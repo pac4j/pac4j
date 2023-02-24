@@ -27,12 +27,21 @@ public class LoadLinkedUserAuthorizationGenerator implements AuthorizationGenera
 
     private boolean failIfLinkedUserNotFound = true;
 
+    /**
+     * <p>Constructor for LoadLinkedUserAuthorizationGenerator.</p>
+     */
     public LoadLinkedUserAuthorizationGenerator() {}
 
+    /**
+     * <p>Constructor for LoadLinkedUserAuthorizationGenerator.</p>
+     *
+     * @param profileService a {@link org.pac4j.core.profile.service.ProfileService} object
+     */
     public LoadLinkedUserAuthorizationGenerator(final ProfileService profileService) {
         this.profileService = profileService;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<UserProfile> generate(final CallContext ctx, final UserProfile profile) {
         CommonHelper.assertNotNull("profileService", profileService);

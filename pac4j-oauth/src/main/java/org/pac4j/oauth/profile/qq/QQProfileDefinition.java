@@ -26,30 +26,45 @@ import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
  */
 public class QQProfileDefinition extends OAuthProfileDefinition {
 
+    /** Constant <code>OPENID_REGEX</code> */
     public static final Pattern OPENID_REGEX = Pattern.compile("\"openid\"\\s*:\\s*\"(\\S*?)\"");
 
+    /** Constant <code>RET="ret"</code> */
     public static final String RET = "ret";
 
+    /** Constant <code>MSG="msg"</code> */
     public static final String MSG = "msg";
 
+    /** Constant <code>NICKNAME="nickname"</code> */
     public static final String NICKNAME = "nickname";
 
+    /** Constant <code>PROVINCE="province"</code> */
     public static final String PROVINCE = "province";
 
+    /** Constant <code>CITY="city"</code> */
     public static final String CITY = "city";
 
+    /** Constant <code>YEAR="year"</code> */
     public static final String YEAR = "year";
 
+    /** Constant <code>FIGUREURL="figureurl"</code> */
     public static final String FIGUREURL = "figureurl";
 
+    /** Constant <code>FIGUREURL_1="figureurl_1"</code> */
     public static final String FIGUREURL_1 = "figureurl_1";
 
+    /** Constant <code>FIGUREURL_2="figureurl_2"</code> */
     public static final String FIGUREURL_2 = "figureurl_2";
 
+    /** Constant <code>FIGUREURL_QQ_1="figureurl_qq_1"</code> */
     public static final String FIGUREURL_QQ_1 = "figureurl_qq_1";
 
+    /** Constant <code>FIGUREURL_QQ_2="figureurl_qq_2"</code> */
     public static final String FIGUREURL_QQ_2 = "figureurl_qq_2";
 
+    /**
+     * <p>Constructor for QQProfileDefinition.</p>
+     */
     public QQProfileDefinition() {
         Arrays.stream(new String[]{
             MSG,
@@ -70,15 +85,24 @@ public class QQProfileDefinition extends OAuthProfileDefinition {
         primary(YEAR, new DateConverter("yyyy"));
     }
 
+    /**
+     * <p>getOpenidUrl.</p>
+     *
+     * @param accessToken a {@link com.github.scribejava.core.model.OAuth2AccessToken} object
+     * @param configuration a {@link org.pac4j.oauth.config.OAuth20Configuration} object
+     * @return a {@link java.lang.String} object
+     */
     public String getOpenidUrl(OAuth2AccessToken accessToken, OAuth20Configuration configuration) {
         return "https://graph.qq.com/oauth2.0/me";
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getProfileUrl(final Token accessToken, final OAuthConfiguration configuration) {
         return "https://graph.qq.com/user/get_user_info";
     }
 
+    /** {@inheritDoc} */
     @Override
     public QQProfile extractUserProfile(String body) {
         val profile = new QQProfile();
@@ -94,11 +118,26 @@ public class QQProfileDefinition extends OAuthProfileDefinition {
         return profile;
     }
 
+    /**
+     * <p>extractOpenid.</p>
+     *
+     * @param body a {@link java.lang.String} object
+     * @return a {@link java.lang.String} object
+     */
     public String extractOpenid(String body) {
         var openid = extractParameter(body, OPENID_REGEX, true);
         return openid;
     }
 
+    /**
+     * <p>extractParameter.</p>
+     *
+     * @param response a {@link java.lang.String} object
+     * @param regexPattern a {@link java.util.regex.Pattern} object
+     * @param required a boolean
+     * @return a {@link java.lang.String} object
+     * @throws com.github.scribejava.core.exceptions.OAuthException if any.
+     */
     protected static String extractParameter(String response, Pattern regexPattern,
                                              boolean required)
         throws OAuthException {

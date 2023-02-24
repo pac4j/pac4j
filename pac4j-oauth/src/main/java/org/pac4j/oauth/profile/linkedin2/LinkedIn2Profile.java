@@ -7,43 +7,68 @@ import org.pac4j.oauth.profile.OAuth20Profile;
 import java.net.URI;
 
 /**
+ * <p>LinkedIn2Profile class.</p>
  *
  * @author Vassilis Virvilis
  */
 public class LinkedIn2Profile extends OAuth20Profile {
     private static final long serialVersionUID = 100L;
 
+    /**
+     * <p>getLocalizedFirstName.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getLocalizedFirstName() {
         return (String) getAttribute(LinkedIn2ProfileDefinition.LOCALIZED_FIRST_NAME);
     }
 
+    /**
+     * <p>getLocalizedLastName.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getLocalizedLastName() {
         return (String) getAttribute(LinkedIn2ProfileDefinition.LOCALIZED_LAST_NAME);
     }
 
+    /**
+     * <p>getProfilePicture.</p>
+     *
+     * @return a {@link org.pac4j.oauth.profile.linkedin2.LinkedIn2ProfilePicture} object
+     */
     public LinkedIn2ProfilePicture getProfilePicture() {
         return (LinkedIn2ProfilePicture) getAttribute(LinkedIn2ProfileDefinition.PROFILE_PICTURE);
     }
 
+    /**
+     * <p>getProfileEmails.</p>
+     *
+     * @return a {@link org.pac4j.oauth.profile.linkedin2.LinkedIn2ProfileEmails} object
+     */
     public LinkedIn2ProfileEmails getProfileEmails() {
         return (LinkedIn2ProfileEmails) getAttribute(LinkedIn2ProfileDefinition.PROFILE_EMAILS);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getFirstName() {
         return getLocalizedFirstName();
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getFamilyName() {
         return getLocalizedLastName();
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getDisplayName() {
         return getFirstName() + " " + getFamilyName();
     }
 
+    /** {@inheritDoc} */
     @Override
     public URI getPictureUrl() {
         val pp = getProfilePicture();
@@ -84,6 +109,7 @@ public class LinkedIn2Profile extends OAuth20Profile {
         return CommonHelper.asURI(identifier2);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getEmail() {
         val pe = getProfileEmails();

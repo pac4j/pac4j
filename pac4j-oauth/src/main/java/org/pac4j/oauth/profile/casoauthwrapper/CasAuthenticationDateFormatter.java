@@ -10,10 +10,14 @@ import org.pac4j.core.profile.converter.DateConverter;
  */
 public class CasAuthenticationDateFormatter extends DateConverter {
 
+    /**
+     * <p>Constructor for CasAuthenticationDateFormatter.</p>
+     */
     public CasAuthenticationDateFormatter() {
         super("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
     }
 
+    /** {@inheritDoc} */
     @Override
     public Object convert(final Object attribute) {
         var a = attribute;

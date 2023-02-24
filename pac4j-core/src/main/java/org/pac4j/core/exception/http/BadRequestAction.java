@@ -21,6 +21,9 @@ public class BadRequestAction extends HttpAction implements WithContentAction {
 
     private String content = Pac4jConstants.EMPTY_STRING;
 
+    /**
+     * <p>Constructor for BadRequestAction.</p>
+     */
     public BadRequestAction() {
         super(HttpConstants.BAD_REQUEST);
     }

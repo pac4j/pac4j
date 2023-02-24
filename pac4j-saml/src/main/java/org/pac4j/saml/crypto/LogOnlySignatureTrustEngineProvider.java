@@ -14,16 +14,23 @@ import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
  * Provider wrapping another trust engine provider to suppress all signature validation errors and only log them.
  *
  * @since 3.8.0
+ * @author bidou
  */
 @Slf4j
 public class LogOnlySignatureTrustEngineProvider implements SAML2SignatureTrustEngineProvider {
 
     private final SAML2SignatureTrustEngineProvider wrapped;
 
+    /**
+     * <p>Constructor for LogOnlySignatureTrustEngineProvider.</p>
+     *
+     * @param wrapped a {@link org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider} object
+     */
     public LogOnlySignatureTrustEngineProvider(final SAML2SignatureTrustEngineProvider wrapped) {
         this.wrapped = wrapped;
     }
 
+    /** {@inheritDoc} */
     @Override
     public SignatureTrustEngine build() {
         return new LogOnlySignatureTrustEngine(wrapped.build());

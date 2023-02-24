@@ -13,10 +13,14 @@ import org.pac4j.core.profile.Color;
 @Slf4j
 public final class ColorConverter extends AbstractAttributeConverter {
 
+    /**
+     * <p>Constructor for ColorConverter.</p>
+     */
     public ColorConverter() {
         super(Color.class);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected Color internalConvert(final Object attribute) {
         if (attribute instanceof String s && s.length() == 6) {

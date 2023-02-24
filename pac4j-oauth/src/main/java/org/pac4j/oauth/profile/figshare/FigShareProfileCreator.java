@@ -17,10 +17,17 @@ import com.github.scribejava.core.model.OAuthRequest;
  * @since 3.8.0
  */
 public class FigShareProfileCreator extends OAuth20ProfileCreator {
+    /**
+     * <p>Constructor for FigShareProfileCreator.</p>
+     *
+     * @param configuration a {@link org.pac4j.oauth.config.OAuth20Configuration} object
+     * @param client a {@link org.pac4j.core.client.IndirectClient} object
+     */
     public FigShareProfileCreator(final OAuth20Configuration configuration, final IndirectClient client) {
         super(configuration, client);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void signRequest(OAuthService service, Token accessToken, OAuthRequest request) {
         super.signRequest(service, accessToken, request);

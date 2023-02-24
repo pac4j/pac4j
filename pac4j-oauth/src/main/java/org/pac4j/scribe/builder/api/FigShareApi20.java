@@ -12,10 +12,11 @@ import lombok.val;
 import java.io.OutputStream;
 
 /**
-*
-* @author Vassilis Virvilis
-* @since 3.8.0
-*/
+ * <p>FigShareApi20 class.</p>
+ *
+ * @author Vassilis Virvilis
+ * @since 3.8.0
+ */
 public class FigShareApi20 extends DefaultApi20 {
     public static class Service extends OAuth20Service {
         public Service(DefaultApi20 api, String apiKey, String apiSecret, String callback, String defaultScope, String responseType,
@@ -32,6 +33,7 @@ public class FigShareApi20 extends DefaultApi20 {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public OAuth20Service createService(String apiKey, String apiSecret, String callback, String defaultScope, String responseType,
             OutputStream debugStream, String userAgent, HttpClientConfig httpClientConfig, HttpClient httpClient) {
@@ -39,11 +41,13 @@ public class FigShareApi20 extends DefaultApi20 {
                 httpClient);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getAccessTokenEndpoint() {
         return "https://api.figshare.com/v2/token";
     }
 
+    /** {@inheritDoc} */
     @Override
     protected String getAuthorizationBaseUrl() {
         return "https://figshare.com/account/applications/authorize";

@@ -38,8 +38,16 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
     private ObjectMapper objectMapper;
     private static final TypeReference<HashMap<String,Object>> TYPE_REFERENCE = new TypeReference<HashMap<String,Object>>() {};
 
+    /** Constant <code>COUCH_ID="_id"</code> */
     public static final String COUCH_ID = "_id";
 
+    /**
+     * <p>Constructor for CouchProfileService.</p>
+     *
+     * @param couchDbConnector a {@link org.ektorp.CouchDbConnector} object
+     * @param attributes a {@link java.lang.String} object
+     * @param passwordEncoder a {@link org.pac4j.core.credentials.password.PasswordEncoder} object
+     */
     public CouchProfileService(final CouchDbConnector couchDbConnector, final String attributes, final PasswordEncoder passwordEncoder) {
         setIdAttribute(COUCH_ID);
         objectMapper = new ObjectMapper();
@@ -48,22 +56,43 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
         setPasswordEncoder(passwordEncoder);
     }
 
+    /**
+     * <p>Constructor for CouchProfileService.</p>
+     */
     public CouchProfileService() {
         this(null, null, null);
     }
 
+    /**
+     * <p>Constructor for CouchProfileService.</p>
+     *
+     * @param couchDbConnector a {@link org.ektorp.CouchDbConnector} object
+     */
     public CouchProfileService(final CouchDbConnector couchDbConnector) {
         this(couchDbConnector, null, null);
     }
 
+    /**
+     * <p>Constructor for CouchProfileService.</p>
+     *
+     * @param couchDbConnector a {@link org.ektorp.CouchDbConnector} object
+     * @param attributes a {@link java.lang.String} object
+     */
     public CouchProfileService(final CouchDbConnector couchDbConnector, final String attributes) {
         this(couchDbConnector, attributes, null);
     }
 
+    /**
+     * <p>Constructor for CouchProfileService.</p>
+     *
+     * @param couchDbConnector a {@link org.ektorp.CouchDbConnector} object
+     * @param passwordEncoder a {@link org.pac4j.core.credentials.password.PasswordEncoder} object
+     */
     public CouchProfileService(final CouchDbConnector couchDbConnector, final PasswordEncoder passwordEncoder) {
         this(couchDbConnector, null, passwordEncoder);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         assertNotNull("passwordEncoder", getPasswordEncoder());
@@ -75,12 +104,14 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
         super.internalInit(forceReinit);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void insert(final Map<String, Object> attributes) {
         logger.debug("Insert doc: {}", attributes);
         couchDbConnector.create(attributes);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void update(final Map<String, Object> attributes) {
         val id = (String) attributes.get(COUCH_ID);
@@ -98,6 +129,7 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void deleteById(final String id) {
         logger.debug("Delete id: {}", id);
@@ -124,6 +156,7 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
         return newAttributes;
     }
 
+    /** {@inheritDoc} */
     @Override
     protected List<Map<String, Object>> read(final List<String> names, final String key, final String value) {
         logger.debug("Reading key / value: {} / {}", key, value);

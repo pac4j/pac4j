@@ -1,16 +1,15 @@
 package org.pac4j.oauth.client;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.pac4j.oauth.profile.qq.QQProfile;
 import org.pac4j.oauth.profile.qq.QQProfileCreator;
 import org.pac4j.oauth.profile.qq.QQProfileDefinition;
 import org.pac4j.scribe.builder.api.QQApi20;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * <p>This class is the OAuth client to authenticate users in Tencent QQ Connect.</p>
- * <p>It returns a {@link QQProfile}.</p>
+ * <p>It returns a {@link org.pac4j.oauth.profile.qq.QQProfile}.</p>
  * <p>More information at http://wiki.connect.qq.com/%E4%BD%BF%E7%94%A8authorization_code%E8%8E%B7%E5%8F%96access_token</p>
  *
  * @author zhangzhenli
@@ -57,14 +56,24 @@ public class QQClient extends OAuth20Client {
     protected List<QQScope> scopes;
 
 
+    /**
+     * <p>Constructor for QQClient.</p>
+     */
     public QQClient() {
     }
 
+    /**
+     * <p>Constructor for QQClient.</p>
+     *
+     * @param key a {@link java.lang.String} object
+     * @param secret a {@link java.lang.String} object
+     */
     public QQClient(final String key, final String secret) {
         setKey(key);
         setSecret(secret);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         configuration.setApi(new QQApi20());
@@ -94,14 +103,29 @@ public class QQClient extends OAuth20Client {
         return builder == null ? null : builder.toString();
     }
 
+    /**
+     * <p>Getter for the field <code>scopes</code>.</p>
+     *
+     * @return a {@link java.util.List} object
+     */
     public List<QQScope> getScopes() {
         return scopes;
     }
 
+    /**
+     * <p>Setter for the field <code>scopes</code>.</p>
+     *
+     * @param scopes a {@link java.util.List} object
+     */
     public void setScopes(List<QQScope> scopes) {
         this.scopes = scopes;
     }
 
+    /**
+     * <p>addScope.</p>
+     *
+     * @param scopes a {@link org.pac4j.oauth.client.QQClient.QQScope} object
+     */
     public void addScope(QQScope scopes) {
         if (this.scopes == null)
             this.scopes = new ArrayList<>();

@@ -23,16 +23,20 @@ import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
  */
 public class WechatProfileDefinition extends OAuthProfileDefinition {
 
+    /** Constant <code>OPENID="openid"</code> */
     public static final String OPENID = "openid";
 
+    /** Constant <code>NICKNAME="nickname"</code> */
     public static final String NICKNAME = "nickname";
     /**
      * Gender, 1 male and 2 female
      */
     public static final String SEX = "sex";
 
+    /** Constant <code>PROVINCE="province"</code> */
     public static final String PROVINCE = "province";
 
+    /** Constant <code>CITY="city"</code> */
     public static final String CITY = "city";
     /**
      * country, For example, China is CN
@@ -52,6 +56,9 @@ public class WechatProfileDefinition extends OAuthProfileDefinition {
      */
     public static final String UNIONID = "unionid";
 
+    /**
+     * <p>Constructor for WechatProfileDefinition.</p>
+     */
     public WechatProfileDefinition() {
         Arrays.stream(new String[]{
             OPENID,
@@ -67,6 +74,7 @@ public class WechatProfileDefinition extends OAuthProfileDefinition {
     }
 
 
+    /** {@inheritDoc} */
     @Override
     public String getProfileUrl(final Token accessToken, final OAuthConfiguration configuration) {
         if (accessToken instanceof WechatToken) {
@@ -83,6 +91,7 @@ public class WechatProfileDefinition extends OAuthProfileDefinition {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public WechatProfile extractUserProfile(String body) {
         val profile = new WechatProfile();

@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 
 /**
  * Class responsible for executing every required checks for validating a SAML response.
- * The method validate populates the given {@link SAML2MessageContext}
+ * The method validate populates the given {@link org.pac4j.saml.context.SAML2MessageContext}
  * with the correct SAML assertion and the corresponding nameID's Bearer subject if every checks succeeds.
  *
  * @author Michael Remond
@@ -43,6 +43,14 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
 
     private final SAML2Configuration configuration;
 
+    /**
+     * <p>Constructor for SAML2AuthnResponseValidator.</p>
+     *
+     * @param engine a {@link org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider} object
+     * @param decrypter a {@link org.opensaml.saml.saml2.encryption.Decrypter} object
+     * @param replayCache a {@link org.pac4j.saml.replay.ReplayCacheProvider} object
+     * @param saml2Configuration a {@link org.pac4j.saml.config.SAML2Configuration} object
+     */
     public SAML2AuthnResponseValidator(
         final SAML2SignatureTrustEngineProvider engine,
         final Decrypter decrypter,
@@ -52,6 +60,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
         this.configuration = saml2Configuration;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Credentials validate(final SAML2MessageContext context) {
 
@@ -74,6 +83,13 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
         return buildSAML2Credentials(context, response);
     }
 
+    /**
+     * <p>buildSAML2Credentials.</p>
+     *
+     * @param context a {@link org.pac4j.saml.context.SAML2MessageContext} object
+     * @param response a {@link org.opensaml.saml.saml2.core.Response} object
+     * @return a {@link org.pac4j.saml.credentials.SAML2AuthenticationCredentials} object
+     */
     protected SAML2AuthenticationCredentials buildSAML2Credentials(final SAML2MessageContext context,
                                                                    final Response response) {
         val subjectAssertion = context.getSubjectAssertion();
@@ -107,6 +123,12 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
             response.getInResponseTo());
     }
 
+    /**
+     * <p>collectAssertionAttributes.</p>
+     *
+     * @param subjectAssertion a {@link org.opensaml.saml.saml2.core.Assertion} object
+     * @return a {@link java.util.List} object
+     */
     protected List<Attribute> collectAssertionAttributes(final Assertion subjectAssertion) {
         final List<Attribute> attributes = new ArrayList<>();
         for (val attributeStatement : subjectAssertion.getAttributeStatements()) {
@@ -130,6 +152,13 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
         return attributes;
     }
 
+    /**
+     * <p>determineNameID.</p>
+     *
+     * @param context a {@link org.pac4j.saml.context.SAML2MessageContext} object
+     * @param attributes a {@link java.util.List} object
+     * @return a {@link org.pac4j.saml.credentials.SAML2AuthenticationCredentials.SAMLNameID} object
+     */
     protected SAML2AuthenticationCredentials.SAMLNameID determineNameID(final SAML2MessageContext context,
                 final List<SAML2AuthenticationCredentials.SAMLAttribute> attributes) {
         var configContext = context.getConfigurationContext();
@@ -236,6 +265,12 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
         validateIssuerIfItExists(response.getIssuer(), context);
     }
 
+    /**
+     * <p>verifyRequest.</p>
+     *
+     * @param request a {@link org.opensaml.saml.saml2.core.AuthnRequest} object
+     * @param context a {@link org.pac4j.saml.context.SAML2MessageContext} object
+     */
     protected void verifyRequest(final AuthnRequest request, final SAML2MessageContext context) {
         // Verify endpoint requested in the original request
         val assertionConsumerService = (AssertionConsumerService) context.
@@ -269,7 +304,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
 
     /**
      * Validates the SAML SSO response by finding a valid assertion with authn statements.
-     * Populates the {@link SAML2MessageContext} with a subjectAssertion and a subjectNameIdentifier.
+     * Populates the {@link org.pac4j.saml.context.SAML2MessageContext} with a subjectAssertion and a subjectNameIdentifier.
      *
      * @param response  the response
      * @param context   the context
@@ -619,6 +654,12 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
         validateAuthnContextClassRefs(context, authnClassRefs);
     }
 
+    /**
+     * <p>validateAuthnContextClassRefs.</p>
+     *
+     * @param context a {@link org.pac4j.saml.context.SAML2MessageContext} object
+     * @param providedAuthnContextClassRefs a {@link java.util.List} object
+     */
     protected void validateAuthnContextClassRefs(final SAML2MessageContext context, final List<String> providedAuthnContextClassRefs) {
         var configContext = context.getConfigurationContext();
         if (!configContext.getAuthnContextClassRefs().isEmpty()) {

@@ -8,8 +8,14 @@ import org.opensaml.storage.ReplayCache;
  * multiple invocations.
  *
  * @since 3.8
+ * @author bidou
  */
 @FunctionalInterface
 public interface ReplayCacheProvider {
+    /**
+     * <p>get.</p>
+     *
+     * @return a {@link org.opensaml.storage.ReplayCache} object
+     */
     ReplayCache get();
 }

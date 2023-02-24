@@ -15,5 +15,13 @@ import java.util.List;
 @FunctionalInterface
 public interface ClientFinder {
 
+    /**
+     * <p>find.</p>
+     *
+     * @param clients a {@link org.pac4j.core.client.Clients} object
+     * @param context a {@link org.pac4j.core.context.WebContext} object
+     * @param clientNames a {@link java.lang.String} object
+     * @return a {@link java.util.List} object
+     */
     List<Client> find(Clients clients, WebContext context, String clientNames);
 }

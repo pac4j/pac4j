@@ -10,11 +10,21 @@ import org.pac4j.saml.crypto.SignatureSigningParametersProvider;
 import org.pac4j.saml.profile.impl.AbstractSAML2MessageSender;
 
 /**
+ * <p>SAML2WebSSOMessageSender class.</p>
+ *
  * @author Misagh Moayyed
  */
 @Slf4j
 public class SAML2WebSSOMessageSender extends AbstractSAML2MessageSender<AuthnRequest> {
 
+    /**
+     * <p>Constructor for SAML2WebSSOMessageSender.</p>
+     *
+     * @param signatureSigningParametersProvider a {@link org.pac4j.saml.crypto.SignatureSigningParametersProvider} object
+     * @param destinationBindingType a {@link java.lang.String} object
+     * @param signErrorResponses a boolean
+     * @param isAuthnRequestSigned a boolean
+     */
     public SAML2WebSSOMessageSender(final SignatureSigningParametersProvider signatureSigningParametersProvider,
                                     final String destinationBindingType,
                                     final boolean signErrorResponses,
@@ -22,6 +32,7 @@ public class SAML2WebSSOMessageSender extends AbstractSAML2MessageSender<AuthnRe
         super(signatureSigningParametersProvider, destinationBindingType, signErrorResponses, isAuthnRequestSigned);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected boolean mustSignRequest(final SPSSODescriptor spDescriptor, final IDPSSODescriptor idpssoDescriptor) {
         var signOutboundContext = false;
@@ -38,6 +49,7 @@ public class SAML2WebSSOMessageSender extends AbstractSAML2MessageSender<AuthnRe
         return signOutboundContext;
     }
 
+    /** {@inheritDoc} */
     @Override
     protected Endpoint getEndpoint(final SAML2MessageContext context) {
         return context.getIDPSingleSignOnService(destinationBindingType);

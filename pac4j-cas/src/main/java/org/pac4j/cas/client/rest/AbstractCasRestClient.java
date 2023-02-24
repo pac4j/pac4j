@@ -21,7 +21,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 /**
- * This is {@link CasRestFormClient} able to communicate to
+ * This is {@link org.pac4j.cas.client.rest.CasRestFormClient} able to communicate to
  * a CAS server via its REST api, to retrieve TGTs and STs
  * and to construct CAS principals.
  *
@@ -34,6 +34,12 @@ public abstract class AbstractCasRestClient extends DirectClient {
     @Setter
     protected CasConfiguration configuration;
 
+    /**
+     * <p>destroyTicketGrantingTicket.</p>
+     *
+     * @param profile a {@link org.pac4j.cas.profile.CasRestProfile} object
+     * @param context a {@link org.pac4j.core.context.WebContext} object
+     */
     public void destroyTicketGrantingTicket(final CasRestProfile profile, final WebContext context) {
         HttpURLConnection connection = null;
         try {
@@ -52,6 +58,14 @@ public abstract class AbstractCasRestClient extends DirectClient {
         }
     }
 
+    /**
+     * <p>requestServiceTicket.</p>
+     *
+     * @param serviceURL a {@link java.lang.String} object
+     * @param profile a {@link org.pac4j.cas.profile.CasRestProfile} object
+     * @param context a {@link org.pac4j.core.context.WebContext} object
+     * @return a {@link org.pac4j.core.credentials.TokenCredentials} object
+     */
     public TokenCredentials requestServiceTicket(final String serviceURL, final CasRestProfile profile, final WebContext context) {
         HttpURLConnection connection = null;
         try {
@@ -80,6 +94,14 @@ public abstract class AbstractCasRestClient extends DirectClient {
         }
     }
 
+    /**
+     * <p>validateServiceTicket.</p>
+     *
+     * @param serviceURL a {@link java.lang.String} object
+     * @param ticket a {@link org.pac4j.core.credentials.TokenCredentials} object
+     * @param context a {@link org.pac4j.core.context.WebContext} object
+     * @return a {@link org.pac4j.cas.profile.CasProfile} object
+     */
     public CasProfile validateServiceTicket(final String serviceURL, final TokenCredentials ticket, final WebContext context) {
         try {
             val assertion = configuration.retrieveTicketValidator(context).validate(ticket.getToken(), serviceURL);

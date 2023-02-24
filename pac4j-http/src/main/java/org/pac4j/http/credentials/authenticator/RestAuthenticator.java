@@ -45,12 +45,21 @@ public class RestAuthenticator extends ProfileDefinitionAware implements Authent
 
     private String url;
 
+    /**
+     * <p>Constructor for RestAuthenticator.</p>
+     */
     public RestAuthenticator() {}
 
+    /**
+     * <p>Constructor for RestAuthenticator.</p>
+     *
+     * @param url a {@link java.lang.String} object
+     */
     public RestAuthenticator(final String url) {
         this.url = url;
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         CommonHelper.assertNotBlank("url", url);
@@ -63,6 +72,7 @@ public class RestAuthenticator extends ProfileDefinitionAware implements Authent
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<Credentials> validate(final CallContext ctx, final Credentials cred) {
         init();
@@ -84,6 +94,12 @@ public class RestAuthenticator extends ProfileDefinitionAware implements Authent
         return Optional.of(credentials);
     }
 
+    /**
+     * <p>buildProfile.</p>
+     *
+     * @param credentials a {@link org.pac4j.core.credentials.UsernamePasswordCredentials} object
+     * @param body a {@link java.lang.String} object
+     */
     protected void buildProfile(final UsernamePasswordCredentials credentials, final String body) {
         val profileClass = (RestProfile) getProfileDefinition().newProfile();
         final RestProfile profile;

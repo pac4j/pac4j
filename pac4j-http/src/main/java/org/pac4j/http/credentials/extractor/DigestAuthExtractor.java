@@ -29,15 +29,26 @@ public class DigestAuthExtractor implements CredentialsExtractor {
 
     private final HeaderExtractor extractor;
 
+    /**
+     * <p>Constructor for DigestAuthExtractor.</p>
+     */
     public DigestAuthExtractor() {
         this(HttpConstants.AUTHORIZATION_HEADER, HttpConstants.DIGEST_HEADER_PREFIX);
     }
 
+    /**
+     * <p>Constructor for DigestAuthExtractor.</p>
+     *
+     * @param headerName a {@link java.lang.String} object
+     * @param prefixHeader a {@link java.lang.String} object
+     */
     public DigestAuthExtractor(final String headerName, final String prefixHeader) {
         this.extractor = new HeaderExtractor(headerName, prefixHeader);
     }
 
     /**
+     * {@inheritDoc}
+     *
      * Extracts digest Authorization header components.
      * As per RFC 2617 :
      * username is the user's name in the specified realm
@@ -51,8 +62,6 @@ public class DigestAuthExtractor implements CredentialsExtractor {
      * If in the Authorization header it is not specified a username and response, we throw CredentialsException because
      * the client uses an username and a password to authenticate. response is just a MD5 encoded value
      * based on user provided password and RFC 2617 digest authentication encoding rules
-     * @param ctx the current context
-     * @return the Digest credentials
      */
     @Override
     public Optional<Credentials> extract(final CallContext ctx) {

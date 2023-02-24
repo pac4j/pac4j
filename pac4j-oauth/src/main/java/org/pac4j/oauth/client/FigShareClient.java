@@ -10,7 +10,7 @@ import java.util.Optional;
 
 /**
  * <p>This class is the OAuth client to authenticate users in FigShare (using OAuth 2.0 protocol).</p>
- * <p>It returns a {@link FigShareProfileDefinition}.</p>
+ * <p>It returns a {@link org.pac4j.oauth.profile.figshare.FigShareProfileDefinition}.</p>
  * <p>More information at https://docs.figshare.com/old_docs/oauth/</p>
  *
  * @author Vassilis Virivilis
@@ -18,6 +18,7 @@ import java.util.Optional;
  */
 public class FigShareClient extends OAuth20Client {
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         val api = new FigShareApi20();

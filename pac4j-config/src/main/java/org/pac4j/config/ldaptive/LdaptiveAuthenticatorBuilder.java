@@ -21,10 +21,15 @@ import java.util.stream.Collectors;
 
 /**
  * Copy/pasted from CAS server v5.0.4: Beans + LdapAuthenticationConfiguration classes, only the Ldaptive stuffs are kept.
+ *
+ * @author bidou
  */
 @Slf4j
 public class LdaptiveAuthenticatorBuilder {
 
+    /**
+     * <p>Constructor for LdaptiveAuthenticatorBuilder.</p>
+     */
     protected LdaptiveAuthenticatorBuilder() {
     }
 
@@ -36,6 +41,12 @@ public class LdaptiveAuthenticatorBuilder {
      * ####################################################################################################################################
      */
 
+    /**
+     * <p>getAuthenticator.</p>
+     *
+     * @param l a {@link org.pac4j.config.ldaptive.LdapAuthenticationProperties} object
+     * @return a {@link org.ldaptive.auth.Authenticator} object
+     */
     public static Authenticator getAuthenticator(final LdapAuthenticationProperties l) {
         if (l.getType() == LdapAuthenticationProperties.AuthenticationTypes.AD) {
             LOGGER.debug("Creating active directory authenticator for {}", l.getLdapUrl());

@@ -7,7 +7,7 @@ import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import java.util.Map;
 
 /**
- * This is {@link JwtProfileDefinition}.
+ * This is {@link org.pac4j.jwt.profile.JwtProfileDefinition}.
  *
  * @author Misagh Moayyed
  * @since 5.0.1
@@ -15,11 +15,15 @@ import java.util.Map;
 public class JwtProfileDefinition extends CommonProfileDefinition {
     private boolean keepNestedAttributes = true;
 
+    /**
+     * <p>Constructor for JwtProfileDefinition.</p>
+     */
     public JwtProfileDefinition() {
         super(x -> new JwtProfile());
         setRestoreProfileFromTypedId(true);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void convertAndAdd(UserProfile profile, AttributeLocation attributeLocation, String name, Object value) {
         if (value instanceof Map) {
@@ -33,6 +37,11 @@ public class JwtProfileDefinition extends CommonProfileDefinition {
         }
     }
 
+    /**
+     * <p>Setter for the field <code>keepNestedAttributes</code>.</p>
+     *
+     * @param keepNestedAttributes a boolean
+     */
     public void setKeepNestedAttributes(boolean keepNestedAttributes) {
         this.keepNestedAttributes = keepNestedAttributes;
     }

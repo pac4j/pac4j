@@ -24,6 +24,12 @@ public class SecurityEndpointBuilder {
 
     private static final AtomicInteger internalNumber = new AtomicInteger(1);
 
+    /**
+     * <p>buildConfig.</p>
+     *
+     * @param endpoint a {@link org.pac4j.core.util.security.SecurityEndpoint} object
+     * @param parameters a {@link java.lang.Object} object
+     */
     public static void buildConfig(final SecurityEndpoint endpoint, Object... parameters) {
         Config config = null;
         var configProvided = false;

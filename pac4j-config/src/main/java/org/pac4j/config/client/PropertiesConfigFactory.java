@@ -25,15 +25,27 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
 
     private final String callbackUrl;
 
+    /**
+     * <p>Constructor for PropertiesConfigFactory.</p>
+     *
+     * @param properties a {@link java.util.Map} object
+     */
     public PropertiesConfigFactory(final Map<String, String> properties) {
         this(null, properties);
     }
 
+    /**
+     * <p>Constructor for PropertiesConfigFactory.</p>
+     *
+     * @param callbackUrl a {@link java.lang.String} object
+     * @param properties a {@link java.util.Map} object
+     */
     public PropertiesConfigFactory(final String callbackUrl, final Map<String, String> properties) {
         super(properties);
         this.callbackUrl = callbackUrl;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Config build(final Object... parameters) {
 
@@ -105,6 +117,11 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
         return new Config(callbackUrl, clients);
     }
 
+    /**
+     * <p>hasShiroEncoder.</p>
+     *
+     * @return a boolean
+     */
     protected boolean hasShiroEncoder() {
         for (var i = 0; i <= MAX_NUM_ENCODERS; i++) {
             if (isNotBlank(getProperty(SHIRO_ENCODER, i)) || containsProperty(SHIRO_ENCODER_GENERATE_PUBLIC_SALT, i)
@@ -116,6 +133,11 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
         return false;
     }
 
+    /**
+     * <p>hasSpringEncoder.</p>
+     *
+     * @return a boolean
+     */
     protected boolean hasSpringEncoder() {
         for (var i = 0; i <= MAX_NUM_ENCODERS; i++) {
             val type = getProperty(SPRING_ENCODER_TYPE, i);
@@ -126,6 +148,11 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
         return false;
     }
 
+    /**
+     * <p>hasLdapAuthenticator.</p>
+     *
+     * @return a boolean
+     */
     protected boolean hasLdapAuthenticator() {
         for (var i = 0; i <= MAX_NUM_AUTHENTICATORS; i++) {
             val type = getProperty(LDAP_TYPE, i);
@@ -136,6 +163,11 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
         return false;
     }
 
+    /**
+     * <p>hasDbAuthenticator.</p>
+     *
+     * @return a boolean
+     */
     protected boolean hasDbAuthenticator() {
         for (var i = 0; i <= MAX_NUM_AUTHENTICATORS; i++) {
             val className = getProperty(DB_DATASOURCE_CLASS_NAME, i);
@@ -147,6 +179,11 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
         return false;
     }
 
+    /**
+     * <p>hasOAuthClients.</p>
+     *
+     * @return a boolean
+     */
     protected boolean hasOAuthClients() {
         if (isNotBlank(getProperty(LINKEDIN_ID)) && isNotBlank(getProperty(LINKEDIN_SECRET))) {
             return true;
@@ -182,6 +219,11 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
         return false;
     }
 
+    /**
+     * <p>hasSaml2Clients.</p>
+     *
+     * @return a boolean
+     */
     protected boolean hasSaml2Clients() {
         for (var i = 0; i <= MAX_NUM_CLIENTS; i++) {
             if (isNotBlank(getProperty(SAML_KEYSTORE_PASSWORD, i)) &&
@@ -194,6 +236,11 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
         return false;
     }
 
+    /**
+     * <p>hasCasClients.</p>
+     *
+     * @return a boolean
+     */
     protected boolean hasCasClients() {
         for (var i = 0; i <= MAX_NUM_CLIENTS; i++) {
             if (isNotBlank(getProperty(CAS_LOGIN_URL, i))) {
@@ -203,6 +250,11 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
         return false;
     }
 
+    /**
+     * <p>hasOidcClients.</p>
+     *
+     * @return a boolean
+     */
     protected boolean hasOidcClients() {
         for (var i = 0; i <= MAX_NUM_CLIENTS; i++) {
             if (isNotBlank(getProperty(OIDC_ID, i)) && isNotBlank(getProperty(OIDC_SECRET, i))) {
@@ -212,6 +264,11 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
         return false;
     }
 
+    /**
+     * <p>hasHttpAuthenticatorsOrClients.</p>
+     *
+     * @return a boolean
+     */
     protected boolean hasHttpAuthenticatorsOrClients() {
         if (isNotBlank(getProperty(ANONYMOUS))) {
             return true;

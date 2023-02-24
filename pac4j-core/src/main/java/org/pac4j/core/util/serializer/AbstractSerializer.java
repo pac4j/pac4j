@@ -13,6 +13,7 @@ import java.util.Base64;
  */
 public abstract class AbstractSerializer implements Serializer {
 
+    /** {@inheritDoc} */
     @Override
     public final String serializeToString(final Object obj) {
         if (obj == null) {
@@ -22,10 +23,17 @@ public abstract class AbstractSerializer implements Serializer {
         return internalSerializeToString(obj);
     }
 
+    /**
+     * <p>internalSerializeToString.</p>
+     *
+     * @param obj a {@link java.lang.Object} object
+     * @return a {@link java.lang.String} object
+     */
     protected String internalSerializeToString(final Object obj) {
         return Base64.getEncoder().encodeToString(internalSerializeToBytes(obj));
     }
 
+    /** {@inheritDoc} */
     @Override
     public final byte[] serializeToBytes(final Object obj) {
         if (obj == null) {
@@ -35,10 +43,17 @@ public abstract class AbstractSerializer implements Serializer {
         return internalSerializeToBytes(obj);
     }
 
+    /**
+     * <p>internalSerializeToBytes.</p>
+     *
+     * @param obj a {@link java.lang.Object} object
+     * @return an array of {@link byte} objects
+     */
     protected byte[] internalSerializeToBytes(final Object obj) {
         return internalSerializeToString(obj).getBytes(StandardCharsets.UTF_8);
     }
 
+    /** {@inheritDoc} */
     @Override
     public final Object deserializeFromString(final String encoded) {
         if (encoded == null) {
@@ -48,11 +63,18 @@ public abstract class AbstractSerializer implements Serializer {
         return internalDeserializeFromString(encoded);
     }
 
+    /**
+     * <p>internalDeserializeFromString.</p>
+     *
+     * @param encoded a {@link java.lang.String} object
+     * @return a {@link java.lang.Object} object
+     */
     protected Object internalDeserializeFromString(final String encoded) {
         val enc = Base64.getDecoder().decode(encoded);
         return internalDeserializeFromBytes(enc);
     }
 
+    /** {@inheritDoc} */
     @Override
     public final Object deserializeFromBytes(final byte[] encoded) {
         if (encoded == null) {
@@ -62,6 +84,12 @@ public abstract class AbstractSerializer implements Serializer {
         return internalDeserializeFromBytes(encoded);
     }
 
+    /**
+     * <p>internalDeserializeFromBytes.</p>
+     *
+     * @param encoded an array of {@link byte} objects
+     * @return a {@link java.lang.Object} object
+     */
     protected Object internalDeserializeFromBytes(final byte[] encoded) {
         return internalDeserializeFromString(new String(encoded, StandardCharsets.UTF_8));
     }

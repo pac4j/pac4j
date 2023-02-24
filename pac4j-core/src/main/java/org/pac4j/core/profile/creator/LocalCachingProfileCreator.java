@@ -36,13 +36,30 @@ public class LocalCachingProfileCreator extends InitializableObject implements P
 
     private Store<Credentials, UserProfile> store;
 
+    /**
+     * <p>Constructor for LocalCachingProfileCreator.</p>
+     */
     public LocalCachingProfileCreator() {}
 
+    /**
+     * <p>Constructor for LocalCachingProfileCreator.</p>
+     *
+     * @param delegate a {@link org.pac4j.core.profile.creator.ProfileCreator} object
+     * @param store a {@link org.pac4j.core.store.Store} object
+     */
     public LocalCachingProfileCreator(final ProfileCreator delegate, final Store<Credentials, UserProfile> store) {
         this.delegate = delegate;
         this.store = store;
     }
 
+    /**
+     * <p>Constructor for LocalCachingProfileCreator.</p>
+     *
+     * @param delegate a {@link org.pac4j.core.profile.creator.ProfileCreator} object
+     * @param cacheSize a int
+     * @param timeout a int
+     * @param timeUnit a {@link java.util.concurrent.TimeUnit} object
+     */
     public LocalCachingProfileCreator(final ProfileCreator delegate, final int cacheSize,
                                       final int timeout, final TimeUnit timeUnit) {
         this.delegate = delegate;
@@ -51,6 +68,7 @@ public class LocalCachingProfileCreator extends InitializableObject implements P
         this.timeUnit = timeUnit;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<UserProfile> create(final CallContext ctx, final Credentials credentials) {
         init();
@@ -70,6 +88,7 @@ public class LocalCachingProfileCreator extends InitializableObject implements P
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         if (this.store == null) {
@@ -81,10 +100,21 @@ public class LocalCachingProfileCreator extends InitializableObject implements P
         }
     }
 
+    /**
+     * <p>removeFromCache.</p>
+     *
+     * @param credentials a {@link org.pac4j.core.credentials.Credentials} object
+     */
     public void removeFromCache(final Credentials credentials) {
         this.store.remove(credentials);
     }
 
+    /**
+     * <p>isCached.</p>
+     *
+     * @param credentials a {@link org.pac4j.core.credentials.Credentials} object
+     * @return a boolean
+     */
     public boolean isCached(final Credentials credentials) {
         return this.store.get(credentials).isPresent();
     }

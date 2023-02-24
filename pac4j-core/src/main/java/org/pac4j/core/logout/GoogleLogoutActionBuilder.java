@@ -18,6 +18,7 @@ import java.util.Optional;
 @Slf4j
 public class GoogleLogoutActionBuilder implements LogoutActionBuilder {
 
+    /** {@inheritDoc} */
     @Override
     public Optional<RedirectionAction> getLogoutAction(final CallContext ctx, final UserProfile currentProfile, final String targetUrl) {
 

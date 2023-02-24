@@ -20,6 +20,14 @@ public class KerberosTicketValidation {
     private final GSSContext gssContext;
     private final String servicePrincipal;
 
+    /**
+     * <p>Constructor for KerberosTicketValidation.</p>
+     *
+     * @param username a {@link java.lang.String} object
+     * @param servicePrincipal a {@link java.lang.String} object
+     * @param responseToken an array of {@link byte} objects
+     * @param gssContext a GSSContext object
+     */
     public KerberosTicketValidation(String username, String servicePrincipal, byte[] responseToken, GSSContext gssContext) {
         this.username = username;
         this.servicePrincipal = servicePrincipal;
@@ -31,18 +39,38 @@ public class KerberosTicketValidation {
         this.gssContext = gssContext;
     }
 
+    /**
+     * <p>username.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String username() {
         return username;
     }
 
+    /**
+     * <p>responseToken.</p>
+     *
+     * @return an array of {@link byte} objects
+     */
     public byte[] responseToken() {
         return responseToken.clone();
     }
 
+    /**
+     * <p>Getter for the field <code>gssContext</code>.</p>
+     *
+     * @return a GSSContext object
+     */
     public GSSContext getGssContext() {
         return gssContext;
     }
 
+    /**
+     * <p>subject.</p>
+     *
+     * @return a {@link javax.security.auth.Subject} object
+     */
     public Subject subject() {
         final Set<KerberosPrincipal> princs = new HashSet<>();
         princs.add(new KerberosPrincipal(servicePrincipal));

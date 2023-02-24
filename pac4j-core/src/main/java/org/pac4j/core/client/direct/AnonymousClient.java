@@ -14,10 +14,14 @@ import java.util.Optional;
  */
 public final class AnonymousClient extends DirectClient {
 
+    /** Constant <code>INSTANCE</code> */
     public static final AnonymousClient INSTANCE = new AnonymousClient();
 
     private static boolean warned;
 
+    /**
+     * <p>Constructor for AnonymousClient.</p>
+     */
     public AnonymousClient() {
         if (!warned) {
             logger.warn("Be careful when using the 'AnonymousClient': an 'AnonymousProfile' is returned "
@@ -26,6 +30,7 @@ public final class AnonymousClient extends DirectClient {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         setCredentialsExtractorIfUndefined(ctx -> Optional.of(AnonymousCredentials.INSTANCE));

@@ -31,11 +31,17 @@ public abstract class SpringResourceLoader<M> extends InitializableObject {
 
     protected M loaded;
 
+    /** {@inheritDoc} */
     protected final void internalInit(final boolean forceReinit) {
         internalLoad();
         hasChanged();
     }
 
+    /**
+     * <p>load.</p>
+     *
+     * @return a M object
+     */
     public final M load() {
         if (lock.tryLock()) {
             try {
@@ -49,6 +55,11 @@ public abstract class SpringResourceLoader<M> extends InitializableObject {
         return loaded;
     }
 
+    /**
+     * <p>hasChanged.</p>
+     *
+     * @return a boolean
+     */
     public boolean hasChanged() {
         if (resource != null) {
             if (resource instanceof ByteArrayResource) {
@@ -69,5 +80,8 @@ public abstract class SpringResourceLoader<M> extends InitializableObject {
         return false;
     }
 
+    /**
+     * <p>internalLoad.</p>
+     */
     protected abstract void internalLoad();
 }

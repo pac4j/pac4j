@@ -8,6 +8,9 @@ package org.pac4j.core.profile.converter;
  */
 public final class StringConverter extends AbstractAttributeConverter {
 
+    /**
+     * <p>Constructor for StringConverter.</p>
+     */
     public StringConverter() {
         super(String.class);
     }

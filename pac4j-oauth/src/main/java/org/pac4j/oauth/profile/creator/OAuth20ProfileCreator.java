@@ -25,10 +25,17 @@ import org.pac4j.oauth.profile.OAuth20Profile;
  */
 public class OAuth20ProfileCreator extends OAuthProfileCreator {
 
+    /**
+     * <p>Constructor for OAuth20ProfileCreator.</p>
+     *
+     * @param configuration a {@link org.pac4j.oauth.config.OAuth20Configuration} object
+     * @param client a {@link org.pac4j.core.client.IndirectClient} object
+     */
     public OAuth20ProfileCreator(final OAuth20Configuration configuration, final IndirectClient client) {
         super(configuration, client);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected OAuth2AccessToken getAccessToken(final Credentials credentials) {
         // we assume the access token only has been passed: it can be a bearer call (HTTP client)
@@ -40,6 +47,7 @@ public class OAuth20ProfileCreator extends OAuthProfileCreator {
         return ((OAuth20Credentials) credentials).getAccessToken();
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void addTokenToProfile(final UserProfile profile, final Token token) {
         if (profile != null) {
@@ -51,6 +59,7 @@ public class OAuth20ProfileCreator extends OAuthProfileCreator {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void signRequest(final OAuthService service, final Token token, final OAuthRequest request) {
         ((OAuth20Service) service).signRequest((OAuth2AccessToken) token, request);

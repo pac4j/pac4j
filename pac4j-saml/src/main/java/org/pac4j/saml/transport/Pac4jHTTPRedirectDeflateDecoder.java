@@ -26,10 +26,16 @@ import java.util.zip.InflaterInputStream;
  */
 public class Pac4jHTTPRedirectDeflateDecoder extends AbstractPac4jDecoder {
 
+    /**
+     * <p>Constructor for Pac4jHTTPRedirectDeflateDecoder.</p>
+     *
+     * @param context a {@link org.pac4j.core.context.CallContext} object
+     */
     public Pac4jHTTPRedirectDeflateDecoder(final CallContext context) {
         super(context);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void doDecode() throws MessageDecodingException {
         val messageContext = new SAML2MessageContext(callContext);
@@ -52,6 +58,13 @@ public class Pac4jHTTPRedirectDeflateDecoder extends AbstractPac4jDecoder {
         }
     }
 
+    /**
+     * <p>inflate.</p>
+     *
+     * @param input an array of {@link byte} objects
+     * @return a {@link java.io.InputStream} object
+     * @throws org.opensaml.messaging.decoder.MessageDecodingException if any.
+     */
     protected InputStream inflate(final byte[] input) throws MessageDecodingException {
         try {
             // compatible with GZIP and PKZIP
@@ -67,6 +80,14 @@ public class Pac4jHTTPRedirectDeflateDecoder extends AbstractPac4jDecoder {
         }
     }
 
+    /**
+     * <p>internalInflate.</p>
+     *
+     * @param input an array of {@link byte} objects
+     * @param inflater a {@link java.util.zip.Inflater} object
+     * @return a {@link java.io.InputStream} object
+     * @throws java.io.IOException if any.
+     */
     protected InputStream internalInflate(final byte[] input, final Inflater inflater) throws IOException {
         val baos = new ByteArrayOutputStream();
         val iis = new InflaterInputStream(new ByteArrayInputStream(input), inflater);
@@ -86,6 +107,7 @@ public class Pac4jHTTPRedirectDeflateDecoder extends AbstractPac4jDecoder {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getBindingURI(final SAML2MessageContext messageContext) {
         return SAMLConstants.SAML2_REDIRECT_BINDING_URI;

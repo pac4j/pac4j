@@ -2,7 +2,6 @@ package org.pac4j.saml.sso.impl;
 
 import lombok.val;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
-import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.saml.common.SAMLObjectBuilder;
 import org.opensaml.saml.common.SAMLVersion;
 import org.opensaml.saml.saml2.core.*;
@@ -24,7 +23,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
 /**
- * Build a SAML2 Authn Request from the given {@link MessageContext}.
+ * Build a SAML2 Authn Request from the given {@link org.opensaml.messaging.context.MessageContext}.
  *
  * @author Michael Remond
  * @author Misagh Moayyed
@@ -37,6 +36,7 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
 
     private final XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
 
+    /** {@inheritDoc} */
     @Override
     public AuthnRequest build(final SAML2MessageContext context) {
         val configContext = context.getConfigurationContext();
@@ -51,6 +51,14 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
         return authnRequest;
     }
 
+    /**
+     * <p>buildAuthnRequest.</p>
+     *
+     * @param context a {@link org.pac4j.saml.context.SAML2MessageContext} object
+     * @param assertionConsumerService a {@link org.opensaml.saml.saml2.metadata.AssertionConsumerService} object
+     * @param ssoService a {@link org.opensaml.saml.saml2.metadata.SingleSignOnService} object
+     * @return a {@link org.opensaml.saml.saml2.core.AuthnRequest} object
+     */
     @SuppressWarnings("unchecked")
     protected final AuthnRequest buildAuthnRequest(final SAML2MessageContext context,
                                                    final AssertionConsumerService assertionConsumerService,
@@ -158,12 +166,25 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
         return request;
     }
 
+    /**
+     * <p>buildAuthnContextClassRef.</p>
+     *
+     * @param authnContextClassRef a {@link java.lang.String} object
+     * @return a {@link org.opensaml.saml.saml2.core.AuthnContextClassRef} object
+     */
     protected AuthnContextClassRef buildAuthnContextClassRef(final String authnContextClassRef) {
         val classRef = new AuthnContextClassRefBuilder().buildObject();
         classRef.setURI(authnContextClassRef);
         return classRef;
     }
 
+    /**
+     * <p>getIssuer.</p>
+     *
+     * @param context a {@link org.pac4j.saml.context.SAML2MessageContext} object
+     * @param spEntityId a {@link java.lang.String} object
+     * @return a {@link org.opensaml.saml.saml2.core.Issuer} object
+     */
     @SuppressWarnings("unchecked")
     protected final Issuer getIssuer(final SAML2MessageContext context, final String spEntityId) {
         val configContext = context.getConfigurationContext();
@@ -182,6 +203,12 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
         return issuer;
     }
 
+    /**
+     * <p>getComparisonTypeEnumFromString.</p>
+     *
+     * @param comparisonType a {@link java.lang.String} object
+     * @return a {@link org.opensaml.saml.saml2.core.AuthnContextComparisonTypeEnumeration} object
+     */
     protected AuthnContextComparisonTypeEnumeration getComparisonTypeEnumFromString(final String comparisonType) {
         if ("exact".equalsIgnoreCase(comparisonType)) {
             return AuthnContextComparisonTypeEnumeration.EXACT;
@@ -198,6 +225,11 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
         return null;
     }
 
+    /**
+     * <p>Setter for the field <code>issueInstantSkewSeconds</code>.</p>
+     *
+     * @param issueInstantSkewSeconds a int
+     */
     public void setIssueInstantSkewSeconds(final int issueInstantSkewSeconds) {
         this.issueInstantSkewSeconds = issueInstantSkewSeconds;
     }

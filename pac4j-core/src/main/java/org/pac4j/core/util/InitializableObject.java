@@ -66,10 +66,21 @@ public abstract class InitializableObject {
         }
     }
 
+    /**
+     * <p>isInitialized.</p>
+     *
+     * @return a boolean
+     */
     public final boolean isInitialized() {
         return initialized.get();
     }
 
+    /**
+     * <p>shouldInitialize.</p>
+     *
+     * @param forceReinit a boolean
+     * @return a boolean
+     */
     protected boolean shouldInitialize(final boolean forceReinit) {
         if (forceReinit) {
             return true;
@@ -85,13 +96,30 @@ public abstract class InitializableObject {
 
     /**
      * Internal initialization of the object.
+     *
+     * @param forceReinit a boolean
      */
     protected abstract void internalInit(final boolean forceReinit);
 
+    /**
+     * <p>beforeInternalInit.</p>
+     *
+     * @param forceReinit a boolean
+     */
     protected void beforeInternalInit(final boolean forceReinit) {}
 
+    /**
+     * <p>afterInternalInit.</p>
+     *
+     * @param forceReinit a boolean
+     */
     protected void afterInternalInit(final boolean forceReinit) {}
 
+    /**
+     * <p>Getter for the field <code>nbAttempts</code>.</p>
+     *
+     * @return a int
+     */
     public int getNbAttempts() {
         return nbAttempts.get();
     }

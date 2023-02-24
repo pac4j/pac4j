@@ -17,14 +17,24 @@ public class CronofyClient extends OAuth20Client {
 
     private String scope = "read_free_busy";
 
+    /**
+     * <p>Constructor for CronofyClient.</p>
+     */
     public CronofyClient() {
     }
 
+    /**
+     * <p>Constructor for CronofyClient.</p>
+     *
+     * @param key a {@link java.lang.String} object
+     * @param secret a {@link java.lang.String} object
+     */
     public CronofyClient(final String key, final String secret) {
         setKey(key);
         setSecret(secret);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         configuration.setApi(new CronofyApi20(sdkIdentifier));
@@ -36,18 +46,38 @@ public class CronofyClient extends OAuth20Client {
         super.internalInit(forceReinit);
     }
 
+    /**
+     * <p>Getter for the field <code>scope</code>.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getScope() {
         return scope;
     }
 
+    /**
+     * <p>Setter for the field <code>scope</code>.</p>
+     *
+     * @param scope a {@link java.lang.String} object
+     */
     public void setScope(final String scope) {
         this.scope = scope;
     }
 
+    /**
+     * <p>Getter for the field <code>sdkIdentifier</code>.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getSdkIdentifier() {
         return sdkIdentifier;
     }
 
+    /**
+     * <p>Setter for the field <code>sdkIdentifier</code>.</p>
+     *
+     * @param sdkIdentifier a {@link java.lang.String} object
+     */
     public void setSdkIdentifier(final String sdkIdentifier) {
         this.sdkIdentifier = sdkIdentifier;
     }

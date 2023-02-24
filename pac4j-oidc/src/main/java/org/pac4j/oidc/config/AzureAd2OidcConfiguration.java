@@ -25,9 +25,17 @@ public class AzureAd2OidcConfiguration extends OidcConfiguration {
     /** AzureAd tenant **/
     private String tenant;
 
+    /**
+     * <p>Constructor for AzureAd2OidcConfiguration.</p>
+     */
     public AzureAd2OidcConfiguration() {
     }
 
+    /**
+     * <p>Constructor for AzureAd2OidcConfiguration.</p>
+     *
+     * @param oidcConfiguration a {@link org.pac4j.oidc.config.OidcConfiguration} object
+     */
     public AzureAd2OidcConfiguration(final OidcConfiguration oidcConfiguration) {
         this.setOpMetadataResolver(oidcConfiguration.getOpMetadataResolver());
         this.setClientId(oidcConfiguration.getClientId());
@@ -50,6 +58,7 @@ public class AzureAd2OidcConfiguration extends OidcConfiguration {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         if (isBlank(getTenant())){
@@ -66,11 +75,18 @@ public class AzureAd2OidcConfiguration extends OidcConfiguration {
         super.internalInit(forceReinit);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getDiscoveryURI() {
         return "https://login.microsoftonline.com/" + getTenant() + "/v2.0/.well-known/openid-configuration";
     }
 
+    /**
+     * <p>makeOauth2TokenRequest.</p>
+     *
+     * @param refreshToken a {@link java.lang.String} object
+     * @return a {@link java.lang.String} object
+     */
     public String makeOauth2TokenRequest(String refreshToken) {
         var scope = this.getScope();
         if (isBlank(scope)){

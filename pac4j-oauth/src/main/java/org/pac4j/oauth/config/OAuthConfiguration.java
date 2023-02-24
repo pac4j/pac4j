@@ -24,8 +24,10 @@ import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
 @Accessors(chain = true)
 public abstract class OAuthConfiguration extends BaseClientConfiguration {
 
+    /** Constant <code>OAUTH_TOKEN="oauth_token"</code> */
     public static final String OAUTH_TOKEN = "oauth_token";
 
+    /** Constant <code>RESPONSE_TYPE_CODE="code"</code> */
     public static final String RESPONSE_TYPE_CODE = "code";
 
     protected String key;
@@ -46,6 +48,7 @@ public abstract class OAuthConfiguration extends BaseClientConfiguration {
 
     protected Object api;
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         CommonHelper.assertNotNull("api", api);
@@ -55,5 +58,12 @@ public abstract class OAuthConfiguration extends BaseClientConfiguration {
         CommonHelper.assertNotNull("profileDefinition", profileDefinition);
     }
 
+    /**
+     * <p>buildService.</p>
+     *
+     * @param context a {@link org.pac4j.core.context.WebContext} object
+     * @param client a {@link org.pac4j.core.client.IndirectClient} object
+     * @return a {@link com.github.scribejava.core.oauth.OAuthService} object
+     */
     public abstract OAuthService buildService(final WebContext context, final IndirectClient client);
 }

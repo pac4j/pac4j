@@ -24,6 +24,11 @@ public abstract class AbstractRegexpAuthenticator extends ProfileDefinitionAware
 
     protected Pattern pattern;
 
+    /**
+     * <p>Setter for the field <code>regexpPattern</code>.</p>
+     *
+     * @param regexpPattern a {@link java.lang.String} object
+     */
     public void setRegexpPattern(final String regexpPattern) {
         CommonHelper.assertNotNull("regexpPattern", regexpPattern);
         this.regexpPattern = regexpPattern;

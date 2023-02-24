@@ -10,6 +10,7 @@ import org.pac4j.core.context.CallContext;
  */
 public class XSSProtectionMatcher implements Matcher {
 
+    /** {@inheritDoc} */
     @Override
     public boolean matches(final CallContext ctx) {
         ctx.webContext().setResponseHeader("X-XSS-Protection", "1; mode=block");

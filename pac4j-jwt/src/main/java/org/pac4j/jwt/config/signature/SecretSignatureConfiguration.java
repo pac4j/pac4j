@@ -26,28 +26,54 @@ public class SecretSignatureConfiguration extends AbstractSignatureConfiguration
 
     private byte[] secret;
 
+    /**
+     * <p>Constructor for SecretSignatureConfiguration.</p>
+     */
     public SecretSignatureConfiguration() {
         algorithm = JWSAlgorithm.HS256;
     }
 
+    /**
+     * <p>Constructor for SecretSignatureConfiguration.</p>
+     *
+     * @param secret a {@link java.lang.String} object
+     */
     public SecretSignatureConfiguration(final String secret) {
         this(secret.getBytes(UTF_8));
     }
 
+    /**
+     * <p>Constructor for SecretSignatureConfiguration.</p>
+     *
+     * @param secret an array of {@link byte} objects
+     */
     public SecretSignatureConfiguration(final byte[] secret) {
         this();
         this.secret = Arrays.copyOf(secret,secret.length);
     }
 
+    /**
+     * <p>Constructor for SecretSignatureConfiguration.</p>
+     *
+     * @param secret a {@link java.lang.String} object
+     * @param algorithm a {@link com.nimbusds.jose.JWSAlgorithm} object
+     */
     public SecretSignatureConfiguration(final String secret, final JWSAlgorithm algorithm) {
         this(secret.getBytes(UTF_8),algorithm);
     }
 
+    /**
+     * <p>Constructor for SecretSignatureConfiguration.</p>
+     *
+     * @param secret an array of {@link byte} objects
+     * @param algorithm a {@link com.nimbusds.jose.JWSAlgorithm} object
+     */
     public SecretSignatureConfiguration(final byte[] secret, final JWSAlgorithm algorithm) {
         this.secret = Arrays.copyOf(secret,secret.length);
         this.algorithm = algorithm;
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         CommonHelper.assertNotNull("algorithm", algorithm);
@@ -58,11 +84,13 @@ public class SecretSignatureConfiguration extends AbstractSignatureConfiguration
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean supports(final JWSAlgorithm algorithm) {
         return algorithm != null && MACVerifier.SUPPORTED_ALGORITHMS.contains(algorithm);
     }
 
+    /** {@inheritDoc} */
     @Override
     public SignedJWT sign(final JWTClaimsSet claims) {
         init();
@@ -77,6 +105,7 @@ public class SecretSignatureConfiguration extends AbstractSignatureConfiguration
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean verify(final SignedJWT jwt) throws JOSEException {
         init();
@@ -85,26 +114,56 @@ public class SecretSignatureConfiguration extends AbstractSignatureConfiguration
         return jwt.verify(verifier);
     }
 
+    /**
+     * <p>Getter for the field <code>secret</code>.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getSecret() {
         return new String(secret,UTF_8);
     }
 
+    /**
+     * <p>Setter for the field <code>secret</code>.</p>
+     *
+     * @param secret a {@link java.lang.String} object
+     */
     public void setSecret(final String secret) {
         this.secret = secret.getBytes(UTF_8);
     }
 
+    /**
+     * <p>getSecretBytes.</p>
+     *
+     * @return an array of {@link byte} objects
+     */
     public byte[] getSecretBytes() {
         return  Arrays.copyOf(secret,secret.length);
     }
 
+    /**
+     * <p>setSecretBytes.</p>
+     *
+     * @param secretBytes an array of {@link byte} objects
+     */
     public void setSecretBytes(final byte[] secretBytes) {
         this.secret = Arrays.copyOf(secretBytes,secretBytes.length);
     }
 
+    /**
+     * <p>getSecretBase64.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getSecretBase64() {
         return Base64.encode(secret).toString();
     }
 
+    /**
+     * <p>setSecretBase64.</p>
+     *
+     * @param secret a {@link java.lang.String} object
+     */
     public void setSecretBase64(final String secret) {
         this.secret = new Base64(secret).decode();
     }

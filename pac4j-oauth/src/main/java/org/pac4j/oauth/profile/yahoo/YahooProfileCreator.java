@@ -22,10 +22,17 @@ import java.util.Optional;
  */
 public class YahooProfileCreator extends OAuth10ProfileCreator {
 
+    /**
+     * <p>Constructor for YahooProfileCreator.</p>
+     *
+     * @param configuration a {@link org.pac4j.oauth.config.OAuth10Configuration} object
+     * @param client a {@link org.pac4j.core.client.IndirectClient} object
+     */
     public YahooProfileCreator(final OAuth10Configuration configuration, final IndirectClient client) {
         super(configuration, client);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected Optional<UserProfile> retrieveUserProfileFromToken(final WebContext context, final Token accessToken) {
         // get the guid: https://developer.yahoo.com/social/rest_api_guide/introspective-guid-resource.html

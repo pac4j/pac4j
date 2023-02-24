@@ -6,7 +6,6 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.profile.linkedin2.LinkedIn2Configuration;
-import org.pac4j.oauth.profile.linkedin2.LinkedIn2Profile;
 import org.pac4j.oauth.profile.linkedin2.LinkedIn2ProfileCreator;
 import org.pac4j.oauth.profile.linkedin2.LinkedIn2ProfileDefinition;
 
@@ -14,7 +13,7 @@ import java.util.Optional;
 
 /**
  * <p>This class is the OAuth client to authenticate users in LinkedIn (using OAuth 2.0 protocol).</p>
- * <p>It returns a {@link LinkedIn2Profile}.</p>
+ * <p>It returns a {@link org.pac4j.oauth.profile.linkedin2.LinkedIn2Profile}.</p>
  * <p>The scope (by default : <code>r_fullprofile</code>) can be specified using the {@link #setScope(String)} method.</p>
  * <p>More information at https://developer.linkedin.com/documents/profile-api</p>
  *
@@ -24,16 +23,26 @@ import java.util.Optional;
  */
 public class LinkedIn2Client extends OAuth20Client {
 
+    /**
+     * <p>Constructor for LinkedIn2Client.</p>
+     */
     public LinkedIn2Client() {
         configuration = new LinkedIn2Configuration();
     }
 
+    /**
+     * <p>Constructor for LinkedIn2Client.</p>
+     *
+     * @param key a {@link java.lang.String} object
+     * @param secret a {@link java.lang.String} object
+     */
     public LinkedIn2Client(final String key, final String secret) {
         this();
         setKey(key);
         setSecret(secret);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         CommonHelper.assertNotBlank("scope", getConfiguration().getScope());
@@ -58,15 +67,26 @@ public class LinkedIn2Client extends OAuth20Client {
         super.internalInit(forceReinit);
     }
 
+    /** {@inheritDoc} */
     @Override
     public LinkedIn2Configuration getConfiguration() {
         return (LinkedIn2Configuration) configuration;
     }
 
+    /**
+     * <p>getScope.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getScope() {
         return getConfiguration().getScope();
     }
 
+    /**
+     * <p>setScope.</p>
+     *
+     * @param scope a {@link java.lang.String} object
+     */
     public void setScope(final String scope) {
         getConfiguration().setScope(scope);
     }

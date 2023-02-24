@@ -21,11 +21,18 @@ public class FormExtractor implements CredentialsExtractor {
 
     private final String passwordParameter;
 
+    /**
+     * <p>Constructor for FormExtractor.</p>
+     *
+     * @param usernameParameter a {@link java.lang.String} object
+     * @param passwordParameter a {@link java.lang.String} object
+     */
     public FormExtractor(final String usernameParameter, final String passwordParameter) {
         this.usernameParameter = usernameParameter;
         this.passwordParameter = passwordParameter;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<Credentials> extract(final CallContext ctx) {
         val webContext = ctx.webContext();

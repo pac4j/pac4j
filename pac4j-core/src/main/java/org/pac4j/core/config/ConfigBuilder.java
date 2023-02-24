@@ -14,6 +14,13 @@ import org.pac4j.core.util.CommonHelper;
 @Slf4j
 public final class ConfigBuilder {
 
+    /**
+     * <p>build.</p>
+     *
+     * @param factoryName a {@link java.lang.String} object
+     * @param parameters a {@link java.lang.Object} object
+     * @return a {@link org.pac4j.core.config.Config} object
+     */
     @SuppressWarnings("unchecked")
     public synchronized static Config build(final String factoryName, final Object... parameters) {
         try {

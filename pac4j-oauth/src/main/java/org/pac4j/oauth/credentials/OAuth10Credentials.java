@@ -29,6 +29,13 @@ public class OAuth10Credentials extends Credentials {
     @Setter
     private OAuth1AccessToken accessToken;
 
+    /**
+     * <p>Constructor for OAuth10Credentials.</p>
+     *
+     * @param requestToken a {@link com.github.scribejava.core.model.OAuth1RequestToken} object
+     * @param token a {@link java.lang.String} object
+     * @param verifier a {@link java.lang.String} object
+     */
     public OAuth10Credentials(OAuth1RequestToken requestToken, String token, String verifier) {
         this.requestToken = requestToken;
         this.token = token;

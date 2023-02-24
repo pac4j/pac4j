@@ -17,21 +17,25 @@ public class WechatProfile extends OAuth20Profile {
 
     private static final long serialVersionUID = 2576512203937798654L;
 
+    /** {@inheritDoc} */
     @Override
     public String getDisplayName() {
         return (String) getAttribute(WechatProfileDefinition.NICKNAME);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getUsername() {
         return (String) getAttribute(WechatProfileDefinition.NICKNAME);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Gender getGender() {
         return (Gender) getAttribute(WechatProfileDefinition.SEX);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getLocation() {
         val location = getAttribute(WechatProfileDefinition.CITY) + ","
@@ -40,6 +44,7 @@ public class WechatProfile extends OAuth20Profile {
         return location;
     }
 
+    /** {@inheritDoc} */
     @Override
     public URI getPictureUrl() {
         return (URI) getAttribute(WechatProfileDefinition.HEADIMGURL);

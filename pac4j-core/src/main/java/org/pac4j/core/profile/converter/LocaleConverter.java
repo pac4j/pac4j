@@ -12,10 +12,14 @@ import java.util.Locale;
  */
 public final class LocaleConverter extends AbstractAttributeConverter {
 
+    /**
+     * <p>Constructor for LocaleConverter.</p>
+     */
     public LocaleConverter() {
         super(Locale.class);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected Locale internalConvert(final Object attribute) {
         if (attribute instanceof String str) {

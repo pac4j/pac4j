@@ -35,12 +35,14 @@ import static org.pac4j.core.util.CommonHelper.*;
 @Accessors(chain = true)
 public class DefaultCallbackLogic extends AbstractExceptionAwareLogic implements CallbackLogic {
 
+    /** Constant <code>INSTANCE</code> */
     public static final DefaultCallbackLogic INSTANCE = new DefaultCallbackLogic();
 
     private ClientFinder clientFinder = new DefaultCallbackClientFinder();
 
     private SavedRequestHandler savedRequestHandler = new DefaultSavedRequestHandler();
 
+    /** {@inheritDoc} */
     @Override
     public Object perform(final Config config, final String inputDefaultUrl, final Boolean inputRenewSession,
                           final String defaultClient, final FrameworkParameters parameters) {
@@ -111,6 +113,16 @@ public class DefaultCallbackLogic extends AbstractExceptionAwareLogic implements
         return httpActionAdapter.adapt(action, webContext);
     }
 
+    /**
+     * <p>saveUserProfile.</p>
+     *
+     * @param ctx a {@link org.pac4j.core.context.CallContext} object
+     * @param config a {@link org.pac4j.core.config.Config} object
+     * @param profile a {@link org.pac4j.core.profile.UserProfile} object
+     * @param saveProfileInSession a boolean
+     * @param multiProfile a boolean
+     * @param renewSession a boolean
+     */
     protected void saveUserProfile(final CallContext ctx, final Config config, final UserProfile profile,
                                    final boolean saveProfileInSession, final boolean multiProfile, final boolean renewSession) {
         val manager = ctx.profileManagerFactory().apply(ctx.webContext(), ctx.sessionStore());
@@ -122,6 +134,12 @@ public class DefaultCallbackLogic extends AbstractExceptionAwareLogic implements
         }
     }
 
+    /**
+     * <p>renewSession.</p>
+     *
+     * @param ctx a {@link org.pac4j.core.context.CallContext} object
+     * @param config a {@link org.pac4j.core.config.Config} object
+     */
     protected void renewSession(final CallContext ctx, final Config config) {
         val context = ctx.webContext();
         val sessionStore = ctx.sessionStore();
@@ -154,6 +172,13 @@ public class DefaultCallbackLogic extends AbstractExceptionAwareLogic implements
         }
     }
 
+    /**
+     * <p>redirectToOriginallyRequestedUrl.</p>
+     *
+     * @param ctx a {@link org.pac4j.core.context.CallContext} object
+     * @param defaultUrl a {@link java.lang.String} object
+     * @return a {@link org.pac4j.core.exception.http.HttpAction} object
+     */
     protected HttpAction redirectToOriginallyRequestedUrl(final CallContext ctx, final String defaultUrl) {
         return savedRequestHandler.restore(ctx, defaultUrl);
     }

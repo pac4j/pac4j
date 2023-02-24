@@ -28,8 +28,10 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
 @Slf4j
 public class DefaultLogoutLogic extends AbstractExceptionAwareLogic implements LogoutLogic {
 
+    /** Constant <code>INSTANCE</code> */
     public static final DefaultLogoutLogic INSTANCE = new DefaultLogoutLogic();
 
+    /** {@inheritDoc} */
     @Override
     public Object perform(final Config config, final String defaultUrl, final String inputLogoutUrlPattern, final Boolean inputLocalLogout,
                           final Boolean inputDestroySession, final Boolean inputCentralLogout, final FrameworkParameters parameters) {
@@ -131,6 +133,15 @@ public class DefaultLogoutLogic extends AbstractExceptionAwareLogic implements L
         return httpActionAdapter.adapt(action, webContext);
     }
 
+    /**
+     * <p>enhanceRedirectUrl.</p>
+     *
+     * @param ctx a {@link org.pac4j.core.context.CallContext} object
+     * @param config a {@link org.pac4j.core.config.Config} object
+     * @param client a {@link org.pac4j.core.client.Client} object
+     * @param redirectUrl a {@link java.lang.String} object
+     * @return a {@link java.lang.String} object
+     */
     protected String enhanceRedirectUrl(final CallContext ctx, final Config config, final Client client, final String redirectUrl) {
         return redirectUrl;
     }

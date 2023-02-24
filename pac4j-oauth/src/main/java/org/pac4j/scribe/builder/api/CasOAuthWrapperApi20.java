@@ -21,12 +21,20 @@ public class CasOAuthWrapperApi20 extends DefaultApi20 {
 
     private final Verb accessTokenVerb;
 
+    /**
+     * <p>Constructor for CasOAuthWrapperApi20.</p>
+     *
+     * @param casServerUrl a {@link java.lang.String} object
+     * @param isJsonTokenExtractor a boolean
+     * @param accessTokenVerb a {@link com.github.scribejava.core.model.Verb} object
+     */
     public CasOAuthWrapperApi20(final String casServerUrl, final boolean isJsonTokenExtractor, final Verb accessTokenVerb) {
         this.casServerUrl = casServerUrl;
         this.isJsonTokenExtractor = isJsonTokenExtractor;
         this.accessTokenVerb = accessTokenVerb;
     }
 
+    /** {@inheritDoc} */
     @Override
     public TokenExtractor<OAuth2AccessToken> getAccessTokenExtractor() {
         if (this.isJsonTokenExtractor) {
@@ -36,21 +44,29 @@ public class CasOAuthWrapperApi20 extends DefaultApi20 {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getAccessTokenEndpoint() {
         return this.casServerUrl + "/accessToken?";
     }
 
+    /** {@inheritDoc} */
     @Override
     protected String getAuthorizationBaseUrl() {
         return this.casServerUrl + "/authorize";
     }
 
+    /** {@inheritDoc} */
     @Override
     public Verb getAccessTokenVerb() {
         return this.accessTokenVerb;
     }
 
+    /**
+     * <p>Getter for the field <code>casServerUrl</code>.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getCasServerUrl() {
         return casServerUrl;
     }

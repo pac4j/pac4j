@@ -20,11 +20,18 @@ import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
  */
 public class WordPressProfileDefinition extends OAuthProfileDefinition {
 
+    /** Constant <code>PRIMARY_BLOG="primary_blog"</code> */
     public static final String PRIMARY_BLOG = "primary_blog";
+    /** Constant <code>AVATAR_URL="avatar_URL"</code> */
     public static final String AVATAR_URL = "avatar_URL";
+    /** Constant <code>PROFILE_URL="profile_URL"</code> */
     public static final String PROFILE_URL = "profile_URL";
+    /** Constant <code>LINKS="links"</code> */
     public static final String LINKS = "links";
 
+    /**
+     * <p>Constructor for WordPressProfileDefinition.</p>
+     */
     public WordPressProfileDefinition() {
         super(x -> new WordPressProfile());
         primary(Pac4jConstants.USERNAME, Converters.STRING);
@@ -34,11 +41,13 @@ public class WordPressProfileDefinition extends OAuthProfileDefinition {
         secondary(LINKS, new JsonConverter(WordPressLinks.class));
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getProfileUrl(final Token accessToken, final OAuthConfiguration configuration) {
         return "https://public-api.wordpress.com/rest/v1/me/?pretty=1";
     }
 
+    /** {@inheritDoc} */
     @Override
     public WordPressProfile extractUserProfile(final String body) {
         val profile = (WordPressProfile) newProfile();

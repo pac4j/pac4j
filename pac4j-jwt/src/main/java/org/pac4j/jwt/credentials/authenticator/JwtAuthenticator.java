@@ -16,7 +16,6 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
-import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.core.profile.definition.ProfileDefinitionAware;
 import org.pac4j.core.profile.jwt.JwtClaims;
 import org.pac4j.core.util.Pac4jConstants;
@@ -36,7 +35,7 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
 
 /**
  * Authenticator for JWT. It creates the user profile and stores it in the credentials
- * for the {@link AuthenticatorProfileCreator}.
+ * for the {@link org.pac4j.core.profile.creator.AuthenticatorProfileCreator}.
  *
  * @author Jerome Leleu
  * @since 1.8.0
@@ -58,27 +57,53 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
 
     private ValueGenerator identifierGenerator;
 
+    /**
+     * <p>Constructor for JwtAuthenticator.</p>
+     */
     public JwtAuthenticator() {}
 
+    /**
+     * <p>Constructor for JwtAuthenticator.</p>
+     *
+     * @param signatureConfigurations a {@link java.util.List} object
+     */
     public JwtAuthenticator(final List<SignatureConfiguration> signatureConfigurations) {
         this.signatureConfigurations = signatureConfigurations;
     }
 
+    /**
+     * <p>Constructor for JwtAuthenticator.</p>
+     *
+     * @param signatureConfigurations a {@link java.util.List} object
+     * @param encryptionConfigurations a {@link java.util.List} object
+     */
     public JwtAuthenticator(final List<SignatureConfiguration> signatureConfigurations,
         final List<EncryptionConfiguration> encryptionConfigurations) {
         this.signatureConfigurations = signatureConfigurations;
         this.encryptionConfigurations = encryptionConfigurations;
     }
 
+    /**
+     * <p>Constructor for JwtAuthenticator.</p>
+     *
+     * @param signatureConfiguration a {@link org.pac4j.jwt.config.signature.SignatureConfiguration} object
+     */
     public JwtAuthenticator(final SignatureConfiguration signatureConfiguration) {
         setSignatureConfiguration(signatureConfiguration);
     }
 
+    /**
+     * <p>Constructor for JwtAuthenticator.</p>
+     *
+     * @param signatureConfiguration a {@link org.pac4j.jwt.config.signature.SignatureConfiguration} object
+     * @param encryptionConfiguration a {@link org.pac4j.jwt.config.encryption.EncryptionConfiguration} object
+     */
     public JwtAuthenticator(final SignatureConfiguration signatureConfiguration, final EncryptionConfiguration encryptionConfiguration) {
         setSignatureConfiguration(signatureConfiguration);
         setEncryptionConfiguration(encryptionConfiguration);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         assertNotBlank("realmName", this.realmName);
@@ -124,6 +149,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
         return credentials.getUserProfile();
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<Credentials> validate(final CallContext ctx, final Credentials cred) {
         init();
@@ -225,6 +251,14 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
         return Optional.of(credentials);
     }
 
+    /**
+     * <p>createJwtProfile.</p>
+     *
+     * @param ctx a {@link org.pac4j.core.context.CallContext} object
+     * @param credentials a {@link org.pac4j.core.credentials.TokenCredentials} object
+     * @param jwt a {@link com.nimbusds.jwt.JWT} object
+     * @throws java.text.ParseException if any.
+     */
     @SuppressWarnings("unchecked")
     protected void createJwtProfile(final CallContext ctx, final TokenCredentials credentials, final JWT jwt) throws ParseException {
         val claimSet = jwt.getJWTClaimsSet();
@@ -272,38 +306,78 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
         credentials.setUserProfile(profile);
     }
 
+    /**
+     * <p>setSignatureConfiguration.</p>
+     *
+     * @param signatureConfiguration a {@link org.pac4j.jwt.config.signature.SignatureConfiguration} object
+     */
     public void setSignatureConfiguration(final SignatureConfiguration signatureConfiguration) {
         addSignatureConfiguration(signatureConfiguration);
     }
 
+    /**
+     * <p>addSignatureConfiguration.</p>
+     *
+     * @param signatureConfiguration a {@link org.pac4j.jwt.config.signature.SignatureConfiguration} object
+     */
     public void addSignatureConfiguration(final SignatureConfiguration signatureConfiguration) {
         assertNotNull("signatureConfiguration", signatureConfiguration);
         signatureConfigurations.add(signatureConfiguration);
     }
 
+    /**
+     * <p>Setter for the field <code>signatureConfigurations</code>.</p>
+     *
+     * @param signatureConfigurations a {@link java.util.List} object
+     */
     public void setSignatureConfigurations(final List<SignatureConfiguration> signatureConfigurations) {
         assertNotNull("signatureConfigurations", signatureConfigurations);
         this.signatureConfigurations = signatureConfigurations;
     }
 
+    /**
+     * <p>setEncryptionConfiguration.</p>
+     *
+     * @param encryptionConfiguration a {@link org.pac4j.jwt.config.encryption.EncryptionConfiguration} object
+     */
     public void setEncryptionConfiguration(final EncryptionConfiguration encryptionConfiguration) {
         addEncryptionConfiguration(encryptionConfiguration);
     }
 
+    /**
+     * <p>addEncryptionConfiguration.</p>
+     *
+     * @param encryptionConfiguration a {@link org.pac4j.jwt.config.encryption.EncryptionConfiguration} object
+     */
     public void addEncryptionConfiguration(final EncryptionConfiguration encryptionConfiguration) {
         assertNotNull("encryptionConfiguration", encryptionConfiguration);
         encryptionConfigurations.add(encryptionConfiguration);
     }
 
+    /**
+     * <p>Setter for the field <code>encryptionConfigurations</code>.</p>
+     *
+     * @param encryptionConfigurations a {@link java.util.List} object
+     */
     public void setEncryptionConfigurations(final List<EncryptionConfiguration> encryptionConfigurations) {
         assertNotNull("encryptionConfigurations", encryptionConfigurations);
         this.encryptionConfigurations = encryptionConfigurations;
     }
 
+    /**
+     * <p>Setter for the field <code>expirationTime</code>.</p>
+     *
+     * @param expirationTime a {@link java.util.Date} object
+     */
     public void setExpirationTime(final Date expirationTime) {
         this.expirationTime = new Date(expirationTime.getTime());
     }
 
+    /**
+     * <p>Getter for the field <code>expirationTime</code>.</p>
+     *
+     * @return a {@link java.util.Date} object
+     */
     public Date getExpirationTime() {
         return new Date(expirationTime.getTime());
     }

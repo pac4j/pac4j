@@ -12,7 +12,7 @@ import org.pac4j.core.exception.TechnicalException;
 import java.time.Duration;
 
 /**
- * This is {@link SAML2HttpClientBuilder}.
+ * This is {@link org.pac4j.saml.util.SAML2HttpClientBuilder}.
  *
  * @author Misagh Moayyed
  */
@@ -28,6 +28,11 @@ public class SAML2HttpClientBuilder {
     private int maxConnectionsTotal = 3;
     private CredentialsProvider credentialsProvider;
 
+    /**
+     * <p>build.</p>
+     *
+     * @return a {@link org.apache.hc.client5.http.classic.HttpClient} object
+     */
     public HttpClient build() {
         try {
             val builder = new Pac4jHttpClientBuilder(credentialsProvider);

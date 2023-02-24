@@ -30,6 +30,11 @@ public abstract class Credentials implements Serializable {
     @Getter
     protected LogoutType logoutType = null;
 
+    /**
+     * <p>isForAuthentication.</p>
+     *
+     * @return a boolean
+     */
     public boolean isForAuthentication() {
         return logoutType == null;
     }

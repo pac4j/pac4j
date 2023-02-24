@@ -12,6 +12,7 @@ import org.pac4j.http.credentials.extractor.X509CredentialsExtractor;
  */
 public class X509Client extends DirectClient {
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         setCredentialsExtractorIfUndefined(new X509CredentialsExtractor());

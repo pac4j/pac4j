@@ -3,15 +3,15 @@ package org.pac4j.oauth.client;
 import lombok.val;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
-import org.pac4j.oauth.profile.weibo.WeiboProfile;
 import org.pac4j.oauth.profile.weibo.WeiboProfileDefinition;
 import org.pac4j.scribe.builder.api.WeiboApi20;
 
 /**
  * <p>This class is the OAuth client to authenticate users in Weibo using OAuth protocol version 2.0.</p>
- * <p>The <i>scope</i> is by default : {@link WeiboScope#EMAIL}, but it can also but set to : {@link WeiboScope#ALL}
- * or {@link WeiboScope#EMAIL}.</p>
- * <p>It returns a {@link WeiboProfile}.</p>
+ * <p>The <i>scope</i> is by default : {@link org.pac4j.oauth.client.WeiboClient.WeiboScope#EMAIL},
+ * but it can also but set to : {@link org.pac4j.oauth.client.WeiboClient.WeiboScope#ALL} or
+ * {@link org.pac4j.oauth.client.WeiboClient.WeiboScope#EMAIL}.</p>
+ * <p>It returns a {@link org.pac4j.oauth.profile.weibo.WeiboProfile}.</p>
  * <p>More information at http://open.weibo.com/wiki/Oauth2/access_token/</p>
  *
  * @author zhangzhenli
@@ -40,14 +40,24 @@ public class WeiboClient extends OAuth20Client {
 
     protected String scopeValue;
 
+    /**
+     * <p>Constructor for WeiboClient.</p>
+     */
     public WeiboClient() {
     }
 
+    /**
+     * <p>Constructor for WeiboClient.</p>
+     *
+     * @param key a {@link java.lang.String} object
+     * @param secret a {@link java.lang.String} object
+     */
     public WeiboClient(final String key, final String secret) {
         setKey(key);
         setSecret(secret);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         CommonHelper.assertNotNull("scope", this.scope);
@@ -69,10 +79,20 @@ public class WeiboClient extends OAuth20Client {
         super.internalInit(forceReinit);
     }
 
+    /**
+     * <p>Getter for the field <code>scope</code>.</p>
+     *
+     * @return a {@link org.pac4j.oauth.client.WeiboClient.WeiboScope} object
+     */
     public WeiboScope getScope() {
         return this.scope;
     }
 
+    /**
+     * <p>Setter for the field <code>scope</code>.</p>
+     *
+     * @param scope a {@link org.pac4j.oauth.client.WeiboClient.WeiboScope} object
+     */
     public void setScope(final WeiboScope scope) {
         this.scope = scope;
     }

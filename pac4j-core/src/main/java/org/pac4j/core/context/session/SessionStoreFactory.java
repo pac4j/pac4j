@@ -11,5 +11,11 @@ import org.pac4j.core.context.FrameworkParameters;
 @FunctionalInterface
 public interface SessionStoreFactory {
 
+    /**
+     * <p>newSessionStore.</p>
+     *
+     * @param parameters a {@link org.pac4j.core.context.FrameworkParameters} object
+     * @return a {@link org.pac4j.core.context.session.SessionStore} object
+     */
     SessionStore newSessionStore(FrameworkParameters parameters);
 }

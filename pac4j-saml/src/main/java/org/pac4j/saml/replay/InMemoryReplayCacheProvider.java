@@ -12,10 +12,15 @@ import org.pac4j.saml.exceptions.SAMLException;
  * Default replay cache provider which stores the identifiers in memory. This
  * implementation will not work in a clustered environment and requires the same
  * instance is used for all SAML authentications.
+ *
+ * @author bidou
  */
 public class InMemoryReplayCacheProvider implements ReplayCacheProvider {
     private StorageServiceReplayCache cache;
 
+    /**
+     * <p>Constructor for InMemoryReplayCacheProvider.</p>
+     */
     public InMemoryReplayCacheProvider() {
         try {
             val storageService = new MemoryStorageService();
@@ -30,6 +35,7 @@ public class InMemoryReplayCacheProvider implements ReplayCacheProvider {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public ReplayCache get() {
         return cache;

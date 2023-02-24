@@ -19,10 +19,21 @@ import java.util.Map;
  */
 public class DbAuthenticatorBuilder extends AbstractBuilder {
 
+    /**
+     * <p>Constructor for DbAuthenticatorBuilder.</p>
+     *
+     * @param properties a {@link java.util.Map} object
+     */
     public DbAuthenticatorBuilder(final Map<String, String> properties) {
         super(properties);
     }
 
+    /**
+     * <p>tryBuildDbAuthenticator.</p>
+     *
+     * @param authenticators a {@link java.util.Map} object
+     * @param encoders a {@link java.util.Map} object
+     */
     public void tryBuildDbAuthenticator(final Map<String, Authenticator> authenticators, final Map<String, PasswordEncoder> encoders) {
         for (var i = 0; i <= MAX_NUM_AUTHENTICATORS; i++) {
             if (containsProperty(DB_DATASOURCE_CLASS_NAME, i) || containsProperty(DB_JDBC_URL, i)) {

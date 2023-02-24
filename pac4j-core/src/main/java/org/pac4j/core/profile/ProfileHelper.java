@@ -98,10 +98,20 @@ public final class ProfileHelper {
         return null;
     }
 
+    /**
+     * <p>Getter for the field <code>profileClassPrefixes</code>.</p>
+     *
+     * @return a {@link java.util.List} object
+     */
     public static List<String> getProfileClassPrefixes() {
         return profileClassPrefixes;
     }
 
+    /**
+     * <p>Setter for the field <code>profileClassPrefixes</code>.</p>
+     *
+     * @param profileClassPrefixes a {@link java.util.List} object
+     */
     public static void setProfileClassPrefixes(final List<String> profileClassPrefixes) {
         CommonHelper.assertNotNull("profileClassPrefixes", profileClassPrefixes);
         ProfileHelper.profileClassPrefixes = profileClassPrefixes;

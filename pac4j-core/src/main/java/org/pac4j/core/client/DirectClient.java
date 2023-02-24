@@ -18,6 +18,7 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
  */
 public abstract class DirectClient extends BaseClient {
 
+    /** {@inheritDoc} */
     @Override
     protected void beforeInternalInit(final boolean forceReinit) {
         if (saveProfileInSession == null) {
@@ -25,6 +26,7 @@ public abstract class DirectClient extends BaseClient {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     protected final void afterInternalInit(final boolean forceReinit) {
         // ensures components have been properly initialized
@@ -33,16 +35,19 @@ public abstract class DirectClient extends BaseClient {
         assertNotNull("profileCreator", getProfileCreator());
     }
 
+    /** {@inheritDoc} */
     @Override
     public final Optional<RedirectionAction> getRedirectionAction(final CallContext ctx) {
         throw new UnsupportedOperationException("Direct clients cannot redirect for login");
     }
 
+    /** {@inheritDoc} */
     @Override
     public final HttpAction processLogout(final CallContext ctx, final Credentials credentials) {
         throw new UnsupportedOperationException("Direct clients cannot process logout");
     }
 
+    /** {@inheritDoc} */
     @Override
     public final Optional<RedirectionAction> getLogoutAction(final CallContext ctx, final UserProfile currentProfile,
                                                              final String targetUrl) {

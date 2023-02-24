@@ -34,8 +34,10 @@ import java.util.Map;
 @NoArgsConstructor
 public class OAuth20Configuration extends OAuthConfiguration {
 
+    /** Constant <code>OAUTH_CODE="code"</code> */
     public static final String OAUTH_CODE = "code";
 
+    /** Constant <code>STATE_REQUEST_PARAMETER="state"</code> */
     public static final String STATE_REQUEST_PARAMETER = "state";
 
     /* Map containing user defined parameters */
@@ -46,11 +48,9 @@ public class OAuth20Configuration extends OAuthConfiguration {
     private ValueGenerator stateGenerator = new RandomValueGenerator();
 
     /**
-     * Build an OAuth service from the web context.
+     * {@inheritDoc}
      *
-     * @param context the web context
-     * @param client the client
-     * @return the OAuth service
+     * Build an OAuth service from the web context.
      */
     @Override
     public OAuthService buildService(final WebContext context, final IndirectClient client) {
@@ -62,6 +62,11 @@ public class OAuth20Configuration extends OAuthConfiguration {
             this.responseType, null, null, this.httpClientConfig, null);
     }
 
+    /**
+     * <p>Setter for the field <code>stateGenerator</code>.</p>
+     *
+     * @param stateGenerator a {@link org.pac4j.core.util.generator.ValueGenerator} object
+     */
     public void setStateGenerator(final ValueGenerator stateGenerator) {
         CommonHelper.assertNotNull("stateGenerator", stateGenerator);
         this.stateGenerator = stateGenerator;

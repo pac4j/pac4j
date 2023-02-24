@@ -17,6 +17,11 @@ public class SeeOtherAction extends RedirectionAction implements WithLocationAct
     private static final long serialVersionUID = 6749123580877847389L;
     private final String location;
 
+    /**
+     * <p>Constructor for SeeOtherAction.</p>
+     *
+     * @param location a {@link java.lang.String} object
+     */
     public SeeOtherAction(final String location) {
         super(HttpConstants.SEE_OTHER);
         this.location = location;

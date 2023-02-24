@@ -18,23 +18,28 @@ import com.github.scribejava.core.model.OAuth2AccessToken;
  */
 public class WeiboApi20 extends DefaultApi20 {
 
+    /** Constant <code>BASE_URL="https://api.weibo.com/oauth2/"</code> */
     public static final String BASE_URL = "https://api.weibo.com/oauth2/";
 
+    /** {@inheritDoc} */
     @Override
     public String getAccessTokenEndpoint() {
         return BASE_URL + "access_token";
     }
 
+    /** {@inheritDoc} */
     @Override
     protected String getAuthorizationBaseUrl() {
         return BASE_URL + "authorize";
     }
 
+    /** {@inheritDoc} */
     @Override
     public TokenExtractor<OAuth2AccessToken> getAccessTokenExtractor() {
         return WeiboJsonExtractor.instance();
     }
 
+    /** {@inheritDoc} */
     @Override
     public BearerSignature getBearerSignature() {
         return BearerSignatureURIQueryParameter.instance();

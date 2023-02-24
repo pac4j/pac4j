@@ -20,12 +20,21 @@ public abstract class AbstractCheckAuthenticationAuthorizer extends ProfileAutho
 
     private String redirectionUrl;
 
+    /**
+     * <p>Constructor for AbstractCheckAuthenticationAuthorizer.</p>
+     */
     public AbstractCheckAuthenticationAuthorizer() {}
 
+    /**
+     * <p>Constructor for AbstractCheckAuthenticationAuthorizer.</p>
+     *
+     * @param redirectionUrl a {@link java.lang.String} object
+     */
     public AbstractCheckAuthenticationAuthorizer(final String redirectionUrl) {
         this.redirectionUrl = redirectionUrl;
     }
 
+    /** {@inheritDoc} */
     @Override
     protected boolean handleError(final WebContext context, final SessionStore sessionStore) {
         if (this.redirectionUrl != null) {

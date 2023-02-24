@@ -27,27 +27,35 @@ import java.time.ZoneOffset;
 import java.util.Date;
 
 /**
- * This is {@link BaseSAML2KeystoreGenerator}.
+ * This is {@link org.pac4j.saml.metadata.keystore.BaseSAML2KeystoreGenerator}.
  *
  * @author Misagh Moayyed
  * @since 4.0.1
  */
 public abstract class BaseSAML2KeystoreGenerator implements SAML2KeystoreGenerator {
+    /** Constant <code>CERTIFICATES_PREFIX="saml-signing-cert"</code> */
     protected static final String CERTIFICATES_PREFIX = "saml-signing-cert";
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     protected final SAML2Configuration saml2Configuration;
 
+    /**
+     * <p>Constructor for BaseSAML2KeystoreGenerator.</p>
+     *
+     * @param saml2Configuration a {@link org.pac4j.saml.config.SAML2Configuration} object
+     */
     public BaseSAML2KeystoreGenerator(final SAML2Configuration saml2Configuration) {
         this.saml2Configuration = saml2Configuration;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean shouldGenerate() {
         return saml2Configuration.isForceKeystoreGeneration();
     }
 
+    /** {@inheritDoc} */
     @Override
     public void generate() {
         try {
@@ -89,6 +97,14 @@ public abstract class BaseSAML2KeystoreGenerator implements SAML2KeystoreGenerat
         }
     }
 
+    /**
+     * <p>store.</p>
+     *
+     * @param ks a {@link java.security.KeyStore} object
+     * @param certificate a {@link java.security.cert.X509Certificate} object
+     * @param privateKey a {@link java.security.PrivateKey} object
+     * @throws java.lang.Exception if any.
+     */
     protected abstract void store(KeyStore ks, X509Certificate certificate,
                                   PrivateKey privateKey) throws Exception;
 

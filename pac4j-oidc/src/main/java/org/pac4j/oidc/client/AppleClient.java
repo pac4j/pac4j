@@ -15,13 +15,22 @@ import org.pac4j.oidc.profile.creator.OidcProfileCreator;
  */
 public class AppleClient extends OidcClient {
 
+    /**
+     * <p>Constructor for AppleClient.</p>
+     */
     public AppleClient() {
     }
 
+    /**
+     * <p>Constructor for AppleClient.</p>
+     *
+     * @param configuration a {@link org.pac4j.oidc.config.AppleOidcConfiguration} object
+     */
     public AppleClient(AppleOidcConfiguration configuration) {
         super(configuration);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         val profileCreator = new OidcProfileCreator(getConfiguration(), this);

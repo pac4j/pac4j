@@ -17,20 +17,39 @@ import java.util.Set;
  */
 public class CheckHttpMethodAuthorizer extends AbstractRequireAnyAuthorizer<HttpConstants.HTTP_METHOD> {
 
+    /**
+     * <p>Constructor for CheckHttpMethodAuthorizer.</p>
+     */
     public CheckHttpMethodAuthorizer() { }
 
+    /**
+     * <p>Constructor for CheckHttpMethodAuthorizer.</p>
+     *
+     * @param methods a {@link org.pac4j.core.context.HttpConstants.HTTP_METHOD} object
+     */
     public CheckHttpMethodAuthorizer(final HttpConstants.HTTP_METHOD... methods) {
         setElements(methods);
     }
 
+    /**
+     * <p>Constructor for CheckHttpMethodAuthorizer.</p>
+     *
+     * @param methods a {@link java.util.List} object
+     */
     public CheckHttpMethodAuthorizer(final List<HttpConstants.HTTP_METHOD> methods) {
         setElements(methods);
     }
 
+    /**
+     * <p>Constructor for CheckHttpMethodAuthorizer.</p>
+     *
+     * @param methods a {@link java.util.Set} object
+     */
     public CheckHttpMethodAuthorizer(final Set<HttpConstants.HTTP_METHOD> methods) {
         setElements(methods);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected boolean check(final WebContext context, final SessionStore sessionStore, final UserProfile profile,
                             final HttpConstants.HTTP_METHOD element) {
@@ -38,14 +57,32 @@ public class CheckHttpMethodAuthorizer extends AbstractRequireAnyAuthorizer<Http
         return requestMethod.equalsIgnoreCase(element.toString());
     }
 
+    /**
+     * <p>checkHttpMethod.</p>
+     *
+     * @param methods a {@link org.pac4j.core.context.HttpConstants.HTTP_METHOD} object
+     * @return a {@link org.pac4j.core.authorization.authorizer.CheckHttpMethodAuthorizer} object
+     */
     public static CheckHttpMethodAuthorizer checkHttpMethod(HttpConstants.HTTP_METHOD... methods) {
         return new CheckHttpMethodAuthorizer(methods);
     }
 
+    /**
+     * <p>checkHttpMethod.</p>
+     *
+     * @param methods a {@link java.util.List} object
+     * @return a {@link org.pac4j.core.authorization.authorizer.CheckHttpMethodAuthorizer} object
+     */
     public static CheckHttpMethodAuthorizer checkHttpMethod(List<HttpConstants.HTTP_METHOD> methods) {
         return new CheckHttpMethodAuthorizer(methods);
     }
 
+    /**
+     * <p>checkHttpMethod.</p>
+     *
+     * @param methods a {@link java.util.Set} object
+     * @return a {@link org.pac4j.core.authorization.authorizer.CheckHttpMethodAuthorizer} object
+     */
     public static CheckHttpMethodAuthorizer checkHttpMethod(Set<HttpConstants.HTTP_METHOD> methods) {
         return new CheckHttpMethodAuthorizer(methods);
     }

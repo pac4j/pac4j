@@ -18,16 +18,16 @@ import org.pac4j.core.context.WebContext;
 @AllArgsConstructor
 public class OAuth10Configuration extends OAuthConfiguration {
 
+    /** Constant <code>OAUTH_VERIFIER="oauth_verifier"</code> */
     public static final String OAUTH_VERIFIER = "oauth_verifier";
 
+    /** Constant <code>REQUEST_TOKEN="requestToken"</code> */
     public static final String REQUEST_TOKEN = "requestToken";
 
     /**
-     * Build an OAuth service from the web context.
+     * {@inheritDoc}
      *
-     * @param context the web context
-     * @param client the client
-     * @return the OAuth service
+     * Build an OAuth service from the web context.
      */
     @Override
     public OAuthService buildService(final WebContext context, final IndirectClient client) {

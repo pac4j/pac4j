@@ -14,6 +14,9 @@ import org.pac4j.scribe.model.WechatToken;
  */
 public class WechatJsonExtractor extends OAuth2AccessTokenJsonExtractor {
 
+    /**
+     * <p>Constructor for WechatJsonExtractor.</p>
+     */
     protected WechatJsonExtractor() {
     }
 
@@ -22,10 +25,16 @@ public class WechatJsonExtractor extends OAuth2AccessTokenJsonExtractor {
         private static final WechatJsonExtractor INSTANCE = new WechatJsonExtractor();
     }
 
+    /**
+     * <p>instance.</p>
+     *
+     * @return a {@link org.pac4j.scribe.extractors.WechatJsonExtractor} object
+     */
     public static WechatJsonExtractor instance() {
         return WechatJsonExtractor.InstanceHolder.INSTANCE;
     }
 
+    /** {@inheritDoc} */
     @Override
     protected OAuth2AccessToken createToken(String accessToken, String tokenType, Integer expiresIn, String refreshToken, String scope,
                                             JsonNode response, String rawResponse) {

@@ -26,6 +26,7 @@ public class DefaultAjaxRequestResolver implements AjaxRequestResolver, HttpCons
 
     private boolean addRedirectionUrlAsHeader = false;
 
+    /** {@inheritDoc} */
     @Override
     public boolean isAjax(final CallContext ctx) {
         val webContext = ctx.webContext();
@@ -38,6 +39,7 @@ public class DefaultAjaxRequestResolver implements AjaxRequestResolver, HttpCons
         return xmlHttpRequest || hasDynamicAjaxParameter || hasDynamicAjaxHeader;
     }
 
+    /** {@inheritDoc} */
     @Override
     public HttpAction buildAjaxResponse(final CallContext ctx, final RedirectionActionBuilder redirectionActionBuilder) {
         String url = null;

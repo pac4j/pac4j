@@ -45,23 +45,52 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
 
     private String usersDn;
 
+    /**
+     * <p>Constructor for LdapProfileService.</p>
+     */
     public LdapProfileService() {}
 
+    /**
+     * <p>Constructor for LdapProfileService.</p>
+     *
+     * @param ldapAuthenticator a {@link org.ldaptive.auth.Authenticator} object
+     */
     public LdapProfileService(final Authenticator ldapAuthenticator) {
         this.ldapAuthenticator = ldapAuthenticator;
     }
 
+    /**
+     * <p>Constructor for LdapProfileService.</p>
+     *
+     * @param ldapAuthenticator a {@link org.ldaptive.auth.Authenticator} object
+     * @param attributes a {@link java.lang.String} object
+     */
     public LdapProfileService(final Authenticator ldapAuthenticator, final String attributes) {
         this.ldapAuthenticator = ldapAuthenticator;
         setAttributes(attributes);
     }
 
+    /**
+     * <p>Constructor for LdapProfileService.</p>
+     *
+     * @param connectionFactory a {@link org.ldaptive.ConnectionFactory} object
+     * @param ldapAuthenticator a {@link org.ldaptive.auth.Authenticator} object
+     * @param usersDn a {@link java.lang.String} object
+     */
     public LdapProfileService(final ConnectionFactory connectionFactory, final Authenticator ldapAuthenticator, final String usersDn) {
         this.connectionFactory = connectionFactory;
         this.ldapAuthenticator = ldapAuthenticator;
         this.usersDn = usersDn;
     }
 
+    /**
+     * <p>Constructor for LdapProfileService.</p>
+     *
+     * @param connectionFactory a {@link org.ldaptive.ConnectionFactory} object
+     * @param ldapAuthenticator a {@link org.ldaptive.auth.Authenticator} object
+     * @param attributes a {@link java.lang.String} object
+     * @param usersDn a {@link java.lang.String} object
+     */
     public LdapProfileService(final ConnectionFactory connectionFactory, final Authenticator ldapAuthenticator, final String attributes,
         final String usersDn) {
         this.connectionFactory = connectionFactory;
@@ -70,6 +99,7 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
         this.usersDn = usersDn;
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         assertNotNull("ldapAuthenticator", ldapAuthenticator);
@@ -83,6 +113,7 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
         super.internalInit(forceReinit);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void insert(final Map<String, Object> attributes) {
         attributes.put("objectClass", "person");
@@ -100,10 +131,22 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
         }
     }
 
+    /**
+     * <p>getEntryId.</p>
+     *
+     * @param attributes a {@link java.util.Map} object
+     * @return a {@link java.lang.String} object
+     */
     protected String getEntryId(final Map<String, Object> attributes) {
         return getIdAttribute() + "=" + attributes.get(getIdAttribute()) + "," + usersDn;
     }
 
+    /**
+     * <p>getLdapAttributes.</p>
+     *
+     * @param attributes a {@link java.util.Map} object
+     * @return a {@link java.util.List} object
+     */
     protected List<LdapAttribute> getLdapAttributes(final Map<String, Object> attributes) {
         val ldapAttributes = new ArrayList<LdapAttribute>();
         for (val entry : attributes.entrySet()) {
@@ -125,6 +168,7 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
         return ldapAttributes;
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void update(final Map<String, Object> attributes) {
         try {
@@ -142,6 +186,7 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void deleteById(final String id) {
         try {
@@ -153,6 +198,7 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     protected List<Map<String, Object>> read(final List<String> names, final String key, final String value) {
         val listAttributes = new ArrayList<Map<String, Object>>();
@@ -169,6 +215,12 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
         return listAttributes;
     }
 
+    /**
+     * <p>getAttributesFromEntry.</p>
+     *
+     * @param entry a {@link org.ldaptive.LdapEntry} object
+     * @return a {@link java.util.Map} object
+     */
     protected Map<String, Object> getAttributesFromEntry(final LdapEntry entry) {
         val attributes = new HashMap<String, Object>();
         for (val attribute : entry.getAttributes()) {
@@ -182,6 +234,7 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
         return attributes;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<Credentials> validate(final CallContext ctx, final Credentials cred) {
         init();

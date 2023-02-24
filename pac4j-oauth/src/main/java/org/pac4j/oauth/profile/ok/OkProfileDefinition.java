@@ -25,25 +25,44 @@ import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
  */
 public class OkProfileDefinition extends OAuthProfileDefinition {
 
+    /** Constant <code>UID="uid"</code> */
     public static final String UID = "uid";
+    /** Constant <code>BIRTHDAY="birthday"</code> */
     public static final String BIRTHDAY = "birthday";
+    /** Constant <code>AGE="age"</code> */
     public static final String AGE = "age";
+    /** Constant <code>NAME="name"</code> */
     public static final String NAME = "name";
+    /** Constant <code>LOCATION_CITY="location.city"</code> */
     public static final String LOCATION_CITY = "location.city";
+    /** Constant <code>LOCATION_COUNTRY="location.country"</code> */
     public static final String LOCATION_COUNTRY = "location.country";
+    /** Constant <code>LOCATION_COUNTRY_CODE="location.countryCode"</code> */
     public static final String LOCATION_COUNTRY_CODE = "location.countryCode";
+    /** Constant <code>LOCATION_COUNTRY_NAME="location.countryName"</code> */
     public static final String LOCATION_COUNTRY_NAME = "location.countryName";
+    /** Constant <code>ONLINE="online"</code> */
     public static final String ONLINE = "online";
+    /** Constant <code>LAST_NAME="last_name"</code> */
     public static final String LAST_NAME = "last_name";
+    /** Constant <code>HAS_EMAIL="has_email"</code> */
     public static final String HAS_EMAIL = "has_email";
+    /** Constant <code>CURRENT_STATUS="current_status"</code> */
     public static final String CURRENT_STATUS = "current_status";
+    /** Constant <code>CURRENT_STATUS_ID="current_status_id"</code> */
     public static final String CURRENT_STATUS_ID = "current_status_id";
+    /** Constant <code>CURRENT_STATUS_DATE="current_status_date"</code> */
     public static final String CURRENT_STATUS_DATE = "current_status_date";
+    /** Constant <code>PIC_1="pic_1"</code> */
     public static final String PIC_1 = "pic_1";
+    /** Constant <code>PIC_2="pic_2"</code> */
     public static final String PIC_2 = "pic_2";
 
     private static final String API_BASE_URL = "http://api.ok.ru/fb.do?";
 
+    /**
+     * <p>Constructor for OkProfileDefinition.</p>
+     */
     public OkProfileDefinition() {
         super(x -> new OkProfile());
         Arrays.stream(new String[] {UID, BIRTHDAY, AGE, NAME, LOCATION_CITY, LOCATION_COUNTRY, LOCATION_COUNTRY_CODE,
@@ -53,6 +72,7 @@ public class OkProfileDefinition extends OAuthProfileDefinition {
         primary(PIC_2, Converters.URL);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getProfileUrl(final Token token, final OAuthConfiguration configuration) {
         val accessToken = ((OAuth2AccessToken) token).getAccessToken();
@@ -71,6 +91,13 @@ public class OkProfileDefinition extends OAuthProfileDefinition {
         return API_BASE_URL + baseParams + "&access_token=" + accessToken + "&sig=" + finalSign;
     }
 
+    /**
+     * <p>getMD5SignAsHexString.</p>
+     *
+     * @param strForEncoding a {@link java.lang.String} object
+     * @return a {@link java.lang.String} object
+     * @throws java.security.NoSuchAlgorithmException if any.
+     */
     protected String getMD5SignAsHexString(final String strForEncoding) throws NoSuchAlgorithmException {
         var md = MessageDigest.getInstance("MD5");
         var result = new StringBuilder();
@@ -84,6 +111,7 @@ public class OkProfileDefinition extends OAuthProfileDefinition {
         return result.toString();
     }
 
+    /** {@inheritDoc} */
     @Override
     public OkProfile extractUserProfile(String body) {
         val profile = (OkProfile) newProfile();

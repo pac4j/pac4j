@@ -11,6 +11,7 @@ import org.pac4j.core.context.CallContext;
  */
 public class CacheControlMatcher implements Matcher {
 
+    /** {@inheritDoc} */
     @Override
     public boolean matches(final CallContext ctx) {
         val webContext = ctx.webContext();

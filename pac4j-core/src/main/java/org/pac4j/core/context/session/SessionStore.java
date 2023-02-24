@@ -17,6 +17,7 @@ public interface SessionStore {
      *
      * @param context the web context
      * @return the optional session identifier
+     * @param createSession a boolean
      */
     Optional<String> getSessionId(WebContext context, boolean createSession);
 

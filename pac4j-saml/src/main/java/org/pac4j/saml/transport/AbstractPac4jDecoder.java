@@ -45,11 +45,22 @@ public abstract class AbstractPac4jDecoder extends AbstractMessageDecoder {
     @Getter
     protected final CallContext callContext;
 
+    /**
+     * <p>Constructor for AbstractPac4jDecoder.</p>
+     *
+     * @param context a {@link org.pac4j.core.context.CallContext} object
+     */
     public AbstractPac4jDecoder(final CallContext context) {
         CommonHelper.assertNotNull("context", context);
         this.callContext = context;
     }
 
+    /**
+     * <p>getBase64DecodedMessage.</p>
+     *
+     * @return an array of {@link byte} objects
+     * @throws org.opensaml.messaging.decoder.MessageDecodingException if any.
+     */
     protected byte[] getBase64DecodedMessage() throws MessageDecodingException {
         Optional<String> encodedMessage = Optional.empty();
         for (val parameter : SAML_PARAMETERS) {
@@ -98,6 +109,7 @@ public abstract class AbstractPac4jDecoder extends AbstractMessageDecoder {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void doDestroy() {
         parserPool = null;
@@ -105,6 +117,7 @@ public abstract class AbstractPac4jDecoder extends AbstractMessageDecoder {
         super.doDestroy();
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void doInitialize() throws ComponentInitializationException {
         super.doInitialize();
@@ -140,10 +153,8 @@ public abstract class AbstractPac4jDecoder extends AbstractMessageDecoder {
      * Helper method that deserializes and unmarshalls the message from the given stream.
      *
      * @param messageStream input stream containing the message
-     *
      * @return the inbound message
-     *
-     * @throws MessageDecodingException thrown if there is a problem deserializing and unmarshalling the message
+     * @throws org.opensaml.messaging.decoder.MessageDecodingException thrown if there is a problem deserializing/unmarshalling the message
      */
     protected XMLObject unmarshallMessage(final InputStream messageStream) throws MessageDecodingException {
         try {

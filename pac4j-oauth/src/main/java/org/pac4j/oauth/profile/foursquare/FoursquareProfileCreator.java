@@ -17,10 +17,17 @@ import org.pac4j.oauth.profile.creator.OAuth20ProfileCreator;
  */
 public class FoursquareProfileCreator extends OAuth20ProfileCreator {
 
+    /**
+     * <p>Constructor for FoursquareProfileCreator.</p>
+     *
+     * @param configuration a {@link org.pac4j.oauth.config.OAuth20Configuration} object
+     * @param client a {@link org.pac4j.core.client.IndirectClient} object
+     */
     public FoursquareProfileCreator(final OAuth20Configuration configuration, final IndirectClient client) {
         super(configuration, client);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void signRequest(final OAuthService service, final Token accessToken, final OAuthRequest request) {
         request.addQuerystringParameter(OAuthConfiguration.OAUTH_TOKEN, ((OAuth2AccessToken) accessToken).getAccessToken());

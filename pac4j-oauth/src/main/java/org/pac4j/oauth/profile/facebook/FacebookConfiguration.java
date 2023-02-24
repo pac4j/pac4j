@@ -22,12 +22,14 @@ import org.pac4j.oauth.config.OAuth20Configuration;
 @AllArgsConstructor
 public class FacebookConfiguration extends OAuth20Configuration {
 
+    /** Constant <code>DEFAULT_FIELDS="id,name,first_name,middle_name,last_nam"{trunked}</code> */
     public static final String DEFAULT_FIELDS = "id,name,first_name,middle_name,last_name,gender,locale,languages,link,third_party_id,"
         + "timezone,updated_time,verified,about,birthday,education,email,hometown,interested_in,location,political,favorite_athletes,"
         + "favorite_teams,quotes,relationship_status,religion,significant_other,website,work";
 
     protected String fields = DEFAULT_FIELDS;
 
+    /** Constant <code>DEFAULT_SCOPE="user_likes,user_birthday,email,user_hom"{trunked}</code> */
     public static final String DEFAULT_SCOPE = "user_likes,user_birthday,email,user_hometown,user_location";
 
     protected int limit = FacebookProfileDefinition.DEFAULT_LIMIT;
@@ -36,6 +38,9 @@ public class FacebookConfiguration extends OAuth20Configuration {
 
     protected boolean useAppsecretProof = false;
 
+    /**
+     * <p>Constructor for FacebookConfiguration.</p>
+     */
     public FacebookConfiguration() {
         setScope(DEFAULT_SCOPE);
     }

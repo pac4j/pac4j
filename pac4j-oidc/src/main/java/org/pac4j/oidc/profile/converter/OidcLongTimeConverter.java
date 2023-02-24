@@ -12,6 +12,7 @@ import java.util.Date;
  */
 public class OidcLongTimeConverter implements AttributeConverter {
 
+    /** {@inheritDoc} */
     @Override
     public Date convert(final Object attribute) {
         if (attribute instanceof Long) {

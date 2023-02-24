@@ -5,7 +5,6 @@ import lombok.val;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.profile.facebook.FacebookConfiguration;
-import org.pac4j.oauth.profile.facebook.FacebookProfile;
 import org.pac4j.oauth.profile.facebook.FacebookProfileCreator;
 import org.pac4j.oauth.profile.facebook.FacebookProfileDefinition;
 
@@ -23,7 +22,7 @@ import org.pac4j.oauth.profile.facebook.FacebookProfileDefinition;
  * <p>The number of results can be limited by using the {@link #setLimit(int)} method.</p>
  * <p>An extended access token can be requested by setting <code>true</code> on the
  * <code>FacebookConfiguration#setRequiresExtendedToken(boolean)</code> method.</p>
- * <p>It returns a {@link FacebookProfile}.</p>
+ * <p>It returns a {@link org.pac4j.oauth.profile.facebook.FacebookProfile}.</p>
  * <p>More information at http://developers.facebook.com/docs/reference/api/user/</p>
  * <p>More information at https://developers.facebook.com/docs/howtos/login/extending-tokens/</p>
  *
@@ -33,16 +32,26 @@ import org.pac4j.oauth.profile.facebook.FacebookProfileDefinition;
  */
 public class FacebookClient extends OAuth20Client {
 
+    /**
+     * <p>Constructor for FacebookClient.</p>
+     */
     public FacebookClient() {
         configuration = new FacebookConfiguration();
     }
 
+    /**
+     * <p>Constructor for FacebookClient.</p>
+     *
+     * @param key a {@link java.lang.String} object
+     * @param secret a {@link java.lang.String} object
+     */
     public FacebookClient(final String key, final String secret) {
         configuration = new FacebookConfiguration();
         setKey(key);
         setSecret(secret);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         CommonHelper.assertNotBlank("fields", getConfiguration().getFields());
@@ -67,31 +76,62 @@ public class FacebookClient extends OAuth20Client {
         super.internalInit(forceReinit);
     }
 
+    /** {@inheritDoc} */
     @Override
     public FacebookConfiguration getConfiguration() {
         return (FacebookConfiguration) configuration;
     }
 
+    /**
+     * <p>getScope.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getScope() {
         return getConfiguration().getScope();
     }
 
+    /**
+     * <p>setScope.</p>
+     *
+     * @param scope a {@link java.lang.String} object
+     */
     public void setScope(final String scope) {
         getConfiguration().setScope(scope);
     }
 
+    /**
+     * <p>getFields.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getFields() {
         return getConfiguration().getFields();
     }
 
+    /**
+     * <p>setFields.</p>
+     *
+     * @param fields a {@link java.lang.String} object
+     */
     public void setFields(final String fields) {
         getConfiguration().setFields(fields);
     }
 
+    /**
+     * <p>getLimit.</p>
+     *
+     * @return a int
+     */
     public int getLimit() {
         return getConfiguration().getLimit();
     }
 
+    /**
+     * <p>setLimit.</p>
+     *
+     * @param limit a int
+     */
     public void setLimit(final int limit) {
         getConfiguration().setLimit(limit);
     }

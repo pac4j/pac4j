@@ -17,18 +17,24 @@ import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
  * @since 3.8.0
  */
 public class FigShareProfileDefinition extends OAuthProfileDefinition {
+    /** Constant <code>LAST_NAME="last_name"</code> */
     public static final String LAST_NAME = "last_name";
 
+    /**
+     * <p>Constructor for FigShareProfileDefinition.</p>
+     */
     public FigShareProfileDefinition() {
         super(x -> new FigShareProfile());
         primary(LAST_NAME, Converters.STRING);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getProfileUrl(final Token accessToken, final OAuthConfiguration configuration) {
         return "https://api.figshare.com/v2/account";
     }
 
+    /** {@inheritDoc} */
     @Override
     public FigShareProfile extractUserProfile(final String body) {
         val profile = (FigShareProfile) newProfile();

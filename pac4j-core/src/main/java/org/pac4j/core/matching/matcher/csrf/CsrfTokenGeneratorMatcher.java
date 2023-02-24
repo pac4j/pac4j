@@ -39,10 +39,16 @@ public class CsrfTokenGeneratorMatcher implements Matcher {
     private boolean addTokenAsHeader = false;
     private boolean addTokenAsCookie = true;
 
+    /**
+     * <p>Constructor for CsrfTokenGeneratorMatcher.</p>
+     *
+     * @param csrfTokenGenerator a {@link org.pac4j.core.matching.matcher.csrf.CsrfTokenGenerator} object
+     */
     public CsrfTokenGeneratorMatcher(final CsrfTokenGenerator csrfTokenGenerator) {
         this.csrfTokenGenerator = csrfTokenGenerator;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean matches(final CallContext ctx) {
         val webContext = ctx.webContext();

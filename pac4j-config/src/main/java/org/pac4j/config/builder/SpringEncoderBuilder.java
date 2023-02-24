@@ -24,10 +24,20 @@ import static org.pac4j.core.util.CommonHelper.isNotBlank;
 @Slf4j
 public class SpringEncoderBuilder extends AbstractBuilder {
 
+    /**
+     * <p>Constructor for SpringEncoderBuilder.</p>
+     *
+     * @param properties a {@link java.util.Map} object
+     */
     public SpringEncoderBuilder(final Map<String, String> properties) {
         super(properties);
     }
 
+    /**
+     * <p>tryCreatePasswordEncoder.</p>
+     *
+     * @param encoders a {@link java.util.Map} object
+     */
     public void tryCreatePasswordEncoder(final Map<String, org.pac4j.core.credentials.password.PasswordEncoder> encoders) {
         for (var i = 0; i <= MAX_NUM_ENCODERS; i++) {
             val type = getProperty(SPRING_ENCODER_TYPE, i);

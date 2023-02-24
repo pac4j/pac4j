@@ -41,6 +41,7 @@ public abstract class AbstractSAML2MessageSender<T extends SAMLObject> implement
     protected final boolean signErrorResponses;
     protected final boolean isRequestSigned;
 
+    /** {@inheritDoc} */
     @Override
     public void sendMessage(final SAML2MessageContext context,
                             final T request,
@@ -94,6 +95,12 @@ public abstract class AbstractSAML2MessageSender<T extends SAMLObject> implement
         }
     }
 
+    /**
+     * <p>storeMessage.</p>
+     *
+     * @param context a {@link org.pac4j.saml.context.SAML2MessageContext} object
+     * @param request a T object
+     */
     protected void storeMessage(final SAML2MessageContext context, final T request) {
         val messageStorage = context.getSamlMessageStore();
         if (messageStorage != null) {
@@ -105,8 +112,21 @@ public abstract class AbstractSAML2MessageSender<T extends SAMLObject> implement
         }
     }
 
+    /**
+     * <p>getEndpoint.</p>
+     *
+     * @param context a {@link org.pac4j.saml.context.SAML2MessageContext} object
+     * @return a {@link org.opensaml.saml.saml2.metadata.Endpoint} object
+     */
     protected abstract Endpoint getEndpoint(SAML2MessageContext context);
 
+    /**
+     * <p>invokeOutboundMessageHandlers.</p>
+     *
+     * @param spDescriptor a {@link org.opensaml.saml.saml2.metadata.SPSSODescriptor} object
+     * @param idpssoDescriptor a {@link org.opensaml.saml.saml2.metadata.IDPSSODescriptor} object
+     * @param messageContext a {@link org.opensaml.messaging.context.MessageContext} object
+     */
     protected void invokeOutboundMessageHandlers(final SPSSODescriptor spDescriptor,
                                                        final IDPSSODescriptor idpssoDescriptor,
                                                        final MessageContext messageContext) {
@@ -134,6 +154,13 @@ public abstract class AbstractSAML2MessageSender<T extends SAMLObject> implement
         }
     }
 
+    /**
+     * <p>mustSignRequest.</p>
+     *
+     * @param spDescriptor a {@link org.opensaml.saml.saml2.metadata.SPSSODescriptor} object
+     * @param idpssoDescriptor a {@link org.opensaml.saml.saml2.metadata.IDPSSODescriptor} object
+     * @return a boolean
+     */
     protected boolean mustSignRequest(final SPSSODescriptor spDescriptor, final IDPSSODescriptor idpssoDescriptor) {
         return isRequestSigned;
     }

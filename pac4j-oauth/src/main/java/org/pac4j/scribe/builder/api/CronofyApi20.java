@@ -21,15 +21,22 @@ public final class CronofyApi20 extends DefaultApi20 {
 
     private final String sdkIdentifier;
 
+    /**
+     * <p>Constructor for CronofyApi20.</p>
+     *
+     * @param sdkIdentifier a {@link java.lang.String} object
+     */
     public CronofyApi20(final String sdkIdentifier) {
         this.sdkIdentifier = sdkIdentifier;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getAccessTokenEndpoint() {
         return computeBaseUrl() + "/oauth/token";
     }
 
+    /** {@inheritDoc} */
     @Override
     protected String getAuthorizationBaseUrl() {
         return computeBaseUrl() + "/oauth/authorize";
@@ -43,6 +50,7 @@ public final class CronofyApi20 extends DefaultApi20 {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public OAuth20Service createService(String apiKey, String apiSecret, String callback, String defaultScope,
                                         String responseType, OutputStream debugStream, String userAgent,

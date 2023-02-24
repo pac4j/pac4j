@@ -14,10 +14,17 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
  */
 public class AzureAdProfileCreator extends OidcProfileCreator {
 
+    /**
+     * <p>Constructor for AzureAdProfileCreator.</p>
+     *
+     * @param configuration a {@link org.pac4j.oidc.config.OidcConfiguration} object
+     * @param client a {@link org.pac4j.oidc.client.OidcClient} object
+     */
     public AzureAdProfileCreator(final OidcConfiguration configuration, final OidcClient client) {
         super(configuration, client);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         assertNotNull("configuration", configuration);

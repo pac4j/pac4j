@@ -21,10 +21,16 @@ public class OrAuthorizer implements Authorizer {
 
     private final List<Authorizer> authorizers;
 
+    /**
+     * <p>Constructor for OrAuthorizer.</p>
+     *
+     * @param authorizers a {@link java.util.List} object
+     */
     public OrAuthorizer(List<Authorizer> authorizers) {
         this.authorizers = authorizers;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean isAuthorized(final WebContext context, final SessionStore sessionStore, final List<UserProfile> profiles) {
         for (val authorizer : authorizers) {
@@ -33,6 +39,12 @@ public class OrAuthorizer implements Authorizer {
         return false;
     }
 
+    /**
+     * <p>or.</p>
+     *
+     * @param authorizers a {@link org.pac4j.core.authorization.authorizer.Authorizer} object
+     * @return a {@link org.pac4j.core.authorization.authorizer.OrAuthorizer} object
+     */
     public static OrAuthorizer or(Authorizer... authorizers) {
         return new OrAuthorizer(asList(authorizers));
     }

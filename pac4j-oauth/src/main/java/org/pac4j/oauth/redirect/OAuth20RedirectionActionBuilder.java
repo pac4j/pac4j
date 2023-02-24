@@ -29,6 +29,12 @@ public class OAuth20RedirectionActionBuilder implements RedirectionActionBuilder
 
     protected IndirectClient client;
 
+    /**
+     * <p>Constructor for OAuth20RedirectionActionBuilder.</p>
+     *
+     * @param configuration a {@link org.pac4j.oauth.config.OAuth20Configuration} object
+     * @param client a {@link org.pac4j.core.client.IndirectClient} object
+     */
     public OAuth20RedirectionActionBuilder(final OAuth20Configuration configuration, final IndirectClient client) {
         CommonHelper.assertNotNull("client", client);
         CommonHelper.assertNotNull("configuration", configuration);
@@ -36,6 +42,7 @@ public class OAuth20RedirectionActionBuilder implements RedirectionActionBuilder
         this.client = client;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<RedirectionAction> getRedirectionAction(final CallContext ctx) {
         val webContext = ctx.webContext();

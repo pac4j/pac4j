@@ -26,13 +26,23 @@ public class HeaderMatcher implements Matcher {
 
     protected Pattern pattern;
 
+    /**
+     * <p>Constructor for HeaderMatcher.</p>
+     */
     public HeaderMatcher() {}
 
+    /**
+     * <p>Constructor for HeaderMatcher.</p>
+     *
+     * @param headerName a {@link java.lang.String} object
+     * @param expectedValue a {@link java.lang.String} object
+     */
     public HeaderMatcher(final String headerName, final String expectedValue) {
         setHeaderName(headerName);
         setExpectedValue(expectedValue);
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean matches(final CallContext ctx) {
         CommonHelper.assertNotBlank("headerName", headerName);
@@ -43,6 +53,11 @@ public class HeaderMatcher implements Matcher {
         return headerNull || headerMatches;
     }
 
+    /**
+     * <p>Setter for the field <code>expectedValue</code>.</p>
+     *
+     * @param expectedValue a {@link java.lang.String} object
+     */
     public void setExpectedValue(final String expectedValue) {
         this.expectedValue = expectedValue;
         if (expectedValue != null) {

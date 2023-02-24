@@ -19,6 +19,7 @@ public abstract class AbstractRequireElementAuthorizer<E extends Object> extends
 
     protected Set<E> elements;
 
+    /** {@inheritDoc} */
     @Override
     public boolean isAuthorized(final WebContext context, final SessionStore sessionStore, final List<UserProfile> profiles) {
         return isAnyAuthorized(context, sessionStore, profiles);
@@ -36,20 +37,40 @@ public abstract class AbstractRequireElementAuthorizer<E extends Object> extends
     protected abstract boolean check(final WebContext context, final SessionStore sessionStore,
                                      final UserProfile profile, final E element);
 
+    /**
+     * <p>Getter for the field <code>elements</code>.</p>
+     *
+     * @return a {@link java.util.Set} object
+     */
     public Set<E> getElements() {
         return elements;
     }
 
+    /**
+     * <p>Setter for the field <code>elements</code>.</p>
+     *
+     * @param elements a {@link java.util.Set} object
+     */
     public void setElements(final Set<E> elements) {
         this.elements = elements;
     }
 
+    /**
+     * <p>Setter for the field <code>elements</code>.</p>
+     *
+     * @param elements a {@link java.util.List} object
+     */
     public void setElements(final List<E> elements) {
         if (elements != null) {
             this.elements = new HashSet<>(elements);
         }
     }
 
+    /**
+     * <p>Setter for the field <code>elements</code>.</p>
+     *
+     * @param elements a E object
+     */
     public void setElements(final E... elements) {
         if (elements != null) {
             setElements(Arrays.asList(elements));

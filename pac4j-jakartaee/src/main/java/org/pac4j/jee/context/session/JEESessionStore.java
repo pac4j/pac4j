@@ -24,16 +24,32 @@ import java.util.stream.Collectors;
 @ToString
 public class JEESessionStore implements SessionStore {
 
+    /** Constant <code>INSTANCE</code> */
     public static final JEESessionStore INSTANCE = new JEESessionStore();
 
     protected HttpSession httpSession;
 
+    /**
+     * <p>Constructor for JEESessionStore.</p>
+     */
     protected JEESessionStore() {}
 
+    /**
+     * <p>Constructor for JEESessionStore.</p>
+     *
+     * @param httpSession a {@link jakarta.servlet.http.HttpSession} object
+     */
     protected JEESessionStore(final HttpSession httpSession) {
         this.httpSession = httpSession;
     }
 
+    /**
+     * <p>getNativeSession.</p>
+     *
+     * @param context a {@link org.pac4j.core.context.WebContext} object
+     * @param createSession a boolean
+     * @return a {@link java.util.Optional} object
+     */
     protected Optional<HttpSession> getNativeSession(final WebContext context, final boolean createSession) {
         if (httpSession != null) {
             LOGGER.debug("Provided session: {}", httpSession);
@@ -46,6 +62,7 @@ public class JEESessionStore implements SessionStore {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<String> getSessionId(final WebContext context, final boolean createSession) {
         val httpSession = getNativeSession(context, createSession);
@@ -59,6 +76,7 @@ public class JEESessionStore implements SessionStore {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<Object> get(final WebContext context, final String key) {
         val httpSession = getNativeSession(context, false);
@@ -72,6 +90,7 @@ public class JEESessionStore implements SessionStore {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public void set(final WebContext context, final String key, final Object value) {
         if (value == null) {
@@ -91,6 +110,7 @@ public class JEESessionStore implements SessionStore {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean destroySession(final WebContext context) {
         val httpSession = getNativeSession(context, false);
@@ -102,6 +122,7 @@ public class JEESessionStore implements SessionStore {
         return true;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<Object> getTrackableSession(final WebContext context) {
         val httpSession = getNativeSession(context, false);
@@ -115,6 +136,7 @@ public class JEESessionStore implements SessionStore {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<SessionStore> buildFromTrackableSession(final WebContext context, final Object trackableSession) {
         if (trackableSession != null) {
@@ -126,6 +148,7 @@ public class JEESessionStore implements SessionStore {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean renewSession(final WebContext context) {
         Map<String, Object> attributes = new HashMap<>();

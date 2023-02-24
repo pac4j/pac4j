@@ -29,13 +29,18 @@ import java.util.Map;
  */
 public class WechatApi20 extends DefaultApi20 {
 
+    /** Constant <code>APPID="appid"</code> */
     public static final String APPID = "appid";
+    /** Constant <code>SECRET="secret"</code> */
     public static final String SECRET = "secret";
     //WeChat QR code login
+    /** Constant <code>AUTHORIZE_ENDPOINT_URL_1="https://open.weixin.qq.com/connect/qrco"{trunked}</code> */
     public static final String AUTHORIZE_ENDPOINT_URL_1 = "https://open.weixin.qq.com/connect/qrconnect";
     //WeChat embedded browser,, call native login.
+    /** Constant <code>AUTHORIZE_ENDPOINT_URL_2="https://open.weixin.qq.com/connect/oaut"{trunked}</code> */
     public static final String AUTHORIZE_ENDPOINT_URL_2 = "https://open.weixin.qq.com/connect/oauth2/authorize";
 
+    /** Constant <code>TOKEN_ENDPOINT_URL="https://api.weixin.qq.com/sns/oauth2/ac"{trunked}</code> */
     public static final String TOKEN_ENDPOINT_URL = "https://api.weixin.qq.com/sns/oauth2/access_token";
 
 
@@ -43,15 +48,22 @@ public class WechatApi20 extends DefaultApi20 {
         private static final WechatApi20 INSTANCE = new WechatApi20();
     }
 
+    /**
+     * <p>instance.</p>
+     *
+     * @return a {@link org.pac4j.scribe.builder.api.WechatApi20} object
+     */
     public static WechatApi20 instance() {
         return WechatApi20.InstanceHolder.INSTANCE;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getAccessTokenEndpoint() {
         return TOKEN_ENDPOINT_URL + "?grant_type=authorization_code";
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getAuthorizationUrl(String responseType, String apiKey, String callback, String scope, String state,
             Map<String, String> additionalParams) {
@@ -66,21 +78,25 @@ public class WechatApi20 extends DefaultApi20 {
         return authorizationUrl;
     }
 
+    /** {@inheritDoc} */
     @Override
     protected String getAuthorizationBaseUrl() {
         return Pac4jConstants.EMPTY_STRING;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Verb getAccessTokenVerb() {
         return Verb.GET;
     }
 
+    /** {@inheritDoc} */
     @Override
     public TokenExtractor<OAuth2AccessToken> getAccessTokenExtractor() {
         return WechatJsonExtractor.instance();
     }
 
+    /** {@inheritDoc} */
     @Override
     public OAuth20Service createService(String apiKey, String apiSecret, String callback, String defaultScope,
                                                      String responseType, OutputStream debugStream, String userAgent,
@@ -88,11 +104,13 @@ public class WechatApi20 extends DefaultApi20 {
         return new WechatService(this, apiKey, apiSecret, callback, defaultScope, responseType, userAgent, httpClientConfig, httpClient);
     }
 
+    /** {@inheritDoc} */
     @Override
     public BearerSignature getBearerSignature() {
         return BearerSignatureURIQueryParameter.instance();
     }
 
+    /** {@inheritDoc} */
     @Override
     public ClientAuthentication getClientAuthentication() {
         return RequestBodyAuthenticationScheme.instance();

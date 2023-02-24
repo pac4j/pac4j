@@ -22,14 +22,24 @@ public class BasicAuthExtractor implements CredentialsExtractor {
 
     private final HeaderExtractor extractor;
 
+    /**
+     * <p>Constructor for BasicAuthExtractor.</p>
+     */
     public BasicAuthExtractor() {
         this(HttpConstants.AUTHORIZATION_HEADER, HttpConstants.BASIC_HEADER_PREFIX);
     }
 
+    /**
+     * <p>Constructor for BasicAuthExtractor.</p>
+     *
+     * @param headerName a {@link java.lang.String} object
+     * @param prefixHeader a {@link java.lang.String} object
+     */
     public BasicAuthExtractor(final String headerName, final String prefixHeader) {
         this.extractor = new HeaderExtractor(headerName, prefixHeader);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<Credentials> extract(final CallContext ctx) {
         val optCredentials = this.extractor.extract(ctx);

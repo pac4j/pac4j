@@ -17,6 +17,7 @@ import java.lang.reflect.InvocationTargetException;
 @Slf4j
 public abstract class FrameworkAdapter {
 
+    /** Constant <code>INSTANCE</code> */
     public static final FrameworkAdapter INSTANCE;
 
     static {
@@ -49,7 +50,19 @@ public abstract class FrameworkAdapter {
         }
     }
 
+    /**
+     * <p>compareManagers.</p>
+     *
+     * @param obj1 a {@link java.lang.Object} object
+     * @param obj2 a {@link java.lang.Object} object
+     * @return a int
+     */
     public abstract int compareManagers(final Object obj1, final Object obj2);
 
+    /**
+     * <p>applyDefaultSettingsIfUndefined.</p>
+     *
+     * @param config a {@link org.pac4j.core.config.Config} object
+     */
     public abstract void applyDefaultSettingsIfUndefined(final Config config);
 }

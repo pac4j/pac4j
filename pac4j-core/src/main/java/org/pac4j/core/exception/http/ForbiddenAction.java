@@ -21,6 +21,9 @@ public class ForbiddenAction extends HttpAction implements WithContentAction {
 
     private String content = Pac4jConstants.EMPTY_STRING;
 
+    /**
+     * <p>Constructor for ForbiddenAction.</p>
+     */
     public ForbiddenAction() {
         super(HttpConstants.FORBIDDEN);
     }

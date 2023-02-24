@@ -23,11 +23,18 @@ import java.util.Optional;
  */
 public class QQProfileCreator extends OAuth20ProfileCreator {
 
+    /**
+     * <p>Constructor for QQProfileCreator.</p>
+     *
+     * @param configuration a {@link org.pac4j.oauth.config.OAuth20Configuration} object
+     * @param client a {@link org.pac4j.core.client.IndirectClient} object
+     */
     public QQProfileCreator(final OAuth20Configuration configuration,
                             final IndirectClient client) {
         super(configuration, client);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<UserProfile> retrieveUserProfileFromToken(final WebContext context, final Token accessToken) {
         var profileDefinition = (QQProfileDefinition) configuration.getProfileDefinition();

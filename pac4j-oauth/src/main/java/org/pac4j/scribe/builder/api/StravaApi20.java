@@ -29,25 +29,33 @@ public final class StravaApi20 extends DefaultApi20 {
      */
     private String approvalPrompt;
 
+    /**
+     * <p>Constructor for StravaApi20.</p>
+     *
+     * @param approvalPrompt a {@link java.lang.String} object
+     */
     public StravaApi20(String approvalPrompt) {
         this.approvalPrompt = approvalPrompt;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getAccessTokenEndpoint() {
         return ACCESS_TOKEN_URL;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Verb getAccessTokenVerb() {
         return Verb.POST;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getAuthorizationUrl(String responseType, String apiKey, String callback, String scope, String state,
             Map<String, String> additionalParams) {
         CommonHelper.assertNotBlank("callback", callback, "Must provide a valid callback url.");
-        
+
         if (additionalParams == null) {
             additionalParams = new HashMap<>();
         }
@@ -55,6 +63,7 @@ public final class StravaApi20 extends DefaultApi20 {
         return super.getAuthorizationUrl(responseType, apiKey, callback, scope, state, additionalParams);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected String getAuthorizationBaseUrl() {
         return AUTHORIZE_BASE_URL;

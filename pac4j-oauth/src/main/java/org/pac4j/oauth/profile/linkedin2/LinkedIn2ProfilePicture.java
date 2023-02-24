@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 
 /**
+ * <p>LinkedIn2ProfilePicture class.</p>
  *
  * @author Vassilis Virvilis
  * @since 3.8.0
@@ -405,27 +406,55 @@ public class LinkedIn2ProfilePicture implements Serializable {
     @JsonProperty("displayImage~")
     private DisplayImageTilde displayImageTilde;
 
+    /**
+     * <p>Getter for the field <code>displayImage</code>.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getDisplayImage() {
         return displayImage;
     }
 
+    /**
+     * <p>Setter for the field <code>displayImage</code>.</p>
+     *
+     * @param displayImage a {@link java.lang.String} object
+     */
     public void setDisplayImage(String displayImage) {
         this.displayImage = displayImage;
     }
 
+    /**
+     * <p>Getter for the field <code>displayImageTilde</code>.</p>
+     *
+     * @return a {@link org.pac4j.oauth.profile.linkedin2.LinkedIn2ProfilePicture.DisplayImageTilde} object
+     */
     public DisplayImageTilde getDisplayImageTilde() {
         return displayImageTilde;
     }
 
+    /**
+     * <p>Setter for the field <code>displayImageTilde</code>.</p>
+     *
+     * @param displayImageTilde a {@link org.pac4j.oauth.profile.linkedin2.LinkedIn2ProfilePicture.DisplayImageTilde} object
+     */
     public void setDisplayImageTilde(DisplayImageTilde displayImageTilde) {
         this.displayImageTilde = displayImageTilde;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return String.format("{displayImage: %s, displayImage~: %s}", displayImage, displayImageTilde);
     }
 
+    /**
+     * <p>deepCopy.</p>
+     *
+     * @param array an array of T[] objects
+     * @param <T> a T class
+     * @return an array of T[] objects
+     */
     public static <T> T[] deepCopy(T[] array) {
         val mapper = new ObjectMapper();
         // per https://stackoverflow.com/questions/6349421/how-to-use-jackson-to-deserialise-an-array-of-objects

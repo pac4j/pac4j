@@ -44,6 +44,12 @@ public class OidcCredentialsExtractor implements CredentialsExtractor {
 
     protected OidcClient client;
 
+    /**
+     * <p>Constructor for OidcCredentialsExtractor.</p>
+     *
+     * @param configuration a {@link org.pac4j.oidc.config.OidcConfiguration} object
+     * @param client a {@link org.pac4j.oidc.client.OidcClient} object
+     */
     public OidcCredentialsExtractor(final OidcConfiguration configuration, final OidcClient client) {
         CommonHelper.assertNotNull("configuration", configuration);
         CommonHelper.assertNotNull("client", client);
@@ -51,6 +57,7 @@ public class OidcCredentialsExtractor implements CredentialsExtractor {
         this.client = client;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<Credentials> extract(final CallContext ctx) {
         val webContext = ctx.webContext();
@@ -143,6 +150,12 @@ public class OidcCredentialsExtractor implements CredentialsExtractor {
         }
     }
 
+    /**
+     * <p>retrieveParameters.</p>
+     *
+     * @param context a {@link org.pac4j.core.context.WebContext} object
+     * @return a {@link java.util.Map} object
+     */
     protected Map<String, List<String>> retrieveParameters(final WebContext context) {
         val requestParameters = context.getRequestParameters();
         final Map<String, List<String>> map = new HashMap<>();

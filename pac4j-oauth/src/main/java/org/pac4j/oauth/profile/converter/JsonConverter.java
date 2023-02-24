@@ -21,15 +21,27 @@ public final class JsonConverter implements AttributeConverter {
 
     private TypeReference<? extends Object> typeReference;
 
+    /**
+     * <p>Constructor for JsonConverter.</p>
+     *
+     * @param clazz a {@link java.lang.Class} object
+     */
     public JsonConverter(final Class<? extends Object> clazz) {
         this.clazz = clazz;
     }
 
+    /**
+     * <p>Constructor for JsonConverter.</p>
+     *
+     * @param clazz a {@link java.lang.Class} object
+     * @param typeReference a {@link com.fasterxml.jackson.core.type.TypeReference} object
+     */
     public JsonConverter(final Class<? extends Object> clazz, final TypeReference<? extends Object> typeReference) {
         this(clazz);
         this.typeReference = typeReference;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Object convert(final Object attribute) {
         if (attribute != null) {

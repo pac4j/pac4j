@@ -19,10 +19,20 @@ import static org.pac4j.core.util.CommonHelper.isNotBlank;
  */
 public class CasClientBuilder extends AbstractBuilder {
 
+    /**
+     * <p>Constructor for CasClientBuilder.</p>
+     *
+     * @param properties a {@link java.util.Map} object
+     */
     public CasClientBuilder(final Map<String, String> properties) {
         super(properties);
     }
 
+    /**
+     * <p>tryCreateCasClient.</p>
+     *
+     * @param clients a {@link java.util.List} object
+     */
     public void tryCreateCasClient(final List<Client> clients) {
         for (var i = 0; i <= MAX_NUM_CLIENTS; i++) {
             val loginUrl = getProperty(CAS_LOGIN_URL, i);

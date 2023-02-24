@@ -22,14 +22,24 @@ import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
  */
 public class FoursquareProfileDefinition extends OAuthProfileDefinition {
 
+    /** Constant <code>FIRST_NAME="firstName"</code> */
     public static final String FIRST_NAME = "firstName";
+    /** Constant <code>LAST_NAME="lastName"</code> */
     public static final String LAST_NAME = "lastName";
+    /** Constant <code>PHOTO="photo"</code> */
     public static final String PHOTO = "photo";
+    /** Constant <code>FIRENDS="friends"</code> */
     public static final String FIRENDS = "friends";
+    /** Constant <code>HOME_CITY="homeCity"</code> */
     public static final String HOME_CITY = "homeCity";
+    /** Constant <code>CONTACT="contact"</code> */
     public static final String CONTACT = "contact";
+    /** Constant <code>BIO="bio"</code> */
     public static final String BIO = "bio";
 
+    /**
+     * <p>Constructor for FoursquareProfileDefinition.</p>
+     */
     public FoursquareProfileDefinition() {
         super(x -> new FoursquareProfile());
         Arrays.stream(new String[] {
@@ -41,11 +51,13 @@ public class FoursquareProfileDefinition extends OAuthProfileDefinition {
         primary(PHOTO, new JsonConverter(FoursquareUserPhoto.class));
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getProfileUrl(final Token accessToken, final OAuthConfiguration configuration) {
         return "https://api.foursquare.com/v2/users/self?v=20131118";
     }
 
+    /** {@inheritDoc} */
     @Override
     public FoursquareProfile extractUserProfile(String body) {
         var profile = (FoursquareProfile) newProfile();

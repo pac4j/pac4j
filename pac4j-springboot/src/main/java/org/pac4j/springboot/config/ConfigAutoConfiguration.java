@@ -22,6 +22,11 @@ public class ConfigAutoConfiguration {
     @Autowired
     private Pac4jConfigurationProperties pac4j;
 
+    /**
+     * <p>config.</p>
+     *
+     * @return a {@link org.pac4j.core.config.Config} object
+     */
     @Bean
     @ConditionalOnMissingBean
     public Config config() {

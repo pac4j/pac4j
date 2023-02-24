@@ -23,7 +23,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Implementation of {@link KerberosTicketValidator} which uses the SUN JAAS
+ * Implementation of {@link org.pac4j.kerberos.credentials.authenticator.KerberosTicketValidator} which uses the SUN JAAS
  * login module, which is included in the SUN JRE, it will not work with an IBM JRE.
  * The whole configuration is done in this class, no additional JAAS configuration
  * is needed.
@@ -41,6 +41,7 @@ public class SunJaasKerberosTicketValidator extends InitializableObject implemen
     private boolean holdOnToGSSContext;
     private boolean debug = false;
 
+    /** {@inheritDoc} */
     @Override
     public KerberosTicketValidation validateTicket(byte[] token) {
         init();
@@ -51,6 +52,7 @@ public class SunJaasKerberosTicketValidator extends InitializableObject implemen
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         // P.S. this fn is called from init(), so if init() is not called explicitly,
@@ -118,7 +120,7 @@ public class SunJaasKerberosTicketValidator extends InitializableObject implemen
 
     /**
      * Determines whether to hold on to the {@link GSSContext GSS security context} or
-     * otherwise {@link GSSContext#dispose() dispose} of it immediately (the default behaviour).
+     * otherwise {@link org.ietf.jgss.GSSContext#dispose() dispose} of it immediately (the default behaviour).
      * <p>Holding on to the GSS context allows decrypt and encrypt operations for subsequent
      * interactions with the principal.
      *

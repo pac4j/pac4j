@@ -32,6 +32,12 @@ public class OAuth10RedirectionActionBuilder implements RedirectionActionBuilder
 
     protected IndirectClient client;
 
+    /**
+     * <p>Constructor for OAuth10RedirectionActionBuilder.</p>
+     *
+     * @param configuration a {@link org.pac4j.oauth.config.OAuth10Configuration} object
+     * @param client a {@link org.pac4j.core.client.IndirectClient} object
+     */
     public OAuth10RedirectionActionBuilder(final OAuth10Configuration configuration, final IndirectClient client) {
         CommonHelper.assertNotNull("client", client);
         CommonHelper.assertNotNull("configuration", configuration);
@@ -39,6 +45,7 @@ public class OAuth10RedirectionActionBuilder implements RedirectionActionBuilder
         this.client = client;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<RedirectionAction> getRedirectionAction(final CallContext ctx) {
         try {

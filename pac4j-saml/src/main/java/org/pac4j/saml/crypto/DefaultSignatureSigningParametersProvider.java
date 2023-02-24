@@ -19,6 +19,7 @@ import java.util.List;
 
 /**
  * Provide the signature parameters required for signing.
+ *
  * @author Misagh Moayyed
  * @since 1.7
  */
@@ -27,10 +28,16 @@ public class DefaultSignatureSigningParametersProvider implements SignatureSigni
 
     private final SAML2Configuration configuration;
 
+    /**
+     * <p>Constructor for DefaultSignatureSigningParametersProvider.</p>
+     *
+     * @param configuration a {@link org.pac4j.saml.config.SAML2Configuration} object
+     */
     public DefaultSignatureSigningParametersProvider(final SAML2Configuration configuration) {
         this.configuration = configuration;
     }
 
+    /** {@inheritDoc} */
     @Override
     public SignatureSigningParameters build(final SSODescriptor descriptor) {
         try {
@@ -61,6 +68,11 @@ public class DefaultSignatureSigningParametersProvider implements SignatureSigni
         }
     }
 
+    /**
+     * <p>getSignatureSigningConfiguration.</p>
+     *
+     * @return a {@link org.opensaml.xmlsec.SignatureSigningConfiguration} object
+     */
     protected SignatureSigningConfiguration getSignatureSigningConfiguration() {
         val config =
                 DefaultSecurityConfigurationBootstrap.buildDefaultSignatureSigningConfiguration();
@@ -84,6 +96,12 @@ public class DefaultSignatureSigningParametersProvider implements SignatureSigni
         return config;
     }
 
+    /**
+     * <p>augmentSignatureSigningParameters.</p>
+     *
+     * @param params a {@link org.opensaml.xmlsec.SignatureSigningParameters} object
+     * @return a {@link org.opensaml.xmlsec.SignatureSigningParameters} object
+     */
     protected SignatureSigningParameters augmentSignatureSigningParameters(final SignatureSigningParameters params) {
         return params;
     }

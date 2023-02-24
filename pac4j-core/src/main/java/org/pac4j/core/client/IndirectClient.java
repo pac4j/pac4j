@@ -43,6 +43,7 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
 @Accessors(chain = true)
 public abstract class IndirectClient extends BaseClient {
 
+    /** Constant <code>ATTEMPTED_AUTHENTICATION_SUFFIX="$attemptedAuthentication"</code> */
     public static final String ATTEMPTED_AUTHENTICATION_SUFFIX = "$attemptedAuthentication";
     private static final String STATE_SESSION_PARAMETER = "$stateSessionParameter";
     private static final String NONCE_SESSION_PARAMETER = "$nonceSessionParameter";
@@ -64,6 +65,7 @@ public abstract class IndirectClient extends BaseClient {
 
     private boolean checkAuthenticationAttempt = true;
 
+    /** {@inheritDoc} */
     @Override
     protected void beforeInternalInit(final boolean forceReinit) {
         // check configuration
@@ -82,6 +84,7 @@ public abstract class IndirectClient extends BaseClient {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     protected final void afterInternalInit(final boolean forceReinit) {
         // ensures components have been properly initialized
@@ -92,16 +95,20 @@ public abstract class IndirectClient extends BaseClient {
         assertNotNull("logoutActionBuilder", this.logoutActionBuilder);
     }
 
+    /**
+     * <p>newDefaultCallbackUrlResolver.</p>
+     *
+     * @return a {@link org.pac4j.core.http.callback.CallbackUrlResolver} object
+     */
     protected CallbackUrlResolver newDefaultCallbackUrlResolver() {
         return new QueryParameterCallbackUrlResolver();
     }
 
     /**
+     * {@inheritDoc}
+     *
      * <p>If an authentication has already been tried for this client and has failed (<code>null</code> credentials) or if the request is
      * an AJAX one, an unauthorized response is thrown instead of a "redirection".</p>
-     *
-     * @param ctx the context
-     * @return the "redirection" action
      */
     @Override
     public final Optional<RedirectionAction> getRedirectionAction(final CallContext ctx) {
@@ -129,6 +136,7 @@ public abstract class IndirectClient extends BaseClient {
         return redirectionActionBuilder.getRedirectionAction(ctx);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void checkCredentials(final CallContext ctx, final Credentials credentials) {
         val webContext = ctx.webContext();
@@ -142,6 +150,7 @@ public abstract class IndirectClient extends BaseClient {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public HttpAction processLogout(final CallContext ctx, final Credentials credentials) {
         init();
@@ -149,6 +158,7 @@ public abstract class IndirectClient extends BaseClient {
         return this.logoutProcessor.processLogout(ctx, credentials);
     }
 
+    /** {@inheritDoc} */
     @Override
     public final Optional<RedirectionAction> getLogoutAction(final CallContext ctx, final UserProfile currentProfile,
                                                              final String targetUrl) {
@@ -156,6 +166,12 @@ public abstract class IndirectClient extends BaseClient {
         return logoutActionBuilder.getLogoutAction(ctx, currentProfile, targetUrl);
     }
 
+    /**
+     * <p>computeFinalCallbackUrl.</p>
+     *
+     * @param context a {@link org.pac4j.core.context.WebContext} object
+     * @return a {@link java.lang.String} object
+     */
     public String computeFinalCallbackUrl(final WebContext context) {
         init();
         return callbackUrlResolver.compute(this.urlResolver, this.callbackUrl, this.getName(), context);
@@ -171,14 +187,29 @@ public abstract class IndirectClient extends BaseClient {
         sessionStore.set(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, null);
     }
 
+    /**
+     * <p>getStateSessionAttributeName.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getStateSessionAttributeName() {
         return getName() + STATE_SESSION_PARAMETER;
     }
 
+    /**
+     * <p>getNonceSessionAttributeName.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getNonceSessionAttributeName() {
         return getName() + NONCE_SESSION_PARAMETER;
     }
 
+    /**
+     * <p>getCodeVerifierSessionAttributeName.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getCodeVerifierSessionAttributeName() {
         return getName() + CODE_VERIFIER_SESSION_PARAMETER;
     }
@@ -190,18 +221,33 @@ public abstract class IndirectClient extends BaseClient {
         }
     }
 
+    /**
+     * <p>setRedirectionActionBuilderIfUndefined.</p>
+     *
+     * @param redirectActionBuilder a {@link org.pac4j.core.redirect.RedirectionActionBuilder} object
+     */
     protected void setRedirectionActionBuilderIfUndefined(final RedirectionActionBuilder redirectActionBuilder) {
         if (this.redirectionActionBuilder == null) {
             this.redirectionActionBuilder = redirectActionBuilder;
         }
     }
 
+    /**
+     * <p>setLogoutProcessorIfUndefined.</p>
+     *
+     * @param logoutProcessor a {@link org.pac4j.core.logout.processor.LogoutProcessor} object
+     */
     protected void setLogoutProcessorIfUndefined(final LogoutProcessor logoutProcessor) {
         if (this.logoutProcessor == null) {
             this.logoutProcessor = logoutProcessor;
         }
     }
 
+    /**
+     * <p>setLogoutActionBuilderIfUndefined.</p>
+     *
+     * @param logoutActionBuilder a {@link org.pac4j.core.logout.LogoutActionBuilder} object
+     */
     protected void setLogoutActionBuilderIfUndefined(final LogoutActionBuilder logoutActionBuilder) {
         if (this.logoutActionBuilder == null || this.logoutActionBuilder == NoLogoutActionBuilder.INSTANCE) {
             this.logoutActionBuilder = logoutActionBuilder;

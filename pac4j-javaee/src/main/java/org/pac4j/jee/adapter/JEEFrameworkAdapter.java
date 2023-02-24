@@ -17,6 +17,7 @@ import javax.annotation.Priority;
  */
 public class JEEFrameworkAdapter extends DefaultFrameworkAdapter {
 
+    /** {@inheritDoc} */
     @Override
     public int compareManagers(final Object obj1, final Object obj2) {
         var p1 = 100;
@@ -38,6 +39,7 @@ public class JEEFrameworkAdapter extends DefaultFrameworkAdapter {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public void applyDefaultSettingsIfUndefined(final Config config) {
         super.applyDefaultSettingsIfUndefined(config);
@@ -47,6 +49,7 @@ public class JEEFrameworkAdapter extends DefaultFrameworkAdapter {
         config.setHttpActionAdapterIfUndefined(JEEHttpActionAdapter.INSTANCE);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return "JavaEE";

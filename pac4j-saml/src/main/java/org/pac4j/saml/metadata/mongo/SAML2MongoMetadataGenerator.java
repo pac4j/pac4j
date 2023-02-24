@@ -20,7 +20,7 @@ import java.util.Objects;
 import static com.mongodb.client.model.Filters.eq;
 
 /**
- * This is {@link SAML2MongoMetadataGenerator}
+ * This is {@link org.pac4j.saml.metadata.mongo.SAML2MongoMetadataGenerator}
  * that stores service provider metadata in a MongoDb database.
  *
  * @author Misagh Moayyed
@@ -35,11 +35,18 @@ public class SAML2MongoMetadataGenerator extends BaseSAML2MetadataGenerator {
     private String metadataCollection = "metadata";
 
 
+    /**
+     * <p>Constructor for SAML2MongoMetadataGenerator.</p>
+     *
+     * @param mongoClient a {@link com.mongodb.client.MongoClient} object
+     * @param entityId a {@link java.lang.String} object
+     */
     public SAML2MongoMetadataGenerator(final MongoClient mongoClient, final String entityId) {
         this.mongoClient = mongoClient;
         this.entityId = entityId;
     }
 
+    /** {@inheritDoc} */
     @Override
     public AbstractMetadataResolver createMetadataResolver() throws Exception {
         var documents = Objects.requireNonNull(getCollection().find(buildMetadataDocumentFilter(this.entityId)));
@@ -55,10 +62,17 @@ public class SAML2MongoMetadataGenerator extends BaseSAML2MetadataGenerator {
         throw new SAMLException("Unable to locate metadata document ");
     }
 
+    /**
+     * <p>buildMetadataDocumentFilter.</p>
+     *
+     * @param entityId a {@link java.lang.String} object
+     * @return a {@link org.bson.conversions.Bson} object
+     */
     protected Bson buildMetadataDocumentFilter(final String entityId) {
         return eq("entityId", entityId);
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean storeMetadata(final String metadata, final boolean force) {
         if (CommonHelper.isBlank(metadata)) {
@@ -91,23 +105,48 @@ public class SAML2MongoMetadataGenerator extends BaseSAML2MetadataGenerator {
         return updateResult.getMatchedCount() == 1;
     }
 
+    /**
+     * <p>getCollection.</p>
+     *
+     * @return a {@link com.mongodb.client.MongoCollection} object
+     */
     protected MongoCollection<Document> getCollection() {
         val db = mongoClient.getDatabase(metadataDatabase);
         return Objects.requireNonNull(db.getCollection(metadataCollection));
     }
 
+    /**
+     * <p>Getter for the field <code>metadataDatabase</code>.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getMetadataDatabase() {
         return metadataDatabase;
     }
 
+    /**
+     * <p>Setter for the field <code>metadataDatabase</code>.</p>
+     *
+     * @param metadataDatabase a {@link java.lang.String} object
+     */
     public void setMetadataDatabase(String metadataDatabase) {
         this.metadataDatabase = metadataDatabase;
     }
 
+    /**
+     * <p>Getter for the field <code>metadataCollection</code>.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getMetadataCollection() {
         return metadataCollection;
     }
 
+    /**
+     * <p>Setter for the field <code>metadataCollection</code>.</p>
+     *
+     * @param metadataCollection a {@link java.lang.String} object
+     */
     public void setMetadataCollection(String metadataCollection) {
         this.metadataCollection = metadataCollection;
     }

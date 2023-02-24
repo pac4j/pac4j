@@ -19,6 +19,11 @@ public class TokenCredentials extends Credentials {
     @Getter
     private String token;
 
+    /**
+     * <p>Constructor for TokenCredentials.</p>
+     *
+     * @param token a {@link java.lang.String} object
+     */
     public TokenCredentials(String token) {
         this.token = token;
     }

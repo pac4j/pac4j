@@ -15,22 +15,37 @@ import java.util.List;
  */
 public class IsAnonymousAuthorizer extends AbstractCheckAuthenticationAuthorizer {
 
+    /**
+     * <p>Constructor for IsAnonymousAuthorizer.</p>
+     */
     public IsAnonymousAuthorizer() {}
 
+    /**
+     * <p>Constructor for IsAnonymousAuthorizer.</p>
+     *
+     * @param redirectionUrl a {@link java.lang.String} object
+     */
     public IsAnonymousAuthorizer(final String redirectionUrl) {
         super(redirectionUrl);
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean isAuthorized(final WebContext context, final SessionStore sessionStore, final List<UserProfile> profiles) {
         return isAllAuthorized(context, sessionStore, profiles);
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean isProfileAuthorized(final WebContext context, final SessionStore sessionStore, final UserProfile profile) {
         return profile == null || profile instanceof AnonymousProfile;
     }
 
+    /**
+     * <p>isAnonymous.</p>
+     *
+     * @return a {@link org.pac4j.core.authorization.authorizer.IsAnonymousAuthorizer} object
+     */
     public static IsAnonymousAuthorizer isAnonymous() {
         return new IsAnonymousAuthorizer();
     }

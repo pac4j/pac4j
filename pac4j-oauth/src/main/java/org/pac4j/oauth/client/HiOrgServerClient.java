@@ -19,16 +19,26 @@ public class HiOrgServerClient extends OAuth20Client {
 
     private final static String LOGOUT_URL = "https://www.hiorg-server.de/logout.php";
 
+    /**
+     * <p>Constructor for HiOrgServerClient.</p>
+     */
     public HiOrgServerClient() {
         configuration = new HiOrgServerConfiguration();
     }
 
+    /**
+     * <p>Constructor for HiOrgServerClient.</p>
+     *
+     * @param key a {@link java.lang.String} object
+     * @param secret a {@link java.lang.String} object
+     */
     public HiOrgServerClient(final String key, final String secret) {
         configuration = new HiOrgServerConfiguration();
         setKey(key);
         setSecret(secret);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         configuration.setApi(HiOrgServerApi20.instance());

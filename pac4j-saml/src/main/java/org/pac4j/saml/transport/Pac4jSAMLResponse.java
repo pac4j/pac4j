@@ -7,6 +7,7 @@ import java.io.OutputStreamWriter;
 /**
  * Indicates the SAML response that will be written
  * to the actual backend response via a given SAML encoder.
+ *
  * @author Misagh Moayyed
  * @since 1.8
  */

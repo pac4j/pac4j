@@ -30,6 +30,7 @@ public class KeycloakOidcConfiguration extends OidcConfiguration {
     /** Keycloak server base uri **/
     private String baseUri;
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         // checks
@@ -39,6 +40,7 @@ public class KeycloakOidcConfiguration extends OidcConfiguration {
         super.internalInit(forceReinit);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getDiscoveryURI() {
         return baseUri+"/realms/"+realm+"/.well-known/openid-configuration";

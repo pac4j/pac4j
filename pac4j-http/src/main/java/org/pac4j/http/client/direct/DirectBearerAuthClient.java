@@ -29,24 +29,44 @@ public class DirectBearerAuthClient extends DirectClient {
 
     private String realmName = Pac4jConstants.DEFAULT_REALM_NAME;
 
+    /**
+     * <p>Constructor for DirectBearerAuthClient.</p>
+     */
     public DirectBearerAuthClient() {
     }
 
+    /**
+     * <p>Constructor for DirectBearerAuthClient.</p>
+     *
+     * @param tokenAuthenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
+     */
     public DirectBearerAuthClient(final Authenticator tokenAuthenticator) {
         setAuthenticatorIfUndefined(tokenAuthenticator);
     }
 
+    /**
+     * <p>Constructor for DirectBearerAuthClient.</p>
+     *
+     * @param profileCreator a {@link org.pac4j.core.profile.creator.ProfileCreator} object
+     */
     public DirectBearerAuthClient(final ProfileCreator profileCreator) {
         setAuthenticatorIfUndefined(Authenticator.ALWAYS_VALIDATE);
         setProfileCreatorIfUndefined(profileCreator);
     }
 
+    /**
+     * <p>Constructor for DirectBearerAuthClient.</p>
+     *
+     * @param tokenAuthenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
+     * @param profileCreator a {@link org.pac4j.core.profile.creator.ProfileCreator} object
+     */
     public DirectBearerAuthClient(final Authenticator tokenAuthenticator,
                                  final ProfileCreator profileCreator) {
         setAuthenticatorIfUndefined(tokenAuthenticator);
         setProfileCreatorIfUndefined(profileCreator);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         assertNotBlank("realmName", this.realmName);
@@ -54,6 +74,7 @@ public class DirectBearerAuthClient extends DirectClient {
         setCredentialsExtractorIfUndefined(new BearerAuthExtractor());
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<Credentials> getCredentials(final CallContext ctx) {
         // set the www-authenticate in case of error

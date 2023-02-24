@@ -31,12 +31,21 @@ public class DefaultSessionLogoutHandler implements SessionLogoutHandler {
 
     private boolean destroySession;
 
+    /**
+     * <p>Constructor for DefaultSessionLogoutHandler.</p>
+     */
     public DefaultSessionLogoutHandler() {}
 
+    /**
+     * <p>Constructor for DefaultSessionLogoutHandler.</p>
+     *
+     * @param store a {@link org.pac4j.core.store.Store} object
+     */
     public DefaultSessionLogoutHandler(final Store<String, Object> store) {
         this.store = store;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void recordSession(final CallContext ctx, final String key) {
         val webContext = ctx.webContext();
@@ -65,6 +74,7 @@ public class DefaultSessionLogoutHandler implements SessionLogoutHandler {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public void destroySession(final CallContext ctx, final String key) {
         val webContext = ctx.webContext();
@@ -121,6 +131,14 @@ public class DefaultSessionLogoutHandler implements SessionLogoutHandler {
         }
     }
 
+    /**
+     * <p>destroy.</p>
+     *
+     * @param webContext a {@link org.pac4j.core.context.WebContext} object
+     * @param sessionStore a {@link org.pac4j.core.context.session.SessionStore} object
+     * @param profileManagerFactory a {@link org.pac4j.core.profile.factory.ProfileManagerFactory} object
+     * @param channel a {@link java.lang.String} object
+     */
     protected void destroy(final WebContext webContext, final SessionStore sessionStore,
                            final ProfileManagerFactory profileManagerFactory, final String channel) {
         // remove profiles
@@ -137,6 +155,7 @@ public class DefaultSessionLogoutHandler implements SessionLogoutHandler {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public void renewSession(final CallContext ctx, final String oldSessionId) {
         val optKey = store.get(oldSessionId);

@@ -32,25 +32,43 @@ public class DirectDigestAuthClient extends DirectClient {
 
     private String realm = "pac4jRealm";
 
+    /**
+     * <p>Constructor for DirectDigestAuthClient.</p>
+     */
     public DirectDigestAuthClient() {
     }
 
+    /**
+     * <p>Constructor for DirectDigestAuthClient.</p>
+     *
+     * @param digestAuthenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
+     */
     public DirectDigestAuthClient(final Authenticator digestAuthenticator) {
         setAuthenticatorIfUndefined(digestAuthenticator);
     }
 
+    /**
+     * <p>Constructor for DirectDigestAuthClient.</p>
+     *
+     * @param digestAuthenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
+     * @param profileCreator a {@link org.pac4j.core.profile.creator.ProfileCreator} object
+     */
     public DirectDigestAuthClient(final Authenticator digestAuthenticator,
                                  final ProfileCreator profileCreator) {
         setAuthenticatorIfUndefined(digestAuthenticator);
         setProfileCreatorIfUndefined(profileCreator);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         setCredentialsExtractorIfUndefined(new DigestAuthExtractor());
     }
 
-    /** Per RFC 2617
+    /**
+     * {@inheritDoc}
+     *
+     * Per RFC 2617
      * If a server receives a request for an access-protected object, and an
      * acceptable Authorization header is not sent, the server responds with
      * a "401 Unauthorized" status code, and a WWW-Authenticate header

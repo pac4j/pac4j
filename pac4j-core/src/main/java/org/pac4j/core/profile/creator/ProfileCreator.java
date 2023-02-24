@@ -7,7 +7,8 @@ import org.pac4j.core.profile.UserProfile;
 import java.util.Optional;
 
 /**
- * This interface is responsible to create a {@link UserProfile} from a {@link Credentials}.
+ * This interface is responsible to create a {@link org.pac4j.core.profile.UserProfile}
+ * from a {@link org.pac4j.core.credentials.Credentials}.
  * Return <code>Optional.empty()</code> if no profile can be found / created.
  *
  * @author Jerome Leleu

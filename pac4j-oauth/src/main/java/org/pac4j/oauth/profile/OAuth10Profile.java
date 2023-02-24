@@ -31,6 +31,7 @@ public class OAuth10Profile extends OAuth20Profile {
         return (String) getAttribute(ACCESS_SECRET);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void removeLoginData() {
         super.removeLoginData();

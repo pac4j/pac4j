@@ -14,11 +14,18 @@ public class StaticOidcOpMetadataResolver extends OidcOpMetadataResolver {
 
     private final OIDCProviderMetadata staticMetadata;
 
+    /**
+     * <p>Constructor for StaticOidcOpMetadataResolver.</p>
+     *
+     * @param configuration a {@link org.pac4j.oidc.config.OidcConfiguration} object
+     * @param staticMetadata a {@link com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata} object
+     */
     public StaticOidcOpMetadataResolver(final OidcConfiguration configuration, final OIDCProviderMetadata staticMetadata) {
         super(configuration);
         this.staticMetadata = staticMetadata;
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalLoad() {
         this.loaded = staticMetadata;

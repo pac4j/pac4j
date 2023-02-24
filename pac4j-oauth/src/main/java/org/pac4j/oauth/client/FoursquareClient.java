@@ -3,7 +3,6 @@ package org.pac4j.oauth.client;
 import com.github.scribejava.apis.Foursquare2Api;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.HttpActionHelper;
-import org.pac4j.oauth.profile.foursquare.FoursquareProfile;
 import org.pac4j.oauth.profile.foursquare.FoursquareProfileCreator;
 import org.pac4j.oauth.profile.foursquare.FoursquareProfileDefinition;
 
@@ -11,7 +10,7 @@ import java.util.Optional;
 
 /**
  * <p>This class is the OAuth client to authenticate users in Foursquare.
- * It returns a {@link FoursquareProfile}.</p>
+ * It returns a {@link org.pac4j.oauth.profile.foursquare.FoursquareProfile}.</p>
  * <p>More information at https://developer.foursquare.com/overview/auth.html</p>
  *
  * @author Alexey Ogarkov
@@ -19,13 +18,23 @@ import java.util.Optional;
  */
 public class FoursquareClient extends OAuth20Client {
 
+    /**
+     * <p>Constructor for FoursquareClient.</p>
+     */
     public FoursquareClient() {}
 
+    /**
+     * <p>Constructor for FoursquareClient.</p>
+     *
+     * @param key a {@link java.lang.String} object
+     * @param secret a {@link java.lang.String} object
+     */
     public FoursquareClient(String key, String secret) {
         setKey(key);
         setSecret(secret);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         CommonHelper.assertNotNull("configuration", configuration);

@@ -16,11 +16,18 @@ import java.util.*;
  */
 public class SpringSecurityPropertiesAuthorizationGenerator implements AuthorizationGenerator {
 
+    /** Constant <code>DISABLED="disabled"</code> */
     public final static String DISABLED = "disabled";
+    /** Constant <code>ENABLED="enabled"</code> */
     public final static String ENABLED = "enabled";
 
     private Map<String, List<String>> rolesByUsers = new HashMap<>();
 
+    /**
+     * <p>Constructor for SpringSecurityPropertiesAuthorizationGenerator.</p>
+     *
+     * @param properties a {@link java.util.Properties} object
+     */
     public SpringSecurityPropertiesAuthorizationGenerator(final Properties properties) {
         val keys = properties.stringPropertyNames();
         for (val key : keys) {
@@ -43,6 +50,7 @@ public class SpringSecurityPropertiesAuthorizationGenerator implements Authoriza
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<UserProfile> generate(final CallContext ctx, final UserProfile profile) {
         val id = profile.getId();

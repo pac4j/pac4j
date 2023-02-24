@@ -138,7 +138,9 @@ public final class WebContextHelper implements HttpConstants {
      * Custom method for adding cookie because the servlet-api version doesn't support SameSite attributes.
      * Sets the default SameSite policy to lax which is what most browsers do if the cookie doesn't specify
      * a SameSite policy.
+     *
      * @param cookie pac4j Cookie object
+     * @return a {@link java.lang.String} object
      */
     public static String createCookieHeader(Cookie cookie) {
         var builder = new StringBuilder();

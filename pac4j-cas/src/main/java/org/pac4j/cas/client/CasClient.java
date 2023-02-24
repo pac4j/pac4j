@@ -14,8 +14,6 @@ import org.pac4j.core.context.CallContext;
 import org.pac4j.core.http.callback.CallbackUrlResolver;
 import org.pac4j.core.http.callback.QueryParameterCallbackUrlResolver;
 import org.pac4j.core.logout.CasLogoutActionBuilder;
-import org.pac4j.core.logout.handler.DefaultSessionLogoutHandler;
-import org.pac4j.core.logout.handler.SessionLogoutHandler;
 
 import static org.pac4j.core.util.CommonHelper.assertNotNull;
 
@@ -26,12 +24,13 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
  *
  * <p>The configuration can be defined via the {@link #configuration} object.</p>
  *
- * <p>By default, the {@link SessionLogoutHandler} will be a {@link DefaultSessionLogoutHandler}. Use <code>null</code> to
- * disable logout support.</p>
+ * <p>By default, the {@link org.pac4j.core.logout.handler.SessionLogoutHandler} will be a
+ * {@link org.pac4j.core.logout.handler.DefaultSessionLogoutHandler}. Use <code>null</code> to disable logout support.</p>
  *
- * <p>For proxy support, a {@link CasProxyReceptor} must be defined in the configuration (the corresponding "callback filter" must be
- * enabled) and set to the CAS configuration of this client. In that case, a {@link org.pac4j.cas.profile.CasProxyProfile} will be return
- * (instead of a {@link org.pac4j.cas.profile.CasProfile}) to be able to request proxy tickets.</p>
+ * <p>For proxy support, a {@link org.pac4j.cas.client.CasProxyReceptor} must be defined in the configuration
+ * (the corresponding "callback filter" must be enabled) and set to the CAS configuration of this client.
+ * In that case, a {@link org.pac4j.cas.profile.CasProxyProfile} will be return (instead of a {@link org.pac4j.cas.profile.CasProfile})
+ * to be able to request proxy tickets.</p>
  *
  * @author Jerome Leleu
  * @since 1.4.0
@@ -43,12 +42,21 @@ public class CasClient extends IndirectClient {
     @Setter
     private CasConfiguration configuration = new CasConfiguration();
 
+    /**
+     * <p>Constructor for CasClient.</p>
+     */
     public CasClient() { }
 
+    /**
+     * <p>Constructor for CasClient.</p>
+     *
+     * @param configuration a {@link org.pac4j.cas.config.CasConfiguration} object
+     */
     public CasClient(final CasConfiguration configuration) {
         setConfiguration(configuration);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         assertNotNull("configuration", configuration);
@@ -63,11 +71,13 @@ public class CasClient extends IndirectClient {
         addAuthorizationGenerator(new DefaultCasAuthorizationGenerator());
     }
 
+    /** {@inheritDoc} */
     @Override
     protected CallbackUrlResolver newDefaultCallbackUrlResolver() {
         return new QueryParameterCallbackUrlResolver(configuration.getCustomParams());
     }
 
+    /** {@inheritDoc} */
     @Override
     public void notifySessionRenewal(final CallContext ctx, final String oldSessionId) {
         configuration.findSessionLogoutHandler().renewSession(ctx, oldSessionId);

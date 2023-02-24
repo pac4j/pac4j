@@ -13,50 +13,76 @@ import java.net.URI;
  * @since 1.5.0
  */
 public class FoursquareProfile extends OAuth20Profile {
-    
+
     private static final long serialVersionUID = 8919122885219420820L;
 
+    /**
+     * <p>getBio.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getBio() {
         return (String) getAttribute(FoursquareProfileDefinition.BIO);
     }
 
+    /**
+     * <p>getContact.</p>
+     *
+     * @return a {@link org.pac4j.oauth.profile.foursquare.FoursquareUserContact} object
+     */
     public FoursquareUserContact getContact() {
         return (FoursquareUserContact) getAttribute(FoursquareProfileDefinition.CONTACT);
     }
 
+    /**
+     * <p>getFriends.</p>
+     *
+     * @return a {@link org.pac4j.oauth.profile.foursquare.FoursquareUserFriends} object
+     */
     public FoursquareUserFriends getFriends() {
         return (FoursquareUserFriends) getAttribute(FoursquareProfileDefinition.FIRENDS);
     }
 
+    /**
+     * <p>getPhoto.</p>
+     *
+     * @return a {@link org.pac4j.oauth.profile.foursquare.FoursquareUserPhoto} object
+     */
     public FoursquareUserPhoto getPhoto() {
         return (FoursquareUserPhoto) getAttribute(FoursquareProfileDefinition.PHOTO);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getFirstName() {
         return (String) getAttribute(FoursquareProfileDefinition.FIRST_NAME);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getLocation() {
         return (String) getAttribute(FoursquareProfileDefinition.HOME_CITY);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getFamilyName() {
         return (String) getAttribute(FoursquareProfileDefinition.LAST_NAME);
     }
 
+    /** {@inheritDoc} */
     @Override
     public URI getProfileUrl() {
         return CommonHelper.asURI("https://foursquare.com/user/" + getId());
     }
 
+    /** {@inheritDoc} */
     @Override
     public URI getPictureUrl() {
         return CommonHelper.asURI(this.getPhoto().getPhotoUrl());
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getEmail() {
         return this.getContact().getEmail();

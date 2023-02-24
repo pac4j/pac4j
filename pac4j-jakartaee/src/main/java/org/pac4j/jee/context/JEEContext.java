@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * This implementation uses the JEE {@link HttpServletRequest} and {@link HttpServletResponse}.
+ * This implementation uses the JEE {@link jakarta.servlet.http.HttpServletRequest} and {@link jakarta.servlet.http.HttpServletResponse}.
  *
  * @author Jerome Leleu
  * @since 1.4.0
@@ -43,26 +43,31 @@ public class JEEContext implements WebContext {
         this.response = response;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<String> getRequestParameter(final String name) {
         return Optional.ofNullable(this.request.getParameter(name));
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional getRequestAttribute(final String name) {
         return Optional.ofNullable(this.request.getAttribute(name));
     }
 
+    /** {@inheritDoc} */
     @Override
     public void setRequestAttribute(final String name, final Object value) {
         this.request.setAttribute(name, value);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Map<String, String[]> getRequestParameters() {
         return this.request.getParameterMap();
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<String> getRequestHeader(final String name) {
         val names = request.getHeaderNames();
@@ -77,11 +82,13 @@ public class JEEContext implements WebContext {
         return Optional.empty();
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getRequestMethod() {
         return this.request.getMethod();
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getRemoteAddr() {
         return this.request.getRemoteAddr();
@@ -105,41 +112,49 @@ public class JEEContext implements WebContext {
         return this.response;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void setResponseHeader(final String name, final String value) {
         this.response.setHeader(name, value);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<String> getResponseHeader(final String name) {
         return Optional.ofNullable(this.response.getHeader(name));
     }
 
+    /** {@inheritDoc} */
     @Override
     public void setResponseContentType(final String content) {
         this.response.setContentType(content);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getServerName() {
         return this.request.getServerName();
     }
 
+    /** {@inheritDoc} */
     @Override
     public int getServerPort() {
         return this.request.getServerPort();
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getScheme() {
         return this.request.getScheme();
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean isSecure() {
         return this.request.isSecure();
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getRequestURL() {
         val url = request.getRequestURL().toString();
@@ -150,6 +165,7 @@ public class JEEContext implements WebContext {
         return url;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getFullRequestURL() {
         val requestURL = request.getRequestURL();
@@ -160,6 +176,7 @@ public class JEEContext implements WebContext {
         return requestURL.append('?').append(queryString).toString();
     }
 
+    /** {@inheritDoc} */
     @Override
     public Collection<Cookie> getRequestCookies() {
         final Collection<Cookie> pac4jCookies = new LinkedHashSet<>();
@@ -179,12 +196,15 @@ public class JEEContext implements WebContext {
         return pac4jCookies;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void addResponseCookie(Cookie cookie) {
         this.response.addHeader("Set-Cookie", WebContextHelper.createCookieHeader(cookie));
     }
 
     /**
+     * {@inheritDoc}
+     *
      * This is not implemented using {@link HttpServletRequest#getServletPath()} or
      * {@link HttpServletRequest#getPathInfo()} because they both have strange behaviours
      * in different contexts (inside servlets, inside filters, various container implementation, etc)
@@ -208,6 +228,7 @@ public class JEEContext implements WebContext {
         return fullPath;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getRequestContent() {
         if (body == null) {
@@ -222,6 +243,7 @@ public class JEEContext implements WebContext {
         return body;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getProtocol() {
         return request.getProtocol();

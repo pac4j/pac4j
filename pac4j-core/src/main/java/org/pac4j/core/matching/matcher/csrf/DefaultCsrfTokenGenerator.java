@@ -27,6 +27,7 @@ public class DefaultCsrfTokenGenerator implements CsrfTokenGenerator {
 
     private boolean rotateTokens = true;
 
+    /** {@inheritDoc} */
     @Override
     public String get(final WebContext context, final SessionStore sessionStore) {
         String token = null;

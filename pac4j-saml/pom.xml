@@ -38,6 +38,11 @@
             <artifactId>pac4j-core</artifactId>
         </dependency>
         <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>org.opensaml</groupId>
             <artifactId>opensaml-core-api</artifactId>
             <version>${opensaml.version}</version>

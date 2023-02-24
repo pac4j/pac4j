@@ -20,10 +20,16 @@ public class X509Credentials extends Credentials {
 
     private final X509Certificate certificate;
 
+    /**
+     * <p>Constructor for X509Credentials.</p>
+     *
+     * @param certificate a {@link java.security.cert.X509Certificate} object
+     */
     public X509Credentials(final X509Certificate certificate) {
         this.certificate = certificate;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return "X509Credentials(certificate.serialNumber=" + (certificate != null ? certificate.getSerialNumber() : null) + ")";

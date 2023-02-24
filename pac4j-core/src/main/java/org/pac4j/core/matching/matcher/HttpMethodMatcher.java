@@ -25,14 +25,23 @@ public class HttpMethodMatcher implements Matcher {
 
     private Set<HttpConstants.HTTP_METHOD> methods;
 
+    /**
+     * <p>Constructor for HttpMethodMatcher.</p>
+     */
     public HttpMethodMatcher() {}
 
+    /**
+     * <p>Constructor for HttpMethodMatcher.</p>
+     *
+     * @param methods a {@link org.pac4j.core.context.HttpConstants.HTTP_METHOD} object
+     */
     public HttpMethodMatcher(final HttpConstants.HTTP_METHOD... methods) {
         if (methods != null) {
             this.methods = new HashSet<>(Arrays.asList(methods));
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean matches(final CallContext ctx) {
         CommonHelper.assertNotNull("methods", methods);

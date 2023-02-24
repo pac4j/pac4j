@@ -8,10 +8,14 @@ package org.pac4j.core.profile.converter;
  */
 public final class LongConverter extends AbstractAttributeConverter {
 
+    /**
+     * <p>Constructor for LongConverter.</p>
+     */
     public LongConverter() {
         super(Long.class);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected Long internalConvert(final Object attribute) {
         if (attribute instanceof Integer) {

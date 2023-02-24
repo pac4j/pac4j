@@ -66,6 +66,7 @@ public class AppleOidcConfiguration extends OidcConfiguration {
      */
     private Duration timeout = MAX_TIMEOUT;
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         // checks
@@ -96,6 +97,8 @@ public class AppleOidcConfiguration extends OidcConfiguration {
     }
 
     /**
+     * {@inheritDoc}
+     *
      * Generate client secret (JWT) and cache it until expiration timeout
      */
     @Override

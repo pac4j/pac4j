@@ -24,12 +24,14 @@ public class OAuth10Client extends IndirectClient {
     @Setter
     protected OAuth10Configuration configuration = new OAuth10Configuration();
 
+    /** {@inheritDoc} */
     @Override
     protected void beforeInternalInit(final boolean forceReinit) {
         super.beforeInternalInit(forceReinit);
         CommonHelper.assertNotNull("configuration", configuration);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         setRedirectionActionBuilderIfUndefined(new OAuth10RedirectionActionBuilder(configuration, this));
@@ -38,18 +40,38 @@ public class OAuth10Client extends IndirectClient {
         setProfileCreatorIfUndefined(new OAuth10ProfileCreator(configuration, this));
     }
 
+    /**
+     * <p>getKey.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getKey() {
         return configuration.getKey();
     }
 
+    /**
+     * <p>setKey.</p>
+     *
+     * @param key a {@link java.lang.String} object
+     */
     public void setKey(final String key) {
         configuration.setKey(key);
     }
 
+    /**
+     * <p>getSecret.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getSecret() {
         return configuration.getSecret();
     }
 
+    /**
+     * <p>setSecret.</p>
+     *
+     * @param secret a {@link java.lang.String} object
+     */
     public void setSecret(final String secret) {
         configuration.setSecret(secret);
     }

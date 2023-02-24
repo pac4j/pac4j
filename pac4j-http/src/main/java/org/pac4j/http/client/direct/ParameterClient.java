@@ -28,13 +28,28 @@ public class ParameterClient extends DirectClient {
 
     private boolean supportPostRequest = true;
 
+    /**
+     * <p>Constructor for ParameterClient.</p>
+     */
     public ParameterClient() {}
 
+    /**
+     * <p>Constructor for ParameterClient.</p>
+     *
+     * @param parameterName a {@link java.lang.String} object
+     * @param tokenAuthenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
+     */
     public ParameterClient(final String parameterName, final Authenticator tokenAuthenticator) {
         this.parameterName = parameterName;
         setAuthenticatorIfUndefined(tokenAuthenticator);
     }
 
+    /**
+     * <p>Constructor for ParameterClient.</p>
+     *
+     * @param parameterName a {@link java.lang.String} object
+     * @param profileCreator a {@link org.pac4j.core.profile.creator.ProfileCreator} object
+     */
     public ParameterClient(final String parameterName,
                            final ProfileCreator profileCreator) {
         this.parameterName = parameterName;
@@ -42,6 +57,13 @@ public class ParameterClient extends DirectClient {
         setProfileCreatorIfUndefined(profileCreator);
     }
 
+    /**
+     * <p>Constructor for ParameterClient.</p>
+     *
+     * @param parameterName a {@link java.lang.String} object
+     * @param tokenAuthenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
+     * @param profileCreator a {@link org.pac4j.core.profile.creator.ProfileCreator} object
+     */
     public ParameterClient(final String parameterName,
                            final Authenticator tokenAuthenticator,
                            final ProfileCreator profileCreator) {
@@ -51,6 +73,7 @@ public class ParameterClient extends DirectClient {
     }
 
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         assertNotBlank("parameterName", this.parameterName);

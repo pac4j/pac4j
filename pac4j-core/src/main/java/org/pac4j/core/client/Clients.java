@@ -47,27 +47,53 @@ public class Clients extends InitializableObject {
 
     private String defaultSecurityClients;
 
+    /**
+     * <p>Constructor for Clients.</p>
+     */
     public Clients() {
     }
 
+    /**
+     * <p>Constructor for Clients.</p>
+     *
+     * @param callbackUrl a {@link java.lang.String} object
+     * @param clients a {@link java.util.List} object
+     */
     public Clients(final String callbackUrl, final List<Client> clients) {
         setCallbackUrl(callbackUrl);
         setClients(clients);
     }
 
+    /**
+     * <p>Constructor for Clients.</p>
+     *
+     * @param callbackUrl a {@link java.lang.String} object
+     * @param clients a {@link org.pac4j.core.client.Client} object
+     */
     public Clients(final String callbackUrl, final Client... clients) {
         setCallbackUrl(callbackUrl);
         setClients(clients);
     }
 
+    /**
+     * <p>Constructor for Clients.</p>
+     *
+     * @param clients a {@link java.util.List} object
+     */
     public Clients(final List<Client> clients) {
         setClients(clients);
     }
 
+    /**
+     * <p>Constructor for Clients.</p>
+     *
+     * @param clients a {@link org.pac4j.core.client.Client} object
+     */
     public Clients(final Client... clients) {
         setClients(clients);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected boolean shouldInitialize(final boolean forceReinit) {
         if (forceReinit) {
@@ -78,6 +104,8 @@ public class Clients extends InitializableObject {
     }
 
     /**
+     * {@inheritDoc}
+     *
      * Populate the resolvers, callback URL and authz generators in the Client
      * if defined in Clients and not already in the Client itself. And check the client name.
      */
@@ -140,34 +168,69 @@ public class Clients extends InitializableObject {
         return getClients();
     }
 
+    /**
+     * <p>addClient.</p>
+     *
+     * @param client a {@link org.pac4j.core.client.Client} object
+     */
     public void addClient(final Client client) {
         this.clients.add(client);
     }
 
+    /**
+     * <p>Setter for the field <code>clients</code>.</p>
+     *
+     * @param clients a {@link java.util.List} object
+     */
     public void setClients(final List<Client> clients) {
         CommonHelper.assertNotNull("clients", clients);
         this.clients = clients;
     }
 
+    /**
+     * <p>Setter for the field <code>clients</code>.</p>
+     *
+     * @param clients a {@link org.pac4j.core.client.Client} object
+     */
     public void setClients(final Client... clients) {
         CommonHelper.assertNotNull("clients", clients);
         setClients(new ArrayList<>(Arrays.asList(clients)));
     }
 
+    /**
+     * <p>Setter for the field <code>authorizationGenerators</code>.</p>
+     *
+     * @param authorizationGenerators a {@link java.util.List} object
+     */
     public void setAuthorizationGenerators(final List<AuthorizationGenerator> authorizationGenerators) {
         CommonHelper.assertNotNull("authorizationGenerators", authorizationGenerators);
         this.authorizationGenerators = authorizationGenerators;
     }
 
+    /**
+     * <p>Setter for the field <code>authorizationGenerators</code>.</p>
+     *
+     * @param authorizationGenerators a {@link org.pac4j.core.authorization.generator.AuthorizationGenerator} object
+     */
     public void setAuthorizationGenerators(final AuthorizationGenerator... authorizationGenerators) {
         CommonHelper.assertNotNull("authorizationGenerators", authorizationGenerators);
         this.authorizationGenerators = Arrays.asList(authorizationGenerators);
     }
 
+    /**
+     * <p>setAuthorizationGenerator.</p>
+     *
+     * @param authorizationGenerator a {@link org.pac4j.core.authorization.generator.AuthorizationGenerator} object
+     */
     public void setAuthorizationGenerator(final AuthorizationGenerator authorizationGenerator) {
         addAuthorizationGenerator(authorizationGenerator);
     }
 
+    /**
+     * <p>addAuthorizationGenerator.</p>
+     *
+     * @param authorizationGenerator a {@link org.pac4j.core.authorization.generator.AuthorizationGenerator} object
+     */
     public void addAuthorizationGenerator(final AuthorizationGenerator authorizationGenerator) {
         CommonHelper.assertNotNull("authorizationGenerator", authorizationGenerator);
         this.authorizationGenerators.add(authorizationGenerator);

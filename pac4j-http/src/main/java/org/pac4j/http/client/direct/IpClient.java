@@ -13,17 +13,32 @@ import org.pac4j.http.credentials.extractor.IpExtractor;
  */
 public class IpClient extends DirectClient {
 
+    /**
+     * <p>Constructor for IpClient.</p>
+     */
     public IpClient() {}
 
+    /**
+     * <p>Constructor for IpClient.</p>
+     *
+     * @param tokenAuthenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
+     */
     public IpClient(final Authenticator tokenAuthenticator) {
         setAuthenticatorIfUndefined(tokenAuthenticator);
     }
 
+    /**
+     * <p>Constructor for IpClient.</p>
+     *
+     * @param tokenAuthenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
+     * @param profileCreator a {@link org.pac4j.core.profile.creator.ProfileCreator} object
+     */
     public IpClient(final Authenticator tokenAuthenticator, final ProfileCreator profileCreator) {
         setAuthenticatorIfUndefined(tokenAuthenticator);
         setProfileCreatorIfUndefined(profileCreator);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         setCredentialsExtractorIfUndefined(new IpExtractor());

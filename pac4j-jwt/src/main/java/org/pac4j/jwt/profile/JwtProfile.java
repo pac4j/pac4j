@@ -15,6 +15,11 @@ public class JwtProfile extends AbstractJwtProfile {
 
     private static final long serialVersionUID = -1688563185891542198L;
 
+    /**
+     * <p>getJwtId.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getJwtId() {
         return (String) getAttribute(JwtClaims.JWT_ID);
     }

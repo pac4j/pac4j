@@ -29,10 +29,17 @@ public class FacebookProfileCreator extends OAuth20ProfileCreator {
 
     private static final String EXCHANGE_TOKEN_PARAMETER = "fb_exchange_token";
 
+    /**
+     * <p>Constructor for FacebookProfileCreator.</p>
+     *
+     * @param configuration a {@link org.pac4j.oauth.config.OAuth20Configuration} object
+     * @param client a {@link org.pac4j.core.client.IndirectClient} object
+     */
     public FacebookProfileCreator(final OAuth20Configuration configuration, final IndirectClient client) {
         super(configuration, client);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected Optional<UserProfile> retrieveUserProfileFromToken(final WebContext context, final Token accessToken) {
         val profileDefinition = configuration.getProfileDefinition();

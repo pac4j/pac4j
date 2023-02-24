@@ -23,5 +23,6 @@ public interface DefaultAuthorizers {
     /** The "isRemembered" authorizer. */
     String IS_REMEMBERED = "isRemembered";
 
+    /** Constant <code>NONE="none"</code> */
     String NONE = "none";
 }

@@ -6,6 +6,7 @@ import org.pac4j.saml.context.SAML2MessageContext;
 /**
  * Defines operations needed to validate the response
  * from IdP.
+ *
  * @author Misagh Moayyed
  * @since 1.7
  */
@@ -20,5 +21,10 @@ public interface SAML2ResponseValidator {
      */
     Credentials validate(SAML2MessageContext context);
 
+    /**
+     * <p>setAcceptedSkew.</p>
+     *
+     * @param acceptedSkew a long
+     */
     void setAcceptedSkew(long acceptedSkew);
 }

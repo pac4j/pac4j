@@ -13,6 +13,7 @@ import org.pac4j.core.util.CommonHelper;
  */
 public class PathParameterCallbackUrlResolver implements CallbackUrlResolver {
 
+    /** {@inheritDoc} */
     @Override
     public String compute(final UrlResolver urlResolver, final String url, final String clientName, final WebContext context) {
         var newUrl = urlResolver.compute(url, context);
@@ -25,6 +26,7 @@ public class PathParameterCallbackUrlResolver implements CallbackUrlResolver {
         return newUrl;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean matches(final String clientName, final WebContext context) {
         val path = context.getPath();

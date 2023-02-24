@@ -19,10 +19,21 @@ import static org.pac4j.core.util.CommonHelper.isNotBlank;
  */
 public class IndirectHttpClientBuilder extends AbstractBuilder {
 
+    /**
+     * <p>Constructor for IndirectHttpClientBuilder.</p>
+     *
+     * @param properties a {@link java.util.Map} object
+     * @param authenticators a {@link java.util.Map} object
+     */
     public IndirectHttpClientBuilder(final Map<String, String> properties, final Map<String, Authenticator> authenticators) {
         super(properties, authenticators);
     }
 
+    /**
+     * <p>tryCreateLoginFormClient.</p>
+     *
+     * @param clients a {@link java.util.List} object
+     */
     public void tryCreateLoginFormClient(final List<Client> clients) {
         for (var i = 0; i <= MAX_NUM_CLIENTS; i++) {
             val loginUrl = getProperty(FORMCLIENT_LOGIN_URL, i);
@@ -43,6 +54,11 @@ public class IndirectHttpClientBuilder extends AbstractBuilder {
         }
     }
 
+    /**
+     * <p>tryCreateIndirectBasicAuthClient.</p>
+     *
+     * @param clients a {@link java.util.List} object
+     */
     public void tryCreateIndirectBasicAuthClient(final List<Client> clients) {
         for (var i = 0; i <= MAX_NUM_CLIENTS; i++) {
             val authenticator = getProperty(INDIRECTBASICAUTH_AUTHENTICATOR, i);

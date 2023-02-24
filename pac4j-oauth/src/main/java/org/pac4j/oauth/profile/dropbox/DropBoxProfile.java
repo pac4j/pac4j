@@ -16,16 +16,23 @@ public class DropBoxProfile extends OAuth10Profile {
 
     private static final long serialVersionUID = 6671295443243112368L;
 
+    /** {@inheritDoc} */
     @Override
     public Locale getLocale() {
         return (Locale) getAttribute(DropBoxProfileDefinition.COUNTRY);
     }
 
+    /** {@inheritDoc} */
     @Override
     public URI getProfileUrl() {
         return (URI) getAttribute(DropBoxProfileDefinition.REFERRAL_LINK);
     }
 
+    /**
+     * <p>getEmailVerified.</p>
+     *
+     * @return a {@link java.lang.Boolean} object
+     */
     public Boolean getEmailVerified() {
         return (Boolean) getAttribute(DropBoxProfileDefinition.EMAIL_VERIFIED);
     }

@@ -18,7 +18,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * This is {@link DefaultSAML2MetadataSigner}.
+ * This is {@link org.pac4j.saml.metadata.DefaultSAML2MetadataSigner}.
  *
  * @author Misagh Moayyed
  * @since 5.0.0
@@ -32,6 +32,11 @@ public class DefaultSAML2MetadataSigner implements SAML2MetadataSigner {
 
     protected final SAML2Configuration configuration;
 
+    /**
+     * <p>Constructor for DefaultSAML2MetadataSigner.</p>
+     *
+     * @param configuration a {@link org.pac4j.saml.config.SAML2Configuration} object
+     */
     public DefaultSAML2MetadataSigner(final SAML2Configuration configuration) {
         this.configuration = configuration;
         this.credentialProvider = null;
@@ -39,6 +44,13 @@ public class DefaultSAML2MetadataSigner implements SAML2MetadataSigner {
         this.signatureReferenceDigestMethod = "http://www.w3.org/2001/04/xmlenc#sha256";
     }
 
+    /**
+     * <p>Constructor for DefaultSAML2MetadataSigner.</p>
+     *
+     * @param credentialProvider a {@link org.pac4j.saml.crypto.CredentialProvider} object
+     * @param signatureAlgorithm a {@link java.lang.String} object
+     * @param signatureReferenceDigestMethod a {@link java.lang.String} object
+     */
     public DefaultSAML2MetadataSigner(final CredentialProvider credentialProvider,
                                       final String signatureAlgorithm,
                                       final String signatureReferenceDigestMethod) {
@@ -63,6 +75,7 @@ public class DefaultSAML2MetadataSigner implements SAML2MetadataSigner {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public String sign(final String metadata) {
         try {
@@ -74,6 +87,7 @@ public class DefaultSAML2MetadataSigner implements SAML2MetadataSigner {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public void sign(final File metadataFile) {
         try {
@@ -85,6 +99,7 @@ public class DefaultSAML2MetadataSigner implements SAML2MetadataSigner {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public void sign(final SignableXMLObject descriptor) {
         try {

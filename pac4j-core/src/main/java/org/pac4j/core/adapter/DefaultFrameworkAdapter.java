@@ -15,6 +15,7 @@ import org.pac4j.core.util.CommonHelper;
  */
 public class DefaultFrameworkAdapter extends FrameworkAdapter {
 
+    /** {@inheritDoc} */
     @Override
     public int compareManagers(final Object obj1, final Object obj2) {
         if (obj1 != null && obj2 != null) {
@@ -24,6 +25,7 @@ public class DefaultFrameworkAdapter extends FrameworkAdapter {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public void applyDefaultSettingsIfUndefined(final Config config) {
         CommonHelper.assertNotNull("config", config);
@@ -34,6 +36,7 @@ public class DefaultFrameworkAdapter extends FrameworkAdapter {
         config.setProfileManagerFactoryIfUndefined(ProfileManagerFactory.DEFAULT);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return "default";

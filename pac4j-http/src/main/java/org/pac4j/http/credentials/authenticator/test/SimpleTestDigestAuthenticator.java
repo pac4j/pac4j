@@ -19,6 +19,7 @@ import java.util.Optional;
  */
 public class SimpleTestDigestAuthenticator implements Authenticator {
 
+    /** {@inheritDoc} */
     @Override
     public Optional<Credentials> validate(final CallContext ctx, final Credentials cred) {
         if (cred == null) {

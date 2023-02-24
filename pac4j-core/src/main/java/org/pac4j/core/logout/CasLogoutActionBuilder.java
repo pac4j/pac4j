@@ -25,6 +25,12 @@ public class CasLogoutActionBuilder implements LogoutActionBuilder {
 
     private final String postLogoutUrlParameter;
 
+    /**
+     * <p>Constructor for CasLogoutActionBuilder.</p>
+     *
+     * @param serverLogoutUrl a {@link java.lang.String} object
+     * @param postLogoutUrlParameter a {@link java.lang.String} object
+     */
     public CasLogoutActionBuilder(final String serverLogoutUrl, final String postLogoutUrlParameter) {
         if (isNotBlank(serverLogoutUrl)) {
             assertNotBlank("postLogoutUrlParameter", postLogoutUrlParameter);
@@ -33,6 +39,7 @@ public class CasLogoutActionBuilder implements LogoutActionBuilder {
         this.postLogoutUrlParameter = postLogoutUrlParameter;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<RedirectionAction> getLogoutAction(final CallContext ctx, final UserProfile currentProfile, final String targetUrl) {
         if (isBlank(serverLogoutUrl)) {

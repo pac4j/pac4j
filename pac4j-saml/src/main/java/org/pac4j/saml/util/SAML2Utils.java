@@ -41,6 +41,11 @@ public final class SAML2Utils implements HttpConstants {
         super();
     }
 
+    /**
+     * <p>generateID.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public static String generateID() {
         return "_".concat(CommonHelper.randomString(39)).toLowerCase();
     }
@@ -48,8 +53,8 @@ public final class SAML2Utils implements HttpConstants {
     /**
      * Compares two URIs for equality, ignoring default port numbers for selected protocols.
      *
-     * By default, {@link URI#equals(Object)} doesn't take into account default port numbers, so http://server:80/resource is a different
-     * URI than http://server/resource.
+     * By default, {@link java.net.URI#equals(Object)} doesn't take into account default port numbers,
+     * so http://server:80/resource is a different URI than http://server/resource.
      *
      * And URLs should not be used for comparison, as written here:
      * http://stackoverflow.com/questions/3771081/proper-way-to-check-for-url-equality
@@ -58,7 +63,6 @@ public final class SAML2Utils implements HttpConstants {
      *            URI 1 to be compared.
      * @param uri2
      *            URI 2 to be compared.
-     *
      * @return True if both URIs are equal.
      */
     public static boolean urisEqualAfterPortNormalization(final URI uri1, final URI uri2) {
@@ -106,6 +110,13 @@ public final class SAML2Utils implements HttpConstants {
         return result;
     }
 
+    /**
+     * <p>buildChainingMetadataResolver.</p>
+     *
+     * @param idpMetadataProvider a {@link org.pac4j.saml.metadata.SAML2MetadataResolver} object
+     * @param spMetadataProvider a {@link org.pac4j.saml.metadata.SAML2MetadataResolver} object
+     * @return a {@link org.opensaml.saml.metadata.resolver.ChainingMetadataResolver} object
+     */
     public static ChainingMetadataResolver buildChainingMetadataResolver(final SAML2MetadataResolver idpMetadataProvider,
                                                                          final SAML2MetadataResolver spMetadataProvider) {
         val metadataManager = new ChainingMetadataResolver();
@@ -124,6 +135,11 @@ public final class SAML2Utils implements HttpConstants {
         return metadataManager;
     }
 
+    /**
+     * <p>logProtocolMessage.</p>
+     *
+     * @param object a {@link org.opensaml.core.xml.XMLObject} object
+     */
     public static void logProtocolMessage(final XMLObject object) {
         if (protocolMessageLog.isDebugEnabled()) {
             try {

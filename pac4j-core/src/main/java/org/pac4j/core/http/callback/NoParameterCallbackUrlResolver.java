@@ -11,11 +11,13 @@ import org.pac4j.core.http.url.UrlResolver;
  */
 public class NoParameterCallbackUrlResolver implements CallbackUrlResolver {
 
+    /** {@inheritDoc} */
     @Override
     public String compute(final UrlResolver urlResolver, final String url, final String clientName, final WebContext context) {
         return urlResolver.compute(url, context);
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean matches(final String clientName, final WebContext context) {
         return false;

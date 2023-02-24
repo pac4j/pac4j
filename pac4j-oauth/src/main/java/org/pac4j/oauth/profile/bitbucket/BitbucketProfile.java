@@ -12,24 +12,32 @@ import java.net.URI;
  * @since 1.5.1
  */
 public class BitbucketProfile extends OAuth10Profile {
-    
+
     private static final long serialVersionUID = -8943779913358140436L;
 
+    /** {@inheritDoc} */
     @Override
     public String getFamilyName() {
         return (String) getAttribute(BitbucketProfileDefinition.LAST_NAME);
     }
-    
+
+    /** {@inheritDoc} */
     @Override
     public URI getPictureUrl() {
         return (URI) getAttribute(BitbucketProfileDefinition.AVATAR);
     }
-    
+
+    /** {@inheritDoc} */
     @Override
     public URI getProfileUrl() {
         return (URI) getAttribute(BitbucketProfileDefinition.RESOURCE_URI);
     }
-    
+
+    /**
+     * <p>isTeam.</p>
+     *
+     * @return a boolean
+     */
     public boolean isTeam() {
         return (Boolean) getAttribute(BitbucketProfileDefinition.IS_TEAM);
     }

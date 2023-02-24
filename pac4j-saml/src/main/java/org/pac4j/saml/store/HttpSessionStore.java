@@ -64,11 +64,10 @@ public class HttpSessionStore implements SAMLMessageStore {
 
 
     /**
+     * {@inheritDoc}
+     *
      * Stores a request message into the repository. RequestAbstractType must have an ID
      * set. Any previous message with the same ID will be overwritten.
-     *
-     * @param messageID ID of message
-     * @param message   message to be stored
      */
     @Override
     public void set(final String messageID, final XMLObject message) {
@@ -79,6 +78,8 @@ public class HttpSessionStore implements SAMLMessageStore {
     }
 
     /**
+     * {@inheritDoc}
+     *
      * Returns previously stored message with the given ID or null, if there is no message
      * stored.
      * <p>
@@ -88,9 +89,6 @@ public class HttpSessionStore implements SAMLMessageStore {
      * Messages are automatically cleared upon successful reception, as we presume that there
      * are never multiple ongoing SAML exchanges for the same session. This saves memory used by
      * the session.
-     *
-     * @param messageID ID of message to retrieve
-     * @return message found or null
      */
     @Override
     public Optional<XMLObject> get(final String messageID) {
@@ -150,6 +148,7 @@ public class HttpSessionStore implements SAMLMessageStore {
         sessionStore.set(context, SAML_STORAGE_KEY, messages);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void remove(final String key) {
         set(key, null);

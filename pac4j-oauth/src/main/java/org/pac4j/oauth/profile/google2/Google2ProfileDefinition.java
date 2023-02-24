@@ -18,12 +18,20 @@ import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
  */
 public class Google2ProfileDefinition extends OAuthProfileDefinition {
 
+    /** Constant <code>EMAIL_VERIFIED="email_verified"</code> */
     public static final String EMAIL_VERIFIED = "email_verified";
+    /** Constant <code>GIVEN_NAME="given_name"</code> */
     public static final String GIVEN_NAME = "given_name";
+    /** Constant <code>NAME="name"</code> */
     public static final String NAME = "name";
+    /** Constant <code>PICTURE="picture"</code> */
     public static final String PICTURE = "picture";
+    /** Constant <code>PROFILE="profile"</code> */
     public static final String PROFILE = "profile";
 
+    /**
+     * <p>Constructor for Google2ProfileDefinition.</p>
+     */
     public Google2ProfileDefinition() {
         super(x -> new Google2Profile());
         primary(EMAIL_VERIFIED, Converters.BOOLEAN);
@@ -33,11 +41,13 @@ public class Google2ProfileDefinition extends OAuthProfileDefinition {
         primary(PROFILE, Converters.URL);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getProfileUrl(final Token accessToken, final OAuthConfiguration configuration) {
         return "https://www.googleapis.com/oauth2/v3/userinfo";
     }
 
+    /** {@inheritDoc} */
     @Override
     public Google2Profile extractUserProfile(final String body) {
         val profile = (Google2Profile) newProfile();

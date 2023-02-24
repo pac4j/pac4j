@@ -8,14 +8,30 @@ package org.pac4j.oidc.exceptions;
  */
 public class OidcMissingSessionStateException extends OidcException {
 
+    /**
+     * <p>Constructor for OidcMissingSessionStateException.</p>
+     *
+     * @param message a {@link java.lang.String} object
+     */
     public OidcMissingSessionStateException(String message) {
         super(message);
     }
 
+    /**
+     * <p>Constructor for OidcMissingSessionStateException.</p>
+     *
+     * @param t a {@link java.lang.Throwable} object
+     */
     public OidcMissingSessionStateException(Throwable t) {
         super(t);
     }
 
+    /**
+     * <p>Constructor for OidcMissingSessionStateException.</p>
+     *
+     * @param message a {@link java.lang.String} object
+     * @param t a {@link java.lang.Throwable} object
+     */
     public OidcMissingSessionStateException(String message, Throwable t) {
         super(message, t);
     }

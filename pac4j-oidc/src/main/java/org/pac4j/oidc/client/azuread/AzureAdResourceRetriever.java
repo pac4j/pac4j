@@ -15,6 +15,7 @@ import java.net.URL;
  * @since 1.8.3
  */
 public class AzureAdResourceRetriever extends DefaultResourceRetriever implements ResourceRetriever {
+    /** {@inheritDoc} */
     @Override
     public Resource retrieveResource(final URL url) throws IOException {
         val ret = super.retrieveResource(url);

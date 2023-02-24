@@ -1,6 +1,5 @@
 package org.pac4j.saml.crypto;
 
-
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import net.shibboleth.shared.resolver.CriteriaSet;
@@ -23,8 +22,8 @@ import java.security.KeyStoreException;
 import java.util.HashMap;
 
 /**
- * Class responsible for loading a private key from a JKS keystore and returning the corresponding {@link Credential}
- * opensaml object.
+ * Class responsible for loading a private key from a JKS keystore and returning
+ * the corresponding {@link org.opensaml.security.credential.Credential} opensaml object.
  *
  * @author Misagh Moayyed
  * @since 1.8.0
@@ -38,6 +37,11 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
 
     private final String privateKeyAlias;
 
+    /**
+     * <p>Constructor for KeyStoreCredentialProvider.</p>
+     *
+     * @param configuration a {@link org.pac4j.saml.config.SAML2Configuration} object
+     */
     public KeyStoreCredentialProvider(final SAML2Configuration configuration) {
         CommonHelper.assertNotBlank("keystorePassword", configuration.getKeystorePassword());
         CommonHelper.assertNotBlank("privateKeyPassword", configuration.getPrivateKeyPassword());
@@ -68,6 +72,13 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
         }
     }
 
+    /**
+     * <p>Getter for the field <code>privateKeyAlias</code>.</p>
+     *
+     * @param keyStore a {@link java.security.KeyStore} object
+     * @param keyStoreAlias a {@link java.lang.String} object
+     * @return a {@link java.lang.String} object
+     */
     protected static String getPrivateKeyAlias(final KeyStore keyStore, final String keyStoreAlias) {
         try {
             val aliases = keyStore.aliases();
@@ -87,22 +98,26 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public KeyInfo getKeyInfo() {
         val serverCredential = getCredential();
         return generateKeyInfoForCredential(serverCredential);
     }
 
+    /** {@inheritDoc} */
     @Override
     public final CredentialResolver getCredentialResolver() {
         return credentialResolver;
     }
 
+    /** {@inheritDoc} */
     @Override
     public KeyInfoCredentialResolver getKeyInfoCredentialResolver() {
         return DefaultSecurityConfigurationBootstrap.buildBasicInlineKeyInfoCredentialResolver();
     }
 
+    /** {@inheritDoc} */
     @Override
     public final KeyInfoGenerator getKeyInfoGenerator() {
         val mgmr = DefaultSecurityConfigurationBootstrap.buildBasicKeyInfoGeneratorManager();
@@ -110,6 +125,7 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
         return mgmr.getDefaultManager().getFactory(credential).newInstance();
     }
 
+    /** {@inheritDoc} */
     @Override
     public final Credential getCredential() {
         try {
@@ -122,6 +138,12 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
         }
     }
 
+    /**
+     * <p>generateKeyInfoForCredential.</p>
+     *
+     * @param credential a {@link org.opensaml.security.credential.Credential} object
+     * @return a {@link org.opensaml.xmlsec.signature.KeyInfo} object
+     */
     protected final KeyInfo generateKeyInfoForCredential(final Credential credential) {
         try {
             return getKeyInfoGenerator().generate(credential);

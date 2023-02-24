@@ -29,6 +29,7 @@ public class GaeUserServiceClient extends IndirectClient {
     protected UserService service;
     protected String authDomain = null;
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         service = UserServiceFactory.getUserService();
@@ -63,12 +64,18 @@ public class GaeUserServiceClient extends IndirectClient {
 
     /**
      * Set the authDomain for connect to google apps for domain with the UserService
+     *
      * @param authDomain the authentication domain
      */
     public void setAuthDomain(final String authDomain) {
         this.authDomain = authDomain;
     }
 
+    /**
+     * <p>Getter for the field <code>authDomain</code>.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getAuthDomain() {
         return authDomain;
     }

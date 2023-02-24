@@ -28,6 +28,7 @@ public class DefaultSecurityClientFinder implements ClientFinder {
 
     private String clientNameParameter = Pac4jConstants.DEFAULT_FORCE_CLIENT_PARAMETER;
 
+    /** {@inheritDoc} */
     @Override
     public List<Client> find(final Clients clients, final WebContext context, final String clientNames) {
         final List<Client> result = new ArrayList<>();

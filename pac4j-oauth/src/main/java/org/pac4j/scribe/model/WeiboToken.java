@@ -14,6 +14,12 @@ public class WeiboToken extends OAuth2AccessToken {
     private static final long serialVersionUID = 1489916603771001585L;
     private String uid;
 
+    /**
+     * <p>Constructor for WeiboToken.</p>
+     *
+     * @param accessToken a {@link com.github.scribejava.core.model.OAuth2AccessToken} object
+     * @param uid a {@link java.lang.String} object
+     */
     public WeiboToken(OAuth2AccessToken accessToken, String uid) {
         super(accessToken.getAccessToken(), accessToken.getTokenType(), accessToken.getExpiresIn(),
             accessToken.getRefreshToken(), accessToken.getScope(),
@@ -22,14 +28,25 @@ public class WeiboToken extends OAuth2AccessToken {
     }
 
 
+    /**
+     * <p>Getter for the field <code>uid</code>.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getUid() {
         return uid;
     }
 
+    /**
+     * <p>Setter for the field <code>uid</code>.</p>
+     *
+     * @param uid a {@link java.lang.String} object
+     */
     public void setUid(String uid) {
         this.uid = uid;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -41,6 +58,7 @@ public class WeiboToken extends OAuth2AccessToken {
         return uid != null ? uid.equals(that.uid) : that.uid == null;
     }
 
+    /** {@inheritDoc} */
     @Override
     public int hashCode() {
         var result = super.hashCode();

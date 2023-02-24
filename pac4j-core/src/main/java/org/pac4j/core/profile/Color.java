@@ -19,6 +19,13 @@ public class Color implements Serializable {
     private int green;
     private int blue;
 
+    /**
+     * <p>Constructor for Color.</p>
+     *
+     * @param red a int
+     * @param green a int
+     * @param blue a int
+     */
     public Color(final int red, final int green, final int blue) {
         if (red < 0 || red > 255 || green < 0 || green > 255 || blue < 0 || blue > 255)
             throw new TechnicalException("Color's red, green or blue values must be between 0 and 255.");
@@ -27,30 +34,61 @@ public class Color implements Serializable {
         this.blue = blue;
     }
 
+    /**
+     * <p>Getter for the field <code>red</code>.</p>
+     *
+     * @return a int
+     */
     public int getRed() {
         return this.red;
     }
 
+    /**
+     * <p>Getter for the field <code>green</code>.</p>
+     *
+     * @return a int
+     */
     public int getGreen() {
         return this.green;
     }
 
+    /**
+     * <p>Getter for the field <code>blue</code>.</p>
+     *
+     * @return a int
+     */
     public int getBlue() {
         return this.blue;
     }
 
+    /**
+     * <p>Setter for the field <code>red</code>.</p>
+     *
+     * @param red a int
+     */
     public void setRed(final int red) {
         this.red = red;
     }
 
+    /**
+     * <p>Setter for the field <code>green</code>.</p>
+     *
+     * @param green a int
+     */
     public void setGreen(final int green) {
         this.green = green;
     }
 
+    /**
+     * <p>Setter for the field <code>blue</code>.</p>
+     *
+     * @param blue a int
+     */
     public void setBlue(final int blue) {
         this.blue = blue;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return toPaddedHexString(this.red) + toPaddedHexString(this.green) + toPaddedHexString(this.blue);

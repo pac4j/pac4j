@@ -28,6 +28,7 @@ public abstract class AbstractEncryptionConfiguration extends InitializableObjec
 
     protected EncryptionMethod method;
 
+    /** {@inheritDoc} */
     @Override
     public String encrypt(final JWT jwt) {
         init();
@@ -73,6 +74,7 @@ public abstract class AbstractEncryptionConfiguration extends InitializableObjec
      */
     protected abstract JWEEncrypter buildEncrypter();
 
+    /** {@inheritDoc} */
     @Override
     public void decrypt(final EncryptedJWT encryptedJWT) throws JOSEException {
         init();

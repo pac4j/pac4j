@@ -14,6 +14,7 @@ import org.pac4j.saml.credentials.SAML2AuthenticationCredentials;
  */
 public class SimpleSAML2AttributeConverter implements AttributeConverter {
 
+    /** {@inheritDoc} */
     @Override
     public Object convert(final Object a) {
         val attribute = (Attribute) a;

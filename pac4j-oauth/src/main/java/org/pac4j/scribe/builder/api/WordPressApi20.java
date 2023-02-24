@@ -12,16 +12,19 @@ import com.github.scribejava.core.model.Verb;
 public final class WordPressApi20 extends DefaultApi20 {
     private static final String BASE_URL = "https://public-api.wordpress.com/oauth2/";
 
+    /** {@inheritDoc} */
     @Override
     public String getAccessTokenEndpoint() {
         return BASE_URL + "token";
     }
 
+    /** {@inheritDoc} */
     @Override
     public Verb getAccessTokenVerb() {
         return Verb.POST;
     }
 
+    /** {@inheritDoc} */
     @Override
     protected String getAuthorizationBaseUrl() {
         return BASE_URL + "authorize";

@@ -22,11 +22,18 @@ import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
  */
 public class BitbucketProfileDefinition extends OAuthProfileDefinition {
 
+    /** Constant <code>LAST_NAME="last_name"</code> */
     public static final String LAST_NAME = "last_name";
+    /** Constant <code>IS_TEAM="is_team"</code> */
     public static final String IS_TEAM = "is_team";
+    /** Constant <code>AVATAR="avatar"</code> */
     public static final String AVATAR = "avatar";
+    /** Constant <code>RESOURCE_URI="resource_uri"</code> */
     public static final String RESOURCE_URI = "resource_uri";
 
+    /**
+     * <p>Constructor for BitbucketProfileDefinition.</p>
+     */
     public BitbucketProfileDefinition() {
         super(x -> new BitbucketProfile());
         Arrays.stream(new String[] {Pac4jConstants.USERNAME, LAST_NAME})
@@ -36,11 +43,13 @@ public class BitbucketProfileDefinition extends OAuthProfileDefinition {
         primary(RESOURCE_URI, Converters.URL);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getProfileUrl(final Token token, final OAuthConfiguration configuration) {
         return "https://bitbucket.org/api/1.0/user/";
     }
 
+    /** {@inheritDoc} */
     @Override
     public BitbucketProfile extractUserProfile(final String body) {
         val profile = (BitbucketProfile) newProfile();

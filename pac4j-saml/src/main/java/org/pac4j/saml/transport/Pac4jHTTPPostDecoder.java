@@ -24,10 +24,16 @@ import java.io.ByteArrayInputStream;
  */
 public class Pac4jHTTPPostDecoder extends AbstractPac4jDecoder {
 
+    /**
+     * <p>Constructor for Pac4jHTTPPostDecoder.</p>
+     *
+     * @param context a {@link org.pac4j.core.context.CallContext} object
+     */
     public Pac4jHTTPPostDecoder(final CallContext context) {
         super(context);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void doDecode() throws MessageDecodingException {
         val messageContext = new SAML2MessageContext(callContext);
@@ -61,6 +67,7 @@ public class Pac4jHTTPPostDecoder extends AbstractPac4jDecoder {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getBindingURI(final SAML2MessageContext messageContext) {
         if (messageContext.getSOAP11Context().getEnvelope() != null) {

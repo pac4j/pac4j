@@ -20,10 +20,16 @@ public class WeiboJsonExtractor extends OAuth2AccessTokenJsonExtractor {
         private static final WeiboJsonExtractor INSTANCE = new WeiboJsonExtractor();
     }
 
+    /**
+     * <p>instance.</p>
+     *
+     * @return a {@link org.pac4j.scribe.extractors.WeiboJsonExtractor} object
+     */
     public static WeiboJsonExtractor instance() {
         return WeiboJsonExtractor.InstanceHolder.INSTANCE;
     }
 
+    /** {@inheritDoc} */
     @Override
     protected OAuth2AccessToken createToken(String accessToken, String tokenType, Integer expiresIn, String refreshToken, String scope,
                                             JsonNode response, String rawResponse) {

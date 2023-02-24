@@ -24,18 +24,29 @@ import static org.pac4j.core.util.CommonHelper.*;
 @Slf4j
 public class DefaultMatchingChecker implements MatchingChecker {
 
+    /** Constant <code>GET_MATCHER</code> */
     protected static final Matcher GET_MATCHER = new HttpMethodMatcher(HttpConstants.HTTP_METHOD.GET);
+    /** Constant <code>POST_MATCHER</code> */
     protected static final Matcher POST_MATCHER = new HttpMethodMatcher(HttpConstants.HTTP_METHOD.POST);
+    /** Constant <code>PUT_MATCHER</code> */
     protected static final Matcher PUT_MATCHER = new HttpMethodMatcher(HttpConstants.HTTP_METHOD.PUT);
+    /** Constant <code>DELETE_MATCHER</code> */
     protected static final Matcher DELETE_MATCHER = new HttpMethodMatcher(HttpConstants.HTTP_METHOD.DELETE);
 
+    /** Constant <code>STRICT_TRANSPORT_MATCHER</code> */
     protected static final StrictTransportSecurityMatcher STRICT_TRANSPORT_MATCHER = new StrictTransportSecurityMatcher();
+    /** Constant <code>X_CONTENT_TYPE_OPTIONS_MATCHER</code> */
     protected static final XContentTypeOptionsMatcher X_CONTENT_TYPE_OPTIONS_MATCHER = new XContentTypeOptionsMatcher();
+    /** Constant <code>X_FRAME_OPTIONS_MATCHER</code> */
     protected static final XFrameOptionsMatcher X_FRAME_OPTIONS_MATCHER = new XFrameOptionsMatcher();
+    /** Constant <code>XSS_PROTECTION_MATCHER</code> */
     protected static final XSSProtectionMatcher XSS_PROTECTION_MATCHER = new XSSProtectionMatcher();
+    /** Constant <code>CACHE_CONTROL_MATCHER</code> */
     protected static final CacheControlMatcher CACHE_CONTROL_MATCHER = new CacheControlMatcher();
+    /** Constant <code>CSRF_TOKEN_MATCHER</code> */
     protected static final CsrfTokenGeneratorMatcher CSRF_TOKEN_MATCHER = new CsrfTokenGeneratorMatcher(new DefaultCsrfTokenGenerator());
 
+    /** Constant <code>CORS_MATCHER</code> */
     protected static final CorsMatcher CORS_MATCHER = new CorsMatcher();
 
     static {
@@ -50,6 +61,7 @@ public class DefaultMatchingChecker implements MatchingChecker {
         CORS_MATCHER.setAllowMethods(methods);
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean matches(final CallContext ctx, final String matchersValue,
                            final Map<String, Matcher> matchersMap, final List<Client> clients) {
@@ -58,6 +70,15 @@ public class DefaultMatchingChecker implements MatchingChecker {
         return matches(ctx, matchers);
     }
 
+    /**
+     * <p>computeMatchers.</p>
+     *
+     * @param ctx a {@link org.pac4j.core.context.CallContext} object
+     * @param matchersValue a {@link java.lang.String} object
+     * @param matchersMap a {@link java.util.Map} object
+     * @param clients a {@link java.util.List} object
+     * @return a {@link java.util.List} object
+     */
     protected List<Matcher> computeMatchers(final CallContext ctx, final String matchersValue,
                                             final Map<String, Matcher> matchersMap, final List<Client> clients) {
         String matcherNames;
@@ -72,6 +93,14 @@ public class DefaultMatchingChecker implements MatchingChecker {
         return computeMatchersFromNames(matcherNames, matchersMap);
     }
 
+    /**
+     * <p>computeDefaultMatcherNames.</p>
+     *
+     * @param ctx a {@link org.pac4j.core.context.CallContext} object
+     * @param clients a {@link java.util.List} object
+     * @param matchersMap a {@link java.util.Map} object
+     * @return a {@link java.lang.String} object
+     */
     protected String computeDefaultMatcherNames(final CallContext ctx, final List<Client> clients,
                                                 final Map<String, Matcher> matchersMap) {
         String name = DefaultMatchers.SECURITYHEADERS;
@@ -88,6 +117,13 @@ public class DefaultMatchingChecker implements MatchingChecker {
         return name;
     }
 
+    /**
+     * <p>computeMatchersFromNames.</p>
+     *
+     * @param matchersValue a {@link java.lang.String} object
+     * @param matchersMap a {@link java.util.Map} object
+     * @return a {@link java.util.List} object
+     */
     protected List<Matcher> computeMatchersFromNames(final String matchersValue, final Map<String, Matcher> matchersMap) {
         assertNotNull("matchersMap", matchersMap);
         final List<Matcher> matchers = new ArrayList<>();
@@ -117,6 +153,13 @@ public class DefaultMatchingChecker implements MatchingChecker {
         return matchers;
     }
 
+    /**
+     * <p>retrieveMatchers.</p>
+     *
+     * @param matcherName a {@link java.lang.String} object
+     * @param matchersMap a {@link java.util.Map} object
+     * @return a {@link java.util.List} object
+     */
     protected List<Matcher> retrieveMatchers(final String matcherName, final Map<String, Matcher> matchersMap) {
         final List<Matcher> results = new ArrayList<>();
         for (val entry : matchersMap.entrySet()) {
@@ -154,6 +197,13 @@ public class DefaultMatchingChecker implements MatchingChecker {
     }
 
 
+    /**
+     * <p>matches.</p>
+     *
+     * @param ctx a {@link org.pac4j.core.context.CallContext} object
+     * @param matchers a {@link java.util.List} object
+     * @return a boolean
+     */
     protected boolean matches(final CallContext ctx, final List<Matcher> matchers) {
         if (!matchers.isEmpty()) {
             // check matching using matchers: all must be satisfied

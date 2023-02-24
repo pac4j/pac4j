@@ -16,24 +16,40 @@ import org.pac4j.kerberos.credentials.extractor.KerberosExtractor;
 import java.util.Optional;
 
 /**
- * @author Vidmantas Zemleris, at Kensu.io
+ * <p>IndirectKerberosClient class.</p>
  *
+ * @author Vidmantas Zemleris, at Kensu.io
  * @since 2.1.0
  */
 @ToString(callSuper = true)
 public class IndirectKerberosClient extends IndirectClient {
 
+    /**
+     * <p>Constructor for IndirectKerberosClient.</p>
+     */
     public IndirectKerberosClient() {}
 
+    /**
+     * <p>Constructor for IndirectKerberosClient.</p>
+     *
+     * @param authenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
+     */
     public IndirectKerberosClient(final Authenticator authenticator) {
         setAuthenticatorIfUndefined(authenticator);
     }
 
+    /**
+     * <p>Constructor for IndirectKerberosClient.</p>
+     *
+     * @param authenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
+     * @param profileCreator a {@link org.pac4j.core.profile.creator.ProfileCreator} object
+     */
     public IndirectKerberosClient(final Authenticator authenticator, final ProfileCreator profileCreator) {
         setAuthenticatorIfUndefined(authenticator);
         setProfileCreatorIfUndefined(profileCreator);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         setRedirectionActionBuilderIfUndefined(ctx -> {
@@ -43,6 +59,7 @@ public class IndirectKerberosClient extends IndirectClient {
         setCredentialsExtractorIfUndefined(new KerberosExtractor());
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<Credentials> getCredentials(final CallContext ctx) {
         init();
@@ -65,6 +82,7 @@ public class IndirectKerberosClient extends IndirectClient {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     protected Optional<Credentials> internalValidateCredentials(final CallContext ctx, final Credentials credentials) {
         CommonHelper.assertNotNull("authenticator", getAuthenticator());

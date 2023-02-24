@@ -19,6 +19,7 @@ import java.util.Optional;
  */
 public class KerberosExtractor implements CredentialsExtractor {
 
+    /** {@inheritDoc} */
     @Override
     public Optional<Credentials> extract(final CallContext ctx) {
         val optHeader = ctx.webContext().getRequestHeader(HttpConstants.AUTHORIZATION_HEADER);

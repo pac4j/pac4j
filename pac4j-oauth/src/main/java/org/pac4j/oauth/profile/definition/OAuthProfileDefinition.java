@@ -17,10 +17,18 @@ import org.pac4j.core.exception.TechnicalException;
  */
 public abstract class OAuthProfileDefinition extends CommonProfileDefinition {
 
+    /**
+     * <p>Constructor for OAuthProfileDefinition.</p>
+     */
     public OAuthProfileDefinition() {
         super();
     }
 
+    /**
+     * <p>Constructor for OAuthProfileDefinition.</p>
+     *
+     * @param profileFactory a {@link org.pac4j.core.profile.factory.ProfileFactory} object
+     */
     public OAuthProfileDefinition(final ProfileFactory profileFactory) {
         super(profileFactory);
     }
@@ -52,7 +60,7 @@ public abstract class OAuthProfileDefinition extends CommonProfileDefinition {
     public abstract CommonProfile extractUserProfile(String body);
 
     /**
-     * Throws a {@link TechnicalException} to indicate that user profile extraction has failed.
+     * Throws a {@link org.pac4j.core.exception.TechnicalException} to indicate that user profile extraction has failed.
      *
      * @param body the request body that the user profile should be have been extracted from
      * @param missingNode the name of a JSON node that was found missing. may be omitted
@@ -63,7 +71,7 @@ public abstract class OAuthProfileDefinition extends CommonProfileDefinition {
     }
 
     /**
-     * Throws a {@link TechnicalException} to indicate that user profile extraction has failed.
+     * Throws a {@link org.pac4j.core.exception.TechnicalException} to indicate that user profile extraction has failed.
      *
      * @param body the request body that the user profile should have been extracted from
      */
@@ -73,7 +81,7 @@ public abstract class OAuthProfileDefinition extends CommonProfileDefinition {
     }
 
     /**
-     * Throws a {@link TechnicalException} to indicate that user profile extraction has failed.
+     * Throws a {@link org.pac4j.core.exception.TechnicalException} to indicate that user profile extraction has failed.
      *
      * @param body the request body that the user profile should have been extracted from
      */

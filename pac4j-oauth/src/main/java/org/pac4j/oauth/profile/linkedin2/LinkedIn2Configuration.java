@@ -22,6 +22,7 @@ import org.pac4j.oauth.config.OAuth20Configuration;
 @With
 @AllArgsConstructor
 public class LinkedIn2Configuration extends OAuth20Configuration {
+    /** Constant <code>DEFAULT_SCOPE="r_liteprofile r_emailaddress"</code> */
     public static final String DEFAULT_SCOPE = "r_liteprofile r_emailaddress";
 
     private String profileUrl = "https://api.linkedin.com/v2/me?projection=(id,"
@@ -29,6 +30,9 @@ public class LinkedIn2Configuration extends OAuth20Configuration {
         + ',' + LinkedIn2ProfileDefinition.LOCALIZED_LAST_NAME
         + ',' + LinkedIn2ProfileDefinition.PROFILE_PICTURE + "(displayImage~:playableStreams))";
 
+    /**
+     * <p>Constructor for LinkedIn2Configuration.</p>
+     */
     public LinkedIn2Configuration() {
         setScope(DEFAULT_SCOPE);
     }

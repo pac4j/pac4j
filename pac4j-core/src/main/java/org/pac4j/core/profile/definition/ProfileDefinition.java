@@ -79,6 +79,13 @@ public abstract class ProfileDefinition {
         return profileFactory.apply(parameters);
     }
 
+    /**
+     * <p>getParameter.</p>
+     *
+     * @param parameters an array of {@link java.lang.Object} objects
+     * @param num a int
+     * @return a {@link java.lang.Object} object
+     */
     protected Object getParameter(final Object[] parameters, final int num) {
         if (parameters != null && parameters.length >= num) {
             return parameters[num];

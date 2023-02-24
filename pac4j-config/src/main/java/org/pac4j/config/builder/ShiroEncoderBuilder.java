@@ -19,10 +19,20 @@ import static org.pac4j.core.util.CommonHelper.isNotBlank;
  */
 public class ShiroEncoderBuilder extends AbstractBuilder {
 
+    /**
+     * <p>Constructor for ShiroEncoderBuilder.</p>
+     *
+     * @param properties a {@link java.util.Map} object
+     */
     public ShiroEncoderBuilder(final Map<String, String> properties) {
         super(properties);
     }
 
+    /**
+     * <p>tryCreatePasswordEncoder.</p>
+     *
+     * @param encoders a {@link java.util.Map} object
+     */
     public void tryCreatePasswordEncoder(final Map<String, PasswordEncoder> encoders) {
         for (var i = 0; i <= MAX_NUM_ENCODERS; i++) {
             val exists = getProperty(SHIRO_ENCODER, i);

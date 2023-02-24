@@ -8,7 +8,7 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 
 /**
- * Empty response adapter containing a {@link ByteArrayOutputStream} in order opensaml can write
+ * Empty response adapter containing a {@link java.io.ByteArrayOutputStream} in order opensaml can write
  * the saml messages. The content can be retrieved as a String from getOutgoingContent().
  *
  * @author Misagh Moayyed
@@ -24,7 +24,7 @@ public class DefaultPac4jSAMLResponse implements Pac4jSAMLResponse {
      * Constructs a response adaptor wrapping the given response.
      *
      * @param response the response
-     * @throws IllegalArgumentException if the response is null
+     * @throws java.lang.IllegalArgumentException if the response is null
      */
     public DefaultPac4jSAMLResponse(final WebContext response) {
         webContext = response;
@@ -33,41 +33,51 @@ public class DefaultPac4jSAMLResponse implements Pac4jSAMLResponse {
         outputStreamWriter = new Pac4jServletOutputStreamWriter(outputStream);
     }
 
+    /** {@inheritDoc} */
     @Override
     public final String getOutgoingContent() {
         return outputStreamWriter.toString();
     }
 
+    /** {@inheritDoc} */
     @Override
     public WebContext getWebContext() {
         return webContext;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void init() {
         setNoCacheHeaders();
     }
 
+    /** {@inheritDoc} */
     @Override
     public OutputStreamWriter getOutputStreamWriter() {
         return this.outputStreamWriter;
     }
 
+    /**
+     * <p>setNoCacheHeaders.</p>
+     */
     public void setNoCacheHeaders() {
         webContext.setResponseHeader("Cache-control", "no-cache, no-store");
         webContext.setResponseHeader("Pragma", "no-cache");
     }
 
+    /** {@inheritDoc} */
     @Override
     public void setContentType(final String type) {
         webContext.setResponseContentType(type + ";charset=" + StandardCharsets.UTF_8);
     }
 
+    /** {@inheritDoc} */
     @Override
     public final void setRedirectUrl(final String redirectUrl) {
         this.redirectUrl = redirectUrl;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getRedirectUrl() {
         return this.redirectUrl;

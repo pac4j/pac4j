@@ -26,23 +26,31 @@ import java.util.Map;
  * <p>This class is the OpenID Connect client to authenticate users in Microsoft Azure AD v2.</p>.
  * <p>More information at: https://docs.microsoft.com/azure/active-directory/develop/active-directory-v2-protocols</p>
  *
- *  @author Charley Wu
- *  @since 5.0.0
  */
 public class AzureAd2Client extends OidcClient {
 
     protected ObjectMapper objectMapper;
+    /** Constant <code>typeRef</code> */
     protected static final TypeReference<HashMap<String,Object>> typeRef = new TypeReference<>() {};
 
+    /**
+     * <p>Constructor for AzureAd2Client.</p>
+     */
     public AzureAd2Client() {
         objectMapper = new ObjectMapper();
     }
 
+    /**
+     * <p>Constructor for AzureAd2Client.</p>
+     *
+     * @param configuration a {@link org.pac4j.oidc.config.AzureAd2OidcConfiguration} object
+     */
     public AzureAd2Client(AzureAd2OidcConfiguration configuration) {
         super(configuration);
         objectMapper = new ObjectMapper();
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         getConfiguration().setResourceRetriever(new AzureAdResourceRetriever());
@@ -51,6 +59,7 @@ public class AzureAd2Client extends OidcClient {
         super.internalInit(forceReinit);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected CallbackUrlResolver newDefaultCallbackUrlResolver() {
         return new PathParameterCallbackUrlResolver();
@@ -59,6 +68,9 @@ public class AzureAd2Client extends OidcClient {
     /**
      * <p>Refresh the access token</p>
      * <p>https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow#refresh-the-access-token</p>
+     *
+     * @param azureAdProfile a {@link org.pac4j.oidc.profile.azuread.AzureAdProfile} object
+     * @return a {@link java.lang.String} object
      */
     public String getAccessTokenFromRefreshToken(final AzureAdProfile azureAdProfile) {
         val azureConfig = (AzureAd2OidcConfiguration) getConfiguration();

@@ -23,44 +23,58 @@ import com.github.scribejava.core.oauth2.clientauthentication.RequestBodyAuthent
  */
 public class QQApi20 extends DefaultApi20 {
 
+    /** Constant <code>BASE_URL="https://graph.qq.com/oauth2.0"</code> */
     public static final String BASE_URL = "https://graph.qq.com/oauth2.0";
     // Endpont Url.
+    /** Constant <code>AUTHORIZE_ENDPOINT_URL="BASE_URL + /authorize"</code> */
     public static final String AUTHORIZE_ENDPOINT_URL = BASE_URL + "/authorize";
+    /** Constant <code>TOKEN_ENDPOINT_URL="BASE_URL + /token"</code> */
     public static final String TOKEN_ENDPOINT_URL = BASE_URL + "/token";
 
     private static class InstanceHolder {
         private static final QQApi20 INSTANCE = new QQApi20();
     }
 
+    /**
+     * <p>instance.</p>
+     *
+     * @return a {@link org.pac4j.scribe.builder.api.QQApi20} object
+     */
     public static QQApi20 instance() {
         return QQApi20.InstanceHolder.INSTANCE;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getAccessTokenEndpoint() {
         return TOKEN_ENDPOINT_URL + "?grant_type=authorization_code";
     }
 
+    /** {@inheritDoc} */
     @Override
     protected String getAuthorizationBaseUrl() {
         return AUTHORIZE_ENDPOINT_URL;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Verb getAccessTokenVerb() {
         return Verb.GET;
     }
 
+    /** {@inheritDoc} */
     @Override
     public TokenExtractor<OAuth2AccessToken> getAccessTokenExtractor() {
         return OAuth2AccessTokenExtractor.instance();
     }
 
+    /** {@inheritDoc} */
     @Override
     public BearerSignature getBearerSignature() {
         return BearerSignatureURIQueryParameter.instance();
     }
 
+    /** {@inheritDoc} */
     @Override
     public ClientAuthentication getClientAuthentication() {
         return RequestBodyAuthenticationScheme.instance();

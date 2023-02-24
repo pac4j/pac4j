@@ -36,13 +36,30 @@ public class LocalCachingAuthenticator extends InitializableObject implements Au
 
     private Store<Credentials, UserProfile> store;
 
+    /**
+     * <p>Constructor for LocalCachingAuthenticator.</p>
+     */
     public LocalCachingAuthenticator() {}
 
+    /**
+     * <p>Constructor for LocalCachingAuthenticator.</p>
+     *
+     * @param delegate a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
+     * @param store a {@link org.pac4j.core.store.Store} object
+     */
     public LocalCachingAuthenticator(final Authenticator delegate, final Store<Credentials, UserProfile> store) {
         this.delegate = delegate;
         this.store = store;
     }
 
+    /**
+     * <p>Constructor for LocalCachingAuthenticator.</p>
+     *
+     * @param delegate a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
+     * @param cacheSize a int
+     * @param timeout a int
+     * @param timeUnit a {@link java.util.concurrent.TimeUnit} object
+     */
     public LocalCachingAuthenticator(final Authenticator delegate, final int cacheSize,
                                      final int timeout, final TimeUnit timeUnit) {
         this.delegate = delegate;
@@ -51,6 +68,7 @@ public class LocalCachingAuthenticator extends InitializableObject implements Au
         this.timeUnit = timeUnit;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<Credentials> validate(final CallContext ctx, final Credentials credentials) {
         init();
@@ -70,6 +88,7 @@ public class LocalCachingAuthenticator extends InitializableObject implements Au
         return Optional.of(credentials);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         if (this.store == null) {
@@ -81,10 +100,21 @@ public class LocalCachingAuthenticator extends InitializableObject implements Au
         }
     }
 
+    /**
+     * <p>removeFromCache.</p>
+     *
+     * @param credentials a {@link org.pac4j.core.credentials.Credentials} object
+     */
     public void removeFromCache(final Credentials credentials) {
         this.store.remove(credentials);
     }
 
+    /**
+     * <p>isCached.</p>
+     *
+     * @param credentials a {@link org.pac4j.core.credentials.Credentials} object
+     * @return a boolean
+     */
     public boolean isCached(final Credentials credentials) {
         return this.store.get(credentials).isPresent();
     }

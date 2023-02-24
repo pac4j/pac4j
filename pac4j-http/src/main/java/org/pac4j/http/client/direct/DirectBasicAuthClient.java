@@ -30,19 +30,34 @@ public class DirectBasicAuthClient extends DirectClient {
 
     private String realmName = Pac4jConstants.DEFAULT_REALM_NAME;
 
+    /**
+     * <p>Constructor for DirectBasicAuthClient.</p>
+     */
     public DirectBasicAuthClient() {
     }
 
+    /**
+     * <p>Constructor for DirectBasicAuthClient.</p>
+     *
+     * @param usernamePasswordAuthenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
+     */
     public DirectBasicAuthClient(final Authenticator usernamePasswordAuthenticator) {
         setAuthenticatorIfUndefined(usernamePasswordAuthenticator);
     }
 
+    /**
+     * <p>Constructor for DirectBasicAuthClient.</p>
+     *
+     * @param usernamePasswordAuthenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
+     * @param profileCreator a {@link org.pac4j.core.profile.creator.ProfileCreator} object
+     */
     public DirectBasicAuthClient(final Authenticator usernamePasswordAuthenticator,
                                  final ProfileCreator profileCreator) {
         setAuthenticatorIfUndefined(usernamePasswordAuthenticator);
         setProfileCreatorIfUndefined(profileCreator);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         assertNotBlank("realmName", this.realmName);
@@ -50,6 +65,7 @@ public class DirectBasicAuthClient extends DirectClient {
         setCredentialsExtractorIfUndefined(new BasicAuthExtractor());
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<Credentials> getCredentials(final CallContext ctx) {
         addAuthenticateHeader(ctx.webContext());
@@ -57,6 +73,11 @@ public class DirectBasicAuthClient extends DirectClient {
         return super.getCredentials(ctx);
     }
 
+    /**
+     * <p>addAuthenticateHeader.</p>
+     *
+     * @param context a {@link org.pac4j.core.context.WebContext} object
+     */
     protected void addAuthenticateHeader(final WebContext context) {
         // set the www-authenticate in case of error
         context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Basic realm=\"" + realmName + "\"");

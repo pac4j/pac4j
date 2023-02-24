@@ -57,6 +57,7 @@ import static org.pac4j.core.util.CommonHelper.*;
 @Accessors(chain = true)
 public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements SecurityLogic {
 
+    /** Constant <code>INSTANCE</code> */
     public static final DefaultSecurityLogic INSTANCE = new DefaultSecurityLogic();
 
     private ClientFinder clientFinder = new DefaultSecurityClientFinder();
@@ -69,6 +70,7 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
 
     private boolean loadProfilesFromSession = true;
 
+    /** {@inheritDoc} */
     @Override
     public Object perform(final Config config, final SecurityGrantedAccessAdapter securityGrantedAccessAdapter,
                           final String clients, final String authorizers, final String matchers, final FrameworkParameters parameters) {
@@ -181,7 +183,7 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
      * @param ctx the context
      * @param manager the profile manager
      * @param clients the current clients
-     * @return
+     * @return a {@link java.util.List} object
      */
     protected List<UserProfile> loadProfiles(final CallContext ctx, final ProfileManager manager, final List<Client> clients) {
         return manager.getProfiles();

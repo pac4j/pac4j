@@ -19,34 +19,74 @@ public class FoursquareUserFriendGroup implements Serializable {
     private String type;
     private List<FoursquareUserFriend> friends = new ArrayList<>();
 
+    /**
+     * <p>Getter for the field <code>count</code>.</p>
+     *
+     * @return a int
+     */
     public int getCount() {
         return count;
     }
 
+    /**
+     * <p>Setter for the field <code>count</code>.</p>
+     *
+     * @param count a int
+     */
     public void setCount(int count) {
         this.count = count;
     }
 
+    /**
+     * <p>Getter for the field <code>name</code>.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * <p>Setter for the field <code>name</code>.</p>
+     *
+     * @param name a {@link java.lang.String} object
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * <p>Getter for the field <code>type</code>.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getType() {
         return type;
     }
 
+    /**
+     * <p>Setter for the field <code>type</code>.</p>
+     *
+     * @param type a {@link java.lang.String} object
+     */
     public void setType(String type) {
         this.type = type;
     }
 
+    /**
+     * <p>Getter for the field <code>friends</code>.</p>
+     *
+     * @return a {@link java.util.List} object
+     */
     public List<FoursquareUserFriend> getFriends() {
         return friends;
     }
 
+    /**
+     * <p>Setter for the field <code>friends</code>.</p>
+     *
+     * @param friends a {@link java.util.List} object
+     */
     public void setFriends(List<FoursquareUserFriend> friends) {
         this.friends = friends;
     }

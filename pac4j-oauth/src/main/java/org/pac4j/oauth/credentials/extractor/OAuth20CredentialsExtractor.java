@@ -20,10 +20,17 @@ import java.util.Optional;
  */
 public class OAuth20CredentialsExtractor extends OAuthCredentialsExtractor {
 
+    /**
+     * <p>Constructor for OAuth20CredentialsExtractor.</p>
+     *
+     * @param configuration a {@link org.pac4j.oauth.config.OAuth20Configuration} object
+     * @param client a {@link org.pac4j.core.client.IndirectClient} object
+     */
     public OAuth20CredentialsExtractor(final OAuth20Configuration configuration, final IndirectClient client) {
         super(configuration, client);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected Optional<Credentials> getOAuthCredentials(final WebContext context, final SessionStore sessionStore) {
         if (((OAuth20Configuration) configuration).isWithState()) {

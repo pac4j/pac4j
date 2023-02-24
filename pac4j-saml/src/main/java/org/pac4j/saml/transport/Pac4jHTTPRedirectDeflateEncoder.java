@@ -34,7 +34,8 @@ import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
 
 /**
- * Pac4j implementation extending directly the {@link AbstractMessageEncoder} as intermediate classes use the JEE HTTP response.
+ * Pac4j implementation extending directly the {@link org.opensaml.messaging.encoder.AbstractMessageEncoder}
+ * as intermediate classes use the JEE HTTP response.
  * It's mostly a copy/paste of the source code of these intermediate opensaml classes.
  *
  * @author Misagh Moayyed
@@ -46,12 +47,19 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder {
     private final Pac4jSAMLResponse responseAdapter;
     private final boolean isAuthnRequestSigned;
 
+    /**
+     * <p>Constructor for Pac4jHTTPRedirectDeflateEncoder.</p>
+     *
+     * @param responseAdapter a {@link org.pac4j.saml.transport.Pac4jSAMLResponse} object
+     * @param isAuthnRequestSigned a boolean
+     */
     public Pac4jHTTPRedirectDeflateEncoder(final Pac4jSAMLResponse responseAdapter,
                                            final boolean isAuthnRequestSigned) {
         this.responseAdapter = responseAdapter;
         this.isAuthnRequestSigned = isAuthnRequestSigned;
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void doEncode() throws MessageEncodingException {
         val messageContext = this.getMessageContext();
@@ -67,6 +75,7 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder {
         responseAdapter.setRedirectUrl(redirectURL);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void doInitialize() throws ComponentInitializationException {
         LOGGER.debug("Initialized {}", this.getClass().getSimpleName());
@@ -76,10 +85,8 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder {
      * Gets the response URL from the message context.
      *
      * @param messageContext current message context
-     *
      * @return response URL from the message context
-     *
-     * @throws MessageEncodingException throw if no relying party endpoint is available
+     * @throws org.opensaml.messaging.encoder.MessageEncodingException throw if no relying party endpoint is available
      */
     protected URI getEndpointURL(final MessageContext messageContext) throws MessageEncodingException {
         try {
@@ -135,10 +142,8 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder {
      * Helper method that marshalls the given message.
      *
      * @param message message the marshall and serialize
-     *
      * @return marshalled message
-     *
-     * @throws MessageEncodingException thrown if the give message can not be marshalled into its DOM representation
+     * @throws org.opensaml.messaging.encoder.MessageEncodingException thrown if the give message can not be marshalled into DOM
      */
     protected Element marshallMessage(final XMLObject message) throws MessageEncodingException {
         LOGGER.debug("Marshalling message");
@@ -156,10 +161,8 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder {
      * @param messageContext current message context
      * @param endpoint endpoint URL to send encoded message to
      * @param message Deflated and Base64 encoded message
-     *
      * @return URL to redirect client to
-     *
-     * @throws MessageEncodingException thrown if the SAML message is neither a RequestAbstractType or Response
+     * @throws org.opensaml.messaging.encoder.MessageEncodingException thrown if the SAML msg is neither a RequestAbstractType or Response
      */
     protected String buildRedirectURL(final MessageContext messageContext, final String endpoint, final String message)
             throws MessageEncodingException {
@@ -220,10 +223,8 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder {
      * Gets the signature algorithm URI to use.
      *
      * @param signingParameters the signing parameters to use
-     *
      * @return signature algorithm to use with the associated signing credential
-     *
-     * @throws MessageEncodingException thrown if the algorithm URI is not supplied explicitly and
+     * @throws org.opensaml.messaging.encoder.MessageEncodingException thrown if the algorithm URI is not supplied explicitly and
      *          could not be derived from the supplied credential
      */
     protected String getSignatureAlgorithmURI(final SignatureSigningParameters signingParameters)
@@ -242,10 +243,8 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder {
      * @param signingCredential credential that will be used to sign query string
      * @param algorithmURI algorithm URI of the signing credential
      * @param queryString query string to be signed
-     *
      * @return base64 encoded signature of query string
-     *
-     * @throws MessageEncodingException there is an error computing the signature
+     * @throws org.opensaml.messaging.encoder.MessageEncodingException there is an error computing the signature
      */
     protected String generateSignature(final Credential signingCredential, final String algorithmURI, final String queryString)
             throws MessageEncodingException {

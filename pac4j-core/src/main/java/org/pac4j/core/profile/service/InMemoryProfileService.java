@@ -20,21 +20,32 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
  * @author Elie Roux
  * @since 2.1.0
  */
-
 public class InMemoryProfileService<U extends CommonProfile> extends AbstractProfileService<U>  {
 
     public Map<String,Map<String,Object>> profiles;
     public ProfileFactory profileFactory;
 
+    /**
+     * <p>Constructor for InMemoryProfileService.</p>
+     *
+     * @param profileFactory a {@link org.pac4j.core.profile.factory.ProfileFactory} object
+     */
     public InMemoryProfileService(final ProfileFactory profileFactory) {
         this(new HashMap<>(), profileFactory);
     }
 
+    /**
+     * <p>Constructor for InMemoryProfileService.</p>
+     *
+     * @param profiles a {@link java.util.Map} object
+     * @param profileFactory a {@link org.pac4j.core.profile.factory.ProfileFactory} object
+     */
     public InMemoryProfileService(final Map<String,Map<String,Object>> profiles, final ProfileFactory profileFactory) {
         this.profiles = profiles;
         this.profileFactory = profileFactory;
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         assertNotNull("passwordEncoder", getPasswordEncoder());
@@ -45,6 +56,7 @@ public class InMemoryProfileService<U extends CommonProfile> extends AbstractPro
         super.internalInit(forceReinit);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void insert(final Map<String, Object> attributes) {
         val id = (String) attributes.get(getIdAttribute());
@@ -52,6 +64,7 @@ public class InMemoryProfileService<U extends CommonProfile> extends AbstractPro
         profiles.put(id, attributes);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void update(final Map<String, Object> attributes) {
         val id = (String) attributes.get(getIdAttribute());
@@ -64,6 +77,7 @@ public class InMemoryProfileService<U extends CommonProfile> extends AbstractPro
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void deleteById(final String id) {
         logger.debug("Delete id: {}", id);
@@ -78,6 +92,7 @@ public class InMemoryProfileService<U extends CommonProfile> extends AbstractPro
                 .collect(HashMap::new, (m,v)->m.put(v.getKey(), v.getValue()), HashMap::putAll);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected List<Map<String, Object>> read(final List<String> names, final String key, final String value) {
         logger.debug("Reading key / value: {} / {}", key, value);

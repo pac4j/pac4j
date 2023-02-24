@@ -18,22 +18,43 @@ public class OAuth20Profile extends CommonProfile {
     private static final String ACCESS_TOKEN = "access_token";
     private static final String REFRESH_TOKEN = "refresh_token";
 
+    /**
+     * <p>setAccessToken.</p>
+     *
+     * @param accessToken a {@link java.lang.String} object
+     */
     public void setAccessToken(final String accessToken) {
         addAttribute(ACCESS_TOKEN, accessToken);
     }
 
+    /**
+     * <p>getAccessToken.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getAccessToken() {
         return (String) getAttribute(ACCESS_TOKEN);
     }
 
+    /**
+     * <p>setRefreshToken.</p>
+     *
+     * @param refreshToken a {@link java.lang.String} object
+     */
     public void setRefreshToken(final String refreshToken) {
         addAttribute(REFRESH_TOKEN, refreshToken);
     }
 
+    /**
+     * <p>getRefreshToken.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getRefreshToken() {
         return (String) getAttribute(REFRESH_TOKEN);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void removeLoginData() {
         removeAttribute(ACCESS_TOKEN);

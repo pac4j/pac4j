@@ -55,12 +55,16 @@ public class BasicUserProfile implements UserProfile, Externalizable {
 
     private final boolean canAttributesBeMerged;
 
+    /**
+     * <p>Constructor for BasicUserProfile.</p>
+     */
     public BasicUserProfile() {
         this(true);
     }
 
     /**
      * Create a profile with possibility to merge attributes with the same name and collection-type values.
+     *
      * @param canAttributesBeMerged if true - merge attributes with the same name and collection-type values, if false - overwrite them
      * @since 3.1.0
      */
@@ -92,9 +96,9 @@ public class BasicUserProfile implements UserProfile, Externalizable {
     }
 
     /**
-     * Set the identifier.
+     * {@inheritDoc}
      *
-     * @param id user identifier
+     * Set the identifier.
      */
     @Override
     public void setId(final String id) {
@@ -103,16 +107,17 @@ public class BasicUserProfile implements UserProfile, Externalizable {
     }
 
     /**
+     * {@inheritDoc}
+     *
      * Get the user identifier with a prefix which is the profile type (full class name with package).
      * This identifier is unique through all providers.
-     *
-     * @return the typed user identifier
      */
     @Override
     public String getTypedId() {
         return this.getClass().getName() + Pac4jConstants.TYPED_ID_SEPARATOR + this.id;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getUsername() {
         return null;
@@ -153,12 +158,11 @@ public class BasicUserProfile implements UserProfile, Externalizable {
     }
 
     /**
+     * {@inheritDoc}
+     *
      * Add an attribute.
      *
      * If existing attribute value is collection and the new value is collection - merge the collections
-     *
-     * @param key key of the attribute
-     * @param value value of the attribute
      */
     @Override
     public void addAttribute(final String key, final Object value) {
@@ -166,10 +170,9 @@ public class BasicUserProfile implements UserProfile, Externalizable {
     }
 
     /**
-     * Add an authentication-related attribute
+     * {@inheritDoc}
      *
-     * @param key the attribute key
-     * @param value the attribute value
+     * Add an authentication-related attribute
      */
     @Override
     public void addAuthenticationAttribute(final String key, final Object value) {
@@ -203,9 +206,9 @@ public class BasicUserProfile implements UserProfile, Externalizable {
         }
     }
     /**
-     * Remove an attribute by its key.
+     * {@inheritDoc}
      *
-     * @param key the key
+     * Remove an attribute by its key.
      */
     public void removeAttribute(final String key) {
         CommonHelper.assertNotNull("key", key);
@@ -213,9 +216,9 @@ public class BasicUserProfile implements UserProfile, Externalizable {
     }
 
     /**
-     * Remove an authentication attribute by its key
+     * {@inheritDoc}
      *
-     * @param key the key
+     * Remove an authentication attribute by its key
      */
     public void removeAuthenticationAttribute(final String key) {
         CommonHelper.assertNotNull("key", key);
@@ -223,9 +226,9 @@ public class BasicUserProfile implements UserProfile, Externalizable {
     }
 
     /**
-     * Get all attributes as immutable map.
+     * {@inheritDoc}
      *
-     * @return the immutable attributes
+     * Get all attributes as immutable map.
      */
     @Override
     public Map<String, Object> getAttributes() {
@@ -252,10 +255,9 @@ public class BasicUserProfile implements UserProfile, Externalizable {
     }
 
     /**
-     * Return the attribute with name.
+     * {@inheritDoc}
      *
-     * @param name attribute name
-     * @return the attribute with name
+     * Return the attribute with name.
      */
     @Override
     public Object getAttribute(final String name) {
@@ -292,10 +294,9 @@ public class BasicUserProfile implements UserProfile, Externalizable {
     }
 
     /**
-     * Check to see if profile contains attribute name.
+     * {@inheritDoc}
      *
-     * @param name the name
-     * @return true/false
+     * Check to see if profile contains attribute name.
      */
     @Override
     public boolean containsAttribute(final String name) {
@@ -358,9 +359,9 @@ public class BasicUserProfile implements UserProfile, Externalizable {
     }
 
     /**
-     * Add a role.
+     * {@inheritDoc}
      *
-     * @param role the role to add.
+     * Add a role.
      */
     @Override
     public void addRole(final String role) {
@@ -369,9 +370,9 @@ public class BasicUserProfile implements UserProfile, Externalizable {
     }
 
     /**
-     * Add roles.
+     * {@inheritDoc}
      *
-     * @param roles the roles to add.
+     * Add roles.
      */
     @Override
     public void addRoles(final Collection<String> roles) {
@@ -380,20 +381,26 @@ public class BasicUserProfile implements UserProfile, Externalizable {
     }
 
     /**
-     * Get the roles of the user.
+     * {@inheritDoc}
      *
-     * @return the user roles.
+     * Get the roles of the user.
      */
     @Override
     public Set<String> getRoles() {
         return new LinkedHashSet<>(this.roles);
     }
 
+    /**
+     * <p>Setter for the field <code>roles</code>.</p>
+     *
+     * @param roles a {@link java.util.Set} object
+     */
     public void setRoles(Set<String> roles) {
         CommonHelper.assertNotNull("roles", roles);
         this.roles = roles;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void writeExternal(final ObjectOutput out) throws IOException {
         out.writeObject(this.id);
@@ -405,6 +412,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
         out.writeObject(this.linkedId);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
         this.id = (String) in.readObject();
@@ -424,11 +432,13 @@ public class BasicUserProfile implements UserProfile, Externalizable {
         // No-op. Allow subtypes to specify which state should be cleared out.
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean isExpired() {
         return false;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Principal asPrincipal() {
         return new Pac4JPrincipal(this);

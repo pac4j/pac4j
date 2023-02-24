@@ -12,26 +12,36 @@ import org.pac4j.http.profile.X509Profile;
 import java.util.Optional;
 
 /**
- * Authenticates {@link X509Credentials}. Like the SubjectDnX509PrincipalExtractor in Spring Security.
+ * Authenticates {@link org.pac4j.http.credentials.X509Credentials}. Like the SubjectDnX509PrincipalExtractor in Spring Security.
  *
  * @author Jerome Leleu
  * @since 3.3.0
  */
 public class X509Authenticator extends AbstractRegexpAuthenticator implements Authenticator {
 
+    /**
+     * <p>Constructor for X509Authenticator.</p>
+     */
     public X509Authenticator() {
         setRegexpPattern("CN=(.*?)(?:,|$)");
     }
 
+    /**
+     * <p>Constructor for X509Authenticator.</p>
+     *
+     * @param regexpPattern a {@link java.lang.String} object
+     */
     public X509Authenticator(final String regexpPattern) {
         setRegexpPattern(regexpPattern);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         setProfileDefinitionIfUndefined(new CommonProfileDefinition(x -> new X509Profile()));
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<Credentials> validate(final CallContext ctx, final Credentials credentials) {
         init();

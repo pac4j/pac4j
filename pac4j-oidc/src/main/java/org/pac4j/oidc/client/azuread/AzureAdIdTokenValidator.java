@@ -21,12 +21,18 @@ public class AzureAdIdTokenValidator extends IDTokenValidator {
     private IDTokenValidator base;
     private String originalIssuer;
 
+    /**
+     * <p>Constructor for AzureAdIdTokenValidator.</p>
+     *
+     * @param base a {@link com.nimbusds.openid.connect.sdk.validators.IDTokenValidator} object
+     */
     public AzureAdIdTokenValidator(final IDTokenValidator base) {
         super(base.getExpectedIssuer(), base.getClientID());
         this.base = base;
         this.originalIssuer = base.getExpectedIssuer().getValue();
     }
 
+    /** {@inheritDoc} */
     @Override
     public IDTokenClaimsSet validate(final JWT idToken, final Nonce expectedNonce) throws BadJOSEException, JOSEException {
         try {

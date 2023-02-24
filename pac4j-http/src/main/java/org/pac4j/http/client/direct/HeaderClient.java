@@ -25,13 +25,29 @@ public class HeaderClient extends DirectClient {
 
     private String prefixHeader = Pac4jConstants.EMPTY_STRING;
 
+    /**
+     * <p>Constructor for HeaderClient.</p>
+     */
     public HeaderClient() {}
 
+    /**
+     * <p>Constructor for HeaderClient.</p>
+     *
+     * @param headerName a {@link java.lang.String} object
+     * @param tokenAuthenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
+     */
     public HeaderClient(final String headerName, final Authenticator tokenAuthenticator) {
         this.headerName = headerName;
         setAuthenticatorIfUndefined(tokenAuthenticator);
     }
 
+    /**
+     * <p>Constructor for HeaderClient.</p>
+     *
+     * @param headerName a {@link java.lang.String} object
+     * @param prefixHeader a {@link java.lang.String} object
+     * @param tokenAuthenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
+     */
     public HeaderClient(final String headerName, final String prefixHeader,
                         final Authenticator tokenAuthenticator) {
         this.headerName = headerName;
@@ -39,6 +55,13 @@ public class HeaderClient extends DirectClient {
         setAuthenticatorIfUndefined(tokenAuthenticator);
     }
 
+    /**
+     * <p>Constructor for HeaderClient.</p>
+     *
+     * @param headerName a {@link java.lang.String} object
+     * @param tokenAuthenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
+     * @param profileCreator a {@link org.pac4j.core.profile.creator.ProfileCreator} object
+     */
     public HeaderClient(final String headerName, final Authenticator tokenAuthenticator,
                         final ProfileCreator profileCreator) {
         this.headerName = headerName;
@@ -46,12 +69,26 @@ public class HeaderClient extends DirectClient {
         setProfileCreatorIfUndefined(profileCreator);
     }
 
+    /**
+     * <p>Constructor for HeaderClient.</p>
+     *
+     * @param headerName a {@link java.lang.String} object
+     * @param profileCreator a {@link org.pac4j.core.profile.creator.ProfileCreator} object
+     */
     public HeaderClient(final String headerName, final ProfileCreator profileCreator) {
         this.headerName = headerName;
         setAuthenticatorIfUndefined(Authenticator.ALWAYS_VALIDATE);
         setProfileCreatorIfUndefined(profileCreator);
     }
 
+    /**
+     * <p>Constructor for HeaderClient.</p>
+     *
+     * @param headerName a {@link java.lang.String} object
+     * @param prefixHeader a {@link java.lang.String} object
+     * @param tokenAuthenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
+     * @param profileCreator a {@link org.pac4j.core.profile.creator.ProfileCreator} object
+     */
     public HeaderClient(final String headerName, final String prefixHeader,
                         final Authenticator tokenAuthenticator, final ProfileCreator profileCreator) {
         this.headerName = headerName;
@@ -60,6 +97,13 @@ public class HeaderClient extends DirectClient {
         setProfileCreatorIfUndefined(profileCreator);
     }
 
+    /**
+     * <p>Constructor for HeaderClient.</p>
+     *
+     * @param headerName a {@link java.lang.String} object
+     * @param prefixHeader a {@link java.lang.String} object
+     * @param profileCreator a {@link org.pac4j.core.profile.creator.ProfileCreator} object
+     */
     public HeaderClient(final String headerName, final String prefixHeader, final ProfileCreator profileCreator) {
         this.headerName = headerName;
         this.prefixHeader = prefixHeader;
@@ -67,6 +111,7 @@ public class HeaderClient extends DirectClient {
         setProfileCreatorIfUndefined(profileCreator);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         if (getCredentialsExtractor() == null) {

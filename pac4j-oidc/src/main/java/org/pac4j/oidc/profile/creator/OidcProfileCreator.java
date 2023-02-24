@@ -46,11 +46,18 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
 
     protected OidcClient client;
 
+    /**
+     * <p>Constructor for OidcProfileCreator.</p>
+     *
+     * @param configuration a {@link org.pac4j.oidc.config.OidcConfiguration} object
+     * @param client a {@link org.pac4j.oidc.client.OidcClient} object
+     */
     public OidcProfileCreator(final OidcConfiguration configuration, final OidcClient client) {
         this.configuration = configuration;
         this.client = client;
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         assertNotNull("configuration", configuration);
@@ -58,6 +65,7 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
         setProfileDefinitionIfUndefined(new OidcProfileDefinition());
     }
 
+    /** {@inheritDoc} */
     @Override
     @SuppressWarnings("unchecked")
     public Optional<UserProfile> create(final CallContext ctx, final Credentials credentials) {

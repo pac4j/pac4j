@@ -5,14 +5,14 @@ import lombok.val;
 import org.pac4j.core.logout.GoogleLogoutActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
-import org.pac4j.oauth.profile.google2.Google2Profile;
 import org.pac4j.oauth.profile.google2.Google2ProfileDefinition;
 
 /**
  * <p>This class is the OAuth client to authenticate users in Google using OAuth protocol version 2.0.</p>
- * <p>The <i>scope</i> is by default : {@link Google2Scope#EMAIL_AND_PROFILE}, but it can also but set to : {@link Google2Scope#PROFILE}
- * or {@link Google2Scope#EMAIL}.</p>
- * <p>It returns a {@link Google2Profile}.</p>
+ * <p>The <i>scope</i> is by default : {@link org.pac4j.oauth.client.Google2Client.Google2Scope#EMAIL_AND_PROFILE},
+ * but it can also but set to : {@link org.pac4j.oauth.client.Google2Client.Google2Scope#PROFILE} or
+ * {@link org.pac4j.oauth.client.Google2Client.Google2Scope#EMAIL}.</p>
+ * <p>It returns a {@link org.pac4j.oauth.profile.google2.Google2Profile}.</p>
  * <p>More information at https://developers.google.com/accounts/docs/OAuth2Login</p>
  *
  * @author Jerome Leleu
@@ -26,20 +26,32 @@ public class Google2Client extends OAuth20Client {
         EMAIL_AND_PROFILE
     }
 
+    /** Constant <code>PROFILE_SCOPE="profile"</code> */
     protected final static String PROFILE_SCOPE = "profile";
 
+    /** Constant <code>EMAIL_SCOPE="email"</code> */
     protected final static String EMAIL_SCOPE = "email";
 
     protected Google2Scope scope = Google2Scope.EMAIL_AND_PROFILE;
 
+    /**
+     * <p>Constructor for Google2Client.</p>
+     */
     public Google2Client() {
     }
 
+    /**
+     * <p>Constructor for Google2Client.</p>
+     *
+     * @param key a {@link java.lang.String} object
+     * @param secret a {@link java.lang.String} object
+     */
     public Google2Client(final String key, final String secret) {
         setKey(key);
         setSecret(secret);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         CommonHelper.assertNotNull("scope", this.scope);
@@ -68,10 +80,20 @@ public class Google2Client extends OAuth20Client {
         super.internalInit(forceReinit);
     }
 
+    /**
+     * <p>Getter for the field <code>scope</code>.</p>
+     *
+     * @return a {@link org.pac4j.oauth.client.Google2Client.Google2Scope} object
+     */
     public Google2Scope getScope() {
         return this.scope;
     }
 
+    /**
+     * <p>Setter for the field <code>scope</code>.</p>
+     *
+     * @param scope a {@link org.pac4j.oauth.client.Google2Client.Google2Scope} object
+     */
     public void setScope(final Google2Scope scope) {
         this.scope = scope;
     }

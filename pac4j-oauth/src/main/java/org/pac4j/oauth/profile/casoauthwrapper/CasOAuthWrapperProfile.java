@@ -12,25 +12,50 @@ import java.util.Date;
  * @since 1.3.0
  */
 public class CasOAuthWrapperProfile extends OAuth20Profile {
-    
+
     private static final long serialVersionUID = 1347249873352825528L;
 
+    /**
+     * <p>isFromNewLogin.</p>
+     *
+     * @return a {@link java.lang.Boolean} object
+     */
     public Boolean isFromNewLogin() {
         return (Boolean) getAttribute(CasOAuthWrapperProfileDefinition.IS_FROM_NEW_LOGIN);
     }
 
+    /**
+     * <p>getAuthenticationDate.</p>
+     *
+     * @return a {@link java.util.Date} object
+     */
     public Date getAuthenticationDate() {
         return (Date) getAttribute(CasOAuthWrapperProfileDefinition.AUTHENTICATION_DATE);
     }
 
+    /**
+     * <p>getAuthenticationMethod.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getAuthenticationMethod() {
         return (String) getAttribute(CasOAuthWrapperProfileDefinition.AUTHENTICATION_METHOD);
     }
 
+    /**
+     * <p>getSuccessfulAuthenticationHandlers.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getSuccessfulAuthenticationHandlers() {
         return (String) getAttribute(CasOAuthWrapperProfileDefinition.SUCCESSFUL_AUTHENTICATION_HANDLERS);
     }
 
+    /**
+     * <p>isLongTermAuthenticationRequestTokenUsed.</p>
+     *
+     * @return a {@link java.lang.Boolean} object
+     */
     public Boolean isLongTermAuthenticationRequestTokenUsed() {
         return (Boolean) getAttribute(CasOAuthWrapperProfileDefinition.LONG_TERM_AUTHENTICATION_REQUEST_TOKEN_USED);
     }

@@ -20,10 +20,16 @@ public class AndAuthorizer implements Authorizer {
 
     private final List<Authorizer> authorizers;
 
+    /**
+     * <p>Constructor for AndAuthorizer.</p>
+     *
+     * @param authorizers a {@link java.util.List} object
+     */
     public AndAuthorizer(List<Authorizer> authorizers) {
         this.authorizers = authorizers;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean isAuthorized(final WebContext context, final SessionStore sessionStore, final List<UserProfile> profiles) {
         for (var authorizer : authorizers) {
@@ -32,6 +38,12 @@ public class AndAuthorizer implements Authorizer {
         return true;
     }
 
+    /**
+     * <p>and.</p>
+     *
+     * @param authorizers a {@link org.pac4j.core.authorization.authorizer.Authorizer} object
+     * @return a {@link org.pac4j.core.authorization.authorizer.Authorizer} object
+     */
     public static Authorizer and(Authorizer... authorizers) {
         return new AndAuthorizer(asList(authorizers));
     }

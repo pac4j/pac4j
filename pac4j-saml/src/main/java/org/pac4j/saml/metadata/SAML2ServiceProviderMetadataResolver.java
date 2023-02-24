@@ -11,6 +11,8 @@ import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.exceptions.SAMLException;
 
 /**
+ * <p>SAML2ServiceProviderMetadataResolver class.</p>
+ *
  * @author Misagh Moayyed
  * @since 1.7
  */
@@ -19,11 +21,19 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
     protected final SAML2Configuration configuration;
     private MetadataResolver metadataResolver;
 
+    /**
+     * <p>Constructor for SAML2ServiceProviderMetadataResolver.</p>
+     *
+     * @param configuration a {@link org.pac4j.saml.config.SAML2Configuration} object
+     */
     public SAML2ServiceProviderMetadataResolver(final SAML2Configuration configuration) {
         this.configuration = configuration;
         this.metadataResolver = prepareServiceProviderMetadata();
     }
 
+    /**
+     * <p>destroy.</p>
+     */
     public void destroy() {
         if (this.metadataResolver instanceof FilesystemMetadataResolver) {
             ((FilesystemMetadataResolver) this.metadataResolver).destroy();
@@ -31,6 +41,11 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
         }
     }
 
+    /**
+     * <p>prepareServiceProviderMetadata.</p>
+     *
+     * @return a {@link org.opensaml.saml.metadata.resolver.MetadataResolver} object
+     */
     protected MetadataResolver prepareServiceProviderMetadata() {
         try {
             val metadataGenerator = configuration.toMetadataGenerator();
@@ -47,16 +62,19 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public final MetadataResolver resolve() {
         return this.metadataResolver;
     }
 
+    /** {@inheritDoc} */
     @Override
     public final String getEntityId() {
         return configuration.getServiceProviderEntityId();
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getMetadata() {
         try {
@@ -68,6 +86,7 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public XMLObject getEntityDescriptorElement() {
         try {

@@ -12,8 +12,10 @@ import org.pac4j.core.exception.TechnicalException;
  */
 public class JEEContextFactory implements WebContextFactory {
 
+    /** Constant <code>INSTANCE</code> */
     public static final JEEContextFactory INSTANCE = new JEEContextFactory();
 
+    /** {@inheritDoc} */
     @Override
     public JEEContext newContext(final FrameworkParameters parameters) {
         if (parameters instanceof JEEFrameworkParameters jeeFrameworkParameters) {

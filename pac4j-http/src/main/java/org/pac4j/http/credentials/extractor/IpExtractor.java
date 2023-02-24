@@ -37,12 +37,21 @@ public class IpExtractor implements CredentialsExtractor {
     @Getter
     private String proxyIp = Pac4jConstants.EMPTY_STRING;
 
+    /**
+     * <p>Constructor for IpExtractor.</p>
+     */
     public IpExtractor() {}
 
+    /**
+     * <p>Constructor for IpExtractor.</p>
+     *
+     * @param alternateIpHeaders a {@link java.lang.String} object
+     */
     public IpExtractor(String... alternateIpHeaders) {
         this.alternateIpHeaders = Arrays.asList(alternateIpHeaders);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<Credentials> extract(final CallContext ctx) {
         val webContext = ctx.webContext();
@@ -81,6 +90,8 @@ public class IpExtractor implements CredentialsExtractor {
     }
 
     /**
+     * <p>Setter for the field <code>proxyIp</code>.</p>
+     *
      * @param proxyIp Set the IP to verify the proxy request source.
      *               Setting {@code null} or {@code ""} (empty string) disabled the proxy IP check.
      */
@@ -89,6 +100,8 @@ public class IpExtractor implements CredentialsExtractor {
     }
 
     /**
+     * <p>Setter for the field <code>alternateIpHeaders</code>.</p>
+     *
      * @param alternateIpHeaders Sets alternate headers to search for IP.
      *                           The first match will be returned as specified for {@code enhanced for} iteration over arrays.
      */

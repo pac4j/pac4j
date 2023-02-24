@@ -35,11 +35,17 @@ public class CasCredentialsExtractor implements CredentialsExtractor {
 
     protected CasConfiguration configuration;
 
+    /**
+     * <p>Constructor for CasCredentialsExtractor.</p>
+     *
+     * @param configuration a {@link org.pac4j.cas.config.CasConfiguration} object
+     */
     public CasCredentialsExtractor(final CasConfiguration configuration) {
         CommonHelper.assertNotNull("configuration", configuration);
         this.configuration = configuration;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<Credentials> extract(final CallContext ctx) {
         Credentials credentials = null;
@@ -71,10 +77,22 @@ public class CasCredentialsExtractor implements CredentialsExtractor {
         return Optional.ofNullable(credentials);
     }
 
+    /**
+     * <p>isTokenRequest.</p>
+     *
+     * @param context a {@link org.pac4j.core.context.WebContext} object
+     * @return a boolean
+     */
     protected boolean isTokenRequest(final WebContext context) {
         return getArtifactParameter(context).isPresent();
     }
 
+    /**
+     * <p>getArtifactParameter.</p>
+     *
+     * @param context a {@link org.pac4j.core.context.WebContext} object
+     * @return a {@link java.util.Optional} object
+     */
     protected Optional<String> getArtifactParameter(final WebContext context) {
         if (configuration.getProtocol() == CasProtocol.SAML) {
             val optValue = context.getRequestParameter(Protocol.SAML11.getArtifactParameterName());
@@ -85,22 +103,46 @@ public class CasCredentialsExtractor implements CredentialsExtractor {
         return context.getRequestParameter(CasConfiguration.TICKET_PARAMETER);
     }
 
+    /**
+     * <p>isBackLogoutRequest.</p>
+     *
+     * @param context a {@link org.pac4j.core.context.WebContext} object
+     * @return a boolean
+     */
     protected boolean isBackLogoutRequest(final WebContext context) {
         return WebContextHelper.isPost(context)
                 && !isMultipartRequest(context)
                 && context.getRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER).isPresent();
     }
 
+    /**
+     * <p>isMultipartRequest.</p>
+     *
+     * @param context a {@link org.pac4j.core.context.WebContext} object
+     * @return a boolean
+     */
     protected boolean isMultipartRequest(final WebContext context) {
         val contentType = context.getRequestHeader(HttpConstants.CONTENT_TYPE_HEADER);
         return contentType.isPresent() && contentType.get().toLowerCase().startsWith("multipart");
     }
 
+    /**
+     * <p>isFrontLogoutRequest.</p>
+     *
+     * @param context a {@link org.pac4j.core.context.WebContext} object
+     * @return a boolean
+     */
     protected boolean isFrontLogoutRequest(final WebContext context) {
         return WebContextHelper.isGet(context)
                 && context.getRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER).isPresent();
     }
 
+    /**
+     * <p>uncompressLogoutMessage.</p>
+     *
+     * @param originalMessage a {@link java.lang.String} object
+     * @return a {@link java.lang.String} object
+     */
     protected String uncompressLogoutMessage(final String originalMessage) {
         val binaryMessage = Base64.getMimeDecoder().decode(originalMessage);
 

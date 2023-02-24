@@ -20,6 +20,11 @@ public class StatusAction extends HttpAction implements WithContentAction {
 
     private String content = Pac4jConstants.EMPTY_STRING;
 
+    /**
+     * <p>Constructor for StatusAction.</p>
+     *
+     * @param code a int
+     */
     public StatusAction(final int code) {
         super(code);
     }

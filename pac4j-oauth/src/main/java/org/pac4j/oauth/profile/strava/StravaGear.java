@@ -21,42 +21,92 @@ public class StravaGear implements Serializable {
     private Integer resourceState;
     private Long distance;
 
+    /**
+     * <p>Getter for the field <code>id</code>.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getId() {
         return id;
     }
 
+    /**
+     * <p>Setter for the field <code>id</code>.</p>
+     *
+     * @param id a {@link java.lang.String} object
+     */
     public void setId(String id) {
         this.id = id;
     }
 
+    /**
+     * <p>Getter for the field <code>primary</code>.</p>
+     *
+     * @return a {@link java.lang.Boolean} object
+     */
     public Boolean getPrimary() {
         return primary;
     }
 
+    /**
+     * <p>Setter for the field <code>primary</code>.</p>
+     *
+     * @param primary a {@link java.lang.Boolean} object
+     */
     public void setPrimary(Boolean primary) {
         this.primary = primary;
     }
 
+    /**
+     * <p>Getter for the field <code>name</code>.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * <p>Setter for the field <code>name</code>.</p>
+     *
+     * @param name a {@link java.lang.String} object
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * <p>Getter for the field <code>resourceState</code>.</p>
+     *
+     * @return a {@link java.lang.Integer} object
+     */
     public Integer getResourceState() {
         return resourceState;
     }
 
+    /**
+     * <p>Setter for the field <code>resourceState</code>.</p>
+     *
+     * @param resourceState a {@link java.lang.Integer} object
+     */
     public void setResourceState(Integer resourceState) {
         this.resourceState = resourceState;
     }
 
+    /**
+     * <p>Getter for the field <code>distance</code>.</p>
+     *
+     * @return a {@link java.lang.Long} object
+     */
     public Long getDistance() {
         return distance;
     }
 
+    /**
+     * <p>Setter for the field <code>distance</code>.</p>
+     *
+     * @param distance a {@link java.lang.Long} object
+     */
     public void setDistance(Long distance) {
         this.distance = distance;
     }

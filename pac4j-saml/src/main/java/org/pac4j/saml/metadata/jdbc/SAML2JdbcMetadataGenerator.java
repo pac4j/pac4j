@@ -17,7 +17,7 @@ import java.util.Base64;
 import java.util.HashMap;
 
 /**
- * This is {@link SAML2JdbcMetadataGenerator}
+ * This is {@link org.pac4j.saml.metadata.jdbc.SAML2JdbcMetadataGenerator}
  * that stores service provider metadata in a relational database.
  *
  * @author Misagh Moayyed
@@ -30,11 +30,18 @@ public class SAML2JdbcMetadataGenerator extends BaseSAML2MetadataGenerator {
 
     private final String entityId;
 
+    /**
+     * <p>Constructor for SAML2JdbcMetadataGenerator.</p>
+     *
+     * @param template a {@link org.springframework.jdbc.core.JdbcTemplate} object
+     * @param entityId a {@link java.lang.String} object
+     */
     public SAML2JdbcMetadataGenerator(final JdbcTemplate template, final String entityId) {
         this.template = template;
         this.entityId = entityId;
     }
 
+    /** {@inheritDoc} */
     @Override
     @SuppressWarnings("PMD.NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
     public AbstractMetadataResolver createMetadataResolver() throws Exception {
@@ -46,6 +53,7 @@ public class SAML2JdbcMetadataGenerator extends BaseSAML2MetadataGenerator {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean storeMetadata(final String metadata, final boolean force) {
         if (CommonHelper.isBlank(metadata)) {
@@ -75,6 +83,12 @@ public class SAML2JdbcMetadataGenerator extends BaseSAML2MetadataGenerator {
         }
     }
 
+    /**
+     * <p>updateMetadata.</p>
+     *
+     * @param metadataToUse a {@link java.lang.String} object
+     * @return a boolean
+     */
     protected boolean updateMetadata(final String metadataToUse) {
         var updateSql = String.format("UPDATE %s SET metadata='%s' WHERE entityId='%s'", this.tableName,
             encodeMetadata(metadataToUse), this.entityId);
@@ -82,6 +96,12 @@ public class SAML2JdbcMetadataGenerator extends BaseSAML2MetadataGenerator {
         return count > 0;
     }
 
+    /**
+     * <p>insertMetadata.</p>
+     *
+     * @param metadataToUse a {@link java.lang.String} object
+     * @return a boolean
+     */
     protected boolean insertMetadata(String metadataToUse) {
         var insert = new SimpleJdbcInsert(this.template)
             .withTableName(String.format("%s", this.tableName))
@@ -92,23 +112,50 @@ public class SAML2JdbcMetadataGenerator extends BaseSAML2MetadataGenerator {
         return insert.execute(parameters) > 0;
     }
 
+    /**
+     * <p>fetchMetadata.</p>
+     *
+     * @return an array of {@link byte} objects
+     */
     protected byte[] fetchMetadata() {
         var sql = String.format("SELECT metadata FROM %s WHERE entityId='%s'", this.tableName, this.entityId);
         return decodeMetadata(template.queryForObject(sql, String.class));
     }
 
+    /**
+     * <p>decodeMetadata.</p>
+     *
+     * @param metadata a {@link java.lang.String} object
+     * @return an array of {@link byte} objects
+     */
     protected byte[] decodeMetadata(final String metadata) {
         return Base64.getDecoder().decode(metadata);
     }
 
+    /**
+     * <p>encodeMetadata.</p>
+     *
+     * @param metadataToUse a {@link java.lang.String} object
+     * @return a {@link java.lang.String} object
+     */
     protected String encodeMetadata(String metadataToUse) {
         return Base64.getEncoder().encodeToString(metadataToUse.getBytes(StandardCharsets.UTF_8));
     }
 
+    /**
+     * <p>Getter for the field <code>tableName</code>.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getTableName() {
         return tableName;
     }
 
+    /**
+     * <p>Setter for the field <code>tableName</code>.</p>
+     *
+     * @param tableName a {@link java.lang.String} object
+     */
     public void setTableName(String tableName) {
         this.tableName = tableName;
     }

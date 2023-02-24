@@ -13,8 +13,12 @@ public class AnonymousProfile extends CommonProfile {
 
     private static final long serialVersionUID = -7377022639833719511L;
 
+    /** Constant <code>INSTANCE</code> */
     public static final AnonymousProfile INSTANCE = new AnonymousProfile();
 
+    /**
+     * <p>Constructor for AnonymousProfile.</p>
+     */
     public AnonymousProfile() {
         setId("anonymous");
     }

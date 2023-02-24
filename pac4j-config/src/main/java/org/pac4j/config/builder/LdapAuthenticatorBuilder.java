@@ -22,10 +22,20 @@ import static org.pac4j.core.util.CommonHelper.isNotBlank;
  */
 public class LdapAuthenticatorBuilder extends AbstractBuilder {
 
+    /**
+     * <p>Constructor for LdapAuthenticatorBuilder.</p>
+     *
+     * @param properties a {@link java.util.Map} object
+     */
     public LdapAuthenticatorBuilder(final Map<String, String> properties) {
         super(properties);
     }
 
+    /**
+     * <p>tryBuildLdapAuthenticator.</p>
+     *
+     * @param authenticators a {@link java.util.Map} object
+     */
     public void tryBuildLdapAuthenticator(final Map<String, Authenticator> authenticators) {
         for (var i = 0; i <= MAX_NUM_AUTHENTICATORS; i++) {
             val type = getProperty(LDAP_TYPE, i);

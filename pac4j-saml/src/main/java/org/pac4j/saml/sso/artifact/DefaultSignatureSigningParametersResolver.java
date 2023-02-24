@@ -13,25 +13,33 @@ import org.pac4j.saml.crypto.SignatureSigningParametersProvider;
 import java.util.Collections;
 
 /**
- * A {@link SignatureSigningParametersResolver} that resolves the
- * {@link SignatureSigningParameters} from the pac4j
- * {@link SignatureSigningParametersProvider}.
+ * A {@link org.opensaml.xmlsec.SignatureSigningParametersResolver} that resolves the
+ * {@link org.opensaml.xmlsec.SignatureSigningParameters} from the pac4j
+ * {@link org.pac4j.saml.crypto.SignatureSigningParametersProvider}.
  *
  * @since 3.8.0
+ * @author bidou
  */
 public class DefaultSignatureSigningParametersResolver implements SignatureSigningParametersResolver {
     private SignatureSigningParametersProvider provider;
 
+    /**
+     * <p>Constructor for DefaultSignatureSigningParametersResolver.</p>
+     *
+     * @param provider a {@link org.pac4j.saml.crypto.SignatureSigningParametersProvider} object
+     */
     public DefaultSignatureSigningParametersResolver(final SignatureSigningParametersProvider provider) {
         this.provider = provider;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Iterable<SignatureSigningParameters> resolve(final CriteriaSet criteria) throws ResolverException {
         val ret = resolveSingle(criteria);
         return ret == null ? Collections.emptySet() : Collections.singleton(ret);
     }
 
+    /** {@inheritDoc} */
     @Override
     public SignatureSigningParameters resolveSingle(final CriteriaSet criteria) throws ResolverException {
         if (criteria == null) {

@@ -23,12 +23,27 @@ import java.net.*;
  */
 public final class SpringResourceHelper {
 
+    /** Constant <code>RESOURCE_PREFIX="resource:"</code> */
     public static final String RESOURCE_PREFIX = "resource:";
 
+    /** Constant <code>CLASSPATH_PREFIX="classpath:"</code> */
     public static final String CLASSPATH_PREFIX = "classpath:";
 
+    /** Constant <code>FILE_PREFIX="file:"</code> */
     public static final String FILE_PREFIX = "file:";
 
+    /**
+     * <p>getResourceInputStream.</p>
+     *
+     * @param resource a {@link org.springframework.core.io.Resource} object
+     * @param proxy a {@link java.net.Proxy} object
+     * @param sslSocketFactory a {@link javax.net.ssl.SSLSocketFactory} object
+     * @param hostnameVerifier a {@link javax.net.ssl.HostnameVerifier} object
+     * @param connectTimeout a int
+     * @param readTimeout a int
+     * @return a {@link java.io.InputStream} object
+     * @throws java.io.IOException if any.
+     */
     public static InputStream getResourceInputStream(final Resource resource, final Proxy proxy, final SSLSocketFactory sslSocketFactory,
                                                      final HostnameVerifier hostnameVerifier, final int connectTimeout,
                                                      final int readTimeout) throws IOException {
@@ -64,6 +79,12 @@ public final class SpringResourceHelper {
         return resource.getInputStream();
     }
 
+    /**
+     * <p>buildResourceFromPath.</p>
+     *
+     * @param path a {@link java.lang.String} object
+     * @return a {@link org.springframework.core.io.Resource} object
+     */
     public static Resource buildResourceFromPath(final String path) {
         CommonHelper.assertNotBlank("path", path);
         try {
@@ -86,6 +107,12 @@ public final class SpringResourceHelper {
     }
 
 
+    /**
+     * <p>newUrlResource.</p>
+     *
+     * @param url a {@link java.lang.String} object
+     * @return a {@link org.springframework.core.io.UrlResource} object
+     */
     public static UrlResource newUrlResource(final String url) {
         try {
             return new UrlResource(url);

@@ -33,6 +33,7 @@ public class Saml2MetadataFilter extends AbstractConfigFilter {
 
     private String clientName;
 
+    /** {@inheritDoc} */
     @Override
     public void init(final FilterConfig filterConfig) throws ServletException {
         super.init(filterConfig);
@@ -40,6 +41,7 @@ public class Saml2MetadataFilter extends AbstractConfigFilter {
         this.clientName = getStringParam(filterConfig, Pac4jConstants.CLIENT_NAME, this.clientName);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalFilter(final HttpServletRequest request, final HttpServletResponse response,
                                   final FilterChain chain)  throws IOException, ServletException {
@@ -59,14 +61,25 @@ public class Saml2MetadataFilter extends AbstractConfigFilter {
         response.getWriter().flush();
     }
 
+    /** {@inheritDoc} */
     @Override
     public void destroy() {
     }
 
+    /**
+     * <p>Getter for the field <code>clientName</code>.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getClientName() {
         return clientName;
     }
 
+    /**
+     * <p>Setter for the field <code>clientName</code>.</p>
+     *
+     * @param clientName a {@link java.lang.String} object
+     */
     public void setClientName(final String clientName) {
         this.clientName = clientName;
     }

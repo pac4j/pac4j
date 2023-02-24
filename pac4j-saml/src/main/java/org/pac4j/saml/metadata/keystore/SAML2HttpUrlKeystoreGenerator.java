@@ -23,17 +23,23 @@ import java.security.cert.X509Certificate;
 import java.util.Base64;
 
 /**
- * This is {@link SAML2HttpUrlKeystoreGenerator}.
+ * This is {@link org.pac4j.saml.metadata.keystore.SAML2HttpUrlKeystoreGenerator}.
  *
  * @author Misagh Moayyed
  * @since 4.0.1
  */
 public class SAML2HttpUrlKeystoreGenerator extends BaseSAML2KeystoreGenerator {
 
+    /**
+     * <p>Constructor for SAML2HttpUrlKeystoreGenerator.</p>
+     *
+     * @param configuration a {@link org.pac4j.saml.config.SAML2Configuration} object
+     */
     public SAML2HttpUrlKeystoreGenerator(final SAML2Configuration configuration) {
         super(configuration);
     }
 
+    /** {@inheritDoc} */
     @Override
     public InputStream retrieve() throws Exception {
         validate();
@@ -62,6 +68,7 @@ public class SAML2HttpUrlKeystoreGenerator extends BaseSAML2KeystoreGenerator {
         });
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void store(final KeyStore ks, final X509Certificate certificate,
                          final PrivateKey privateKey) throws Exception {

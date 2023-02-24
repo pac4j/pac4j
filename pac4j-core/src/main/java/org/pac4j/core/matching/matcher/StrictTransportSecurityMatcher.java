@@ -25,12 +25,21 @@ public class StrictTransportSecurityMatcher implements Matcher {
 
     private int maxAge = DEFAULT_MAX_AGE;
 
+    /**
+     * <p>Constructor for StrictTransportSecurityMatcher.</p>
+     */
     public StrictTransportSecurityMatcher() {}
 
+    /**
+     * <p>Constructor for StrictTransportSecurityMatcher.</p>
+     *
+     * @param maxAge a int
+     */
     public StrictTransportSecurityMatcher(final int maxAge) {
         this.maxAge = maxAge;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean matches(final CallContext ctx) {
         val webContext = ctx.webContext();

@@ -15,6 +15,14 @@ import org.pac4j.saml.profile.impl.AbstractSAML2MessageSender;
  */
 public class SAML2LogoutRequestMessageSender extends AbstractSAML2MessageSender<LogoutRequest> {
 
+    /**
+     * <p>Constructor for SAML2LogoutRequestMessageSender.</p>
+     *
+     * @param signatureSigningParametersProvider a {@link org.pac4j.saml.crypto.SignatureSigningParametersProvider} object
+     * @param destinationBindingType a {@link java.lang.String} object
+     * @param signErrorResponses a boolean
+     * @param isRequestSigned a boolean
+     */
     public SAML2LogoutRequestMessageSender(final SignatureSigningParametersProvider signatureSigningParametersProvider,
                                            final String destinationBindingType,
                                            final boolean signErrorResponses,
@@ -22,6 +30,7 @@ public class SAML2LogoutRequestMessageSender extends AbstractSAML2MessageSender<
         super(signatureSigningParametersProvider, destinationBindingType, signErrorResponses, isRequestSigned);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected Endpoint getEndpoint(final SAML2MessageContext context) {
         return context.getIDPSingleLogoutService(destinationBindingType);

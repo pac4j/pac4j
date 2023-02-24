@@ -32,20 +32,35 @@ public class RSASignatureConfiguration extends AbstractSignatureConfiguration {
 
     private RSAPrivateKey privateKey;
 
+    /**
+     * <p>Constructor for RSASignatureConfiguration.</p>
+     */
     public RSASignatureConfiguration() {
         algorithm = JWSAlgorithm.RS256;
     }
 
+    /**
+     * <p>Constructor for RSASignatureConfiguration.</p>
+     *
+     * @param keyPair a {@link java.security.KeyPair} object
+     */
     public RSASignatureConfiguration(final KeyPair keyPair) {
         this();
         setKeyPair(keyPair);
     }
 
+    /**
+     * <p>Constructor for RSASignatureConfiguration.</p>
+     *
+     * @param keyPair a {@link java.security.KeyPair} object
+     * @param algorithm a {@link com.nimbusds.jose.JWSAlgorithm} object
+     */
     public RSASignatureConfiguration(final KeyPair keyPair, final JWSAlgorithm algorithm) {
         setKeyPair(keyPair);
         this.algorithm = algorithm;
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         CommonHelper.assertNotNull("algorithm", algorithm);
@@ -55,11 +70,13 @@ public class RSASignatureConfiguration extends AbstractSignatureConfiguration {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean supports(final JWSAlgorithm algorithm) {
         return algorithm != null && RSASSAVerifier.SUPPORTED_ALGORITHMS.contains(algorithm);
     }
 
+    /** {@inheritDoc} */
     @Override
     public SignedJWT sign(JWTClaimsSet claims) {
         init();
@@ -75,6 +92,7 @@ public class RSASignatureConfiguration extends AbstractSignatureConfiguration {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean verify(final SignedJWT jwt) throws JOSEException {
         init();
@@ -84,12 +102,22 @@ public class RSASignatureConfiguration extends AbstractSignatureConfiguration {
         return jwt.verify(verifier);
     }
 
+    /**
+     * <p>setKeyPair.</p>
+     *
+     * @param keyPair a {@link java.security.KeyPair} object
+     */
     public void setKeyPair(final KeyPair keyPair) {
         CommonHelper.assertNotNull("keyPair", keyPair);
         this.privateKey = (RSAPrivateKey) keyPair.getPrivate();
         this.publicKey = (RSAPublicKey) keyPair.getPublic();
     }
 
+    /**
+     * <p>setKeysFromJwk.</p>
+     *
+     * @param json a {@link java.lang.String} object
+     */
     public void setKeysFromJwk(final String json) {
         val pair = JWKHelper.buildRSAKeyPairFromJwk(json);
         this.publicKey = (RSAPublicKey) pair.getPublic();

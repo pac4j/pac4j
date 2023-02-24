@@ -21,6 +21,9 @@ public class UnauthorizedAction extends HttpAction implements WithContentAction 
 
     private String content = Pac4jConstants.EMPTY_STRING;
 
+    /**
+     * <p>Constructor for UnauthorizedAction.</p>
+     */
     public UnauthorizedAction() {
         super(HttpConstants.UNAUTHORIZED);
     }

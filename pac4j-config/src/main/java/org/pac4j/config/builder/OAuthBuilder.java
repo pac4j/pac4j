@@ -17,10 +17,20 @@ import static org.pac4j.core.util.CommonHelper.isNotBlank;
  */
 public class OAuthBuilder extends AbstractBuilder {
 
+    /**
+     * <p>Constructor for OAuthBuilder.</p>
+     *
+     * @param properties a {@link java.util.Map} object
+     */
     public OAuthBuilder(final Map<String, String> properties) {
         super(properties);
     }
 
+    /**
+     * <p>tryCreateLinkedInClient.</p>
+     *
+     * @param clients a {@link java.util.List} object
+     */
     public void tryCreateLinkedInClient(final List<Client> clients) {
         val id = getProperty(LINKEDIN_ID);
         val secret = getProperty(LINKEDIN_SECRET);
@@ -35,6 +45,11 @@ public class OAuthBuilder extends AbstractBuilder {
         }
     }
 
+    /**
+     * <p>tryCreateFacebookClient.</p>
+     *
+     * @param clients a {@link java.util.List} object
+     */
     public void tryCreateFacebookClient(final List<Client> clients) {
         val id = getProperty(FACEBOOK_ID);
         val secret = getProperty(FACEBOOK_SECRET);
@@ -52,6 +67,11 @@ public class OAuthBuilder extends AbstractBuilder {
         }
     }
 
+    /**
+     * <p>tryCreateWindowsLiveClient.</p>
+     *
+     * @param clients a {@link java.util.List} object
+     */
     public void tryCreateWindowsLiveClient(final List<Client> clients) {
         val id = getProperty(WINDOWSLIVE_ID);
         val secret = getProperty(WINDOWSLIVE_SECRET);
@@ -61,6 +81,11 @@ public class OAuthBuilder extends AbstractBuilder {
         }
     }
 
+    /**
+     * <p>tryCreateFoursquareClient.</p>
+     *
+     * @param clients a {@link java.util.List} object
+     */
     public void tryCreateFoursquareClient(final List<Client> clients) {
         val id = getProperty(FOURSQUARE_ID);
         val secret = getProperty(FOURSQUARE_SECRET);
@@ -70,6 +95,11 @@ public class OAuthBuilder extends AbstractBuilder {
         }
     }
 
+    /**
+     * <p>tryCreateGoogleClient.</p>
+     *
+     * @param clients a {@link java.util.List} object
+     */
     public void tryCreateGoogleClient(final List<Client> clients) {
         val id = getProperty(GOOGLE_ID);
         val secret = getProperty(GOOGLE_SECRET);
@@ -83,6 +113,11 @@ public class OAuthBuilder extends AbstractBuilder {
         }
     }
 
+    /**
+     * <p>tryCreateYahooClient.</p>
+     *
+     * @param clients a {@link java.util.List} object
+     */
     public void tryCreateYahooClient(final List<Client> clients) {
         val id = getProperty(YAHOO_ID);
         val secret = getProperty(YAHOO_SECRET);
@@ -92,6 +127,11 @@ public class OAuthBuilder extends AbstractBuilder {
         }
     }
 
+    /**
+     * <p>tryCreateDropboxClient.</p>
+     *
+     * @param clients a {@link java.util.List} object
+     */
     public void tryCreateDropboxClient(final List<Client> clients) {
         val id = getProperty(DROPBOX_ID);
         val secret = getProperty(DROPBOX_SECRET);
@@ -101,6 +141,11 @@ public class OAuthBuilder extends AbstractBuilder {
         }
     }
 
+    /**
+     * <p>tryCreateGithubClient.</p>
+     *
+     * @param clients a {@link java.util.List} object
+     */
     public void tryCreateGithubClient(final List<Client> clients) {
         val id = getProperty(GITHUB_ID);
         val secret = getProperty(GITHUB_SECRET);
@@ -110,6 +155,11 @@ public class OAuthBuilder extends AbstractBuilder {
         }
     }
 
+    /**
+     * <p>tryCreateTwitterClient.</p>
+     *
+     * @param clients a {@link java.util.List} object
+     */
     public void tryCreateTwitterClient(final List<Client> clients) {
         val id = getProperty(TWITTER_ID);
         val secret = getProperty(TWITTER_SECRET);
@@ -119,6 +169,11 @@ public class OAuthBuilder extends AbstractBuilder {
         }
     }
 
+    /**
+     * <p>tryCreateGenericOAuth2Clients.</p>
+     *
+     * @param clients a {@link java.util.List} object
+     */
     public void tryCreateGenericOAuth2Clients(final List<Client> clients) {
         for (var i = 0; i <= MAX_NUM_CLIENTS; i++) {
             val id = getProperty(OAUTH2_ID, i);

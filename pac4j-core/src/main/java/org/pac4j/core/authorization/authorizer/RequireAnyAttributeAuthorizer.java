@@ -9,7 +9,7 @@ import org.pac4j.core.util.CommonHelper;
 import java.util.Collection;
 
 /**
- * This is {@link RequireAnyAttributeAuthorizer} which checks profile
+ * This is {@link org.pac4j.core.authorization.authorizer.RequireAnyAttributeAuthorizer} which checks profile
  * attributes for the specified element, and optionally
  * may pattern-check the configured value. In practice, you may
  * use this authorizer to see if the profile contains attribute X
@@ -21,14 +21,23 @@ import java.util.Collection;
 public class RequireAnyAttributeAuthorizer extends AbstractRequireAnyAuthorizer<String> {
     private final String valueToMatch;
 
+    /**
+     * <p>Constructor for RequireAnyAttributeAuthorizer.</p>
+     */
     public RequireAnyAttributeAuthorizer() {
         this(".+");
     }
 
+    /**
+     * <p>Constructor for RequireAnyAttributeAuthorizer.</p>
+     *
+     * @param valueToMatch a {@link java.lang.String} object
+     */
     public RequireAnyAttributeAuthorizer(final String valueToMatch) {
         this.valueToMatch = valueToMatch;
     }
 
+    /** {@inheritDoc} */
     @Override
     protected boolean check(final WebContext context, final SessionStore sessionStore, final UserProfile profile, final String element) {
         if (!profile.containsAttribute(element)) {
@@ -48,6 +57,12 @@ public class RequireAnyAttributeAuthorizer extends AbstractRequireAnyAuthorizer<
         return attributeValues.toString().matches(this.valueToMatch);
     }
 
+    /**
+     * <p>requireAnyAttribute.</p>
+     *
+     * @param valueToMatch a {@link java.lang.String} object
+     * @return a {@link org.pac4j.core.authorization.authorizer.RequireAnyAttributeAuthorizer} object
+     */
     public static RequireAnyAttributeAuthorizer requireAnyAttribute(String valueToMatch) {
         return new RequireAnyAttributeAuthorizer(valueToMatch);
     }

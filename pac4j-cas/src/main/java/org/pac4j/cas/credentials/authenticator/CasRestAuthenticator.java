@@ -34,11 +34,17 @@ public class CasRestAuthenticator implements Authenticator {
 
     protected CasConfiguration configuration;
 
+    /**
+     * <p>Constructor for CasRestAuthenticator.</p>
+     *
+     * @param configuration a {@link org.pac4j.cas.config.CasConfiguration} object
+     */
     public CasRestAuthenticator(final CasConfiguration configuration) {
         CommonHelper.assertNotNull("configuration", configuration);
         this.configuration = configuration;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<Credentials> validate(final CallContext ctx, final Credentials cred) {
         val credentials = (UsernamePasswordCredentials) cred;

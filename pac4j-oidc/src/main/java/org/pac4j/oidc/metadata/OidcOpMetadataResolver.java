@@ -52,6 +52,11 @@ public class OidcOpMetadataResolver extends SpringResourceLoader<OIDCProviderMet
     @Getter
     protected TokenValidator tokenValidator;
 
+    /**
+     * <p>Constructor for OidcOpMetadataResolver.</p>
+     *
+     * @param configuration a {@link org.pac4j.oidc.config.OidcConfiguration} object
+     */
     public OidcOpMetadataResolver(final OidcConfiguration configuration) {
         super(buildResource(configuration));
         this.configuration = configuration;
@@ -64,6 +69,7 @@ public class OidcOpMetadataResolver extends SpringResourceLoader<OIDCProviderMet
         return null;
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalLoad() {
         this.loaded = retrieveMetadata();
@@ -73,6 +79,11 @@ public class OidcOpMetadataResolver extends SpringResourceLoader<OIDCProviderMet
         this.tokenValidator = new TokenValidator(configuration, this.loaded);
     }
 
+    /**
+     * <p>retrieveMetadata.</p>
+     *
+     * @return a {@link com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata} object
+     */
     protected OIDCProviderMetadata retrieveMetadata() {
         val sslFactoryName = configuration.getSSLFactory();
         SSLSocketFactory sslSocketFactory = null;
@@ -96,6 +107,11 @@ public class OidcOpMetadataResolver extends SpringResourceLoader<OIDCProviderMet
         }
     }
 
+    /**
+     * <p>computeClientAuthentication.</p>
+     *
+     * @return a {@link com.nimbusds.oauth2.sdk.auth.ClientAuthentication} object
+     */
     protected ClientAuthentication computeClientAuthentication() {
         val _clientID = new ClientID(configuration.getClientId());
 

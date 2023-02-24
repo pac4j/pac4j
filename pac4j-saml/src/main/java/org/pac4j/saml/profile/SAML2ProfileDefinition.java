@@ -12,6 +12,9 @@ import org.pac4j.core.profile.definition.CommonProfileDefinition;
  * @version 5.0.0
  */
 public class SAML2ProfileDefinition extends CommonProfileDefinition {
+    /**
+     * <p>Constructor for SAML2ProfileDefinition.</p>
+     */
     public SAML2ProfileDefinition() {
         super(parameters -> new SAML2Profile());
     }

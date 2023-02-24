@@ -27,6 +27,11 @@ public class HazelcastSAMLMessageStore implements SAMLMessageStore {
 
     private final HazelcastInstance hazelcastInstance;
 
+    /**
+     * <p>Constructor for HazelcastSAMLMessageStore.</p>
+     *
+     * @param hazelcastInstance a {@link com.hazelcast.core.HazelcastInstance} object
+     */
     public HazelcastSAMLMessageStore(final HazelcastInstance hazelcastInstance) {
         CommonHelper.assertNotNull("hazelcastInstance", hazelcastInstance);
         this.hazelcastInstance = hazelcastInstance;
@@ -38,6 +43,7 @@ public class HazelcastSAMLMessageStore implements SAMLMessageStore {
         return inst;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<XMLObject> get(final String messageID) {
         IMap<String, String> map = getStoreMapInstance();
@@ -56,6 +62,7 @@ public class HazelcastSAMLMessageStore implements SAMLMessageStore {
                 new String(Base64.getDecoder().decode(message), StandardCharsets.UTF_8));
     }
 
+    /** {@inheritDoc} */
     @Override
     public void set(final String messageID, final XMLObject message) {
         IMap<String, String> map = getStoreMapInstance();
@@ -64,6 +71,7 @@ public class HazelcastSAMLMessageStore implements SAMLMessageStore {
                 Configuration.serializeSamlObject(message).toString().getBytes(StandardCharsets.UTF_8)));
     }
 
+    /** {@inheritDoc} */
     @Override
     public void remove(final String messageID) {
         IMap<String, String> map = getStoreMapInstance();

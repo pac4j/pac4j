@@ -36,11 +36,17 @@ public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
 
     protected OidcClient client;
 
+    /**
+     * <p>Constructor for OidcRedirectionActionBuilder.</p>
+     *
+     * @param client a {@link org.pac4j.oidc.client.OidcClient} object
+     */
     public OidcRedirectionActionBuilder(final OidcClient client) {
         CommonHelper.assertNotNull("client", client);
         this.client = client;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<RedirectionAction> getRedirectionAction(final CallContext ctx) {
         val webContext = ctx.webContext();
@@ -71,6 +77,12 @@ public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
         return Optional.of(HttpActionHelper.buildRedirectUrlAction(webContext, location));
     }
 
+    /**
+     * <p>buildParams.</p>
+     *
+     * @param webContext a {@link org.pac4j.core.context.WebContext} object
+     * @return a {@link java.util.Map} object
+     */
     protected Map<String, String> buildParams(final WebContext webContext) {
         val configContext = new OidcConfigurationContext(webContext, client.getConfiguration());
 
@@ -84,6 +96,12 @@ public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
         return new HashMap<>(authParams);
     }
 
+    /**
+     * <p>addStateAndNonceParameters.</p>
+     *
+     * @param ctx a {@link org.pac4j.core.context.CallContext} object
+     * @param params a {@link java.util.Map} object
+     */
     protected void addStateAndNonceParameters(final CallContext ctx, final Map<String, String> params) {
         val webContext = ctx.webContext();
         val sessionStore = ctx.sessionStore();
@@ -112,6 +130,12 @@ public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
         }
     }
 
+    /**
+     * <p>buildAuthenticationRequestUrl.</p>
+     *
+     * @param params a {@link java.util.Map} object
+     * @return a {@link java.lang.String} object
+     */
     protected String buildAuthenticationRequestUrl(final Map<String, String> params) {
         // Build authentication request query string
         String queryString;

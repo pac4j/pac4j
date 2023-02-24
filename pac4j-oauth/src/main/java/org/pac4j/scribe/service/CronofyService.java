@@ -25,6 +25,20 @@ public class CronofyService extends OAuth20Service {
 
     private final DefaultApi20 api;
 
+    /**
+     * <p>Constructor for CronofyService.</p>
+     *
+     * @param api a {@link com.github.scribejava.core.builder.api.DefaultApi20} object
+     * @param apiKey a {@link java.lang.String} object
+     * @param apiSecret a {@link java.lang.String} object
+     * @param callback a {@link java.lang.String} object
+     * @param defaultScope a {@link java.lang.String} object
+     * @param responseType a {@link java.lang.String} object
+     * @param debugStream a {@link java.io.OutputStream} object
+     * @param userAgent a {@link java.lang.String} object
+     * @param httpClientConfig a {@link com.github.scribejava.core.httpclient.HttpClientConfig} object
+     * @param httpClient a {@link com.github.scribejava.core.httpclient.HttpClient} object
+     */
     public CronofyService(final DefaultApi20 api, final String apiKey, final String apiSecret, final String callback,
                           final String defaultScope, final String responseType, final OutputStream debugStream,
                           final String userAgent, final HttpClientConfig httpClientConfig, final HttpClient httpClient) {
@@ -32,6 +46,7 @@ public class CronofyService extends OAuth20Service {
         this.api = api;
     }
 
+    /** {@inheritDoc} */
     protected OAuthRequest createAccessTokenRequest(AccessTokenRequestParams params) {
         final OAuthRequest request = new OAuthRequest(api.getAccessTokenVerb(), api.getAccessTokenEndpoint());
 

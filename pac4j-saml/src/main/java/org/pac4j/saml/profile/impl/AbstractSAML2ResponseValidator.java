@@ -61,6 +61,15 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
     /* maximum skew in seconds between SP and IDP clocks */
     protected long acceptedSkew = 120;
 
+    /**
+     * <p>Constructor for AbstractSAML2ResponseValidator.</p>
+     *
+     * @param signatureTrustEngineProvider a {@link org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider} object
+     * @param decrypter a {@link org.opensaml.saml.saml2.encryption.Decrypter} object
+     * @param logoutHandler a {@link org.pac4j.core.logout.handler.SessionLogoutHandler} object
+     * @param replayCache a {@link org.pac4j.saml.replay.ReplayCacheProvider} object
+     * @param uriComparator a {@link net.shibboleth.shared.net.URIComparator} object
+     */
     protected AbstractSAML2ResponseValidator(final SAML2SignatureTrustEngineProvider signatureTrustEngineProvider,
                                              final Decrypter decrypter, final SessionLogoutHandler logoutHandler,
                                              final ReplayCacheProvider replayCache, final URIComparator uriComparator) {
@@ -91,6 +100,13 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
         }
     }
 
+    /**
+     * <p>validateSignatureIfItExists.</p>
+     *
+     * @param signature a {@link org.opensaml.xmlsec.signature.Signature} object
+     * @param context a {@link org.pac4j.saml.context.SAML2MessageContext} object
+     * @param engine a {@link org.opensaml.xmlsec.signature.support.SignatureTrustEngine} object
+     */
     protected void validateSignatureIfItExists(final Signature signature, final SAML2MessageContext context,
                                                final SignatureTrustEngine engine) {
         if (signature != null) {
@@ -139,6 +155,12 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
         }
     }
 
+    /**
+     * <p>validateIssuerIfItExists.</p>
+     *
+     * @param isser a {@link org.opensaml.saml.saml2.core.Issuer} object
+     * @param context a {@link org.pac4j.saml.context.SAML2MessageContext} object
+     */
     protected void validateIssuerIfItExists(final Issuer isser, final SAML2MessageContext context) {
         if (isser != null) {
             validateIssuer(isser, context);
@@ -163,16 +185,34 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
         }
     }
 
+    /**
+     * <p>validateIssueInstant.</p>
+     *
+     * @param issueInstant a {@link java.time.Instant} object
+     */
     protected void validateIssueInstant(final Instant issueInstant) {
         if (!isIssueInstantValid(issueInstant)) {
             throw new SAMLIssueInstantException("Issue instant is too old or in the future");
         }
     }
 
+    /**
+     * <p>isIssueInstantValid.</p>
+     *
+     * @param issueInstant a {@link java.time.Instant} object
+     * @return a boolean
+     */
     protected boolean isIssueInstantValid(final Instant issueInstant) {
         return isDateValid(issueInstant, 0);
     }
 
+    /**
+     * <p>isDateValid.</p>
+     *
+     * @param issueInstant a {@link java.time.Instant} object
+     * @param interval a long
+     * @return a boolean
+     */
     protected boolean isDateValid(final Instant issueInstant, final long interval) {
         val now = ZonedDateTime.now(ZoneOffset.UTC);
         val before = now.plusSeconds(acceptedSkew);
@@ -187,6 +227,13 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
         return isDateValid;
     }
 
+    /**
+     * <p>verifyEndpoint.</p>
+     *
+     * @param endpoints a {@link java.util.List} object
+     * @param destination a {@link java.lang.String} object
+     * @param isDestinationMandatory a boolean
+     */
     protected void verifyEndpoint(final List<String> endpoints, final String destination, final boolean isDestinationMandatory) {
         if (destination == null && !isDestinationMandatory) {
             return;
@@ -204,6 +251,13 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
         }
     }
 
+    /**
+     * <p>compareEndpoints.</p>
+     *
+     * @param destination a {@link java.lang.String} object
+     * @param endpoint a {@link java.lang.String} object
+     * @return a boolean
+     */
     protected boolean compareEndpoints(final String destination, final String endpoint) {
         try {
             return uriComparator.compare(destination, endpoint);
@@ -212,6 +266,11 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
         }
     }
 
+    /**
+     * <p>verifyMessageReplay.</p>
+     *
+     * @param context a {@link org.pac4j.saml.context.SAML2MessageContext} object
+     */
     protected void verifyMessageReplay(final SAML2MessageContext context) {
         if (replayCache == null) {
             logger.warn("No replay cache specified, skipping replay verification");
@@ -237,7 +296,7 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
      * @param encryptedId The EncryptedID to be decrypted.
      * @param decrypter   The decrypter to use.
      * @return Decrypted ID or {@code null} if any input is {@code null}.
-     * @throws SAMLException If the input ID cannot be decrypted.
+     * @throws org.pac4j.saml.exceptions.SAMLException If the input ID cannot be decrypted.
      */
     protected NameID decryptEncryptedId(final EncryptedID encryptedId, final Decrypter decrypter) throws SAMLException {
         if (encryptedId == null) {
@@ -257,6 +316,13 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
         }
     }
 
+    /**
+     * <p>computeSloKey.</p>
+     *
+     * @param sessionIndex a {@link java.lang.String} object
+     * @param nameId a {@link org.pac4j.saml.credentials.SAML2AuthenticationCredentials.SAMLNameID} object
+     * @return a {@link java.lang.String} object
+     */
     protected String computeSloKey(final String sessionIndex, final SAML2AuthenticationCredentials.SAMLNameID nameId) {
         if (sessionIndex != null) {
             return sessionIndex;
@@ -269,6 +335,7 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
         return null;
     }
 
+    /** {@inheritDoc} */
     @Override
     public final void setAcceptedSkew(final long acceptedSkew) {
         this.acceptedSkew = acceptedSkew;

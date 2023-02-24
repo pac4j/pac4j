@@ -86,12 +86,21 @@ public class SAML2Client extends IndirectClient {
         assertNotNull("builderFactory", Configuration.getBuilderFactory());
     }
 
+    /**
+     * <p>Constructor for SAML2Client.</p>
+     */
     public SAML2Client() { }
 
+    /**
+     * <p>Constructor for SAML2Client.</p>
+     *
+     * @param configuration a {@link org.pac4j.saml.config.SAML2Configuration} object
+     */
     public SAML2Client(final SAML2Configuration configuration) {
         this.configuration = configuration;
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         assertNotNull("configuration", this.configuration);
@@ -121,22 +130,38 @@ public class SAML2Client extends IndirectClient {
         setLogoutActionBuilderIfUndefined(new SAML2LogoutActionBuilder(this));
     }
 
+    /**
+     * <p>initSOAPPipelineProvider.</p>
+     */
     protected void initSOAPPipelineProvider() {
         this.soapPipelineProvider = new DefaultSOAPPipelineProvider(this);
     }
 
+    /**
+     * <p>getLogoutRequestMessageSender.</p>
+     *
+     * @return a {@link org.pac4j.saml.logout.impl.SAML2LogoutRequestMessageSender} object
+     */
     public SAML2LogoutRequestMessageSender getLogoutRequestMessageSender() {
         return new SAML2LogoutRequestMessageSender(this.signatureSigningParametersProvider,
             this.configuration.getSpLogoutRequestBindingType(), false,
             this.configuration.isSpLogoutRequestSigned());
     }
 
+    /**
+     * <p>getSSOMessageSender.</p>
+     *
+     * @return a {@link org.pac4j.saml.sso.impl.SAML2WebSSOMessageSender} object
+     */
     public SAML2WebSSOMessageSender getSSOMessageSender() {
         return new SAML2WebSSOMessageSender(this.signatureSigningParametersProvider,
             this.configuration.getAuthnRequestBindingType(), true,
             this.configuration.isAuthnRequestSigned());
     }
 
+    /**
+     * <p>initSAMLLogoutResponseValidator.</p>
+     */
     protected void initSAMLLogoutResponseValidator() {
         this.logoutValidator = new SAML2LogoutValidator(this.signatureTrustEngineProvider,
             this.decrypter, this.configuration.getSessionLogoutHandler(),
@@ -145,6 +170,9 @@ public class SAML2Client extends IndirectClient {
         this.logoutValidator.setPartialLogoutTreatedAsSuccess(this.configuration.isPartialLogoutTreatedAsSuccess());
     }
 
+    /**
+     * <p>initSAMLResponseValidator.</p>
+     */
     protected void initSAMLResponseValidator() {
         // Build the SAML response validator
         this.authnResponseValidator = new SAML2AuthnResponseValidator(
@@ -155,6 +183,9 @@ public class SAML2Client extends IndirectClient {
         this.authnResponseValidator.setAcceptedSkew(this.configuration.getAcceptedSkew());
     }
 
+    /**
+     * <p>initSignatureTrustEngineProvider.</p>
+     */
     protected void initSignatureTrustEngineProvider() {
         // Build provider for digital signature validation and encryption
         this.signatureTrustEngineProvider = new ExplicitSignatureTrustEngineProvider(
@@ -164,47 +195,79 @@ public class SAML2Client extends IndirectClient {
         }
     }
 
+    /**
+     * <p>initSAMLContextProvider.</p>
+     */
     protected void initSAMLContextProvider() {
         // Build the contextProvider
         this.contextProvider = new SAML2ContextProvider(this.identityProviderMetadataResolver, this.serviceProviderMetadataResolver,
                 this.configuration.getSamlMessageStoreFactory());
     }
 
+    /**
+     * <p>initServiceProviderMetadataResolver.</p>
+     */
     protected void initServiceProviderMetadataResolver() {
         this.serviceProviderMetadataResolver = new SAML2ServiceProviderMetadataResolver(configuration);
         this.serviceProviderMetadataResolver.resolve();
     }
 
+    /**
+     * <p>initIdentityProviderMetadataResolver.</p>
+     */
     protected void initIdentityProviderMetadataResolver() {
         this.identityProviderMetadataResolver = this.configuration.getIdentityProviderMetadataResolver();
         this.identityProviderMetadataResolver.resolve();
     }
 
+    /**
+     * <p>initDecrypter.</p>
+     */
     protected void initDecrypter() {
         this.decrypter = new KeyStoreDecryptionProvider(configuration.getCredentialProvider()).build();
     }
 
+    /**
+     * <p>initSignatureSigningParametersProvider.</p>
+     */
     protected void initSignatureSigningParametersProvider() {
         this.signatureSigningParametersProvider = new DefaultSignatureSigningParametersProvider(configuration);
     }
 
+    /**
+     * <p>initSAMLReplayCache.</p>
+     */
     protected void initSAMLReplayCache() {
         replayCache = new InMemoryReplayCacheProvider();
     }
 
+    /**
+     * <p>destroy.</p>
+     */
     public void destroy() {
         ((SAML2ServiceProviderMetadataResolver) serviceProviderMetadataResolver).destroy();
     }
 
+    /** {@inheritDoc} */
     @Override
     public void notifySessionRenewal(final CallContext ctx, final String oldSessionId) {
         configuration.findSessionLogoutHandler().renewSession(ctx, oldSessionId);
     }
 
+    /**
+     * <p>getIdentityProviderResolvedEntityId.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public final String getIdentityProviderResolvedEntityId() {
         return this.identityProviderMetadataResolver.getEntityId();
     }
 
+    /**
+     * <p>getServiceProviderResolvedEntityId.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public final String getServiceProviderResolvedEntityId() {
         return this.serviceProviderMetadataResolver.getEntityId();
     }

@@ -19,12 +19,21 @@ public class DefaultUrlResolver implements UrlResolver {
 
     private boolean completeRelativeUrl;
 
+    /**
+     * <p>Constructor for DefaultUrlResolver.</p>
+     */
     public DefaultUrlResolver() {}
 
+    /**
+     * <p>Constructor for DefaultUrlResolver.</p>
+     *
+     * @param completeRelativeUrl a boolean
+     */
     public DefaultUrlResolver(final boolean completeRelativeUrl) {
         this.completeRelativeUrl = completeRelativeUrl;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String compute(final String url, WebContext context) {
         if (this.completeRelativeUrl) {

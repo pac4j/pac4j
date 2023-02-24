@@ -96,6 +96,7 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
 
     private SAML2MetadataSigner metadataSigner;
 
+    /** {@inheritDoc} */
     @Override
     public MetadataResolver buildMetadataResolver() throws Exception {
         var resolver = createMetadataResolver();
@@ -113,8 +114,15 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
         return resolver;
     }
 
+    /**
+     * <p>createMetadataResolver.</p>
+     *
+     * @return a {@link org.opensaml.saml.metadata.resolver.impl.AbstractMetadataResolver} object
+     * @throws java.lang.Exception if any.
+     */
     protected abstract AbstractMetadataResolver createMetadataResolver() throws Exception;
 
+    /** {@inheritDoc} */
     @Override
     public String getMetadata(final EntityDescriptor entityDescriptor) throws Exception {
         val entityDescriptorElement = this.marshallerFactory
@@ -122,6 +130,7 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
         return SerializeSupport.nodeToString(entityDescriptorElement);
     }
 
+    /** {@inheritDoc} */
     @Override
     public EntityDescriptor buildEntityDescriptor() {
         val builder = (SAMLObjectBuilder<EntityDescriptor>)
@@ -138,6 +147,11 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
         return descriptor;
     }
 
+    /**
+     * <p>signMetadata.</p>
+     *
+     * @param descriptor a {@link org.opensaml.saml.saml2.metadata.EntityDescriptor} object
+     */
     protected void signMetadata(final EntityDescriptor descriptor) {
         if (this.metadataSigner == null) {
             this.metadataSigner = new DefaultSAML2MetadataSigner(this.credentialProvider,
@@ -147,6 +161,11 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
         this.metadataSigner.sign(descriptor);
     }
 
+    /**
+     * <p>generateMetadataExtensions.</p>
+     *
+     * @return a {@link org.opensaml.saml.saml2.metadata.Extensions} object
+     */
     protected Extensions generateMetadataExtensions() {
         val builderExt = (SAMLObjectBuilder<Extensions>)
             this.builderFactory.getBuilder(Extensions.DEFAULT_ELEMENT_NAME);
@@ -178,6 +197,11 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
         return extensions;
     }
 
+    /**
+     * <p>buildSPSSODescriptor.</p>
+     *
+     * @return a {@link org.opensaml.saml.saml2.metadata.SPSSODescriptor} object
+     */
     protected SPSSODescriptor buildSPSSODescriptor() {
         val builder = (SAMLObjectBuilder<SPSSODescriptor>)
             this.builderFactory.getBuilder(SPSSODescriptor.DEFAULT_ELEMENT_NAME);
@@ -390,6 +414,11 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
 
     }
 
+    /**
+     * <p>buildNameIDFormat.</p>
+     *
+     * @return a {@link java.util.Collection} object
+     */
     protected Collection<NameIDFormat> buildNameIDFormat() {
 
         val builder = (SAMLObjectBuilder<NameIDFormat>) this.builderFactory
@@ -417,6 +446,14 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
         return formats;
     }
 
+    /**
+     * <p>getAssertionConsumerService.</p>
+     *
+     * @param binding a {@link java.lang.String} object
+     * @param index a int
+     * @param isDefault a boolean
+     * @return a {@link org.opensaml.saml.saml2.metadata.AssertionConsumerService} object
+     */
     protected AssertionConsumerService getAssertionConsumerService(final String binding, final int index,
                                                                    final boolean isDefault) {
         val builder = (SAMLObjectBuilder<AssertionConsumerService>) this.builderFactory
@@ -431,6 +468,12 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
         return consumer;
     }
 
+    /**
+     * <p>getSingleLogoutService.</p>
+     *
+     * @param binding a {@link java.lang.String} object
+     * @return a {@link org.opensaml.saml.saml2.metadata.SingleLogoutService} object
+     */
     protected SingleLogoutService getSingleLogoutService(final String binding) {
         val builder = (SAMLObjectBuilder<SingleLogoutService>) this.builderFactory
             .getBuilder(SingleLogoutService.DEFAULT_ELEMENT_NAME);
@@ -440,6 +483,13 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
         return logoutService;
     }
 
+    /**
+     * <p>getKeyDescriptor.</p>
+     *
+     * @param type a {@link org.opensaml.security.credential.UsageType} object
+     * @param key a {@link org.opensaml.xmlsec.signature.KeyInfo} object
+     * @return a {@link org.opensaml.saml.saml2.metadata.KeyDescriptor} object
+     */
     protected KeyDescriptor getKeyDescriptor(final UsageType type, final KeyInfo key) {
         val builder = (SAMLObjectBuilder<KeyDescriptor>)
             Configuration.getBuilderFactory()
@@ -450,6 +500,11 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
         return descriptor;
     }
 
+    /**
+     * <p>Getter for the field <code>blackListedSignatureSigningAlgorithms</code>.</p>
+     *
+     * @return a {@link java.util.List} object
+     */
     public List<String> getBlackListedSignatureSigningAlgorithms() {
         if (blackListedSignatureSigningAlgorithms == null) {
             this.blackListedSignatureSigningAlgorithms =
@@ -459,6 +514,11 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
         return blackListedSignatureSigningAlgorithms;
     }
 
+    /**
+     * <p>Getter for the field <code>signatureAlgorithms</code>.</p>
+     *
+     * @return a {@link java.util.List} object
+     */
     public List<String> getSignatureAlgorithms() {
         if (signatureAlgorithms == null) {
             this.signatureAlgorithms = new ArrayList<>(defaultSignatureSigningConfiguration.getSignatureAlgorithms());
@@ -467,6 +527,11 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
         return signatureAlgorithms;
     }
 
+    /**
+     * <p>Getter for the field <code>signatureReferenceDigestMethods</code>.</p>
+     *
+     * @return a {@link java.util.List} object
+     */
     public List<String> getSignatureReferenceDigestMethods() {
         if (signatureReferenceDigestMethods == null) {
             this.signatureReferenceDigestMethods = defaultSignatureSigningConfiguration.getSignatureReferenceDigestMethods();

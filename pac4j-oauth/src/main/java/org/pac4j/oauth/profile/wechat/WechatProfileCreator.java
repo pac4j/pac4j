@@ -18,10 +18,17 @@ import java.util.Optional;
  * @since 3.1.0
  */
 public class WechatProfileCreator extends OAuth20ProfileCreator {
+    /**
+     * <p>Constructor for WechatProfileCreator.</p>
+     *
+     * @param configuration a {@link org.pac4j.oauth.config.OAuth20Configuration} object
+     * @param client a {@link org.pac4j.core.client.IndirectClient} object
+     */
     public WechatProfileCreator(OAuth20Configuration configuration, IndirectClient client) {
         super(configuration, client);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected Optional<UserProfile> retrieveUserProfileFromToken(final WebContext context, final Token accessToken) {
         val token = (WechatToken) accessToken;

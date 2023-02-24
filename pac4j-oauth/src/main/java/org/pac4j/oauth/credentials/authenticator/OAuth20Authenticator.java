@@ -21,10 +21,17 @@ import java.util.concurrent.ExecutionException;
  */
 public class OAuth20Authenticator extends OAuthAuthenticator {
 
+    /**
+     * <p>Constructor for OAuth20Authenticator.</p>
+     *
+     * @param configuration a {@link org.pac4j.oauth.config.OAuth20Configuration} object
+     * @param client a {@link org.pac4j.core.client.IndirectClient} object
+     */
     public OAuth20Authenticator(final OAuth20Configuration configuration, final IndirectClient client) {
         super(configuration, client);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void retrieveAccessToken(final WebContext context, final Credentials credentials) {
         var oAuth20Credentials = (OAuth20Credentials) credentials;

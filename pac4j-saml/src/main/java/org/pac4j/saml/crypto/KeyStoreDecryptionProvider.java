@@ -32,10 +32,16 @@ public class KeyStoreDecryptionProvider implements DecryptionProvider {
         encryptedKeyResolver = new ChainingEncryptedKeyResolver(list);
     }
 
+    /**
+     * <p>Constructor for KeyStoreDecryptionProvider.</p>
+     *
+     * @param credentialProvider a {@link org.pac4j.saml.crypto.CredentialProvider} object
+     */
     public KeyStoreDecryptionProvider(final CredentialProvider credentialProvider) {
         this.credentialProvider = credentialProvider;
     }
 
+    /** {@inheritDoc} */
     @Override
     public final Decrypter build() {
         val encryptionCredential = this.credentialProvider.getCredential();

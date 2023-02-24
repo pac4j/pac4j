@@ -8,10 +8,14 @@ package org.pac4j.core.profile.converter;
  */
 public final class IntegerConverter extends AbstractAttributeConverter {
 
+    /**
+     * <p>Constructor for IntegerConverter.</p>
+     */
     public IntegerConverter() {
         super(Integer.class);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected Integer internalConvert(final Object attribute) {
         if (attribute instanceof String) {

@@ -13,22 +13,47 @@ public class CronofyProfile extends OAuth20Profile {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * <p>getAccountId.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getAccountId() {
         return (String) getAttribute(CronofyProfileDefinition.ACCOUNT_ID);
     }
 
+    /**
+     * <p>getProviderName.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getProviderName() {
         return (String) getAttribute(CronofyProfileDefinition.PROVIDER_NAME);
     }
 
+    /**
+     * <p>getProfileId.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getProfileId() {
         return (String) getAttribute(CronofyProfileDefinition.PROFILE_ID);
     }
 
+    /**
+     * <p>getProfileName.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getProfileName() {
         return (String) getAttribute(CronofyProfileDefinition.PROFILE_NAME);
     }
 
+    /**
+     * <p>getProviderService.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getProviderService() {
         return (String) getAttribute(CronofyProfileDefinition.PROVIDER_SERVICE);
     }

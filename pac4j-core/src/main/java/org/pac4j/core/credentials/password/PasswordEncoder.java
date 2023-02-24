@@ -18,7 +18,7 @@ public interface PasswordEncoder {
 
     /**
      * Validate if a plainPassword matches
-     * 
+     *
      * @param plainPassword
      *            the not encoded password to check
      * @param encodedPassword

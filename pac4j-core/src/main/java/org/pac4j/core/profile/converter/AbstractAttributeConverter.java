@@ -14,10 +14,16 @@ public abstract class AbstractAttributeConverter implements AttributeConverter {
 
     private final Class<? extends Object> clazz;
 
+    /**
+     * <p>Constructor for AbstractAttributeConverter.</p>
+     *
+     * @param clazz a {@link java.lang.Class} object
+     */
     protected AbstractAttributeConverter(final Class<? extends Object> clazz) {
         this.clazz = clazz;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Object convert(final Object attribute) {
         Object t = null;
@@ -45,14 +51,31 @@ public abstract class AbstractAttributeConverter implements AttributeConverter {
         }
     }
 
+    /**
+     * <p>internalConvert.</p>
+     *
+     * @param attribute a {@link java.lang.Object} object
+     * @return a {@link java.lang.Object} object
+     */
     protected Object internalConvert(final Object attribute) {
         return null;
     }
 
+    /**
+     * <p>defaultValue.</p>
+     *
+     * @return a {@link java.lang.Object} object
+     */
     protected Object defaultValue() {
         return null;
     }
 
+    /**
+     * <p>accept.</p>
+     *
+     * @param typeName a {@link java.lang.String} object
+     * @return a {@link java.lang.Boolean} object
+     */
     public Boolean accept(final String typeName){
         return clazz.getSimpleName().equals(typeName);
     }

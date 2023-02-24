@@ -36,17 +36,34 @@ public class SAML2LogoutRequestBuilder {
 
     /**
      * Instantiates a new Saml 2 logout request builder.
+     *
+     * @param cfg a {@link org.pac4j.saml.config.SAML2Configuration} object
      */
     public SAML2LogoutRequestBuilder(final SAML2Configuration cfg) {
         this.bindingType = cfg.getSpLogoutRequestBindingType();
         this.useNameQualifier = cfg.isUseNameQualifier();
     }
 
+    /**
+     * <p>build.</p>
+     *
+     * @param context a {@link org.pac4j.saml.context.SAML2MessageContext} object
+     * @param profile a {@link org.pac4j.saml.profile.SAML2Profile} object
+     * @return a {@link org.opensaml.saml.saml2.core.LogoutRequest} object
+     */
     public LogoutRequest build(final SAML2MessageContext context, final SAML2Profile profile) {
         val ssoService = context.getIDPSingleLogoutService(this.bindingType);
         return buildLogoutRequest(context, ssoService, profile);
     }
 
+    /**
+     * <p>buildLogoutRequest.</p>
+     *
+     * @param context a {@link org.pac4j.saml.context.SAML2MessageContext} object
+     * @param ssoService a {@link org.opensaml.saml.saml2.metadata.SingleLogoutService} object
+     * @param profile a {@link org.pac4j.saml.profile.SAML2Profile} object
+     * @return a {@link org.opensaml.saml.saml2.core.LogoutRequest} object
+     */
     @SuppressWarnings("unchecked")
     protected final LogoutRequest buildLogoutRequest(final SAML2MessageContext context,
                                                      final SingleLogoutService ssoService,
@@ -88,6 +105,12 @@ public class SAML2LogoutRequestBuilder {
         return request;
     }
 
+    /**
+     * <p>getIssuer.</p>
+     *
+     * @param spEntityId a {@link java.lang.String} object
+     * @return a {@link org.opensaml.saml.saml2.core.Issuer} object
+     */
     @SuppressWarnings("unchecked")
     protected final Issuer getIssuer(final String spEntityId) {
         val issuerBuilder = (SAMLObjectBuilder<Issuer>) this.builderFactory
@@ -97,6 +120,11 @@ public class SAML2LogoutRequestBuilder {
         return issuer;
     }
 
+    /**
+     * <p>Setter for the field <code>issueInstantSkewSeconds</code>.</p>
+     *
+     * @param issueInstantSkewSeconds a int
+     */
     public void setIssueInstantSkewSeconds(final int issueInstantSkewSeconds) {
         this.issueInstantSkewSeconds = issueInstantSkewSeconds;
     }

@@ -16,13 +16,26 @@ public class KerberosProfile extends CommonProfile {
     private static final long serialVersionUID = -1388563485891552197L;
     private GSSContext gssContext = null;
 
+    /**
+     * <p>Constructor for KerberosProfile.</p>
+     */
     public KerberosProfile() {
     }
 
+    /**
+     * <p>Constructor for KerberosProfile.</p>
+     *
+     * @param gssContext a GSSContext object
+     */
     public KerberosProfile(final GSSContext gssContext) {
         this.gssContext = gssContext;
     }
 
+    /**
+     * <p>Getter for the field <code>gssContext</code>.</p>
+     *
+     * @return a GSSContext object
+     */
     public GSSContext getGssContext() {
         return gssContext;
     }

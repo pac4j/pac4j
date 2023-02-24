@@ -22,10 +22,17 @@ import org.pac4j.oauth.profile.OAuth10Profile;
  */
 public class OAuth10ProfileCreator extends OAuthProfileCreator {
 
+    /**
+     * <p>Constructor for OAuth10ProfileCreator.</p>
+     *
+     * @param configuration a {@link org.pac4j.oauth.config.OAuth10Configuration} object
+     * @param client a {@link org.pac4j.core.client.IndirectClient} object
+     */
     public OAuth10ProfileCreator(final OAuth10Configuration configuration, final IndirectClient client) {
         super(configuration, client);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected OAuth1AccessToken getAccessToken(final Credentials credentials) {
         // we assume the access token only has been passed: it can be a bearer call (HTTP client)
@@ -37,6 +44,7 @@ public class OAuth10ProfileCreator extends OAuthProfileCreator {
         return ((OAuth10Credentials) credentials).getAccessToken();
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void addTokenToProfile(final UserProfile userProfile, final Token tok) {
         val profile = (OAuth10Profile) userProfile;
@@ -49,6 +57,7 @@ public class OAuth10ProfileCreator extends OAuthProfileCreator {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void signRequest(final OAuthService service, final Token tok, final OAuthRequest request) {
         val token = (OAuth1AccessToken) tok;

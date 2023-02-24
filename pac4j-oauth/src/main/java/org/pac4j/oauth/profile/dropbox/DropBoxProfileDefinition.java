@@ -20,10 +20,16 @@ import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
  */
 public class DropBoxProfileDefinition extends OAuthProfileDefinition {
 
+    /** Constant <code>REFERRAL_LINK="referral_link"</code> */
     public static final String REFERRAL_LINK = "referral_link";
+    /** Constant <code>COUNTRY="country"</code> */
     public static final String COUNTRY = "country";
+    /** Constant <code>EMAIL_VERIFIED="email_verified"</code> */
     public static final String EMAIL_VERIFIED = "email_verified";
 
+    /**
+     * <p>Constructor for DropBoxProfileDefinition.</p>
+     */
     public DropBoxProfileDefinition() {
         super(x -> new DropBoxProfile());
         primary(REFERRAL_LINK, Converters.STRING);
@@ -33,16 +39,19 @@ public class DropBoxProfileDefinition extends OAuthProfileDefinition {
         primary(EMAIL_VERIFIED, Converters.BOOLEAN);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getProfileUrl(final Token token, final OAuthConfiguration configuration) {
         return "https://api.dropboxapi.com/2/users/get_current_account";
     }
 
+    /** {@inheritDoc} */
     @Override
     public Verb getProfileVerb() {
         return Verb.POST;
     }
 
+    /** {@inheritDoc} */
     @Override
     public DropBoxProfile extractUserProfile(final String body) {
         val profile = (DropBoxProfile) newProfile();

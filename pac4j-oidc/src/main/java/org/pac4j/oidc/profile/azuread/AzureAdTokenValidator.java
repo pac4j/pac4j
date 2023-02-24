@@ -16,10 +16,17 @@ import org.pac4j.oidc.profile.creator.TokenValidator;
  */
 public class AzureAdTokenValidator extends TokenValidator {
 
+    /**
+     * <p>Constructor for AzureAdTokenValidator.</p>
+     *
+     * @param configuration a {@link org.pac4j.oidc.config.OidcConfiguration} object
+     * @param metadata a {@link com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata} object
+     */
     public AzureAdTokenValidator(final OidcConfiguration configuration, final OIDCProviderMetadata metadata) {
         super(configuration, metadata);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected IDTokenValidator createRSATokenValidator(final JWSAlgorithm jwsAlgorithm, final ClientID clientID) {
         return new AzureAdIdTokenValidator(super.createRSATokenValidator(jwsAlgorithm, clientID));

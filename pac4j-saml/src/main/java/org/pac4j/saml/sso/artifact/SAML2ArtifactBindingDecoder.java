@@ -25,6 +25,7 @@ import java.util.Objects;
  * SOAP.
  *
  * @since 3.8.0
+ * @author bidou
  */
 public class SAML2ArtifactBindingDecoder extends AbstractPac4jDecoder {
     private final SAML2MetadataResolver idpMetadataResolver;
@@ -33,6 +34,14 @@ public class SAML2ArtifactBindingDecoder extends AbstractPac4jDecoder {
 
     private final SOAPPipelineProvider soapPipelineProvider;
 
+    /**
+     * <p>Constructor for SAML2ArtifactBindingDecoder.</p>
+     *
+     * @param context a {@link org.pac4j.core.context.CallContext} object
+     * @param idpMetadataResolver a {@link org.pac4j.saml.metadata.SAML2MetadataResolver} object
+     * @param spMetadataResolver a {@link org.pac4j.saml.metadata.SAML2MetadataResolver} object
+     * @param soapPipelineProvider a {@link org.pac4j.saml.sso.artifact.SOAPPipelineProvider} object
+     */
     public SAML2ArtifactBindingDecoder(final CallContext context, final SAML2MetadataResolver idpMetadataResolver,
                                        final SAML2MetadataResolver spMetadataResolver, final SOAPPipelineProvider soapPipelineProvider) {
         super(context);
@@ -41,11 +50,13 @@ public class SAML2ArtifactBindingDecoder extends AbstractPac4jDecoder {
         this.soapPipelineProvider = soapPipelineProvider;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getBindingURI(final SAML2MessageContext messageContext) {
         return SAMLConstants.SAML2_ARTIFACT_BINDING_URI;
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void doDecode() throws MessageDecodingException {
         try {
@@ -90,6 +101,12 @@ public class SAML2ArtifactBindingDecoder extends AbstractPac4jDecoder {
         }
     }
 
+    /**
+     * <p>transferContext.</p>
+     *
+     * @param operationContext a {@link org.opensaml.messaging.context.InOutOperationContext} object
+     * @param messageContext a {@link org.pac4j.saml.context.SAML2MessageContext} object
+     */
     protected void transferContext(final InOutOperationContext operationContext, final SAML2MessageContext messageContext) {
         messageContext.getMessageContext()
                 .addSubcontext(Objects.requireNonNull(Objects.requireNonNull(operationContext.getInboundMessageContext())

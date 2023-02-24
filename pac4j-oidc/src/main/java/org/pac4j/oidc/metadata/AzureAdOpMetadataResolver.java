@@ -13,10 +13,16 @@ import org.pac4j.oidc.profile.azuread.AzureAdTokenValidator;
 @Slf4j
 public class AzureAdOpMetadataResolver extends OidcOpMetadataResolver {
 
+    /**
+     * <p>Constructor for AzureAdOpMetadataResolver.</p>
+     *
+     * @param configuration a {@link org.pac4j.oidc.config.OidcConfiguration} object
+     */
     public AzureAdOpMetadataResolver(final OidcConfiguration configuration) {
         super(configuration);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalLoad() {
         this.loaded = retrieveMetadata();

@@ -6,7 +6,6 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 import lombok.val;
 import org.pac4j.cas.authorization.DefaultCasAuthorizationGenerator;
-import org.pac4j.cas.client.CasProxyReceptor;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.config.CasProtocol;
 import org.pac4j.cas.credentials.authenticator.CasAuthenticator;
@@ -26,9 +25,10 @@ import static org.pac4j.core.util.CommonHelper.*;
  *
  * <p>As no session is meant to be created, this client does not handle CAS logout requests.</p>
  *
- * <p>For proxy support, a {@link CasProxyReceptor} must be defined in the configuration (the corresponding "callback filter" must be
- * enabled) and set to the CAS configuration of this client. In that case, a {@link org.pac4j.cas.profile.CasProxyProfile} will be return
- * (instead of a {@link org.pac4j.cas.profile.CasProfile}) to be able to request proxy tickets.</p>
+ * <p>For proxy support, a {@link org.pac4j.cas.client.CasProxyReceptor} must be defined in the configuration
+ * (the corresponding "callback filter" must be enabled) and set to the CAS configuration of this client.
+ * In that case, a {@link org.pac4j.cas.profile.CasProxyProfile} will be return (instead of a {@link org.pac4j.cas.profile.CasProfile})
+ * to be able to request proxy tickets.</p>
  *
  * @author Jerome Leleu
  * @since 1.9.2
@@ -47,13 +47,23 @@ public class DirectCasProxyClient extends DirectClient {
 
     private String serviceUrl;
 
+    /**
+     * <p>Constructor for DirectCasProxyClient.</p>
+     */
     public DirectCasProxyClient() { }
 
+    /**
+     * <p>Constructor for DirectCasProxyClient.</p>
+     *
+     * @param casConfiguration a {@link org.pac4j.cas.config.CasConfiguration} object
+     * @param serviceUrl a {@link java.lang.String} object
+     */
     public DirectCasProxyClient(final CasConfiguration casConfiguration, final String serviceUrl) {
         this.configuration = casConfiguration;
         this.serviceUrl = serviceUrl;
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         assertNotBlank("serviceUrl", this.serviceUrl);

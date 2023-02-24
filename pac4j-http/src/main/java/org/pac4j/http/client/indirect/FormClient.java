@@ -36,22 +36,41 @@ public class FormClient extends IndirectClient {
 
     private String loginUrl;
 
+    /** Constant <code>ERROR_PARAMETER="error"</code> */
     public final static String ERROR_PARAMETER = "error";
 
+    /** Constant <code>MISSING_FIELD_ERROR="missing_field"</code> */
     public final static String MISSING_FIELD_ERROR = "missing_field";
 
     private String usernameParameter = Pac4jConstants.USERNAME;
 
     private String passwordParameter = Pac4jConstants.PASSWORD;
 
+    /**
+     * <p>Constructor for FormClient.</p>
+     */
     public FormClient() {
     }
 
+    /**
+     * <p>Constructor for FormClient.</p>
+     *
+     * @param loginUrl a {@link java.lang.String} object
+     * @param usernamePasswordAuthenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
+     */
     public FormClient(final String loginUrl, final Authenticator usernamePasswordAuthenticator) {
         this.loginUrl = loginUrl;
         setAuthenticatorIfUndefined(usernamePasswordAuthenticator);
     }
 
+    /**
+     * <p>Constructor for FormClient.</p>
+     *
+     * @param loginUrl a {@link java.lang.String} object
+     * @param usernameParameter a {@link java.lang.String} object
+     * @param passwordParameter a {@link java.lang.String} object
+     * @param usernamePasswordAuthenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
+     */
     public FormClient(final String loginUrl, final String usernameParameter, final String passwordParameter,
                       final Authenticator usernamePasswordAuthenticator) {
         this.loginUrl = loginUrl;
@@ -60,6 +79,13 @@ public class FormClient extends IndirectClient {
         setAuthenticatorIfUndefined(usernamePasswordAuthenticator);
     }
 
+    /**
+     * <p>Constructor for FormClient.</p>
+     *
+     * @param loginUrl a {@link java.lang.String} object
+     * @param usernamePasswordAuthenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
+     * @param profileCreator a {@link org.pac4j.core.profile.creator.ProfileCreator} object
+     */
     public FormClient(final String loginUrl, final Authenticator usernamePasswordAuthenticator,
                       final ProfileCreator profileCreator) {
         this.loginUrl = loginUrl;
@@ -67,6 +93,7 @@ public class FormClient extends IndirectClient {
         setProfileCreatorIfUndefined(profileCreator);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         assertNotBlank("loginUrl", this.loginUrl);
@@ -81,6 +108,7 @@ public class FormClient extends IndirectClient {
         setCredentialsExtractorIfUndefined(new FormExtractor(usernameParameter, passwordParameter));
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<Credentials> getCredentials(final CallContext ctx) {
         init();
@@ -102,6 +130,7 @@ public class FormClient extends IndirectClient {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     protected Optional<Credentials> internalValidateCredentials(final CallContext ctx, final Credentials credentials) {
         assertNotNull("authenticator", getAuthenticator());
@@ -115,6 +144,15 @@ public class FormClient extends IndirectClient {
         }
     }
 
+    /**
+     * <p>handleInvalidCredentials.</p>
+     *
+     * @param ctx a {@link org.pac4j.core.context.CallContext} object
+     * @param username a {@link java.lang.String} object
+     * @param message a {@link java.lang.String} object
+     * @param errorMessage a {@link java.lang.String} object
+     * @return a {@link org.pac4j.core.exception.http.HttpAction} object
+     */
     protected HttpAction handleInvalidCredentials(final CallContext ctx, final String username, String message, String errorMessage) {
         val webContext = ctx.webContext();
 

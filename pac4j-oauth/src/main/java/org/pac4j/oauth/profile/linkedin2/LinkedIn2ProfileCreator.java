@@ -24,10 +24,17 @@ import java.util.Optional;
 public class LinkedIn2ProfileCreator extends OAuth20ProfileCreator {
     private static final String EMAIL_URL = "https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))";
 
+    /**
+     * <p>Constructor for LinkedIn2ProfileCreator.</p>
+     *
+     * @param configuration a {@link org.pac4j.oauth.config.OAuth20Configuration} object
+     * @param client a {@link org.pac4j.core.client.IndirectClient} object
+     */
     public LinkedIn2ProfileCreator(final OAuth20Configuration configuration, final IndirectClient client) {
         super(configuration, client);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected Optional<UserProfile> retrieveUserProfileFromToken(final WebContext context, final Token accessToken) {
         super.retrieveUserProfileFromToken(context, accessToken);

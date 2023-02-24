@@ -13,7 +13,8 @@ import org.opensaml.saml.saml2.binding.encoding.impl.HTTPPostSimpleSignEncoder;
 import java.net.URI;
 
 /**
- * Pac4j implementation for HTTP Post Simple-Sign extending openSAML {@link HTTPPostSimpleSignEncoder}.
+ * Pac4j implementation for HTTP Post Simple-Sign extending openSAML
+ * {@link org.opensaml.saml.saml2.binding.encoding.impl.HTTPPostSimpleSignEncoder}.
  *
  * @author Vincent Marmin
  * @since 3.7.0
@@ -23,17 +24,20 @@ public class Pac4jHTTPPostSimpleSignEncoder extends HTTPPostSimpleSignEncoder {
 
     private final Pac4jSAMLResponse responseAdapter;
 
+    /**
+     * <p>Constructor for Pac4jHTTPPostSimpleSignEncoder.</p>
+     *
+     * @param responseAdapter a {@link org.pac4j.saml.transport.Pac4jSAMLResponse} object
+     */
     public Pac4jHTTPPostSimpleSignEncoder(final Pac4jSAMLResponse responseAdapter) {
         this.responseAdapter = responseAdapter;
         setVelocityTemplateId(DEFAULT_TEMPLATE_ID);
     }
 
     /**
-     * Gets the response URL from the message context.
+     * {@inheritDoc}
      *
-     * @param messageContext current message context
-     * @return response URL from the message context
-     * @throws MessageEncodingException throw if no relying party endpoint is available
+     * Gets the response URL from the message context.
      */
     @Override
     protected URI getEndpointURL(final MessageContext messageContext) throws MessageEncodingException {
@@ -44,6 +48,7 @@ public class Pac4jHTTPPostSimpleSignEncoder extends HTTPPostSimpleSignEncoder {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void postEncode(final MessageContext messageContext, final String endpointURL) throws MessageEncodingException {
         LOGGER.debug("Invoking Velocity template to create POST body");
@@ -64,10 +69,10 @@ public class Pac4jHTTPPostSimpleSignEncoder extends HTTPPostSimpleSignEncoder {
     }
 
     /**
+     * {@inheritDoc}
+     *
      * Check component attributes. Copy/Paste parents initialization (no super.doInitialize) except for
      * AbstractHttpServletResponseMessageEncoder since HttpServletResponse is always null.
-     *
-     * @throws ComponentInitializationException if initialization fails
      */
     @Override
     protected void doInitialize() throws ComponentInitializationException {

@@ -19,23 +19,39 @@ import java.util.Optional;
  */
 public class DirectKerberosClient extends DirectClient {
 
+    /**
+     * <p>Constructor for DirectKerberosClient.</p>
+     */
     public DirectKerberosClient() {
     }
 
+    /**
+     * <p>Constructor for DirectKerberosClient.</p>
+     *
+     * @param authenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
+     */
     public DirectKerberosClient(final Authenticator authenticator) {
         setAuthenticator(authenticator);
     }
 
+    /**
+     * <p>Constructor for DirectKerberosClient.</p>
+     *
+     * @param authenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
+     * @param profileCreator a {@link org.pac4j.core.profile.creator.ProfileCreator} object
+     */
     public DirectKerberosClient(final Authenticator authenticator, final ProfileCreator profileCreator) {
         setAuthenticator(authenticator);
         setProfileCreator(profileCreator);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         setCredentialsExtractorIfUndefined(new KerberosExtractor());
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<Credentials> getCredentials(final CallContext ctx) {
         // Set the WWW-Authenticate: Negotiate header in case no credentials are found

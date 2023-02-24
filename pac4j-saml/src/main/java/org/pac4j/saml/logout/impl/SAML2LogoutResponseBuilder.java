@@ -33,15 +33,33 @@ public class SAML2LogoutResponseBuilder {
 
     private final XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
 
+    /**
+     * <p>Constructor for SAML2LogoutResponseBuilder.</p>
+     *
+     * @param bindingType a {@link java.lang.String} object
+     */
     public SAML2LogoutResponseBuilder(final String bindingType) {
         this.bindingType = bindingType;
     }
 
+    /**
+     * <p>build.</p>
+     *
+     * @param context a {@link org.pac4j.saml.context.SAML2MessageContext} object
+     * @return a {@link org.opensaml.saml.saml2.core.LogoutResponse} object
+     */
     public LogoutResponse build(final SAML2MessageContext context) {
         val ssoService = context.getIDPSingleLogoutService(this.bindingType);
         return buildLogoutResponse(context, ssoService);
     }
 
+    /**
+     * <p>buildLogoutResponse.</p>
+     *
+     * @param context a {@link org.pac4j.saml.context.SAML2MessageContext} object
+     * @param ssoService a {@link org.opensaml.saml.saml2.metadata.SingleLogoutService} object
+     * @return a {@link org.opensaml.saml.saml2.core.LogoutResponse} object
+     */
     @SuppressWarnings("unchecked")
     protected final LogoutResponse buildLogoutResponse(final SAML2MessageContext context,
                                                       final SingleLogoutService ssoService) {
@@ -66,6 +84,11 @@ public class SAML2LogoutResponseBuilder {
         return response;
     }
 
+    /**
+     * <p>getSuccess.</p>
+     *
+     * @return a {@link org.opensaml.saml.saml2.core.Status} object
+     */
     protected Status getSuccess() {
         val statusBuilder = (SAMLObjectBuilder<Status>) this.builderFactory
             .getBuilder(Status.DEFAULT_ELEMENT_NAME);
@@ -76,6 +99,12 @@ public class SAML2LogoutResponseBuilder {
         return status;
     }
 
+    /**
+     * <p>getIssuer.</p>
+     *
+     * @param spEntityId a {@link java.lang.String} object
+     * @return a {@link org.opensaml.saml.saml2.core.Issuer} object
+     */
     @SuppressWarnings("unchecked")
     protected final Issuer getIssuer(final String spEntityId) {
         val issuerBuilder = (SAMLObjectBuilder<Issuer>) this.builderFactory
@@ -85,10 +114,20 @@ public class SAML2LogoutResponseBuilder {
         return issuer;
     }
 
+    /**
+     * <p>Setter for the field <code>bindingType</code>.</p>
+     *
+     * @param bindingType a {@link java.lang.String} object
+     */
     public void setBindingType(final String bindingType) {
         this.bindingType = bindingType;
     }
 
+    /**
+     * <p>Setter for the field <code>issueInstantSkewSeconds</code>.</p>
+     *
+     * @param issueInstantSkewSeconds a int
+     */
     public void setIssueInstantSkewSeconds(final int issueInstantSkewSeconds) {
         this.issueInstantSkewSeconds = issueInstantSkewSeconds;
     }

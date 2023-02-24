@@ -13,10 +13,12 @@ import java.util.Optional;
  */
 public abstract class AbstractStore<K, O> extends InitializableObject implements Store<K, O> {
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<O> get(final K key) {
         CommonHelper.assertNotNull("key", key);
@@ -25,6 +27,7 @@ public abstract class AbstractStore<K, O> extends InitializableObject implements
         return internalGet(key);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void set(final K key, final O value) {
         CommonHelper.assertNotNull("key", key);
@@ -37,6 +40,7 @@ public abstract class AbstractStore<K, O> extends InitializableObject implements
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public void remove(final K key) {
         CommonHelper.assertNotNull("key", key);
@@ -45,9 +49,26 @@ public abstract class AbstractStore<K, O> extends InitializableObject implements
         internalRemove(key);
     }
 
+    /**
+     * <p>internalGet.</p>
+     *
+     * @param key a K object
+     * @return a {@link java.util.Optional} object
+     */
     protected abstract Optional<O> internalGet(final K key);
 
+    /**
+     * <p>internalSet.</p>
+     *
+     * @param key a K object
+     * @param value a O object
+     */
     protected abstract void internalSet(final K key, final O value);
 
+    /**
+     * <p>internalRemove.</p>
+     *
+     * @param key a K object
+     */
     protected abstract void internalRemove(final K key);
 }

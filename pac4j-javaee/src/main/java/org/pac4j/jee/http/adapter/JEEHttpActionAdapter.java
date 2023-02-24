@@ -13,7 +13,7 @@ import org.pac4j.jee.context.JEEContext;
 import java.io.IOException;
 
 /**
- * The HTTP action adapter for the {@link JEEContext}.
+ * The HTTP action adapter for the {@link org.pac4j.jee.context.JEEContext}.
  *
  * You should upgrade to the new <code>pac4j-jakartaee</code> module.
  *
@@ -23,10 +23,15 @@ import java.io.IOException;
 @Deprecated
 public class JEEHttpActionAdapter implements HttpActionAdapter {
 
+    /** Constant <code>INSTANCE</code> */
     public static final JEEHttpActionAdapter INSTANCE = new JEEHttpActionAdapter();
 
+    /**
+     * <p>Constructor for JEEHttpActionAdapter.</p>
+     */
     protected JEEHttpActionAdapter() {}
 
+    /** {@inheritDoc} */
     @Override
     public Object adapt(final HttpAction action, final WebContext context) {
         if (action != null) {

@@ -20,18 +20,28 @@ import java.util.Optional;
  */
 public class IpRegexpAuthenticator extends AbstractRegexpAuthenticator implements Authenticator {
 
+    /**
+     * <p>Constructor for IpRegexpAuthenticator.</p>
+     */
     public IpRegexpAuthenticator() { }
 
+    /**
+     * <p>Constructor for IpRegexpAuthenticator.</p>
+     *
+     * @param regexpPattern a {@link java.lang.String} object
+     */
     public IpRegexpAuthenticator(final String regexpPattern) {
         setRegexpPattern(regexpPattern);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         CommonHelper.assertNotNull("pattern", pattern);
         setProfileDefinitionIfUndefined(new CommonProfileDefinition(x -> new IpProfile()));
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<Credentials> validate(final CallContext ctx, final Credentials credentials) {
         init();

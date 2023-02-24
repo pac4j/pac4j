@@ -15,6 +15,7 @@ import org.pac4j.core.profile.UserProfile;
 @ToString(callSuper = true)
 public abstract class AbstractRequireAllAuthorizer<E extends Object> extends AbstractRequireElementAuthorizer<E> {
 
+    /** {@inheritDoc} */
     @Override
     protected boolean isProfileAuthorized(final WebContext context, final SessionStore sessionStore, final UserProfile profile) {
         if (elements == null || elements.isEmpty()) {

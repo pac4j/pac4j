@@ -37,28 +37,56 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
     @Setter
     private DataSource dataSource;
 
+    /**
+     * <p>Constructor for DbProfileService.</p>
+     */
     public DbProfileService() {}
 
+    /**
+     * <p>Constructor for DbProfileService.</p>
+     *
+     * @param dataSource a DataSource object
+     */
     public DbProfileService(final DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
+    /**
+     * <p>Constructor for DbProfileService.</p>
+     *
+     * @param dataSource a DataSource object
+     * @param attributes a {@link java.lang.String} object
+     */
     public DbProfileService(final DataSource dataSource, final String attributes) {
         this.dataSource = dataSource;
         setAttributes(attributes);
     }
 
+    /**
+     * <p>Constructor for DbProfileService.</p>
+     *
+     * @param dataSource a DataSource object
+     * @param attributes a {@link java.lang.String} object
+     * @param passwordEncoder a {@link org.pac4j.core.credentials.password.PasswordEncoder} object
+     */
     public DbProfileService(final DataSource dataSource, final String attributes, final PasswordEncoder passwordEncoder) {
         this.dataSource = dataSource;
         setAttributes(attributes);
         setPasswordEncoder(passwordEncoder);
     }
 
+    /**
+     * <p>Constructor for DbProfileService.</p>
+     *
+     * @param dataSource a DataSource object
+     * @param passwordEncoder a {@link org.pac4j.core.credentials.password.PasswordEncoder} object
+     */
     public DbProfileService(final DataSource dataSource, final PasswordEncoder passwordEncoder) {
         this.dataSource = dataSource;
         setPasswordEncoder(passwordEncoder);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         assertNotNull("passwordEncoder", getPasswordEncoder());
@@ -71,6 +99,7 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
         super.internalInit(forceReinit);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void insert(final Map<String, Object> attributes) {
         final List<String> names = new ArrayList<>();
@@ -87,6 +116,7 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
         execute(query, values.toArray());
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void update(final Map<String, Object> attributes) {
         val attributesList = new StringBuilder();
@@ -116,12 +146,19 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
         execute(query, values.toArray());
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void deleteById(final String id) {
         val query = "delete from " + usersTable + " where " + getIdAttribute() + " = :id";
         execute(query, id);
     }
 
+    /**
+     * <p>execute.</p>
+     *
+     * @param query a {@link java.lang.String} object
+     * @param args a {@link java.lang.Object} object
+     */
     protected void execute(final String query, final Object... args) {
         Handle h = null;
         try {
@@ -135,6 +172,7 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     protected List<Map<String, Object>> read(final List<String> names, final String key, final String value) {
         val attributesList = buildAttributesList(names);
@@ -143,6 +181,14 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
         return query(query, key, value);
     }
 
+    /**
+     * <p>query.</p>
+     *
+     * @param query a {@link java.lang.String} object
+     * @param key a {@link java.lang.String} object
+     * @param value a {@link java.lang.String} object
+     * @return a {@link java.util.List} object
+     */
     protected List<Map<String, Object>> query(final String query, final String key, final String value) {
         Handle h = null;
         try {
@@ -156,6 +202,12 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
         }
     }
 
+    /**
+     * <p>buildAttributesList.</p>
+     *
+     * @param names a {@link java.util.List} object
+     * @return a {@link java.lang.String} object
+     */
     protected String buildAttributesList(final List<String> names) {
         val sb = new StringBuilder();
         var firstOne = true;
@@ -169,6 +221,11 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
         return sb.toString();
     }
 
+    /**
+     * <p>Setter for the field <code>usersTable</code>.</p>
+     *
+     * @param usersTable a {@link java.lang.String} object
+     */
     public void setUsersTable(final String usersTable) {
         assertNotBlank("usersTable", usersTable);
         this.usersTable = usersTable;

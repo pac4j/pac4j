@@ -14,10 +14,14 @@ import org.pac4j.core.profile.definition.CommonProfileDefinition;
  */
 public class CasProfileDefinition extends CommonProfileDefinition {
 
+    /**
+     * <p>Constructor for CasProfileDefinition.</p>
+     */
     public CasProfileDefinition() {
         super(parameters -> new CasProfile());
     }
 
+    /** {@inheritDoc} */
     @Override
     public UserProfile newProfile(final Object... parameters) {
         val proxyReceptor = (CasProxyReceptor) getParameter(parameters, 1);

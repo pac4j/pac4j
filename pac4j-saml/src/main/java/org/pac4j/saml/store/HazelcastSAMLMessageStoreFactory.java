@@ -14,10 +14,16 @@ public class HazelcastSAMLMessageStoreFactory implements SAMLMessageStoreFactory
 
     private final HazelcastInstance hazelcastInstance;
 
+    /**
+     * <p>Constructor for HazelcastSAMLMessageStoreFactory.</p>
+     *
+     * @param hazelcastInstance a {@link com.hazelcast.core.HazelcastInstance} object
+     */
     public HazelcastSAMLMessageStoreFactory(final HazelcastInstance hazelcastInstance) {
         this.hazelcastInstance = hazelcastInstance;
     }
 
+    /** {@inheritDoc} */
     @Override
     public SAMLMessageStore getMessageStore(final WebContext context, final SessionStore sessionStore) {
         return new HazelcastSAMLMessageStore(hazelcastInstance);

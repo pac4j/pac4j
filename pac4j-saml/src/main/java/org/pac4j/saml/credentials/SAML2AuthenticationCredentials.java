@@ -44,6 +44,18 @@ public class SAML2AuthenticationCredentials extends Credentials {
 
     private final String inResponseTo;
 
+    /**
+     * <p>Constructor for SAML2AuthenticationCredentials.</p>
+     *
+     * @param nameId a {@link org.pac4j.saml.credentials.SAML2AuthenticationCredentials.SAMLNameID} object
+     * @param issuerId a {@link java.lang.String} object
+     * @param samlAttributes a {@link java.util.List} object
+     * @param conditions a {@link org.opensaml.saml.saml2.core.Conditions} object
+     * @param sessionIndex a {@link java.lang.String} object
+     * @param authnContexts a {@link java.util.List} object
+     * @param authnContextAuthorities a {@link java.util.List} object
+     * @param inResponseTo a {@link java.lang.String} object
+     */
     public SAML2AuthenticationCredentials(final SAMLNameID nameId, final String issuerId,
                                           final List<SAMLAttribute> samlAttributes, final Conditions conditions,
                                           final String sessionIndex, final List<String> authnContexts,

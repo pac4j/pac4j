@@ -17,6 +17,7 @@ import java.util.Map;
  */
 public class PayPalApi20 extends DefaultApi20 {
 
+    /** {@inheritDoc} */
     @Override
     public String getAuthorizationUrl(String responseType, String apiKey, String callback, String scope, String state,
             Map<String, String> additionalParams) {
@@ -31,11 +32,13 @@ public class PayPalApi20 extends DefaultApi20 {
         return super.getAuthorizationUrl(responseType, apiKey, callback, scope, state, additionalParams);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected String getAuthorizationBaseUrl() {
         return "https://www.paypal.com/webapps/auth/protocol/openidconnect/v1/authorize";
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getAccessTokenEndpoint() {
         return "https://api.paypal.com/v1/identity/openidconnect/tokenservice";

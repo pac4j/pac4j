@@ -21,8 +21,8 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
  * <p>The url of the proxy receptor is defined via the <code>setCallbackUrl(String)</code> method, it's the <code>proxyReceptorUrl</code>
  * concept of the Jasig CAS client.</p>
  *
- * <p>The proxy granting tickets and associations are stored by default in a {@link Store} class, which can be overridden by using the
- * <code>setStore(Store)</code> method.</p>
+ * <p>The proxy granting tickets and associations are stored by default in a {@link org.pac4j.core.store.Store} class,
+ * which can be overridden by using the <code>setStore(Store)</code> method.</p>
  *
  * @author Jerome Leleu
  * @since 1.4.0
@@ -32,12 +32,15 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
 @ToString(callSuper = true)
 public final class CasProxyReceptor extends IndirectClient {
 
+    /** Constant <code>PARAM_PROXY_GRANTING_TICKET_IOU="pgtIou"</code> */
     public static final String PARAM_PROXY_GRANTING_TICKET_IOU = "pgtIou";
 
+    /** Constant <code>PARAM_PROXY_GRANTING_TICKET="pgtId"</code> */
     public static final String PARAM_PROXY_GRANTING_TICKET = "pgtId";
 
     private Store<String, String> store = new GuavaStore<>(1000, 1, TimeUnit.MINUTES);
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         assertNotNull("store", this.store);

@@ -4,7 +4,6 @@ import lombok.val;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
-import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.kerberos.credentials.KerberosCredentials;
 import org.pac4j.kerberos.profile.KerberosProfile;
@@ -15,7 +14,7 @@ import java.util.Optional;
 
 /**
  * Authenticator for Kerberos. It creates the user profile and stores it in the credentials
- * for the {@link AuthenticatorProfileCreator}.
+ * for the {@link org.pac4j.core.profile.creator.AuthenticatorProfileCreator}.
  *
  * @author Garry Boyce
  * @since 2.1.0
@@ -37,6 +36,7 @@ public class KerberosAuthenticator implements Authenticator {
         this.ticketValidator = ticketValidator;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<Credentials> validate(final CallContext ctx, final Credentials cred) {
         val credentials = (KerberosCredentials) cred;

@@ -23,14 +23,27 @@ public class FromAttributesAuthorizationGenerator implements AuthorizationGenera
 
     private String splitChar = ",";
 
+    /**
+     * <p>Constructor for FromAttributesAuthorizationGenerator.</p>
+     */
     public FromAttributesAuthorizationGenerator() {
         this.roleAttributes = new ArrayList<>();
     }
 
+    /**
+     * <p>Constructor for FromAttributesAuthorizationGenerator.</p>
+     *
+     * @param roleAttributes a {@link java.util.Collection} object
+     */
     public FromAttributesAuthorizationGenerator(final Collection<String> roleAttributes) {
         this.roleAttributes = roleAttributes;
     }
 
+    /**
+     * <p>Constructor for FromAttributesAuthorizationGenerator.</p>
+     *
+     * @param roleAttributes an array of {@link java.lang.String} objects
+     */
     public FromAttributesAuthorizationGenerator(final String[] roleAttributes) {
         if (roleAttributes != null) {
             this.roleAttributes = Arrays.asList(roleAttributes);
@@ -39,6 +52,7 @@ public class FromAttributesAuthorizationGenerator implements AuthorizationGenera
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<UserProfile> generate(final CallContext ctx, final UserProfile profile) {
         generateAuth(profile, this.roleAttributes);

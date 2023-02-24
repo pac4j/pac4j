@@ -28,8 +28,18 @@ public class CasRestBasicAuthClient extends AbstractCasRestClient {
 
     private String prefixHeader = HttpConstants.BASIC_HEADER_PREFIX;
 
+    /**
+     * <p>Constructor for CasRestBasicAuthClient.</p>
+     */
     public CasRestBasicAuthClient() {}
 
+    /**
+     * <p>Constructor for CasRestBasicAuthClient.</p>
+     *
+     * @param configuration a {@link org.pac4j.cas.config.CasConfiguration} object
+     * @param headerName a {@link java.lang.String} object
+     * @param prefixHeader a {@link java.lang.String} object
+     */
     public CasRestBasicAuthClient(final CasConfiguration configuration,
                                   final String headerName, final String prefixHeader) {
         this.configuration = configuration;
@@ -37,6 +47,7 @@ public class CasRestBasicAuthClient extends AbstractCasRestClient {
         this.prefixHeader = prefixHeader;
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         assertNotBlank("headerName", this.headerName);

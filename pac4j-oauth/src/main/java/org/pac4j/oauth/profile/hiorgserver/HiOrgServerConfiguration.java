@@ -10,8 +10,12 @@ import org.pac4j.oauth.config.OAuth20Configuration;
  */
 public class HiOrgServerConfiguration extends OAuth20Configuration {
 
+    /** Constant <code>DEFAULT_SCOPE="basic eigenedaten"</code> */
     public final static String DEFAULT_SCOPE = "basic eigenedaten";
 
+    /**
+     * <p>Constructor for HiOrgServerConfiguration.</p>
+     */
     public HiOrgServerConfiguration() {
         setScope(DEFAULT_SCOPE);
         setTokenAsHeader(true);

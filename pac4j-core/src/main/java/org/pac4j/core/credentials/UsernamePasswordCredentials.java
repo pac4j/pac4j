@@ -22,6 +22,12 @@ public class UsernamePasswordCredentials extends Credentials {
     @Getter
     private String password;
 
+    /**
+     * <p>Constructor for UsernamePasswordCredentials.</p>
+     *
+     * @param username a {@link java.lang.String} object
+     * @param password a {@link java.lang.String} object
+     */
     public UsernamePasswordCredentials(final String username, final String password) {
         this.username = username;
         this.password = password;

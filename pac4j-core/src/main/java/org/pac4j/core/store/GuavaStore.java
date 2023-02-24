@@ -36,14 +36,25 @@ public class GuavaStore<K, O> extends AbstractStore<K, O> {
     @Setter
     private TimeUnit timeUnit;
 
+    /**
+     * <p>Constructor for GuavaStore.</p>
+     */
     public GuavaStore() {}
 
+    /**
+     * <p>Constructor for GuavaStore.</p>
+     *
+     * @param size a int
+     * @param timeout a int
+     * @param timeUnit a {@link java.util.concurrent.TimeUnit} object
+     */
     public GuavaStore(final int size, final int timeout, final TimeUnit timeUnit) {
         this.size = size;
         this.timeout = timeout;
         this.timeUnit = timeUnit;
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         CommonHelper.assertTrue(this.size > 0, "size mut be greater than zero");
@@ -54,16 +65,19 @@ public class GuavaStore<K, O> extends AbstractStore<K, O> {
                 .expireAfterWrite(this.timeout, this.timeUnit).build();
     }
 
+    /** {@inheritDoc} */
     @Override
     protected Optional<O> internalGet(final K key) {
         return Optional.ofNullable(cache.getIfPresent(key));
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalSet(final K key, final O value) {
         cache.put(key, value);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalRemove(final K key) {
         cache.invalidate(key);

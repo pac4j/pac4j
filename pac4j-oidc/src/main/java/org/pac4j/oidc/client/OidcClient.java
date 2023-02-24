@@ -37,18 +37,28 @@ public class OidcClient extends IndirectClient {
     @Setter
     private OidcConfiguration configuration;
 
+    /**
+     * <p>Constructor for OidcClient.</p>
+     */
     public OidcClient() { }
 
+    /**
+     * <p>Constructor for OidcClient.</p>
+     *
+     * @param configuration a {@link org.pac4j.oidc.config.OidcConfiguration} object
+     */
     public OidcClient(final OidcConfiguration configuration) {
         setConfiguration(configuration);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void beforeInternalInit(final boolean forceReinit) {
         super.beforeInternalInit(forceReinit);
         assertNotNull("configuration", configuration);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         configuration.init(forceReinit);
@@ -61,6 +71,7 @@ public class OidcClient extends IndirectClient {
         setLogoutActionBuilderIfUndefined(new OidcLogoutActionBuilder(configuration));
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<UserProfile> renewUserProfile(final CallContext ctx, final UserProfile profile) {
         val oidcProfile = (OidcProfile) profile;
@@ -80,6 +91,7 @@ public class OidcClient extends IndirectClient {
         return Optional.empty();
     }
 
+    /** {@inheritDoc} */
     @Override
     public void notifySessionRenewal(final CallContext ctx, final String oldSessionId) {
         configuration.findSessionLogoutHandler().renewSession(ctx, oldSessionId);

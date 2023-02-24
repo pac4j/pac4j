@@ -37,28 +37,56 @@ public class MongoProfileService extends AbstractProfileService<MongoProfile> {
     private String usersDatabase = "users";
     private String usersCollection = "users";
 
+    /**
+     * <p>Constructor for MongoProfileService.</p>
+     */
     public MongoProfileService() {}
 
+    /**
+     * <p>Constructor for MongoProfileService.</p>
+     *
+     * @param mongoClient a {@link com.mongodb.client.MongoClient} object
+     */
     public MongoProfileService(final MongoClient mongoClient) {
         this.mongoClient = mongoClient;
     }
 
+    /**
+     * <p>Constructor for MongoProfileService.</p>
+     *
+     * @param mongoClient a {@link com.mongodb.client.MongoClient} object
+     * @param attributes a {@link java.lang.String} object
+     */
     public MongoProfileService(final MongoClient mongoClient, final String attributes) {
         this.mongoClient = mongoClient;
         setAttributes(attributes);
     }
 
+    /**
+     * <p>Constructor for MongoProfileService.</p>
+     *
+     * @param mongoClient a {@link com.mongodb.client.MongoClient} object
+     * @param attributes a {@link java.lang.String} object
+     * @param passwordEncoder a {@link org.pac4j.core.credentials.password.PasswordEncoder} object
+     */
     public MongoProfileService(final MongoClient mongoClient, final String attributes, final PasswordEncoder passwordEncoder) {
         this.mongoClient = mongoClient;
         setAttributes(attributes);
         setPasswordEncoder(passwordEncoder);
     }
 
+    /**
+     * <p>Constructor for MongoProfileService.</p>
+     *
+     * @param mongoClient a {@link com.mongodb.client.MongoClient} object
+     * @param passwordEncoder a {@link org.pac4j.core.credentials.password.PasswordEncoder} object
+     */
     public MongoProfileService(final MongoClient mongoClient, final PasswordEncoder passwordEncoder) {
         this.mongoClient = mongoClient;
         setPasswordEncoder(passwordEncoder);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         CommonHelper.assertNotNull("passwordEncoder", getPasswordEncoder());
@@ -72,6 +100,7 @@ public class MongoProfileService extends AbstractProfileService<MongoProfile> {
         super.internalInit(forceReinit);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void insert(final Map<String, Object> attributes) {
         val doc = new Document();
@@ -83,6 +112,7 @@ public class MongoProfileService extends AbstractProfileService<MongoProfile> {
         getCollection().insertOne(doc);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void update(final Map<String, Object> attributes) {
         String id = null;
@@ -102,6 +132,7 @@ public class MongoProfileService extends AbstractProfileService<MongoProfile> {
         getCollection().updateOne(eq(getIdAttribute(), id), new Document("$set", doc));
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void deleteById(final String id) {
 
@@ -109,6 +140,7 @@ public class MongoProfileService extends AbstractProfileService<MongoProfile> {
         getCollection().deleteOne(eq(getIdAttribute(), id));
     }
 
+    /** {@inheritDoc} */
     @Override
     protected List<Map<String, Object>> read(final List<String> names, final String key, final String value) {
 
@@ -135,6 +167,11 @@ public class MongoProfileService extends AbstractProfileService<MongoProfile> {
         return listAttributes;
     }
 
+    /**
+     * <p>getCollection.</p>
+     *
+     * @return a {@link com.mongodb.client.MongoCollection} object
+     */
     protected MongoCollection<Document> getCollection() {
         val db = mongoClient.getDatabase(usersDatabase);
         return db.getCollection(usersCollection);

@@ -17,18 +17,38 @@ public final class YahooInterest implements Serializable {
 
     private String interestCategory;
 
+    /**
+     * <p>Getter for the field <code>declaredInterests</code>.</p>
+     *
+     * @return a {@link java.util.List} object
+     */
     public List<String> getDeclaredInterests() {
         return declaredInterests;
     }
 
+    /**
+     * <p>Setter for the field <code>declaredInterests</code>.</p>
+     *
+     * @param declaredInterests a {@link java.util.List} object
+     */
     public void setDeclaredInterests(List<String> declaredInterests) {
         this.declaredInterests = declaredInterests;
     }
 
+    /**
+     * <p>Getter for the field <code>interestCategory</code>.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getInterestCategory() {
         return interestCategory;
     }
 
+    /**
+     * <p>Setter for the field <code>interestCategory</code>.</p>
+     *
+     * @param interestCategory a {@link java.lang.String} object
+     */
     public void setInterestCategory(String interestCategory) {
         this.interestCategory = interestCategory;
     }

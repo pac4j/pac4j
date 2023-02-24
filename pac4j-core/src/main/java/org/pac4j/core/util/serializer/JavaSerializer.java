@@ -23,6 +23,9 @@ public class JavaSerializer extends AbstractSerializer {
 
     private Set<Class<?>> trustedClasses;
 
+    /**
+     * <p>Constructor for JavaSerializer.</p>
+     */
     public JavaSerializer() {
         trustedPackages = new HashSet<>();
         trustedPackages.addAll(Arrays.asList("java.", "javax.", "[Ljava.lang.String", "org.pac4j.", "[Lorg.pac4j.",
@@ -32,10 +35,9 @@ public class JavaSerializer extends AbstractSerializer {
     }
 
     /**
-     * Serialize a Java object into a bytes array.
+     * {@inheritDoc}
      *
-     * @param o the object to serialize
-     * @return the bytes array of the serialized object
+     * Serialize a Java object into a bytes array.
      */
     @Override
     protected byte[] internalSerializeToBytes(final Object o) {
@@ -52,10 +54,9 @@ public class JavaSerializer extends AbstractSerializer {
     }
 
     /**
-     * Deserialize a bytes array into a Java object.
+     * {@inheritDoc}
      *
-     * @param bytes the serialized object as a bytes array
-     * @return the deserialized Java object
+     * Deserialize a bytes array into a Java object.
      */
     @Override
     protected Serializable internalDeserializeFromBytes(final byte[] bytes) {
@@ -87,26 +88,52 @@ public class JavaSerializer extends AbstractSerializer {
         return Collections.unmodifiableSet(trustedClasses);
     }
 
+    /**
+     * <p>addTrustedPackages.</p>
+     *
+     * @param trustedPackages a {@link java.util.Collection} object
+     */
     public void addTrustedPackages(final Collection<String> trustedPackages) {
         this.trustedPackages.addAll(trustedPackages);
     }
 
+    /**
+     * <p>addTrustedPackage.</p>
+     *
+     * @param trustedPackage a {@link java.lang.String} object
+     */
     public void addTrustedPackage(final String trustedPackage) {
         this.trustedPackages.add(trustedPackage);
     }
 
+    /**
+     * <p>clearTrustedPackages.</p>
+     */
     public void clearTrustedPackages() {
         this.trustedPackages.clear();
     }
 
+    /**
+     * <p>addTrustedClasses.</p>
+     *
+     * @param trustedClasses a {@link java.util.Collection} object
+     */
     public void addTrustedClasses(final Collection<Class<?>> trustedClasses) {
         this.trustedClasses.addAll(trustedClasses);
     }
 
+    /**
+     * <p>addTrustedClass.</p>
+     *
+     * @param trustedClass a {@link java.lang.Class} object
+     */
     public void addTrustedClass(final Class<?> trustedClass) {
         this.trustedClasses.add(trustedClass);
     }
 
+    /**
+     * <p>clearTrustedClasses.</p>
+     */
     public void clearTrustedClasses() {
         this.trustedClasses.clear();
     }

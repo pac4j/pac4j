@@ -18,6 +18,11 @@ public abstract class HttpAction extends TechnicalException {
 
     protected int code;
 
+    /**
+     * <p>Constructor for HttpAction.</p>
+     *
+     * @param code a int
+     */
     protected HttpAction(final int code) {
         super("Performing a " + code + " HTTP action");
         this.code = code;

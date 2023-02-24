@@ -26,7 +26,9 @@ import java.util.Map;
 @ToString
 public class JwtGenerator {
 
+    /** Constant <code>INTERNAL_ROLES="$int_roles"</code> */
     public static final String INTERNAL_ROLES = "$int_roles";
+    /** Constant <code>INTERNAL_LINKEDID="$int_linkid"</code> */
     public static final String INTERNAL_LINKEDID = "$int_linkid";
 
     private SignatureConfiguration signatureConfiguration;
@@ -35,12 +37,26 @@ public class JwtGenerator {
 
     private Date expirationTime;
 
+    /**
+     * <p>Constructor for JwtGenerator.</p>
+     */
     public JwtGenerator() {}
 
+    /**
+     * <p>Constructor for JwtGenerator.</p>
+     *
+     * @param signatureConfiguration a {@link org.pac4j.jwt.config.signature.SignatureConfiguration} object
+     */
     public JwtGenerator(final SignatureConfiguration signatureConfiguration) {
         this.signatureConfiguration = signatureConfiguration;
     }
 
+    /**
+     * <p>Constructor for JwtGenerator.</p>
+     *
+     * @param signatureConfiguration a {@link org.pac4j.jwt.config.signature.SignatureConfiguration} object
+     * @param encryptionConfiguration a {@link org.pac4j.jwt.config.encryption.EncryptionConfiguration} object
+     */
     public JwtGenerator(final SignatureConfiguration signatureConfiguration, final EncryptionConfiguration encryptionConfiguration) {
         this.signatureConfiguration = signatureConfiguration;
         this.encryptionConfiguration = encryptionConfiguration;
@@ -101,12 +117,23 @@ public class JwtGenerator {
         }
     }
 
+    /**
+     * <p>verifyProfile.</p>
+     *
+     * @param profile a {@link org.pac4j.core.profile.UserProfile} object
+     */
     protected void verifyProfile(final UserProfile profile) {
         CommonHelper.assertNotNull("profile", profile);
         CommonHelper.assertNull(INTERNAL_ROLES, profile.getAttribute(INTERNAL_ROLES));
         CommonHelper.assertNull(INTERNAL_LINKEDID, profile.getAttribute(INTERNAL_LINKEDID));
     }
 
+    /**
+     * <p>buildJwtClaimsSet.</p>
+     *
+     * @param profile a {@link org.pac4j.core.profile.UserProfile} object
+     * @return a {@link com.nimbusds.jwt.JWTClaimsSet} object
+     */
     protected JWTClaimsSet buildJwtClaimsSet(final UserProfile profile) {
         // claims builder with subject and issue time
         val builder = new JWTClaimsSet.Builder()
@@ -130,10 +157,20 @@ public class JwtGenerator {
         return builder.build();
     }
 
+    /**
+     * <p>Getter for the field <code>expirationTime</code>.</p>
+     *
+     * @return a {@link java.util.Date} object
+     */
     public Date getExpirationTime() {
         return new Date(expirationTime.getTime());
     }
 
+    /**
+     * <p>Setter for the field <code>expirationTime</code>.</p>
+     *
+     * @param expirationTime a {@link java.util.Date} object
+     */
     public void setExpirationTime(final Date expirationTime) {
         this.expirationTime = new Date(expirationTime.getTime());
     }

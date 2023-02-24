@@ -13,7 +13,13 @@ import org.opensaml.core.xml.config.XMLObjectProviderRegistry;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * <p>DefaultConfigurationManager class.</p>
+ *
+ * @author bidou
+ */
 public class DefaultConfigurationManager implements ConfigurationManager {
+    /** {@inheritDoc} */
     @Override
     public void configure() {
         XMLObjectProviderRegistry registry;

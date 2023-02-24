@@ -8,14 +8,30 @@ package org.pac4j.oidc.exceptions;
  */
 public class OidcIssuerMismatchException extends OidcException {
 
+    /**
+     * <p>Constructor for OidcIssuerMismatchException.</p>
+     *
+     * @param message a {@link java.lang.String} object
+     */
     public OidcIssuerMismatchException(String message) {
         super(message);
     }
 
+    /**
+     * <p>Constructor for OidcIssuerMismatchException.</p>
+     *
+     * @param t a {@link java.lang.Throwable} object
+     */
     public OidcIssuerMismatchException(Throwable t) {
         super(t);
     }
 
+    /**
+     * <p>Constructor for OidcIssuerMismatchException.</p>
+     *
+     * @param message a {@link java.lang.String} object
+     * @param t a {@link java.lang.Throwable} object
+     */
     public OidcIssuerMismatchException(String message, Throwable t) {
         super(message, t);
     }

@@ -66,6 +66,7 @@ public class DigestCredentials extends TokenCredentials {
      * This calculates the server digest value based on user stored password. If the server stores password in clear format
      * then passwordAlreadyEncoded should be false. If the server stores the password in ha1, digest then the
      * passwordAlreadyEncoded should be true.
+     *
      * @param passwordAlreadyEncoded false if the server stored password is in clear, true otherwise
      * @param password user password stored server-side
      * @return digest value. This value must match the client "response" value in the Authorization http header

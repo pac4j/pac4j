@@ -16,13 +16,22 @@ import org.pac4j.oidc.profile.google.GoogleOidcProfile;
  */
 public class GoogleOidcClient extends OidcClient {
 
+    /**
+     * <p>Constructor for GoogleOidcClient.</p>
+     */
     public GoogleOidcClient() {
     }
 
+    /**
+     * <p>Constructor for GoogleOidcClient.</p>
+     *
+     * @param configuration a {@link org.pac4j.oidc.config.OidcConfiguration} object
+     */
     public GoogleOidcClient(final OidcConfiguration configuration) {
         super(configuration);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         getConfiguration().setDiscoveryURIIfUndefined("https://accounts.google.com/.well-known/openid-configuration");

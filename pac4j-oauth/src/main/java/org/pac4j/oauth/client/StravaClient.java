@@ -26,14 +26,24 @@ public class StravaClient extends OAuth20Client {
      */
     private String approvalPrompt = "auto";
 
+    /**
+     * <p>Constructor for StravaClient.</p>
+     */
     public StravaClient() {
     }
 
+    /**
+     * <p>Constructor for StravaClient.</p>
+     *
+     * @param key a {@link java.lang.String} object
+     * @param secret a {@link java.lang.String} object
+     */
     public StravaClient(final String key, final String secret) {
         setKey(key);
         setSecret(secret);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         configuration.setApi(new StravaApi20(approvalPrompt));
@@ -44,18 +54,38 @@ public class StravaClient extends OAuth20Client {
         super.internalInit(forceReinit);
     }
 
+    /**
+     * <p>Getter for the field <code>approvalPrompt</code>.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getApprovalPrompt() {
         return approvalPrompt;
     }
 
+    /**
+     * <p>Setter for the field <code>approvalPrompt</code>.</p>
+     *
+     * @param approvalPrompt a {@link java.lang.String} object
+     */
     public void setApprovalPrompt(final String approvalPrompt) {
         this.approvalPrompt = approvalPrompt;
     }
 
+    /**
+     * <p>getScope.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getScope() {
         return getConfiguration().getScope();
     }
 
+    /**
+     * <p>setScope.</p>
+     *
+     * @param scope a {@link java.lang.String} object
+     */
     public void setScope(final String scope) {
         getConfiguration().setScope(scope);
     }

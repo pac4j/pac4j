@@ -26,12 +26,21 @@ public class IpRegexpAuthorizer implements Authorizer {
 
     private Pattern pattern;
 
+    /**
+     * <p>Constructor for IpRegexpAuthorizer.</p>
+     */
     public IpRegexpAuthorizer() { }
 
+    /**
+     * <p>Constructor for IpRegexpAuthorizer.</p>
+     *
+     * @param regexpPattern a {@link java.lang.String} object
+     */
     public IpRegexpAuthorizer(final String regexpPattern) {
         setRegexpPattern(regexpPattern);
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean isAuthorized(final WebContext context, final SessionStore sessionStore, final List<UserProfile> profile) {
         CommonHelper.assertNotNull("pattern", pattern);
@@ -40,11 +49,17 @@ public class IpRegexpAuthorizer implements Authorizer {
         return this.pattern.matcher(ip).matches();
     }
 
+    /**
+     * <p>setRegexpPattern.</p>
+     *
+     * @param regexpPattern a {@link java.lang.String} object
+     */
     public void setRegexpPattern(final String regexpPattern) {
         this.regexPattern = regexpPattern;
         this.pattern = Pattern.compile(regexpPattern);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return "IpRegexpAuthorizer[" + this.regexPattern + "]";

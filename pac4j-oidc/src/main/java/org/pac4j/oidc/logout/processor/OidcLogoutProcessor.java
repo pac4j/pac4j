@@ -23,11 +23,17 @@ public class OidcLogoutProcessor implements LogoutProcessor {
 
     protected OidcConfiguration configuration;
 
+    /**
+     * <p>Constructor for OidcLogoutProcessor.</p>
+     *
+     * @param configuration a {@link org.pac4j.oidc.config.OidcConfiguration} object
+     */
     public OidcLogoutProcessor(final OidcConfiguration configuration) {
         CommonHelper.assertNotNull("configuration", configuration);
         this.configuration = configuration;
     }
 
+    /** {@inheritDoc} */
     @Override
     public HttpAction processLogout(final CallContext ctx, final Credentials logoutCredentials) {
         assertTrue(logoutCredentials instanceof SessionKeyCredentials, "credentials must be of type SessionKeyCredentials");

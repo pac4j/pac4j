@@ -22,39 +22,79 @@ public class HeaderExtractor implements CredentialsExtractor {
 
     private boolean trimValue;
 
+    /**
+     * <p>Getter for the field <code>headerName</code>.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getHeaderName() {
         return headerName;
     }
 
+    /**
+     * <p>Setter for the field <code>headerName</code>.</p>
+     *
+     * @param headerName a {@link java.lang.String} object
+     */
     public void setHeaderName(String headerName) {
         this.headerName = headerName;
     }
 
+    /**
+     * <p>Getter for the field <code>prefixHeader</code>.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getPrefixHeader() {
         return prefixHeader;
     }
 
+    /**
+     * <p>Setter for the field <code>prefixHeader</code>.</p>
+     *
+     * @param prefixHeader a {@link java.lang.String} object
+     */
     public void setPrefixHeader(String prefixHeader) {
         this.prefixHeader = prefixHeader;
     }
 
+    /**
+     * <p>isTrimValue.</p>
+     *
+     * @return a boolean
+     */
     public boolean isTrimValue() {
         return trimValue;
     }
 
+    /**
+     * <p>Setter for the field <code>trimValue</code>.</p>
+     *
+     * @param trimValue a boolean
+     */
     public void setTrimValue(boolean trimValue) {
         this.trimValue = trimValue;
     }
 
+    /**
+     * <p>Constructor for HeaderExtractor.</p>
+     */
     public HeaderExtractor() {
         // empty constructor as needed to be instanciated by beanutils
     }
 
+    /**
+     * <p>Constructor for HeaderExtractor.</p>
+     *
+     * @param headerName a {@link java.lang.String} object
+     * @param prefixHeader a {@link java.lang.String} object
+     */
     public HeaderExtractor(final String headerName, final String prefixHeader) {
         this.headerName = headerName;
         this.prefixHeader = prefixHeader;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<Credentials> extract(final CallContext ctx) {
         CommonHelper.assertNotBlank("headerName", this.headerName);

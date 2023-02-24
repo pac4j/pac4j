@@ -18,26 +18,56 @@ public final class FacebookGroup implements Serializable {
 
     private String privacy;
 
+    /**
+     * <p>Getter for the field <code>id</code>.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getId() {
         return id;
     }
 
+    /**
+     * <p>Setter for the field <code>id</code>.</p>
+     *
+     * @param id a {@link java.lang.String} object
+     */
     public void setId(String id) {
         this.id = id;
     }
 
+    /**
+     * <p>Getter for the field <code>name</code>.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * <p>Setter for the field <code>name</code>.</p>
+     *
+     * @param name a {@link java.lang.String} object
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * <p>Getter for the field <code>privacy</code>.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getPrivacy() {
         return privacy;
     }
 
+    /**
+     * <p>Setter for the field <code>privacy</code>.</p>
+     *
+     * @param privacy a {@link java.lang.String} object
+     */
     public void setPrivacy(String privacy) {
         this.privacy = privacy;
     }

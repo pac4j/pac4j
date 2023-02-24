@@ -33,11 +33,17 @@ public class OidcLogoutActionBuilder implements LogoutActionBuilder {
 
     private AjaxRequestResolver ajaxRequestResolver = new DefaultAjaxRequestResolver();
 
+    /**
+     * <p>Constructor for OidcLogoutActionBuilder.</p>
+     *
+     * @param configuration a {@link org.pac4j.oidc.config.OidcConfiguration} object
+     */
     public OidcLogoutActionBuilder(final OidcConfiguration configuration) {
         CommonHelper.assertNotNull("configuration", configuration);
         this.configuration = configuration;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<RedirectionAction> getLogoutAction(final CallContext ctx, final UserProfile currentProfile, final String targetUrl) {
         val logoutUrl = configuration.findLogoutUrl();
@@ -69,10 +75,20 @@ public class OidcLogoutActionBuilder implements LogoutActionBuilder {
         return Optional.empty();
     }
 
+    /**
+     * <p>Getter for the field <code>ajaxRequestResolver</code>.</p>
+     *
+     * @return a {@link org.pac4j.core.http.ajax.AjaxRequestResolver} object
+     */
     public AjaxRequestResolver getAjaxRequestResolver() {
         return ajaxRequestResolver;
     }
 
+    /**
+     * <p>Setter for the field <code>ajaxRequestResolver</code>.</p>
+     *
+     * @param ajaxRequestResolver a {@link org.pac4j.core.http.ajax.AjaxRequestResolver} object
+     */
     public void setAjaxRequestResolver(final AjaxRequestResolver ajaxRequestResolver) {
         CommonHelper.assertNotNull("ajaxRequestResolver", ajaxRequestResolver);
         this.ajaxRequestResolver = ajaxRequestResolver;

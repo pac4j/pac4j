@@ -20,10 +20,17 @@ import java.util.Optional;
  */
 public class OAuth10CredentialsExtractor extends OAuthCredentialsExtractor {
 
+    /**
+     * <p>Constructor for OAuth10CredentialsExtractor.</p>
+     *
+     * @param configuration a {@link org.pac4j.oauth.config.OAuth10Configuration} object
+     * @param client a {@link org.pac4j.core.client.IndirectClient} object
+     */
     public OAuth10CredentialsExtractor(final OAuth10Configuration configuration, final IndirectClient client) {
         super(configuration, client);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected Optional<Credentials> getOAuthCredentials(final WebContext context, final SessionStore sessionStore) {
         val tokenParameter = context.getRequestParameter(OAuth10Configuration.OAUTH_TOKEN);

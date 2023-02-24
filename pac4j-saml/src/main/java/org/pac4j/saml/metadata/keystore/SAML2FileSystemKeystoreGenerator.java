@@ -15,7 +15,7 @@ import java.security.cert.X509Certificate;
 import java.util.regex.Pattern;
 
 /**
- * This is {@link SAML2FileSystemKeystoreGenerator}.
+ * This is {@link org.pac4j.saml.metadata.keystore.SAML2FileSystemKeystoreGenerator}.
  *
  * @author Misagh Moayyed
  * @since 4.0.1
@@ -23,6 +23,11 @@ import java.util.regex.Pattern;
 public class SAML2FileSystemKeystoreGenerator extends BaseSAML2KeystoreGenerator {
     private static final Pattern NORMALIZE_PATTERN = Pattern.compile("[^a-zA-Z0-9-_\\.]");
 
+    /**
+     * <p>Constructor for SAML2FileSystemKeystoreGenerator.</p>
+     *
+     * @param configuration a {@link org.pac4j.saml.config.SAML2Configuration} object
+     */
     public SAML2FileSystemKeystoreGenerator(final SAML2Configuration configuration) {
         super(configuration);
     }
@@ -54,6 +59,7 @@ public class SAML2FileSystemKeystoreGenerator extends BaseSAML2KeystoreGenerator
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean shouldGenerate() {
         validate();
@@ -61,6 +67,7 @@ public class SAML2FileSystemKeystoreGenerator extends BaseSAML2KeystoreGenerator
         return keystoreFile != null && !keystoreFile.exists() || super.shouldGenerate();
     }
 
+    /** {@inheritDoc} */
     @Override
     public InputStream retrieve() throws Exception {
         validate();
@@ -73,6 +80,7 @@ public class SAML2FileSystemKeystoreGenerator extends BaseSAML2KeystoreGenerator
         CommonHelper.assertNotBlank("keystorePassword", saml2Configuration.getKeystorePassword());
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void store(final KeyStore ks, final X509Certificate certificate,
                          final PrivateKey privateKey) throws Exception {

@@ -16,18 +16,28 @@ public final class GenderConverter extends AbstractAttributeConverter {
     private final Pattern maleText;
     private final Pattern femaleText;
 
+    /**
+     * <p>Constructor for GenderConverter.</p>
+     */
     public GenderConverter() {
         super(Gender.class);
         this.maleText = Pattern.compile("(^m$)|(^male$)", Pattern.CASE_INSENSITIVE);
         this.femaleText = Pattern.compile("(^f$)|(^female$)", Pattern.CASE_INSENSITIVE);
     }
 
+    /**
+     * <p>Constructor for GenderConverter.</p>
+     *
+     * @param maleText a {@link java.lang.String} object
+     * @param femaleText a {@link java.lang.String} object
+     */
     public GenderConverter(final String maleText, final String femaleText) {
         super(Gender.class);
         this.maleText = Pattern.compile(maleText);
         this.femaleText = Pattern.compile(femaleText);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected Gender internalConvert(final Object attribute) {
         val s = attribute.toString().toLowerCase();

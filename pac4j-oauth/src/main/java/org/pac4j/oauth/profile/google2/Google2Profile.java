@@ -15,25 +15,34 @@ public class Google2Profile extends OAuth20Profile {
 
     private static final long serialVersionUID = -7486869356444327783L;
 
+    /**
+     * <p>getEmailVerified.</p>
+     *
+     * @return a {@link java.lang.Boolean} object
+     */
     public Boolean getEmailVerified() {
         return (Boolean) getAttribute(Google2ProfileDefinition.EMAIL_VERIFIED);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getFirstName() {
         return (String) getAttribute(Google2ProfileDefinition.GIVEN_NAME);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getDisplayName() {
         return (String) getAttribute(Google2ProfileDefinition.NAME);
     }
 
+    /** {@inheritDoc} */
     @Override
     public URI getPictureUrl() {
         return (URI) getAttribute(Google2ProfileDefinition.PICTURE);
     }
 
+    /** {@inheritDoc} */
     @Override
     public URI getProfileUrl() {
         return (URI) getAttribute(Google2ProfileDefinition.PROFILE);

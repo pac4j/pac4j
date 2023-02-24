@@ -32,7 +32,7 @@ import java.util.Collections;
 /**
  * Resolve and download idp metadata to form a metadata resolver.
  * <p>
- * The resolver supports proxies using {@link Proxy} when fetching metadata over URL resources.
+ * The resolver supports proxies using {@link java.net.Proxy} when fetching metadata over URL resources.
  *
  * @author Misagh Moayyed
  * @since 1.7
@@ -49,6 +49,11 @@ public class SAML2IdentityProviderMetadataResolver extends SpringResourceLoader<
 
     private final SAML2Configuration configuration;
 
+    /**
+     * <p>Constructor for SAML2IdentityProviderMetadataResolver.</p>
+     *
+     * @param configuration a {@link org.pac4j.saml.config.SAML2Configuration} object
+     */
     public SAML2IdentityProviderMetadataResolver(final SAML2Configuration configuration) {
         super(configuration.getIdentityProviderMetadataResource());
         if (configuration.getSslSocketFactory() != null) {
@@ -60,15 +65,24 @@ public class SAML2IdentityProviderMetadataResolver extends SpringResourceLoader<
         this.configuration = configuration;
     }
 
+    /** {@inheritDoc} */
     @Override
     public final MetadataResolver resolve() {
         return load();
     }
 
+    /**
+     * <p>internalLoad.</p>
+     */
     protected void internalLoad() {
         this.loaded = initializeMetadataResolver();
     }
 
+    /**
+     * <p>initializeMetadataResolver.</p>
+     *
+     * @return a {@link org.opensaml.saml.metadata.resolver.impl.DOMMetadataResolver} object
+     */
     protected DOMMetadataResolver initializeMetadataResolver() {
         try (var in = SpringResourceHelper.getResourceInputStream(
             configuration.getIdentityProviderMetadataResource(),
@@ -120,6 +134,7 @@ public class SAML2IdentityProviderMetadataResolver extends SpringResourceLoader<
         return idpEntityId;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getEntityId() {
         val md = getEntityDescriptorElement();
@@ -132,6 +147,7 @@ public class SAML2IdentityProviderMetadataResolver extends SpringResourceLoader<
         throw new SAMLException("No idp entityId found");
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getMetadata() {
         if (getEntityDescriptorElement() != null) {
@@ -140,6 +156,7 @@ public class SAML2IdentityProviderMetadataResolver extends SpringResourceLoader<
         throw new TechnicalException("Metadata cannot be retrieved because entity descriptor is null");
     }
 
+    /** {@inheritDoc} */
     @Override
     public final XMLObject getEntityDescriptorElement() {
         try {

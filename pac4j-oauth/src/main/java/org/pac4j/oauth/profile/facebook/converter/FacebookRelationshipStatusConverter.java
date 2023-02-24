@@ -12,6 +12,7 @@ import org.pac4j.oauth.profile.facebook.FacebookRelationshipStatus;
  */
 public final class FacebookRelationshipStatusConverter implements AttributeConverter {
 
+    /** {@inheritDoc} */
     @Override
     public FacebookRelationshipStatus convert(final Object attribute) {
         if (attribute != null) {

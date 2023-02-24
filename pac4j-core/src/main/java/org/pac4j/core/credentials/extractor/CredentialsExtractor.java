@@ -1,9 +1,7 @@
 package org.pac4j.core.credentials.extractor;
 
 import org.pac4j.core.context.CallContext;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.core.exception.CredentialsException;
 
 import java.util.Optional;
 
@@ -17,9 +15,9 @@ import java.util.Optional;
 public interface CredentialsExtractor {
 
     /**
-     * Extract the {@link Credentials} from a {@link WebContext}
+     * Extract the {@link org.pac4j.core.credentials.Credentials} from a {@link org.pac4j.core.context.WebContext}
      * and return <code>Optional.empty()</code> if no credentials are present
-     * or throw a {@link CredentialsException} if it cannot get it.
+     * or throw a {@link org.pac4j.core.exception.CredentialsException} if it cannot get it.
      *
      * @param ctx the current context
      * @return the credentials (optional)

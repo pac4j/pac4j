@@ -25,15 +25,22 @@ public class SAML2FileSystemMetadataGenerator extends BaseSAML2MetadataGenerator
 
     private final Resource metadataResource;
 
+    /**
+     * <p>Constructor for SAML2FileSystemMetadataGenerator.</p>
+     *
+     * @param metadataResource a {@link org.springframework.core.io.Resource} object
+     */
     public SAML2FileSystemMetadataGenerator(Resource metadataResource) {
         this.metadataResource = metadataResource;
     }
 
+    /** {@inheritDoc} */
     @Override
     protected AbstractMetadataResolver createMetadataResolver() throws Exception {
         return new FilesystemMetadataResolver(metadataResource.getFile());
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean storeMetadata(final String metadata, final boolean force) throws Exception {
         if (metadataResource == null || CommonHelper.isBlank(metadata)) {

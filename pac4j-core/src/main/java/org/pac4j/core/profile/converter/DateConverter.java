@@ -21,20 +21,35 @@ public class DateConverter extends AbstractAttributeConverter {
 
     protected Locale locale;
 
+    /**
+     * <p>Constructor for DateConverter.</p>
+     */
     public DateConverter() {
         this(DateTimeFormatter.ISO_LOCAL_DATE_TIME.toString());
     }
 
+    /**
+     * <p>Constructor for DateConverter.</p>
+     *
+     * @param format a {@link java.lang.String} object
+     */
     public DateConverter(final String format) {
         super(Date.class);
         this.format = format;
     }
 
+    /**
+     * <p>Constructor for DateConverter.</p>
+     *
+     * @param format a {@link java.lang.String} object
+     * @param locale a {@link java.util.Locale} object
+     */
     public DateConverter(final String format, final Locale locale) {
         this(format);
         this.locale = locale;
     }
 
+    /** {@inheritDoc} */
     @Override
     protected Date internalConvert(final Object attribute) {
         if (attribute instanceof String s) {

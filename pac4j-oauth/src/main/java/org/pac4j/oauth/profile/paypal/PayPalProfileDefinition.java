@@ -21,12 +21,20 @@ import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
  */
 public class PayPalProfileDefinition extends OAuthProfileDefinition {
 
+    /** Constant <code>ADDRESS="address"</code> */
     public static final String ADDRESS = "address";
+    /** Constant <code>LANGUAGE="language"</code> */
     public static final String LANGUAGE = "language";
+    /** Constant <code>ZONEINFO="zoneinfo"</code> */
     public static final String ZONEINFO = "zoneinfo";
+    /** Constant <code>NAME="name"</code> */
     public static final String NAME = "name";
+    /** Constant <code>GIVEN_NAME="given_name"</code> */
     public static final String GIVEN_NAME = "given_name";
 
+    /**
+     * <p>Constructor for PayPalProfileDefinition.</p>
+     */
     public PayPalProfileDefinition() {
         super(x -> new PayPalProfile());
         Arrays.stream(new String[] {ZONEINFO, NAME, GIVEN_NAME}).forEach(a -> primary(a, Converters.STRING));
@@ -34,11 +42,13 @@ public class PayPalProfileDefinition extends OAuthProfileDefinition {
         primary(LANGUAGE, Converters.LOCALE);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getProfileUrl(final Token accessToken, final OAuthConfiguration configuration) {
         return "https://api.paypal.com/v1/identity/openidconnect/userinfo?schema=openid";
     }
 
+    /** {@inheritDoc} */
     @Override
     public PayPalProfile extractUserProfile(final String body) {
         val profile = (PayPalProfile) newProfile();

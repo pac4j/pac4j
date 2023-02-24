@@ -8,10 +8,14 @@ package org.pac4j.core.profile.converter;
  */
 public final class BooleanConverter extends AbstractAttributeConverter {
 
+    /**
+     * <p>Constructor for BooleanConverter.</p>
+     */
     public BooleanConverter() {
         super(Boolean.class);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected Boolean internalConvert(final Object attribute) {
         if (attribute instanceof String) {
@@ -22,6 +26,7 @@ public final class BooleanConverter extends AbstractAttributeConverter {
         return null;
     }
 
+    /** {@inheritDoc} */
     @Override
     protected Boolean defaultValue() {
         return Boolean.FALSE;

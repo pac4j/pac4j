@@ -11,7 +11,6 @@ import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.extractor.BasicAuthExtractor;
 import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.util.Pac4jConstants;
@@ -24,7 +23,7 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
 /**
  * <p>This class is the client to authenticate users through HTTP basic auth.</p>
  * <p>For authentication, the user is redirected to the callback url. If the user is not authenticated by basic auth, a
- * specific exception : {@link HttpAction} is returned which must be handled by the application to force
+ * specific exception : {@link org.pac4j.core.exception.http.HttpAction} is returned which must be handled by the application to force
  * authentication.</p>
  *
  * @author Jerome Leleu
@@ -37,22 +36,43 @@ public class IndirectBasicAuthClient extends IndirectClient {
 
     private String realmName = Pac4jConstants.DEFAULT_REALM_NAME;
 
+    /**
+     * <p>Constructor for IndirectBasicAuthClient.</p>
+     */
     public IndirectBasicAuthClient() {}
 
+    /**
+     * <p>Constructor for IndirectBasicAuthClient.</p>
+     *
+     * @param usernamePasswordAuthenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
+     */
     public IndirectBasicAuthClient(final Authenticator usernamePasswordAuthenticator) {
         setAuthenticatorIfUndefined(usernamePasswordAuthenticator);
     }
 
+    /**
+     * <p>Constructor for IndirectBasicAuthClient.</p>
+     *
+     * @param realmName a {@link java.lang.String} object
+     * @param usernamePasswordAuthenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
+     */
     public IndirectBasicAuthClient(final String realmName, final Authenticator usernamePasswordAuthenticator) {
         this.realmName = realmName;
         setAuthenticatorIfUndefined(usernamePasswordAuthenticator);
     }
 
+    /**
+     * <p>Constructor for IndirectBasicAuthClient.</p>
+     *
+     * @param usernamePasswordAuthenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
+     * @param profileCreator a {@link org.pac4j.core.profile.creator.ProfileCreator} object
+     */
     public IndirectBasicAuthClient(final Authenticator usernamePasswordAuthenticator, final ProfileCreator profileCreator) {
         setAuthenticatorIfUndefined(usernamePasswordAuthenticator);
         setProfileCreatorIfUndefined(profileCreator);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         assertNotBlank("realmName", this.realmName);
@@ -64,6 +84,7 @@ public class IndirectBasicAuthClient extends IndirectClient {
         setCredentialsExtractorIfUndefined(new BasicAuthExtractor());
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<Credentials> getCredentials(final CallContext ctx) {
         init();
@@ -88,6 +109,7 @@ public class IndirectBasicAuthClient extends IndirectClient {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     protected Optional<Credentials> internalValidateCredentials(final CallContext ctx, final Credentials credentials) {
         assertNotNull("authenticator", getAuthenticator());

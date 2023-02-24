@@ -13,5 +13,12 @@ import org.pac4j.core.exception.http.HttpAction;
 @FunctionalInterface
 public interface LogoutProcessor {
 
+    /**
+     * <p>processLogout.</p>
+     *
+     * @param ctx a {@link org.pac4j.core.context.CallContext} object
+     * @param credentials a {@link org.pac4j.core.credentials.Credentials} object
+     * @return a {@link org.pac4j.core.exception.http.HttpAction} object
+     */
     HttpAction processLogout(CallContext ctx, Credentials credentials);
 }

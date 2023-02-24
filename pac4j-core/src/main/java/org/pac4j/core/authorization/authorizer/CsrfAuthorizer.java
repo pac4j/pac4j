@@ -33,19 +33,36 @@ public class CsrfAuthorizer implements Authorizer {
 
     private boolean checkAllRequests = false;
 
+    /**
+     * <p>Constructor for CsrfAuthorizer.</p>
+     */
     public CsrfAuthorizer() {
     }
 
+    /**
+     * <p>Constructor for CsrfAuthorizer.</p>
+     *
+     * @param parameterName a {@link java.lang.String} object
+     * @param headerName a {@link java.lang.String} object
+     */
     public CsrfAuthorizer(final String parameterName, final String headerName) {
         this.parameterName = parameterName;
         this.headerName = headerName;
     }
 
+    /**
+     * <p>Constructor for CsrfAuthorizer.</p>
+     *
+     * @param parameterName a {@link java.lang.String} object
+     * @param headerName a {@link java.lang.String} object
+     * @param checkAllRequests a boolean
+     */
     public CsrfAuthorizer(final String parameterName, final String headerName, final boolean checkAllRequests) {
         this(parameterName, headerName);
         this.checkAllRequests = checkAllRequests;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean isAuthorized(final WebContext context, final SessionStore sessionStore, final List<UserProfile> profiles) {
         val checkRequest = checkAllRequests || isPost(context) || isPut(context) || isPatch(context) || isDelete(context);
@@ -81,6 +98,13 @@ public class CsrfAuthorizer implements Authorizer {
         return true;
     }
 
+    /**
+     * <p>hashEquals.</p>
+     *
+     * @param a a {@link java.lang.String} object
+     * @param b a {@link java.lang.String} object
+     * @return a boolean
+     */
     protected boolean hashEquals(final String a, final String b) {
         if (a == null || b == null) {
             return false;

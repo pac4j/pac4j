@@ -10,14 +10,30 @@ package org.pac4j.oidc.exceptions;
 public class OidcUnsupportedClientAuthMethodException extends
     OidcException {
 
+    /**
+     * <p>Constructor for OidcUnsupportedClientAuthMethodException.</p>
+     *
+     * @param message a {@link java.lang.String} object
+     */
     public OidcUnsupportedClientAuthMethodException(String message) {
         super(message);
     }
 
+    /**
+     * <p>Constructor for OidcUnsupportedClientAuthMethodException.</p>
+     *
+     * @param t a {@link java.lang.Throwable} object
+     */
     public OidcUnsupportedClientAuthMethodException(Throwable t) {
         super(t);
     }
 
+    /**
+     * <p>Constructor for OidcUnsupportedClientAuthMethodException.</p>
+     *
+     * @param message a {@link java.lang.String} object
+     * @param t a {@link java.lang.Throwable} object
+     */
     public OidcUnsupportedClientAuthMethodException(String message, Throwable t) {
         super(message, t);
     }

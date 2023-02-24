@@ -16,22 +16,37 @@ import java.util.List;
  */
 public class IsAuthenticatedAuthorizer extends AbstractCheckAuthenticationAuthorizer {
 
+    /**
+     * <p>Constructor for IsAuthenticatedAuthorizer.</p>
+     */
     public IsAuthenticatedAuthorizer() {}
 
+    /**
+     * <p>Constructor for IsAuthenticatedAuthorizer.</p>
+     *
+     * @param redirectionUrl a {@link java.lang.String} object
+     */
     public IsAuthenticatedAuthorizer(final String redirectionUrl) {
         super(redirectionUrl);
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean isAuthorized(final WebContext context, final SessionStore sessionStore, final List<UserProfile> profiles) {
         return isAnyAuthorized(context, sessionStore, profiles);
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean isProfileAuthorized(final WebContext context, final SessionStore sessionStore, final UserProfile profile) {
         return profile != null && !(profile instanceof AnonymousProfile);
     }
 
+    /**
+     * <p>isAuthenticated.</p>
+     *
+     * @return a {@link org.pac4j.core.authorization.authorizer.IsAuthenticatedAuthorizer} object
+     */
     public static IsAuthenticatedAuthorizer isAuthenticated() {
         return new IsAuthenticatedAuthorizer();
     }

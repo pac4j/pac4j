@@ -13,17 +13,22 @@ import org.pac4j.jee.context.JEEContext;
 import java.io.IOException;
 
 /**
- * The HTTP action adapter for the {@link JEEContext}.
+ * The HTTP action adapter for the {@link org.pac4j.jee.context.JEEContext}.
  *
  * @author Jerome Leleu
  * @since 1.9.0
  */
 public class JEEHttpActionAdapter implements HttpActionAdapter {
 
+    /** Constant <code>INSTANCE</code> */
     public static final JEEHttpActionAdapter INSTANCE = new JEEHttpActionAdapter();
 
+    /**
+     * <p>Constructor for JEEHttpActionAdapter.</p>
+     */
     protected JEEHttpActionAdapter() {}
 
+    /** {@inheritDoc} */
     @Override
     public Object adapt(final HttpAction action, final WebContext context) {
         if (action != null) {

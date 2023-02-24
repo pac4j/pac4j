@@ -9,5 +9,10 @@ package org.pac4j.core.exception.http;
 @FunctionalInterface
 public interface WithContentAction {
 
+    /**
+     * <p>getContent.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     String getContent();
 }

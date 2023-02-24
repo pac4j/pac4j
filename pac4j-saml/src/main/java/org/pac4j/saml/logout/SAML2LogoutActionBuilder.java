@@ -39,6 +39,11 @@ public class SAML2LogoutActionBuilder implements LogoutActionBuilder {
 
     protected final SAML2Client saml2Client;
 
+    /**
+     * <p>Constructor for SAML2LogoutActionBuilder.</p>
+     *
+     * @param client a {@link org.pac4j.saml.client.SAML2Client} object
+     */
     public SAML2LogoutActionBuilder(final SAML2Client client) {
         this.saml2Client = client;
         this.saml2LogoutRequestMessageSender = client.getLogoutRequestMessageSender();
@@ -48,6 +53,7 @@ public class SAML2LogoutActionBuilder implements LogoutActionBuilder {
         this.saml2LogoutRequestBuilder = new SAML2LogoutRequestBuilder(configuration);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<RedirectionAction> getLogoutAction(final CallContext ctx, final UserProfile currentProfile, final String targetUrl) {
         try {

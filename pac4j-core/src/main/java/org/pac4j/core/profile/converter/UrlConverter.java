@@ -13,10 +13,14 @@ import java.net.URI;
  */
 public class UrlConverter extends AbstractAttributeConverter {
 
+    /**
+     * <p>Constructor for UrlConverter.</p>
+     */
     public UrlConverter() {
         super(URI.class);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected URI internalConvert(final Object attribute) {
         if (attribute instanceof String sAttribute) {

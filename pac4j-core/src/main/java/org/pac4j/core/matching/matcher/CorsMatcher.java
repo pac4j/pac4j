@@ -35,6 +35,7 @@ public class CorsMatcher implements Matcher {
 
     private String allowHeaders;
 
+    /** {@inheritDoc} */
     @Override
     public boolean matches(final CallContext ctx) {
         val webContext = ctx.webContext();

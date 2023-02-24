@@ -30,11 +30,17 @@ public class CasLogoutProcessor implements LogoutProcessor {
 
     protected CasConfiguration configuration;
 
+    /**
+     * <p>Constructor for CasLogoutProcessor.</p>
+     *
+     * @param configuration a {@link org.pac4j.cas.config.CasConfiguration} object
+     */
     public CasLogoutProcessor(final CasConfiguration configuration) {
         CommonHelper.assertNotNull("configuration", configuration);
         this.configuration = configuration;
     }
 
+    /** {@inheritDoc} */
     @Override
     public HttpAction processLogout(final CallContext ctx, final Credentials logoutCredentials) {
         assertTrue(logoutCredentials instanceof SessionKeyCredentials, "credentials must be of type SessionKeyCredentials");
@@ -59,6 +65,12 @@ public class CasLogoutProcessor implements LogoutProcessor {
         }
     }
 
+    /**
+     * <p>getFinalActionForFrontChannelLogout.</p>
+     *
+     * @param context a {@link org.pac4j.core.context.WebContext} object
+     * @return a {@link org.pac4j.core.exception.http.HttpAction} object
+     */
     protected HttpAction getFinalActionForFrontChannelLogout(final WebContext context) {
         val relayStateValue = context.getRequestParameter(CasConfiguration.RELAY_STATE_PARAMETER);
         // if we have a state value -> redirect to the CAS server to continue the logout process

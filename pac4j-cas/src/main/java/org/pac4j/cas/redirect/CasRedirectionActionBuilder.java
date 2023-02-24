@@ -27,6 +27,12 @@ public class CasRedirectionActionBuilder implements RedirectionActionBuilder {
 
     protected CasClient client;
 
+    /**
+     * <p>Constructor for CasRedirectionActionBuilder.</p>
+     *
+     * @param configuration a {@link org.pac4j.cas.config.CasConfiguration} object
+     * @param client a {@link org.pac4j.cas.client.CasClient} object
+     */
     public CasRedirectionActionBuilder(final CasConfiguration configuration, final CasClient client) {
         CommonHelper.assertNotNull("configuration", configuration);
         CommonHelper.assertNotNull("client", client);
@@ -34,6 +40,7 @@ public class CasRedirectionActionBuilder implements RedirectionActionBuilder {
         this.client = client;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<RedirectionAction> getRedirectionAction(final CallContext ctx) {
         val webContext = ctx.webContext();
@@ -51,6 +58,11 @@ public class CasRedirectionActionBuilder implements RedirectionActionBuilder {
         return Optional.of(HttpActionHelper.buildRedirectUrlAction(webContext, redirectionUrl));
     }
 
+    /**
+     * <p>getServiceParameter.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     protected String getServiceParameter() {
         if (configuration.getProtocol() == CasProtocol.SAML) {
             return Protocol.SAML11.getServiceParameterName();
@@ -60,6 +72,17 @@ public class CasRedirectionActionBuilder implements RedirectionActionBuilder {
     }
 
     // like CommonUtils.constructRedirectUrl in CAS client
+    /**
+     * <p>constructRedirectUrl.</p>
+     *
+     * @param casServerLoginUrl a {@link java.lang.String} object
+     * @param serviceParameterName a {@link java.lang.String} object
+     * @param serviceUrl a {@link java.lang.String} object
+     * @param renew a boolean
+     * @param gateway a boolean
+     * @param method a {@link java.lang.String} object
+     * @return a {@link java.lang.String} object
+     */
     public static String constructRedirectUrl(final String casServerLoginUrl, final String serviceParameterName,
                                               final String serviceUrl, final boolean renew, final boolean gateway, final String method) {
         return casServerLoginUrl + (casServerLoginUrl.contains("?") ? "&" : "?") + serviceParameterName + "="

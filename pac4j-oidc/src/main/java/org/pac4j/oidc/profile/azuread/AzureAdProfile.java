@@ -13,34 +13,70 @@ public class AzureAdProfile extends OidcProfile {
 
     private static final long serialVersionUID = -8659029290353954198L;
 
+    /**
+     * <p>getIdp.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getIdp() {
         return (String) getAttribute(AzureAdProfileDefinition.IDP);
     }
 
+    /**
+     * <p>getOid.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getOid() {
         return (String) getAttribute(AzureAdProfileDefinition.OID);
     }
 
+    /**
+     * <p>getTid.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getTid() {
         return (String) getAttribute(AzureAdProfileDefinition.TID);
     }
 
+    /**
+     * <p>getVer.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getVer() {
         return (String) getAttribute(AzureAdProfileDefinition.VER);
     }
 
+    /**
+     * <p>getUniqueName.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getUniqueName() {
         return (String) getAttribute(AzureAdProfileDefinition.UNQIUE_NAME);
     }
 
+    /**
+     * <p>getIpaddr.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getIpaddr() {
         return (String) getAttribute(AzureAdProfileDefinition.IPADDR);
     }
 
+    /**
+     * <p>getUpn.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getUpn() {
         return (String) getAttribute(AzureAdProfileDefinition.UPN);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getUsername() {
         return (String) getAttribute(AzureAdProfileDefinition.UPN);

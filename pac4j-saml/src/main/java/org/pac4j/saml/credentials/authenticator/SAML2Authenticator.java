@@ -29,15 +29,25 @@ import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
  */
 public class SAML2Authenticator extends ProfileDefinitionAware implements Authenticator {
 
+    /** Constant <code>SAML_CONDITION_NOT_BEFORE_ATTRIBUTE="notBefore"</code> */
     public static final String SAML_CONDITION_NOT_BEFORE_ATTRIBUTE = "notBefore";
+    /** Constant <code>SAML_CONDITION_NOT_ON_OR_AFTER_ATTRIBUTE="notOnOrAfter"</code> */
     public static final String SAML_CONDITION_NOT_ON_OR_AFTER_ATTRIBUTE = "notOnOrAfter";
+    /** Constant <code>SESSION_INDEX="sessionindex"</code> */
     public static final String SESSION_INDEX = "sessionindex";
+    /** Constant <code>ISSUER_ID="issuerId"</code> */
     public static final String ISSUER_ID = "issuerId";
+    /** Constant <code>AUTHN_CONTEXT="authnContext"</code> */
     public static final String AUTHN_CONTEXT = "authnContext";
+    /** Constant <code>AUTHN_CONTEXT_AUTHORITIES="authnContextAuthorities"</code> */
     public static final String AUTHN_CONTEXT_AUTHORITIES = "authnContextAuthorities";
+    /** Constant <code>SAML_NAME_ID_FORMAT="samlNameIdFormat"</code> */
     public static final String SAML_NAME_ID_FORMAT = "samlNameIdFormat";
+    /** Constant <code>SAML_NAME_ID_NAME_QUALIFIER="samlNameIdNameQualifier"</code> */
     public static final String SAML_NAME_ID_NAME_QUALIFIER = "samlNameIdNameQualifier";
+    /** Constant <code>SAML_NAME_ID_SP_NAME_QUALIFIER="samlNameIdSpNameQualifier"</code> */
     public static final String SAML_NAME_ID_SP_NAME_QUALIFIER = "samlNameIdSpNameQualifier";
+    /** Constant <code>SAML_NAME_ID_SP_PROVIDED_ID="samlNameIdSpProvidedId"</code> */
     public static final String SAML_NAME_ID_SP_PROVIDED_ID = "samlNameIdSpProvidedId";
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
@@ -56,6 +66,14 @@ public class SAML2Authenticator extends ProfileDefinitionAware implements Authen
      */
     private final Map<String, String> mappedAttributes;
 
+    /**
+     * <p>Constructor for SAML2Authenticator.</p>
+     *
+     * @param loginValidator a {@link org.pac4j.saml.profile.api.SAML2ResponseValidator} object
+     * @param logoutValidator a {@link org.pac4j.saml.logout.impl.SAML2LogoutValidator} object
+     * @param attributeAsId a {@link java.lang.String} object
+     * @param mappedAttributes a {@link java.util.Map} object
+     */
     public SAML2Authenticator(final SAML2ResponseValidator loginValidator, final SAML2LogoutValidator logoutValidator,
                               final String attributeAsId, final Map<String, String> mappedAttributes) {
         this.loginValidator = loginValidator;
@@ -64,16 +82,25 @@ public class SAML2Authenticator extends ProfileDefinitionAware implements Authen
         this.mappedAttributes = mappedAttributes;
     }
 
+    /**
+     * <p>Constructor for SAML2Authenticator.</p>
+     *
+     * @param loginValidator a {@link org.pac4j.saml.profile.api.SAML2ResponseValidator} object
+     * @param logoutValidator a {@link org.pac4j.saml.logout.impl.SAML2LogoutValidator} object
+     * @param attributeAsId a {@link java.lang.String} object
+     */
     public SAML2Authenticator(final SAML2ResponseValidator loginValidator, final SAML2LogoutValidator logoutValidator,
                               final String attributeAsId) {
         this(loginValidator, logoutValidator, attributeAsId, new HashMap<>());
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         setProfileDefinitionIfUndefined(new SAML2ProfileDefinition());
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<Credentials> validate(final CallContext ctx, final Credentials extractedCredentials) {
         init();
@@ -91,6 +118,11 @@ public class SAML2Authenticator extends ProfileDefinitionAware implements Authen
         }
     }
 
+    /**
+     * <p>buildProfile.</p>
+     *
+     * @param credentials a {@link org.pac4j.saml.credentials.SAML2AuthenticationCredentials} object
+     */
     protected void buildProfile(final SAML2AuthenticationCredentials credentials) {
         val profile = (SAML2Profile) getProfileDefinition().newProfile();
 

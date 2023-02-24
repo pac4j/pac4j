@@ -14,26 +14,35 @@ public class HiOrgServerProfile extends OAuth20Profile {
 
     private static final long serialVersionUID = 1889864079390590548L;
 
+    /** {@inheritDoc} */
     @Override
     public String getUsername() {
         return getAttribute(HiOrgServerProfileDefinition.USERNAME, String.class);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getFirstName() {
         return getAttribute(HiOrgServerProfileDefinition.FIRST_NAME, String.class);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getFamilyName() {
         return getAttribute(HiOrgServerProfileDefinition.NAME, String.class);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getDisplayName() {
         return getAttribute(HiOrgServerProfileDefinition.FULL_NAME, String.class);
     }
 
+    /**
+     * <p>getRolesAsInteger.</p>
+     *
+     * @return a int
+     */
     public int getRolesAsInteger() {
         var rolesAsInt = getAttribute(HiOrgServerProfileDefinition.ROLES, Integer.class);
         if (rolesAsInt != null) {
@@ -43,27 +52,54 @@ public class HiOrgServerProfile extends OAuth20Profile {
         }
     }
 
+    /**
+     * <p>hasRole.</p>
+     *
+     * @param roleId a int
+     * @return a boolean
+     */
     public boolean hasRole(int roleId) {
         return (getRolesAsInteger() & roleId) == roleId;
     }
 
+    /**
+     * <p>getOrganisationId.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getOrganisationId() {
         return getAttribute(HiOrgServerProfileDefinition.ORGANISATION_ID, String.class);
     }
 
+    /**
+     * <p>getOrganisationName.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getOrganisationName() {
         return getAttribute(HiOrgServerProfileDefinition.ORGANISATION_NAME, String.class);
     }
 
+    /**
+     * <p>getPosition.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getPosition() {
         return getAttribute(HiOrgServerProfileDefinition.POSITION, String.class);
     }
 
+    /**
+     * <p>isLeader.</p>
+     *
+     * @return a boolean
+     */
     public boolean isLeader() {
         return getAttribute(HiOrgServerProfileDefinition.LEADER, Boolean.class);
     }
 
-    /** An alternative identifier to uniquely identify a HiOrg-Server user.
+    /**
+     * An alternative identifier to uniquely identify a HiOrg-Server user.
      *
      * @return username and the organisation id, joined by an at-sign, lowercase
      */

@@ -10,8 +10,8 @@ import java.security.Principal;
 
 /**
  *
- * Default implementation for {@link Principal} based on a pac4j
- * {@link BasicUserProfile}.
+ * Default implementation for {@link java.security.Principal} based on a pac4j
+ * {@link org.pac4j.core.profile.BasicUserProfile}.
  *
  * It determines the name based on the profile's username, and fallbacks to id
  * if it doesn't exist.
@@ -26,6 +26,11 @@ public class Pac4JPrincipal implements Principal {
 
     private final String name;
 
+    /**
+     * <p>Constructor for Pac4JPrincipal.</p>
+     *
+     * @param profile a {@link org.pac4j.core.profile.UserProfile} object
+     */
     public Pac4JPrincipal(final UserProfile profile) {
         val username = profile.getUsername();
         if (CommonHelper.isNotBlank(username)) {

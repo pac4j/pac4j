@@ -19,14 +19,25 @@ public class KerberosCredentials extends Credentials {
      */
     private static final long serialVersionUID = -4264156105410684508L;
 
+    /**
+     * <p>Constructor for KerberosCredentials.</p>
+     *
+     * @param kerberosTicket an array of {@link byte} objects
+     */
     public KerberosCredentials(byte[] kerberosTicket) {
         this.kerberosTicket = kerberosTicket.clone();
     }
 
+    /**
+     * <p>getKerberosTicketAsString.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getKerberosTicketAsString() {
         return getTicketAsString(kerberosTicket);
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -40,6 +51,7 @@ public class KerberosCredentials extends Credentials {
             : that.kerberosTicket != null);
     }
 
+    /** {@inheritDoc} */
     @Override
     public int hashCode() {
         return kerberosTicket != null ? getTicketAsString(kerberosTicket).hashCode() : 0;
@@ -49,6 +61,11 @@ public class KerberosCredentials extends Credentials {
         return new String(kerberosTicket, StandardCharsets.UTF_8);
     }
 
+    /**
+     * <p>Getter for the field <code>kerberosTicket</code>.</p>
+     *
+     * @return an array of {@link byte} objects
+     */
     public byte[] getKerberosTicket() {
         return kerberosTicket.clone();
     }

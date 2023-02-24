@@ -10,8 +10,10 @@ public final class AnonymousCredentials extends Credentials {
 
     private static final long serialVersionUID = 7526472295622776147L;
 
+    /** Constant <code>INSTANCE</code> */
     public final static AnonymousCredentials INSTANCE = new AnonymousCredentials();
 
+    /** {@inheritDoc} */
     @Override
     public boolean equals(Object o) {
         if (o instanceof AnonymousCredentials) {
@@ -20,6 +22,7 @@ public final class AnonymousCredentials extends Credentials {
         return false;
     }
 
+    /** {@inheritDoc} */
     @Override
     public int hashCode() {
         return 0;

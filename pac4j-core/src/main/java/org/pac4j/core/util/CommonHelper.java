@@ -100,7 +100,7 @@ public final class CommonHelper {
     }
 
     /**
-     * Verify that a boolean is true otherwise throw a {@link TechnicalException}.
+     * Verify that a boolean is true otherwise throw a {@link org.pac4j.core.exception.TechnicalException}.
      *
      * @param value   the value to be checked for truth
      * @param message the message to include in the exception if the value is false
@@ -112,7 +112,7 @@ public final class CommonHelper {
     }
 
     /**
-     * Verify that a String is not blank otherwise throw a {@link TechnicalException}.
+     * Verify that a String is not blank otherwise throw a {@link org.pac4j.core.exception.TechnicalException}.
      *
      * @param name  name if the string
      * @param value value of the string
@@ -123,7 +123,7 @@ public final class CommonHelper {
     }
 
     /**
-     * Verify that a String is not blank otherwise throw a {@link TechnicalException}.
+     * Verify that a String is not blank otherwise throw a {@link org.pac4j.core.exception.TechnicalException}.
      *
      * @param name  name if the string
      * @param value value of the string
@@ -133,7 +133,7 @@ public final class CommonHelper {
     }
 
     /**
-     * Verify that an Object is not <code>null</code> otherwise throw a {@link TechnicalException}.
+     * Verify that an Object is not <code>null</code> otherwise throw a {@link org.pac4j.core.exception.TechnicalException}.
      *
      * @param name name of the object
      * @param obj  object
@@ -143,7 +143,7 @@ public final class CommonHelper {
     }
 
     /**
-     * Verify that an Object is <code>null</code> otherwise throw a {@link TechnicalException}.
+     * Verify that an Object is <code>null</code> otherwise throw a {@link org.pac4j.core.exception.TechnicalException}.
      *
      * @param name name of the object
      * @param obj  object
@@ -241,6 +241,14 @@ public final class CommonHelper {
 
     private static final int INDEX_NOT_FOUND = -1;
 
+    /**
+     * <p>substringBetween.</p>
+     *
+     * @param str a {@link java.lang.String} object
+     * @param open a {@link java.lang.String} object
+     * @param close a {@link java.lang.String} object
+     * @return a {@link java.lang.String} object
+     */
     public static String substringBetween(final String str, final String open, final String close) {
         if (str == null || open == null || close == null) {
             return null;
@@ -255,6 +263,13 @@ public final class CommonHelper {
         return null;
     }
 
+    /**
+     * <p>substringAfter.</p>
+     *
+     * @param str a {@link java.lang.String} object
+     * @param separator a {@link java.lang.String} object
+     * @return a {@link java.lang.String} object
+     */
     public static String substringAfter(final String str, final String separator) {
         if (isEmpty(str)) {
             return str;
@@ -269,6 +284,13 @@ public final class CommonHelper {
         return str.substring(pos + separator.length());
     }
 
+    /**
+     * <p>substringBefore.</p>
+     *
+     * @param str a {@link java.lang.String} object
+     * @param separator a {@link java.lang.String} object
+     * @return a {@link java.lang.String} object
+     */
     public static String substringBefore(final String str, final String separator) {
         if (isEmpty(str) || separator == null) {
             return str;
@@ -294,8 +316,8 @@ public final class CommonHelper {
      *
      * @param name the name of the class
      * @return the constructor
-     * @throws ClassNotFoundException class not found
-     * @throws NoSuchMethodException  method not found
+     * @throws java.lang.ClassNotFoundException class not found
+     * @throws java.lang.NoSuchMethodException  method not found
      */
     public static Constructor getConstructor(final String name) throws ClassNotFoundException, NoSuchMethodException {
         var constructor = constructorsCache.get(name);
@@ -324,6 +346,13 @@ public final class CommonHelper {
         return constructor;
     }
 
+    /**
+     * <p>ifBlank.</p>
+     *
+     * @param value a {@link java.lang.String} object
+     * @param defaultValue a {@link java.lang.String} object
+     * @return a {@link java.lang.String} object
+     */
     public static String ifBlank(final String value, final String defaultValue) {
         return isBlank(value) ? defaultValue : value;
     }

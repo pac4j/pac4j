@@ -36,11 +36,18 @@ public class SAML2HttpUrlMetadataGenerator extends BaseSAML2MetadataGenerator {
     @Setter
     private Duration minRefreshDelay;
 
+    /**
+     * <p>Constructor for SAML2HttpUrlMetadataGenerator.</p>
+     *
+     * @param metadataUrl a {@link java.net.URL} object
+     * @param httpClient a {@link org.apache.hc.client5.http.classic.HttpClient} object
+     */
     public SAML2HttpUrlMetadataGenerator(final URL metadataUrl, final HttpClient httpClient) {
         this.metadataUrl = metadataUrl;
         this.httpClient = httpClient;
     }
 
+    /** {@inheritDoc} */
     @Override
     protected AbstractMetadataResolver createMetadataResolver() throws Exception {
         val resolver = new HTTPMetadataResolver(httpClient, this.metadataUrl.toExternalForm());
@@ -56,6 +63,7 @@ public class SAML2HttpUrlMetadataGenerator extends BaseSAML2MetadataGenerator {
         return resolver;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean storeMetadata(final String metadata, final boolean force) throws Exception {
         HttpResponse response = null;

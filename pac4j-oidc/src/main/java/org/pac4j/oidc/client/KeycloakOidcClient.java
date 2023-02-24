@@ -21,13 +21,22 @@ import org.pac4j.oidc.profile.keycloak.KeycloakOidcProfile;
  */
 public class KeycloakOidcClient extends OidcClient {
 
+    /**
+     * <p>Constructor for KeycloakOidcClient.</p>
+     */
     public KeycloakOidcClient() {
     }
 
+    /**
+     * <p>Constructor for KeycloakOidcClient.</p>
+     *
+     * @param configuration a {@link org.pac4j.oidc.config.KeycloakOidcConfiguration} object
+     */
     public KeycloakOidcClient(final KeycloakOidcConfiguration configuration) {
         super(configuration);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         val profileCreator = new OidcProfileCreator(getConfiguration(), this);

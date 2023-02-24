@@ -21,10 +21,20 @@ import static org.pac4j.core.util.CommonHelper.isNotBlank;
  */
 public class Saml2ClientBuilder extends AbstractBuilder {
 
+    /**
+     * <p>Constructor for Saml2ClientBuilder.</p>
+     *
+     * @param properties a {@link java.util.Map} object
+     */
     public Saml2ClientBuilder(final Map<String, String> properties) {
         super(properties);
     }
 
+    /**
+     * <p>tryCreateSaml2Client.</p>
+     *
+     * @param clients a {@link java.util.List} object
+     */
     public void tryCreateSaml2Client(final List<Client> clients) {
         for (var i = 0; i <= MAX_NUM_CLIENTS; i++) {
             val keystorePassword = getProperty(SAML_KEYSTORE_PASSWORD, i);

@@ -28,6 +28,12 @@ abstract class OAuthAuthenticator implements Authenticator {
 
     protected IndirectClient client;
 
+    /**
+     * <p>Constructor for OAuthAuthenticator.</p>
+     *
+     * @param configuration a {@link org.pac4j.oauth.config.OAuthConfiguration} object
+     * @param client a {@link org.pac4j.core.client.IndirectClient} object
+     */
     protected OAuthAuthenticator(final OAuthConfiguration configuration, final IndirectClient client) {
         CommonHelper.assertNotNull("client", client);
         CommonHelper.assertNotNull("configuration", configuration);
@@ -35,6 +41,7 @@ abstract class OAuthAuthenticator implements Authenticator {
         this.client = client;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<Credentials> validate(final CallContext ctx, final Credentials credentials) {
         try {

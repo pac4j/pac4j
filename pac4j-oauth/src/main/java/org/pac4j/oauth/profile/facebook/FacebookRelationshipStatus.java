@@ -2,7 +2,7 @@ package org.pac4j.oauth.profile.facebook;
 
 /**
  * This class is the relationship status in Facebook.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.0.0
  */

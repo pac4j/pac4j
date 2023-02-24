@@ -34,46 +34,85 @@ import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
  */
 public class FacebookProfileDefinition extends OAuthProfileDefinition {
 
+    /** Constant <code>NAME="name"</code> */
     public static final String NAME = "name";
+    /** Constant <code>MIDDLE_NAME="middle_name"</code> */
     public static final String MIDDLE_NAME = "middle_name";
+    /** Constant <code>LAST_NAME="last_name"</code> */
     public static final String LAST_NAME = "last_name";
+    /** Constant <code>LANGUAGES="languages"</code> */
     public static final String LANGUAGES = "languages";
+    /** Constant <code>LINK="link"</code> */
     public static final String LINK = "link";
+    /** Constant <code>THIRD_PARTY_ID="third_party_id"</code> */
     public static final String THIRD_PARTY_ID = "third_party_id";
+    /** Constant <code>TIMEZONE="timezone"</code> */
     public static final String TIMEZONE = "timezone";
+    /** Constant <code>UPDATED_TIME="updated_time"</code> */
     public static final String UPDATED_TIME = "updated_time";
+    /** Constant <code>VERIFIED="verified"</code> */
     public static final String VERIFIED = "verified";
+    /** Constant <code>ABOUT="about"</code> */
     public static final String ABOUT = "about";
+    /** Constant <code>BIRTHDAY="birthday"</code> */
     public static final String BIRTHDAY = "birthday";
+    /** Constant <code>EDUCATION="education"</code> */
     public static final String EDUCATION = "education";
+    /** Constant <code>HOMETOWN="hometown"</code> */
     public static final String HOMETOWN = "hometown";
+    /** Constant <code>INTERESTED_IN="interested_in"</code> */
     public static final String INTERESTED_IN = "interested_in";
+    /** Constant <code>POLITICAL="political"</code> */
     public static final String POLITICAL = "political";
+    /** Constant <code>FAVORITE_ATHLETES="favorite_athletes"</code> */
     public static final String FAVORITE_ATHLETES = "favorite_athletes";
+    /** Constant <code>FAVORITE_TEAMS="favorite_teams"</code> */
     public static final String FAVORITE_TEAMS = "favorite_teams";
+    /** Constant <code>QUOTES="quotes"</code> */
     public static final String QUOTES = "quotes";
+    /** Constant <code>RELATIONSHIP_STATUS="relationship_status"</code> */
     public static final String RELATIONSHIP_STATUS = "relationship_status";
+    /** Constant <code>RELIGION="religion"</code> */
     public static final String RELIGION = "religion";
+    /** Constant <code>SIGNIFICANT_OTHER="significant_other"</code> */
     public static final String SIGNIFICANT_OTHER = "significant_other";
+    /** Constant <code>WEBSITE="website"</code> */
     public static final String WEBSITE = "website";
+    /** Constant <code>WORK="work"</code> */
     public static final String WORK = "work";
+    /** Constant <code>FRIENDS="friends"</code> */
     public static final String FRIENDS = "friends";
+    /** Constant <code>MOVIES="movies"</code> */
     public static final String MOVIES = "movies";
+    /** Constant <code>MUSIC="music"</code> */
     public static final String MUSIC = "music";
+    /** Constant <code>BOOKS="books"</code> */
     public static final String BOOKS = "books";
+    /** Constant <code>LIKES="likes"</code> */
     public static final String LIKES = "likes";
+    /** Constant <code>ALBUMS="albums"</code> */
     public static final String ALBUMS = "albums";
+    /** Constant <code>EVENTS="events"</code> */
     public static final String EVENTS = "events";
+    /** Constant <code>GROUPS="groups"</code> */
     public static final String GROUPS = "groups";
+    /** Constant <code>MUSIC_LISTENS="music.listens"</code> */
     public static final String MUSIC_LISTENS = "music.listens";
+    /** Constant <code>PICTURE="picture"</code> */
     public static final String PICTURE = "picture";
 
+    /** Constant <code>DEFAULT_LIMIT=0</code> */
     public static final int DEFAULT_LIMIT = 0;
 
+    /** Constant <code>BASE_URL="https://graph.facebook.com/v2.8/me"</code> */
     protected static final String BASE_URL = "https://graph.facebook.com/v2.8/me";
 
+    /** Constant <code>APPSECRET_PARAMETER="appsecret_proof"</code> */
     protected static final String APPSECRET_PARAMETER = "appsecret_proof";
 
+    /**
+     * <p>Constructor for FacebookProfileDefinition.</p>
+     */
     public FacebookProfileDefinition() {
         super(x -> new FacebookProfile());
         Arrays.stream(new String[] {
@@ -109,6 +148,7 @@ public class FacebookProfileDefinition extends OAuthProfileDefinition {
         secondary(PICTURE, new JsonConverter(FacebookPicture.class));
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getProfileUrl(final Token accessToken, final OAuthConfiguration configuration) {
         val fbConfiguration = (FacebookConfiguration) configuration;
@@ -147,6 +187,7 @@ public class FacebookProfileDefinition extends OAuthProfileDefinition {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public FacebookProfile extractUserProfile(final String body) {
         val profile = (FacebookProfile) newProfile();
@@ -172,6 +213,13 @@ public class FacebookProfileDefinition extends OAuthProfileDefinition {
         return profile;
     }
 
+    /**
+     * <p>extractData.</p>
+     *
+     * @param profile a {@link org.pac4j.oauth.profile.facebook.FacebookProfile} object
+     * @param json a {@link com.fasterxml.jackson.databind.JsonNode} object
+     * @param name a {@link java.lang.String} object
+     */
     protected void extractData(final FacebookProfile profile, final JsonNode json, final String name) {
         val data = (JsonNode) JsonHelper.getElement(json, name);
         if (data != null) {

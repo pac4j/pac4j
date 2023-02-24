@@ -9,5 +9,10 @@ package org.pac4j.core.exception.http;
 @FunctionalInterface
 public interface WithLocationAction {
 
+    /**
+     * <p>getLocation.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     String getLocation();
 }

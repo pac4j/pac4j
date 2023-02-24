@@ -17,10 +17,17 @@ import java.util.Optional;
  */
 public class CronofyProfileCreator extends OAuth20ProfileCreator {
 
+    /**
+     * <p>Constructor for CronofyProfileCreator.</p>
+     *
+     * @param configuration a {@link org.pac4j.oauth.config.OAuth20Configuration} object
+     * @param client a {@link org.pac4j.core.client.IndirectClient} object
+     */
     public CronofyProfileCreator(final OAuth20Configuration configuration, final IndirectClient client) {
         super(configuration, client);
     }
 
+    /** {@inheritDoc} */
     protected Optional<UserProfile> retrieveUserProfileFromToken(final WebContext context, final Token accessToken) {
         final UserProfile profile = configuration.getProfileDefinition().extractUserProfile(accessToken.getRawResponse());
         addTokenToProfile(profile, accessToken);

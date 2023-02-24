@@ -11,13 +11,18 @@ import org.pac4j.core.util.Pac4jConstants;
  */
 public class NoContentAction extends HttpAction implements WithContentAction {
 
+    /** Constant <code>INSTANCE</code> */
     public static final NoContentAction INSTANCE = new NoContentAction();
     private static final long serialVersionUID = 7441277744489210027L;
 
+    /**
+     * <p>Constructor for NoContentAction.</p>
+     */
     protected NoContentAction() {
         super(HttpConstants.NO_CONTENT);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getContent() {
         return Pac4jConstants.EMPTY_STRING;

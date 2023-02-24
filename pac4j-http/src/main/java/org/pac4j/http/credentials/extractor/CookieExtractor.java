@@ -20,10 +20,16 @@ public class CookieExtractor implements CredentialsExtractor {
 
     private final String cookieName;
 
+    /**
+     * <p>Constructor for CookieExtractor.</p>
+     *
+     * @param cookieName a {@link java.lang.String} object
+     */
     public CookieExtractor(final String cookieName) {
         this.cookieName = cookieName;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<Credentials> extract(final CallContext ctx) {
         val col = ctx.webContext().getRequestCookies();

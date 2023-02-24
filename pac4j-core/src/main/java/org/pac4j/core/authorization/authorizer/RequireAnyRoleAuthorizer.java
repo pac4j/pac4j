@@ -16,18 +16,37 @@ import java.util.Set;
  */
 public class RequireAnyRoleAuthorizer extends AbstractRequireAnyAuthorizer<String> {
 
+    /**
+     * <p>Constructor for RequireAnyRoleAuthorizer.</p>
+     */
     public RequireAnyRoleAuthorizer() { }
 
+    /**
+     * <p>Constructor for RequireAnyRoleAuthorizer.</p>
+     *
+     * @param roles a {@link java.lang.String} object
+     */
     public RequireAnyRoleAuthorizer(final String... roles) {
         setElements(roles);
     }
 
+    /**
+     * <p>Constructor for RequireAnyRoleAuthorizer.</p>
+     *
+     * @param roles a {@link java.util.List} object
+     */
     public RequireAnyRoleAuthorizer(final List<String> roles) {
         setElements(roles);
     }
 
+    /**
+     * <p>Constructor for RequireAnyRoleAuthorizer.</p>
+     *
+     * @param roles a {@link java.util.Set} object
+     */
     public RequireAnyRoleAuthorizer(final Set<String> roles) { setElements(roles); }
 
+    /** {@inheritDoc} */
     @Override
     protected boolean check(final WebContext context, final SessionStore sessionStore, final UserProfile profile, final String element) {
         val profileRoles = profile.getRoles();
@@ -40,14 +59,32 @@ public class RequireAnyRoleAuthorizer extends AbstractRequireAnyAuthorizer<Strin
         return profileRoles.contains(element);
     }
 
+    /**
+     * <p>requireAnyRole.</p>
+     *
+     * @param roles a {@link java.lang.String} object
+     * @return a {@link org.pac4j.core.authorization.authorizer.RequireAnyRoleAuthorizer} object
+     */
     public static RequireAnyRoleAuthorizer requireAnyRole(String ... roles) {
         return new RequireAnyRoleAuthorizer(roles);
     }
 
+    /**
+     * <p>requireAnyRole.</p>
+     *
+     * @param roles a {@link java.util.List} object
+     * @return a {@link org.pac4j.core.authorization.authorizer.RequireAnyRoleAuthorizer} object
+     */
     public static RequireAnyRoleAuthorizer requireAnyRole(List<String> roles) {
         return new RequireAnyRoleAuthorizer(roles);
     }
 
+    /**
+     * <p>requireAnyRole.</p>
+     *
+     * @param roles a {@link java.util.Set} object
+     * @return a {@link org.pac4j.core.authorization.authorizer.RequireAnyRoleAuthorizer} object
+     */
     public static RequireAnyRoleAuthorizer requireAnyRole(Set<String> roles) {
         return new RequireAnyRoleAuthorizer(roles);
     }

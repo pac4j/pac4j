@@ -50,6 +50,15 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
      */
     private String expectedDestination;
 
+    /**
+     * <p>Constructor for SAML2LogoutValidator.</p>
+     *
+     * @param engine a {@link org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider} object
+     * @param decrypter a {@link org.opensaml.saml.saml2.encryption.Decrypter} object
+     * @param logoutHandler a {@link org.pac4j.core.logout.handler.SessionLogoutHandler} object
+     * @param replayCache a {@link org.pac4j.saml.replay.ReplayCacheProvider} object
+     * @param uriComparator a {@link net.shibboleth.shared.net.URIComparator} object
+     */
     public SAML2LogoutValidator(final SAML2SignatureTrustEngineProvider engine, final Decrypter decrypter,
                                 final SessionLogoutHandler logoutHandler, final ReplayCacheProvider replayCache,
                                 final URIComparator uriComparator) {
@@ -57,9 +66,9 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
     }
 
     /**
-     * Validates the SAML protocol logout request/response.
+     * {@inheritDoc}
      *
-     * @param context the context
+     * Validates the SAML protocol logout request/response.
      */
     @Override
     public Credentials validate(final SAML2MessageContext context) {
@@ -145,6 +154,12 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
         validateDestinationEndpoint(logoutResponse, context);
     }
 
+    /**
+     * <p>validateDestinationEndpoint.</p>
+     *
+     * @param logoutResponse a {@link org.opensaml.saml.saml2.core.LogoutResponse} object
+     * @param context a {@link org.pac4j.saml.context.SAML2MessageContext} object
+     */
     protected void validateDestinationEndpoint(final LogoutResponse logoutResponse, final SAML2MessageContext context) {
         val expected = new ArrayList<String>();
         if (CommonHelper.isBlank(this.expectedDestination)) {
@@ -163,6 +178,7 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
         verifyEndpoint(expected, logoutResponse.getDestination(), isDestinationMandatory);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void validateSuccess(Status status) {
 

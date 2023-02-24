@@ -19,8 +19,10 @@ import java.util.Optional;
 @Slf4j
 public class X509CredentialsExtractor implements CredentialsExtractor  {
 
+    /** Constant <code>CERTIFICATE_REQUEST_ATTRIBUTE="javax.servlet.request.X509Certificate"</code> */
     public static final String CERTIFICATE_REQUEST_ATTRIBUTE = "javax.servlet.request.X509Certificate";
 
+    /** {@inheritDoc} */
     @Override
     public Optional<Credentials> extract(final CallContext ctx) {
         val certificates =

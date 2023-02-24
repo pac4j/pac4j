@@ -22,6 +22,18 @@ public class WechatToken extends OAuth2AccessToken {
     private String openid;
     private String unionid;
 
+    /**
+     * <p>Constructor for WechatToken.</p>
+     *
+     * @param accessToken a {@link java.lang.String} object
+     * @param tokenType a {@link java.lang.String} object
+     * @param expiresIn a {@link java.lang.Integer} object
+     * @param refreshToken a {@link java.lang.String} object
+     * @param scope a {@link java.lang.String} object
+     * @param rawResponse a {@link java.lang.String} object
+     * @param openid a {@link java.lang.String} object
+     * @param unionid a {@link java.lang.String} object
+     */
     public WechatToken(String accessToken, String tokenType, Integer expiresIn,
                        String refreshToken, String scope, String rawResponse,
                        String openid, String unionid) {

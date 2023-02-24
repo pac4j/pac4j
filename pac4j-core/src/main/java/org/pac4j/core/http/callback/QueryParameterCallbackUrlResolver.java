@@ -24,13 +24,22 @@ public class QueryParameterCallbackUrlResolver implements CallbackUrlResolver {
 
     private Map<String, String> customParams = new HashMap<>();
 
+    /**
+     * <p>Constructor for QueryParameterCallbackUrlResolver.</p>
+     */
     public QueryParameterCallbackUrlResolver() {
     }
 
+    /**
+     * <p>Constructor for QueryParameterCallbackUrlResolver.</p>
+     *
+     * @param customParams a {@link java.util.Map} object
+     */
     public QueryParameterCallbackUrlResolver(final Map<String, String> customParams) {
         this.customParams = customParams;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String compute(final UrlResolver urlResolver, final String url, final String clientName, final WebContext context) {
         var newUrl = urlResolver.compute(url, context);
@@ -43,6 +52,7 @@ public class QueryParameterCallbackUrlResolver implements CallbackUrlResolver {
         return newUrl;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean matches(final String clientName, final WebContext context) {
         val name = context.getRequestParameter(this.clientNameParameter).orElse(null);

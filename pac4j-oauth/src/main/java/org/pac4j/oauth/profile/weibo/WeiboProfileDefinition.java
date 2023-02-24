@@ -167,6 +167,9 @@ public class WeiboProfileDefinition extends OAuthProfileDefinition {
     public static final String LANG = "lang";
 
 
+    /**
+     * <p>Constructor for WeiboProfileDefinition.</p>
+     */
     public WeiboProfileDefinition() {
         Arrays.stream(new String[]{
             URL,
@@ -212,6 +215,7 @@ public class WeiboProfileDefinition extends OAuthProfileDefinition {
         primary(GENDER, Converters.GENDER);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getProfileUrl(final Token accessToken, final OAuthConfiguration configuration) {
         if (accessToken instanceof WeiboToken) {
@@ -221,6 +225,7 @@ public class WeiboProfileDefinition extends OAuthProfileDefinition {
             throw new OAuthException("Token in getProfileUrl is not an WeiboToken");
     }
 
+    /** {@inheritDoc} */
     @Override
     public WeiboProfile extractUserProfile(final String body) throws HttpAction {
         val profile = new WeiboProfile();

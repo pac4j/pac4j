@@ -5,7 +5,6 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.val;
 import org.pac4j.cas.authorization.DefaultCasAuthorizationGenerator;
-import org.pac4j.cas.client.CasProxyReceptor;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.credentials.authenticator.CasAuthenticator;
 import org.pac4j.cas.redirect.CasRedirectionActionBuilder;
@@ -37,9 +36,10 @@ import static org.pac4j.core.util.CommonHelper.*;
  *
  * <p>As no session is meant to be created, this client does not handle CAS logout requests.</p>
  *
- * <p>For proxy support, a {@link CasProxyReceptor} must be defined in the configuration (the corresponding "callback filter" must be
- * enabled) and set to the CAS configuration of this client. In that case, a {@link org.pac4j.cas.profile.CasProxyProfile} will be return
- * (instead of a {@link org.pac4j.cas.profile.CasProfile}) to be able to request proxy tickets.</p>
+ * <p>For proxy support, a {@link org.pac4j.cas.client.CasProxyReceptor} must be defined in the configuration
+ * (the corresponding "callback filter" must be enabled) and set to the CAS configuration of this client.
+ * In that case, a {@link org.pac4j.cas.profile.CasProxyProfile} will be return (instead of a {@link org.pac4j.cas.profile.CasProfile})
+ * to be able to request proxy tickets.</p>
  *
  * @author Jerome Leleu
  * @since 1.9.2
@@ -55,12 +55,21 @@ public class DirectCasClient extends DirectClient {
 
     private CallbackUrlResolver callbackUrlResolver = new NoParameterCallbackUrlResolver();
 
+    /**
+     * <p>Constructor for DirectCasClient.</p>
+     */
     public DirectCasClient() { }
 
+    /**
+     * <p>Constructor for DirectCasClient.</p>
+     *
+     * @param casConfiguration a {@link org.pac4j.cas.config.CasConfiguration} object
+     */
     public DirectCasClient(final CasConfiguration casConfiguration) {
         this.configuration = casConfiguration;
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinits) {
         assertNotNull("configuration", this.configuration);
@@ -72,6 +81,7 @@ public class DirectCasClient extends DirectClient {
         addAuthorizationGenerator(new DefaultCasAuthorizationGenerator());
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<Credentials> getCredentials(final CallContext ctx) {
         init();
@@ -97,6 +107,7 @@ public class DirectCasClient extends DirectClient {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     protected Optional<Credentials> internalValidateCredentials(final CallContext ctx, final Credentials credentials) {
         val webContext = ctx.webContext();
@@ -118,6 +129,7 @@ public class DirectCasClient extends DirectClient {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void setAuthenticatorIfUndefined(final Authenticator authenticator) {
         throw new TechnicalException("You can not set an Authenticator for the DirectCasClient at startup. A new CasAuthenticator is "

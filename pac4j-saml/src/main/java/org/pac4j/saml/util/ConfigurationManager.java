@@ -7,10 +7,13 @@ package org.pac4j.saml.util;
  * found is the one used.
  *
  * @see java.util.ServiceLoader
- *
  * @since 3.3.0
+ * @author bidou
  */
 @FunctionalInterface
 public interface ConfigurationManager {
+    /**
+     * <p>configure.</p>
+     */
     void configure();
 }

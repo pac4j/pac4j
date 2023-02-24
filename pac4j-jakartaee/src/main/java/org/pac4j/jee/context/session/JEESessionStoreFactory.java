@@ -12,13 +12,13 @@ import org.pac4j.core.context.session.SessionStoreFactory;
  */
 public class JEESessionStoreFactory implements SessionStoreFactory {
 
+    /** Constant <code>INSTANCE</code> */
     public static final JEESessionStoreFactory INSTANCE = new JEESessionStoreFactory();
 
     /**
-     * Create the session store.
+     * {@inheritDoc}
      *
-     * @param parameters the JEE parameters
-     * @return the JEE session store
+     * Create the session store.
      */
     @Override
     public SessionStore newSessionStore(final FrameworkParameters parameters) {

@@ -38,6 +38,15 @@ public class CasAuthenticator extends ProfileDefinitionAware implements Authenti
 
     protected String callbackUrl;
 
+    /**
+     * <p>Constructor for CasAuthenticator.</p>
+     *
+     * @param configuration a {@link org.pac4j.cas.config.CasConfiguration} object
+     * @param clientName a {@link java.lang.String} object
+     * @param urlResolver a {@link org.pac4j.core.http.url.UrlResolver} object
+     * @param callbackUrlResolver a {@link org.pac4j.core.http.callback.CallbackUrlResolver} object
+     * @param callbackUrl a {@link java.lang.String} object
+     */
     public CasAuthenticator(final CasConfiguration configuration, final String clientName, final UrlResolver urlResolver,
                             final CallbackUrlResolver callbackUrlResolver, final String callbackUrl) {
         this.configuration = configuration;
@@ -47,6 +56,7 @@ public class CasAuthenticator extends ProfileDefinitionAware implements Authenti
         this.callbackUrl = callbackUrl;
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         CommonHelper.assertNotNull("urlResolver", urlResolver);
@@ -58,6 +68,7 @@ public class CasAuthenticator extends ProfileDefinitionAware implements Authenti
         setProfileDefinitionIfUndefined(new CasProfileDefinition());
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<Credentials> validate(final CallContext ctx, final Credentials cred) {
         if (cred instanceof TokenCredentials credentials) {

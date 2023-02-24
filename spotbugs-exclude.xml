@@ -72,4 +72,12 @@
         <Class name="~.*JsonHelper"/>
         <Bug pattern="MS_EXPOSE_REP" />
     </Match>
+    <Match>
+        <Class name="~.*SecretSignatureConfigurationTests"/>
+        <Bug pattern="DMI_RANDOM_USED_ONLY_ONCE" />
+    </Match>
+    <Match>
+        <Class name="~.*DbServer"/>
+        <Bug pattern="MS_EXPOSE_REP" />
+    </Match>
 </FindBugsFilter>

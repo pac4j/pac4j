@@ -20,21 +20,29 @@ import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
  */
 public class WindowsLiveProfileDefinition extends OAuthProfileDefinition {
 
+    /** Constant <code>NAME="name"</code> */
     public static final String NAME = "name";
+    /** Constant <code>LAST_NAME="last_name"</code> */
     public static final String LAST_NAME = "last_name";
+    /** Constant <code>LINK="link"</code> */
     public static final String LINK = "link";
 
+    /**
+     * <p>Constructor for WindowsLiveProfileDefinition.</p>
+     */
     public WindowsLiveProfileDefinition() {
         super(x -> new WindowsLiveProfile());
         Arrays.stream(new String[] {NAME, LAST_NAME}).forEach(a -> primary(a, Converters.STRING));
         primary(LINK, Converters.URL);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getProfileUrl(final Token accessToken, final OAuthConfiguration configuration) {
         return "https://apis.live.net/v5.0/me";
     }
 
+    /** {@inheritDoc} */
     @Override
     public WindowsLiveProfile extractUserProfile(final String body) {
         val profile = (WindowsLiveProfile) newProfile();

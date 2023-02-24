@@ -31,6 +31,12 @@ abstract class OAuthCredentialsExtractor implements CredentialsExtractor {
 
     protected IndirectClient client;
 
+    /**
+     * <p>Constructor for OAuthCredentialsExtractor.</p>
+     *
+     * @param configuration a {@link org.pac4j.oauth.config.OAuthConfiguration} object
+     * @param client a {@link org.pac4j.core.client.IndirectClient} object
+     */
     protected OAuthCredentialsExtractor(final OAuthConfiguration configuration, final IndirectClient client) {
         CommonHelper.assertNotNull("client", client);
         CommonHelper.assertNotNull("configuration", configuration);
@@ -38,6 +44,7 @@ abstract class OAuthCredentialsExtractor implements CredentialsExtractor {
         this.client = client;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<Credentials> extract(final CallContext ctx) {
         val webContext = ctx.webContext();

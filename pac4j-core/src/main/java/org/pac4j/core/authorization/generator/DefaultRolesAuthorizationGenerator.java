@@ -17,10 +17,20 @@ public class DefaultRolesAuthorizationGenerator implements AuthorizationGenerato
 
     private final Collection<String> defaultRoles;
 
+    /**
+     * <p>Constructor for DefaultRolesAuthorizationGenerator.</p>
+     *
+     * @param defaultRoles a {@link java.util.Collection} object
+     */
     public DefaultRolesAuthorizationGenerator(final Collection<String> defaultRoles) {
         this.defaultRoles = defaultRoles;
     }
 
+    /**
+     * <p>Constructor for DefaultRolesAuthorizationGenerator.</p>
+     *
+     * @param defaultRoles an array of {@link java.lang.String} objects
+     */
     public DefaultRolesAuthorizationGenerator(final String[] defaultRoles) {
         if (defaultRoles != null) {
             this.defaultRoles = Arrays.asList(defaultRoles);
@@ -29,6 +39,7 @@ public class DefaultRolesAuthorizationGenerator implements AuthorizationGenerato
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<UserProfile> generate(final CallContext ctx, final UserProfile profile) {
         if (defaultRoles != null) {

@@ -15,22 +15,37 @@ import java.util.List;
  */
 public class IsFullyAuthenticatedAuthorizer extends AbstractCheckAuthenticationAuthorizer {
 
+    /**
+     * <p>Constructor for IsFullyAuthenticatedAuthorizer.</p>
+     */
     public IsFullyAuthenticatedAuthorizer() {}
 
+    /**
+     * <p>Constructor for IsFullyAuthenticatedAuthorizer.</p>
+     *
+     * @param redirectionUrl a {@link java.lang.String} object
+     */
     public IsFullyAuthenticatedAuthorizer(final String redirectionUrl) {
         super(redirectionUrl);
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean isAuthorized(final WebContext context, final SessionStore sessionStore, final List<UserProfile> profiles) {
         return isAnyAuthorized(context, sessionStore, profiles);
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean isProfileAuthorized(final WebContext context, final SessionStore sessionStore, final UserProfile profile) {
         return profile != null && !(profile instanceof AnonymousProfile) && !profile.isRemembered();
     }
 
+    /**
+     * <p>isFullyAuthenticated.</p>
+     *
+     * @return a {@link org.pac4j.core.authorization.authorizer.IsFullyAuthenticatedAuthorizer} object
+     */
     public static IsFullyAuthenticatedAuthorizer isFullyAuthenticated() {
         return new IsFullyAuthenticatedAuthorizer();
     }

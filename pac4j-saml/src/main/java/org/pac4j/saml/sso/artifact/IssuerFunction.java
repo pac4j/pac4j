@@ -9,13 +9,15 @@ import org.opensaml.saml.saml2.core.RequestAbstractType;
 import org.opensaml.saml.saml2.core.StatusResponseType;
 
 /**
- * A simple function that returns the issuer set on the {@link MessageContext}.
+ * A simple function that returns the issuer set on the {@link org.opensaml.messaging.context.MessageContext}.
  * This is read from the message in the context.
  *
  * @since 3.8.0
+ * @author bidou
  */
 @SuppressWarnings("rawtypes")
 public class IssuerFunction implements Function<MessageContext, String> {
+    /** {@inheritDoc} */
     @Override
     public String apply(final MessageContext context) {
         if (context == null) {

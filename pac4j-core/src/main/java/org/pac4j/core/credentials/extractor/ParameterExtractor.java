@@ -25,10 +25,22 @@ public class ParameterExtractor implements CredentialsExtractor {
 
     private boolean supportPostRequest;
 
+    /**
+     * <p>Constructor for ParameterExtractor.</p>
+     *
+     * @param parameterName a {@link java.lang.String} object
+     */
     public ParameterExtractor(final String parameterName) {
         this(parameterName, false, true);
     }
 
+    /**
+     * <p>Constructor for ParameterExtractor.</p>
+     *
+     * @param parameterName a {@link java.lang.String} object
+     * @param supportGetRequest a boolean
+     * @param supportPostRequest a boolean
+     */
     public ParameterExtractor(final String parameterName, final boolean supportGetRequest,
                               final boolean supportPostRequest) {
         this.parameterName = parameterName;
@@ -36,6 +48,7 @@ public class ParameterExtractor implements CredentialsExtractor {
         this.supportPostRequest = supportPostRequest;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<Credentials> extract(final CallContext ctx) {
         val webContext = ctx.webContext();

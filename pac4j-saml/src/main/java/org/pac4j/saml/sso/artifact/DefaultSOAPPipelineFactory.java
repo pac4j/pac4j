@@ -43,6 +43,7 @@ import java.util.List;
  * specific handler, override the build method for that handler.
  *
  * @since 3.8.0
+ * @author bidou
  */
 @SuppressWarnings("unchecked")
 public class DefaultSOAPPipelineFactory implements HttpClientMessagePipelineFactory {
@@ -58,6 +59,16 @@ public class DefaultSOAPPipelineFactory implements HttpClientMessagePipelineFact
 
     protected final ReplayCacheProvider replayCache;
 
+    /**
+     * <p>Constructor for DefaultSOAPPipelineFactory.</p>
+     *
+     * @param configuration a {@link org.pac4j.saml.config.SAML2Configuration} object
+     * @param idpMetadataResolver a {@link org.pac4j.saml.metadata.SAML2MetadataResolver} object
+     * @param spMetadataResolver a {@link org.pac4j.saml.metadata.SAML2MetadataResolver} object
+     * @param signingParametersProvider a {@link org.pac4j.saml.crypto.SignatureSigningParametersProvider} object
+     * @param signatureTrustEngineProvider a {@link org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider} object
+     * @param replayCache a {@link org.pac4j.saml.replay.ReplayCacheProvider} object
+     */
     public DefaultSOAPPipelineFactory(final SAML2Configuration configuration,
                                       final SAML2MetadataResolver idpMetadataResolver,
                                       final SAML2MetadataResolver spMetadataResolver,
@@ -72,6 +83,12 @@ public class DefaultSOAPPipelineFactory implements HttpClientMessagePipelineFact
         this.replayCache = replayCache;
     }
 
+    /**
+     * <p>getInboundHandlers.</p>
+     *
+     * @return a {@link java.util.List} object
+     * @throws net.shibboleth.shared.component.ComponentInitializationException if any.
+     */
     protected List<MessageHandler> getInboundHandlers() throws ComponentInitializationException {
         final List<MessageHandler> handlers = new ArrayList<>();
         handlers.add(buildSAMLProtocolAndRoleHandler(IDPSSODescriptor.DEFAULT_ELEMENT_NAME));
@@ -92,6 +109,12 @@ public class DefaultSOAPPipelineFactory implements HttpClientMessagePipelineFact
         return handlers;
     }
 
+    /**
+     * <p>getOutboundPayloadHandlers.</p>
+     *
+     * @return a {@link java.util.List} object
+     * @throws net.shibboleth.shared.component.ComponentInitializationException if any.
+     */
     protected List<MessageHandler> getOutboundPayloadHandlers() throws ComponentInitializationException {
         final List<MessageHandler> handlers = new ArrayList<>();
         handlers.add(buildSAMLProtocolAndRoleHandler(SPSSODescriptor.DEFAULT_ELEMENT_NAME));
@@ -101,10 +124,23 @@ public class DefaultSOAPPipelineFactory implements HttpClientMessagePipelineFact
         return handlers;
     }
 
+    /**
+     * <p>getOutboundTransportHandlers.</p>
+     *
+     * @return a {@link java.util.List} object
+     * @throws net.shibboleth.shared.component.ComponentInitializationException if any.
+     */
     protected List<MessageHandler> getOutboundTransportHandlers() throws ComponentInitializationException {
         return new ArrayList<>();
     }
 
+    /**
+     * <p>buildSAMLProtocolAndRoleHandler.</p>
+     *
+     * @param roleName a {@link javax.xml.namespace.QName} object
+     * @return a {@link org.opensaml.messaging.handler.MessageHandler} object
+     * @throws net.shibboleth.shared.component.ComponentInitializationException if any.
+     */
     protected MessageHandler buildSAMLProtocolAndRoleHandler(final QName roleName)
         throws ComponentInitializationException {
         val protocolAndRoleHandler = new SAMLProtocolAndRoleHandler();
@@ -114,6 +150,13 @@ public class DefaultSOAPPipelineFactory implements HttpClientMessagePipelineFact
         return protocolAndRoleHandler;
     }
 
+    /**
+     * <p>buildSAMLMetadataLookupHandler.</p>
+     *
+     * @param metadataResolver a {@link org.pac4j.saml.metadata.SAML2MetadataResolver} object
+     * @return a {@link org.opensaml.messaging.handler.MessageHandler} object
+     * @throws net.shibboleth.shared.component.ComponentInitializationException if any.
+     */
     protected MessageHandler buildSAMLMetadataLookupHandler(final SAML2MetadataResolver metadataResolver)
         throws ComponentInitializationException {
         val roleResolver = new PredicateRoleDescriptorResolver(metadataResolver.resolve());
@@ -125,6 +168,12 @@ public class DefaultSOAPPipelineFactory implements HttpClientMessagePipelineFact
         return metadataLookupHandler;
     }
 
+    /**
+     * <p>buildSchemaValidateXMLMessage.</p>
+     *
+     * @return a {@link org.opensaml.messaging.handler.MessageHandler} object
+     * @throws net.shibboleth.shared.component.ComponentInitializationException if any.
+     */
     protected MessageHandler buildSchemaValidateXMLMessage() throws ComponentInitializationException {
         try {
             val validateXMLHandler = new SchemaValidateXMLMessage(
@@ -136,12 +185,24 @@ public class DefaultSOAPPipelineFactory implements HttpClientMessagePipelineFact
         }
     }
 
+    /**
+     * <p>buildCheckMessageVersionHandler.</p>
+     *
+     * @return a {@link org.opensaml.messaging.handler.MessageHandler} object
+     * @throws net.shibboleth.shared.component.ComponentInitializationException if any.
+     */
     protected MessageHandler buildCheckMessageVersionHandler() throws ComponentInitializationException {
         val messageVersionHandler = new CheckMessageVersionHandler();
         messageVersionHandler.initialize();
         return messageVersionHandler;
     }
 
+    /**
+     * <p>buildMessageLifetimeSecurityHandler.</p>
+     *
+     * @return a {@link org.opensaml.messaging.handler.MessageHandler} object
+     * @throws net.shibboleth.shared.component.ComponentInitializationException if any.
+     */
     protected MessageHandler buildMessageLifetimeSecurityHandler() throws ComponentInitializationException {
         val lifetimeHandler = new MessageLifetimeSecurityHandler();
         lifetimeHandler.setClockSkew(Duration.ofMillis(configuration.getAcceptedSkew() * 1000));
@@ -149,12 +210,24 @@ public class DefaultSOAPPipelineFactory implements HttpClientMessagePipelineFact
         return lifetimeHandler;
     }
 
+    /**
+     * <p>buildInResponseToSecurityHandler.</p>
+     *
+     * @return a {@link org.opensaml.messaging.handler.MessageHandler} object
+     * @throws net.shibboleth.shared.component.ComponentInitializationException if any.
+     */
     protected MessageHandler buildInResponseToSecurityHandler() throws ComponentInitializationException {
         val inResponseToHandler = new InResponseToSecurityHandler();
         inResponseToHandler.initialize();
         return inResponseToHandler;
     }
 
+    /**
+     * <p>buildMessageReplaySecurityHandler.</p>
+     *
+     * @return a {@link org.opensaml.messaging.handler.MessageHandler} object
+     * @throws net.shibboleth.shared.component.ComponentInitializationException if any.
+     */
     protected MessageHandler buildMessageReplaySecurityHandler() throws ComponentInitializationException {
         val messageReplayHandler = new MessageReplaySecurityHandler();
         messageReplayHandler.setExpires(Duration.ofMillis(configuration.getAcceptedSkew() * 1000));
@@ -163,6 +236,12 @@ public class DefaultSOAPPipelineFactory implements HttpClientMessagePipelineFact
         return messageReplayHandler;
     }
 
+    /**
+     * <p>buildCheckMandatoryIssuer.</p>
+     *
+     * @return a {@link org.opensaml.messaging.handler.MessageHandler} object
+     * @throws net.shibboleth.shared.component.ComponentInitializationException if any.
+     */
     protected MessageHandler buildCheckMandatoryIssuer() throws ComponentInitializationException {
         val mandatoryIssuer = new CheckMandatoryIssuer();
         mandatoryIssuer.setIssuerLookupStrategy(new IssuerFunction());
@@ -170,6 +249,12 @@ public class DefaultSOAPPipelineFactory implements HttpClientMessagePipelineFact
         return mandatoryIssuer;
     }
 
+    /**
+     * <p>buildCheckExpectedIssuer.</p>
+     *
+     * @return a {@link org.opensaml.messaging.handler.MessageHandler} object
+     * @throws net.shibboleth.shared.component.ComponentInitializationException if any.
+     */
     protected MessageHandler buildCheckExpectedIssuer() throws ComponentInitializationException {
         val expectedIssuer = new CheckExpectedIssuer();
         expectedIssuer.setIssuerLookupStrategy(new IssuerFunction());
@@ -178,6 +263,12 @@ public class DefaultSOAPPipelineFactory implements HttpClientMessagePipelineFact
         return expectedIssuer;
     }
 
+    /**
+     * <p>buildPopulateSignatureSigningParametersHandler.</p>
+     *
+     * @return a {@link org.opensaml.messaging.handler.MessageHandler} object
+     * @throws net.shibboleth.shared.component.ComponentInitializationException if any.
+     */
     protected MessageHandler buildPopulateSignatureSigningParametersHandler()
         throws ComponentInitializationException {
         val signatureSigningParameters = new PopulateSignatureSigningParametersHandler();
@@ -187,6 +278,12 @@ public class DefaultSOAPPipelineFactory implements HttpClientMessagePipelineFact
         return signatureSigningParameters;
     }
 
+    /**
+     * <p>buildPopulateSignatureValidationParametersHandler.</p>
+     *
+     * @return a {@link org.opensaml.messaging.handler.MessageHandler} object
+     * @throws net.shibboleth.shared.component.ComponentInitializationException if any.
+     */
     protected MessageHandler buildPopulateSignatureValidationParametersHandler()
         throws ComponentInitializationException {
         val signatureValidationParameters =
@@ -202,6 +299,12 @@ public class DefaultSOAPPipelineFactory implements HttpClientMessagePipelineFact
         return signatureValidationParameters;
     }
 
+    /**
+     * <p>buildSAMLProtocolMessageXMLSignatureSecurityHandler.</p>
+     *
+     * @return a {@link org.opensaml.messaging.handler.MessageHandler} object
+     * @throws net.shibboleth.shared.component.ComponentInitializationException if any.
+     */
     protected MessageHandler buildSAMLProtocolMessageXMLSignatureSecurityHandler()
         throws ComponentInitializationException {
         val messageXMLSignatureHandler =
@@ -210,6 +313,12 @@ public class DefaultSOAPPipelineFactory implements HttpClientMessagePipelineFact
         return messageXMLSignatureHandler;
     }
 
+    /**
+     * <p>buildCheckAndRecordServerTLSEntityAuthenticationtHandler.</p>
+     *
+     * @return a {@link org.opensaml.messaging.handler.MessageHandler} object
+     * @throws net.shibboleth.shared.component.ComponentInitializationException if any.
+     */
     protected MessageHandler buildCheckAndRecordServerTLSEntityAuthenticationtHandler()
         throws ComponentInitializationException {
         val tlsHandler =
@@ -218,6 +327,11 @@ public class DefaultSOAPPipelineFactory implements HttpClientMessagePipelineFact
         return tlsHandler;
     }
 
+    /**
+     * <p>buildCheckMandatoryAuthentication.</p>
+     *
+     * @return a {@link org.opensaml.messaging.handler.MessageHandler} object
+     */
     protected MessageHandler buildCheckMandatoryAuthentication() {
         val mandatoryAuthentication = new CheckMandatoryAuthentication();
         mandatoryAuthentication.setAuthenticationLookupStrategy(
@@ -225,12 +339,24 @@ public class DefaultSOAPPipelineFactory implements HttpClientMessagePipelineFact
         return mandatoryAuthentication;
     }
 
+    /**
+     * <p>buildSAMLSOAPDecoderBodyHandler.</p>
+     *
+     * @return a {@link org.opensaml.messaging.handler.MessageHandler} object
+     * @throws net.shibboleth.shared.component.ComponentInitializationException if any.
+     */
     protected MessageHandler buildSAMLSOAPDecoderBodyHandler() throws ComponentInitializationException {
         val soapDecoderBody = new SAMLSOAPDecoderBodyHandler();
         soapDecoderBody.initialize();
         return soapDecoderBody;
     }
 
+    /**
+     * <p>buildSAMLOutboundProtocolMessageSigningHandler.</p>
+     *
+     * @return a {@link org.opensaml.messaging.handler.MessageHandler} object
+     * @throws net.shibboleth.shared.component.ComponentInitializationException if any.
+     */
     protected MessageHandler buildSAMLOutboundProtocolMessageSigningHandler()
         throws ComponentInitializationException {
         val messageSigner = new SAMLOutboundProtocolMessageSigningHandler();
@@ -238,12 +364,19 @@ public class DefaultSOAPPipelineFactory implements HttpClientMessagePipelineFact
         return messageSigner;
     }
 
+    /**
+     * <p>toHandlerChain.</p>
+     *
+     * @param handlers a {@link java.util.List} object
+     * @return a {@link org.opensaml.messaging.handler.impl.BasicMessageHandlerChain} object
+     */
     protected BasicMessageHandlerChain toHandlerChain(final List<MessageHandler> handlers) {
         val ret = new BasicMessageHandlerChain();
         ret.setHandlers(handlers);
         return ret;
     }
 
+    /** {@inheritDoc} */
     @Override
     public HttpClientMessagePipeline newInstance() {
         val ret = new BasicHttpClientMessagePipeline(
@@ -258,6 +391,7 @@ public class DefaultSOAPPipelineFactory implements HttpClientMessagePipelineFact
         return ret;
     }
 
+    /** {@inheritDoc} */
     @Override
     public HttpClientMessagePipeline newInstance(final String pipelineName) {
         return newInstance();

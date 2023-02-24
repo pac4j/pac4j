@@ -26,12 +26,11 @@ import java.util.ServiceLoader;
 /**
  * OpenSAML configuration bean to bootstrap the parser pool.
  *
- * Uses the Java service API to find an instance of {@link ConfigurationManager} to do the actual configuration. Will
+ * Uses the Java service API to find an instance of {@link org.pac4j.saml.util.ConfigurationManager} to do the actual configuration. Will
  * use the implementation with the lowest javax|jakarta.annotation.Priority annotation. If none are found, a relatively sane
- * implementation, {@link DefaultConfigurationManager}, will be used. The default priority is 100.
+ * implementation, {@link org.pac4j.saml.util.DefaultConfigurationManager}, will be used. The default priority is 100.
  *
  * @see ServiceLoader
- *
  * @author Misagh Moayyed
  * @since 1.7
  */
@@ -58,22 +57,48 @@ public final class Configuration {
         }
     }
 
+    /**
+     * <p>getParserPool.</p>
+     *
+     * @return a {@link net.shibboleth.shared.xml.ParserPool} object
+     */
     public static ParserPool getParserPool() {
         return XMLObjectProviderRegistrySupport.getParserPool();
     }
 
+    /**
+     * <p>getBuilderFactory.</p>
+     *
+     * @return a {@link org.opensaml.core.xml.XMLObjectBuilderFactory} object
+     */
     public static XMLObjectBuilderFactory getBuilderFactory() {
         return XMLObjectProviderRegistrySupport.getBuilderFactory();
     }
 
+    /**
+     * <p>getMarshallerFactory.</p>
+     *
+     * @return a {@link org.opensaml.core.xml.io.MarshallerFactory} object
+     */
     public static MarshallerFactory getMarshallerFactory() {
         return XMLObjectProviderRegistrySupport.getMarshallerFactory();
     }
 
+    /**
+     * <p>getUnmarshallerFactory.</p>
+     *
+     * @return a {@link org.opensaml.core.xml.io.UnmarshallerFactory} object
+     */
     public static UnmarshallerFactory getUnmarshallerFactory() {
         return XMLObjectProviderRegistrySupport.getUnmarshallerFactory();
     }
 
+    /**
+     * <p>serializeSamlObject.</p>
+     *
+     * @param samlObject a {@link org.opensaml.core.xml.XMLObject} object
+     * @return a {@link java.io.StringWriter} object
+     */
     public static StringWriter serializeSamlObject(final XMLObject samlObject) {
         val writer = new StringWriter();
         try {
@@ -95,6 +120,12 @@ public final class Configuration {
         return writer;
     }
 
+    /**
+     * <p>deserializeSamlObject.</p>
+     *
+     * @param obj a {@link java.lang.String} object
+     * @return a {@link java.util.Optional} object
+     */
     public static Optional<XMLObject> deserializeSamlObject(final String obj) {
         try (val reader = new StringReader(obj)) {
             return Optional.of(XMLObjectSupport.unmarshallFromReader(Configuration.getParserPool(), reader));

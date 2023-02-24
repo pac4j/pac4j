@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
  */
 public class ComplexTypeSAML2AttributeConverter implements AttributeConverter {
 
+    /** {@inheritDoc} */
     @Override
     public Object convert(final Object a) {
         val attribute = (Attribute) a;

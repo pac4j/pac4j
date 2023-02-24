@@ -107,6 +107,11 @@ public final class JsonHelper {
         return null;
     }
 
+    /**
+     * <p>Getter for the field <code>mapper</code>.</p>
+     *
+     * @return a {@link com.fasterxml.jackson.databind.ObjectMapper} object
+     */
     public static ObjectMapper getMapper() {
         return mapper;
     }

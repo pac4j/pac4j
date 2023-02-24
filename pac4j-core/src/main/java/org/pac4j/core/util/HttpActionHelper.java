@@ -7,7 +7,7 @@ import org.pac4j.core.context.WebContextHelper;
 import org.pac4j.core.exception.http.*;
 
 /**
- * Helper to build the appropriate {@link HttpAction}.
+ * Helper to build the appropriate {@link org.pac4j.core.exception.http.HttpAction}.
  *
  * @author Jerome LELEU
  * @since 4.0.0
@@ -96,22 +96,48 @@ public final class HttpActionHelper {
         return buffer.toString();
     }
 
+    /**
+     * <p>escapeHtml.</p>
+     *
+     * @param s a {@link java.lang.String} object
+     * @return a {@link java.lang.String} object
+     */
     protected static String escapeHtml(final String s) {
         return s.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll("\"", "&quot;");
     }
 
+    /**
+     * <p>isUseModernHttpCodes.</p>
+     *
+     * @return a boolean
+     */
     public static boolean isUseModernHttpCodes() {
         return useModernHttpCodes;
     }
 
+    /**
+     * <p>Setter for the field <code>useModernHttpCodes</code>.</p>
+     *
+     * @param useModernHttpCodes a boolean
+     */
     public static void setUseModernHttpCodes(final boolean useModernHttpCodes) {
         HttpActionHelper.useModernHttpCodes = useModernHttpCodes;
     }
 
+    /**
+     * <p>isAlwaysUse401ForUnauthenticated.</p>
+     *
+     * @return a boolean
+     */
     public static boolean isAlwaysUse401ForUnauthenticated() {
         return alwaysUse401ForUnauthenticated;
     }
 
+    /**
+     * <p>Setter for the field <code>alwaysUse401ForUnauthenticated</code>.</p>
+     *
+     * @param alwaysUse401ForUnauthenticated a boolean
+     */
     public static void setAlwaysUse401ForUnauthenticated(final boolean alwaysUse401ForUnauthenticated) {
         HttpActionHelper.alwaysUse401ForUnauthenticated = alwaysUse401ForUnauthenticated;
     }

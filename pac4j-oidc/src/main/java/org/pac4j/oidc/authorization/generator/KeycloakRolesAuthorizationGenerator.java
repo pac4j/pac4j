@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * Specific {@link AuthorizationGenerator} to Keycloak.
+ * Specific {@link org.pac4j.core.authorization.generator.AuthorizationGenerator} to Keycloak.
  *
  * @author Jerome Leleu
  * @since 3.4.0
@@ -27,13 +27,22 @@ public class KeycloakRolesAuthorizationGenerator implements AuthorizationGenerat
 
     private String clientId;
 
+    /**
+     * <p>Constructor for KeycloakRolesAuthorizationGenerator.</p>
+     */
     public KeycloakRolesAuthorizationGenerator() {
     }
 
+    /**
+     * <p>Constructor for KeycloakRolesAuthorizationGenerator.</p>
+     *
+     * @param clientId a {@link java.lang.String} object
+     */
     public KeycloakRolesAuthorizationGenerator(final String clientId) {
         this.clientId = clientId;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<UserProfile> generate(final CallContext ctx, final UserProfile profile) {
 

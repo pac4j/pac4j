@@ -31,6 +31,9 @@ public class PathMatcher implements Matcher {
     private static boolean warnedRegexp;
     private static boolean warnedInclude;
 
+    /**
+     * <p>Constructor for PathMatcher.</p>
+     */
     public PathMatcher() {}
 
     /**
@@ -45,6 +48,12 @@ public class PathMatcher implements Matcher {
         return this;
     }
 
+    /**
+     * <p>excludePaths.</p>
+     *
+     * @param paths a {@link java.lang.String} object
+     * @return a {@link org.pac4j.core.matching.matcher.PathMatcher} object
+     */
     public PathMatcher excludePaths(final String... paths) {
         if (paths != null && paths.length > 0) {
             for (val path : paths) {
@@ -54,6 +63,12 @@ public class PathMatcher implements Matcher {
         return this;
     }
 
+    /**
+     * <p>includePath.</p>
+     *
+     * @param path a {@link java.lang.String} object
+     * @return a {@link org.pac4j.core.matching.matcher.PathMatcher} object
+     */
     public PathMatcher includePath(final String path) {
         warnInclude();
         validatePath(path);
@@ -61,6 +76,12 @@ public class PathMatcher implements Matcher {
         return this;
     }
 
+    /**
+     * <p>includePaths.</p>
+     *
+     * @param paths a {@link java.lang.String} object
+     * @return a {@link org.pac4j.core.matching.matcher.PathMatcher} object
+     */
     public PathMatcher includePaths(final String... paths) {
         if (paths != null && paths.length > 0) {
             for (val path : paths) {
@@ -102,6 +123,9 @@ public class PathMatcher implements Matcher {
         return this;
     }
 
+    /**
+     * <p>warnRegexp.</p>
+     */
     protected void warnRegexp() {
         if (!warnedRegexp) {
             LOGGER.warn("Be careful when using the 'excludeBranch' or 'excludeRegex' methods. "
@@ -110,6 +134,9 @@ public class PathMatcher implements Matcher {
         }
     }
 
+    /**
+     * <p>warnInclude.</p>
+     */
     protected void warnInclude() {
         if (!warnedInclude) {
             LOGGER.warn("Be careful when using the 'includePath' or 'includePaths' methods. "
@@ -118,6 +145,7 @@ public class PathMatcher implements Matcher {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean matches(final CallContext ctx) {
         return matches(ctx.webContext().getPath());
@@ -153,21 +181,41 @@ public class PathMatcher implements Matcher {
         return true;
     }
 
+    /**
+     * <p>Setter for the field <code>excludedPaths</code>.</p>
+     *
+     * @param paths a {@link java.util.Collection} object
+     */
     public void setExcludedPaths(Collection<String> paths) {
         excludedPaths.clear();
         paths.forEach(this::excludePath);
     }
 
+    /**
+     * <p>Setter for the field <code>excludedPatterns</code>.</p>
+     *
+     * @param regularExpressions a {@link java.util.Collection} object
+     */
     public void setExcludedPatterns(Collection<String> regularExpressions) {
         excludedPatterns.clear();
         regularExpressions.forEach(this::excludeRegex);
     }
 
+    /**
+     * <p>setExcludedPath.</p>
+     *
+     * @param path a {@link java.lang.String} object
+     */
     public void setExcludedPath(final String path) {
         excludedPaths.clear();
         excludePath(path);
     }
 
+    /**
+     * <p>setExcludedPattern.</p>
+     *
+     * @param regularExpression a {@link java.lang.String} object
+     */
     public void setExcludedPattern(final String regularExpression) {
         excludedPatterns.clear();
         excludeRegex(regularExpression);

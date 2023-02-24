@@ -17,6 +17,11 @@ public class FoundAction extends RedirectionAction implements WithLocationAction
     private static final long serialVersionUID = 5155686595276189592L;
     private final String location;
 
+    /**
+     * <p>Constructor for FoundAction.</p>
+     *
+     * @param location a {@link java.lang.String} object
+     */
     public FoundAction(final String location) {
         super(HttpConstants.FOUND);
         this.location = location;

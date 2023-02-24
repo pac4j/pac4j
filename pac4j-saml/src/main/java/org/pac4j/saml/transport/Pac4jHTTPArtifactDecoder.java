@@ -157,9 +157,7 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
         parserPool = XMLObjectProviderRegistrySupport.getParserPool();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public void decode() throws MessageDecodingException {
         LOGGER.debug("Beginning to decode message from WebContext");
@@ -173,9 +171,7 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
         LOGGER.debug("Successfully decoded message from WebContext.");
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     protected void doDestroy() {
         super.doDestroy();
@@ -189,9 +185,7 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
         idStrategy = null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     protected void doDecode() throws MessageDecodingException {
         val messageContext = new MessageContext();
@@ -226,9 +220,7 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
         parserPool = pool;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     protected void doInitialize() throws ComponentInitializationException {
         super.doInitialize();
@@ -271,9 +263,7 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
 
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     @NotEmpty
     public String getBindingURI() {

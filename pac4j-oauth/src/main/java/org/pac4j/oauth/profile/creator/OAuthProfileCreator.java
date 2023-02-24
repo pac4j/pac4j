@@ -35,6 +35,7 @@ abstract class OAuthProfileCreator implements ProfileCreator {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
+    /** Constant <code>mapper</code> */
     protected static final ObjectMapper mapper;
 
     static {
@@ -46,6 +47,12 @@ abstract class OAuthProfileCreator implements ProfileCreator {
 
     protected IndirectClient client;
 
+    /**
+     * <p>Constructor for OAuthProfileCreator.</p>
+     *
+     * @param configuration a {@link org.pac4j.oauth.config.OAuthConfiguration} object
+     * @param client a {@link org.pac4j.core.client.IndirectClient} object
+     */
     protected OAuthProfileCreator(final OAuthConfiguration configuration, final IndirectClient client) {
         CommonHelper.assertNotNull("client", client);
         CommonHelper.assertNotNull("configuration", configuration);
@@ -53,6 +60,7 @@ abstract class OAuthProfileCreator implements ProfileCreator {
         this.client = client;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<UserProfile> create(final CallContext ctx, final Credentials credentials) {
         try {

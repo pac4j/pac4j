@@ -37,6 +37,12 @@ public class TokenValidator {
 
     private final OIDCProviderMetadata metadata;
 
+    /**
+     * <p>Constructor for TokenValidator.</p>
+     *
+     * @param configuration a {@link org.pac4j.oidc.config.OidcConfiguration} object
+     * @param metadata a {@link com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata} object
+     */
     public TokenValidator(final OidcConfiguration configuration, final OIDCProviderMetadata metadata) {
         CommonHelper.assertNotNull("configuration", configuration);
         CommonHelper.assertNotNull("metadata", metadata);
@@ -87,6 +93,13 @@ public class TokenValidator {
         }
     }
 
+    /**
+     * <p>createRSATokenValidator.</p>
+     *
+     * @param jwsAlgorithm a {@link com.nimbusds.jose.JWSAlgorithm} object
+     * @param clientID a {@link com.nimbusds.oauth2.sdk.id.ClientID} object
+     * @return a {@link com.nimbusds.openid.connect.sdk.validators.IDTokenValidator} object
+     */
     protected IDTokenValidator createRSATokenValidator(final JWSAlgorithm jwsAlgorithm, final ClientID clientID) {
         try {
             return new IDTokenValidator(metadata.getIssuer(), clientID, jwsAlgorithm, metadata.getJWKSetURI().toURL(),
@@ -96,10 +109,27 @@ public class TokenValidator {
         }
     }
 
+    /**
+     * <p>createHMACTokenValidator.</p>
+     *
+     * @param jwsAlgorithm a {@link com.nimbusds.jose.JWSAlgorithm} object
+     * @param clientID a {@link com.nimbusds.oauth2.sdk.id.ClientID} object
+     * @param secret a {@link com.nimbusds.oauth2.sdk.auth.Secret} object
+     * @return a {@link com.nimbusds.openid.connect.sdk.validators.IDTokenValidator} object
+     */
     protected IDTokenValidator createHMACTokenValidator(final JWSAlgorithm jwsAlgorithm, final ClientID clientID, final Secret secret) {
         return new IDTokenValidator(metadata.getIssuer(), clientID, jwsAlgorithm, secret);
     }
 
+    /**
+     * <p>validate.</p>
+     *
+     * @param idToken a {@link com.nimbusds.jwt.JWT} object
+     * @param expectedNonce a {@link com.nimbusds.openid.connect.sdk.Nonce} object
+     * @return a {@link com.nimbusds.openid.connect.sdk.claims.IDTokenClaimsSet} object
+     * @throws com.nimbusds.jose.proc.BadJOSEException if any.
+     * @throws com.nimbusds.jose.JOSEException if any.
+     */
     public IDTokenClaimsSet validate(final JWT idToken, final Nonce expectedNonce)
         throws BadJOSEException, JOSEException {
 

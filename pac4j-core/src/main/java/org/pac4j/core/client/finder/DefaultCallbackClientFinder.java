@@ -21,8 +21,12 @@ import java.util.stream.Collectors;
 @Slf4j
 public class DefaultCallbackClientFinder implements ClientFinder {
 
+    /**
+     * <p>Constructor for DefaultCallbackClientFinder.</p>
+     */
     public DefaultCallbackClientFinder() {}
 
+    /** {@inheritDoc} */
     @Override
     public List<Client> find(final Clients clients, final WebContext context, final String clientNames) {
 

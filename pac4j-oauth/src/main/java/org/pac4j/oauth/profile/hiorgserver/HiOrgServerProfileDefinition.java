@@ -21,23 +21,39 @@ import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
  */
 public class HiOrgServerProfileDefinition extends OAuthProfileDefinition {
 
+    /** Constant <code>USER_ID="user_id"</code> */
     public static final String USER_ID = "user_id";
+    /** Constant <code>USERNAME="username"</code> */
     public static final String USERNAME = "username";
 
+    /** Constant <code>NAME="name"</code> */
     public static final String NAME = "name";
+    /** Constant <code>FIRST_NAME="vorname"</code> */
     public static final String FIRST_NAME = "vorname";
+    /** Constant <code>FULL_NAME="fullname"</code> */
     public static final String FULL_NAME = "fullname";
+    /** Constant <code>ROLES="gruppe"</code> */
     public static final String ROLES = "gruppe";
+    /** Constant <code>LEADER="leitung"</code> */
     public static final String LEADER = "leitung";
+    /** Constant <code>POSITION="funktion"</code> */
     public static final String POSITION = "funktion";
+    /** Constant <code>ORGANISATION_ID="orga"</code> */
     public static final String ORGANISATION_ID = "orga";
+    /** Constant <code>ORGANISATION_NAME="organisation"</code> */
     public static final String ORGANISATION_NAME = "organisation";
 
+    /** Constant <code>ALTERNATIVE_ID="alt_user_id"</code> */
     public static final String ALTERNATIVE_ID = "alt_user_id";
+    /** Constant <code>TYPED_ALTERNATIVE_ID="typed_alt_user_id"</code> */
     public static final String TYPED_ALTERNATIVE_ID = "typed_alt_user_id";
 
+    /** Constant <code>BASE_URL="https://www.hiorg-server.de/api/oauth2/"{trunked}</code> */
     protected static final String BASE_URL = "https://www.hiorg-server.de/api/oauth2/v1/user.php";
 
+    /**
+     * <p>Constructor for HiOrgServerProfileDefinition.</p>
+     */
     public HiOrgServerProfileDefinition() {
         super(x -> new HiOrgServerProfile());
         primary(USERNAME, Converters.STRING);
@@ -53,11 +69,13 @@ public class HiOrgServerProfileDefinition extends OAuthProfileDefinition {
         secondary(TYPED_ALTERNATIVE_ID, Converters.STRING);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getProfileUrl(final Token accessToken, final OAuthConfiguration configuration) {
         return BASE_URL;
     }
 
+    /** {@inheritDoc} */
     @Override
     public HiOrgServerProfile extractUserProfile(String body) {
         val profile = (HiOrgServerProfile) newProfile();
@@ -78,6 +96,11 @@ public class HiOrgServerProfileDefinition extends OAuthProfileDefinition {
         return profile;
     }
 
+    /**
+     * <p>extractRoles.</p>
+     *
+     * @param profile a {@link org.pac4j.oauth.profile.hiorgserver.HiOrgServerProfile} object
+     */
     protected void extractRoles(HiOrgServerProfile profile) {
         final Integer rolesAsInt = profile.getRolesAsInteger();
         Set<String> roles = new HashSet<>();

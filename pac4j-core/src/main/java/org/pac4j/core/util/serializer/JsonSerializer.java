@@ -21,6 +21,11 @@ public class JsonSerializer extends AbstractSerializer {
 
     private Class<? extends Object> clazz;
 
+    /**
+     * <p>Constructor for JsonSerializer.</p>
+     *
+     * @param clazz a {@link java.lang.Class} object
+     */
     public JsonSerializer(final Class<? extends Object> clazz) {
         assertNotNull("clazz", clazz);
         this.clazz = clazz;
@@ -30,6 +35,7 @@ public class JsonSerializer extends AbstractSerializer {
         objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected String internalSerializeToString(final Object obj) {
         try {
@@ -40,6 +46,7 @@ public class JsonSerializer extends AbstractSerializer {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     protected Object internalDeserializeFromString(final String encoded) {
         try {
@@ -50,10 +57,20 @@ public class JsonSerializer extends AbstractSerializer {
         }
     }
 
+    /**
+     * <p>Getter for the field <code>objectMapper</code>.</p>
+     *
+     * @return a {@link com.fasterxml.jackson.databind.ObjectMapper} object
+     */
     public ObjectMapper getObjectMapper() {
         return objectMapper;
     }
 
+    /**
+     * <p>Setter for the field <code>objectMapper</code>.</p>
+     *
+     * @param objectMapper a {@link com.fasterxml.jackson.databind.ObjectMapper} object
+     */
     public void setObjectMapper(final ObjectMapper objectMapper) {
         assertNotNull("objectMapper", objectMapper);
         this.objectMapper = objectMapper;

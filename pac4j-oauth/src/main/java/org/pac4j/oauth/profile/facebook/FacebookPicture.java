@@ -19,18 +19,38 @@ public final class FacebookPicture implements Serializable {
     @JsonProperty("is_silhouette")
     private Boolean isSilhouette;
 
+    /**
+     * <p>Getter for the field <code>url</code>.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getUrl() {
         return url;
     }
 
+    /**
+     * <p>Setter for the field <code>url</code>.</p>
+     *
+     * @param url a {@link java.lang.String} object
+     */
     public void setUrl(String url) {
         this.url = url;
     }
 
+    /**
+     * <p>getSilhouette.</p>
+     *
+     * @return a {@link java.lang.Boolean} object
+     */
     public Boolean getSilhouette() {
         return isSilhouette;
     }
 
+    /**
+     * <p>setSilhouette.</p>
+     *
+     * @param silhouette a {@link java.lang.Boolean} object
+     */
     public void setSilhouette(Boolean silhouette) {
         isSilhouette = silhouette;
     }

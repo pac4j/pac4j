@@ -7,7 +7,7 @@ import org.pac4j.core.profile.ProfileManager;
 import java.util.function.BiFunction;
 
 /**
- * A {@link ProfileManager} factory based on the {@link WebContext}.
+ * A {@link org.pac4j.core.profile.ProfileManager} factory based on the {@link org.pac4j.core.context.WebContext}.
  *
  * @author Jerome LELEU
  * @since 4.0.0
@@ -15,5 +15,6 @@ import java.util.function.BiFunction;
 @FunctionalInterface
 public interface ProfileManagerFactory extends BiFunction<WebContext, SessionStore, ProfileManager> {
 
+    /** Constant <code>DEFAULT</code> */
     ProfileManagerFactory DEFAULT = ProfileManager::new;
 }

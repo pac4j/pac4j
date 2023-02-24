@@ -27,7 +27,7 @@ import static org.pac4j.core.util.Pac4jConstants.PASSWORD;
 import static org.pac4j.core.util.Pac4jConstants.USERNAME;
 
 /**
- * Abstract implementation of the {@link ProfileService} for the storage: LDAP, SQL and MongoDB.
+ * Abstract implementation of the {@link org.pac4j.core.profile.service.ProfileService} for the storage: LDAP, SQL and MongoDB.
  *
  * @author Jerome Leleu
  * @since 2.0.0
@@ -35,10 +35,13 @@ import static org.pac4j.core.util.Pac4jConstants.USERNAME;
 public abstract class AbstractProfileService<U extends CommonProfile> extends ProfileDefinitionAware
         implements ProfileService<U>, Authenticator {
 
+    /** Constant <code>ID="id"</code> */
     public static final String ID = "id";
 
+    /** Constant <code>LINKEDID="linkedid"</code> */
     public static final String LINKEDID = "linkedid";
 
+    /** Constant <code>SERIALIZED_PROFILE="serializedprofile"</code> */
     public static final String SERIALIZED_PROFILE = "serializedprofile";
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
@@ -67,6 +70,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
 
     protected String[] attributeNames;
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         assertNotNull("profileDefinition", getProfileDefinition());
@@ -90,6 +94,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public void create(final U profile, final String password) {
         init();
@@ -103,6 +108,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
         insert(attributes);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void update(final U profile, final String password) {
         init();
@@ -115,6 +121,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
         update(attributes);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void remove(final U profile) {
         init();
@@ -124,6 +131,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
         removeById(profile.getId());
     }
 
+    /** {@inheritDoc} */
     @Override
     public void removeById(final String id) {
         init();
@@ -189,6 +197,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
      */
     protected abstract void deleteById(final String id);
 
+    /** {@inheritDoc} */
     @Override
     public U findById(final String id) {
         init();
@@ -199,6 +208,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
         return convertAttributesToProfile(listAttributes, null);
     }
 
+    /** {@inheritDoc} */
     @Override
     public U findByLinkedId(final String linkedId) {
         init();
@@ -292,6 +302,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
      */
     protected abstract List<Map<String, Object>> read(final List<String> names, final String key, final String value);
 
+    /** {@inheritDoc} */
     @Override
     public Optional<Credentials> validate(final CallContext ctx, Credentials cred) {
         init();
@@ -332,6 +343,11 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
         return Optional.of(cred);
     }
 
+    /**
+     * <p>isLegacyMode.</p>
+     *
+     * @return a boolean
+     */
     protected boolean isLegacyMode() {
         return attributes != null;
     }

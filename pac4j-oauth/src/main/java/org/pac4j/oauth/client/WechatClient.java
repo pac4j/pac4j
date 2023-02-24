@@ -1,6 +1,5 @@
 package org.pac4j.oauth.client;
 
-import org.pac4j.oauth.profile.wechat.WechatProfile;
 import org.pac4j.oauth.profile.wechat.WechatProfileCreator;
 import org.pac4j.oauth.profile.wechat.WechatProfileDefinition;
 import org.pac4j.scribe.builder.api.WechatApi20;
@@ -10,7 +9,7 @@ import java.util.List;
 
 /**
  * <p>This class is the OAuth client to authenticate users in Tencent Wechat.</p>
- * <p>It returns a {@link WechatProfile}.</p>
+ * <p>It returns a {@link org.pac4j.oauth.profile.wechat.WechatProfile}.</p>
  *
  * @author zhangzhenli
  * @since 3.1.0
@@ -35,14 +34,24 @@ public class WechatClient extends OAuth20Client {
     protected List<WechatScope> scopes;
 
 
+    /**
+     * <p>Constructor for WechatClient.</p>
+     */
     public WechatClient() {
     }
 
+    /**
+     * <p>Constructor for WechatClient.</p>
+     *
+     * @param key a {@link java.lang.String} object
+     * @param secret a {@link java.lang.String} object
+     */
     public WechatClient(final String key, final String secret) {
         setKey(key);
         setSecret(secret);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         configuration.setApi(new WechatApi20());
@@ -54,6 +63,11 @@ public class WechatClient extends OAuth20Client {
         super.internalInit(forceReinit);
     }
 
+    /**
+     * <p>getOAuthScope.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     protected String getOAuthScope() {
         StringBuilder builder = null;
         if (scopes == null || scopes.isEmpty()) {
@@ -73,14 +87,29 @@ public class WechatClient extends OAuth20Client {
         return builder == null ? null : builder.toString();
     }
 
+    /**
+     * <p>Getter for the field <code>scopes</code>.</p>
+     *
+     * @return a {@link java.util.List} object
+     */
     public List<WechatScope> getScopes() {
         return scopes;
     }
 
+    /**
+     * <p>Setter for the field <code>scopes</code>.</p>
+     *
+     * @param scopes a {@link java.util.List} object
+     */
     public void setScopes(List<WechatScope> scopes) {
         this.scopes = scopes;
     }
 
+    /**
+     * <p>addScope.</p>
+     *
+     * @param scopes a {@link org.pac4j.oauth.client.WechatClient.WechatScope} object
+     */
     public void addScope(WechatScope scopes) {
         if (this.scopes == null)
             this.scopes = new ArrayList<>();

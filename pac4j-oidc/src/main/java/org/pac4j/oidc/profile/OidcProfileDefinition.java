@@ -20,34 +20,62 @@ import java.util.Arrays;
  */
 public class OidcProfileDefinition extends CommonProfileDefinition {
 
+    /** Constant <code>NAME="name"</code> */
     public static final String NAME                     = "name";
+    /** Constant <code>GIVEN_NAME="given_name"</code> */
     public static final String GIVEN_NAME               = "given_name";
+    /** Constant <code>MIDDLE_NAME="middle_name"</code> */
     public static final String MIDDLE_NAME              = "middle_name";
+    /** Constant <code>NICKNAME="nickname"</code> */
     public static final String NICKNAME                 = "nickname";
+    /** Constant <code>PREFERRED_USERNAME="preferred_username"</code> */
     public static final String PREFERRED_USERNAME       = "preferred_username";
+    /** Constant <code>PROFILE="profile"</code> */
     public static final String PROFILE                  = "profile";
+    /** Constant <code>PICTURE="picture"</code> */
     public static final String PICTURE                  = "picture";
+    /** Constant <code>WEBSITE="website"</code> */
     public static final String WEBSITE                  = "website";
+    /** Constant <code>EMAIL_VERIFIED="email_verified"</code> */
     public static final String EMAIL_VERIFIED           = "email_verified";
+    /** Constant <code>BIRTHDATE="birthdate"</code> */
     public static final String BIRTHDATE                = "birthdate";
+    /** Constant <code>ZONEINFO="zoneinfo"</code> */
     public static final String ZONEINFO                 = "zoneinfo";
+    /** Constant <code>PHONE_NUMBER="phone_number"</code> */
     public static final String PHONE_NUMBER             = "phone_number";
+    /** Constant <code>PHONE_NUMBER_VERIFIED="phone_number_verified"</code> */
     public static final String PHONE_NUMBER_VERIFIED    = "phone_number_verified";
+    /** Constant <code>ADDRESS="address"</code> */
     public static final String ADDRESS                  = "address";
+    /** Constant <code>UPDATED_AT="updated_at"</code> */
     public static final String UPDATED_AT               = "updated_at";
+    /** Constant <code>ACCESS_TOKEN="access_token"</code> */
     public static final String ACCESS_TOKEN             = "access_token";
+    /** Constant <code>ID_TOKEN="id_token"</code> */
     public static final String ID_TOKEN                 = "id_token";
+    /** Constant <code>REFRESH_TOKEN="refresh_token"</code> */
     public static final String REFRESH_TOKEN            = "refresh_token";
+    /** Constant <code>AUTH_TIME="auth_time"</code> */
     public static final String AUTH_TIME                = "auth_time";
+    /** Constant <code>NONCE="nonce"</code> */
     public static final String NONCE                    = "nonce";
+    /** Constant <code>ACR="acr"</code> */
     public static final String ACR                      = "acr";
+    /** Constant <code>AMR="amr"</code> */
     public static final String AMR                      = "amr";
+    /** Constant <code>AZP="azp"</code> */
     public static final String AZP                      = "azp";
 
     // Custom secondary attributes
+    /** Constant <code>TOKEN_EXPIRATION_ADVANCE="token_expiration_advance"</code> */
     public static final String TOKEN_EXPIRATION_ADVANCE = "token_expiration_advance";
+    /** Constant <code>EXPIRATION="expiration"</code> */
     public static final String EXPIRATION               = "expiration";
 
+    /**
+     * <p>Constructor for OidcProfileDefinition.</p>
+     */
     public OidcProfileDefinition() {
         super(x -> new OidcProfile());
         Arrays.stream(new String[] {NAME, GIVEN_NAME, MIDDLE_NAME, NICKNAME, PREFERRED_USERNAME, WEBSITE,
@@ -84,6 +112,11 @@ public class OidcProfileDefinition extends CommonProfileDefinition {
         secondary(EXPIRATION, Converters.DATE_TZ_RFC822);
     }
 
+    /**
+     * <p>Constructor for OidcProfileDefinition.</p>
+     *
+     * @param profileFactory a {@link org.pac4j.core.profile.factory.ProfileFactory} object
+     */
     public OidcProfileDefinition(final ProfileFactory profileFactory) {
         this();
         setProfileFactory(profileFactory);

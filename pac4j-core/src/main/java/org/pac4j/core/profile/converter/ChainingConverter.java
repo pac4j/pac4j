@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * This is {@link ChainingConverter}.
+ * This is {@link org.pac4j.core.profile.converter.ChainingConverter}.
  *
  * @author Misagh Moayyed
  * @since 4.3.0
@@ -12,10 +12,16 @@ import java.util.Objects;
 public class ChainingConverter implements AttributeConverter {
     private final List<AttributeConverter> converters;
 
+    /**
+     * <p>Constructor for ChainingConverter.</p>
+     *
+     * @param converters a {@link java.util.List} object
+     */
     public ChainingConverter(final List<AttributeConverter> converters) {
         this.converters = converters;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Object convert(final Object o) {
         return converters.stream().map(c -> c.convert(o))

@@ -17,26 +17,56 @@ public class FoursquareUserContact implements Serializable {
     private String twitter;
     private String facebook;
 
+    /**
+     * <p>Getter for the field <code>email</code>.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getEmail() {
         return email;
     }
 
+    /**
+     * <p>Setter for the field <code>email</code>.</p>
+     *
+     * @param email a {@link java.lang.String} object
+     */
     public void setEmail(String email) {
         this.email = email;
     }
 
+    /**
+     * <p>Getter for the field <code>twitter</code>.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getTwitter() {
         return twitter;
     }
 
+    /**
+     * <p>Setter for the field <code>twitter</code>.</p>
+     *
+     * @param twitter a {@link java.lang.String} object
+     */
     public void setTwitter(String twitter) {
         this.twitter = twitter;
     }
 
+    /**
+     * <p>Getter for the field <code>facebook</code>.</p>
+     *
+     * @return a {@link java.lang.String} object
+     */
     public String getFacebook() {
         return facebook;
     }
 
+    /**
+     * <p>Setter for the field <code>facebook</code>.</p>
+     *
+     * @param facebook a {@link java.lang.String} object
+     */
     public void setFacebook(String facebook) {
         this.facebook = facebook;
     }

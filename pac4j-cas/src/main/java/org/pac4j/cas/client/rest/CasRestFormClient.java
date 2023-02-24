@@ -26,14 +26,25 @@ public class CasRestFormClient extends AbstractCasRestClient {
 
     private String passwordParameter = Pac4jConstants.PASSWORD;
 
+    /**
+     * <p>Constructor for CasRestFormClient.</p>
+     */
     public CasRestFormClient() {}
 
+    /**
+     * <p>Constructor for CasRestFormClient.</p>
+     *
+     * @param configuration a {@link org.pac4j.cas.config.CasConfiguration} object
+     * @param usernameParameter a {@link java.lang.String} object
+     * @param passwordParameter a {@link java.lang.String} object
+     */
     public CasRestFormClient(final CasConfiguration configuration, final String usernameParameter, final String passwordParameter) {
         this.configuration = configuration;
         this.usernameParameter = usernameParameter;
         this.passwordParameter = passwordParameter;
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         assertNotBlank("usernameParameter", this.usernameParameter);

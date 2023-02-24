@@ -58,6 +58,11 @@ public class SAML2LogoutProcessor implements LogoutProcessor {
     @Setter
     private boolean actionOnSuccess = true;
 
+    /**
+     * <p>Constructor for SAML2LogoutProcessor.</p>
+     *
+     * @param client a {@link org.pac4j.saml.client.SAML2Client} object
+     */
     public SAML2LogoutProcessor(final SAML2Client client) {
         this.contextProvider = client.getContextProvider();
         this.saml2Client = client;
@@ -68,6 +73,7 @@ public class SAML2LogoutProcessor implements LogoutProcessor {
         this.postLogoutURL = client.getConfiguration().getPostLogoutURL();
     }
 
+    /** {@inheritDoc} */
     @Override
     public HttpAction processLogout(final CallContext ctx, final Credentials credentials) {
         val saml2Credentials = (SAML2Credentials) credentials;
@@ -91,6 +97,12 @@ public class SAML2LogoutProcessor implements LogoutProcessor {
         throw new SAMLException("SAML message must be a LogoutRequest or LogoutResponse type");
     }
 
+    /**
+     * <p>sendLogoutResponse.</p>
+     *
+     * @param samlContext a {@link org.pac4j.saml.context.SAML2MessageContext} object
+     * @param saml2Credentials a {@link org.pac4j.saml.credentials.SAML2Credentials} object
+     */
     protected void sendLogoutResponse(final SAML2MessageContext samlContext, final SAML2Credentials saml2Credentials) {
         samlContext.getSAMLBindingContext().setRelayState(saml2Credentials.getContext().getSAMLBindingContext().getRelayState());
         val logoutResponse = this.saml2LogoutResponseBuilder.build(samlContext);
@@ -98,6 +110,13 @@ public class SAML2LogoutProcessor implements LogoutProcessor {
             samlContext.getSAMLBindingContext().getRelayState());
     }
 
+    /**
+     * <p>adaptLogoutResponseToBinding.</p>
+     *
+     * @param context a {@link org.pac4j.core.context.WebContext} object
+     * @param samlContext a {@link org.pac4j.saml.context.SAML2MessageContext} object
+     * @return a {@link org.pac4j.core.exception.http.HttpAction} object
+     */
     protected HttpAction adaptLogoutResponseToBinding(final WebContext context, final SAML2MessageContext samlContext) {
         val adapter = samlContext.getProfileRequestContextOutboundMessageTransportResponse();
         if (spLogoutResponseBindingType.equalsIgnoreCase(SAMLConstants.SAML2_POST_BINDING_URI)) {
@@ -109,6 +128,12 @@ public class SAML2LogoutProcessor implements LogoutProcessor {
         }
     }
 
+    /**
+     * <p>handlePostLogoutResponse.</p>
+     *
+     * @param context a {@link org.pac4j.saml.context.SAML2MessageContext} object
+     * @return a {@link org.pac4j.core.exception.http.HttpAction} object
+     */
     protected HttpAction handlePostLogoutResponse(final SAML2MessageContext context) {
         if (CommonHelper.isNotBlank(postLogoutURL)) {
             // if custom post logout URL is present then redirect to it
