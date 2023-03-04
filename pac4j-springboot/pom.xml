@@ -21,7 +21,7 @@
     </repositories>
 
     <properties>
-        <springboot.version>3.0.3</springboot.version>
+        <springboot.version>3.0.4</springboot.version>
     </properties>
 
     <dependencyManagement>
