@@ -1,12 +1,12 @@
 package org.pac4j.saml.metadata;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.HttpResponse;
+import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.opensaml.saml.metadata.resolver.impl.AbstractMetadataResolver;
 import org.opensaml.saml.metadata.resolver.impl.HTTPMetadataResolver;
 
@@ -61,7 +61,7 @@ public class SAML2HttpUrlMetadataGenerator extends BaseSAML2MetadataGenerator {
 
             response = httpClient.execute(httpPost);
             if (response != null) {
-                final var code = response.getStatusLine().getStatusCode();
+                final var code = response.getCode();
                 if (code == HttpStatus.SC_NOT_IMPLEMENTED) {
                     logger.info("Storing metadata is not supported/implemented by {}", metadataUrl);
                     return false;

@@ -2,7 +2,7 @@ package org.pac4j.saml.util;
 
 import net.shibboleth.shared.net.URIComparator;
 import net.shibboleth.shared.net.URIException;
-import org.apache.http.client.utils.URIBuilder;
+import org.apache.hc.core5.net.URIBuilder;
 
 /**
  * This is {@link ExcludingParametersURIComparator}.

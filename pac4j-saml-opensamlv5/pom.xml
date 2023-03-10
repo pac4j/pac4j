@@ -14,6 +14,7 @@
 
     <properties>
         <opensaml.version>5.0.0-SNAPSHOT</opensaml.version>
+        <httpclient.version>5.2.1</httpclient.version>
         <joda-time.version>2.12.1</joda-time.version>
         <velocity.version>2.3</velocity.version>
         <xmlsec.version>3.0.1</xmlsec.version>
@@ -105,6 +106,11 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
             <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents.client5</groupId>
+            <artifactId>httpclient5</artifactId>
+            <version>${httpclient.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>

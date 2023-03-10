@@ -3,7 +3,7 @@ package org.pac4j.saml.metadata;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import net.shibboleth.shared.resolver.CriteriaSet;
 import org.apache.commons.io.IOUtils;
-import org.apache.http.entity.ContentType;
+import org.apache.hc.core5.http.ContentType;
 import org.junit.Test;
 import org.opensaml.core.criterion.EntityIdCriterion;
 import org.pac4j.saml.config.SAML2Configuration;
@@ -18,7 +18,8 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * This is {@link SAML2HttpUrlMetadataGeneratorTests}.

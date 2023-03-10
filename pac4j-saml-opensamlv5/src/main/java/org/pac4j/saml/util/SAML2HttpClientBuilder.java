@@ -1,8 +1,8 @@
 package org.pac4j.saml.util;
 
 import net.shibboleth.shared.httpclient.HttpClientBuilder;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.HttpClient;
+import org.apache.hc.client5.http.auth.CredentialsProvider;
+import org.apache.hc.client5.http.classic.HttpClient;
 import org.pac4j.core.exception.TechnicalException;
 
 import java.time.Duration;
@@ -24,7 +24,7 @@ public class SAML2HttpClientBuilder {
 
     public HttpClient build() {
         try {
-            final var builder = new Pac4jHttpClientBuilder();
+            final var builder = new Pac4jHttpClientBuilder(credentialsProvider);
             builder.resetDefaults();
 
             if (this.connectionTimeout != null) {
@@ -38,9 +38,6 @@ public class SAML2HttpClientBuilder {
             builder.setMaxConnectionsTotal(this.maxConnectionsTotal);
             builder.setConnectionCloseAfterResponse(this.closeConnectionAfterResponse);
 
-            if (this.credentialsProvider != null) {
-                builder.getApacheBuilder().setDefaultCredentialsProvider(credentialsProvider);
-            }
             return builder.buildClient();
         } catch (final Exception e) {
             throw new TechnicalException(e);
@@ -104,10 +101,20 @@ public class SAML2HttpClientBuilder {
     }
 
     private static class Pac4jHttpClientBuilder extends HttpClientBuilder {
+
+        private final CredentialsProvider credentialsProvider;
+
+        public Pac4jHttpClientBuilder(final CredentialsProvider credentialsProvider) {
+            this.credentialsProvider = credentialsProvider;
+        }
+
         @Override
-        protected org.apache.http.impl.client.HttpClientBuilder getApacheBuilder() {
-            final var builder = super.getApacheBuilder();
-            return builder;
+        protected CredentialsProvider buildDefaultCredentialsProvider() {
+            if (credentialsProvider != null) {
+                return credentialsProvider;
+            }
+
+            return super.buildDefaultCredentialsProvider();
         }
     }
 }

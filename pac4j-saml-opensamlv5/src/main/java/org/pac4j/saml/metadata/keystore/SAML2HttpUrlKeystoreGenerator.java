@@ -1,13 +1,13 @@
 package org.pac4j.saml.metadata.keystore;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.HttpResponse;
+import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.exceptions.SAMLException;
@@ -42,23 +42,23 @@ public class SAML2HttpUrlKeystoreGenerator extends BaseSAML2KeystoreGenerator {
         final var httpGet = new HttpGet(url);
         httpGet.addHeader("Accept", ContentType.TEXT_PLAIN.getMimeType());
         httpGet.addHeader("Content-Type", ContentType.TEXT_PLAIN.getMimeType());
-        HttpResponse response = null;
-        try {
-            response = saml2Configuration.getHttpClient().execute(httpGet);
-            if (response != null) {
-                final var code = response.getStatusLine().getStatusCode();
-                if (code == HttpStatus.SC_OK) {
-                    logger.info("Successfully submitted/created keystore to {}", url);
-                    final var results = IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8);
-                    return new ByteArrayInputStream(Base64.getDecoder().decode(results));
+        return saml2Configuration.getHttpClient().execute(httpGet, response -> {
+            try {
+                if (response != null) {
+                    final var code = response.getCode();
+                    if (code == HttpStatus.SC_OK) {
+                        logger.info("Successfully submitted/created keystore to {}", url);
+                        final var results = IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8);
+                        return new ByteArrayInputStream(Base64.getDecoder().decode(results));
+                    }
+                }
+                throw new SAMLException("Unable to retrieve keystore from " + url);
+            } finally {
+                if (response != null && response instanceof CloseableHttpResponse) {
+                    ((CloseableHttpResponse) response).close();
                 }
             }
-            throw new SAMLException("Unable to retrieve keystore from " + url);
-        } finally {
-            if (response != null && response instanceof CloseableHttpResponse) {
-                ((CloseableHttpResponse) response).close();
-            }
-        }
+        });
     }
 
     @Override
@@ -86,7 +86,7 @@ public class SAML2HttpUrlKeystoreGenerator extends BaseSAML2KeystoreGenerator {
 
             response = saml2Configuration.getHttpClient().execute(httpPost);
             if (response != null) {
-                final var code = response.getStatusLine().getStatusCode();
+                final var code = response.getCode();
                 if (code == HttpStatus.SC_NOT_IMPLEMENTED) {
                     logger.info("Storing keystore is not supported/implemented by {}", url);
                 } else if (code == HttpStatus.SC_OK || code == HttpStatus.SC_CREATED) {
