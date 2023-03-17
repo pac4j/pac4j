@@ -76,7 +76,7 @@
         <jbcrypt.version>0.4.3</jbcrypt.version>
         <snakeyaml.version>2.0</snakeyaml.version>
 		<mockito.version>5.2.0</mockito.version>
-		<slf4j.version>2.0.6</slf4j.version>
+		<slf4j.version>2.0.7</slf4j.version>
         <unboundid.version>6.0.8</unboundid.version>
         <h2.version>2.1.214</h2.version>
 		<java.version>17</java.version>
