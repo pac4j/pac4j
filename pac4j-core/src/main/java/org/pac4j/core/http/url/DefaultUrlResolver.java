@@ -54,6 +54,7 @@ public class DefaultUrlResolver implements UrlResolver {
                     sb.append(":").append(context.getServerPort());
                 }
 
+                sb.append(((J2EContext) context).getRequest().getContextPath());
                 sb.append(url.startsWith("/") ? url : "/" + url);
 
                 return sb.toString();
