@@ -174,10 +174,14 @@ public class OidcConfiguration extends BaseClientConfiguration {
         // default value
         if (getResourceRetriever() == null) {
             try {
-                setResourceRetriever(SSLFactory == null ?
+                final DefaultResourceRetriever resourceRetriever = SSLFactory == null ?
                     new DefaultResourceRetriever(getConnectTimeout(),getReadTimeout()) :
                     new DefaultResourceRetriever(getConnectTimeout(),getReadTimeout(), 0, false,
-                        (SSLSocketFactory) Class.forName(SSLFactory).getDeclaredConstructor().newInstance()));
+                        (SSLSocketFactory) Class.forName(SSLFactory).getDeclaredConstructor().newInstance());
+                final Map<String, List<String>> headers = new HashMap<>();
+                headers.put(HttpConstants.CONTENT_TYPE_HEADER, Collections.singletonList(HttpConstants.APPLICATION_JSON));
+                resourceRetriever.setHeaders(headers);
+                setResourceRetriever(resourceRetriever);
             } catch (ClassNotFoundException | InvocationTargetException | InstantiationException
                 | IllegalAccessException | NoSuchMethodException e) {
                 throw new TechnicalException("SSLFactory loaded fail, please check your configuration");
