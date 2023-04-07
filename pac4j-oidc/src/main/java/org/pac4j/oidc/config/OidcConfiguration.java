@@ -179,7 +179,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
                     new DefaultResourceRetriever(getConnectTimeout(),getReadTimeout(), 0, false,
                         (SSLSocketFactory) Class.forName(SSLFactory).getDeclaredConstructor().newInstance());
                 final Map<String, List<String>> headers = new HashMap<>();
-                headers.put(HttpConstants.CONTENT_TYPE_HEADER, Collections.singletonList(HttpConstants.APPLICATION_JSON));
+                headers.put(HttpConstants.ACCEPT_HEADER, Collections.singletonList(HttpConstants.APPLICATION_JSON));
                 resourceRetriever.setHeaders(headers);
                 setResourceRetriever(resourceRetriever);
             } catch (ClassNotFoundException | InvocationTargetException | InstantiationException
