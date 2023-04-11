@@ -21,7 +21,7 @@ public interface AjaxRequestResolver {
     boolean isAjax(CallContext ctx);
 
     /**
-     * Build an AJAX reponse.
+     * Build an AJAX response.
      *
      * @param ctx                      the context
      * @param redirectionActionBuilder the builder of the redirection, is case the redirect URL calculation needs to be performed

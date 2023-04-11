@@ -310,7 +310,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
      * @param name the name
      * @return true/false
      */
-    public boolean containsAuthenicationAttribute(final String name) {
+    public boolean containsAuthenticationAttribute(final String name) {
         CommonHelper.assertNotNull("name", name);
         return this.authenticationAttributes.containsKey(name);
     }
