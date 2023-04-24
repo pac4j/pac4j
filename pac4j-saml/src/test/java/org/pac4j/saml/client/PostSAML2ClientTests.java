@@ -19,6 +19,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Collections;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -101,6 +102,16 @@ public final class PostSAML2ClientTests extends AbstractSAML2ClientTests {
         sessionStore.set(context, SAML2StateGenerator.SAML_RELAY_STATE_ATTRIBUTE, "relayState");
         val action = (OkAction) client.getRedirectionAction(new CallContext(context, sessionStore)).get();
         assertTrue(action.getContent().contains("<input type=\"hidden\" name=\"RelayState\" value=\"relayState\"/>"));
+    }
+
+    @Test
+    public void testPostDestinationBindingWithRequestSignedWorks() {
+        val client = getClient();
+        client.getConfiguration().setAuthnRequestBindingType(SAMLConstants.SAML2_POST_BINDING_URI);
+        client.getConfiguration().setAuthnRequestSigned(true);
+
+        val action = (OkAction) client.getRedirectionAction(new CallContext(MockWebContext.create(), new MockSessionStore())).get();
+        assertFalse(getDecodedAuthnRequest(action.getContent()).isBlank());
     }
 
     @Override
