@@ -12,7 +12,7 @@
 	<artifactId>pac4j-parent</artifactId>
 	<packaging>pom</packaging>
 	<name>pac4j parent</name>
-	<version>6.0.0-RC6-SNAPSHOT</version>
+	<version>6.0.0-RC7-SNAPSHOT</version>
 	<description>Profile &amp; Authentication Client for Java</description>
 	<url>https://github.com/pac4j/pac4j</url>
 
@@ -59,28 +59,28 @@
 	</modules>
 
 	<properties>
-        <mongo-driver.version>4.9.0</mongo-driver.version>
+        <mongo-driver.version>4.9.1</mongo-driver.version>
         <flapdoodle.version>3.5.4</flapdoodle.version>
 		<junit.version>4.13.2</junit.version>
 		<servlet-api.version>4.0.1</servlet-api.version>
         <jakarta-servlet-api.version>6.0.0</jakarta-servlet-api.version>
-		<logback.version>1.4.5</logback.version>
+		<logback.version>1.4.7</logback.version>
 		<commons-codec.version>1.15</commons-codec.version>
 		<commons-io.version>2.11.0</commons-io.version>
 		<commons-lang3.version>3.12.0</commons-lang3.version>
 		<guava.version>31.1-jre</guava.version>
 		<nimbus-jose-jwt.version>9.31</nimbus-jose-jwt.version>
-		<spring.version>6.0.6</spring.version>
-		<spring.security.version>6.0.2</spring.security.version>
+		<spring.version>6.0.8</spring.version>
+		<spring.security.version>6.0.3</spring.security.version>
 		<shiro.version>1.11.0</shiro.version>
         <jbcrypt.version>0.4.3</jbcrypt.version>
         <snakeyaml.version>2.0</snakeyaml.version>
-		<mockito.version>5.1.1</mockito.version>
-		<slf4j.version>2.0.6</slf4j.version>
-        <unboundid.version>6.0.7</unboundid.version>
+		<mockito.version>5.3.1</mockito.version>
+		<slf4j.version>2.0.7</slf4j.version>
+        <unboundid.version>6.0.8</unboundid.version>
         <h2.version>2.1.214</h2.version>
 		<java.version>17</java.version>
-        <jackson.version>2.14.2</jackson.version>
+        <jackson.version>2.15.0</jackson.version>
         <reflections.version>0.10.2</reflections.version>
         <nanohttpd.version>2.3.1</nanohttpd.version>
         <mockserver.version>5.10</mockserver.version>
@@ -359,7 +359,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.22.2</version>
+				<version>3.0.0</version>
 				<configuration>
 					<includes>
 						<include>**/*Tests.java</include>
@@ -370,12 +370,12 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>3.2.1</version>
+                <version>3.2.2</version>
 				<dependencies>
 					<dependency>
 						<groupId>com.puppycrawl.tools</groupId>
 						<artifactId>checkstyle</artifactId>
-						<version>10.8.0</version>
+						<version>10.9.3</version>
 					</dependency>
 				</dependencies>
                 <configuration>
@@ -495,7 +495,7 @@
 			<plugin>
 				<groupId>com.github.spotbugs</groupId>
 				<artifactId>spotbugs-maven-plugin</artifactId>
-				<version>4.7.3.2</version>
+				<version>4.7.3.4</version>
 				<configuration>
 					<effort>Low</effort> <!-- Max -->
 					<threshold>Max</threshold> <!-- Medium Low -->
@@ -592,7 +592,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-failsafe-plugin</artifactId>
-                    <version>2.22.2</version>
+                    <version>3.0.0</version>
                 </plugin>
 			</plugins>
 		</pluginManagement>

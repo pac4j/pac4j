@@ -147,6 +147,7 @@ public abstract class AbstractSAML2MessageSender<T extends SAMLObject> implement
                 val handler = new
                     SAMLOutboundProtocolMessageSigningHandler();
                 handler.setSignErrorResponses(this.signErrorResponses);
+                handler.initialize();
                 handler.invoke(messageContext);
             }
         } catch (final Exception e) {

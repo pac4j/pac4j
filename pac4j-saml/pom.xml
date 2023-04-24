@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.pac4j</groupId>
         <artifactId>pac4j-parent</artifactId>
-        <version>6.0.0-RC6-SNAPSHOT</version>
+        <version>6.0.0-RC7-SNAPSHOT</version>
     </parent>
 
     <artifactId>pac4j-saml</artifactId>
@@ -15,11 +15,11 @@
     <properties>
         <opensaml.version>5.0.0-SNAPSHOT</opensaml.version>
         <httpclient.version>5.2.1</httpclient.version>
-        <joda-time.version>2.12.2</joda-time.version>
+        <joda-time.version>2.12.5</joda-time.version>
         <velocity.version>2.3</velocity.version>
-        <xmlsec.version>3.0.1</xmlsec.version>
+        <xmlsec.version>3.0.2</xmlsec.version>
         <cryptacular.version>1.2.5</cryptacular.version>
-        <hazelcast.version>5.2.2</hazelcast.version>
+        <hazelcast.version>5.2.3</hazelcast.version>
     </properties>
 
     <dependencyManagement>

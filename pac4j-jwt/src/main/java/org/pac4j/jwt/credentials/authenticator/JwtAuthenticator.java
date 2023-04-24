@@ -276,11 +276,11 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
         if (expTime != null) {
             val now = new Date();
             if (expTime.before(now)) {
-                logger.error("The JWT is expired: no profile is built");
+                logger.warn("The JWT is expired: no profile is built");
                 return;
             }
             if (this.expirationTime != null && expTime.after(this.expirationTime)) {
-                logger.error("The JWT is expired: no profile is built");
+                logger.warn("The JWT is expired: no profile is built");
                 return;
             }
         }

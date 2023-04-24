@@ -8,28 +8,28 @@ package org.pac4j.core.matching.matcher;
  */
 public interface DefaultMatchers {
 
-    /** The "hsts" authorizer. */
+    /** The "hsts" matcher. */
     String HSTS = "hsts";
 
-    /** The "nosniff" authorizer. */
+    /** The "nosniff" matcher. */
     String NOSNIFF = "nosniff";
 
-    /** The "noframe" authorizer. */
+    /** The "noframe" matcher. */
     String NOFRAME = "noframe";
 
-    /** The "securityheaders" authorizer. */
+    /** The "securityheaders" matcher. */
     String SECURITYHEADERS = "securityheaders";
 
-    /** The "xssprotection" authorizer. */
+    /** The "xssprotection" matcher. */
     String XSSPROTECTION = "xssprotection";
 
-    /** The "allowAjaxRequests" authorizer. */
+    /** The "allowAjaxRequests" matcher. */
     String ALLOW_AJAX_REQUESTS = "allowAjaxRequests";
 
-    /** The "nocache" authorizer. */
+    /** The "nocache" matcher. */
     String NOCACHE = "nocache";
 
-    /** The "csrfToken" authorizer. */
+    /** The "csrfToken" matcher. */
     String CSRF_TOKEN = "csrfToken";
 
     /** Constant <code>GET="get"</code> */
