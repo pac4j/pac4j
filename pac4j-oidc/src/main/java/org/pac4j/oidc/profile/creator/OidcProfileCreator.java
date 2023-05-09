@@ -74,8 +74,8 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
         OidcCredentials oidcCredentials = null;
         AccessToken accessToken = null;
 
-        // regular OIDC flow
-        if (credentials instanceof OidcCredentials) {
+        val regularOidcFlow = credentials instanceof OidcCredentials;
+        if (regularOidcFlow) {
             oidcCredentials = (OidcCredentials) credentials;
             accessToken = oidcCredentials.getAccessToken();
         } else {
@@ -133,6 +133,11 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
                 if (userInfoResponse instanceof UserInfoErrorResponse) {
                     LOGGER.error("Bad User Info response, error={}",
                         ((UserInfoErrorResponse) userInfoResponse).getErrorObject());
+
+                    // bearer call -> no profile returned
+                    if (!regularOidcFlow) {
+                        return Optional.empty();
+                    }
                 } else {
                     val userInfoSuccessResponse = (UserInfoSuccessResponse) userInfoResponse;
                     final JWTClaimsSet userInfoClaimsSet;
