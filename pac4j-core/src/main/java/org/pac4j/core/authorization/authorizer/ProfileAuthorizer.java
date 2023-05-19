@@ -5,8 +5,6 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.profile.UserProfile;
 
-import java.util.List;
-
 /**
  * Authorizer which is valid if one of the profiles is authorized or all the profiles are authorized.
  *
@@ -23,7 +21,7 @@ public abstract class ProfileAuthorizer implements Authorizer {
      * @param profiles the user profiles
      * @return whether all profiles are authorized
      */
-    public boolean isAllAuthorized(final WebContext context, final SessionStore sessionStore, final List<UserProfile> profiles) {
+    public boolean isAllAuthorized(final WebContext context, final SessionStore sessionStore, final Iterable<UserProfile> profiles) {
         for (val profile : profiles) {
             if (!isProfileAuthorized(context, sessionStore, profile)) {
                 return handleError(context, sessionStore);
@@ -40,7 +38,7 @@ public abstract class ProfileAuthorizer implements Authorizer {
      * @param profiles the user profiles
      * @return whether any of the profiles is authorized
      */
-    public boolean isAnyAuthorized(final WebContext context, final SessionStore sessionStore, final List<UserProfile> profiles) {
+    public boolean isAnyAuthorized(final WebContext context, final SessionStore sessionStore, final Iterable<UserProfile> profiles) {
         for (val profile : profiles) {
             if (isProfileAuthorized(context, sessionStore, profile)) {
                 return true;

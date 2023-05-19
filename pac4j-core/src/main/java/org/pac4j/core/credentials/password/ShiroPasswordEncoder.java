@@ -4,7 +4,7 @@ import org.apache.shiro.authc.credential.PasswordService;
 import org.pac4j.core.util.CommonHelper;
 
 /**
- * A password encoder based on {@link org.apache.shiro.authc.credential.PasswordService} from Apache Shiro
+ * A password encoder based on {@link PasswordService} from Apache Shiro
  *
  * Add the <code>shiro-core</code> dependency to use this class.
  *
@@ -18,7 +18,7 @@ public class ShiroPasswordEncoder implements PasswordEncoder {
     /**
      * <p>Constructor for ShiroPasswordEncoder.</p>
      *
-     * @param delegate a {@link org.apache.shiro.authc.credential.PasswordService} object
+     * @param delegate a {@link PasswordService} object
      */
     public ShiroPasswordEncoder(final PasswordService delegate) {
         setDelegate(delegate);
@@ -39,7 +39,7 @@ public class ShiroPasswordEncoder implements PasswordEncoder {
     /**
      * <p>Getter for the field <code>delegate</code>.</p>
      *
-     * @return a {@link org.apache.shiro.authc.credential.PasswordService} object
+     * @return a {@link PasswordService} object
      */
     public PasswordService getDelegate() {
         return delegate;
@@ -48,7 +48,7 @@ public class ShiroPasswordEncoder implements PasswordEncoder {
     /**
      * <p>Setter for the field <code>delegate</code>.</p>
      *
-     * @param delegate a {@link org.apache.shiro.authc.credential.PasswordService} object
+     * @param delegate a {@link PasswordService} object
      */
     public void setDelegate(final PasswordService delegate) {
         CommonHelper.assertNotNull("delegate", delegate);

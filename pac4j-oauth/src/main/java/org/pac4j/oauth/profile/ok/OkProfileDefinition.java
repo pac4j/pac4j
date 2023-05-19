@@ -94,9 +94,9 @@ public class OkProfileDefinition extends OAuthProfileDefinition {
     /**
      * <p>getMD5SignAsHexString.</p>
      *
-     * @param strForEncoding a {@link java.lang.String} object
-     * @return a {@link java.lang.String} object
-     * @throws java.security.NoSuchAlgorithmException if any.
+     * @param strForEncoding a {@link String} object
+     * @return a {@link String} object
+     * @throws NoSuchAlgorithmException if any.
      */
     protected String getMD5SignAsHexString(final String strForEncoding) throws NoSuchAlgorithmException {
         var md = MessageDigest.getInstance("MD5");

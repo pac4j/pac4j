@@ -21,6 +21,7 @@ import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.ECPrivateKey;
 import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Objects;
 
@@ -103,7 +104,7 @@ public class RunAppleClient extends RunClient {
              var pemReader = new PemReader(keyReader)) {
             var pemObject = pemReader.readPemObject();
             var content = pemObject.getContent();
-            var keySpec = new PKCS8EncodedKeySpec(content);
+            KeySpec keySpec = new PKCS8EncodedKeySpec(content);
             return (ECPrivateKey) keyFactory.generatePrivate(keySpec);
         } catch (InvalidKeySpecException | IOException e) {
             throw new TechnicalException(e);

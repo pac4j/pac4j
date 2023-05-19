@@ -23,7 +23,7 @@ public class KerberosExtractor implements CredentialsExtractor {
     @Override
     public Optional<Credentials> extract(final CallContext ctx) {
         val optHeader = ctx.webContext().getRequestHeader(HttpConstants.AUTHORIZATION_HEADER);
-        if (!optHeader.isPresent()) {
+        if (optHeader.isEmpty()) {
             return Optional.empty();
         }
 

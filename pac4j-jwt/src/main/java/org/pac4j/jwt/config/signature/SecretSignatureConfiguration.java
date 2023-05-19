@@ -3,6 +3,8 @@ package org.pac4j.jwt.config.signature;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
+import com.nimbusds.jose.JWSSigner;
+import com.nimbusds.jose.JWSVerifier;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jose.util.Base64;
@@ -36,7 +38,7 @@ public class SecretSignatureConfiguration extends AbstractSignatureConfiguration
     /**
      * <p>Constructor for SecretSignatureConfiguration.</p>
      *
-     * @param secret a {@link java.lang.String} object
+     * @param secret a {@link String} object
      */
     public SecretSignatureConfiguration(final String secret) {
         this(secret.getBytes(UTF_8));
@@ -55,8 +57,8 @@ public class SecretSignatureConfiguration extends AbstractSignatureConfiguration
     /**
      * <p>Constructor for SecretSignatureConfiguration.</p>
      *
-     * @param secret a {@link java.lang.String} object
-     * @param algorithm a {@link com.nimbusds.jose.JWSAlgorithm} object
+     * @param secret a {@link String} object
+     * @param algorithm a {@link JWSAlgorithm} object
      */
     public SecretSignatureConfiguration(final String secret, final JWSAlgorithm algorithm) {
         this(secret.getBytes(UTF_8),algorithm);
@@ -66,7 +68,7 @@ public class SecretSignatureConfiguration extends AbstractSignatureConfiguration
      * <p>Constructor for SecretSignatureConfiguration.</p>
      *
      * @param secret an array of {@link byte} objects
-     * @param algorithm a {@link com.nimbusds.jose.JWSAlgorithm} object
+     * @param algorithm a {@link JWSAlgorithm} object
      */
     public SecretSignatureConfiguration(final byte[] secret, final JWSAlgorithm algorithm) {
         this.secret = Arrays.copyOf(secret,secret.length);
@@ -96,7 +98,7 @@ public class SecretSignatureConfiguration extends AbstractSignatureConfiguration
         init();
 
         try {
-            val signer = new MACSigner(this.secret);
+            JWSSigner signer = new MACSigner(this.secret);
             val signedJWT = new SignedJWT(new JWSHeader(algorithm), claims);
             signedJWT.sign(signer);
             return signedJWT;
@@ -110,14 +112,14 @@ public class SecretSignatureConfiguration extends AbstractSignatureConfiguration
     public boolean verify(final SignedJWT jwt) throws JOSEException {
         init();
 
-        val verifier = new MACVerifier(this.secret);
+        JWSVerifier verifier = new MACVerifier(this.secret);
         return jwt.verify(verifier);
     }
 
     /**
      * <p>Getter for the field <code>secret</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getSecret() {
         return new String(secret,UTF_8);
@@ -126,7 +128,7 @@ public class SecretSignatureConfiguration extends AbstractSignatureConfiguration
     /**
      * <p>Setter for the field <code>secret</code>.</p>
      *
-     * @param secret a {@link java.lang.String} object
+     * @param secret a {@link String} object
      */
     public void setSecret(final String secret) {
         this.secret = secret.getBytes(UTF_8);
@@ -153,7 +155,7 @@ public class SecretSignatureConfiguration extends AbstractSignatureConfiguration
     /**
      * <p>getSecretBase64.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getSecretBase64() {
         return Base64.encode(secret).toString();
@@ -162,7 +164,7 @@ public class SecretSignatureConfiguration extends AbstractSignatureConfiguration
     /**
      * <p>setSecretBase64.</p>
      *
-     * @param secret a {@link java.lang.String} object
+     * @param secret a {@link String} object
      */
     public void setSecretBase64(final String secret) {
         this.secret = new Base64(secret).decode();

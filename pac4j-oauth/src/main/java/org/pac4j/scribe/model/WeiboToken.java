@@ -2,6 +2,8 @@ package org.pac4j.scribe.model;
 
 import com.github.scribejava.core.model.OAuth2AccessToken;
 
+import java.io.Serial;
+
 /**
  * Weibo token extra.
  * <p>More info at: <a href="http://open.weibo.com/wiki/Oauth2/access_token">Oauth2/access token</a></p>
@@ -11,14 +13,15 @@ import com.github.scribejava.core.model.OAuth2AccessToken;
  */
 public class WeiboToken extends OAuth2AccessToken {
 
+    @Serial
     private static final long serialVersionUID = 1489916603771001585L;
     private String uid;
 
     /**
      * <p>Constructor for WeiboToken.</p>
      *
-     * @param accessToken a {@link com.github.scribejava.core.model.OAuth2AccessToken} object
-     * @param uid a {@link java.lang.String} object
+     * @param accessToken a {@link OAuth2AccessToken} object
+     * @param uid a {@link String} object
      */
     public WeiboToken(OAuth2AccessToken accessToken, String uid) {
         super(accessToken.getAccessToken(), accessToken.getTokenType(), accessToken.getExpiresIn(),
@@ -31,7 +34,7 @@ public class WeiboToken extends OAuth2AccessToken {
     /**
      * <p>Getter for the field <code>uid</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getUid() {
         return uid;
@@ -40,7 +43,7 @@ public class WeiboToken extends OAuth2AccessToken {
     /**
      * <p>Setter for the field <code>uid</code>.</p>
      *
-     * @param uid a {@link java.lang.String} object
+     * @param uid a {@link String} object
      */
     public void setUid(String uid) {
         this.uid = uid;
@@ -50,10 +53,8 @@ public class WeiboToken extends OAuth2AccessToken {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof WeiboToken)) return false;
+        if (!(o instanceof WeiboToken that)) return false;
         if (!super.equals(o)) return false;
-
-        var that = (WeiboToken) o;
 
         return uid != null ? uid.equals(that.uid) : that.uid == null;
     }

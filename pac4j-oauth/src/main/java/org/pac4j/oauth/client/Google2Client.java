@@ -9,9 +9,9 @@ import org.pac4j.oauth.profile.google2.Google2ProfileDefinition;
 
 /**
  * <p>This class is the OAuth client to authenticate users in Google using OAuth protocol version 2.0.</p>
- * <p>The <i>scope</i> is by default : {@link org.pac4j.oauth.client.Google2Client.Google2Scope#EMAIL_AND_PROFILE},
- * but it can also but set to : {@link org.pac4j.oauth.client.Google2Client.Google2Scope#PROFILE} or
- * {@link org.pac4j.oauth.client.Google2Client.Google2Scope#EMAIL}.</p>
+ * <p>The <i>scope</i> is by default : {@link Google2Client.Google2Scope#EMAIL_AND_PROFILE},
+ * but it can also but set to : {@link Google2Client.Google2Scope#PROFILE} or
+ * {@link Google2Client.Google2Scope#EMAIL}.</p>
  * <p>It returns a {@link org.pac4j.oauth.profile.google2.Google2Profile}.</p>
  * <p>More information at https://developers.google.com/accounts/docs/OAuth2Login</p>
  *
@@ -43,8 +43,8 @@ public class Google2Client extends OAuth20Client {
     /**
      * <p>Constructor for Google2Client.</p>
      *
-     * @param key a {@link java.lang.String} object
-     * @param secret a {@link java.lang.String} object
+     * @param key a {@link String} object
+     * @param secret a {@link String} object
      */
     public Google2Client(final String key, final String secret) {
         setKey(key);
@@ -83,7 +83,7 @@ public class Google2Client extends OAuth20Client {
     /**
      * <p>Getter for the field <code>scope</code>.</p>
      *
-     * @return a {@link org.pac4j.oauth.client.Google2Client.Google2Scope} object
+     * @return a {@link Google2Client.Google2Scope} object
      */
     public Google2Scope getScope() {
         return this.scope;
@@ -92,7 +92,7 @@ public class Google2Client extends OAuth20Client {
     /**
      * <p>Setter for the field <code>scope</code>.</p>
      *
-     * @param scope a {@link org.pac4j.oauth.client.Google2Client.Google2Scope} object
+     * @param scope a {@link Google2Client.Google2Scope} object
      */
     public void setScope(final Google2Scope scope) {
         this.scope = scope;

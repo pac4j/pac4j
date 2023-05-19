@@ -21,8 +21,8 @@ public class SessionKeyCredentials extends Credentials {
     /**
      * <p>Constructor for SessionKeyCredentials.</p>
      *
-     * @param type a {@link org.pac4j.core.logout.LogoutType} object
-     * @param sessionKey a {@link java.lang.String} object
+     * @param type a {@link LogoutType} object
+     * @param sessionKey a {@link String} object
      */
     public SessionKeyCredentials(final LogoutType type, final String sessionKey) {
         this.logoutType = type;

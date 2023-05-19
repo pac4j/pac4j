@@ -3,6 +3,8 @@ package org.pac4j.saml.exceptions;
 
 import org.pac4j.core.exception.TechnicalException;
 
+import java.io.Serial;
+
 /**
  * Root exception for SAML Client.
  *
@@ -11,12 +13,13 @@ import org.pac4j.core.exception.TechnicalException;
  */
 public class SAMLException extends TechnicalException {
 
+    @Serial
     private static final long serialVersionUID = -2963580056603469743L;
 
     /**
      * <p>Constructor for SAMLException.</p>
      *
-     * @param message a {@link java.lang.String} object
+     * @param message a {@link String} object
      */
     public SAMLException(final String message) {
         super(message);
@@ -25,7 +28,7 @@ public class SAMLException extends TechnicalException {
     /**
      * <p>Constructor for SAMLException.</p>
      *
-     * @param t a {@link java.lang.Throwable} object
+     * @param t a {@link Throwable} object
      */
     public SAMLException(final Throwable t) {
         super(t);
@@ -34,8 +37,8 @@ public class SAMLException extends TechnicalException {
     /**
      * <p>Constructor for SAMLException.</p>
      *
-     * @param message a {@link java.lang.String} object
-     * @param t a {@link java.lang.Throwable} object
+     * @param message a {@link String} object
+     * @param t a {@link Throwable} object
      */
     public SAMLException(final String message, final Throwable t) {
         super(message, t);

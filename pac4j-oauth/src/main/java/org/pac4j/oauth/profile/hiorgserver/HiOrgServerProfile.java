@@ -3,6 +3,9 @@ package org.pac4j.oauth.profile.hiorgserver;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oauth.profile.OAuth20Profile;
 
+import java.io.Serial;
+import java.util.Objects;
+
 /**
  * This class is the user profile for HiOrg-Server with appropriate getters. It
  * is returned by the {@link org.pac4j.oauth.client.HiOrgServerClient}.
@@ -12,6 +15,7 @@ import org.pac4j.oauth.profile.OAuth20Profile;
  */
 public class HiOrgServerProfile extends OAuth20Profile {
 
+    @Serial
     private static final long serialVersionUID = 1889864079390590548L;
 
     /** {@inheritDoc} */
@@ -45,11 +49,7 @@ public class HiOrgServerProfile extends OAuth20Profile {
      */
     public int getRolesAsInteger() {
         var rolesAsInt = getAttribute(HiOrgServerProfileDefinition.ROLES, Integer.class);
-        if (rolesAsInt != null) {
-            return rolesAsInt;
-        } else {
-            return 0;
-        }
+        return Objects.requireNonNullElse(rolesAsInt, 0);
     }
 
     /**
@@ -65,7 +65,7 @@ public class HiOrgServerProfile extends OAuth20Profile {
     /**
      * <p>getOrganisationId.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getOrganisationId() {
         return getAttribute(HiOrgServerProfileDefinition.ORGANISATION_ID, String.class);
@@ -74,7 +74,7 @@ public class HiOrgServerProfile extends OAuth20Profile {
     /**
      * <p>getOrganisationName.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getOrganisationName() {
         return getAttribute(HiOrgServerProfileDefinition.ORGANISATION_NAME, String.class);
@@ -83,7 +83,7 @@ public class HiOrgServerProfile extends OAuth20Profile {
     /**
      * <p>getPosition.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getPosition() {
         return getAttribute(HiOrgServerProfileDefinition.POSITION, String.class);

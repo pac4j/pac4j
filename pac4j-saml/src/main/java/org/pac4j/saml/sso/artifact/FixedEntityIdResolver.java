@@ -8,7 +8,7 @@ import java.util.Collections;
 
 /**
  * A resolver for the entity id specified by the given
- * {@link org.pac4j.saml.metadata.SAML2MetadataResolver}.
+ * {@link SAML2MetadataResolver}.
  *
  * @since 3.8.0
  * @author bidou
@@ -19,7 +19,7 @@ public class FixedEntityIdResolver implements Resolver<String, CriteriaSet> {
     /**
      * <p>Constructor for FixedEntityIdResolver.</p>
      *
-     * @param metadataResolver a {@link org.pac4j.saml.metadata.SAML2MetadataResolver} object
+     * @param metadataResolver a {@link SAML2MetadataResolver} object
      */
     public FixedEntityIdResolver(final SAML2MetadataResolver metadataResolver) {
         this.metadataResolver = metadataResolver;

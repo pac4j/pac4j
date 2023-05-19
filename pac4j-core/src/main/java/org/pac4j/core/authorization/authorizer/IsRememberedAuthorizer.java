@@ -23,7 +23,7 @@ public class IsRememberedAuthorizer extends AbstractCheckAuthenticationAuthorize
     /**
      * <p>Constructor for IsRememberedAuthorizer.</p>
      *
-     * @param redirectionUrl a {@link java.lang.String} object
+     * @param redirectionUrl a {@link String} object
      */
     public IsRememberedAuthorizer(final String redirectionUrl) {
         super(redirectionUrl);
@@ -44,7 +44,7 @@ public class IsRememberedAuthorizer extends AbstractCheckAuthenticationAuthorize
     /**
      * <p>isRemembered.</p>
      *
-     * @return a {@link org.pac4j.core.authorization.authorizer.IsRememberedAuthorizer} object
+     * @return a {@link IsRememberedAuthorizer} object
      */
     public static IsRememberedAuthorizer isRemembered() {
         return new IsRememberedAuthorizer();

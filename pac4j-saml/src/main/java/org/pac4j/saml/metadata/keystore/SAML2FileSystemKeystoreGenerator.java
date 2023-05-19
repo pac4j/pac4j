@@ -2,6 +2,7 @@ package org.pac4j.saml.metadata.keystore;
 
 import lombok.val;
 import org.bouncycastle.util.io.pem.PemObject;
+import org.bouncycastle.util.io.pem.PemObjectGenerator;
 import org.bouncycastle.util.io.pem.PemWriter;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
@@ -15,7 +16,7 @@ import java.security.cert.X509Certificate;
 import java.util.regex.Pattern;
 
 /**
- * This is {@link org.pac4j.saml.metadata.keystore.SAML2FileSystemKeystoreGenerator}.
+ * This is {@link SAML2FileSystemKeystoreGenerator}.
  *
  * @author Misagh Moayyed
  * @since 4.0.1
@@ -26,7 +27,7 @@ public class SAML2FileSystemKeystoreGenerator extends BaseSAML2KeystoreGenerator
     /**
      * <p>Constructor for SAML2FileSystemKeystoreGenerator.</p>
      *
-     * @param configuration a {@link org.pac4j.saml.config.SAML2Configuration} object
+     * @param configuration a {@link SAML2Configuration} object
      */
     public SAML2FileSystemKeystoreGenerator(final SAML2Configuration configuration) {
         super(configuration);
@@ -39,7 +40,7 @@ public class SAML2FileSystemKeystoreGenerator extends BaseSAML2KeystoreGenerator
         }
         try (var pemWriter = new PemWriter(
             new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8))) {
-            val pemObject = new PemObject(file.getName(), certificate);
+            PemObjectGenerator pemObject = new PemObject(file.getName(), certificate);
             pemWriter.writeObject(pemObject);
         } catch (final Exception e) {
             logger.error(e.getMessage(), e);

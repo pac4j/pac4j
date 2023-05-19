@@ -23,6 +23,7 @@ import org.pac4j.saml.store.SAMLMessageStore;
 import org.pac4j.saml.transport.Pac4jSAMLResponse;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -60,7 +61,7 @@ public class SAML2MessageContext {
     /**
      * <p>Constructor for SAML2MessageContext.</p>
      *
-     * @param callContext a {@link org.pac4j.core.context.CallContext} object
+     * @param callContext a {@link CallContext} object
      */
     public SAML2MessageContext(final CallContext callContext) {
         this.callContext = callContext;
@@ -69,7 +70,7 @@ public class SAML2MessageContext {
     /**
      * <p>getConfigurationContext.</p>
      *
-     * @return a {@link org.pac4j.saml.context.SAML2ConfigurationContext} object
+     * @return a {@link SAML2ConfigurationContext} object
      */
     public SAML2ConfigurationContext getConfigurationContext() {
         val webContext = callContext.webContext();
@@ -81,7 +82,7 @@ public class SAML2MessageContext {
     /**
      * <p>getSPSSODescriptor.</p>
      *
-     * @return a {@link org.opensaml.saml.saml2.metadata.SPSSODescriptor} object
+     * @return a {@link SPSSODescriptor} object
      */
     public final SPSSODescriptor getSPSSODescriptor() {
         val selfContext = getSAMLSelfMetadataContext();
@@ -92,7 +93,7 @@ public class SAML2MessageContext {
     /**
      * <p>getIDPSSODescriptor.</p>
      *
-     * @return a {@link org.opensaml.saml.saml2.metadata.IDPSSODescriptor} object
+     * @return a {@link IDPSSODescriptor} object
      */
     public final IDPSSODescriptor getIDPSSODescriptor() {
         val peerContext = getSAMLPeerMetadataContext();
@@ -103,8 +104,8 @@ public class SAML2MessageContext {
     /**
      * <p>getIDPSingleLogoutService.</p>
      *
-     * @param binding a {@link java.lang.String} object
-     * @return a {@link org.opensaml.saml.saml2.metadata.SingleLogoutService} object
+     * @param binding a {@link String} object
+     * @return a {@link SingleLogoutService} object
      */
     public final SingleLogoutService getIDPSingleLogoutService(final String binding) {
         val services = getIDPSSODescriptor().getSingleLogoutServices();
@@ -120,8 +121,8 @@ public class SAML2MessageContext {
     /**
      * <p>getIDPSingleSignOnService.</p>
      *
-     * @param binding a {@link java.lang.String} object
-     * @return a {@link org.opensaml.saml.saml2.metadata.SingleSignOnService} object
+     * @param binding a {@link String} object
+     * @return a {@link SingleSignOnService} object
      */
     public SingleSignOnService getIDPSingleSignOnService(final String binding) {
         val services = getIDPSSODescriptor().getSingleSignOnServices();
@@ -137,7 +138,7 @@ public class SAML2MessageContext {
     /**
      * <p>getSPAssertionConsumerService.</p>
      *
-     * @return a {@link org.opensaml.saml.saml2.metadata.AssertionConsumerService} object
+     * @return a {@link AssertionConsumerService} object
      */
     public AssertionConsumerService getSPAssertionConsumerService() {
         val spssoDescriptor = getSPSSODescriptor();
@@ -147,8 +148,8 @@ public class SAML2MessageContext {
     /**
      * <p>getSPAssertionConsumerService.</p>
      *
-     * @param response a {@link org.opensaml.saml.saml2.core.StatusResponseType} object
-     * @return a {@link org.opensaml.saml.saml2.metadata.AssertionConsumerService} object
+     * @param response a {@link StatusResponseType} object
+     * @return a {@link AssertionConsumerService} object
      */
     public AssertionConsumerService getSPAssertionConsumerService(final StatusResponseType response) {
         val spssoDescriptor = getSPSSODescriptor();
@@ -171,8 +172,8 @@ public class SAML2MessageContext {
     /**
      * <p>getSPAssertionConsumerService.</p>
      *
-     * @param acsIndex a {@link java.lang.String} object
-     * @return a {@link org.opensaml.saml.saml2.metadata.AssertionConsumerService} object
+     * @param acsIndex a {@link String} object
+     * @return a {@link AssertionConsumerService} object
      */
     public AssertionConsumerService getSPAssertionConsumerService(final String acsIndex) {
         val spssoDescriptor = getSPSSODescriptor();
@@ -195,13 +196,13 @@ public class SAML2MessageContext {
     /**
      * <p>getSPAssertionConsumerService.</p>
      *
-     * @param spssoDescriptor a {@link org.opensaml.saml.saml2.metadata.SPSSODescriptor} object
-     * @param services a {@link java.util.List} object
-     * @return a {@link org.opensaml.saml.saml2.metadata.AssertionConsumerService} object
+     * @param spssoDescriptor a {@link SPSSODescriptor} object
+     * @param services a {@link List} object
+     * @return a {@link AssertionConsumerService} object
      */
     protected AssertionConsumerService getSPAssertionConsumerService(
         final SPSSODescriptor spssoDescriptor,
-        final List<AssertionConsumerService> services) {
+        final Collection<AssertionConsumerService> services) {
 
         // Get default
         if (spssoDescriptor.getDefaultAssertionConsumerService() != null) {
@@ -219,7 +220,7 @@ public class SAML2MessageContext {
     /**
      * <p>getProfileRequestContext.</p>
      *
-     * @return a {@link org.opensaml.profile.context.ProfileRequestContext} object
+     * @return a {@link ProfileRequestContext} object
      */
     public final ProfileRequestContext getProfileRequestContext() {
         return getMessageContext().getSubcontext(ProfileRequestContext.class, true);
@@ -228,7 +229,7 @@ public class SAML2MessageContext {
     /**
      * <p>getSAMLSelfEntityContext.</p>
      *
-     * @return a {@link org.opensaml.saml.common.messaging.context.SAMLSelfEntityContext} object
+     * @return a {@link SAMLSelfEntityContext} object
      */
     public final SAMLSelfEntityContext getSAMLSelfEntityContext() {
         return getMessageContext().getSubcontext(SAMLSelfEntityContext.class, true);
@@ -237,7 +238,7 @@ public class SAML2MessageContext {
     /**
      * <p>getSOAP11Context.</p>
      *
-     * @return a {@link org.opensaml.soap.messaging.context.SOAP11Context} object
+     * @return a {@link SOAP11Context} object
      */
     public final SOAP11Context getSOAP11Context() {
         return getMessageContext().getSubcontext(SOAP11Context.class, true);
@@ -246,7 +247,7 @@ public class SAML2MessageContext {
     /**
      * <p>getSAMLSelfMetadataContext.</p>
      *
-     * @return a {@link org.opensaml.saml.common.messaging.context.SAMLMetadataContext} object
+     * @return a {@link SAMLMetadataContext} object
      */
     public final SAMLMetadataContext getSAMLSelfMetadataContext() {
         return getSAMLSelfEntityContext().getSubcontext(SAMLMetadataContext.class, true);
@@ -255,7 +256,7 @@ public class SAML2MessageContext {
     /**
      * <p>getSAMLPeerMetadataContext.</p>
      *
-     * @return a {@link org.opensaml.saml.common.messaging.context.SAMLMetadataContext} object
+     * @return a {@link SAMLMetadataContext} object
      */
     public final SAMLMetadataContext getSAMLPeerMetadataContext() {
         return getSAMLPeerEntityContext().getSubcontext(SAMLMetadataContext.class, true);
@@ -264,7 +265,7 @@ public class SAML2MessageContext {
     /**
      * <p>getSAMLPeerEntityContext.</p>
      *
-     * @return a {@link org.opensaml.saml.common.messaging.context.SAMLPeerEntityContext} object
+     * @return a {@link SAMLPeerEntityContext} object
      */
     public final SAMLPeerEntityContext getSAMLPeerEntityContext() {
         return getMessageContext().getSubcontext(SAMLPeerEntityContext.class, true);
@@ -273,7 +274,7 @@ public class SAML2MessageContext {
     /**
      * <p>getSAMLSubjectNameIdentifierContext.</p>
      *
-     * @return a {@link org.opensaml.saml.common.messaging.context.SAMLSubjectNameIdentifierContext} object
+     * @return a {@link SAMLSubjectNameIdentifierContext} object
      */
     public final SAMLSubjectNameIdentifierContext getSAMLSubjectNameIdentifierContext() {
         return getMessageContext().getSubcontext(SAMLSubjectNameIdentifierContext.class, true);
@@ -282,7 +283,7 @@ public class SAML2MessageContext {
     /**
      * <p>getSAMLPeerEndpointContext.</p>
      *
-     * @return a {@link org.opensaml.saml.common.messaging.context.SAMLEndpointContext} object
+     * @return a {@link SAMLEndpointContext} object
      */
     public final SAMLEndpointContext getSAMLPeerEndpointContext() {
         return getSAMLPeerEntityContext().getSubcontext(SAMLEndpointContext.class, true);
@@ -291,7 +292,7 @@ public class SAML2MessageContext {
     /**
      * <p>getSAMLSelfEndpointContext.</p>
      *
-     * @return a {@link org.opensaml.saml.common.messaging.context.SAMLEndpointContext} object
+     * @return a {@link SAMLEndpointContext} object
      */
     public final SAMLEndpointContext getSAMLSelfEndpointContext() {
         return getSAMLSelfEntityContext().getSubcontext(SAMLEndpointContext.class, true);
@@ -300,7 +301,7 @@ public class SAML2MessageContext {
     /**
      * <p>getSAMLBindingContext.</p>
      *
-     * @return a {@link org.opensaml.saml.common.messaging.context.SAMLBindingContext} object
+     * @return a {@link SAMLBindingContext} object
      */
     public final SAMLBindingContext getSAMLBindingContext() {
         return getMessageContext().getSubcontext(SAMLBindingContext.class, true);
@@ -309,7 +310,7 @@ public class SAML2MessageContext {
     /**
      * <p>getSecurityParametersContext.</p>
      *
-     * @return a {@link org.opensaml.xmlsec.context.SecurityParametersContext} object
+     * @return a {@link SecurityParametersContext} object
      */
     public final SecurityParametersContext getSecurityParametersContext() {
         return getMessageContext().getSubcontext(SecurityParametersContext.class, true);
@@ -318,7 +319,7 @@ public class SAML2MessageContext {
     /**
      * <p>getSAMLSelfProtocolContext.</p>
      *
-     * @return a {@link org.opensaml.saml.common.messaging.context.SAMLProtocolContext} object
+     * @return a {@link SAMLProtocolContext} object
      */
     public final SAMLProtocolContext getSAMLSelfProtocolContext() {
         return this.getSAMLSelfEntityContext().getSubcontext(SAMLProtocolContext.class, true);
@@ -327,7 +328,7 @@ public class SAML2MessageContext {
     /**
      * <p>getSAMLProtocolContext.</p>
      *
-     * @return a {@link org.opensaml.saml.common.messaging.context.SAMLProtocolContext} object
+     * @return a {@link SAMLProtocolContext} object
      */
     public final SAMLProtocolContext getSAMLProtocolContext() {
         return getMessageContext().getSubcontext(SAMLProtocolContext.class, true);
@@ -336,7 +337,7 @@ public class SAML2MessageContext {
     /**
      * <p>getProfileRequestContextOutboundMessageTransportResponse.</p>
      *
-     * @return a {@link org.pac4j.saml.transport.Pac4jSAMLResponse} object
+     * @return a {@link Pac4jSAMLResponse} object
      */
     public final Pac4jSAMLResponse getProfileRequestContextOutboundMessageTransportResponse() {
         return (Pac4jSAMLResponse) getProfileRequestContext().getOutboundMessageContext().getMessage();
@@ -345,7 +346,7 @@ public class SAML2MessageContext {
     /**
      * <p>getSAMLEndpointContext.</p>
      *
-     * @return a {@link org.opensaml.saml.common.messaging.context.SAMLEndpointContext} object
+     * @return a {@link SAMLEndpointContext} object
      */
     public final SAMLEndpointContext getSAMLEndpointContext() {
         return getMessageContext().getSubcontext(SAMLEndpointContext.class, true);

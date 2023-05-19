@@ -81,7 +81,7 @@ public abstract class RunClient implements TestsConstants {
 
     protected void assertCommonProfile(final CommonProfile profile, final String email, final String firstName,
                                        final String familyName, final String displayName, final String username, final Gender gender,
-                                       final Locale locale, final String pictureUrl, final String profileUrl, final String location) {
+                                       final Locale locale, final CharSequence pictureUrl, final String profileUrl, final String location) {
         assertEquals(email, profile.getEmail());
         assertEquals(firstName, profile.getFirstName());
         assertEquals(familyName, profile.getFamilyName());

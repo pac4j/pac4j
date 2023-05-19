@@ -1,7 +1,7 @@
 package org.pac4j.http.authorization.authorizer;
 
-import lombok.val;
 import org.junit.Test;
+import org.pac4j.core.authorization.authorizer.Authorizer;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.exception.TechnicalException;
@@ -20,11 +20,11 @@ public final class IpRegexpAuthorizerTests {
     private final static String GOOD_IP = "goodIp";
     private final static String BAD_IP = "badIp";
 
-    private final static IpRegexpAuthorizer authorizer = new IpRegexpAuthorizer(GOOD_IP);
+    private final static Authorizer authorizer = new IpRegexpAuthorizer(GOOD_IP);
 
     @Test(expected = TechnicalException.class)
     public void testNoPattern() {
-        val authorizer = new IpRegexpAuthorizer();
+        Authorizer authorizer = new IpRegexpAuthorizer();
         authorizer.isAuthorized(MockWebContext.create(), new MockSessionStore(), null);
     }
 

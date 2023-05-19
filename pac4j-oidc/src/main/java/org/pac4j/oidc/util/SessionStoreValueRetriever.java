@@ -6,7 +6,7 @@ import org.pac4j.oidc.client.OidcClient;
 import java.util.Optional;
 
 /**
- * The default implementation of {@link org.pac4j.oidc.util.ValueRetriever} that reads the values
+ * The default implementation of {@link ValueRetriever} that reads the values
  * from the {@link org.pac4j.core.context.session.SessionStore} in the {@link org.pac4j.core.context.WebContext}.
  *
  * @author Emond Papegaaij

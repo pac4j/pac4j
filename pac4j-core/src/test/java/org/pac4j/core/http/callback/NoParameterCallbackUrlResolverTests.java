@@ -15,7 +15,7 @@ import static org.junit.Assert.*;
  */
 public final class NoParameterCallbackUrlResolverTests implements TestsConstants {
 
-    private static final NoParameterCallbackUrlResolver resolver = new NoParameterCallbackUrlResolver();
+    private static final CallbackUrlResolver resolver = new NoParameterCallbackUrlResolver();
 
     @Test
     public void testCompute() {

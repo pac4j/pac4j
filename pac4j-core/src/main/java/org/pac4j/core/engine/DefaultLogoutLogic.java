@@ -13,6 +13,7 @@ import org.pac4j.core.exception.http.NoContentAction;
 import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.util.Pac4jConstants;
 
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 import static org.pac4j.core.util.CommonHelper.assertNotBlank;
@@ -29,7 +30,7 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
 public class DefaultLogoutLogic extends AbstractExceptionAwareLogic implements LogoutLogic {
 
     /** Constant <code>INSTANCE</code> */
-    public static final DefaultLogoutLogic INSTANCE = new DefaultLogoutLogic();
+    public static final LogoutLogic INSTANCE = new DefaultLogoutLogic();
 
     /** {@inheritDoc} */
     @Override
@@ -50,11 +51,7 @@ public class DefaultLogoutLogic extends AbstractExceptionAwareLogic implements L
 
             // default values
             final String logoutUrlPattern;
-            if (inputLogoutUrlPattern == null) {
-                logoutUrlPattern = Pac4jConstants.DEFAULT_LOGOUT_URL_PATTERN_VALUE;
-            } else {
-                logoutUrlPattern = inputLogoutUrlPattern;
-            }
+            logoutUrlPattern = Objects.requireNonNullElse(inputLogoutUrlPattern, Pac4jConstants.DEFAULT_LOGOUT_URL_PATTERN_VALUE);
             val localLogout = inputLocalLogout == null || inputLocalLogout;
             val destroySession = inputDestroySession != null && inputDestroySession;
             val centralLogout = inputCentralLogout != null && inputCentralLogout;
@@ -136,11 +133,11 @@ public class DefaultLogoutLogic extends AbstractExceptionAwareLogic implements L
     /**
      * <p>enhanceRedirectUrl.</p>
      *
-     * @param ctx a {@link org.pac4j.core.context.CallContext} object
-     * @param config a {@link org.pac4j.core.config.Config} object
-     * @param client a {@link org.pac4j.core.client.Client} object
-     * @param redirectUrl a {@link java.lang.String} object
-     * @return a {@link java.lang.String} object
+     * @param ctx a {@link CallContext} object
+     * @param config a {@link Config} object
+     * @param client a {@link Client} object
+     * @param redirectUrl a {@link String} object
+     * @return a {@link String} object
      */
     protected String enhanceRedirectUrl(final CallContext ctx, final Config config, final Client client, final String redirectUrl) {
         return redirectUrl;

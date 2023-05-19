@@ -6,7 +6,6 @@ import com.nimbusds.oauth2.sdk.ParseException;
 import com.nimbusds.oauth2.sdk.auth.*;
 import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
-import java.util.Set;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -23,7 +22,6 @@ import javax.net.ssl.SSLSocketFactory;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 
 import static org.pac4j.core.util.CommonHelper.assertNotNull;
 import static org.pac4j.core.util.CommonHelper.isNotEmpty;
@@ -55,7 +53,7 @@ public class OidcOpMetadataResolver extends SpringResourceLoader<OIDCProviderMet
     /**
      * <p>Constructor for OidcOpMetadataResolver.</p>
      *
-     * @param configuration a {@link org.pac4j.oidc.config.OidcConfiguration} object
+     * @param configuration a {@link OidcConfiguration} object
      */
     public OidcOpMetadataResolver(final OidcConfiguration configuration) {
         super(buildResource(configuration));
@@ -82,7 +80,7 @@ public class OidcOpMetadataResolver extends SpringResourceLoader<OIDCProviderMet
     /**
      * <p>retrieveMetadata.</p>
      *
-     * @return a {@link com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata} object
+     * @return a {@link OIDCProviderMetadata} object
      */
     protected OIDCProviderMetadata retrieveMetadata() {
         val sslFactoryName = configuration.getSSLFactory();
@@ -110,7 +108,7 @@ public class OidcOpMetadataResolver extends SpringResourceLoader<OIDCProviderMet
     /**
      * <p>computeClientAuthentication.</p>
      *
-     * @return a {@link com.nimbusds.oauth2.sdk.auth.ClientAuthentication} object
+     * @return a {@link ClientAuthentication} object
      */
     protected ClientAuthentication computeClientAuthentication() {
         val _clientID = new ClientID(configuration.getClientId());
@@ -181,8 +179,8 @@ public class OidcOpMetadataResolver extends SpringResourceLoader<OIDCProviderMet
     }
 
     private static ClientAuthenticationMethod firstSupportedMethod(
-        final List<ClientAuthenticationMethod> serverSupportedAuthMethods,
-        Set<ClientAuthenticationMethod> clientSupportedAuthMethods) {
+            final Collection<ClientAuthenticationMethod> serverSupportedAuthMethods,
+            Collection<ClientAuthenticationMethod> clientSupportedAuthMethods) {
         Collection<ClientAuthenticationMethod> supportedMethods =
             clientSupportedAuthMethods != null ? clientSupportedAuthMethods : SUPPORTED_METHODS;
         var firstSupported =

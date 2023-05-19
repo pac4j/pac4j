@@ -29,28 +29,28 @@ public final class HttpMethodMatcherTests implements TestsConstants {
 
     @Test
     public void testBadMethod() {
-        val matcher = new HttpMethodMatcher(HttpConstants.HTTP_METHOD.GET);
+        Matcher matcher = new HttpMethodMatcher(HttpConstants.HTTP_METHOD.GET);
         val context = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.POST.name());
         assertFalse(matcher.matches(new CallContext(context, null)));
     }
 
     @Test
     public void testGoodMethod() {
-        val matcher = new HttpMethodMatcher(HttpConstants.HTTP_METHOD.POST);
+        Matcher matcher = new HttpMethodMatcher(HttpConstants.HTTP_METHOD.POST);
         val context = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.POST.name());
         assertTrue(matcher.matches(new CallContext(context, null)));
     }
 
     @Test
     public void testBadMethod2() {
-        val matcher = new HttpMethodMatcher(HttpConstants.HTTP_METHOD.GET, HttpConstants.HTTP_METHOD.PUT);
+        Matcher matcher = new HttpMethodMatcher(HttpConstants.HTTP_METHOD.GET, HttpConstants.HTTP_METHOD.PUT);
         val context = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.POST.name());
         assertFalse(matcher.matches(new CallContext(context, null)));
     }
 
     @Test
     public void testGoodMethod2() {
-        val matcher = new HttpMethodMatcher(HttpConstants.HTTP_METHOD.DELETE, HttpConstants.HTTP_METHOD.POST);
+        Matcher matcher = new HttpMethodMatcher(HttpConstants.HTTP_METHOD.DELETE, HttpConstants.HTTP_METHOD.POST);
         val context = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.POST.name());
         assertTrue(matcher.matches(new CallContext(context, null)));
     }

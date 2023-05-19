@@ -27,7 +27,7 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
  * <p>By default, the {@link org.pac4j.core.logout.handler.SessionLogoutHandler} will be a
  * {@link org.pac4j.core.logout.handler.DefaultSessionLogoutHandler}. Use <code>null</code> to disable logout support.</p>
  *
- * <p>For proxy support, a {@link org.pac4j.cas.client.CasProxyReceptor} must be defined in the configuration
+ * <p>For proxy support, a {@link CasProxyReceptor} must be defined in the configuration
  * (the corresponding "callback filter" must be enabled) and set to the CAS configuration of this client.
  * In that case, a {@link org.pac4j.cas.profile.CasProxyProfile} will be return (instead of a {@link org.pac4j.cas.profile.CasProfile})
  * to be able to request proxy tickets.</p>
@@ -50,7 +50,7 @@ public class CasClient extends IndirectClient {
     /**
      * <p>Constructor for CasClient.</p>
      *
-     * @param configuration a {@link org.pac4j.cas.config.CasConfiguration} object
+     * @param configuration a {@link CasConfiguration} object
      */
     public CasClient(final CasConfiguration configuration) {
         setConfiguration(configuration);

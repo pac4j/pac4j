@@ -43,8 +43,8 @@ public class WechatClient extends OAuth20Client {
     /**
      * <p>Constructor for WechatClient.</p>
      *
-     * @param key a {@link java.lang.String} object
-     * @param secret a {@link java.lang.String} object
+     * @param key a {@link String} object
+     * @param secret a {@link String} object
      */
     public WechatClient(final String key, final String secret) {
         setKey(key);
@@ -66,7 +66,7 @@ public class WechatClient extends OAuth20Client {
     /**
      * <p>getOAuthScope.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     protected String getOAuthScope() {
         StringBuilder builder = null;
@@ -90,7 +90,7 @@ public class WechatClient extends OAuth20Client {
     /**
      * <p>Getter for the field <code>scopes</code>.</p>
      *
-     * @return a {@link java.util.List} object
+     * @return a {@link List} object
      */
     public List<WechatScope> getScopes() {
         return scopes;
@@ -99,7 +99,7 @@ public class WechatClient extends OAuth20Client {
     /**
      * <p>Setter for the field <code>scopes</code>.</p>
      *
-     * @param scopes a {@link java.util.List} object
+     * @param scopes a {@link List} object
      */
     public void setScopes(List<WechatScope> scopes) {
         this.scopes = scopes;
@@ -108,7 +108,7 @@ public class WechatClient extends OAuth20Client {
     /**
      * <p>addScope.</p>
      *
-     * @param scopes a {@link org.pac4j.oauth.client.WechatClient.WechatScope} object
+     * @param scopes a {@link WechatClient.WechatScope} object
      */
     public void addScope(WechatScope scopes) {
         if (this.scopes == null)

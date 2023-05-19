@@ -55,7 +55,7 @@ public final class SecretSignatureConfigurationTests implements TestsConstants {
 
     @Test
     public void testSignVerify() throws JOSEException {
-        val config = new SecretSignatureConfiguration(MAC_SECRET);
+        SignatureConfiguration config = new SecretSignatureConfiguration(MAC_SECRET);
         val claims = new JWTClaimsSet.Builder().subject(VALUE).build();
         val signedJwt = config.sign(claims);
         assertTrue(config.verify(signedJwt));

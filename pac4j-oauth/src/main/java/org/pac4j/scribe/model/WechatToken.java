@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serial;
+
 /**
  * Wechat token extra.
  *
@@ -18,6 +20,7 @@ import lombok.ToString;
 @ToString
 public class WechatToken extends OAuth2AccessToken {
 
+    @Serial
     private static final long serialVersionUID = -4657457530761699382L;
     private String openid;
     private String unionid;
@@ -25,14 +28,14 @@ public class WechatToken extends OAuth2AccessToken {
     /**
      * <p>Constructor for WechatToken.</p>
      *
-     * @param accessToken a {@link java.lang.String} object
-     * @param tokenType a {@link java.lang.String} object
-     * @param expiresIn a {@link java.lang.Integer} object
-     * @param refreshToken a {@link java.lang.String} object
-     * @param scope a {@link java.lang.String} object
-     * @param rawResponse a {@link java.lang.String} object
-     * @param openid a {@link java.lang.String} object
-     * @param unionid a {@link java.lang.String} object
+     * @param accessToken a {@link String} object
+     * @param tokenType a {@link String} object
+     * @param expiresIn a {@link Integer} object
+     * @param refreshToken a {@link String} object
+     * @param scope a {@link String} object
+     * @param rawResponse a {@link String} object
+     * @param openid a {@link String} object
+     * @param unionid a {@link String} object
      */
     public WechatToken(String accessToken, String tokenType, Integer expiresIn,
                        String refreshToken, String scope, String rawResponse,

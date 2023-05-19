@@ -26,7 +26,7 @@ public class SpringSecurityPropertiesAuthorizationGenerator implements Authoriza
     /**
      * <p>Constructor for SpringSecurityPropertiesAuthorizationGenerator.</p>
      *
-     * @param properties a {@link java.util.Properties} object
+     * @param properties a {@link Properties} object
      */
     public SpringSecurityPropertiesAuthorizationGenerator(final Properties properties) {
         val keys = properties.stringPropertyNames();

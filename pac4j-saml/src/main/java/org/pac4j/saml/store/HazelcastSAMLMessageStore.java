@@ -30,7 +30,7 @@ public class HazelcastSAMLMessageStore implements SAMLMessageStore {
     /**
      * <p>Constructor for HazelcastSAMLMessageStore.</p>
      *
-     * @param hazelcastInstance a {@link com.hazelcast.core.HazelcastInstance} object
+     * @param hazelcastInstance a {@link HazelcastInstance} object
      */
     public HazelcastSAMLMessageStore(final HazelcastInstance hazelcastInstance) {
         CommonHelper.assertNotNull("hazelcastInstance", hazelcastInstance);

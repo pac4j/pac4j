@@ -7,6 +7,7 @@ import org.pac4j.core.profile.factory.ProfileFactory;
 import org.pac4j.core.util.serializer.JsonSerializer;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +29,7 @@ public class InMemoryProfileService<U extends CommonProfile> extends AbstractPro
     /**
      * <p>Constructor for InMemoryProfileService.</p>
      *
-     * @param profileFactory a {@link org.pac4j.core.profile.factory.ProfileFactory} object
+     * @param profileFactory a {@link ProfileFactory} object
      */
     public InMemoryProfileService(final ProfileFactory profileFactory) {
         this(new HashMap<>(), profileFactory);
@@ -37,8 +38,8 @@ public class InMemoryProfileService<U extends CommonProfile> extends AbstractPro
     /**
      * <p>Constructor for InMemoryProfileService.</p>
      *
-     * @param profiles a {@link java.util.Map} object
-     * @param profileFactory a {@link org.pac4j.core.profile.factory.ProfileFactory} object
+     * @param profiles a {@link Map} object
+     * @param profileFactory a {@link ProfileFactory} object
      */
     public InMemoryProfileService(final Map<String,Map<String,Object>> profiles, final ProfileFactory profileFactory) {
         this.profiles = profiles;
@@ -84,7 +85,7 @@ public class InMemoryProfileService<U extends CommonProfile> extends AbstractPro
         profiles.remove(id);
     }
 
-    private Map<String, Object> populateAttributes(final Map<String, Object> rowAttributes, final List<String> names) {
+    private Map<String, Object> populateAttributes(final Map<String, Object> rowAttributes, final Collection<String> names) {
         return rowAttributes.entrySet().stream()
                 .filter(p -> names == null || names.contains(p.getKey()))
                 // not using Collators.toMap because of
@@ -104,9 +105,9 @@ public class InMemoryProfileService<U extends CommonProfile> extends AbstractPro
                 listAttributes.add(populateAttributes(profile, names));
             }
         } else {
-            listAttributes = profiles.entrySet().stream()
-                    .filter(p -> p.getValue().get(key) != null && p.getValue().get(key).equals(value))
-                    .map(p -> populateAttributes(p.getValue(), names))
+            listAttributes = profiles.values().stream()
+                    .filter(stringObjectMap -> stringObjectMap.get(key) != null && stringObjectMap.get(key).equals(value))
+                    .map(stringObjectMap -> populateAttributes(stringObjectMap, names))
                     .collect(Collectors.toList());
         }
         logger.debug("Found: {}", listAttributes);

@@ -32,8 +32,8 @@ public class OAuth20RedirectionActionBuilder implements RedirectionActionBuilder
     /**
      * <p>Constructor for OAuth20RedirectionActionBuilder.</p>
      *
-     * @param configuration a {@link org.pac4j.oauth.config.OAuth20Configuration} object
-     * @param client a {@link org.pac4j.core.client.IndirectClient} object
+     * @param configuration a {@link OAuth20Configuration} object
+     * @param client a {@link IndirectClient} object
      */
     public OAuth20RedirectionActionBuilder(final OAuth20Configuration configuration, final IndirectClient client) {
         CommonHelper.assertNotNull("client", client);

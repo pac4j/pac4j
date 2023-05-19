@@ -13,6 +13,7 @@ import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
@@ -35,7 +36,7 @@ public class GenericOAuth20ProfileDefinition extends OAuthProfileDefinition {
     /**
      * <p>Setter for the field <code>profileVerb</code>.</p>
      *
-     * @param value a {@link com.github.scribejava.core.model.Verb} object
+     * @param value a {@link Verb} object
      */
     public void setProfileVerb(final Verb value) {
         this.profileVerb = value;
@@ -54,7 +55,7 @@ public class GenericOAuth20ProfileDefinition extends OAuthProfileDefinition {
     /**
      * <p>Setter for the field <code>profileUrl</code>.</p>
      *
-     * @param profileUrl a {@link java.lang.String} object
+     * @param profileUrl a {@link String} object
      */
     public void setProfileUrl(final String profileUrl) {
         this.profileUrl = profileUrl;
@@ -94,7 +95,7 @@ public class GenericOAuth20ProfileDefinition extends OAuthProfileDefinition {
     /**
      * <p>Getter for the field <code>profileAttributes</code>.</p>
      *
-     * @return a {@link java.util.Map} object
+     * @return a {@link Map} object
      */
     public Map<String, String> getProfileAttributes() {
         return this.profileAttributes;
@@ -119,17 +120,13 @@ public class GenericOAuth20ProfileDefinition extends OAuthProfileDefinition {
      */
     public void profileAttribute(final String name, String tag, final AttributeConverter converter) {
         profileAttributes.put(name, tag);
-        if (converter != null) {
-            getConverters().put(name, converter);
-        } else {
-            getConverters().put(name, new StringConverter());
-        }
+        getConverters().put(name, Objects.requireNonNullElseGet(converter, StringConverter::new));
     }
 
     /**
      * <p>Getter for the field <code>firstNodePath</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getFirstNodePath() {
         return firstNodePath;
@@ -138,7 +135,7 @@ public class GenericOAuth20ProfileDefinition extends OAuthProfileDefinition {
     /**
      * <p>Setter for the field <code>firstNodePath</code>.</p>
      *
-     * @param firstNodePath a {@link java.lang.String} object
+     * @param firstNodePath a {@link String} object
      */
     public void setFirstNodePath(final String firstNodePath) {
         this.firstNodePath = firstNodePath;

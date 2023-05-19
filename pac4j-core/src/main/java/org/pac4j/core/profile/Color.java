@@ -1,5 +1,6 @@
 package org.pac4j.core.profile;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import org.pac4j.core.exception.TechnicalException;
@@ -13,6 +14,7 @@ import org.pac4j.core.exception.TechnicalException;
  */
 public class Color implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -28080878626869621L;
 
     private int red;

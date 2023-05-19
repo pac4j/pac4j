@@ -24,7 +24,7 @@ public class IsAuthenticatedAuthorizer extends AbstractCheckAuthenticationAuthor
     /**
      * <p>Constructor for IsAuthenticatedAuthorizer.</p>
      *
-     * @param redirectionUrl a {@link java.lang.String} object
+     * @param redirectionUrl a {@link String} object
      */
     public IsAuthenticatedAuthorizer(final String redirectionUrl) {
         super(redirectionUrl);
@@ -45,7 +45,7 @@ public class IsAuthenticatedAuthorizer extends AbstractCheckAuthenticationAuthor
     /**
      * <p>isAuthenticated.</p>
      *
-     * @return a {@link org.pac4j.core.authorization.authorizer.IsAuthenticatedAuthorizer} object
+     * @return a {@link IsAuthenticatedAuthorizer} object
      */
     public static IsAuthenticatedAuthorizer isAuthenticated() {
         return new IsAuthenticatedAuthorizer();

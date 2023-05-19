@@ -42,7 +42,7 @@ public class CsrfTokenGeneratorMatcher implements Matcher {
     /**
      * <p>Constructor for CsrfTokenGeneratorMatcher.</p>
      *
-     * @param csrfTokenGenerator a {@link org.pac4j.core.matching.matcher.csrf.CsrfTokenGenerator} object
+     * @param csrfTokenGenerator a {@link CsrfTokenGenerator} object
      */
     public CsrfTokenGeneratorMatcher(final CsrfTokenGenerator csrfTokenGenerator) {
         this.csrfTokenGenerator = csrfTokenGenerator;

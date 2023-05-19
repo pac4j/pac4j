@@ -51,7 +51,7 @@ public class DefaultAjaxRequestResolver implements AjaxRequestResolver, HttpCons
         }
 
         val webContext = ctx.webContext();
-        if (!webContext.getRequestParameter(FACES_PARTIAL_AJAX_PARAMETER).isPresent()) {
+        if (webContext.getRequestParameter(FACES_PARTIAL_AJAX_PARAMETER).isEmpty()) {
             if (CommonHelper.isNotBlank(url)) {
                 webContext.setResponseHeader(HttpConstants.LOCATION_HEADER, url);
             }

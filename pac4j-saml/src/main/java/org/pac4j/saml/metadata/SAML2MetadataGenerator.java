@@ -12,34 +12,34 @@ public interface SAML2MetadataGenerator {
     /**
      * <p>buildMetadataResolver.</p>
      *
-     * @return a {@link org.opensaml.saml.metadata.resolver.MetadataResolver} object
-     * @throws java.lang.Exception if any.
+     * @return a {@link MetadataResolver} object
+     * @throws Exception if any.
      */
     MetadataResolver buildMetadataResolver() throws Exception;
 
     /**
      * <p>getMetadata.</p>
      *
-     * @param entityDescriptor a {@link org.opensaml.saml.saml2.metadata.EntityDescriptor} object
-     * @return a {@link java.lang.String} object
-     * @throws java.lang.Exception if any.
+     * @param entityDescriptor a {@link EntityDescriptor} object
+     * @return a {@link String} object
+     * @throws Exception if any.
      */
     String getMetadata(EntityDescriptor entityDescriptor) throws Exception;
 
     /**
      * <p>buildEntityDescriptor.</p>
      *
-     * @return a {@link org.opensaml.saml.saml2.metadata.EntityDescriptor} object
+     * @return a {@link EntityDescriptor} object
      */
     EntityDescriptor buildEntityDescriptor();
 
     /**
      * <p>storeMetadata.</p>
      *
-     * @param metadata a {@link java.lang.String} object
+     * @param metadata a {@link String} object
      * @param force a boolean
      * @return a boolean
-     * @throws java.lang.Exception if any.
+     * @throws Exception if any.
      */
     boolean storeMetadata(String metadata, boolean force) throws Exception;
 }

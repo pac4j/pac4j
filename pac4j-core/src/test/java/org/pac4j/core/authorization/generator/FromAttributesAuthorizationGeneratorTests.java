@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.pac4j.core.profile.CommonProfile;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -27,7 +27,7 @@ public final class FromAttributesAuthorizationGeneratorTests {
     private static final String ATTRIB4 = "attrib4";
     private static final String ATTRIB5 = "attrib5";
     private static final String[] ATTRIB_ARRAY = new String[]{"infoA1", "infoA2", "infoA3"};
-    private static final List<String> ATTRIB_LIST = new ArrayList<>();
+    private static final Collection<String> ATTRIB_LIST = new ArrayList<>();
 
     static {
         ATTRIB_LIST.add("infoL1");
@@ -48,14 +48,14 @@ public final class FromAttributesAuthorizationGeneratorTests {
 
     @Test
     public void testNoConfigWithCollections() {
-        val generator = new FromAttributesAuthorizationGenerator(new ArrayList<>());
+        AuthorizationGenerator generator = new FromAttributesAuthorizationGenerator(new ArrayList<>());
         generator.generate(null, this.profile);
         assertEquals(0, this.profile.getRoles().size());
     }
 
     @Test
     public void testNoConfig() {
-        val generator =
+        AuthorizationGenerator generator =
                 new FromAttributesAuthorizationGenerator((String[]) null);
         generator.generate(null, this.profile);
         assertEquals(0, this.profile.getRoles().size());
@@ -66,7 +66,7 @@ public final class FromAttributesAuthorizationGeneratorTests {
         val roleAttributes = new String[] {
             ATTRIB1
         };
-        val generator = new FromAttributesAuthorizationGenerator(roleAttributes);
+        AuthorizationGenerator generator = new FromAttributesAuthorizationGenerator(roleAttributes);
         generator.generate(null, this.profile);
         val roles = this.profile.getRoles();
         assertEquals(2, roles.size());
@@ -79,7 +79,7 @@ public final class FromAttributesAuthorizationGeneratorTests {
         val roleAttributes = new String[] {
             ATTRIB5
         };
-        val generator = new FromAttributesAuthorizationGenerator(roleAttributes);
+        AuthorizationGenerator generator = new FromAttributesAuthorizationGenerator(roleAttributes);
         generator.generate(null, this.profile);
         assertEquals(0, this.profile.getRoles().size());
     }
@@ -102,7 +102,7 @@ public final class FromAttributesAuthorizationGeneratorTests {
         val roleAttributes = new String[] {
                 ATTRIB3, ATTRIB4
         };
-        val generator = new FromAttributesAuthorizationGenerator(roleAttributes);
+        AuthorizationGenerator generator = new FromAttributesAuthorizationGenerator(roleAttributes);
         generator.generate(null, this.profile);
         val roles = this.profile.getRoles();
         assertEquals(ATTRIB_ARRAY.length + ATTRIB_LIST.size(), roles.size());

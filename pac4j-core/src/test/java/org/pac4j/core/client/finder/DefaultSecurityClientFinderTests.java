@@ -14,6 +14,7 @@ import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.util.TestsConstants;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
@@ -67,11 +68,7 @@ public final class DefaultSecurityClientFinderTests implements TestsConstants, P
     }
 
     protected String getClientNameParameter() {
-        if (clientNameParameter != null) {
-            return clientNameParameter;
-        } else {
-            return DEFAULT_FORCE_CLIENT_PARAMETER;
-        }
+        return Objects.requireNonNullElse(clientNameParameter, DEFAULT_FORCE_CLIENT_PARAMETER);
     }
 
     @Test

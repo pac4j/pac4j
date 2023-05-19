@@ -30,8 +30,8 @@ public class CasRedirectionActionBuilder implements RedirectionActionBuilder {
     /**
      * <p>Constructor for CasRedirectionActionBuilder.</p>
      *
-     * @param configuration a {@link org.pac4j.cas.config.CasConfiguration} object
-     * @param client a {@link org.pac4j.cas.client.CasClient} object
+     * @param configuration a {@link CasConfiguration} object
+     * @param client a {@link CasClient} object
      */
     public CasRedirectionActionBuilder(final CasConfiguration configuration, final CasClient client) {
         CommonHelper.assertNotNull("configuration", configuration);
@@ -61,7 +61,7 @@ public class CasRedirectionActionBuilder implements RedirectionActionBuilder {
     /**
      * <p>getServiceParameter.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     protected String getServiceParameter() {
         if (configuration.getProtocol() == CasProtocol.SAML) {
@@ -75,13 +75,13 @@ public class CasRedirectionActionBuilder implements RedirectionActionBuilder {
     /**
      * <p>constructRedirectUrl.</p>
      *
-     * @param casServerLoginUrl a {@link java.lang.String} object
-     * @param serviceParameterName a {@link java.lang.String} object
-     * @param serviceUrl a {@link java.lang.String} object
+     * @param casServerLoginUrl a {@link String} object
+     * @param serviceParameterName a {@link String} object
+     * @param serviceUrl a {@link String} object
      * @param renew a boolean
      * @param gateway a boolean
-     * @param method a {@link java.lang.String} object
-     * @return a {@link java.lang.String} object
+     * @param method a {@link String} object
+     * @return a {@link String} object
      */
     public static String constructRedirectUrl(final String casServerLoginUrl, final String serviceParameterName,
                                               final String serviceUrl, final boolean renew, final boolean gateway, final String method) {

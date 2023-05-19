@@ -14,8 +14,8 @@ public interface ValueGenerator {
     /**
      * <p>generateValue.</p>
      *
-     * @param ctx a {@link org.pac4j.core.context.CallContext} object
-     * @return a {@link java.lang.String} object
+     * @param ctx a {@link CallContext} object
+     * @return a {@link String} object
      */
     String generateValue(CallContext ctx);
 }

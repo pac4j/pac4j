@@ -1,5 +1,6 @@
 package org.pac4j.oauth.profile.wordpress;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -10,6 +11,7 @@ import java.io.Serializable;
  */
 public final class WordPressLinks implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 650184033370922722L;
 
     private String self;
@@ -21,7 +23,7 @@ public final class WordPressLinks implements Serializable {
     /**
      * <p>Getter for the field <code>self</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getSelf() {
         return self;
@@ -30,7 +32,7 @@ public final class WordPressLinks implements Serializable {
     /**
      * <p>Setter for the field <code>self</code>.</p>
      *
-     * @param self a {@link java.lang.String} object
+     * @param self a {@link String} object
      */
     public void setSelf(String self) {
         this.self = self;
@@ -39,7 +41,7 @@ public final class WordPressLinks implements Serializable {
     /**
      * <p>Getter for the field <code>help</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getHelp() {
         return help;
@@ -48,7 +50,7 @@ public final class WordPressLinks implements Serializable {
     /**
      * <p>Setter for the field <code>help</code>.</p>
      *
-     * @param help a {@link java.lang.String} object
+     * @param help a {@link String} object
      */
     public void setHelp(String help) {
         this.help = help;
@@ -57,7 +59,7 @@ public final class WordPressLinks implements Serializable {
     /**
      * <p>Getter for the field <code>site</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getSite() {
         return site;
@@ -66,7 +68,7 @@ public final class WordPressLinks implements Serializable {
     /**
      * <p>Setter for the field <code>site</code>.</p>
      *
-     * @param site a {@link java.lang.String} object
+     * @param site a {@link String} object
      */
     public void setSite(String site) {
         this.site = site;

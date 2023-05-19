@@ -4,6 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.pac4j.core.credentials.Credentials;
 
+import java.io.Serial;
 import java.security.cert.X509Certificate;
 
 /**
@@ -16,6 +17,7 @@ import java.security.cert.X509Certificate;
 @Getter
 public class X509Credentials extends Credentials {
 
+    @Serial
     private static final long serialVersionUID = 2733744949087200768L;
 
     private final X509Certificate certificate;
@@ -23,7 +25,7 @@ public class X509Credentials extends Credentials {
     /**
      * <p>Constructor for X509Credentials.</p>
      *
-     * @param certificate a {@link java.security.cert.X509Certificate} object
+     * @param certificate a {@link X509Certificate} object
      */
     public X509Credentials(final X509Certificate certificate) {
         this.certificate = certificate;

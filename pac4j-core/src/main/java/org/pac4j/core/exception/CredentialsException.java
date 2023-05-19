@@ -1,5 +1,7 @@
 package org.pac4j.core.exception;
 
+import java.io.Serial;
+
 /**
  * This class represents an expected exception occurring during credentials retrieval.
  *
@@ -8,12 +10,13 @@ package org.pac4j.core.exception;
  */
 public class CredentialsException extends TechnicalException {
 
+    @Serial
     private static final long serialVersionUID = 6013115966613706463L;
 
     /**
      * <p>Constructor for CredentialsException.</p>
      *
-     * @param message a {@link java.lang.String} object
+     * @param message a {@link String} object
      */
     public CredentialsException(final String message) {
         super(message);
@@ -22,7 +25,7 @@ public class CredentialsException extends TechnicalException {
     /**
      * <p>Constructor for CredentialsException.</p>
      *
-     * @param t a {@link java.lang.Throwable} object
+     * @param t a {@link Throwable} object
      */
     public CredentialsException(final Throwable t) {
         super(t);
@@ -31,8 +34,8 @@ public class CredentialsException extends TechnicalException {
     /**
      * <p>Constructor for CredentialsException.</p>
      *
-     * @param message a {@link java.lang.String} object
-     * @param t a {@link java.lang.Throwable} object
+     * @param message a {@link String} object
+     * @param t a {@link Throwable} object
      */
     public CredentialsException(String message, Throwable t) {
         super(message, t);

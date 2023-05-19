@@ -6,6 +6,7 @@ import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.credentials.TokenCredentials;
+import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 
@@ -24,7 +25,7 @@ public final class IpExtractorTests implements TestsConstants {
     @SuppressWarnings("PMD")
     private final static String LOCALHOST = "127.0.0.1";
 
-    private static final IpExtractor extractor = new IpExtractor();
+    private static final CredentialsExtractor extractor = new IpExtractor();
 
     @Test
     public void testRetrieveIpOk() {
@@ -52,11 +53,11 @@ public final class IpExtractorTests implements TestsConstants {
     public void testRetrieveIpFromHeaderUsingConstructor() {
         val context = MockWebContext.create().addRequestHeader(HEADER_NAME, GOOD_IP).setRemoteAddress(LOCALHOST);
         // test for varargs
-        val ipExtractor = new IpExtractor("fooBar", HEADER_NAME, "barFoo");
+        CredentialsExtractor ipExtractor = new IpExtractor("fooBar", HEADER_NAME, "barFoo");
         val credentials = (TokenCredentials) ipExtractor.extract(new CallContext(context, new MockSessionStore())).get();
         assertEquals(GOOD_IP, credentials.getToken());
         // test for edge case of 1 header
-        val ipExtractor2 = new IpExtractor(HEADER_NAME);
+        CredentialsExtractor ipExtractor2 = new IpExtractor(HEADER_NAME);
         val credentials2 = (TokenCredentials) ipExtractor2.extract(new CallContext(context, new MockSessionStore())).get();
         assertEquals(GOOD_IP, credentials2.getToken());
     }

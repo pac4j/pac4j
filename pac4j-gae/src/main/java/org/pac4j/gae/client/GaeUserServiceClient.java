@@ -4,6 +4,7 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import lombok.val;
 import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.core.profile.definition.ProfileDefinition;
 import org.pac4j.core.util.CommonHelper;
@@ -49,7 +50,7 @@ public class GaeUserServiceClient extends IndirectClient {
         setAuthenticatorIfUndefined((ctx, credentials) -> {
             val user = ((GaeUserCredentials) credentials).getUser();
             if (user != null) {
-                val profile = (GaeUserServiceProfile) PROFILE_DEFINITION.newProfile();
+                UserProfile profile = (GaeUserServiceProfile) PROFILE_DEFINITION.newProfile();
                 profile.setId(user.getEmail());
                 PROFILE_DEFINITION.convertAndAdd(profile, PROFILE_ATTRIBUTE, CommonProfileDefinition.EMAIL, user.getEmail());
                 PROFILE_DEFINITION.convertAndAdd(profile, PROFILE_ATTRIBUTE, CommonProfileDefinition.DISPLAY_NAME, user.getNickname());
@@ -74,7 +75,7 @@ public class GaeUserServiceClient extends IndirectClient {
     /**
      * <p>Getter for the field <code>authDomain</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getAuthDomain() {
         return authDomain;

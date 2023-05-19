@@ -1,5 +1,8 @@
 package org.pac4j.saml.metadata.jdbc;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.opensaml.saml.metadata.resolver.impl.AbstractMetadataResolver;
 import org.opensaml.saml.metadata.resolver.impl.DOMMetadataResolver;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
@@ -15,31 +18,24 @@ import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
- * This is {@link org.pac4j.saml.metadata.jdbc.SAML2JdbcMetadataGenerator}
+ * This is {@link SAML2JdbcMetadataGenerator}
  * that stores service provider metadata in a relational database.
  *
  * @author Misagh Moayyed
  * @since 5.7.0
  */
+@RequiredArgsConstructor
+@Getter
+@Setter
 public class SAML2JdbcMetadataGenerator extends BaseSAML2MetadataGenerator {
     private String tableName = "sp_metadata";
 
     private final JdbcTemplate template;
 
     private final String entityId;
-
-    /**
-     * <p>Constructor for SAML2JdbcMetadataGenerator.</p>
-     *
-     * @param template a {@link org.springframework.jdbc.core.JdbcTemplate} object
-     * @param entityId a {@link java.lang.String} object
-     */
-    public SAML2JdbcMetadataGenerator(final JdbcTemplate template, final String entityId) {
-        this.template = template;
-        this.entityId = entityId;
-    }
 
     /** {@inheritDoc} */
     @Override
@@ -86,7 +82,7 @@ public class SAML2JdbcMetadataGenerator extends BaseSAML2MetadataGenerator {
     /**
      * <p>updateMetadata.</p>
      *
-     * @param metadataToUse a {@link java.lang.String} object
+     * @param metadataToUse a {@link String} object
      * @return a boolean
      */
     protected boolean updateMetadata(final String metadataToUse) {
@@ -99,14 +95,14 @@ public class SAML2JdbcMetadataGenerator extends BaseSAML2MetadataGenerator {
     /**
      * <p>insertMetadata.</p>
      *
-     * @param metadataToUse a {@link java.lang.String} object
+     * @param metadataToUse a {@link String} object
      * @return a boolean
      */
     protected boolean insertMetadata(String metadataToUse) {
         var insert = new SimpleJdbcInsert(this.template)
             .withTableName(String.format("%s", this.tableName))
             .usingColumns("entityId", "metadata");
-        var parameters = new HashMap<String, Object>();
+        Map<String, Object> parameters = new HashMap<>();
         parameters.put("entityId", this.entityId);
         parameters.put("metadata", encodeMetadata(metadataToUse));
         return insert.execute(parameters) > 0;
@@ -125,7 +121,7 @@ public class SAML2JdbcMetadataGenerator extends BaseSAML2MetadataGenerator {
     /**
      * <p>decodeMetadata.</p>
      *
-     * @param metadata a {@link java.lang.String} object
+     * @param metadata a {@link String} object
      * @return an array of {@link byte} objects
      */
     protected byte[] decodeMetadata(final String metadata) {
@@ -135,28 +131,10 @@ public class SAML2JdbcMetadataGenerator extends BaseSAML2MetadataGenerator {
     /**
      * <p>encodeMetadata.</p>
      *
-     * @param metadataToUse a {@link java.lang.String} object
-     * @return a {@link java.lang.String} object
+     * @param metadataToUse a {@link String} object
+     * @return a {@link String} object
      */
     protected String encodeMetadata(String metadataToUse) {
         return Base64.getEncoder().encodeToString(metadataToUse.getBytes(StandardCharsets.UTF_8));
-    }
-
-    /**
-     * <p>Getter for the field <code>tableName</code>.</p>
-     *
-     * @return a {@link java.lang.String} object
-     */
-    public String getTableName() {
-        return tableName;
-    }
-
-    /**
-     * <p>Setter for the field <code>tableName</code>.</p>
-     *
-     * @param tableName a {@link java.lang.String} object
-     */
-    public void setTableName(String tableName) {
-        this.tableName = tableName;
     }
 }

@@ -28,7 +28,7 @@ public class DirectKerberosClient extends DirectClient {
     /**
      * <p>Constructor for DirectKerberosClient.</p>
      *
-     * @param authenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
+     * @param authenticator a {@link Authenticator} object
      */
     public DirectKerberosClient(final Authenticator authenticator) {
         setAuthenticator(authenticator);
@@ -37,8 +37,8 @@ public class DirectKerberosClient extends DirectClient {
     /**
      * <p>Constructor for DirectKerberosClient.</p>
      *
-     * @param authenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
-     * @param profileCreator a {@link org.pac4j.core.profile.creator.ProfileCreator} object
+     * @param authenticator a {@link Authenticator} object
+     * @param profileCreator a {@link ProfileCreator} object
      */
     public DirectKerberosClient(final Authenticator authenticator, final ProfileCreator profileCreator) {
         setAuthenticator(authenticator);

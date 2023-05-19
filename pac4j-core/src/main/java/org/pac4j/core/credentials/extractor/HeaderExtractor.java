@@ -25,7 +25,7 @@ public class HeaderExtractor implements CredentialsExtractor {
     /**
      * <p>Getter for the field <code>headerName</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getHeaderName() {
         return headerName;
@@ -34,7 +34,7 @@ public class HeaderExtractor implements CredentialsExtractor {
     /**
      * <p>Setter for the field <code>headerName</code>.</p>
      *
-     * @param headerName a {@link java.lang.String} object
+     * @param headerName a {@link String} object
      */
     public void setHeaderName(String headerName) {
         this.headerName = headerName;
@@ -43,7 +43,7 @@ public class HeaderExtractor implements CredentialsExtractor {
     /**
      * <p>Getter for the field <code>prefixHeader</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getPrefixHeader() {
         return prefixHeader;
@@ -52,7 +52,7 @@ public class HeaderExtractor implements CredentialsExtractor {
     /**
      * <p>Setter for the field <code>prefixHeader</code>.</p>
      *
-     * @param prefixHeader a {@link java.lang.String} object
+     * @param prefixHeader a {@link String} object
      */
     public void setPrefixHeader(String prefixHeader) {
         this.prefixHeader = prefixHeader;
@@ -86,8 +86,8 @@ public class HeaderExtractor implements CredentialsExtractor {
     /**
      * <p>Constructor for HeaderExtractor.</p>
      *
-     * @param headerName a {@link java.lang.String} object
-     * @param prefixHeader a {@link java.lang.String} object
+     * @param headerName a {@link String} object
+     * @param prefixHeader a {@link String} object
      */
     public HeaderExtractor(final String headerName, final String prefixHeader) {
         this.headerName = headerName;
@@ -101,9 +101,9 @@ public class HeaderExtractor implements CredentialsExtractor {
         CommonHelper.assertNotNull("prefixHeader", this.prefixHeader);
 
         var header = ctx.webContext().getRequestHeader(this.headerName);
-        if (!header.isPresent()) {
+        if (header.isEmpty()) {
             header = ctx.webContext().getRequestHeader(this.headerName.toLowerCase());
-            if (!header.isPresent()) {
+            if (header.isEmpty()) {
                 return Optional.empty();
             }
         }

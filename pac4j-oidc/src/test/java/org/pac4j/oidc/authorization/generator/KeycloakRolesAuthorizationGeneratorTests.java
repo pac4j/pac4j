@@ -4,6 +4,7 @@ import com.nimbusds.oauth2.sdk.token.AccessToken;
 import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
 import lombok.val;
 import org.junit.Test;
+import org.pac4j.core.authorization.generator.AuthorizationGenerator;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
@@ -34,7 +35,7 @@ public class KeycloakRolesAuthorizationGeneratorTests {
         + "ljNtm1d9dKETvFAKRXWzubRy_PXu6pz32GMDHmvIb7JvdcDe3tYuREZVwNTibfu6rG0KalMAYO1Q0u44fGDxcJTSxfZ7crtno4ujifw_azAw1Kpqqf2mbY"
         + "elw_pr5HALNHsRbpYp2DtxUWQ-tGYLP6H3fYS-cUCgkWyeS7Pl1KHPJBmWvEWEaJjeBfhfN3g";
 
-    private KeycloakRolesAuthorizationGenerator generator = new KeycloakRolesAuthorizationGenerator("keycloakid");
+    private AuthorizationGenerator generator = new KeycloakRolesAuthorizationGenerator("keycloakid");
 
     @Test
     public void test() {

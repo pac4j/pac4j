@@ -8,6 +8,7 @@ import org.pac4j.core.profile.service.AbstractProfileService;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.util.TestsConstants;
 import org.skife.jdbi.v2.DBI;
+import org.skife.jdbi.v2.IDBI;
 import org.springframework.security.crypto.password.StandardPasswordEncoder;
 
 import javax.sql.DataSource;
@@ -26,7 +27,7 @@ public final class DbServer implements TestsConstants {
 
     static {
         ds = JdbcConnectionPool.create("jdbc:h2:mem:test", Pac4jConstants.USERNAME, Pac4jConstants.PASSWORD);
-        val dbi = new DBI(ds);
+        IDBI dbi = new DBI(ds);
         val h = dbi.open();
         val password = PASSWORD_ENCODER.encode(PASSWORD);
         h.execute("create table users (" + AbstractProfileService.ID + " int primary key, " + Pac4jConstants.USERNAME +  " varchar(100), "

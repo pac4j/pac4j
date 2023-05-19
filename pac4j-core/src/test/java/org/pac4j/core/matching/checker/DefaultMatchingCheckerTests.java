@@ -19,7 +19,6 @@ import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 import static org.pac4j.core.context.HttpConstants.*;
@@ -210,7 +209,7 @@ public final class DefaultMatchingCheckerTests implements TestsConstants {
         assertEquals("*", context.getResponseHeaders().get(ACCESS_CONTROL_ALLOW_ORIGIN_HEADER));
         assertEquals("true", context.getResponseHeaders().get(ACCESS_CONTROL_ALLOW_CREDENTIALS_HEADER));
         val methods = context.getResponseHeaders().get(ACCESS_CONTROL_ALLOW_METHODS_HEADER);
-        val methodArray = Arrays.asList(methods.split(",")).stream().map(String::trim).collect(Collectors.toList());
+        val methodArray = Arrays.stream(methods.split(",")).map(String::trim).toList();
         assertTrue(methodArray.contains(HTTP_METHOD.POST.name()));
         assertTrue(methodArray.contains(HTTP_METHOD.PUT.name()));
         assertTrue(methodArray.contains(HTTP_METHOD.DELETE.name()));
@@ -290,14 +289,14 @@ public final class DefaultMatchingCheckerTests implements TestsConstants {
 
     @Test
     public void testComputeMatchersPost() {
-        assertEquals(Arrays.asList(DefaultMatchingChecker.POST_MATCHER),
+        assertEquals(List.of(DefaultMatchingChecker.POST_MATCHER),
             checker.computeMatchers(new CallContext(MockWebContext.create(), new MockSessionStore()), "post" ,
                 new HashMap<>(), new ArrayList<>()));
     }
 
     @Test
     public void testComputeMatchersPlusPost() {
-        final List<Matcher> matchers = new ArrayList<>();
+        final Collection<Matcher> matchers = new ArrayList<>();
         matchers.addAll(SECURITY_HEADERS_MATCHERS);
         matchers.add(DefaultMatchingChecker.POST_MATCHER);
         assertEquals(matchers, checker.computeMatchers(new CallContext(MockWebContext.create(), new MockSessionStore()), "   +   post",
@@ -308,7 +307,7 @@ public final class DefaultMatchingCheckerTests implements TestsConstants {
     public void testComputeMatchersOverrideOneMatcher() {
         final Map<String, Matcher> matchers = new HashMap<>();
         matchers.put(DefaultMatchers.GET, DefaultMatchingChecker.POST_MATCHER);
-        assertEquals(Arrays.asList(DefaultMatchingChecker.POST_MATCHER), checker.computeMatchers(new CallContext(MockWebContext.create(),
+        assertEquals(List.of(DefaultMatchingChecker.POST_MATCHER), checker.computeMatchers(new CallContext(MockWebContext.create(),
             new MockSessionStore()), "get", matchers, new ArrayList<>()));
     }
 
@@ -324,7 +323,7 @@ public final class DefaultMatchingCheckerTests implements TestsConstants {
         final Map<String, Matcher> matchers = new HashMap<>();
         matchers.put(DefaultMatchers.SECURITYHEADERS, overriden);
 
-        final List<Matcher> expectedMatchers = new ArrayList<>();
+        final Collection<Matcher> expectedMatchers = new ArrayList<>();
         expectedMatchers.add(overriden);
         assertEquals(expectedMatchers, checker.computeMatchers(new CallContext(MockWebContext.create(),
             new MockSessionStore()), null, matchers, new ArrayList<>()));
@@ -342,7 +341,7 @@ public final class DefaultMatchingCheckerTests implements TestsConstants {
         final Map<String, Matcher> matchers = new HashMap<>();
         matchers.put(DefaultMatchers.SECURITYHEADERS, overriden);
 
-        final List<Matcher> expectedMatchers = new ArrayList<>();
+        final Collection<Matcher> expectedMatchers = new ArrayList<>();
         expectedMatchers.add(overriden);
         assertEquals(expectedMatchers, checker.computeMatchers(new CallContext(MockWebContext.create(),
             new MockSessionStore()), " securityHEADERS    ", matchers, new ArrayList<>()));
@@ -360,7 +359,7 @@ public final class DefaultMatchingCheckerTests implements TestsConstants {
         final Map<String, Matcher> matchers = new HashMap<>();
         matchers.put(DefaultMatchers.NOSNIFF, overriden);
 
-        final List<Matcher> expectedMatchers = new ArrayList<>();
+        final Collection<Matcher> expectedMatchers = new ArrayList<>();
         expectedMatchers.add(DefaultMatchingChecker.CACHE_CONTROL_MATCHER);
         expectedMatchers.add(overriden);
         expectedMatchers.add(DefaultMatchingChecker.STRICT_TRANSPORT_MATCHER);

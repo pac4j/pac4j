@@ -42,7 +42,7 @@ public class SAML2LogoutActionBuilder implements LogoutActionBuilder {
     /**
      * <p>Constructor for SAML2LogoutActionBuilder.</p>
      *
-     * @param client a {@link org.pac4j.saml.client.SAML2Client} object
+     * @param client a {@link SAML2Client} object
      */
     public SAML2LogoutActionBuilder(final SAML2Client client) {
         this.saml2Client = client;
@@ -57,8 +57,7 @@ public class SAML2LogoutActionBuilder implements LogoutActionBuilder {
     @Override
     public Optional<RedirectionAction> getLogoutAction(final CallContext ctx, final UserProfile currentProfile, final String targetUrl) {
         try {
-            if (currentProfile instanceof SAML2Profile) {
-                val saml2Profile = (SAML2Profile) currentProfile;
+            if (currentProfile instanceof SAML2Profile saml2Profile) {
                 val samlContext = this.contextProvider.buildContext(ctx, this.saml2Client);
                 val relayState = this.stateGenerator.generateValue(ctx);
 

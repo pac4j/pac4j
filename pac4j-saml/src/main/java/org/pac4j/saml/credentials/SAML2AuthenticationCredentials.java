@@ -4,10 +4,11 @@ import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.opensaml.saml.saml2.core.Attribute;
 import org.opensaml.saml.saml2.core.Conditions;
-import org.opensaml.saml.saml2.core.NameID;
+import org.opensaml.saml.saml2.core.NameIDType;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.profile.converter.AttributeConverter;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -27,6 +28,7 @@ import java.util.List;
 @ToString
 public class SAML2AuthenticationCredentials extends Credentials {
 
+    @Serial
     private static final long serialVersionUID = 5040516205957826527L;
 
     private final SAMLNameID nameId;
@@ -47,14 +49,14 @@ public class SAML2AuthenticationCredentials extends Credentials {
     /**
      * <p>Constructor for SAML2AuthenticationCredentials.</p>
      *
-     * @param nameId a {@link org.pac4j.saml.credentials.SAML2AuthenticationCredentials.SAMLNameID} object
-     * @param issuerId a {@link java.lang.String} object
-     * @param samlAttributes a {@link java.util.List} object
-     * @param conditions a {@link org.opensaml.saml.saml2.core.Conditions} object
-     * @param sessionIndex a {@link java.lang.String} object
-     * @param authnContexts a {@link java.util.List} object
-     * @param authnContextAuthorities a {@link java.util.List} object
-     * @param inResponseTo a {@link java.lang.String} object
+     * @param nameId a {@link SAML2AuthenticationCredentials.SAMLNameID} object
+     * @param issuerId a {@link String} object
+     * @param samlAttributes a {@link List} object
+     * @param conditions a {@link Conditions} object
+     * @param sessionIndex a {@link String} object
+     * @param authnContexts a {@link List} object
+     * @param authnContextAuthorities a {@link List} object
+     * @param inResponseTo a {@link String} object
      */
     public SAML2AuthenticationCredentials(final SAMLNameID nameId, final String issuerId,
                                           final List<SAMLAttribute> samlAttributes, final Conditions conditions,
@@ -90,6 +92,7 @@ public class SAML2AuthenticationCredentials extends Credentials {
     @Setter
     @ToString
     public static class SAMLNameID implements Serializable {
+        @Serial
         private static final long serialVersionUID = -7913473743778305079L;
         private String format;
         private String nameQualifier;
@@ -97,7 +100,7 @@ public class SAML2AuthenticationCredentials extends Credentials {
         private String spProviderId;
         private String value;
 
-        public static SAMLNameID from(final NameID nameId) {
+        public static SAMLNameID from(final NameIDType nameId) {
             val result = new SAMLNameID();
             result.setNameQualifier(nameId.getNameQualifier());
             result.setFormat(nameId.getFormat());
@@ -121,15 +124,16 @@ public class SAML2AuthenticationCredentials extends Credentials {
     @Setter
     @ToString
     public static class SAMLAttribute implements Serializable {
+        @Serial
         private static final long serialVersionUID = 2532838901563948260L;
         private String friendlyName;
         private String name;
         private String nameFormat;
         private List<String> attributeValues = new ArrayList<>();
 
-        public static List<SAMLAttribute> from(final AttributeConverter samlAttributeConverter, final List<Attribute> samlAttributes) {
+        public static List<SAMLAttribute> from(final AttributeConverter samlAttributeConverter, final Iterable<Attribute> samlAttributes) {
 
-            val attributes = new ArrayList<SAMLAttribute>();
+            List<SAMLAttribute> attributes = new ArrayList<>();
 
             samlAttributes.forEach(attribute -> {
                 val result = samlAttributeConverter.convert(attribute);
@@ -148,6 +152,7 @@ public class SAML2AuthenticationCredentials extends Credentials {
     @Setter
     @ToString
     public static class SAMLConditions implements Serializable {
+        @Serial
         private static final long serialVersionUID = -8966585574672014553L;
         private ZonedDateTime notBefore;
         private ZonedDateTime notOnOrAfter;

@@ -14,6 +14,7 @@ import org.skife.jdbi.v2.Handle;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -55,7 +56,7 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
      * <p>Constructor for DbProfileService.</p>
      *
      * @param dataSource a DataSource object
-     * @param attributes a {@link java.lang.String} object
+     * @param attributes a {@link String} object
      */
     public DbProfileService(final DataSource dataSource, final String attributes) {
         this.dataSource = dataSource;
@@ -66,8 +67,8 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
      * <p>Constructor for DbProfileService.</p>
      *
      * @param dataSource a DataSource object
-     * @param attributes a {@link java.lang.String} object
-     * @param passwordEncoder a {@link org.pac4j.core.credentials.password.PasswordEncoder} object
+     * @param attributes a {@link String} object
+     * @param passwordEncoder a {@link PasswordEncoder} object
      */
     public DbProfileService(final DataSource dataSource, final String attributes, final PasswordEncoder passwordEncoder) {
         this.dataSource = dataSource;
@@ -79,7 +80,7 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
      * <p>Constructor for DbProfileService.</p>
      *
      * @param dataSource a DataSource object
-     * @param passwordEncoder a {@link org.pac4j.core.credentials.password.PasswordEncoder} object
+     * @param passwordEncoder a {@link PasswordEncoder} object
      */
     public DbProfileService(final DataSource dataSource, final PasswordEncoder passwordEncoder) {
         this.dataSource = dataSource;
@@ -104,7 +105,7 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
     protected void insert(final Map<String, Object> attributes) {
         final List<String> names = new ArrayList<>();
         final List<String> questionMarks = new ArrayList<>();
-        final List<Object> values = new ArrayList<>();
+        final Collection<Object> values = new ArrayList<>();
         for (val entry : attributes.entrySet()) {
             names.add(entry.getKey());
             questionMarks.add("?");
@@ -121,7 +122,7 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
     protected void update(final Map<String, Object> attributes) {
         val attributesList = new StringBuilder();
         String id = null;
-        final List<Object> values = new ArrayList<>();
+        final Collection<Object> values = new ArrayList<>();
         var i = 0;
         for (val entry : attributes.entrySet()) {
             val name = entry.getKey();
@@ -156,8 +157,8 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
     /**
      * <p>execute.</p>
      *
-     * @param query a {@link java.lang.String} object
-     * @param args a {@link java.lang.Object} object
+     * @param query a {@link String} object
+     * @param args a {@link Object} object
      */
     protected void execute(final String query, final Object... args) {
         Handle h = null;
@@ -184,10 +185,10 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
     /**
      * <p>query.</p>
      *
-     * @param query a {@link java.lang.String} object
-     * @param key a {@link java.lang.String} object
-     * @param value a {@link java.lang.String} object
-     * @return a {@link java.util.List} object
+     * @param query a {@link String} object
+     * @param key a {@link String} object
+     * @param value a {@link String} object
+     * @return a {@link List} object
      */
     protected List<Map<String, Object>> query(final String query, final String key, final String value) {
         Handle h = null;
@@ -205,10 +206,10 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
     /**
      * <p>buildAttributesList.</p>
      *
-     * @param names a {@link java.util.List} object
-     * @return a {@link java.lang.String} object
+     * @param names a {@link List} object
+     * @return a {@link String} object
      */
-    protected String buildAttributesList(final List<String> names) {
+    protected String buildAttributesList(final Iterable<String> names) {
         val sb = new StringBuilder();
         var firstOne = true;
         for (val name : names) {
@@ -224,7 +225,7 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
     /**
      * <p>Setter for the field <code>usersTable</code>.</p>
      *
-     * @param usersTable a {@link java.lang.String} object
+     * @param usersTable a {@link String} object
      */
     public void setUsersTable(final String usersTable) {
         assertNotBlank("usersTable", usersTable);

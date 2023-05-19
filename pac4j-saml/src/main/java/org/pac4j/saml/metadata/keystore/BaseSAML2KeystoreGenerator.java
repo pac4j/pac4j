@@ -22,12 +22,14 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.time.Clock;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.chrono.ChronoLocalDateTime;
 import java.util.Date;
 
 /**
- * This is {@link org.pac4j.saml.metadata.keystore.BaseSAML2KeystoreGenerator}.
+ * This is {@link BaseSAML2KeystoreGenerator}.
  *
  * @author Misagh Moayyed
  * @since 4.0.1
@@ -43,7 +45,7 @@ public abstract class BaseSAML2KeystoreGenerator implements SAML2KeystoreGenerat
     /**
      * <p>Constructor for BaseSAML2KeystoreGenerator.</p>
      *
-     * @param saml2Configuration a {@link org.pac4j.saml.config.SAML2Configuration} object
+     * @param saml2Configuration a {@link SAML2Configuration} object
      */
     public BaseSAML2KeystoreGenerator(final SAML2Configuration saml2Configuration) {
         this.saml2Configuration = saml2Configuration;
@@ -100,15 +102,15 @@ public abstract class BaseSAML2KeystoreGenerator implements SAML2KeystoreGenerat
     /**
      * <p>store.</p>
      *
-     * @param ks a {@link java.security.KeyStore} object
-     * @param certificate a {@link java.security.cert.X509Certificate} object
-     * @param privateKey a {@link java.security.PrivateKey} object
-     * @throws java.lang.Exception if any.
+     * @param ks a {@link KeyStore} object
+     * @param certificate a {@link X509Certificate} object
+     * @param privateKey a {@link PrivateKey} object
+     * @throws Exception if any.
      */
     protected abstract void store(KeyStore ks, X509Certificate certificate,
                                   PrivateKey privateKey) throws Exception;
 
-    private static Time time(final LocalDateTime localDateTime) {
+    private static Time time(final ChronoLocalDateTime<LocalDate> localDateTime) {
         return new Time(Date.from(localDateTime.toInstant(ZoneOffset.UTC)));
     }
 

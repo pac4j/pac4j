@@ -1,5 +1,6 @@
 package org.pac4j.oauth.profile.foursquare;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,10 +13,11 @@ import java.util.List;
  */
 public class FoursquareUserFriends implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -6264070010780654226L;
 
     private int count;
-    private List<FoursquareUserFriendGroup> groups = new ArrayList<FoursquareUserFriendGroup>();
+    private List<FoursquareUserFriendGroup> groups = new ArrayList<>();
 
     /**
      * <p>Getter for the field <code>count</code>.</p>
@@ -38,7 +40,7 @@ public class FoursquareUserFriends implements Serializable {
     /**
      * <p>Getter for the field <code>groups</code>.</p>
      *
-     * @return a {@link java.util.List} object
+     * @return a {@link List} object
      */
     public List<FoursquareUserFriendGroup> getGroups() {
         return groups;
@@ -47,7 +49,7 @@ public class FoursquareUserFriends implements Serializable {
     /**
      * <p>Setter for the field <code>groups</code>.</p>
      *
-     * @param groups a {@link java.util.List} object
+     * @param groups a {@link List} object
      */
     public void setGroups(List<FoursquareUserFriendGroup> groups) {
         this.groups = groups;

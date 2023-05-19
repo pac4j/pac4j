@@ -42,8 +42,8 @@ public class CsrfAuthorizer implements Authorizer {
     /**
      * <p>Constructor for CsrfAuthorizer.</p>
      *
-     * @param parameterName a {@link java.lang.String} object
-     * @param headerName a {@link java.lang.String} object
+     * @param parameterName a {@link String} object
+     * @param headerName a {@link String} object
      */
     public CsrfAuthorizer(final String parameterName, final String headerName) {
         this.parameterName = parameterName;
@@ -53,8 +53,8 @@ public class CsrfAuthorizer implements Authorizer {
     /**
      * <p>Constructor for CsrfAuthorizer.</p>
      *
-     * @param parameterName a {@link java.lang.String} object
-     * @param headerName a {@link java.lang.String} object
+     * @param parameterName a {@link String} object
+     * @param headerName a {@link String} object
      * @param checkAllRequests a boolean
      */
     public CsrfAuthorizer(final String parameterName, final String headerName, final boolean checkAllRequests) {
@@ -101,8 +101,8 @@ public class CsrfAuthorizer implements Authorizer {
     /**
      * <p>hashEquals.</p>
      *
-     * @param a a {@link java.lang.String} object
-     * @param b a {@link java.lang.String} object
+     * @param a a {@link String} object
+     * @param b a {@link String} object
      * @return a boolean
      */
     protected boolean hashEquals(final String a, final String b) {

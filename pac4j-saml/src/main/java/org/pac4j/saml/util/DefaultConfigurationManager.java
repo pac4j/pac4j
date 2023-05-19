@@ -53,7 +53,7 @@ public class DefaultConfigurationManager implements ConfigurationManager {
             parserPool.setXincludeAware(false);
             parserPool.setIgnoreElementContentWhitespace(true);
 
-            final Map<String, Object> builderAttributes = new HashMap<String, Object>();
+            final Map<String, Object> builderAttributes = new HashMap<>();
             parserPool.setBuilderAttributes(builderAttributes);
 
             final Map<String, Boolean> features = new HashMap<>();

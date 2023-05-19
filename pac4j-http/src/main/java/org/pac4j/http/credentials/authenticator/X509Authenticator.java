@@ -5,6 +5,7 @@ import org.pac4j.core.context.CallContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.http.credentials.X509Credentials;
 import org.pac4j.http.profile.X509Profile;
@@ -12,7 +13,7 @@ import org.pac4j.http.profile.X509Profile;
 import java.util.Optional;
 
 /**
- * Authenticates {@link org.pac4j.http.credentials.X509Credentials}. Like the SubjectDnX509PrincipalExtractor in Spring Security.
+ * Authenticates {@link X509Credentials}. Like the SubjectDnX509PrincipalExtractor in Spring Security.
  *
  * @author Jerome Leleu
  * @since 3.3.0
@@ -29,7 +30,7 @@ public class X509Authenticator extends AbstractRegexpAuthenticator implements Au
     /**
      * <p>Constructor for X509Authenticator.</p>
      *
-     * @param regexpPattern a {@link java.lang.String} object
+     * @param regexpPattern a {@link String} object
      */
     public X509Authenticator(final String regexpPattern) {
         setRegexpPattern(regexpPattern);
@@ -74,7 +75,7 @@ public class X509Authenticator extends AbstractRegexpAuthenticator implements Au
         }
 
         val id = matcher.group(1);
-        val profile = (X509Profile) getProfileDefinition().newProfile();
+        UserProfile profile = (X509Profile) getProfileDefinition().newProfile();
         profile.setId(id);
         logger.debug("profile: {}", profile);
 

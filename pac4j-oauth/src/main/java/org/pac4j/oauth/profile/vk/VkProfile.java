@@ -6,9 +6,11 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oauth.profile.OAuth20Profile;
 
+import java.io.Serial;
 import java.net.URI;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 /**
  * <p>This class is the user profile for Vk with appropriate getters.</p>
@@ -19,6 +21,7 @@ import java.util.Locale;
  */
 public class VkProfile extends OAuth20Profile {
 
+    @Serial
     private static final long serialVersionUID = -7889265305949082980L;
 
     /** {@inheritDoc} */
@@ -64,11 +67,7 @@ public class VkProfile extends OAuth20Profile {
     @Override
     public Gender getGender() {
         val gender = (Gender) getAttribute(VkProfileDefinition.SEX);
-        if (gender == null) {
-            return Gender.UNSPECIFIED;
-        } else {
-            return gender;
-        }
+        return Objects.requireNonNullElse(gender, Gender.UNSPECIFIED);
     }
 
     /** {@inheritDoc} */
@@ -92,7 +91,7 @@ public class VkProfile extends OAuth20Profile {
     /**
      * <p>getLastName.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getLastName() {
         return (String) getAttribute(VkProfileDefinition.LAST_NAME);
@@ -101,7 +100,7 @@ public class VkProfile extends OAuth20Profile {
     /**
      * <p>getBirthDate.</p>
      *
-     * @return a {@link java.util.Date} object
+     * @return a {@link Date} object
      */
     public Date getBirthDate() {
         return (Date) getAttribute(VkProfileDefinition.BIRTH_DATE);
@@ -110,7 +109,7 @@ public class VkProfile extends OAuth20Profile {
     /**
      * <p>getFoto50.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getFoto50() {
         return (String) getAttribute(VkProfileDefinition.PHOTO_50);
@@ -119,7 +118,7 @@ public class VkProfile extends OAuth20Profile {
     /**
      * <p>getFoto100.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getFoto100() {
         return (String) getAttribute(VkProfileDefinition.PHOTO_100);
@@ -128,7 +127,7 @@ public class VkProfile extends OAuth20Profile {
     /**
      * <p>getFoto200Orig.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getFoto200Orig() {
         return (String) getAttribute(VkProfileDefinition.PHOTO_200_ORIG);
@@ -137,7 +136,7 @@ public class VkProfile extends OAuth20Profile {
     /**
      * <p>getFoto200.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getFoto200() {
         return (String) getAttribute(VkProfileDefinition.PHOTO_200);
@@ -146,7 +145,7 @@ public class VkProfile extends OAuth20Profile {
     /**
      * <p>getFoto400Orig.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getFoto400Orig() {
         return (String) getAttribute(VkProfileDefinition.PHOTO_400_ORIG);
@@ -155,7 +154,7 @@ public class VkProfile extends OAuth20Profile {
     /**
      * <p>getFotoMax.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getFotoMax() {
         return (String) getAttribute(VkProfileDefinition.PHOTO_MAX);
@@ -164,7 +163,7 @@ public class VkProfile extends OAuth20Profile {
     /**
      * <p>getFotoMaxOrig.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getFotoMaxOrig() {
         return (String) getAttribute(VkProfileDefinition.PHOTO_MAX_ORIG);
@@ -173,7 +172,7 @@ public class VkProfile extends OAuth20Profile {
     /**
      * <p>isOnline.</p>
      *
-     * @return a {@link java.lang.Boolean} object
+     * @return a {@link Boolean} object
      */
     public Boolean isOnline() {
         return (Boolean) getAttribute(VkProfileDefinition.ONLINE);
@@ -182,7 +181,7 @@ public class VkProfile extends OAuth20Profile {
     /**
      * <p>isOnlineMobile.</p>
      *
-     * @return a {@link java.lang.Boolean} object
+     * @return a {@link Boolean} object
      */
     public Boolean isOnlineMobile() {
         return (Boolean) getAttribute(VkProfileDefinition.ONLINE_MOBILE);
@@ -191,7 +190,7 @@ public class VkProfile extends OAuth20Profile {
     /**
      * <p>getDomain.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getDomain() {
         return (String) getAttribute(VkProfileDefinition.DOMAIN);
@@ -200,7 +199,7 @@ public class VkProfile extends OAuth20Profile {
     /**
      * <p>isHasMobile.</p>
      *
-     * @return a {@link java.lang.Boolean} object
+     * @return a {@link Boolean} object
      */
     public Boolean isHasMobile() {
         return (Boolean) getAttribute(VkProfileDefinition.HAS_MOBILE);
@@ -209,7 +208,7 @@ public class VkProfile extends OAuth20Profile {
     /**
      * <p>getMobilePhone.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getMobilePhone() {
         return (String) getAttribute(VkProfileDefinition.MOBILE_PHONE);
@@ -218,7 +217,7 @@ public class VkProfile extends OAuth20Profile {
     /**
      * <p>getHomePhone.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getHomePhone() {
         return (String) getAttribute(VkProfileDefinition.HOME_PHONE);
@@ -227,7 +226,7 @@ public class VkProfile extends OAuth20Profile {
     /**
      * <p>getSkype.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getSkype() {
         return (String) getAttribute(VkProfileDefinition.SKYPE);
@@ -236,7 +235,7 @@ public class VkProfile extends OAuth20Profile {
     /**
      * <p>getSite.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getSite() {
         return (String) getAttribute(VkProfileDefinition.SITE);
@@ -245,7 +244,7 @@ public class VkProfile extends OAuth20Profile {
     /**
      * <p>isCanPost.</p>
      *
-     * @return a {@link java.lang.Boolean} object
+     * @return a {@link Boolean} object
      */
     public Boolean isCanPost() {
         return (Boolean) getAttribute(VkProfileDefinition.CAN_POST);
@@ -254,7 +253,7 @@ public class VkProfile extends OAuth20Profile {
     /**
      * <p>isCanSeeAllPost.</p>
      *
-     * @return a {@link java.lang.Boolean} object
+     * @return a {@link Boolean} object
      */
     public Boolean isCanSeeAllPost() {
         return (Boolean) getAttribute(VkProfileDefinition.CAN_SEE_ALL_POST);
@@ -263,7 +262,7 @@ public class VkProfile extends OAuth20Profile {
     /**
      * <p>isCanSeeAudio.</p>
      *
-     * @return a {@link java.lang.Boolean} object
+     * @return a {@link Boolean} object
      */
     public Boolean isCanSeeAudio() {
         return (Boolean) getAttribute(VkProfileDefinition.CAN_SEE_AUDIO);
@@ -272,7 +271,7 @@ public class VkProfile extends OAuth20Profile {
     /**
      * <p>isCanWritePrivateMessage.</p>
      *
-     * @return a {@link java.lang.Boolean} object
+     * @return a {@link Boolean} object
      */
     public Boolean isCanWritePrivateMessage() {
         return (Boolean) getAttribute(VkProfileDefinition.CAN_WRITE_PRIVATE_MESSAGE);
@@ -281,7 +280,7 @@ public class VkProfile extends OAuth20Profile {
     /**
      * <p>getStatus.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getStatus() {
         return (String) getAttribute(VkProfileDefinition.STATUS);
@@ -290,7 +289,7 @@ public class VkProfile extends OAuth20Profile {
     /**
      * <p>getCommonCount.</p>
      *
-     * @return a {@link java.lang.Integer} object
+     * @return a {@link Integer} object
      */
     public Integer getCommonCount() {
         return (Integer) getAttribute(VkProfileDefinition.COMMON_COUNT);
@@ -299,7 +298,7 @@ public class VkProfile extends OAuth20Profile {
     /**
      * <p>getRelation.</p>
      *
-     * @return a {@link java.lang.Integer} object
+     * @return a {@link Integer} object
      */
     public Integer getRelation() {
         return (Integer) getAttribute(VkProfileDefinition.RELATION);

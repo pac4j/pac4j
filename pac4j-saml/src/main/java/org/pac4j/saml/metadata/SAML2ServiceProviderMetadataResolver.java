@@ -24,7 +24,7 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
     /**
      * <p>Constructor for SAML2ServiceProviderMetadataResolver.</p>
      *
-     * @param configuration a {@link org.pac4j.saml.config.SAML2Configuration} object
+     * @param configuration a {@link SAML2Configuration} object
      */
     public SAML2ServiceProviderMetadataResolver(final SAML2Configuration configuration) {
         this.configuration = configuration;
@@ -44,7 +44,7 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
     /**
      * <p>prepareServiceProviderMetadata.</p>
      *
-     * @return a {@link org.opensaml.saml.metadata.resolver.MetadataResolver} object
+     * @return a {@link MetadataResolver} object
      */
     protected MetadataResolver prepareServiceProviderMetadata() {
         try {

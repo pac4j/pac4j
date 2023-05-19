@@ -18,6 +18,8 @@ import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.Pac4jConstants;
 
+import java.util.Objects;
+
 import static org.pac4j.core.util.CommonHelper.*;
 
 /**
@@ -61,11 +63,7 @@ public class DefaultCallbackLogic extends AbstractExceptionAwareLogic implements
 
             // default values
             final String defaultUrl;
-            if (inputDefaultUrl == null) {
-                defaultUrl = Pac4jConstants.DEFAULT_URL_VALUE;
-            } else {
-                defaultUrl = inputDefaultUrl;
-            }
+            defaultUrl = Objects.requireNonNullElse(inputDefaultUrl, Pac4jConstants.DEFAULT_URL_VALUE);
             val renewSession = inputRenewSession == null || inputRenewSession;
 
             assertNotBlank(Pac4jConstants.DEFAULT_URL, defaultUrl);
@@ -116,9 +114,9 @@ public class DefaultCallbackLogic extends AbstractExceptionAwareLogic implements
     /**
      * <p>saveUserProfile.</p>
      *
-     * @param ctx a {@link org.pac4j.core.context.CallContext} object
-     * @param config a {@link org.pac4j.core.config.Config} object
-     * @param profile a {@link org.pac4j.core.profile.UserProfile} object
+     * @param ctx a {@link CallContext} object
+     * @param config a {@link Config} object
+     * @param profile a {@link UserProfile} object
      * @param saveProfileInSession a boolean
      * @param multiProfile a boolean
      * @param renewSession a boolean
@@ -137,8 +135,8 @@ public class DefaultCallbackLogic extends AbstractExceptionAwareLogic implements
     /**
      * <p>renewSession.</p>
      *
-     * @param ctx a {@link org.pac4j.core.context.CallContext} object
-     * @param config a {@link org.pac4j.core.config.Config} object
+     * @param ctx a {@link CallContext} object
+     * @param config a {@link Config} object
      */
     protected void renewSession(final CallContext ctx, final Config config) {
         val context = ctx.webContext();
@@ -175,9 +173,9 @@ public class DefaultCallbackLogic extends AbstractExceptionAwareLogic implements
     /**
      * <p>redirectToOriginallyRequestedUrl.</p>
      *
-     * @param ctx a {@link org.pac4j.core.context.CallContext} object
-     * @param defaultUrl a {@link java.lang.String} object
-     * @return a {@link org.pac4j.core.exception.http.HttpAction} object
+     * @param ctx a {@link CallContext} object
+     * @param defaultUrl a {@link String} object
+     * @return a {@link HttpAction} object
      */
     protected HttpAction redirectToOriginallyRequestedUrl(final CallContext ctx, final String defaultUrl) {
         return savedRequestHandler.restore(ctx, defaultUrl);

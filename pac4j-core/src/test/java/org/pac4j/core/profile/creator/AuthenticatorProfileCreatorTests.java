@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 
 import static org.junit.Assert.assertEquals;
@@ -25,7 +26,7 @@ public final class AuthenticatorProfileCreatorTests implements TestsConstants {
 
     @Test
     public void testReturnProfile() {
-        val profile = new CommonProfile();
+        UserProfile profile = new CommonProfile();
         final Credentials credentials = new TokenCredentials(TOKEN);
         credentials.setUserProfile(profile);
         val profile2 = (CommonProfile) AuthenticatorProfileCreator.INSTANCE.create(null, credentials).get();

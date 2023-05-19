@@ -43,7 +43,7 @@ public class OAuth20Client extends IndirectClient {
     /**
      * <p>getKey.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getKey() {
         return configuration.getKey();
@@ -52,7 +52,7 @@ public class OAuth20Client extends IndirectClient {
     /**
      * <p>setKey.</p>
      *
-     * @param key a {@link java.lang.String} object
+     * @param key a {@link String} object
      */
     public void setKey(final String key) {
         configuration.setKey(key);
@@ -61,7 +61,7 @@ public class OAuth20Client extends IndirectClient {
     /**
      * <p>getSecret.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getSecret() {
         return configuration.getSecret();
@@ -70,7 +70,7 @@ public class OAuth20Client extends IndirectClient {
     /**
      * <p>setSecret.</p>
      *
-     * @param secret a {@link java.lang.String} object
+     * @param secret a {@link String} object
      */
     public void setSecret(final String secret) {
         configuration.setSecret(secret);

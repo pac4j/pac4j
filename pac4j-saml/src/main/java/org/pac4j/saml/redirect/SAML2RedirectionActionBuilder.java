@@ -28,7 +28,7 @@ public class SAML2RedirectionActionBuilder implements RedirectionActionBuilder {
     /**
      * <p>Constructor for SAML2RedirectionActionBuilder.</p>
      *
-     * @param client a {@link org.pac4j.saml.client.SAML2Client} object
+     * @param client a {@link SAML2Client} object
      */
     public SAML2RedirectionActionBuilder(final SAML2Client client) {
         CommonHelper.assertNotNull("client", client);

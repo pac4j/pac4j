@@ -19,6 +19,7 @@ import org.pac4j.core.util.CommonHelper;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSocketFactory;
+import java.io.Serial;
 import java.net.HttpURLConnection;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
@@ -107,7 +108,7 @@ public class CasConfiguration extends BaseClientConfiguration {
     /**
      * <p>Constructor for CasConfiguration.</p>
      *
-     * @param loginUrl a {@link java.lang.String} object
+     * @param loginUrl a {@link String} object
      */
     public CasConfiguration(final String loginUrl) {
         this.loginUrl = loginUrl;
@@ -116,8 +117,8 @@ public class CasConfiguration extends BaseClientConfiguration {
     /**
      * <p>Constructor for CasConfiguration.</p>
      *
-     * @param loginUrl a {@link java.lang.String} object
-     * @param protocol a {@link org.pac4j.cas.config.CasProtocol} object
+     * @param loginUrl a {@link String} object
+     * @param protocol a {@link CasProtocol} object
      */
     public CasConfiguration(final String loginUrl, final CasProtocol protocol) {
         this.loginUrl = loginUrl;
@@ -127,8 +128,8 @@ public class CasConfiguration extends BaseClientConfiguration {
     /**
      * <p>Constructor for CasConfiguration.</p>
      *
-     * @param loginUrl a {@link java.lang.String} object
-     * @param prefixUrl a {@link java.lang.String} object
+     * @param loginUrl a {@link String} object
+     * @param prefixUrl a {@link String} object
      */
     public CasConfiguration(final String loginUrl, final String prefixUrl) {
         this.loginUrl = loginUrl;
@@ -151,11 +152,7 @@ public class CasConfiguration extends BaseClientConfiguration {
 
         if (privateKeyPath != null) {
             final String algo;
-            if (privateKeyAlgorithm != null) {
-                algo = privateKeyAlgorithm;
-            } else {
-                algo = "RSA";
-            }
+            algo = Objects.requireNonNullElse(privateKeyAlgorithm, "RSA");
             this.privateKey = PrivateKeyUtils.createKey(privateKeyPath, algo);
         }
     }
@@ -193,8 +190,8 @@ public class CasConfiguration extends BaseClientConfiguration {
     /**
      * <p>retrieveTicketValidator.</p>
      *
-     * @param context a {@link org.pac4j.core.context.WebContext} object
-     * @return a {@link org.apereo.cas.client.validation.TicketValidator} object
+     * @param context a {@link WebContext} object
+     * @return a {@link TicketValidator} object
      */
     public TicketValidator retrieveTicketValidator(final WebContext context) {
         if (this.defaultTicketValidator != null) {
@@ -221,8 +218,8 @@ public class CasConfiguration extends BaseClientConfiguration {
     /**
      * <p>buildSAMLTicketValidator.</p>
      *
-     * @param context a {@link org.pac4j.core.context.WebContext} object
-     * @return a {@link org.apereo.cas.client.validation.TicketValidator} object
+     * @param context a {@link WebContext} object
+     * @return a {@link TicketValidator} object
      */
     protected TicketValidator buildSAMLTicketValidator(final WebContext context) {
         val saml11TicketValidator = new Saml11TicketValidator(computeFinalPrefixUrl(context));
@@ -236,7 +233,7 @@ public class CasConfiguration extends BaseClientConfiguration {
     /**
      * <p>addPrivateKey.</p>
      *
-     * @param validator a {@link org.apereo.cas.client.validation.Cas20ServiceTicketValidator} object
+     * @param validator a {@link Cas20ServiceTicketValidator} object
      */
     protected void addPrivateKey(final Cas20ServiceTicketValidator validator) {
         if (this.privateKey != null) {
@@ -247,8 +244,8 @@ public class CasConfiguration extends BaseClientConfiguration {
     /**
      * <p>buildCas30ProxyTicketValidator.</p>
      *
-     * @param context a {@link org.pac4j.core.context.WebContext} object
-     * @return a {@link org.apereo.cas.client.validation.TicketValidator} object
+     * @param context a {@link WebContext} object
+     * @return a {@link TicketValidator} object
      */
     protected TicketValidator buildCas30ProxyTicketValidator(final WebContext context) {
         val cas30ProxyTicketValidator = new Cas30ProxyTicketValidator(computeFinalPrefixUrl(context));
@@ -268,8 +265,8 @@ public class CasConfiguration extends BaseClientConfiguration {
     /**
      * <p>buildCas30TicketValidator.</p>
      *
-     * @param context a {@link org.pac4j.core.context.WebContext} object
-     * @return a {@link org.apereo.cas.client.validation.TicketValidator} object
+     * @param context a {@link WebContext} object
+     * @return a {@link TicketValidator} object
      */
     protected TicketValidator buildCas30TicketValidator(final WebContext context) {
         val cas30ServiceTicketValidator = new Cas30ServiceTicketValidator(computeFinalPrefixUrl(context));
@@ -287,8 +284,8 @@ public class CasConfiguration extends BaseClientConfiguration {
     /**
      * <p>buildCas20ProxyTicketValidator.</p>
      *
-     * @param context a {@link org.pac4j.core.context.WebContext} object
-     * @return a {@link org.apereo.cas.client.validation.TicketValidator} object
+     * @param context a {@link WebContext} object
+     * @return a {@link TicketValidator} object
      */
     protected TicketValidator buildCas20ProxyTicketValidator(final WebContext context) {
         val cas20ProxyTicketValidator = new Cas20ProxyTicketValidator(computeFinalPrefixUrl(context));
@@ -308,8 +305,8 @@ public class CasConfiguration extends BaseClientConfiguration {
     /**
      * <p>buildCas20TicketValidator.</p>
      *
-     * @param context a {@link org.pac4j.core.context.WebContext} object
-     * @return a {@link org.apereo.cas.client.validation.TicketValidator} object
+     * @param context a {@link WebContext} object
+     * @return a {@link TicketValidator} object
      */
     protected TicketValidator buildCas20TicketValidator(final WebContext context) {
         val cas20ServiceTicketValidator = new Cas20ServiceTicketValidator(computeFinalPrefixUrl(context));
@@ -327,8 +324,8 @@ public class CasConfiguration extends BaseClientConfiguration {
     /**
      * <p>buildCas10TicketValidator.</p>
      *
-     * @param context a {@link org.pac4j.core.context.WebContext} object
-     * @return a {@link org.apereo.cas.client.validation.TicketValidator} object
+     * @param context a {@link WebContext} object
+     * @return a {@link TicketValidator} object
      */
     protected TicketValidator buildCas10TicketValidator(final WebContext context) {
         val cas10TicketValidator = new Cas10TicketValidator(computeFinalPrefixUrl(context));
@@ -341,8 +338,8 @@ public class CasConfiguration extends BaseClientConfiguration {
     /**
      * <p>computeFinalLoginUrl.</p>
      *
-     * @param context a {@link org.pac4j.core.context.WebContext} object
-     * @return a {@link java.lang.String} object
+     * @param context a {@link WebContext} object
+     * @return a {@link String} object
      */
     public String computeFinalLoginUrl(final WebContext context) {
         init();
@@ -353,8 +350,8 @@ public class CasConfiguration extends BaseClientConfiguration {
     /**
      * <p>computeFinalPrefixUrl.</p>
      *
-     * @param context a {@link org.pac4j.core.context.WebContext} object
-     * @return a {@link java.lang.String} object
+     * @param context a {@link WebContext} object
+     * @return a {@link String} object
      */
     public String computeFinalPrefixUrl(final WebContext context) {
         init();
@@ -365,9 +362,9 @@ public class CasConfiguration extends BaseClientConfiguration {
     /**
      * <p>setAllowedProxies.</p>
      *
-     * @param allowedProxies a {@link java.util.List} object
+     * @param allowedProxies a {@link List} object
      */
-    public void setAllowedProxies(final List<String> allowedProxies) {
+    public void setAllowedProxies(final Iterable<String> allowedProxies) {
         final List<String[]> proxyChains = new ArrayList<>();
         for (final String allowedProxyChain : allowedProxies) {
             final String[] proxyChain = new String[1];
@@ -380,7 +377,7 @@ public class CasConfiguration extends BaseClientConfiguration {
     /**
      * <p>findSessionLogoutHandler.</p>
      *
-     * @return a {@link org.pac4j.core.logout.handler.SessionLogoutHandler} object
+     * @return a {@link SessionLogoutHandler} object
      */
     public SessionLogoutHandler findSessionLogoutHandler() {
         init();
@@ -391,8 +388,8 @@ public class CasConfiguration extends BaseClientConfiguration {
     /**
      * <p>computeFinalRestUrl.</p>
      *
-     * @param context a {@link org.pac4j.core.context.WebContext} object
-     * @return a {@link java.lang.String} object
+     * @param context a {@link WebContext} object
+     * @return a {@link String} object
      */
     public String computeFinalRestUrl(final WebContext context) {
         init();
@@ -404,7 +401,8 @@ public class CasConfiguration extends BaseClientConfiguration {
         if (this.sslSocketFactory == null && this.hostnameVerifier == null) {
             return Optional.empty();
         }
-        var factory = new HttpURLConnectionFactory() {
+        HttpURLConnectionFactory factory = new HttpURLConnectionFactory() {
+            @Serial
             private static final long serialVersionUID = 7296708420276819683L;
 
             @Override

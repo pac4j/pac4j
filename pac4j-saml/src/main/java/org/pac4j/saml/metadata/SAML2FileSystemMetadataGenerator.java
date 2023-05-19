@@ -1,5 +1,6 @@
 package org.pac4j.saml.metadata;
 
+import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.opensaml.saml.metadata.resolver.impl.AbstractMetadataResolver;
 import org.opensaml.saml.metadata.resolver.impl.FilesystemMetadataResolver;
@@ -8,6 +9,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.WritableResource;
 
 import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Source;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
@@ -21,18 +23,10 @@ import java.nio.charset.StandardCharsets;
  * @author Misagh Moayyed
  * @since 4.0.1
  */
+@RequiredArgsConstructor
 public class SAML2FileSystemMetadataGenerator extends BaseSAML2MetadataGenerator {
 
     private final Resource metadataResource;
-
-    /**
-     * <p>Constructor for SAML2FileSystemMetadataGenerator.</p>
-     *
-     * @param metadataResource a {@link org.springframework.core.io.Resource} object
-     */
-    public SAML2FileSystemMetadataGenerator(Resource metadataResource) {
-        this.metadataResource = metadataResource;
-    }
 
     /** {@inheritDoc} */
     @Override
@@ -67,7 +61,7 @@ public class SAML2FileSystemMetadataGenerator extends BaseSAML2MetadataGenerator
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
             val result = new StreamResult(new StringWriter());
-            val source = new StreamSource(new StringReader(metadata));
+            Source source = new StreamSource(new StringReader(metadata));
             transformer.transform(source, result);
 
             val destination = WritableResource.class.cast(metadataResource);

@@ -61,9 +61,9 @@ public abstract class OAuthConfiguration extends BaseClientConfiguration {
     /**
      * <p>buildService.</p>
      *
-     * @param context a {@link org.pac4j.core.context.WebContext} object
-     * @param client a {@link org.pac4j.core.client.IndirectClient} object
-     * @return a {@link com.github.scribejava.core.oauth.OAuthService} object
+     * @param context a {@link WebContext} object
+     * @param client a {@link IndirectClient} object
+     * @return a {@link OAuthService} object
      */
     public abstract OAuthService buildService(final WebContext context, final IndirectClient client);
 }

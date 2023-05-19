@@ -33,7 +33,7 @@ public class HttpMethodMatcher implements Matcher {
     /**
      * <p>Constructor for HttpMethodMatcher.</p>
      *
-     * @param methods a {@link org.pac4j.core.context.HttpConstants.HTTP_METHOD} object
+     * @param methods a {@link HttpConstants.HTTP_METHOD} object
      */
     public HttpMethodMatcher(final HttpConstants.HTTP_METHOD... methods) {
         if (methods != null) {

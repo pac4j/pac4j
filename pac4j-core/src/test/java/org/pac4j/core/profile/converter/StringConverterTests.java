@@ -4,19 +4,19 @@ import org.junit.Test;
 import org.pac4j.core.util.TestsConstants;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
 /**
- * This class tests the {@link org.pac4j.core.profile.converter.StringConverter} class.
- * 
+ * This class tests the {@link StringConverter} class.
+ *
  * @author Jerome Leleu
  * @since 1.1.0
  */
 public final class StringConverterTests implements TestsConstants {
-    
-    private final StringConverter converter = new StringConverter();
+
+    private final AttributeConverter converter = new StringConverter();
 
     @Test
     public void testNull() {
@@ -40,6 +40,6 @@ public final class StringConverterTests implements TestsConstants {
 
     @Test
     public void testListString() {
-        assertEquals(VALUE, this.converter.convert(Arrays.asList(VALUE)));
+        assertEquals(VALUE, this.converter.convert(List.of(VALUE)));
     }
 }

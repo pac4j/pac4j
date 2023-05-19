@@ -21,6 +21,7 @@ import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
@@ -143,7 +144,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         this.logic.setLoadProfilesFromSession(false);
         var profile = new CommonProfile();
         profile.setId(ID);
-        var profiles = new LinkedHashMap<String, CommonProfile>();
+        Map<String, CommonProfile> profiles = new LinkedHashMap<>();
         profiles.put(NAME, profile);
         sessionStore.set(context, Pac4jConstants.USER_PROFILES, profiles);
         var indirectClient = new MockIndirectClient(NAME,
@@ -160,13 +161,13 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
     public void testAlreadyAuthenticatedAndAuthorized() {
         val profile = new CommonProfile();
         profile.setId(ID);
-        val profiles = new LinkedHashMap<String, CommonProfile>();
+        Map<String, CommonProfile> profiles = new LinkedHashMap<>();
         profiles.put(NAME, profile);
         sessionStore.set(context, Pac4jConstants.USER_PROFILES, profiles);
         final IndirectClient indirectClient = new MockIndirectClient(NAME, null, Optional.of(new MockCredentials()), new CommonProfile());
         authorizers = NAME;
         config.setClients(new Clients(CALLBACK_URL, indirectClient));
-        config.addAuthorizer(NAME, (context, store, prof) -> ID.equals(((CommonProfile) prof.get(0)).getId()));
+        config.addAuthorizer(NAME, (context, store, prof) -> ID.equals(prof.get(0).getId()));
         call();
         assertNull(action);
         assertEquals(1, nbCall);
@@ -175,13 +176,13 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
     @Test
     public void testAlreadyAuthenticatedNotAuthorized() {
         val profile = new CommonProfile();
-        val profiles = new LinkedHashMap<String, CommonProfile>();
+        Map<String, CommonProfile> profiles = new LinkedHashMap<>();
         profiles.put(NAME, profile);
         sessionStore.set(context, Pac4jConstants.USER_PROFILES, profiles);
         final IndirectClient indirectClient = new MockIndirectClient(NAME, null, Optional.of(new MockCredentials()), new CommonProfile());
         authorizers = NAME;
         config.setClients(new Clients(CALLBACK_URL, indirectClient));
-        config.addAuthorizer(NAME, (context, store, prof) -> ID.equals(((CommonProfile) prof.get(0)).getId()));
+        config.addAuthorizer(NAME, (context, store, prof) -> ID.equals(prof.get(0).getId()));
         call();
         assertEquals(403, action.getCode());
     }
@@ -189,7 +190,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
     @Test
     public void testAuthorizerThrowsRequiresHttpAction() {
         val profile = new CommonProfile();
-        val profiles = new LinkedHashMap<String, CommonProfile>();
+        Map<String, CommonProfile> profiles = new LinkedHashMap<>();
         profiles.put(NAME, profile);
         sessionStore.set(context, Pac4jConstants.USER_PROFILES, profiles);
         final IndirectClient indirectClient = new MockIndirectClient(NAME, null, Optional.of(new MockCredentials()), new CommonProfile());
@@ -214,7 +215,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         call();
         assertEquals(-1, context.getResponseStatus());
         assertEquals(1, nbCall);
-        val profiles =
+        Map<String, CommonProfile> profiles =
             (LinkedHashMap<String, CommonProfile>) context.getRequestAttribute(Pac4jConstants.USER_PROFILES).get();
         assertEquals(1, profiles.size());
         assertTrue(profiles.containsValue(profile));
@@ -248,7 +249,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         call();
         assertEquals(-1, context.getResponseStatus());
         assertEquals(1, nbCall);
-        val profiles =
+        Map<String, CommonProfile> profiles =
             (LinkedHashMap<String, CommonProfile>) context.getRequestAttribute(Pac4jConstants.USER_PROFILES).get();
         assertEquals(2, profiles.size());
         assertTrue(profiles.containsValue(profile));
@@ -269,7 +270,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         call();
         assertEquals(-1, context.getResponseStatus());
         assertEquals(1, nbCall);
-        val profiles =
+        Map<String, CommonProfile> profiles =
             (LinkedHashMap<String, CommonProfile>) context.getRequestAttribute(Pac4jConstants.USER_PROFILES).get();
         assertEquals(1, profiles.size());
         assertTrue(profiles.containsValue(profile2));

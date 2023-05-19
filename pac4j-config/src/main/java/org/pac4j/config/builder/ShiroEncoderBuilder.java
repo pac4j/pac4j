@@ -22,7 +22,7 @@ public class ShiroEncoderBuilder extends AbstractBuilder {
     /**
      * <p>Constructor for ShiroEncoderBuilder.</p>
      *
-     * @param properties a {@link java.util.Map} object
+     * @param properties a {@link Map} object
      */
     public ShiroEncoderBuilder(final Map<String, String> properties) {
         super(properties);
@@ -31,7 +31,7 @@ public class ShiroEncoderBuilder extends AbstractBuilder {
     /**
      * <p>tryCreatePasswordEncoder.</p>
      *
-     * @param encoders a {@link java.util.Map} object
+     * @param encoders a {@link Map} object
      */
     public void tryCreatePasswordEncoder(final Map<String, PasswordEncoder> encoders) {
         for (var i = 0; i <= MAX_NUM_ENCODERS; i++) {

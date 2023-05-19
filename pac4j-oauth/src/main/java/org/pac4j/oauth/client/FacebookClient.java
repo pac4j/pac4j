@@ -42,8 +42,8 @@ public class FacebookClient extends OAuth20Client {
     /**
      * <p>Constructor for FacebookClient.</p>
      *
-     * @param key a {@link java.lang.String} object
-     * @param secret a {@link java.lang.String} object
+     * @param key a {@link String} object
+     * @param secret a {@link String} object
      */
     public FacebookClient(final String key, final String secret) {
         configuration = new FacebookConfiguration();
@@ -85,7 +85,7 @@ public class FacebookClient extends OAuth20Client {
     /**
      * <p>getScope.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getScope() {
         return getConfiguration().getScope();
@@ -94,7 +94,7 @@ public class FacebookClient extends OAuth20Client {
     /**
      * <p>setScope.</p>
      *
-     * @param scope a {@link java.lang.String} object
+     * @param scope a {@link String} object
      */
     public void setScope(final String scope) {
         getConfiguration().setScope(scope);
@@ -103,7 +103,7 @@ public class FacebookClient extends OAuth20Client {
     /**
      * <p>getFields.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getFields() {
         return getConfiguration().getFields();
@@ -112,7 +112,7 @@ public class FacebookClient extends OAuth20Client {
     /**
      * <p>setFields.</p>
      *
-     * @param fields a {@link java.lang.String} object
+     * @param fields a {@link String} object
      */
     public void setFields(final String fields) {
         getConfiguration().setFields(fields);

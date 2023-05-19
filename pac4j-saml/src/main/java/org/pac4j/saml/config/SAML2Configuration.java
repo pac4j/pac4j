@@ -1,9 +1,15 @@
 package org.pac4j.saml.config;
 
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.With;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import net.shibboleth.shared.net.URIComparator;
 import net.shibboleth.shared.net.impl.BasicURLComparator;
 import org.apache.commons.lang3.StringUtils;
@@ -24,7 +30,16 @@ import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.saml.crypto.CredentialProvider;
 import org.pac4j.saml.crypto.KeyStoreCredentialProvider;
 import org.pac4j.saml.exceptions.SAMLException;
-import org.pac4j.saml.metadata.*;
+import org.pac4j.saml.metadata.BaseSAML2MetadataGenerator;
+import org.pac4j.saml.metadata.SAML2FileSystemMetadataGenerator;
+import org.pac4j.saml.metadata.SAML2HttpUrlMetadataGenerator;
+import org.pac4j.saml.metadata.SAML2IdentityProviderMetadataResolver;
+import org.pac4j.saml.metadata.SAML2MetadataContactPerson;
+import org.pac4j.saml.metadata.SAML2MetadataGenerator;
+import org.pac4j.saml.metadata.SAML2MetadataResolver;
+import org.pac4j.saml.metadata.SAML2MetadataSigner;
+import org.pac4j.saml.metadata.SAML2MetadataUIInfo;
+import org.pac4j.saml.metadata.SAML2ServiceProviderRequestedAttribute;
 import org.pac4j.saml.metadata.keystore.SAML2FileSystemKeystoreGenerator;
 import org.pac4j.saml.metadata.keystore.SAML2HttpUrlKeystoreGenerator;
 import org.pac4j.saml.metadata.keystore.SAML2KeystoreGenerator;
@@ -42,7 +57,14 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
 import java.net.URL;
 import java.time.Period;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.ServiceLoader;
 import java.util.function.Supplier;
 
 /**
@@ -62,7 +84,9 @@ import java.util.function.Supplier;
 @NoArgsConstructor
 public class SAML2Configuration extends BaseClientConfiguration {
 
-    /** Constant <code>DEFAULT_PROVIDER_NAME="pac4j-saml"</code> */
+    /**
+     * Constant <code>DEFAULT_PROVIDER_NAME="pac4j-saml"</code>
+     */
     protected static final String DEFAULT_PROVIDER_NAME = "pac4j-saml";
 
     private final List<SAML2ScopingIdentityProvider> scopingIdentityProviders = new ArrayList<>();
@@ -89,8 +113,11 @@ public class SAML2Configuration extends BaseClientConfiguration {
 
     private String keystorePassword;
 
+    @Getter
     private String privateKeyPassword;
 
+    @Getter
+    @Setter
     private String certificateNameToAppend;
 
     private Resource identityProviderMetadataResource;
@@ -216,10 +243,10 @@ public class SAML2Configuration extends BaseClientConfiguration {
     /**
      * <p>Constructor for SAML2Configuration.</p>
      *
-     * @param keystorePath a {@link java.lang.String} object
-     * @param keystorePassword a {@link java.lang.String} object
-     * @param privateKeyPassword a {@link java.lang.String} object
-     * @param identityProviderMetadataPath a {@link java.lang.String} object
+     * @param keystorePath                 a {@link String} object
+     * @param keystorePassword             a {@link String} object
+     * @param privateKeyPassword           a {@link String} object
+     * @param identityProviderMetadataPath a {@link String} object
      */
     public SAML2Configuration(final String keystorePath, final String keystorePassword, final String privateKeyPassword,
                               final String identityProviderMetadataPath) {
@@ -231,10 +258,10 @@ public class SAML2Configuration extends BaseClientConfiguration {
     /**
      * <p>Constructor for SAML2Configuration.</p>
      *
-     * @param keystoreResource a {@link org.springframework.core.io.Resource} object
-     * @param keystorePassword a {@link java.lang.String} object
-     * @param privateKeyPassword a {@link java.lang.String} object
-     * @param identityProviderMetadataResource a {@link org.springframework.core.io.Resource} object
+     * @param keystoreResource                 a {@link Resource} object
+     * @param keystorePassword                 a {@link String} object
+     * @param privateKeyPassword               a {@link String} object
+     * @param identityProviderMetadataResource a {@link Resource} object
      */
     public SAML2Configuration(final Resource keystoreResource, final String keystorePassword, final String privateKeyPassword,
                               final Resource identityProviderMetadataResource) {
@@ -246,12 +273,12 @@ public class SAML2Configuration extends BaseClientConfiguration {
     /**
      * <p>Constructor for SAML2Configuration.</p>
      *
-     * @param keystoreResource a {@link org.springframework.core.io.Resource} object
-     * @param keyStoreAlias a {@link java.lang.String} object
-     * @param keyStoreType a {@link java.lang.String} object
-     * @param keystorePassword a {@link java.lang.String} object
-     * @param privateKeyPassword a {@link java.lang.String} object
-     * @param identityProviderMetadataResource a {@link org.springframework.core.io.Resource} object
+     * @param keystoreResource                 a {@link Resource} object
+     * @param keyStoreAlias                    a {@link String} object
+     * @param keyStoreType                     a {@link String} object
+     * @param keystorePassword                 a {@link String} object
+     * @param privateKeyPassword               a {@link String} object
+     * @param identityProviderMetadataResource a {@link Resource} object
      */
     public SAML2Configuration(final Resource keystoreResource, final String keyStoreAlias,
                               final String keyStoreType, final String keystorePassword, final String privateKeyPassword,
@@ -264,17 +291,17 @@ public class SAML2Configuration extends BaseClientConfiguration {
     /**
      * <p>Constructor for SAML2Configuration.</p>
      *
-     * @param keyStoreAlias a {@link java.lang.String} object
-     * @param keyStoreType a {@link java.lang.String} object
-     * @param keystoreResource a {@link org.springframework.core.io.Resource} object
-     * @param keystorePassword a {@link java.lang.String} object
-     * @param privateKeyPassword a {@link java.lang.String} object
-     * @param identityProviderMetadataResource a {@link org.springframework.core.io.Resource} object
-     * @param identityProviderEntityId a {@link java.lang.String} object
-     * @param serviceProviderEntityId a {@link java.lang.String} object
-     * @param providerName a {@link java.lang.String} object
-     * @param authnRequestExtensions a {@link java.util.function.Supplier} object
-     * @param attributeAsId a {@link java.lang.String} object
+     * @param keyStoreAlias                    a {@link String} object
+     * @param keyStoreType                     a {@link String} object
+     * @param keystoreResource                 a {@link Resource} object
+     * @param keystorePassword                 a {@link String} object
+     * @param privateKeyPassword               a {@link String} object
+     * @param identityProviderMetadataResource a {@link Resource} object
+     * @param identityProviderEntityId         a {@link String} object
+     * @param serviceProviderEntityId          a {@link String} object
+     * @param providerName                     a {@link String} object
+     * @param authnRequestExtensions           a {@link Supplier} object
+     * @param attributeAsId                    a {@link String} object
      */
     protected SAML2Configuration(final String keyStoreAlias, final String keyStoreType,
                                  final Resource keystoreResource, final String keystorePassword,
@@ -298,7 +325,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
     /**
      * <p>Setter for the field <code>callbackUrl</code>.</p>
      *
-     * @param callbackUrl a {@link java.lang.String} object
+     * @param callbackUrl a {@link String} object
      */
     public void setCallbackUrl(final String callbackUrl) {
         this.callbackUrl = callbackUrl;
@@ -317,7 +344,9 @@ public class SAML2Configuration extends BaseClientConfiguration {
         }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void internalInit(final boolean forceReinit) {
         val keystoreGenerator = getKeystoreGenerator();
@@ -336,7 +365,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
     /**
      * <p>Getter for the field <code>keystoreGenerator</code>.</p>
      *
-     * @return a {@link org.pac4j.saml.metadata.keystore.SAML2KeystoreGenerator} object
+     * @return a {@link SAML2KeystoreGenerator} object
      */
     public SAML2KeystoreGenerator getKeystoreGenerator() {
         if (keystoreGenerator == null) {
@@ -351,7 +380,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
     /**
      * <p>setIdentityProviderMetadataResourceFilepath.</p>
      *
-     * @param path a {@link java.lang.String} object
+     * @param path a {@link String} object
      */
     public void setIdentityProviderMetadataResourceFilepath(final String path) {
         this.identityProviderMetadataResource = new FileSystemResource(path);
@@ -360,7 +389,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
     /**
      * <p>setIdentityProviderMetadataResourceClasspath.</p>
      *
-     * @param path a {@link java.lang.String} object
+     * @param path a {@link String} object
      */
     public void setIdentityProviderMetadataResourceClasspath(final String path) {
         this.identityProviderMetadataResource = new ClassPathResource(path);
@@ -369,7 +398,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
     /**
      * <p>setIdentityProviderMetadataResourceUrl.</p>
      *
-     * @param url a {@link java.lang.String} object
+     * @param url a {@link String} object
      */
     public void setIdentityProviderMetadataResourceUrl(final String url) {
         this.identityProviderMetadataResource = SpringResourceHelper.newUrlResource(url);
@@ -378,7 +407,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
     /**
      * <p>setIdentityProviderMetadataPath.</p>
      *
-     * @param path a {@link java.lang.String} object
+     * @param path a {@link String} object
      */
     public void setIdentityProviderMetadataPath(final String path) {
         this.identityProviderMetadataResource = SpringResourceHelper.buildResourceFromPath(path);
@@ -387,7 +416,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
     /**
      * <p>setKeystoreResourceFilepath.</p>
      *
-     * @param path a {@link java.lang.String} object
+     * @param path a {@link String} object
      */
     public void setKeystoreResourceFilepath(final String path) {
         this.keystoreResource = new FileSystemResource(path);
@@ -396,7 +425,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
     /**
      * <p>setKeystoreResourceClasspath.</p>
      *
-     * @param path a {@link java.lang.String} object
+     * @param path a {@link String} object
      */
     public void setKeystoreResourceClasspath(final String path) {
         this.keystoreResource = new ClassPathResource(path);
@@ -405,7 +434,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
     /**
      * <p>setKeystoreResourceUrl.</p>
      *
-     * @param url a {@link java.lang.String} object
+     * @param url a {@link String} object
      */
     public void setKeystoreResourceUrl(final String url) {
         this.keystoreResource = SpringResourceHelper.buildResourceFromPath(url);
@@ -414,43 +443,17 @@ public class SAML2Configuration extends BaseClientConfiguration {
     /**
      * <p>setKeystorePath.</p>
      *
-     * @param path a {@link java.lang.String} object
+     * @param path a {@link String} object
      */
     public void setKeystorePath(final String path) {
         this.keystoreResource = SpringResourceHelper.buildResourceFromPath(path);
     }
 
-    /**
-     * <p>Setter for the field <code>privateKeyPassword</code>.</p>
-     *
-     * @param privateKeyPassword a {@link java.lang.String} object
-     */
-    public void setPrivateKeyPassword(final String privateKeyPassword) {
-        this.privateKeyPassword = privateKeyPassword;
-    }
-
-    /**
-     * <p>Getter for the field <code>certificateNameToAppend</code>.</p>
-     *
-     * @return a {@link java.lang.String} object
-     */
-    public String getCertificateNameToAppend() {
-        return certificateNameToAppend;
-    }
-
-    /**
-     * <p>Setter for the field <code>certificateNameToAppend</code>.</p>
-     *
-     * @param certificateNameToAppend a {@link java.lang.String} object
-     */
-    public void setCertificateNameToAppend(final String certificateNameToAppend) {
-        this.certificateNameToAppend = certificateNameToAppend;
-    }
 
     /**
      * <p>setServiceProviderMetadataResourceFilepath.</p>
      *
-     * @param path a {@link java.lang.String} object
+     * @param path a {@link String} object
      */
     public void setServiceProviderMetadataResourceFilepath(final String path) {
         this.serviceProviderMetadataResource = new FileSystemResource(path);
@@ -459,7 +462,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
     /**
      * <p>setServiceProviderMetadataPath.</p>
      *
-     * @param path a {@link java.lang.String} object
+     * @param path a {@link String} object
      */
     public void setServiceProviderMetadataPath(final String path) {
         this.serviceProviderMetadataResource = SpringResourceHelper.buildResourceFromPath(path);
@@ -468,7 +471,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
     /**
      * <p>findSessionLogoutHandler.</p>
      *
-     * @return a {@link org.pac4j.core.logout.handler.SessionLogoutHandler} object
+     * @return a {@link SessionLogoutHandler} object
      */
     public SessionLogoutHandler findSessionLogoutHandler() {
         init();
@@ -507,7 +510,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
     /**
      * <p>Getter for the field <code>httpClient</code>.</p>
      *
-     * @return a {@link org.apache.hc.client5.http.classic.HttpClient} object
+     * @return a {@link HttpClient} object
      */
     public HttpClient getHttpClient() {
         if (httpClient == null) {
@@ -519,7 +522,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
     /**
      * <p>getCredentialProvider.</p>
      *
-     * @return a {@link org.pac4j.saml.crypto.CredentialProvider} object
+     * @return a {@link CredentialProvider} object
      */
     public CredentialProvider getCredentialProvider() {
         return new KeyStoreCredentialProvider(this);
@@ -528,13 +531,12 @@ public class SAML2Configuration extends BaseClientConfiguration {
     /**
      * <p>toMetadataGenerator.</p>
      *
-     * @return a {@link org.pac4j.saml.metadata.SAML2MetadataGenerator} object
+     * @return a {@link SAML2MetadataGenerator} object
      */
     public SAML2MetadataGenerator toMetadataGenerator() {
         try {
             val instance = getMetadataGenerator();
-            if (instance instanceof BaseSAML2MetadataGenerator) {
-                val generator = (BaseSAML2MetadataGenerator) instance;
+            if (instance instanceof BaseSAML2MetadataGenerator generator) {
                 generator.setWantAssertionSigned(isWantsAssertionsSigned());
                 generator.setAuthnRequestSigned(isAuthnRequestSigned());
                 generator.setSignMetadata(isSignMetadata());
@@ -571,7 +573,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
     /**
      * <p>determineSingleSignOutServiceUrl.</p>
      *
-     * @param generator a {@link org.pac4j.saml.metadata.BaseSAML2MetadataGenerator} object
+     * @param generator a {@link BaseSAML2MetadataGenerator} object
      */
     protected void determineSingleSignOutServiceUrl(final BaseSAML2MetadataGenerator generator) {
         val logoutUrl = CommonHelper.ifBlank(this.singleSignOutServiceUrl, callbackUrl);
@@ -581,7 +583,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
     /**
      * <p>Getter for the field <code>metadataGenerator</code>.</p>
      *
-     * @return a {@link org.pac4j.saml.metadata.SAML2MetadataGenerator} object
+     * @return a {@link SAML2MetadataGenerator} object
      */
     public SAML2MetadataGenerator getMetadataGenerator() {
         return Objects.requireNonNullElseGet(this.metadataGenerator,
@@ -601,12 +603,9 @@ public class SAML2Configuration extends BaseClientConfiguration {
     /**
      * <p>Getter for the field <code>identityProviderMetadataResolver</code>.</p>
      *
-     * @return a {@link org.pac4j.saml.metadata.SAML2MetadataResolver} object
+     * @return a {@link SAML2MetadataResolver} object
      */
     public SAML2MetadataResolver getIdentityProviderMetadataResolver() {
-        if (identityProviderMetadataResolver == null) {
-            return new SAML2IdentityProviderMetadataResolver(this);
-        }
-        return identityProviderMetadataResolver;
+        return Objects.requireNonNullElseGet(identityProviderMetadataResolver, () -> new SAML2IdentityProviderMetadataResolver(this));
     }
 }

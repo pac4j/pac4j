@@ -45,10 +45,10 @@ public abstract class AbstractConfigFilter implements Filter {
     /**
      * <p>getStringParam.</p>
      *
-     * @param filterConfig a {@link javax.servlet.FilterConfig} object
-     * @param name a {@link java.lang.String} object
-     * @param defaultValue a {@link java.lang.String} object
-     * @return a {@link java.lang.String} object
+     * @param filterConfig a {@link FilterConfig} object
+     * @param name a {@link String} object
+     * @param defaultValue a {@link String} object
+     * @return a {@link String} object
      */
     protected String getStringParam(final FilterConfig filterConfig, final String name, final String defaultValue) {
         val param = filterConfig.getInitParameter(name);
@@ -65,10 +65,10 @@ public abstract class AbstractConfigFilter implements Filter {
     /**
      * <p>getBooleanParam.</p>
      *
-     * @param filterConfig a {@link javax.servlet.FilterConfig} object
-     * @param name a {@link java.lang.String} object
-     * @param defaultValue a {@link java.lang.Boolean} object
-     * @return a {@link java.lang.Boolean} object
+     * @param filterConfig a {@link FilterConfig} object
+     * @param name a {@link String} object
+     * @param defaultValue a {@link Boolean} object
+     * @return a {@link Boolean} object
      */
     protected Boolean getBooleanParam(final FilterConfig filterConfig, final String name, final Boolean defaultValue) {
         val param = filterConfig.getInitParameter(name);
@@ -95,11 +95,11 @@ public abstract class AbstractConfigFilter implements Filter {
     /**
      * <p>internalFilter.</p>
      *
-     * @param request a {@link javax.servlet.http.HttpServletRequest} object
-     * @param response a {@link javax.servlet.http.HttpServletResponse} object
-     * @param chain a {@link javax.servlet.FilterChain} object
-     * @throws java.io.IOException if any.
-     * @throws javax.servlet.ServletException if any.
+     * @param request a {@link HttpServletRequest} object
+     * @param response a {@link HttpServletResponse} object
+     * @param chain a {@link FilterChain} object
+     * @throws IOException if any.
+     * @throws ServletException if any.
      */
     protected abstract void internalFilter(final HttpServletRequest request, final HttpServletResponse response,
                                            final FilterChain chain) throws IOException, ServletException;
@@ -107,7 +107,7 @@ public abstract class AbstractConfigFilter implements Filter {
     /**
      * <p>getSharedConfig.</p>
      *
-     * @return a {@link org.pac4j.core.config.Config} object
+     * @return a {@link Config} object
      */
     public Config getSharedConfig() {
         if (this.config == null) {
@@ -119,7 +119,7 @@ public abstract class AbstractConfigFilter implements Filter {
     /**
      * <p>Setter for the field <code>config</code>.</p>
      *
-     * @param config a {@link org.pac4j.core.config.Config} object
+     * @param config a {@link Config} object
      */
     public void setConfig(final Config config) {
         CommonHelper.assertNotNull("config", config);

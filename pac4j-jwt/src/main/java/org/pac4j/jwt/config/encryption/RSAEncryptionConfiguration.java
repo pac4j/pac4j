@@ -40,7 +40,7 @@ public class RSAEncryptionConfiguration extends AbstractEncryptionConfiguration 
     /**
      * <p>Constructor for RSAEncryptionConfiguration.</p>
      *
-     * @param keyPair a {@link java.security.KeyPair} object
+     * @param keyPair a {@link KeyPair} object
      */
     public RSAEncryptionConfiguration(final KeyPair keyPair) {
         setKeyPair(keyPair);
@@ -49,9 +49,9 @@ public class RSAEncryptionConfiguration extends AbstractEncryptionConfiguration 
     /**
      * <p>Constructor for RSAEncryptionConfiguration.</p>
      *
-     * @param keyPair a {@link java.security.KeyPair} object
-     * @param algorithm a {@link com.nimbusds.jose.JWEAlgorithm} object
-     * @param method a {@link com.nimbusds.jose.EncryptionMethod} object
+     * @param keyPair a {@link KeyPair} object
+     * @param algorithm a {@link JWEAlgorithm} object
+     * @param method a {@link EncryptionMethod} object
      */
     public RSAEncryptionConfiguration(final KeyPair keyPair, final JWEAlgorithm algorithm, final EncryptionMethod method) {
         setKeyPair(keyPair);
@@ -97,7 +97,7 @@ public class RSAEncryptionConfiguration extends AbstractEncryptionConfiguration 
     /**
      * <p>setKeyPair.</p>
      *
-     * @param keyPair a {@link java.security.KeyPair} object
+     * @param keyPair a {@link KeyPair} object
      */
     public void setKeyPair(final KeyPair keyPair) {
         CommonHelper.assertNotNull("keyPair", keyPair);
@@ -108,7 +108,7 @@ public class RSAEncryptionConfiguration extends AbstractEncryptionConfiguration 
     /**
      * <p>setKeysFromJwk.</p>
      *
-     * @param json a {@link java.lang.String} object
+     * @param json a {@link String} object
      */
     public void setKeysFromJwk(final String json) {
         val pair = JWKHelper.buildRSAKeyPairFromJwk(json);

@@ -32,7 +32,7 @@ public final class StravaApi20 extends DefaultApi20 {
     /**
      * <p>Constructor for StravaApi20.</p>
      *
-     * @param approvalPrompt a {@link java.lang.String} object
+     * @param approvalPrompt a {@link String} object
      */
     public StravaApi20(String approvalPrompt) {
         this.approvalPrompt = approvalPrompt;

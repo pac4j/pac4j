@@ -29,8 +29,8 @@ public class HiOrgServerClient extends OAuth20Client {
     /**
      * <p>Constructor for HiOrgServerClient.</p>
      *
-     * @param key a {@link java.lang.String} object
-     * @param secret a {@link java.lang.String} object
+     * @param key a {@link String} object
+     * @param secret a {@link String} object
      */
     public HiOrgServerClient(final String key, final String secret) {
         configuration = new HiOrgServerConfiguration();

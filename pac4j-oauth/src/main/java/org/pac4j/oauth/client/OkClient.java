@@ -23,9 +23,9 @@ public final class OkClient extends OAuth20Client {
     /**
      * <p>Constructor for OkClient.</p>
      *
-     * @param key a {@link java.lang.String} object
-     * @param secret a {@link java.lang.String} object
-     * @param publicKey a {@link java.lang.String} object
+     * @param key a {@link String} object
+     * @param secret a {@link String} object
+     * @param publicKey a {@link String} object
      */
     public OkClient(final String key, final String secret,final String publicKey) {
         configuration = new OkConfiguration();
@@ -53,7 +53,7 @@ public final class OkClient extends OAuth20Client {
     /**
      * <p>getPublicKey.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getPublicKey() {
         return getConfiguration().getPublicKey();
@@ -62,7 +62,7 @@ public final class OkClient extends OAuth20Client {
     /**
      * <p>setPublicKey.</p>
      *
-     * @param publicKey a {@link java.lang.String} object
+     * @param publicKey a {@link String} object
      */
     public void setPublicKey(final String publicKey) {
         getConfiguration().setPublicKey(publicKey);

@@ -134,7 +134,7 @@ public final class ClientsTests implements TestsConstants {
         val client1 =
             new MockIndirectClient(NAME, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
         val clients = new Clients(CALLBACK_URL, client1);
-        val client2 =
+        Client client2 =
             new MockIndirectClient(NAME, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
         clients.getClients().add(client2);
         TestsHelper.expectException(() -> clients.findClient(NAME),

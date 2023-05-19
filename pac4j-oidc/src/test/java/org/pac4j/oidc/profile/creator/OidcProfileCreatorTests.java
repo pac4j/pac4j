@@ -15,6 +15,7 @@ import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
@@ -74,11 +75,11 @@ public class OidcProfileCreatorTests implements TestsConstants {
     @Test
     public void testCreateOidcProfile() throws Exception {
         when(configuration.isIncludeAccessTokenClaimsInProfile()).thenReturn(true);
-        var creator = new OidcProfileCreator(configuration, new OidcClient(configuration));
+        ProfileCreator creator = new OidcProfileCreator(configuration, new OidcClient(configuration));
         var webContext = MockWebContext.create();
         var credentials = new OidcCredentials();
         credentials.setAccessToken(new BearerAccessToken(UUID.randomUUID().toString()));
-        var idToken = new PlainJWT(idTokenClaims.toJWTClaimsSet());
+        JWT idToken = new PlainJWT(idTokenClaims.toJWTClaimsSet());
         credentials.setIdToken(idToken);
         assertTrue(creator.create(new CallContext(webContext, new MockSessionStore()), credentials).isPresent());
     }
@@ -86,11 +87,11 @@ public class OidcProfileCreatorTests implements TestsConstants {
     @Test
     public void testCreateOidcProfileWithoutAccessToken() throws Exception {
         when(configuration.isIncludeAccessTokenClaimsInProfile()).thenReturn(true);
-        var creator = new OidcProfileCreator(configuration, new OidcClient(configuration));
+        ProfileCreator creator = new OidcProfileCreator(configuration, new OidcClient(configuration));
         var webContext = MockWebContext.create();
         var credentials = new OidcCredentials();
         credentials.setAccessToken(null);
-        var idToken = new PlainJWT(idTokenClaims.toJWTClaimsSet());
+        JWT idToken = new PlainJWT(idTokenClaims.toJWTClaimsSet());
         credentials.setIdToken(idToken);
         assertTrue(creator.create(new CallContext(webContext, new MockSessionStore()), credentials).isPresent());
     }
@@ -98,7 +99,7 @@ public class OidcProfileCreatorTests implements TestsConstants {
     @Test
     public void testCreateOidcProfileJwtAccessToken() throws Exception {
         when(configuration.isIncludeAccessTokenClaimsInProfile()).thenReturn(false);
-        var creator = new OidcProfileCreator(configuration, new OidcClient(configuration));
+        ProfileCreator creator = new OidcProfileCreator(configuration, new OidcClient(configuration));
         var webContext = MockWebContext.create();
         var credentials = new OidcCredentials();
 
@@ -106,7 +107,7 @@ public class OidcProfileCreatorTests implements TestsConstants {
         var accessTokenToken = new PlainJWT(accessTokenClaims);
         credentials.setAccessToken(new BearerAccessToken(accessTokenToken.serialize()));
 
-        var idToken = new PlainJWT(idTokenClaims.toJWTClaimsSet());
+        JWT idToken = new PlainJWT(idTokenClaims.toJWTClaimsSet());
         credentials.setIdToken(idToken);
         Optional<UserProfile> profile = creator.create(new CallContext(webContext, new MockSessionStore()), credentials);
         assertTrue(profile.isPresent());

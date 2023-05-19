@@ -51,7 +51,7 @@ public final class DefaultCallbackClientFinderTests implements TestsConstants {
         val clients = new Clients(CALLBACK_URL, basicAuth, facebook);
         val context = MockWebContext.create()
             .addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, "basicauth");
-        val finder = new DefaultCallbackClientFinder();
+        ClientFinder finder = new DefaultCallbackClientFinder();
         val result = finder.find(clients, context, "Facebook");
         assertEquals(1, result.size());
         assertEquals(facebook, result.get(0));
@@ -64,7 +64,7 @@ public final class DefaultCallbackClientFinderTests implements TestsConstants {
         val clients = new Clients(CALLBACK_URL, twitter, facebook);
         val context = MockWebContext.create()
             .addRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER, "Twitter");
-        val finder = new DefaultCallbackClientFinder();
+        ClientFinder finder = new DefaultCallbackClientFinder();
         val result = finder.find(clients, context, "Twitter");
         assertEquals(1, result.size());
         assertEquals(twitter, result.get(0));
@@ -75,7 +75,7 @@ public final class DefaultCallbackClientFinderTests implements TestsConstants {
         final IndirectClient facebook = new MockIndirectClient("Facebook");
         final IndirectClient twitter = new MockIndirectClient("Twitter");
         val clients = new Clients(CALLBACK_URL, twitter, facebook);
-        val finder = new DefaultCallbackClientFinder();
+        ClientFinder finder = new DefaultCallbackClientFinder();
         val result = finder.find(clients, MockWebContext.create(), "Facebook");
         assertEquals(1, result.size());
         assertEquals(facebook, result.get(0));
@@ -85,7 +85,7 @@ public final class DefaultCallbackClientFinderTests implements TestsConstants {
     public void testOneIndirectClientNoIndirectClientInURL() {
         final IndirectClient facebook = new MockIndirectClient("Facebook");
         val clients = new Clients(CALLBACK_URL, facebook);
-        val finder = new DefaultCallbackClientFinder();
+        ClientFinder finder = new DefaultCallbackClientFinder();
         val result = finder.find(clients, MockWebContext.create(), null);
         assertEquals(1, result.size());
         assertEquals(facebook, result.get(0));

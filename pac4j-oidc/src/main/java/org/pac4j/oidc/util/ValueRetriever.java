@@ -21,10 +21,10 @@ public interface ValueRetriever {
     /**
      * <p>retrieve.</p>
      *
-     * @param ctx a {@link org.pac4j.core.context.CallContext} object
-     * @param key a {@link java.lang.String} object
-     * @param client a {@link org.pac4j.oidc.client.OidcClient} object
-     * @return a {@link java.util.Optional} object
+     * @param ctx a {@link CallContext} object
+     * @param key a {@link String} object
+     * @param client a {@link OidcClient} object
+     * @return a {@link Optional} object
      */
     Optional<Object> retrieve(CallContext ctx, String key, OidcClient client);
 }

@@ -4,6 +4,7 @@ import lombok.val;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.OAuth10Profile;
 
+import java.io.Serial;
 import java.net.URI;
 import java.util.Date;
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.Locale;
 @SuppressWarnings("unchecked")
 public class YahooProfile extends OAuth10Profile {
 
+    @Serial
     private static final long serialVersionUID = 791758805376191144L;
 
     /** {@inheritDoc} */
@@ -84,7 +86,7 @@ public class YahooProfile extends OAuth10Profile {
     /**
      * <p>getAboutMe.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getAboutMe() {
         return (String) getAttribute(YahooProfileDefinition.ABOUT_ME);
@@ -93,7 +95,7 @@ public class YahooProfile extends OAuth10Profile {
     /**
      * <p>getAddresses.</p>
      *
-     * @return a {@link java.util.List} object
+     * @return a {@link List} object
      */
     public List<YahooAddress> getAddresses() {
         return (List<YahooAddress>) getAttribute(YahooProfileDefinition.ADDRESSES);
@@ -102,7 +104,7 @@ public class YahooProfile extends OAuth10Profile {
     /**
      * <p>getBirthYear.</p>
      *
-     * @return a {@link java.lang.Integer} object
+     * @return a {@link Integer} object
      */
     public Integer getBirthYear() {
         return (Integer) getAttribute(YahooProfileDefinition.BIRTH_YEAR);
@@ -111,7 +113,7 @@ public class YahooProfile extends OAuth10Profile {
     /**
      * <p>getBirthdate.</p>
      *
-     * @return a {@link java.util.Date} object
+     * @return a {@link Date} object
      */
     public Date getBirthdate() {
         return (Date) getAttribute(YahooProfileDefinition.BIRTHDATE);
@@ -120,7 +122,7 @@ public class YahooProfile extends OAuth10Profile {
     /**
      * <p>getCreated.</p>
      *
-     * @return a {@link java.util.Date} object
+     * @return a {@link Date} object
      */
     public Date getCreated() {
         return (Date) getAttribute(YahooProfileDefinition.CREATED);
@@ -129,7 +131,7 @@ public class YahooProfile extends OAuth10Profile {
     /**
      * <p>getDisplayAge.</p>
      *
-     * @return a {@link java.lang.Integer} object
+     * @return a {@link Integer} object
      */
     public Integer getDisplayAge() {
         return (Integer) getAttribute(YahooProfileDefinition.DISPLAY_AGE);
@@ -138,7 +140,7 @@ public class YahooProfile extends OAuth10Profile {
     /**
      * <p>getDisclosures.</p>
      *
-     * @return a {@link java.util.List} object
+     * @return a {@link List} object
      */
     public List<YahooDisclosure> getDisclosures() {
         return (List<YahooDisclosure>) getAttribute(YahooProfileDefinition.DISCLOSURES);
@@ -147,7 +149,7 @@ public class YahooProfile extends OAuth10Profile {
     /**
      * <p>getEmails.</p>
      *
-     * @return a {@link java.util.List} object
+     * @return a {@link List} object
      */
     public List<YahooEmail> getEmails() {
         return (List<YahooEmail>) getAttribute(YahooProfileDefinition.EMAILS);
@@ -156,7 +158,7 @@ public class YahooProfile extends OAuth10Profile {
     /**
      * <p>getImage.</p>
      *
-     * @return a {@link org.pac4j.oauth.profile.yahoo.YahooImage} object
+     * @return a {@link YahooImage} object
      */
     public YahooImage getImage() {
         return (YahooImage) getAttribute(YahooProfileDefinition.IMAGE);
@@ -165,7 +167,7 @@ public class YahooProfile extends OAuth10Profile {
     /**
      * <p>getInterests.</p>
      *
-     * @return a {@link java.util.List} object
+     * @return a {@link List} object
      */
     public List<YahooInterest> getInterests() {
         return (List<YahooInterest>) getAttribute(YahooProfileDefinition.INTERESTS);
@@ -174,7 +176,7 @@ public class YahooProfile extends OAuth10Profile {
     /**
      * <p>getIsConnected.</p>
      *
-     * @return a {@link java.lang.Boolean} object
+     * @return a {@link Boolean} object
      */
     public Boolean getIsConnected() {
         return (Boolean) getAttribute(YahooProfileDefinition.IS_CONNECTED);
@@ -183,7 +185,7 @@ public class YahooProfile extends OAuth10Profile {
     /**
      * <p>getMemberSince.</p>
      *
-     * @return a {@link java.util.Date} object
+     * @return a {@link Date} object
      */
     public Date getMemberSince() {
         return (Date) getAttribute(YahooProfileDefinition.MEMBER_SINCE);
@@ -192,7 +194,7 @@ public class YahooProfile extends OAuth10Profile {
     /**
      * <p>getTimeZone.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getTimeZone() {
         return (String) getAttribute(YahooProfileDefinition.TIME_ZONE);
@@ -201,7 +203,7 @@ public class YahooProfile extends OAuth10Profile {
     /**
      * <p>getUpdated.</p>
      *
-     * @return a {@link java.util.Date} object
+     * @return a {@link Date} object
      */
     public Date getUpdated() {
         return (Date) getAttribute(YahooProfileDefinition.UPDATED);
@@ -210,7 +212,7 @@ public class YahooProfile extends OAuth10Profile {
     /**
      * <p>getUri.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getUri() {
         return (String) getAttribute(YahooProfileDefinition.URI);
@@ -219,7 +221,7 @@ public class YahooProfile extends OAuth10Profile {
     /**
      * <p>getAgeCategory.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getAgeCategory() {
         return (String) getAttribute(YahooProfileDefinition.AGE_CATEGORY);

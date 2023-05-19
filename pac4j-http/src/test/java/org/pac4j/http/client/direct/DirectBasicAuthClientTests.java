@@ -9,6 +9,7 @@ import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
@@ -57,7 +58,7 @@ public final class DirectBasicAuthClientTests implements TestsConstants {
         val credentials =
             (UsernamePasswordCredentials) client.getCredentials(ctx).get();
         val authnCredentials = client.validateCredentials(ctx, credentials).get();
-        val profile = (CommonProfile) client.getUserProfile(ctx, authnCredentials).get();
+        UserProfile profile = (CommonProfile) client.getUserProfile(ctx, authnCredentials).get();
         assertEquals(USERNAME, profile.getId());
     }
 
@@ -72,7 +73,7 @@ public final class DirectBasicAuthClientTests implements TestsConstants {
         val credentials =
             (UsernamePasswordCredentials) client.getCredentials(ctx).get();
         val authnCredentials = client.validateCredentials(ctx, credentials).get();
-        val profile = (CommonProfile) client.getUserProfile(ctx, authnCredentials).get();
+        UserProfile profile = (CommonProfile) client.getUserProfile(ctx, authnCredentials).get();
         assertEquals(USERNAME, profile.getId());
     }
 }

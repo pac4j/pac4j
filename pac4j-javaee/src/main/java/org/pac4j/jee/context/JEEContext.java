@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * This implementation uses the JEE {@link javax.servlet.http.HttpServletRequest} and {@link javax.servlet.http.HttpServletResponse}.
+ * This implementation uses the JEE {@link HttpServletRequest} and {@link HttpServletResponse}.
  *
  * You should upgrade to the new <code>pac4j-jakartaee</code> module.
  *

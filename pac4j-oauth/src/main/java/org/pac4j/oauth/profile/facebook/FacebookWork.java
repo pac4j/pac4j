@@ -1,5 +1,6 @@
 package org.pac4j.oauth.profile.facebook;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -16,6 +17,7 @@ import static org.pac4j.core.util.CommonHelper.newDate;
  */
 public final class FacebookWork implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -5698634125512204910L;
 
     private FacebookObject employer;
@@ -37,7 +39,7 @@ public final class FacebookWork implements Serializable {
     /**
      * <p>Getter for the field <code>employer</code>.</p>
      *
-     * @return a {@link org.pac4j.oauth.profile.facebook.FacebookObject} object
+     * @return a {@link FacebookObject} object
      */
     public FacebookObject getEmployer() {
         return employer;
@@ -46,7 +48,7 @@ public final class FacebookWork implements Serializable {
     /**
      * <p>Setter for the field <code>employer</code>.</p>
      *
-     * @param employer a {@link org.pac4j.oauth.profile.facebook.FacebookObject} object
+     * @param employer a {@link FacebookObject} object
      */
     public void setEmployer(FacebookObject employer) {
         this.employer = employer;
@@ -55,7 +57,7 @@ public final class FacebookWork implements Serializable {
     /**
      * <p>Getter for the field <code>location</code>.</p>
      *
-     * @return a {@link org.pac4j.oauth.profile.facebook.FacebookObject} object
+     * @return a {@link FacebookObject} object
      */
     public FacebookObject getLocation() {
         return location;
@@ -64,7 +66,7 @@ public final class FacebookWork implements Serializable {
     /**
      * <p>Setter for the field <code>location</code>.</p>
      *
-     * @param location a {@link org.pac4j.oauth.profile.facebook.FacebookObject} object
+     * @param location a {@link FacebookObject} object
      */
     public void setLocation(FacebookObject location) {
         this.location = location;
@@ -73,7 +75,7 @@ public final class FacebookWork implements Serializable {
     /**
      * <p>Getter for the field <code>position</code>.</p>
      *
-     * @return a {@link org.pac4j.oauth.profile.facebook.FacebookObject} object
+     * @return a {@link FacebookObject} object
      */
     public FacebookObject getPosition() {
         return position;
@@ -82,7 +84,7 @@ public final class FacebookWork implements Serializable {
     /**
      * <p>Setter for the field <code>position</code>.</p>
      *
-     * @param position a {@link org.pac4j.oauth.profile.facebook.FacebookObject} object
+     * @param position a {@link FacebookObject} object
      */
     public void setPosition(FacebookObject position) {
         this.position = position;
@@ -91,7 +93,7 @@ public final class FacebookWork implements Serializable {
     /**
      * <p>Getter for the field <code>description</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getDescription() {
         return description;
@@ -100,7 +102,7 @@ public final class FacebookWork implements Serializable {
     /**
      * <p>Setter for the field <code>description</code>.</p>
      *
-     * @param description a {@link java.lang.String} object
+     * @param description a {@link String} object
      */
     public void setDescription(String description) {
         this.description = description;
@@ -109,7 +111,7 @@ public final class FacebookWork implements Serializable {
     /**
      * <p>Getter for the field <code>startDate</code>.</p>
      *
-     * @return a {@link java.util.Date} object
+     * @return a {@link Date} object
      */
     public Date getStartDate() {
         return newDate(startDate);
@@ -118,7 +120,7 @@ public final class FacebookWork implements Serializable {
     /**
      * <p>Setter for the field <code>startDate</code>.</p>
      *
-     * @param startDate a {@link java.util.Date} object
+     * @param startDate a {@link Date} object
      */
     public void setStartDate(Date startDate) {
         this.startDate = newDate(startDate);
@@ -127,7 +129,7 @@ public final class FacebookWork implements Serializable {
     /**
      * <p>Getter for the field <code>endDate</code>.</p>
      *
-     * @return a {@link java.util.Date} object
+     * @return a {@link Date} object
      */
     public Date getEndDate() {
         return newDate(endDate);
@@ -136,7 +138,7 @@ public final class FacebookWork implements Serializable {
     /**
      * <p>Setter for the field <code>endDate</code>.</p>
      *
-     * @param endDate a {@link java.util.Date} object
+     * @param endDate a {@link Date} object
      */
     public void setEndDate(Date endDate) {
         this.endDate = newDate(endDate);

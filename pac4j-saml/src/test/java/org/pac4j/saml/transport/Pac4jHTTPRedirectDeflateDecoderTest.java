@@ -66,7 +66,7 @@ public class Pac4jHTTPRedirectDeflateDecoderTest {
         val encoder =
             new Pac4jHTTPRedirectDeflateEncoder(new DefaultPac4jSAMLResponse(webContext), false);
         val messageContext = new MessageContext();
-        messageContext.setMessage((SAMLObject) xmlObject);
+        messageContext.setMessage(xmlObject);
 
         val encodedMessage = encoder.deflateAndBase64Encode((SAMLObject) xmlObject);
         val redirectURL = encoder.buildRedirectURL(messageContext, ENDPOINT_URL_WITH_QUERY_PARAMS, encodedMessage);

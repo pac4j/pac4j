@@ -8,7 +8,7 @@ import org.opensaml.saml.saml2.core.Issuer;
 import org.opensaml.saml.saml2.core.LogoutRequest;
 import org.opensaml.saml.saml2.core.NameID;
 import org.opensaml.saml.saml2.core.SessionIndex;
-import org.opensaml.saml.saml2.metadata.SingleLogoutService;
+import org.opensaml.saml.saml2.metadata.Endpoint;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.profile.SAML2Profile;
@@ -37,7 +37,7 @@ public class SAML2LogoutRequestBuilder {
     /**
      * Instantiates a new Saml 2 logout request builder.
      *
-     * @param cfg a {@link org.pac4j.saml.config.SAML2Configuration} object
+     * @param cfg a {@link SAML2Configuration} object
      */
     public SAML2LogoutRequestBuilder(final SAML2Configuration cfg) {
         this.bindingType = cfg.getSpLogoutRequestBindingType();
@@ -47,9 +47,9 @@ public class SAML2LogoutRequestBuilder {
     /**
      * <p>build.</p>
      *
-     * @param context a {@link org.pac4j.saml.context.SAML2MessageContext} object
-     * @param profile a {@link org.pac4j.saml.profile.SAML2Profile} object
-     * @return a {@link org.opensaml.saml.saml2.core.LogoutRequest} object
+     * @param context a {@link SAML2MessageContext} object
+     * @param profile a {@link SAML2Profile} object
+     * @return a {@link LogoutRequest} object
      */
     public LogoutRequest build(final SAML2MessageContext context, final SAML2Profile profile) {
         val ssoService = context.getIDPSingleLogoutService(this.bindingType);
@@ -59,14 +59,14 @@ public class SAML2LogoutRequestBuilder {
     /**
      * <p>buildLogoutRequest.</p>
      *
-     * @param context a {@link org.pac4j.saml.context.SAML2MessageContext} object
+     * @param context a {@link SAML2MessageContext} object
      * @param ssoService a {@link org.opensaml.saml.saml2.metadata.SingleLogoutService} object
-     * @param profile a {@link org.pac4j.saml.profile.SAML2Profile} object
-     * @return a {@link org.opensaml.saml.saml2.core.LogoutRequest} object
+     * @param profile a {@link SAML2Profile} object
+     * @return a {@link LogoutRequest} object
      */
     @SuppressWarnings("unchecked")
     protected final LogoutRequest buildLogoutRequest(final SAML2MessageContext context,
-                                                     final SingleLogoutService ssoService,
+                                                     final Endpoint ssoService,
                                                      final SAML2Profile profile) {
 
         val builder = (SAMLObjectBuilder<LogoutRequest>) this.builderFactory
@@ -108,8 +108,8 @@ public class SAML2LogoutRequestBuilder {
     /**
      * <p>getIssuer.</p>
      *
-     * @param spEntityId a {@link java.lang.String} object
-     * @return a {@link org.opensaml.saml.saml2.core.Issuer} object
+     * @param spEntityId a {@link String} object
+     * @return a {@link Issuer} object
      */
     @SuppressWarnings("unchecked")
     protected final Issuer getIssuer(final String spEntityId) {

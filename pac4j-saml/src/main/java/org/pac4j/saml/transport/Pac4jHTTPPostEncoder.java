@@ -10,6 +10,7 @@ import net.shibboleth.shared.component.ComponentSupport;
 import net.shibboleth.shared.xml.SerializeSupport;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.context.Context;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.core.xml.io.MarshallingException;
 import org.opensaml.core.xml.util.XMLObjectSupport;
@@ -28,7 +29,7 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 
 /**
- * Pac4j implementation extending directly the {@link org.opensaml.messaging.encoder.AbstractMessageEncoder}
+ * Pac4j implementation extending directly the {@link AbstractMessageEncoder}
  * as intermediate classes use the JEE HTTP response.
  * It's mostly a copy/paste of the source code of these intermediate opensaml classes.
  *
@@ -57,7 +58,7 @@ public class Pac4jHTTPPostEncoder extends AbstractMessageEncoder {
     /**
      * <p>Constructor for Pac4jHTTPPostEncoder.</p>
      *
-     * @param responseAdapter a {@link org.pac4j.saml.transport.Pac4jSAMLResponse} object
+     * @param responseAdapter a {@link Pac4jSAMLResponse} object
      */
     public Pac4jHTTPPostEncoder(final Pac4jSAMLResponse responseAdapter) {
         this.responseAdapter = responseAdapter;
@@ -106,7 +107,7 @@ public class Pac4jHTTPPostEncoder extends AbstractMessageEncoder {
      *
      * @param messageContext current message context
      * @return response URL from the message context
-     * @throws org.opensaml.messaging.encoder.MessageEncodingException throw if no relying party endpoint is available
+     * @throws MessageEncodingException throw if no relying party endpoint is available
      */
     protected URI getEndpointURL(final MessageContext messageContext) throws MessageEncodingException {
         try {
@@ -119,9 +120,9 @@ public class Pac4jHTTPPostEncoder extends AbstractMessageEncoder {
     /**
      * <p>postEncode.</p>
      *
-     * @param messageContext a {@link org.opensaml.messaging.context.MessageContext} object
-     * @param endpointURL a {@link java.lang.String} object
-     * @throws org.opensaml.messaging.encoder.MessageEncodingException if any.
+     * @param messageContext a {@link MessageContext} object
+     * @param endpointURL a {@link String} object
+     * @throws MessageEncodingException if any.
      */
     protected void postEncode(final MessageContext messageContext, final String endpointURL) throws MessageEncodingException {
         LOGGER.debug("Invoking Velocity template to create POST body");
@@ -191,9 +192,9 @@ public class Pac4jHTTPPostEncoder extends AbstractMessageEncoder {
      * @param velocityContext the Velocity context instance to populate with data
      * @param messageContext  the SAML message context source of data
      * @param endpointURL     endpoint URL to which to encode message
-     * @throws org.opensaml.messaging.encoder.MessageEncodingException thrown if there is a problem encoding the message
+     * @throws MessageEncodingException thrown if there is a problem encoding the message
      */
-    protected void populateVelocityContext(final VelocityContext velocityContext, final MessageContext messageContext,
+    protected void populateVelocityContext(final Context velocityContext, final MessageContext messageContext,
                                            final String endpointURL) throws MessageEncodingException {
 
         val encodedEndpointURL = HTMLEncoder.encodeForHTMLAttribute(endpointURL);
@@ -201,7 +202,7 @@ public class Pac4jHTTPPostEncoder extends AbstractMessageEncoder {
         velocityContext.put("action", encodedEndpointURL);
         velocityContext.put("binding", getBindingURI());
 
-        val outboundMessage = (SAMLObject) messageContext.getMessage();
+        XMLObject outboundMessage = (SAMLObject) messageContext.getMessage();
 
         LOGGER.debug("Marshalling and Base64 encoding SAML message");
         val domMessage = marshallMessage(outboundMessage);
@@ -234,7 +235,7 @@ public class Pac4jHTTPPostEncoder extends AbstractMessageEncoder {
     /**
      * <p>getBindingURI.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getBindingURI() {
         return SAMLConstants.SAML2_POST_BINDING_URI;
@@ -245,7 +246,7 @@ public class Pac4jHTTPPostEncoder extends AbstractMessageEncoder {
      *
      * @param message message the marshall and serialize
      * @return marshalled message
-     * @throws org.opensaml.messaging.encoder.MessageEncodingException thrown if the give message cannot be marshalled into DOM
+     * @throws MessageEncodingException thrown if the give message cannot be marshalled into DOM
      */
     protected Element marshallMessage(final XMLObject message) throws MessageEncodingException {
         LOGGER.debug("Marshalling message");

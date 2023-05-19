@@ -30,7 +30,7 @@ public class AndAuthorizerTests {
 
     @Before
     public void setUp() {
-        var profile = new CommonProfile();
+        UserProfile profile = new CommonProfile();
         profile.setId("profile_id");
         profile.addRole("profile_role");
         profiles.add(profile);

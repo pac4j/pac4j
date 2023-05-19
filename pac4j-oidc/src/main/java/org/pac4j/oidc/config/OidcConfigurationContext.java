@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * This is {@link org.pac4j.oidc.config.OidcConfigurationContext}.
+ * This is {@link OidcConfigurationContext}.
  *
  * @author Misagh Moayyed
  * @since 5.0.0
@@ -20,8 +20,8 @@ public class OidcConfigurationContext {
     /**
      * <p>Constructor for OidcConfigurationContext.</p>
      *
-     * @param webContext a {@link org.pac4j.core.context.WebContext} object
-     * @param oidcConfiguration a {@link org.pac4j.oidc.config.OidcConfiguration} object
+     * @param webContext a {@link WebContext} object
+     * @param oidcConfiguration a {@link OidcConfiguration} object
      */
     public OidcConfigurationContext(final WebContext webContext,
                                     final OidcConfiguration oidcConfiguration) {
@@ -32,7 +32,7 @@ public class OidcConfigurationContext {
     /**
      * <p>getMaxAge.</p>
      *
-     * @return a {@link java.lang.Integer} object
+     * @return a {@link Integer} object
      */
     public Integer getMaxAge() {
         return (Integer) context.getRequestAttribute(OidcConfiguration.MAX_AGE)
@@ -42,7 +42,7 @@ public class OidcConfigurationContext {
     /**
      * <p>isForceAuthn.</p>
      *
-     * @return a {@link java.lang.Boolean} object
+     * @return a {@link Boolean} object
      */
     public Boolean isForceAuthn() {
         return context.getRequestAttribute(RedirectionActionBuilder.ATTRIBUTE_FORCE_AUTHN)
@@ -52,7 +52,7 @@ public class OidcConfigurationContext {
     /**
      * <p>isPassive.</p>
      *
-     * @return a {@link java.lang.Boolean} object
+     * @return a {@link Boolean} object
      */
     public Boolean isPassive() {
         return context.getRequestAttribute(RedirectionActionBuilder.ATTRIBUTE_PASSIVE)
@@ -62,7 +62,7 @@ public class OidcConfigurationContext {
     /**
      * <p>getScope.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getScope() {
         return (String) context.getRequestAttribute(OidcConfiguration.SCOPE)
@@ -73,7 +73,7 @@ public class OidcConfigurationContext {
     /**
      * <p>getResponseType.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getResponseType() {
         return (String) context.getRequestAttribute(OidcConfiguration.RESPONSE_TYPE)
@@ -83,7 +83,7 @@ public class OidcConfigurationContext {
     /**
      * <p>getResponseMode.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getResponseMode() {
         return (String) context.getRequestAttribute(OidcConfiguration.RESPONSE_MODE)
@@ -93,7 +93,7 @@ public class OidcConfigurationContext {
     /**
      * <p>getCustomParams.</p>
      *
-     * @return a {@link java.util.Map} object
+     * @return a {@link Map} object
      */
     public Map<String, String> getCustomParams() {
         return (Map<String, String>) context.getRequestAttribute(OidcConfiguration.CUSTOM_PARAMS)
@@ -103,7 +103,7 @@ public class OidcConfigurationContext {
     /**
      * <p>Getter for the field <code>configuration</code>.</p>
      *
-     * @return a {@link org.pac4j.oidc.config.OidcConfiguration} object
+     * @return a {@link OidcConfiguration} object
      */
     public OidcConfiguration getConfiguration() {
         return configuration;

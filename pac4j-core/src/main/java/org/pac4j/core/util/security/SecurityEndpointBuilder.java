@@ -27,8 +27,8 @@ public class SecurityEndpointBuilder {
     /**
      * <p>buildConfig.</p>
      *
-     * @param endpoint a {@link org.pac4j.core.util.security.SecurityEndpoint} object
-     * @param parameters a {@link java.lang.Object} object
+     * @param endpoint a {@link SecurityEndpoint} object
+     * @param parameters a {@link Object} object
      */
     public static void buildConfig(final SecurityEndpoint endpoint, Object... parameters) {
         Config config = null;
@@ -51,7 +51,7 @@ public class SecurityEndpointBuilder {
         var authorizers = Pac4jConstants.EMPTY_STRING;
         var matchers = Pac4jConstants.EMPTY_STRING;
 
-        val paramList = new ArrayList<Object>();
+        val paramList = new ArrayList<>();
         for (val parameter : parameters) {
             if (parameter instanceof Collection<?> collection) {
                 collection.forEach(element -> paramList.add(element));

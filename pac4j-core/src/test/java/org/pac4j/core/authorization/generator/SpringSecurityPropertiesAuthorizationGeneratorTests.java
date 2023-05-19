@@ -3,6 +3,7 @@ package org.pac4j.core.authorization.generator;
 import lombok.val;
 import org.junit.Test;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.util.TestsConstants;
 
@@ -26,8 +27,8 @@ public final class SpringSecurityPropertiesAuthorizationGeneratorTests implement
     private Set<String> test(final String value) {
         val properties = new Properties();
         properties.put(USERNAME, PASSWORD + value);
-        val generator = new SpringSecurityPropertiesAuthorizationGenerator(properties);
-        val profile = new CommonProfile();
+        AuthorizationGenerator generator = new SpringSecurityPropertiesAuthorizationGenerator(properties);
+        UserProfile profile = new CommonProfile();
         profile.setId(USERNAME);
         generator.generate(null, profile);
         return profile.getRoles();

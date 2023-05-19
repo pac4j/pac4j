@@ -69,7 +69,7 @@ public final class ECSignatureConfigurationTests extends AbstractKeyEncryptionCo
 
     @Test
     public void testSignVerify() throws JOSEException {
-        val config = new ECSignatureConfiguration(buildKeyPair());
+        SignatureConfiguration config = new ECSignatureConfiguration(buildKeyPair());
         val claims = new JWTClaimsSet.Builder().subject(VALUE).build();
         val signedJwt = config.sign(claims);
         assertTrue(config.verify(signedJwt));

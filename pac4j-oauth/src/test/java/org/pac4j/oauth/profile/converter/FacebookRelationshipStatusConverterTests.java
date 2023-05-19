@@ -1,20 +1,21 @@
 package org.pac4j.oauth.profile.converter;
 
 import org.junit.Test;
+import org.pac4j.core.profile.converter.AttributeConverter;
 import org.pac4j.oauth.profile.facebook.FacebookRelationshipStatus;
 import org.pac4j.oauth.profile.facebook.converter.FacebookRelationshipStatusConverter;
 
 import static org.junit.Assert.*;
 
 /**
- * This class test the {@link org.pac4j.oauth.profile.facebook.converter.FacebookRelationshipStatusConverter} class.
- * 
+ * This class test the {@link FacebookRelationshipStatusConverter} class.
+ *
  * @author Jerome Leleu
  * @since 1.0.0
  */
 public final class FacebookRelationshipStatusConverterTests {
-    
-    private final FacebookRelationshipStatusConverter converter = new FacebookRelationshipStatusConverter();
+
+    private final AttributeConverter converter = new FacebookRelationshipStatusConverter();
 
     @Test
     public void testNull() {

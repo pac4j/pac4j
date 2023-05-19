@@ -1,6 +1,5 @@
 package org.pac4j.core.authorization.authorizer;
 
-import lombok.val;
 import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.context.HttpConstants;
@@ -33,7 +32,7 @@ public final class CheckHttpMethodAuthorizerTests {
 
     @Test
     public void testGoodHttpMethod() {
-        val authorizer = new CheckHttpMethodAuthorizer(HttpConstants.HTTP_METHOD.GET,
+        Authorizer authorizer = new CheckHttpMethodAuthorizer(HttpConstants.HTTP_METHOD.GET,
             HttpConstants.HTTP_METHOD.POST);
         assertTrue(authorizer.isAuthorized(MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.GET.name()),
             new MockSessionStore(), profiles));
@@ -41,7 +40,7 @@ public final class CheckHttpMethodAuthorizerTests {
 
     @Test
     public void testBadHttpMethod() {
-        val authorizer = new CheckHttpMethodAuthorizer(HttpConstants.HTTP_METHOD.PUT);
+        Authorizer authorizer = new CheckHttpMethodAuthorizer(HttpConstants.HTTP_METHOD.PUT);
         assertFalse(authorizer.isAuthorized(MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.DELETE.name()),
             new MockSessionStore(), profiles));
     }

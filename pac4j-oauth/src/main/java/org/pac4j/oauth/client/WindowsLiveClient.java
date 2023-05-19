@@ -25,8 +25,8 @@ public class WindowsLiveClient extends OAuth20Client {
     /**
      * <p>Constructor for WindowsLiveClient.</p>
      *
-     * @param key a {@link java.lang.String} object
-     * @param secret a {@link java.lang.String} object
+     * @param key a {@link String} object
+     * @param secret a {@link String} object
      */
     public WindowsLiveClient(final String key, final String secret) {
         setKey(key);

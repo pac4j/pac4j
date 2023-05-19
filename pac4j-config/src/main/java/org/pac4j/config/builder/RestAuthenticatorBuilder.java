@@ -19,7 +19,7 @@ public class RestAuthenticatorBuilder extends AbstractBuilder {
     /**
      * <p>Constructor for RestAuthenticatorBuilder.</p>
      *
-     * @param properties a {@link java.util.Map} object
+     * @param properties a {@link Map} object
      */
     public RestAuthenticatorBuilder(final Map<String, String> properties) {
         super(properties);
@@ -28,7 +28,7 @@ public class RestAuthenticatorBuilder extends AbstractBuilder {
     /**
      * <p>tryBuildRestAuthenticator.</p>
      *
-     * @param authenticators a {@link java.util.Map} object
+     * @param authenticators a {@link Map} object
      */
     public void tryBuildRestAuthenticator(final Map<String, Authenticator> authenticators) {
         for (var i = 0; i <= MAX_NUM_AUTHENTICATORS; i++) {

@@ -68,7 +68,7 @@ public final class RSASignatureConfigurationTests extends AbstractKeyEncryptionC
 
     @Test
     public void testSignVerify() throws JOSEException {
-        val config = new RSASignatureConfiguration(buildKeyPair());
+        SignatureConfiguration config = new RSASignatureConfiguration(buildKeyPair());
         val claims = new JWTClaimsSet.Builder().subject(VALUE).build();
         val signedJwt = config.sign(claims);
         assertTrue(config.verify(signedJwt));

@@ -5,6 +5,7 @@ import com.nimbusds.jose.proc.BadJOSEException;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.JWTParser;
 import com.nimbusds.oauth2.sdk.ParseException;
+import com.nimbusds.oauth2.sdk.Request;
 import com.nimbusds.oauth2.sdk.token.AccessToken;
 import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
 import com.nimbusds.openid.connect.sdk.*;
@@ -49,8 +50,8 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
     /**
      * <p>Constructor for OidcProfileCreator.</p>
      *
-     * @param configuration a {@link org.pac4j.oidc.config.OidcConfiguration} object
-     * @param client a {@link org.pac4j.oidc.client.OidcClient} object
+     * @param configuration a {@link OidcConfiguration} object
+     * @param client a {@link OidcClient} object
      */
     public OidcProfileCreator(final OidcConfiguration configuration, final OidcClient client) {
         this.configuration = configuration;
@@ -122,7 +123,7 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
             // User Info request
             val opMetadata = configuration.getOpMetadataResolver().load();
             if (opMetadata.getUserInfoEndpointURI() != null && accessToken != null) {
-                val userInfoRequest = new UserInfoRequest(opMetadata.getUserInfoEndpointURI(), accessToken);
+                Request userInfoRequest = new UserInfoRequest(opMetadata.getUserInfoEndpointURI(), accessToken);
                 val userInfoHttpRequest = userInfoRequest.toHTTPRequest();
                 configuration.configureHttpRequest(userInfoHttpRequest);
                 val httpResponse = userInfoHttpRequest.send();
@@ -180,7 +181,7 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
     }
 
     private void collectClaimsFromAccessTokenIfAny(final OidcCredentials credentials,
-                                                   final Nonce nonce, OidcProfile profile) {
+                                                   final Nonce nonce, UserProfile profile) {
         try {
             final AccessToken accessToken = credentials.getAccessToken();
             if (accessToken != null) {

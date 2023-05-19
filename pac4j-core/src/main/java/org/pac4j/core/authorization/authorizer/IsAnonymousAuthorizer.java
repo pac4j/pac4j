@@ -23,7 +23,7 @@ public class IsAnonymousAuthorizer extends AbstractCheckAuthenticationAuthorizer
     /**
      * <p>Constructor for IsAnonymousAuthorizer.</p>
      *
-     * @param redirectionUrl a {@link java.lang.String} object
+     * @param redirectionUrl a {@link String} object
      */
     public IsAnonymousAuthorizer(final String redirectionUrl) {
         super(redirectionUrl);
@@ -44,7 +44,7 @@ public class IsAnonymousAuthorizer extends AbstractCheckAuthenticationAuthorizer
     /**
      * <p>isAnonymous.</p>
      *
-     * @return a {@link org.pac4j.core.authorization.authorizer.IsAnonymousAuthorizer} object
+     * @return a {@link IsAnonymousAuthorizer} object
      */
     public static IsAnonymousAuthorizer isAnonymous() {
         return new IsAnonymousAuthorizer();

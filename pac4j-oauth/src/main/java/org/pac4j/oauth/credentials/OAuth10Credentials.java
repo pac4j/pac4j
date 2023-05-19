@@ -8,6 +8,8 @@ import lombok.Setter;
 import lombok.ToString;
 import org.pac4j.core.credentials.Credentials;
 
+import java.io.Serial;
+
 /**
  * This class represents an OAuth credentials for OAuth 1.0 a request token, a token and a verifier.
  *
@@ -19,6 +21,7 @@ import org.pac4j.core.credentials.Credentials;
 @ToString
 public class OAuth10Credentials extends Credentials {
 
+    @Serial
     private static final long serialVersionUID = -167715058574799025L;
     private OAuth1RequestToken requestToken;
 
@@ -32,9 +35,9 @@ public class OAuth10Credentials extends Credentials {
     /**
      * <p>Constructor for OAuth10Credentials.</p>
      *
-     * @param requestToken a {@link com.github.scribejava.core.model.OAuth1RequestToken} object
-     * @param token a {@link java.lang.String} object
-     * @param verifier a {@link java.lang.String} object
+     * @param requestToken a {@link OAuth1RequestToken} object
+     * @param token a {@link String} object
+     * @param verifier a {@link String} object
      */
     public OAuth10Credentials(OAuth1RequestToken requestToken, String token, String verifier) {
         this.requestToken = requestToken;

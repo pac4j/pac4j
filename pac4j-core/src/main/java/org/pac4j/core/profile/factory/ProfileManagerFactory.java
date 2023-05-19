@@ -7,7 +7,7 @@ import org.pac4j.core.profile.ProfileManager;
 import java.util.function.BiFunction;
 
 /**
- * A {@link org.pac4j.core.profile.ProfileManager} factory based on the {@link org.pac4j.core.context.WebContext}.
+ * A {@link ProfileManager} factory based on the {@link WebContext}.
  *
  * @author Jerome LELEU
  * @since 4.0.0

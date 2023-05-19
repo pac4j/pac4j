@@ -1,5 +1,6 @@
 package org.pac4j.oauth.profile.facebook;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -16,6 +17,7 @@ import static org.pac4j.core.util.CommonHelper.newDate;
  */
 public final class FacebookInfo implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -6023752317085418350L;
 
     private String id;
@@ -31,7 +33,7 @@ public final class FacebookInfo implements Serializable {
     /**
      * <p>Getter for the field <code>id</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getId() {
         return id;
@@ -40,7 +42,7 @@ public final class FacebookInfo implements Serializable {
     /**
      * <p>Setter for the field <code>id</code>.</p>
      *
-     * @param id a {@link java.lang.String} object
+     * @param id a {@link String} object
      */
     public void setId(String id) {
         this.id = id;
@@ -49,7 +51,7 @@ public final class FacebookInfo implements Serializable {
     /**
      * <p>Getter for the field <code>category</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getCategory() {
         return category;
@@ -58,7 +60,7 @@ public final class FacebookInfo implements Serializable {
     /**
      * <p>Setter for the field <code>category</code>.</p>
      *
-     * @param category a {@link java.lang.String} object
+     * @param category a {@link String} object
      */
     public void setCategory(String category) {
         this.category = category;
@@ -67,7 +69,7 @@ public final class FacebookInfo implements Serializable {
     /**
      * <p>Getter for the field <code>name</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getName() {
         return name;
@@ -76,7 +78,7 @@ public final class FacebookInfo implements Serializable {
     /**
      * <p>Setter for the field <code>name</code>.</p>
      *
-     * @param name a {@link java.lang.String} object
+     * @param name a {@link String} object
      */
     public void setName(String name) {
         this.name = name;
@@ -85,7 +87,7 @@ public final class FacebookInfo implements Serializable {
     /**
      * <p>Getter for the field <code>createdTime</code>.</p>
      *
-     * @return a {@link java.util.Date} object
+     * @return a {@link Date} object
      */
     public Date getCreatedTime() {
         return newDate(createdTime);
@@ -94,7 +96,7 @@ public final class FacebookInfo implements Serializable {
     /**
      * <p>Setter for the field <code>createdTime</code>.</p>
      *
-     * @param createdTime a {@link java.util.Date} object
+     * @param createdTime a {@link Date} object
      */
     public void setCreatedTime(Date createdTime) {
         this.createdTime = newDate(createdTime);

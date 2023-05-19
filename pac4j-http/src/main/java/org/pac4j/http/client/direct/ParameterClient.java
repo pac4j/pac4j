@@ -36,8 +36,8 @@ public class ParameterClient extends DirectClient {
     /**
      * <p>Constructor for ParameterClient.</p>
      *
-     * @param parameterName a {@link java.lang.String} object
-     * @param tokenAuthenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
+     * @param parameterName a {@link String} object
+     * @param tokenAuthenticator a {@link Authenticator} object
      */
     public ParameterClient(final String parameterName, final Authenticator tokenAuthenticator) {
         this.parameterName = parameterName;
@@ -47,8 +47,8 @@ public class ParameterClient extends DirectClient {
     /**
      * <p>Constructor for ParameterClient.</p>
      *
-     * @param parameterName a {@link java.lang.String} object
-     * @param profileCreator a {@link org.pac4j.core.profile.creator.ProfileCreator} object
+     * @param parameterName a {@link String} object
+     * @param profileCreator a {@link ProfileCreator} object
      */
     public ParameterClient(final String parameterName,
                            final ProfileCreator profileCreator) {
@@ -60,9 +60,9 @@ public class ParameterClient extends DirectClient {
     /**
      * <p>Constructor for ParameterClient.</p>
      *
-     * @param parameterName a {@link java.lang.String} object
-     * @param tokenAuthenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
-     * @param profileCreator a {@link org.pac4j.core.profile.creator.ProfileCreator} object
+     * @param parameterName a {@link String} object
+     * @param tokenAuthenticator a {@link Authenticator} object
+     * @param profileCreator a {@link ProfileCreator} object
      */
     public ParameterClient(final String parameterName,
                            final Authenticator tokenAuthenticator,

@@ -53,7 +53,7 @@ public abstract class AbstractStore<K, O> extends InitializableObject implements
      * <p>internalGet.</p>
      *
      * @param key a K object
-     * @return a {@link java.util.Optional} object
+     * @return a {@link Optional} object
      */
     protected abstract Optional<O> internalGet(final K key);
 

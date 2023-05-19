@@ -32,8 +32,8 @@ public class BasicAuthExtractor implements CredentialsExtractor {
     /**
      * <p>Constructor for BasicAuthExtractor.</p>
      *
-     * @param headerName a {@link java.lang.String} object
-     * @param prefixHeader a {@link java.lang.String} object
+     * @param headerName a {@link String} object
+     * @param prefixHeader a {@link String} object
      */
     public BasicAuthExtractor(final String headerName, final String prefixHeader) {
         this.extractor = new HeaderExtractor(headerName, prefixHeader);

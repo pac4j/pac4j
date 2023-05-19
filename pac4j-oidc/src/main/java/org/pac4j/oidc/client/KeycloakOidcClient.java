@@ -30,7 +30,7 @@ public class KeycloakOidcClient extends OidcClient {
     /**
      * <p>Constructor for KeycloakOidcClient.</p>
      *
-     * @param configuration a {@link org.pac4j.oidc.config.KeycloakOidcConfiguration} object
+     * @param configuration a {@link KeycloakOidcConfiguration} object
      */
     public KeycloakOidcClient(final KeycloakOidcConfiguration configuration) {
         super(configuration);

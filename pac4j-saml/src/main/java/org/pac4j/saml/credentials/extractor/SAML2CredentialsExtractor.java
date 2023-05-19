@@ -1,6 +1,7 @@
 package org.pac4j.saml.credentials.extractor;
 
 import lombok.val;
+import org.opensaml.messaging.decoder.MessageDecoder;
 import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.common.messaging.context.SAMLBindingContext;
 import org.opensaml.saml.common.messaging.context.SAMLPeerEntityContext;
@@ -53,10 +54,10 @@ public class SAML2CredentialsExtractor implements CredentialsExtractor {
     /**
      * <p>Constructor for SAML2CredentialsExtractor.</p>
      *
-     * @param client a {@link org.pac4j.saml.client.SAML2Client} object
-     * @param idpMetadataResolver a {@link org.pac4j.saml.metadata.SAML2MetadataResolver} object
-     * @param spMetadataResolver a {@link org.pac4j.saml.metadata.SAML2MetadataResolver} object
-     * @param soapPipelineProvider a {@link org.pac4j.saml.sso.artifact.SOAPPipelineProvider} object
+     * @param client a {@link SAML2Client} object
+     * @param idpMetadataResolver a {@link SAML2MetadataResolver} object
+     * @param spMetadataResolver a {@link SAML2MetadataResolver} object
+     * @param soapPipelineProvider a {@link SOAPPipelineProvider} object
      */
     public SAML2CredentialsExtractor(final SAML2Client client, final SAML2MetadataResolver idpMetadataResolver,
                                      final SAML2MetadataResolver spMetadataResolver, final SOAPPipelineProvider soapPipelineProvider) {
@@ -103,8 +104,8 @@ public class SAML2CredentialsExtractor implements CredentialsExtractor {
     /**
      * <p>getDecoder.</p>
      *
-     * @param callContext a {@link org.pac4j.core.context.CallContext} object
-     * @return a {@link org.pac4j.saml.transport.AbstractPac4jDecoder} object
+     * @param callContext a {@link CallContext} object
+     * @return a {@link AbstractPac4jDecoder} object
      */
     protected AbstractPac4jDecoder getDecoder(final CallContext callContext) {
         final AbstractPac4jDecoder decoder;
@@ -154,9 +155,9 @@ public class SAML2CredentialsExtractor implements CredentialsExtractor {
     /**
      * <p>prepareDecodedContext.</p>
      *
-     * @param context a {@link org.pac4j.saml.context.SAML2MessageContext} object
-     * @param decoder a {@link org.pac4j.saml.transport.AbstractPac4jDecoder} object
-     * @return a {@link org.pac4j.saml.context.SAML2MessageContext} object
+     * @param context a {@link SAML2MessageContext} object
+     * @param decoder a {@link AbstractPac4jDecoder} object
+     * @return a {@link SAML2MessageContext} object
      */
     protected SAML2MessageContext prepareDecodedContext(final SAML2MessageContext context, final AbstractPac4jDecoder decoder) {
         val decodedCtx = new SAML2MessageContext(decoder.getCallContext());
@@ -188,8 +189,8 @@ public class SAML2CredentialsExtractor implements CredentialsExtractor {
     /**
      * <p>prepareSelfEntityContext.</p>
      *
-     * @param context a {@link org.pac4j.saml.context.SAML2MessageContext} object
-     * @param decodedCtx a {@link org.pac4j.saml.context.SAML2MessageContext} object
+     * @param context a {@link SAML2MessageContext} object
+     * @param decodedCtx a {@link SAML2MessageContext} object
      */
     protected void prepareSelfEntityContext(final SAML2MessageContext context, final SAML2MessageContext decodedCtx) {
         decodedCtx.getSAMLSelfEntityContext().setEntityId(context.getSAMLSelfEntityContext().getEntityId());
@@ -200,12 +201,12 @@ public class SAML2CredentialsExtractor implements CredentialsExtractor {
     /**
      * <p>preparePeerEntityContext.</p>
      *
-     * @param decoder a {@link org.pac4j.saml.transport.AbstractPac4jDecoder} object
-     * @param decodedCtx a {@link org.pac4j.saml.context.SAML2MessageContext} object
-     * @param bindingContext a {@link org.opensaml.saml.common.messaging.context.SAMLBindingContext} object
-     * @param metadata a {@link org.opensaml.saml.saml2.metadata.EntityDescriptor} object
+     * @param decoder a {@link AbstractPac4jDecoder} object
+     * @param decodedCtx a {@link SAML2MessageContext} object
+     * @param bindingContext a {@link SAMLBindingContext} object
+     * @param metadata a {@link EntityDescriptor} object
      */
-    protected void preparePeerEntityContext(final AbstractPac4jDecoder decoder,
+    protected void preparePeerEntityContext(final MessageDecoder decoder,
                                             final SAML2MessageContext decodedCtx,
                                             final SAMLBindingContext bindingContext,
                                             final EntityDescriptor metadata) {
@@ -219,13 +220,13 @@ public class SAML2CredentialsExtractor implements CredentialsExtractor {
     /**
      * <p>prepareBindingContext.</p>
      *
-     * @param context a {@link org.pac4j.saml.context.SAML2MessageContext} object
-     * @param decoder a {@link org.pac4j.saml.transport.AbstractPac4jDecoder} object
-     * @param decodedCtx a {@link org.pac4j.saml.context.SAML2MessageContext} object
-     * @return a {@link org.opensaml.saml.common.messaging.context.SAMLBindingContext} object
+     * @param context a {@link SAML2MessageContext} object
+     * @param decoder a {@link AbstractPac4jDecoder} object
+     * @param decodedCtx a {@link SAML2MessageContext} object
+     * @return a {@link SAMLBindingContext} object
      */
     protected SAMLBindingContext prepareBindingContext(final SAML2MessageContext context,
-                                                       final AbstractPac4jDecoder decoder,
+                                                       final MessageDecoder decoder,
                                                        final SAML2MessageContext decodedCtx) {
         val bindingContext = decoder.getMessageContext().getSubcontext(SAMLBindingContext.class);
         CommonHelper.assertNotNull("SAMLBindingContext", bindingContext);

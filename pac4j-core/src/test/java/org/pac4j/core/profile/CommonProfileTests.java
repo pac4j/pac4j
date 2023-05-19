@@ -12,6 +12,7 @@ import org.pac4j.core.util.serializer.JavaSerializer;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -30,7 +31,7 @@ public final class CommonProfileTests implements TestsConstants {
 
     @Test
     public void testSetId() {
-        val userProfile = new CommonProfile();
+        UserProfile userProfile = new CommonProfile();
         assertNull(userProfile.getId());
         userProfile.setId(ID);
         assertEquals(ID, userProfile.getId());
@@ -38,7 +39,7 @@ public final class CommonProfileTests implements TestsConstants {
 
     @Test
     public void testAddAttribute() {
-        val userProfile = new CommonProfile();
+        UserProfile userProfile = new CommonProfile();
         assertEquals(0, userProfile.getAttributes().size());
         userProfile.addAttribute(KEY, VALUE);
         assertEquals(1, userProfile.getAttributes().size());
@@ -129,8 +130,8 @@ public final class CommonProfileTests implements TestsConstants {
 
     @Test
     public void testAddAttributeMultipleValues() {
-        val userProfile = new CommonProfile(true);
-        userProfile.addAttribute(KEY, Arrays.asList("Value1"));
+        UserProfile userProfile = new CommonProfile(true);
+        userProfile.addAttribute(KEY, List.of("Value1"));
         userProfile.addAttribute(KEY, Arrays.asList("Value2", "Value3"));
         assertEquals(1, userProfile.getAttributes().size());
         assertEquals(Arrays.asList("Value1", "Value2", "Value3"), userProfile.getAttribute(KEY));
@@ -138,8 +139,8 @@ public final class CommonProfileTests implements TestsConstants {
 
     @Test
     public void testAddAttributeMultipleValuesOldBehaviour() {
-        val userProfile = new CommonProfile(false);
-        userProfile.addAttribute(KEY, Arrays.asList("Value1"));
+        UserProfile userProfile = new CommonProfile(false);
+        userProfile.addAttribute(KEY, List.of("Value1"));
         userProfile.addAttribute(KEY, Arrays.asList("Value2", "Value3"));
         assertEquals(1, userProfile.getAttributes().size());
         assertEquals(Arrays.asList("Value2", "Value3"), userProfile.getAttribute(KEY));
@@ -178,7 +179,7 @@ public final class CommonProfileTests implements TestsConstants {
 
     @Test
     public void testUnsafeAddAttribute() throws UnsupportedOperationException {
-        val userProfile = new CommonProfile();
+        UserProfile userProfile = new CommonProfile();
         userProfile.getAttributes().put(KEY, VALUE);
     }
 
@@ -190,7 +191,7 @@ public final class CommonProfileTests implements TestsConstants {
 
     @Test
     public void testRoles() {
-        val profile = new CommonProfile();
+        UserProfile profile = new CommonProfile();
         assertEquals(0, profile.getRoles().size());
         profile.addRole(ROLE1);
         assertEquals(1, profile.getRoles().size());
@@ -199,7 +200,7 @@ public final class CommonProfileTests implements TestsConstants {
 
     @Test
     public void testRme() {
-        val profile = new CommonProfile();
+        UserProfile profile = new CommonProfile();
         assertFalse(profile.isRemembered());
         profile.setRemembered(true);
         assertTrue(profile.isRemembered());
@@ -207,26 +208,26 @@ public final class CommonProfileTests implements TestsConstants {
 
     @Test
     public void testTypeId() {
-        val profile = new CommonProfile();
+        UserProfile profile = new CommonProfile();
         profile.setId(ID);
         assertEquals("org.pac4j.core.profile.CommonProfile" + Pac4jConstants.TYPED_ID_SEPARATOR + ID, profile.getTypedId());
     }
 
     @Test
     public void testNullId() {
-        val profile = new CommonProfile();
+        UserProfile profile = new CommonProfile();
         TestsHelper.expectException(() -> profile.setId(null), TechnicalException.class, "id cannot be blank");
     }
 
     @Test
     public void testBlankRole() {
-        val profile = new CommonProfile();
+        UserProfile profile = new CommonProfile();
         TestsHelper.expectException(() -> profile.addRole(Pac4jConstants.EMPTY_STRING), TechnicalException.class, "role cannot be blank");
     }
 
     @Test
     public void testNullRoles() {
-        val profile = new CommonProfile();
+        UserProfile profile = new CommonProfile();
         TestsHelper.expectException(() -> profile.addRoles(null), TechnicalException.class, "roles cannot be null");
     }
 
@@ -241,7 +242,7 @@ public final class CommonProfileTests implements TestsConstants {
 
     @Test
     public void testSetNullLinkedIdWhenAlreadySet() {
-        val profile = new CommonProfile();
+        UserProfile profile = new CommonProfile();
         profile.setLinkedId("dummyLinkecId");
         profile.setLinkedId(null);
         assertNull(profile.getLinkedId());
@@ -249,7 +250,7 @@ public final class CommonProfileTests implements TestsConstants {
 
     @Test
     public void testSetNullLinkedIdWhenNotAlreadySet() {
-        val profile = new CommonProfile();
+        UserProfile profile = new CommonProfile();
         profile.setLinkedId(null);
         assertNull(profile.getLinkedId());
     }

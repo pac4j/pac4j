@@ -44,7 +44,7 @@ public class IndirectBasicAuthClient extends IndirectClient {
     /**
      * <p>Constructor for IndirectBasicAuthClient.</p>
      *
-     * @param usernamePasswordAuthenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
+     * @param usernamePasswordAuthenticator a {@link Authenticator} object
      */
     public IndirectBasicAuthClient(final Authenticator usernamePasswordAuthenticator) {
         setAuthenticatorIfUndefined(usernamePasswordAuthenticator);
@@ -53,8 +53,8 @@ public class IndirectBasicAuthClient extends IndirectClient {
     /**
      * <p>Constructor for IndirectBasicAuthClient.</p>
      *
-     * @param realmName a {@link java.lang.String} object
-     * @param usernamePasswordAuthenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
+     * @param realmName a {@link String} object
+     * @param usernamePasswordAuthenticator a {@link Authenticator} object
      */
     public IndirectBasicAuthClient(final String realmName, final Authenticator usernamePasswordAuthenticator) {
         this.realmName = realmName;
@@ -64,8 +64,8 @@ public class IndirectBasicAuthClient extends IndirectClient {
     /**
      * <p>Constructor for IndirectBasicAuthClient.</p>
      *
-     * @param usernamePasswordAuthenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
-     * @param profileCreator a {@link org.pac4j.core.profile.creator.ProfileCreator} object
+     * @param usernamePasswordAuthenticator a {@link Authenticator} object
+     * @param profileCreator a {@link ProfileCreator} object
      */
     public IndirectBasicAuthClient(final Authenticator usernamePasswordAuthenticator, final ProfileCreator profileCreator) {
         setAuthenticatorIfUndefined(usernamePasswordAuthenticator);
@@ -99,7 +99,7 @@ public class IndirectBasicAuthClient extends IndirectClient {
             credentials = getCredentialsExtractor().extract(ctx);
             logger.debug("credentials : {}", credentials);
 
-            if (!credentials.isPresent()) {
+            if (credentials.isEmpty()) {
                 throw HttpActionHelper.buildUnauthenticatedAction(webContext);
             }
 

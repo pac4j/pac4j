@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.serializer.JavaSerializer;
 import org.pac4j.jwt.config.signature.SecretSignatureConfiguration;
+import org.pac4j.jwt.config.signature.SignatureConfiguration;
 import org.pac4j.jwt.credentials.authenticator.JwtAuthenticator;
 import org.pac4j.jwt.profile.JwtGenerator;
 import org.pac4j.oidc.profile.google.GoogleOidcProfile;
@@ -218,7 +219,7 @@ public final class OidcProfileTests implements TestsConstants {
         googleOidcProfile.setExpiration(expiration);
 
         final String secret = "12345678901234567890123456789012";
-        final SecretSignatureConfiguration secretSignatureConfiguration = new SecretSignatureConfiguration(secret);
+        final SignatureConfiguration secretSignatureConfiguration = new SecretSignatureConfiguration(secret);
         final JwtGenerator generator = new JwtGenerator();
         generator.setSignatureConfiguration(secretSignatureConfiguration);
         String token = generator.generate(googleOidcProfile);

@@ -44,8 +44,8 @@ public class LocalCachingProfileCreator extends InitializableObject implements P
     /**
      * <p>Constructor for LocalCachingProfileCreator.</p>
      *
-     * @param delegate a {@link org.pac4j.core.profile.creator.ProfileCreator} object
-     * @param store a {@link org.pac4j.core.store.Store} object
+     * @param delegate a {@link ProfileCreator} object
+     * @param store a {@link Store} object
      */
     public LocalCachingProfileCreator(final ProfileCreator delegate, final Store<Credentials, UserProfile> store) {
         this.delegate = delegate;
@@ -55,10 +55,10 @@ public class LocalCachingProfileCreator extends InitializableObject implements P
     /**
      * <p>Constructor for LocalCachingProfileCreator.</p>
      *
-     * @param delegate a {@link org.pac4j.core.profile.creator.ProfileCreator} object
+     * @param delegate a {@link ProfileCreator} object
      * @param cacheSize a int
      * @param timeout a int
-     * @param timeUnit a {@link java.util.concurrent.TimeUnit} object
+     * @param timeUnit a {@link TimeUnit} object
      */
     public LocalCachingProfileCreator(final ProfileCreator delegate, final int cacheSize,
                                       final int timeout, final TimeUnit timeUnit) {
@@ -103,7 +103,7 @@ public class LocalCachingProfileCreator extends InitializableObject implements P
     /**
      * <p>removeFromCache.</p>
      *
-     * @param credentials a {@link org.pac4j.core.credentials.Credentials} object
+     * @param credentials a {@link Credentials} object
      */
     public void removeFromCache(final Credentials credentials) {
         this.store.remove(credentials);
@@ -112,7 +112,7 @@ public class LocalCachingProfileCreator extends InitializableObject implements P
     /**
      * <p>isCached.</p>
      *
-     * @param credentials a {@link org.pac4j.core.credentials.Credentials} object
+     * @param credentials a {@link Credentials} object
      * @return a boolean
      */
     public boolean isCached(final Credentials credentials) {

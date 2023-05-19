@@ -11,7 +11,7 @@ public class OidcConfigurationException extends OidcException {
     /**
      * <p>Constructor for OidcConfigurationException.</p>
      *
-     * @param message a {@link java.lang.String} object
+     * @param message a {@link String} object
      */
     public OidcConfigurationException(String message) {
         super(message);
@@ -20,7 +20,7 @@ public class OidcConfigurationException extends OidcException {
     /**
      * <p>Constructor for OidcConfigurationException.</p>
      *
-     * @param t a {@link java.lang.Throwable} object
+     * @param t a {@link Throwable} object
      */
     public OidcConfigurationException(Throwable t) {
         super(t);
@@ -29,8 +29,8 @@ public class OidcConfigurationException extends OidcException {
     /**
      * <p>Constructor for OidcConfigurationException.</p>
      *
-     * @param message a {@link java.lang.String} object
-     * @param t a {@link java.lang.Throwable} object
+     * @param message a {@link String} object
+     * @param t a {@link Throwable} object
      */
     public OidcConfigurationException(String message, Throwable t) {
         super(message, t);

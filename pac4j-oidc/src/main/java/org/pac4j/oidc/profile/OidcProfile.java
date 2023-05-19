@@ -9,6 +9,7 @@ import lombok.val;
 import org.pac4j.core.profile.jwt.AbstractJwtProfile;
 import org.pac4j.oidc.exceptions.OidcException;
 
+import java.io.Serial;
 import java.net.URI;
 import java.text.ParseException;
 import java.time.Instant;
@@ -24,6 +25,7 @@ import java.util.Date;
 @ToString(callSuper = true)
 public class OidcProfile extends AbstractJwtProfile {
 
+    @Serial
     private static final long serialVersionUID = -52855988661742374L;
 
     /**
@@ -40,7 +42,7 @@ public class OidcProfile extends AbstractJwtProfile {
     /**
      * <p>getMiddleName.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getMiddleName() {
         return (String) getAttribute(OidcProfileDefinition.MIDDLE_NAME);
@@ -55,7 +57,7 @@ public class OidcProfile extends AbstractJwtProfile {
     /**
      * <p>getNickname.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getNickname() {
         return (String) getAttribute(OidcProfileDefinition.NICKNAME);
@@ -88,7 +90,7 @@ public class OidcProfile extends AbstractJwtProfile {
     /**
      * <p>getEmailVerified.</p>
      *
-     * @return a {@link java.lang.Boolean} object
+     * @return a {@link Boolean} object
      */
     public Boolean getEmailVerified() {
         return (Boolean) getAttribute(OidcProfileDefinition.EMAIL_VERIFIED);
@@ -97,7 +99,7 @@ public class OidcProfile extends AbstractJwtProfile {
     /**
      * <p>getPhoneNumber.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getPhoneNumber() {
         return (String) getAttribute(OidcProfileDefinition.PHONE_NUMBER);
@@ -106,7 +108,7 @@ public class OidcProfile extends AbstractJwtProfile {
     /**
      * <p>getPhoneNumberVerified.</p>
      *
-     * @return a {@link java.lang.Boolean} object
+     * @return a {@link Boolean} object
      */
     public Boolean getPhoneNumberVerified() {
         return (Boolean) getAttribute(OidcProfileDefinition.PHONE_NUMBER_VERIFIED);
@@ -115,7 +117,7 @@ public class OidcProfile extends AbstractJwtProfile {
     /**
      * <p>getUpdatedAt.</p>
      *
-     * @return a {@link java.util.Date} object
+     * @return a {@link Date} object
      */
     public Date getUpdatedAt() {
         return getAttributeAsDate(OidcProfileDefinition.UPDATED_AT);
@@ -124,7 +126,7 @@ public class OidcProfile extends AbstractJwtProfile {
     /**
      * <p>getAuthTime.</p>
      *
-     * @return a {@link java.util.Date} object
+     * @return a {@link Date} object
      */
     public Date getAuthTime() {
         return (Date) getAttribute(OidcProfileDefinition.AUTH_TIME);
@@ -133,7 +135,7 @@ public class OidcProfile extends AbstractJwtProfile {
     /**
      * <p>getNonce.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getNonce() {
         return (String) getAttribute(OidcProfileDefinition.NONCE);
@@ -142,7 +144,7 @@ public class OidcProfile extends AbstractJwtProfile {
     /**
      * <p>getAcr.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getAcr() {
         return (String) getAttribute(OidcProfileDefinition.ACR);
@@ -151,7 +153,7 @@ public class OidcProfile extends AbstractJwtProfile {
     /**
      * <p>getAmr.</p>
      *
-     * @return a {@link java.lang.Object} object
+     * @return a {@link Object} object
      */
     public Object getAmr() {
         return getAttribute(OidcProfileDefinition.AMR);
@@ -160,7 +162,7 @@ public class OidcProfile extends AbstractJwtProfile {
     /**
      * <p>getAzp.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getAzp() {
         return (String) getAttribute(OidcProfileDefinition.AZP);
@@ -169,7 +171,7 @@ public class OidcProfile extends AbstractJwtProfile {
     /**
      * <p>setAccessToken.</p>
      *
-     * @param accessToken a {@link com.nimbusds.oauth2.sdk.token.AccessToken} object
+     * @param accessToken a {@link AccessToken} object
      */
     public void setAccessToken(final AccessToken accessToken) {
         addAttribute(OidcProfileDefinition.ACCESS_TOKEN, accessToken);
@@ -194,7 +196,7 @@ public class OidcProfile extends AbstractJwtProfile {
     /**
      * <p>getAccessToken.</p>
      *
-     * @return a {@link com.nimbusds.oauth2.sdk.token.AccessToken} object
+     * @return a {@link AccessToken} object
      */
     public AccessToken getAccessToken() {
         return (AccessToken) getAttribute(OidcProfileDefinition.ACCESS_TOKEN);
@@ -203,7 +205,7 @@ public class OidcProfile extends AbstractJwtProfile {
     /**
      * <p>getIdTokenString.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getIdTokenString() {
         return (String) getAttribute(OidcProfileDefinition.ID_TOKEN);
@@ -212,7 +214,7 @@ public class OidcProfile extends AbstractJwtProfile {
     /**
      * <p>setIdTokenString.</p>
      *
-     * @param idToken a {@link java.lang.String} object
+     * @param idToken a {@link String} object
      */
     public void setIdTokenString(final String idToken) {
         addAttribute(OidcProfileDefinition.ID_TOKEN, idToken);
@@ -221,7 +223,7 @@ public class OidcProfile extends AbstractJwtProfile {
     /**
      * <p>getIdToken.</p>
      *
-     * @return a {@link com.nimbusds.jwt.JWT} object
+     * @return a {@link JWT} object
      */
     public JWT getIdToken() {
         if(getIdTokenString() != null){
@@ -238,7 +240,7 @@ public class OidcProfile extends AbstractJwtProfile {
     /**
      * <p>getRefreshToken.</p>
      *
-     * @return a {@link com.nimbusds.oauth2.sdk.token.RefreshToken} object
+     * @return a {@link RefreshToken} object
      */
     public RefreshToken getRefreshToken() {
         return (RefreshToken) getAttribute(OidcProfileDefinition.REFRESH_TOKEN);
@@ -247,7 +249,7 @@ public class OidcProfile extends AbstractJwtProfile {
     /**
      * <p>setRefreshToken.</p>
      *
-     * @param refreshToken a {@link com.nimbusds.oauth2.sdk.token.RefreshToken} object
+     * @param refreshToken a {@link RefreshToken} object
      */
     public void setRefreshToken(final RefreshToken refreshToken) {
         addAttribute(OidcProfileDefinition.REFRESH_TOKEN, refreshToken);
@@ -290,7 +292,7 @@ public class OidcProfile extends AbstractJwtProfile {
     /**
      * <p>getExpiration.</p>
      *
-     * @return a {@link java.util.Date} object
+     * @return a {@link Date} object
      */
     public Date getExpiration() {
         return getAttributeAsDate(OidcProfileDefinition.EXPIRATION);
@@ -299,7 +301,7 @@ public class OidcProfile extends AbstractJwtProfile {
     /**
      * <p>setExpiration.</p>
      *
-     * @param expiration a {@link java.util.Date} object
+     * @param expiration a {@link Date} object
      */
     public void setExpiration(final Date expiration) {
         if (expiration != null) {

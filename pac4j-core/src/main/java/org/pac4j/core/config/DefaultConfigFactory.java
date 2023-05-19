@@ -13,7 +13,7 @@ public class DefaultConfigFactory implements ConfigFactory {
     /**
      * <p>Constructor for DefaultConfigFactory.</p>
      *
-     * @param config a {@link org.pac4j.core.config.Config} object
+     * @param config a {@link Config} object
      */
     public DefaultConfigFactory(final Config config) {
         this.config = config;

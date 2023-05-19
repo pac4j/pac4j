@@ -12,8 +12,8 @@ public interface WebContextFactory {
     /**
      * <p>newContext.</p>
      *
-     * @param parameters a {@link org.pac4j.core.context.FrameworkParameters} object
-     * @return a {@link org.pac4j.core.context.WebContext} object
+     * @param parameters a {@link FrameworkParameters} object
+     * @return a {@link WebContext} object
      */
     WebContext newContext(FrameworkParameters parameters);
 }

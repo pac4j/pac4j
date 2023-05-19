@@ -13,18 +13,18 @@ public interface SAMLContextProvider {
     /**
      * <p>buildServiceProviderContext.</p>
      *
-     * @param ctx a {@link org.pac4j.core.context.CallContext} object
-     * @param client a {@link org.pac4j.saml.client.SAML2Client} object
-     * @return a {@link org.pac4j.saml.context.SAML2MessageContext} object
+     * @param ctx a {@link CallContext} object
+     * @param client a {@link SAML2Client} object
+     * @return a {@link SAML2MessageContext} object
      */
     SAML2MessageContext buildServiceProviderContext(CallContext ctx, SAML2Client client);
 
     /**
      * <p>buildContext.</p>
      *
-     * @param ctx a {@link org.pac4j.core.context.CallContext} object
-     * @param client a {@link org.pac4j.saml.client.SAML2Client} object
-     * @return a {@link org.pac4j.saml.context.SAML2MessageContext} object
+     * @param ctx a {@link CallContext} object
+     * @param client a {@link SAML2Client} object
+     * @return a {@link SAML2MessageContext} object
      */
     SAML2MessageContext buildContext(CallContext ctx, SAML2Client client);
 }

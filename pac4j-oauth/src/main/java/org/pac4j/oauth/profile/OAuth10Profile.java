@@ -1,7 +1,9 @@
 package org.pac4j.oauth.profile;
 
+import java.io.Serial;
+
 /**
- * This class is the base OAuth 1.0 profile, extending from the base {@link org.pac4j.oauth.profile.OAuth20Profile}. It deals with the OAuth
+ * This class is the base OAuth 1.0 profile, extending from the base {@link OAuth20Profile}. It deals with the OAuth
  * access token secret.
  *
  * @author Jerome Leleu
@@ -9,6 +11,7 @@ package org.pac4j.oauth.profile;
  */
 public class OAuth10Profile extends OAuth20Profile {
 
+    @Serial
     private static final long serialVersionUID = 3407397824720340476L;
 
     private transient static final String ACCESS_SECRET = "access_secret";

@@ -1,5 +1,6 @@
 package org.pac4j.oauth.profile.foursquare;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
  */
 public class FoursquareUserFriendGroup implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -8744746298033480494L;
 
     private int count;
@@ -40,7 +42,7 @@ public class FoursquareUserFriendGroup implements Serializable {
     /**
      * <p>Getter for the field <code>name</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getName() {
         return name;
@@ -49,7 +51,7 @@ public class FoursquareUserFriendGroup implements Serializable {
     /**
      * <p>Setter for the field <code>name</code>.</p>
      *
-     * @param name a {@link java.lang.String} object
+     * @param name a {@link String} object
      */
     public void setName(String name) {
         this.name = name;
@@ -58,7 +60,7 @@ public class FoursquareUserFriendGroup implements Serializable {
     /**
      * <p>Getter for the field <code>type</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getType() {
         return type;
@@ -67,7 +69,7 @@ public class FoursquareUserFriendGroup implements Serializable {
     /**
      * <p>Setter for the field <code>type</code>.</p>
      *
-     * @param type a {@link java.lang.String} object
+     * @param type a {@link String} object
      */
     public void setType(String type) {
         this.type = type;
@@ -76,7 +78,7 @@ public class FoursquareUserFriendGroup implements Serializable {
     /**
      * <p>Getter for the field <code>friends</code>.</p>
      *
-     * @return a {@link java.util.List} object
+     * @return a {@link List} object
      */
     public List<FoursquareUserFriend> getFriends() {
         return friends;
@@ -85,7 +87,7 @@ public class FoursquareUserFriendGroup implements Serializable {
     /**
      * <p>Setter for the field <code>friends</code>.</p>
      *
-     * @param friends a {@link java.util.List} object
+     * @param friends a {@link List} object
      */
     public void setFriends(List<FoursquareUserFriend> friends) {
         this.friends = friends;

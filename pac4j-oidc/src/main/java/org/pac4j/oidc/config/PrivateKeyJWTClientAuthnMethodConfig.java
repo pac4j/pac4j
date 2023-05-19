@@ -32,8 +32,8 @@ public class PrivateKeyJWTClientAuthnMethodConfig {
     /**
      * <p>Constructor for PrivateKeyJWTClientAuthnMethodConfig.</p>
      *
-     * @param jwsAlgorithm a {@link com.nimbusds.jose.JWSAlgorithm} object
-     * @param privateKey a {@link java.security.PrivateKey} object
+     * @param jwsAlgorithm a {@link JWSAlgorithm} object
+     * @param privateKey a {@link PrivateKey} object
      */
     public PrivateKeyJWTClientAuthnMethodConfig(final JWSAlgorithm jwsAlgorithm, final PrivateKey privateKey) {
         this.jwsAlgorithm = jwsAlgorithm;
@@ -43,9 +43,9 @@ public class PrivateKeyJWTClientAuthnMethodConfig {
     /**
      * <p>Constructor for PrivateKeyJWTClientAuthnMethodConfig.</p>
      *
-     * @param jwsAlgorithm a {@link com.nimbusds.jose.JWSAlgorithm} object
-     * @param privateKey a {@link java.security.PrivateKey} object
-     * @param keyID a {@link java.lang.String} object
+     * @param jwsAlgorithm a {@link JWSAlgorithm} object
+     * @param privateKey a {@link PrivateKey} object
+     * @param keyID a {@link String} object
      */
     public PrivateKeyJWTClientAuthnMethodConfig(final JWSAlgorithm jwsAlgorithm, final PrivateKey privateKey, final String keyID) {
         this(jwsAlgorithm, privateKey);

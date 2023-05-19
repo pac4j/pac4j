@@ -4,7 +4,9 @@ import lombok.val;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.junit.Test;
 import org.pac4j.core.exception.http.FoundAction;
+import org.pac4j.core.exception.http.WithLocationAction;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 
 import static org.junit.Assert.*;
@@ -30,7 +32,7 @@ public final class JavaSerializerTests implements TestsConstants {
     public void testBytesSerialization() {
         val profile = getUserProfile();
         val serialized = helper.serializeToBytes(profile);
-        val profile2 = (CommonProfile) helper.deserializeFromBytes(serialized);
+        UserProfile profile2 = (CommonProfile) helper.deserializeFromBytes(serialized);
         assertEquals(profile.getId(), profile2.getId());
         assertEquals(profile.getAttribute(NAME), profile2.getAttribute(NAME));
     }
@@ -39,7 +41,7 @@ public final class JavaSerializerTests implements TestsConstants {
     public void testStringSerialization() {
         val profile = getUserProfile();
         val serialized = helper.serializeToString(profile);
-        val profile2 = (CommonProfile) helper.deserializeFromString(serialized);
+        UserProfile profile2 = (CommonProfile) helper.deserializeFromString(serialized);
         assertEquals(profile.getId(), profile2.getId());
         assertEquals(profile.getAttribute(NAME), profile2.getAttribute(NAME));
     }
@@ -84,16 +86,16 @@ public final class JavaSerializerTests implements TestsConstants {
     public void testBase64StringSerialization() {
         val profile = getUserProfile();
         val serialized = helper.serializeToString(profile);
-        val profile2 = (CommonProfile) helper.deserializeFromString(serialized);
+        UserProfile profile2 = (CommonProfile) helper.deserializeFromString(serialized);
         assertEquals(profile.getId(), profile2.getId());
         assertEquals(profile.getAttribute(NAME), profile2.getAttribute(NAME));
     }
 
     @Test
     public void testFoundActionSerialization() {
-        val action = new FoundAction(PAC4J_BASE_URL);
+        WithLocationAction action = new FoundAction(PAC4J_BASE_URL);
         val serialized = helper.serializeToBytes(action);
-        val action2 = (FoundAction) helper.deserializeFromBytes(serialized);
+        WithLocationAction action2 = (FoundAction) helper.deserializeFromBytes(serialized);
         assertEquals(action.getLocation(), action2.getLocation());
     }
 }

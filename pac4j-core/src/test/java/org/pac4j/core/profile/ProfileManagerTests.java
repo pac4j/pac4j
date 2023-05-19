@@ -91,7 +91,7 @@ public final class ProfileManagerTests {
         sessionStore.set(context, Pac4jConstants.USER_PROFILES, profiles);
         assertFalse(profileManager.getProfile().isPresent());
         assertFalse(profileManager.isAuthenticated());
-        val profiles =
+        Map<String, UserProfile> profiles =
             (LinkedHashMap<String, UserProfile>) sessionStore.get(context, Pac4jConstants.USER_PROFILES).get();
         assertEquals(0, profiles.size());
     }
@@ -110,7 +110,7 @@ public final class ProfileManagerTests {
         sessionStore.set(context, Pac4jConstants.USER_PROFILES, profiles);
         assertEquals(profile2, profileManager.getProfile().get());
         assertTrue(profileManager.isAuthenticated());
-        val profiles =
+        Map<String, UserProfile> profiles =
             (LinkedHashMap<String, UserProfile>) sessionStore.get(context, Pac4jConstants.USER_PROFILES).get();
         assertEquals(profile2, profiles.get(CLIENT1));
     }
@@ -128,7 +128,7 @@ public final class ProfileManagerTests {
         sessionStore.set(context, Pac4jConstants.USER_PROFILES, profiles);
         assertFalse(profileManager.getProfile().isPresent());
         assertFalse(profileManager.isAuthenticated());
-        val profiles =
+        Map<String, UserProfile> profiles =
             (LinkedHashMap<String, UserProfile>) sessionStore.get(context, Pac4jConstants.USER_PROFILES).get();
         assertEquals(0, profiles.size());
     }
@@ -147,7 +147,7 @@ public final class ProfileManagerTests {
         sessionStore.set(context, Pac4jConstants.USER_PROFILES, profiles);
         assertFalse(profileManager.getProfile().isPresent());
         assertFalse(profileManager.isAuthenticated());
-        val profiles =
+        Map<String, UserProfile> profiles =
             (LinkedHashMap<String, UserProfile>) sessionStore.get(context, Pac4jConstants.USER_PROFILES).get();
         assertEquals(0, profiles.size());
     }
@@ -202,7 +202,7 @@ public final class ProfileManagerTests {
     public void testGetAllTwoProfilesFromSessionAndRequest() {
         profiles.put(CLIENT1, profile1);
         context.setRequestAttribute(Pac4jConstants.USER_PROFILES, profiles);
-        val profiles2 = new LinkedHashMap<String, CommonProfile>();
+        Map<String, CommonProfile> profiles2 = new LinkedHashMap<>();
         profiles2.put(CLIENT2, profile2);
         sessionStore.set(context, Pac4jConstants.USER_PROFILES, profiles2);
         assertEquals(profile1, profileManager.getProfiles().get(0));

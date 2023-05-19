@@ -8,6 +8,7 @@ import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.facebook.FacebookObject;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -83,7 +84,7 @@ public final class JsonConverterTests implements TestsConstants {
 
     @Test
     public void testListObjectForListConverter() {
-        final List<FacebookObject> list = new ArrayList<>();
+        final Collection<FacebookObject> list = new ArrayList<>();
         list.add(new FacebookObject());
         val objects = (List<FacebookObject>) LIST_CONVERTER.convert(list);
         assertNotNull(objects);

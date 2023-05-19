@@ -12,6 +12,7 @@ import org.pac4j.core.exception.AccountNotFoundException;
 import org.pac4j.core.exception.BadCredentialsException;
 import org.pac4j.core.exception.MultipleAccountsFoundException;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.service.AbstractProfileService;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.util.TestsConstants;
@@ -116,7 +117,7 @@ public final class MongoProfileServiceIT implements TestsConstants {
         val profile = credentials.getUserProfile();
         assertNotNull(profile);
         assertTrue(profile instanceof MongoProfile);
-        val dbProfile = (MongoProfile) profile;
+        UserProfile dbProfile = (MongoProfile) profile;
         assertEquals(GOOD_USERNAME, dbProfile.getId());
         assertEquals(FIRSTNAME_VALUE, dbProfile.getAttribute(FIRSTNAME));
     }
@@ -128,7 +129,7 @@ public final class MongoProfileServiceIT implements TestsConstants {
         val profile = credentials.getUserProfile();
         assertNotNull(profile);
         assertTrue(profile instanceof MongoProfile);
-        val dbProfile = (MongoProfile) profile;
+        UserProfile dbProfile = (MongoProfile) profile;
         assertEquals(GOOD_USERNAME, dbProfile.getId());
         assertNull(dbProfile.getAttribute(FIRSTNAME));
     }

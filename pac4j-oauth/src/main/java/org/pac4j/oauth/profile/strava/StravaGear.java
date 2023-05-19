@@ -2,6 +2,7 @@ package org.pac4j.oauth.profile.strava;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -12,6 +13,7 @@ import java.io.Serializable;
  */
 public class StravaGear implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -5738356602119292294L;
 
     private String id;
@@ -24,7 +26,7 @@ public class StravaGear implements Serializable {
     /**
      * <p>Getter for the field <code>id</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getId() {
         return id;
@@ -33,7 +35,7 @@ public class StravaGear implements Serializable {
     /**
      * <p>Setter for the field <code>id</code>.</p>
      *
-     * @param id a {@link java.lang.String} object
+     * @param id a {@link String} object
      */
     public void setId(String id) {
         this.id = id;
@@ -42,7 +44,7 @@ public class StravaGear implements Serializable {
     /**
      * <p>Getter for the field <code>primary</code>.</p>
      *
-     * @return a {@link java.lang.Boolean} object
+     * @return a {@link Boolean} object
      */
     public Boolean getPrimary() {
         return primary;
@@ -51,7 +53,7 @@ public class StravaGear implements Serializable {
     /**
      * <p>Setter for the field <code>primary</code>.</p>
      *
-     * @param primary a {@link java.lang.Boolean} object
+     * @param primary a {@link Boolean} object
      */
     public void setPrimary(Boolean primary) {
         this.primary = primary;
@@ -60,7 +62,7 @@ public class StravaGear implements Serializable {
     /**
      * <p>Getter for the field <code>name</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getName() {
         return name;
@@ -69,7 +71,7 @@ public class StravaGear implements Serializable {
     /**
      * <p>Setter for the field <code>name</code>.</p>
      *
-     * @param name a {@link java.lang.String} object
+     * @param name a {@link String} object
      */
     public void setName(String name) {
         this.name = name;
@@ -78,7 +80,7 @@ public class StravaGear implements Serializable {
     /**
      * <p>Getter for the field <code>resourceState</code>.</p>
      *
-     * @return a {@link java.lang.Integer} object
+     * @return a {@link Integer} object
      */
     public Integer getResourceState() {
         return resourceState;
@@ -87,7 +89,7 @@ public class StravaGear implements Serializable {
     /**
      * <p>Setter for the field <code>resourceState</code>.</p>
      *
-     * @param resourceState a {@link java.lang.Integer} object
+     * @param resourceState a {@link Integer} object
      */
     public void setResourceState(Integer resourceState) {
         this.resourceState = resourceState;
@@ -96,7 +98,7 @@ public class StravaGear implements Serializable {
     /**
      * <p>Getter for the field <code>distance</code>.</p>
      *
-     * @return a {@link java.lang.Long} object
+     * @return a {@link Long} object
      */
     public Long getDistance() {
         return distance;
@@ -105,7 +107,7 @@ public class StravaGear implements Serializable {
     /**
      * <p>Setter for the field <code>distance</code>.</p>
      *
-     * @param distance a {@link java.lang.Long} object
+     * @param distance a {@link Long} object
      */
     public void setDistance(Long distance) {
         this.distance = distance;

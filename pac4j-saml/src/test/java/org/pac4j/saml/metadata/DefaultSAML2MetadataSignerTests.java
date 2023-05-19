@@ -3,6 +3,7 @@ package org.pac4j.saml.metadata;
 import lombok.val;
 import org.junit.Test;
 import org.pac4j.saml.config.SAML2Configuration;
+import org.pac4j.saml.util.ConfigurationManager;
 import org.pac4j.saml.util.DefaultConfigurationManager;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
@@ -43,7 +44,7 @@ public class DefaultSAML2MetadataSignerTests {
         configuration.setMetadataSigner(new DefaultSAML2MetadataSigner(configuration));
         configuration.init();
 
-        val mgr = new DefaultConfigurationManager();
+        ConfigurationManager mgr = new DefaultConfigurationManager();
         mgr.configure();
         val metadataGenerator = configuration.toMetadataGenerator();
         val entity = metadataGenerator.buildEntityDescriptor();

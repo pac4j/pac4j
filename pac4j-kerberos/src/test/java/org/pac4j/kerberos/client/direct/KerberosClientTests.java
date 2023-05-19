@@ -9,6 +9,7 @@ import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.kerberos.credentials.KerberosCredentials;
@@ -92,7 +93,7 @@ public class KerberosClientTests implements TestsConstants {
         assertEquals(new String(Base64.getDecoder().decode(KERBEROS_TICKET), StandardCharsets.UTF_8),
             new String(credentials.getKerberosTicket(), StandardCharsets.UTF_8));
         val authnCredentials = client.validateCredentials(ctx, credentials);
-        val profile = (CommonProfile) client.getUserProfile(ctx, authnCredentials.get()).get();
+        UserProfile profile = (CommonProfile) client.getUserProfile(ctx, authnCredentials.get()).get();
         assertEquals("garry", profile.getId());
     }
 }

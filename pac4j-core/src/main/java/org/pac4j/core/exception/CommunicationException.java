@@ -1,5 +1,7 @@
 package org.pac4j.core.exception;
 
+import java.io.Serial;
+
 /**
  * This class represents a communication exception.
  *
@@ -8,12 +10,13 @@ package org.pac4j.core.exception;
  */
 public class CommunicationException extends TechnicalException {
 
+    @Serial
     private static final long serialVersionUID = 3817212490339517957L;
 
     /**
      * <p>Constructor for CommunicationException.</p>
      *
-     * @param message a {@link java.lang.String} object
+     * @param message a {@link String} object
      */
     public CommunicationException(final String message) {
         super(message);
@@ -22,7 +25,7 @@ public class CommunicationException extends TechnicalException {
     /**
      * <p>Constructor for CommunicationException.</p>
      *
-     * @param t a {@link java.lang.Throwable} object
+     * @param t a {@link Throwable} object
      */
     public CommunicationException(final Throwable t) {
         super(t);

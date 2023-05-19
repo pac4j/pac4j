@@ -2,6 +2,7 @@ package org.pac4j.oauth.profile.facebook;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -12,6 +13,7 @@ import java.io.Serializable;
  */
 public final class FacebookPicture implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -797546775636792491L;
 
     private String url;
@@ -22,7 +24,7 @@ public final class FacebookPicture implements Serializable {
     /**
      * <p>Getter for the field <code>url</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getUrl() {
         return url;
@@ -31,7 +33,7 @@ public final class FacebookPicture implements Serializable {
     /**
      * <p>Setter for the field <code>url</code>.</p>
      *
-     * @param url a {@link java.lang.String} object
+     * @param url a {@link String} object
      */
     public void setUrl(String url) {
         this.url = url;
@@ -40,7 +42,7 @@ public final class FacebookPicture implements Serializable {
     /**
      * <p>getSilhouette.</p>
      *
-     * @return a {@link java.lang.Boolean} object
+     * @return a {@link Boolean} object
      */
     public Boolean getSilhouette() {
         return isSilhouette;
@@ -49,7 +51,7 @@ public final class FacebookPicture implements Serializable {
     /**
      * <p>setSilhouette.</p>
      *
-     * @param silhouette a {@link java.lang.Boolean} object
+     * @param silhouette a {@link Boolean} object
      */
     public void setSilhouette(Boolean silhouette) {
         isSilhouette = silhouette;

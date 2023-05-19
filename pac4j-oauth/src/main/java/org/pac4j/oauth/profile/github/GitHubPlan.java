@@ -2,6 +2,7 @@ package org.pac4j.oauth.profile.github;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -12,6 +13,7 @@ import java.io.Serializable;
  */
 public final class GitHubPlan implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -4718500186419958716L;
 
     private String name;
@@ -26,7 +28,7 @@ public final class GitHubPlan implements Serializable {
     /**
      * <p>Getter for the field <code>name</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getName() {
         return name;
@@ -35,7 +37,7 @@ public final class GitHubPlan implements Serializable {
     /**
      * <p>Setter for the field <code>name</code>.</p>
      *
-     * @param name a {@link java.lang.String} object
+     * @param name a {@link String} object
      */
     public void setName(String name) {
         this.name = name;
@@ -44,7 +46,7 @@ public final class GitHubPlan implements Serializable {
     /**
      * <p>Getter for the field <code>collaborators</code>.</p>
      *
-     * @return a {@link java.lang.Integer} object
+     * @return a {@link Integer} object
      */
     public Integer getCollaborators() {
         return collaborators;
@@ -53,7 +55,7 @@ public final class GitHubPlan implements Serializable {
     /**
      * <p>Setter for the field <code>collaborators</code>.</p>
      *
-     * @param collaborators a {@link java.lang.Integer} object
+     * @param collaborators a {@link Integer} object
      */
     public void setCollaborators(Integer collaborators) {
         this.collaborators = collaborators;
@@ -62,7 +64,7 @@ public final class GitHubPlan implements Serializable {
     /**
      * <p>Getter for the field <code>space</code>.</p>
      *
-     * @return a {@link java.lang.Integer} object
+     * @return a {@link Integer} object
      */
     public Integer getSpace() {
         return space;
@@ -71,7 +73,7 @@ public final class GitHubPlan implements Serializable {
     /**
      * <p>Setter for the field <code>space</code>.</p>
      *
-     * @param space a {@link java.lang.Integer} object
+     * @param space a {@link Integer} object
      */
     public void setSpace(Integer space) {
         this.space = space;
@@ -80,7 +82,7 @@ public final class GitHubPlan implements Serializable {
     /**
      * <p>Getter for the field <code>privateRepos</code>.</p>
      *
-     * @return a {@link java.lang.Integer} object
+     * @return a {@link Integer} object
      */
     public Integer getPrivateRepos() {
         return privateRepos;
@@ -89,7 +91,7 @@ public final class GitHubPlan implements Serializable {
     /**
      * <p>Setter for the field <code>privateRepos</code>.</p>
      *
-     * @param privateRepos a {@link java.lang.Integer} object
+     * @param privateRepos a {@link Integer} object
      */
     public void setPrivateRepos(Integer privateRepos) {
         this.privateRepos = privateRepos;

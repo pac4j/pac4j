@@ -37,7 +37,7 @@ public class CasRestAuthenticator implements Authenticator {
     /**
      * <p>Constructor for CasRestAuthenticator.</p>
      *
-     * @param configuration a {@link org.pac4j.cas.config.CasConfiguration} object
+     * @param configuration a {@link CasConfiguration} object
      */
     public CasRestAuthenticator(final CasConfiguration configuration) {
         CommonHelper.assertNotNull("configuration", configuration);

@@ -46,7 +46,7 @@ public class GuavaStore<K, O> extends AbstractStore<K, O> {
      *
      * @param size a int
      * @param timeout a int
-     * @param timeUnit a {@link java.util.concurrent.TimeUnit} object
+     * @param timeUnit a {@link TimeUnit} object
      */
     public GuavaStore(final int size, final int timeout, final TimeUnit timeUnit) {
         this.size = size;

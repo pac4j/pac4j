@@ -33,7 +33,7 @@ public class QueryParameterCallbackUrlResolver implements CallbackUrlResolver {
     /**
      * <p>Constructor for QueryParameterCallbackUrlResolver.</p>
      *
-     * @param customParams a {@link java.util.Map} object
+     * @param customParams a {@link Map} object
      */
     public QueryParameterCallbackUrlResolver(final Map<String, String> customParams) {
         this.customParams = customParams;

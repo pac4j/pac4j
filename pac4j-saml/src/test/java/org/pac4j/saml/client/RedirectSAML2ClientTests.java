@@ -11,6 +11,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.http.FoundAction;
+import org.pac4j.core.exception.http.WithLocationAction;
 import org.pac4j.saml.state.SAML2StateGenerator;
 
 import java.io.BufferedReader;
@@ -18,8 +19,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Base64;
+import java.util.List;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 
@@ -40,7 +41,8 @@ public final class RedirectSAML2ClientTests extends AbstractSAML2ClientTests {
         client.getConfiguration().setServiceProviderEntityId("http://localhost:8080/callback");
         client.getConfiguration().setUseNameQualifier(true);
 
-        val action = (FoundAction) client.getRedirectionAction(new CallContext(MockWebContext.create(), new MockSessionStore())).get();
+        WithLocationAction action = (FoundAction) client.getRedirectionAction(
+            new CallContext(MockWebContext.create(), new MockSessionStore())).get();
         val inflated = getInflatedAuthnRequest(action.getLocation());
 
         val issuerJdk11 = "<saml2:Issuer "
@@ -55,7 +57,8 @@ public final class RedirectSAML2ClientTests extends AbstractSAML2ClientTests {
         val client = getClient();
         client.getConfiguration().setServiceProviderEntityId("http://localhost:8080/callback");
 
-        val action = (FoundAction) client.getRedirectionAction(new CallContext(MockWebContext.create(), new MockSessionStore())).get();
+        WithLocationAction action = (FoundAction) client.getRedirectionAction(
+            new CallContext(MockWebContext.create(), new MockSessionStore())).get();
         val inflated = getInflatedAuthnRequest(action.getLocation());
 
         val issuerJdk11 = "<saml2:Issuer "
@@ -68,7 +71,8 @@ public final class RedirectSAML2ClientTests extends AbstractSAML2ClientTests {
     public void testForceAuthIsSetForRedirectBinding() {
         val client = getClient();
         client.getConfiguration().setForceAuth(true);
-        val action = (FoundAction) client.getRedirectionAction(new CallContext(MockWebContext.create(), new MockSessionStore())).get();
+        WithLocationAction action = (FoundAction) client.getRedirectionAction(
+            new CallContext(MockWebContext.create(), new MockSessionStore())).get();
         assertTrue(getInflatedAuthnRequest(action.getLocation()).contains("ForceAuthn=\"true\""));
     }
 
@@ -76,7 +80,8 @@ public final class RedirectSAML2ClientTests extends AbstractSAML2ClientTests {
     public void testSetComparisonTypeWithRedirectBinding() {
         val client = getClient();
         client.getConfiguration().setComparisonType(AuthnContextComparisonTypeEnumeration.EXACT.toString());
-        val action = (FoundAction) client.getRedirectionAction(new CallContext(MockWebContext.create(), new MockSessionStore())).get();
+        WithLocationAction action = (FoundAction) client.getRedirectionAction(
+            new CallContext(MockWebContext.create(), new MockSessionStore())).get();
         assertTrue(getInflatedAuthnRequest(action.getLocation()).contains("Comparison=\"exact\""));
     }
 
@@ -84,7 +89,8 @@ public final class RedirectSAML2ClientTests extends AbstractSAML2ClientTests {
     public void testNameIdPolicyFormat() {
         val client = getClient();
         client.getConfiguration().setNameIdPolicyFormat("urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress");
-        val action = (FoundAction) client.getRedirectionAction(new CallContext(MockWebContext.create(), new MockSessionStore())).get();
+        WithLocationAction action = (FoundAction) client.getRedirectionAction(
+            new CallContext(MockWebContext.create(), new MockSessionStore())).get();
         val loc = action.getLocation();
         assertTrue(getInflatedAuthnRequest(loc).contains("<saml2p:NameIDPolicy AllowCreate=\"true\" " +
                 "Format=\"urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress\"/></saml2p:AuthnRequest>"));
@@ -95,8 +101,9 @@ public final class RedirectSAML2ClientTests extends AbstractSAML2ClientTests {
         val client = getClient();
         client.getConfiguration().setComparisonType(AuthnContextComparisonTypeEnumeration.EXACT.toString());
         client.getConfiguration()
-            .setAuthnContextClassRefs(Arrays.asList("urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport"));
-        val action = (FoundAction) client.getRedirectionAction(new CallContext(MockWebContext.create(), new MockSessionStore())).get();
+            .setAuthnContextClassRefs(List.of("urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport"));
+        WithLocationAction action = (FoundAction) client.getRedirectionAction(
+            new CallContext(MockWebContext.create(), new MockSessionStore())).get();
 
         val checkClass = "<saml2p:RequestedAuthnContext Comparison=\"exact\"><saml2:AuthnContextClassRef " +
                 "xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\">" +
@@ -112,7 +119,7 @@ public final class RedirectSAML2ClientTests extends AbstractSAML2ClientTests {
         final WebContext context = MockWebContext.create();
         final SessionStore sessionStore = new MockSessionStore();
         sessionStore.set(context, SAML2StateGenerator.SAML_RELAY_STATE_ATTRIBUTE, "relayState");
-        val action = (FoundAction) client.getRedirectionAction(new CallContext(context, sessionStore)).get();
+        WithLocationAction action = (FoundAction) client.getRedirectionAction(new CallContext(context, sessionStore)).get();
         assertTrue(action.getLocation().contains("RelayState=relayState"));
     }
 
@@ -126,7 +133,7 @@ public final class RedirectSAML2ClientTests extends AbstractSAML2ClientTests {
         return SAMLConstants.SAML2_REDIRECT_BINDING_URI;
     }
 
-    private String getInflatedAuthnRequest(final String location) {
+    private static String getInflatedAuthnRequest(final String location) {
         val pairs = URLEncodedUtils.parse(java.net.URI.create(location), StandardCharsets.UTF_8);
         val inflater = new Inflater(true);
         val decodedRequest = Base64.getDecoder().decode(pairs.get(0).getValue());

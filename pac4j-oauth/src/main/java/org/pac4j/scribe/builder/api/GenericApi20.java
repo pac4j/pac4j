@@ -29,8 +29,8 @@ public class GenericApi20 extends DefaultApi20 {
     /**
      * <p>Constructor for GenericApi20.</p>
      *
-     * @param authUrl a {@link java.lang.String} object
-     * @param tokenUrl a {@link java.lang.String} object
+     * @param authUrl a {@link String} object
+     * @param tokenUrl a {@link String} object
      */
     public GenericApi20(final String authUrl, final String tokenUrl) {
         this.authUrl = authUrl;
@@ -46,7 +46,7 @@ public class GenericApi20 extends DefaultApi20 {
     /**
      * <p>Setter for the field <code>accessTokenVerb</code>.</p>
      *
-     * @param verb a {@link com.github.scribejava.core.model.Verb} object
+     * @param verb a {@link Verb} object
      */
     public void setAccessTokenVerb(final Verb verb) {
         accessTokenVerb = verb;
@@ -67,7 +67,7 @@ public class GenericApi20 extends DefaultApi20 {
     /**
      * <p>Getter for the field <code>clientAuthenticationMethod</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getClientAuthenticationMethod() {
         return clientAuthenticationMethod;
@@ -76,7 +76,7 @@ public class GenericApi20 extends DefaultApi20 {
     /**
      * <p>Setter for the field <code>clientAuthenticationMethod</code>.</p>
      *
-     * @param clientAuthenticationMethod a {@link java.lang.String} object
+     * @param clientAuthenticationMethod a {@link String} object
      */
     public void setClientAuthenticationMethod(final String clientAuthenticationMethod) {
         this.clientAuthenticationMethod = clientAuthenticationMethod;

@@ -38,7 +38,7 @@ public class DirectBearerAuthClient extends DirectClient {
     /**
      * <p>Constructor for DirectBearerAuthClient.</p>
      *
-     * @param tokenAuthenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
+     * @param tokenAuthenticator a {@link Authenticator} object
      */
     public DirectBearerAuthClient(final Authenticator tokenAuthenticator) {
         setAuthenticatorIfUndefined(tokenAuthenticator);
@@ -47,7 +47,7 @@ public class DirectBearerAuthClient extends DirectClient {
     /**
      * <p>Constructor for DirectBearerAuthClient.</p>
      *
-     * @param profileCreator a {@link org.pac4j.core.profile.creator.ProfileCreator} object
+     * @param profileCreator a {@link ProfileCreator} object
      */
     public DirectBearerAuthClient(final ProfileCreator profileCreator) {
         setAuthenticatorIfUndefined(Authenticator.ALWAYS_VALIDATE);
@@ -57,8 +57,8 @@ public class DirectBearerAuthClient extends DirectClient {
     /**
      * <p>Constructor for DirectBearerAuthClient.</p>
      *
-     * @param tokenAuthenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
-     * @param profileCreator a {@link org.pac4j.core.profile.creator.ProfileCreator} object
+     * @param tokenAuthenticator a {@link Authenticator} object
+     * @param profileCreator a {@link ProfileCreator} object
      */
     public DirectBearerAuthClient(final Authenticator tokenAuthenticator,
                                  final ProfileCreator profileCreator) {

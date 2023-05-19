@@ -3,6 +3,8 @@ package org.pac4j.jwt.config.signature;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
+import com.nimbusds.jose.JWSSigner;
+import com.nimbusds.jose.JWSVerifier;
 import com.nimbusds.jose.crypto.ECDSASigner;
 import com.nimbusds.jose.crypto.ECDSAVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
@@ -42,7 +44,7 @@ public class ECSignatureConfiguration extends AbstractSignatureConfiguration {
     /**
      * <p>Constructor for ECSignatureConfiguration.</p>
      *
-     * @param keyPair a {@link java.security.KeyPair} object
+     * @param keyPair a {@link KeyPair} object
      */
     public ECSignatureConfiguration(final KeyPair keyPair) {
         this();
@@ -52,8 +54,8 @@ public class ECSignatureConfiguration extends AbstractSignatureConfiguration {
     /**
      * <p>Constructor for ECSignatureConfiguration.</p>
      *
-     * @param keyPair a {@link java.security.KeyPair} object
-     * @param algorithm a {@link com.nimbusds.jose.JWSAlgorithm} object
+     * @param keyPair a {@link KeyPair} object
+     * @param algorithm a {@link JWSAlgorithm} object
      */
     public ECSignatureConfiguration(final KeyPair keyPair, final JWSAlgorithm algorithm) {
         setKeyPair(keyPair);
@@ -84,7 +86,7 @@ public class ECSignatureConfiguration extends AbstractSignatureConfiguration {
         CommonHelper.assertNotNull("privateKey", privateKey);
 
         try {
-            val signer = new ECDSASigner(this.privateKey);
+            JWSSigner signer = new ECDSASigner(this.privateKey);
             val signedJWT = new SignedJWT(new JWSHeader(algorithm), claims);
             signedJWT.sign(signer);
             return signedJWT;
@@ -99,14 +101,14 @@ public class ECSignatureConfiguration extends AbstractSignatureConfiguration {
         init();
         CommonHelper.assertNotNull("publicKey", publicKey);
 
-        val verifier = new ECDSAVerifier(this.publicKey);
+        JWSVerifier verifier = new ECDSAVerifier(this.publicKey);
         return jwt.verify(verifier);
     }
 
     /**
      * <p>setKeyPair.</p>
      *
-     * @param keyPair a {@link java.security.KeyPair} object
+     * @param keyPair a {@link KeyPair} object
      */
     public void setKeyPair(final KeyPair keyPair) {
         CommonHelper.assertNotNull("keyPair", keyPair);
@@ -117,7 +119,7 @@ public class ECSignatureConfiguration extends AbstractSignatureConfiguration {
     /**
      * <p>setKeysFromJwk.</p>
      *
-     * @param json a {@link java.lang.String} object
+     * @param json a {@link String} object
      */
     public void setKeysFromJwk(final String json) {
         val pair = JWKHelper.buildECKeyPairFromJwk(json);

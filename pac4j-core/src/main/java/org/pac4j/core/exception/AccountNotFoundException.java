@@ -1,5 +1,7 @@
 package org.pac4j.core.exception;
 
+import java.io.Serial;
+
 /**
  * Exception when an account is not found.
  *
@@ -8,12 +10,13 @@ package org.pac4j.core.exception;
  */
 public class AccountNotFoundException extends CredentialsException {
 
+    @Serial
     private static final long serialVersionUID = -2405351263139588633L;
 
     /**
      * <p>Constructor for AccountNotFoundException.</p>
      *
-     * @param message a {@link java.lang.String} object
+     * @param message a {@link String} object
      */
     public AccountNotFoundException(final String message) {
         super(message);
@@ -22,7 +25,7 @@ public class AccountNotFoundException extends CredentialsException {
     /**
      * <p>Constructor for AccountNotFoundException.</p>
      *
-     * @param t a {@link java.lang.Throwable} object
+     * @param t a {@link Throwable} object
      */
     public AccountNotFoundException(final Throwable t) {
         super(t);

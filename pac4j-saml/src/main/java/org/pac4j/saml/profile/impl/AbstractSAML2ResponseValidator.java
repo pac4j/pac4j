@@ -18,9 +18,11 @@ import org.opensaml.saml.security.impl.SAMLSignatureProfileValidator;
 import org.opensaml.security.SecurityException;
 import org.opensaml.security.credential.UsageType;
 import org.opensaml.security.criteria.UsageCriterion;
+import org.opensaml.security.trust.TrustEngine;
 import org.opensaml.xmlsec.encryption.support.DecryptionException;
 import org.opensaml.xmlsec.signature.Signature;
 import org.opensaml.xmlsec.signature.support.SignatureException;
+import org.opensaml.xmlsec.signature.support.SignaturePrevalidator;
 import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
 import org.pac4j.core.logout.handler.SessionLogoutHandler;
 import org.pac4j.saml.context.SAML2MessageContext;
@@ -36,7 +38,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.List;
+import java.util.Collection;
 
 /**
  * The abstract class for all SAML response validators.
@@ -64,11 +66,11 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
     /**
      * <p>Constructor for AbstractSAML2ResponseValidator.</p>
      *
-     * @param signatureTrustEngineProvider a {@link org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider} object
-     * @param decrypter a {@link org.opensaml.saml.saml2.encryption.Decrypter} object
-     * @param logoutHandler a {@link org.pac4j.core.logout.handler.SessionLogoutHandler} object
-     * @param replayCache a {@link org.pac4j.saml.replay.ReplayCacheProvider} object
-     * @param uriComparator a {@link net.shibboleth.shared.net.URIComparator} object
+     * @param signatureTrustEngineProvider a {@link SAML2SignatureTrustEngineProvider} object
+     * @param decrypter a {@link Decrypter} object
+     * @param logoutHandler a {@link SessionLogoutHandler} object
+     * @param replayCache a {@link ReplayCacheProvider} object
+     * @param uriComparator a {@link URIComparator} object
      */
     protected AbstractSAML2ResponseValidator(final SAML2SignatureTrustEngineProvider signatureTrustEngineProvider,
                                              final Decrypter decrypter, final SessionLogoutHandler logoutHandler,
@@ -103,9 +105,9 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
     /**
      * <p>validateSignatureIfItExists.</p>
      *
-     * @param signature a {@link org.opensaml.xmlsec.signature.Signature} object
-     * @param context a {@link org.pac4j.saml.context.SAML2MessageContext} object
-     * @param engine a {@link org.opensaml.xmlsec.signature.support.SignatureTrustEngine} object
+     * @param signature a {@link Signature} object
+     * @param context a {@link SAML2MessageContext} object
+     * @param engine a {@link SignatureTrustEngine} object
      */
     protected void validateSignatureIfItExists(final Signature signature, final SAML2MessageContext context,
                                                final SignatureTrustEngine engine) {
@@ -127,10 +129,10 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
      * @param trustEngine the trust engine
      */
     protected void validateSignature(final Signature signature, final String idpEntityId,
-                                     final SignatureTrustEngine trustEngine) {
+                                     final TrustEngine<Signature> trustEngine) {
 
 
-        val validator = new SAMLSignatureProfileValidator();
+        SignaturePrevalidator validator = new SAMLSignatureProfileValidator();
         try {
             logger.debug("Validating profile signature for entity id {}", idpEntityId);
             validator.validate(signature);
@@ -158,8 +160,8 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
     /**
      * <p>validateIssuerIfItExists.</p>
      *
-     * @param isser a {@link org.opensaml.saml.saml2.core.Issuer} object
-     * @param context a {@link org.pac4j.saml.context.SAML2MessageContext} object
+     * @param isser a {@link Issuer} object
+     * @param context a {@link SAML2MessageContext} object
      */
     protected void validateIssuerIfItExists(final Issuer isser, final SAML2MessageContext context) {
         if (isser != null) {
@@ -173,7 +175,7 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
      * @param issuer  the issuer
      * @param context the context
      */
-    protected void validateIssuer(final Issuer issuer, final SAML2MessageContext context) {
+    protected void validateIssuer(final NameIDType issuer, final SAML2MessageContext context) {
         if (issuer.getFormat() != null && !issuer.getFormat().equals(NameIDType.ENTITY)) {
             throw new SAMLIssuerException("Issuer type is not entity but " + issuer.getFormat());
         }
@@ -188,7 +190,7 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
     /**
      * <p>validateIssueInstant.</p>
      *
-     * @param issueInstant a {@link java.time.Instant} object
+     * @param issueInstant a {@link Instant} object
      */
     protected void validateIssueInstant(final Instant issueInstant) {
         if (!isIssueInstantValid(issueInstant)) {
@@ -199,7 +201,7 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
     /**
      * <p>isIssueInstantValid.</p>
      *
-     * @param issueInstant a {@link java.time.Instant} object
+     * @param issueInstant a {@link Instant} object
      * @return a boolean
      */
     protected boolean isIssueInstantValid(final Instant issueInstant) {
@@ -209,7 +211,7 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
     /**
      * <p>isDateValid.</p>
      *
-     * @param issueInstant a {@link java.time.Instant} object
+     * @param issueInstant a {@link Instant} object
      * @param interval a long
      * @return a boolean
      */
@@ -231,10 +233,10 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
      * <p>verifyEndpoint.</p>
      *
      * @param endpoints a {@link java.util.List} object
-     * @param destination a {@link java.lang.String} object
+     * @param destination a {@link String} object
      * @param isDestinationMandatory a boolean
      */
-    protected void verifyEndpoint(final List<String> endpoints, final String destination, final boolean isDestinationMandatory) {
+    protected void verifyEndpoint(final Collection<String> endpoints, final String destination, final boolean isDestinationMandatory) {
         if (destination == null && !isDestinationMandatory) {
             return;
         }
@@ -254,8 +256,8 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
     /**
      * <p>compareEndpoints.</p>
      *
-     * @param destination a {@link java.lang.String} object
-     * @param endpoint a {@link java.lang.String} object
+     * @param destination a {@link String} object
+     * @param endpoint a {@link String} object
      * @return a boolean
      */
     protected boolean compareEndpoints(final String destination, final String endpoint) {
@@ -269,7 +271,7 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
     /**
      * <p>verifyMessageReplay.</p>
      *
-     * @param context a {@link org.pac4j.saml.context.SAML2MessageContext} object
+     * @param context a {@link SAML2MessageContext} object
      */
     protected void verifyMessageReplay(final SAML2MessageContext context) {
         if (replayCache == null) {
@@ -296,7 +298,7 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
      * @param encryptedId The EncryptedID to be decrypted.
      * @param decrypter   The decrypter to use.
      * @return Decrypted ID or {@code null} if any input is {@code null}.
-     * @throws org.pac4j.saml.exceptions.SAMLException If the input ID cannot be decrypted.
+     * @throws SAMLException If the input ID cannot be decrypted.
      */
     protected NameID decryptEncryptedId(final EncryptedID encryptedId, final Decrypter decrypter) throws SAMLException {
         if (encryptedId == null) {
@@ -319,9 +321,9 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
     /**
      * <p>computeSloKey.</p>
      *
-     * @param sessionIndex a {@link java.lang.String} object
-     * @param nameId a {@link org.pac4j.saml.credentials.SAML2AuthenticationCredentials.SAMLNameID} object
-     * @return a {@link java.lang.String} object
+     * @param sessionIndex a {@link String} object
+     * @param nameId a {@link SAML2AuthenticationCredentials.SAMLNameID} object
+     * @return a {@link String} object
      */
     protected String computeSloKey(final String sessionIndex, final SAML2AuthenticationCredentials.SAMLNameID nameId) {
         if (sessionIndex != null) {

@@ -1,5 +1,6 @@
 package org.pac4j.saml.transport;
 
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.opensaml.messaging.decoder.MessageDecodingException;
 import org.opensaml.messaging.handler.MessageHandlerException;
@@ -22,12 +23,13 @@ import java.io.ByteArrayInputStream;
  * @author Jerome Leleu
  * @since 1.8
  */
+@Slf4j
 public class Pac4jHTTPPostDecoder extends AbstractPac4jDecoder {
 
     /**
      * <p>Constructor for Pac4jHTTPPostDecoder.</p>
      *
-     * @param context a {@link org.pac4j.core.context.CallContext} object
+     * @param context a {@link CallContext} object
      */
     public Pac4jHTTPPostDecoder(final CallContext context) {
         super(context);
@@ -40,14 +42,13 @@ public class Pac4jHTTPPostDecoder extends AbstractPac4jDecoder {
 
         if (WebContextHelper.isPost(callContext.webContext())) {
             val relayState = this.callContext.webContext().getRequestParameter("RelayState").orElse(null);
-            logger.debug("Decoded SAML relay state of: {}", relayState);
+            LOGGER.debug("Decoded SAML relay state of: {}", relayState);
             SAMLBindingSupport.setRelayState(messageContext.getMessageContext(), relayState);
             val base64DecodedMessage = this.getBase64DecodedMessage();
             val xmlObject = this.unmarshallMessage(new ByteArrayInputStream(base64DecodedMessage));
             SAML2Utils.logProtocolMessage(xmlObject);
             final SAMLObject inboundMessage;
-            if (xmlObject instanceof Envelope) {
-                val soapMessage = (Envelope) xmlObject;
+            if (xmlObject instanceof Envelope soapMessage) {
                 messageContext.getSOAP11Context().setEnvelope(soapMessage);
                 try {
                     new SAMLSOAPDecoderBodyHandler().invoke(messageContext.getMessageContext());
@@ -58,7 +59,7 @@ public class Pac4jHTTPPostDecoder extends AbstractPac4jDecoder {
                 inboundMessage = (SAMLObject) xmlObject;
                 messageContext.getMessageContext().setMessage(inboundMessage);
             }
-            logger.debug("Decoded SAML message");
+            LOGGER.debug("Decoded SAML message");
             this.populateBindingContext(messageContext);
             this.setMessageContext(messageContext.getMessageContext());
 

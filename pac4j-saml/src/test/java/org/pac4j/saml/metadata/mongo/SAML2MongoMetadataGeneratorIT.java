@@ -17,6 +17,7 @@ import org.opensaml.core.criterion.EntityIdCriterion;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.metadata.SAML2MetadataGenerator;
+import org.pac4j.saml.util.ConfigurationManager;
 import org.pac4j.saml.util.DefaultConfigurationManager;
 import org.springframework.core.io.ClassPathResource;
 
@@ -56,7 +57,7 @@ public class SAML2MongoMetadataGeneratorIT implements TestsConstants {
 
     @Test
     public void testMetadata() throws Exception {
-        var mgr = new DefaultConfigurationManager();
+        ConfigurationManager mgr = new DefaultConfigurationManager();
         mgr.configure();
 
         val configuration = new SAML2Configuration();

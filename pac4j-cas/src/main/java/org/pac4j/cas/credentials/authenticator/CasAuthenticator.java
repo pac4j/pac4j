@@ -21,6 +21,7 @@ import org.pac4j.core.profile.definition.ProfileDefinitionAware;
 import org.pac4j.core.util.CommonHelper;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -45,11 +46,11 @@ public class CasAuthenticator extends ProfileDefinitionAware implements Authenti
     /**
      * <p>Constructor for CasAuthenticator.</p>
      *
-     * @param configuration a {@link org.pac4j.cas.config.CasConfiguration} object
-     * @param clientName a {@link java.lang.String} object
-     * @param urlResolver a {@link org.pac4j.core.http.url.UrlResolver} object
-     * @param callbackUrlResolver a {@link org.pac4j.core.http.callback.CallbackUrlResolver} object
-     * @param callbackUrl a {@link java.lang.String} object
+     * @param configuration a {@link CasConfiguration} object
+     * @param clientName a {@link String} object
+     * @param urlResolver a {@link UrlResolver} object
+     * @param callbackUrlResolver a {@link CallbackUrlResolver} object
+     * @param callbackUrl a {@link String} object
      */
     public CasAuthenticator(final CasConfiguration configuration, final String clientName, final UrlResolver urlResolver,
                             final CallbackUrlResolver callbackUrlResolver, final String callbackUrl) {
@@ -108,8 +109,8 @@ public class CasAuthenticator extends ProfileDefinitionAware implements Authenti
 
     protected void createUserProfileAttributes(final Assertion assertion, final AttributePrincipal principal,
                                                final UserProfile profile) {
-        val newPrincipalAttributes = new HashMap<String, Object>();
-        val newAuthenticationAttributes = new HashMap<String, Object>();
+        Map<String, Object> newPrincipalAttributes = new HashMap<>();
+        Map<String, Object> newAuthenticationAttributes = new HashMap<>();
         // restore both sets of attributes
         val oldPrincipalAttributes = principal.getAttributes();
         val oldAuthenticationAttributes = assertion.getAttributes();

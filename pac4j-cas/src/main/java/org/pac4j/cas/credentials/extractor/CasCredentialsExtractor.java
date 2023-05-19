@@ -38,7 +38,7 @@ public class CasCredentialsExtractor implements CredentialsExtractor {
     /**
      * <p>Constructor for CasCredentialsExtractor.</p>
      *
-     * @param configuration a {@link org.pac4j.cas.config.CasConfiguration} object
+     * @param configuration a {@link CasConfiguration} object
      */
     public CasCredentialsExtractor(final CasConfiguration configuration) {
         CommonHelper.assertNotNull("configuration", configuration);
@@ -80,7 +80,7 @@ public class CasCredentialsExtractor implements CredentialsExtractor {
     /**
      * <p>isTokenRequest.</p>
      *
-     * @param context a {@link org.pac4j.core.context.WebContext} object
+     * @param context a {@link WebContext} object
      * @return a boolean
      */
     protected boolean isTokenRequest(final WebContext context) {
@@ -90,8 +90,8 @@ public class CasCredentialsExtractor implements CredentialsExtractor {
     /**
      * <p>getArtifactParameter.</p>
      *
-     * @param context a {@link org.pac4j.core.context.WebContext} object
-     * @return a {@link java.util.Optional} object
+     * @param context a {@link WebContext} object
+     * @return a {@link Optional} object
      */
     protected Optional<String> getArtifactParameter(final WebContext context) {
         if (configuration.getProtocol() == CasProtocol.SAML) {
@@ -106,7 +106,7 @@ public class CasCredentialsExtractor implements CredentialsExtractor {
     /**
      * <p>isBackLogoutRequest.</p>
      *
-     * @param context a {@link org.pac4j.core.context.WebContext} object
+     * @param context a {@link WebContext} object
      * @return a boolean
      */
     protected boolean isBackLogoutRequest(final WebContext context) {
@@ -118,7 +118,7 @@ public class CasCredentialsExtractor implements CredentialsExtractor {
     /**
      * <p>isMultipartRequest.</p>
      *
-     * @param context a {@link org.pac4j.core.context.WebContext} object
+     * @param context a {@link WebContext} object
      * @return a boolean
      */
     protected boolean isMultipartRequest(final WebContext context) {
@@ -129,7 +129,7 @@ public class CasCredentialsExtractor implements CredentialsExtractor {
     /**
      * <p>isFrontLogoutRequest.</p>
      *
-     * @param context a {@link org.pac4j.core.context.WebContext} object
+     * @param context a {@link WebContext} object
      * @return a boolean
      */
     protected boolean isFrontLogoutRequest(final WebContext context) {
@@ -140,8 +140,8 @@ public class CasCredentialsExtractor implements CredentialsExtractor {
     /**
      * <p>uncompressLogoutMessage.</p>
      *
-     * @param originalMessage a {@link java.lang.String} object
-     * @return a {@link java.lang.String} object
+     * @param originalMessage a {@link String} object
+     * @return a {@link String} object
      */
     protected String uncompressLogoutMessage(final String originalMessage) {
         val binaryMessage = Base64.getMimeDecoder().decode(originalMessage);

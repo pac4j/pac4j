@@ -73,11 +73,11 @@ public class DefaultMatchingChecker implements MatchingChecker {
     /**
      * <p>computeMatchers.</p>
      *
-     * @param ctx a {@link org.pac4j.core.context.CallContext} object
-     * @param matchersValue a {@link java.lang.String} object
-     * @param matchersMap a {@link java.util.Map} object
-     * @param clients a {@link java.util.List} object
-     * @return a {@link java.util.List} object
+     * @param ctx a {@link CallContext} object
+     * @param matchersValue a {@link String} object
+     * @param matchersMap a {@link Map} object
+     * @param clients a {@link List} object
+     * @return a {@link List} object
      */
     protected List<Matcher> computeMatchers(final CallContext ctx, final String matchersValue,
                                             final Map<String, Matcher> matchersMap, final List<Client> clients) {
@@ -96,12 +96,12 @@ public class DefaultMatchingChecker implements MatchingChecker {
     /**
      * <p>computeDefaultMatcherNames.</p>
      *
-     * @param ctx a {@link org.pac4j.core.context.CallContext} object
-     * @param clients a {@link java.util.List} object
-     * @param matchersMap a {@link java.util.Map} object
-     * @return a {@link java.lang.String} object
+     * @param ctx a {@link CallContext} object
+     * @param clients a {@link List} object
+     * @param matchersMap a {@link Map} object
+     * @return a {@link String} object
      */
-    protected String computeDefaultMatcherNames(final CallContext ctx, final List<Client> clients,
+    protected String computeDefaultMatcherNames(final CallContext ctx, final Iterable<Client> clients,
                                                 final Map<String, Matcher> matchersMap) {
         String name = DefaultMatchers.SECURITYHEADERS;
         if (ctx.sessionStore().getSessionId(ctx.webContext(), false).isPresent()) {
@@ -120,9 +120,9 @@ public class DefaultMatchingChecker implements MatchingChecker {
     /**
      * <p>computeMatchersFromNames.</p>
      *
-     * @param matchersValue a {@link java.lang.String} object
-     * @param matchersMap a {@link java.util.Map} object
-     * @return a {@link java.util.List} object
+     * @param matchersValue a {@link String} object
+     * @param matchersMap a {@link Map} object
+     * @return a {@link List} object
      */
     protected List<Matcher> computeMatchersFromNames(final String matchersValue, final Map<String, Matcher> matchersMap) {
         assertNotNull("matchersMap", matchersMap);
@@ -156,9 +156,9 @@ public class DefaultMatchingChecker implements MatchingChecker {
     /**
      * <p>retrieveMatchers.</p>
      *
-     * @param matcherName a {@link java.lang.String} object
-     * @param matchersMap a {@link java.util.Map} object
-     * @return a {@link java.util.List} object
+     * @param matcherName a {@link String} object
+     * @param matchersMap a {@link Map} object
+     * @return a {@link List} object
      */
     protected List<Matcher> retrieveMatchers(final String matcherName, final Map<String, Matcher> matchersMap) {
         final List<Matcher> results = new ArrayList<>();
@@ -170,27 +170,27 @@ public class DefaultMatchingChecker implements MatchingChecker {
         }
         if (results.size() == 0) {
             if (DefaultMatchers.HSTS.equalsIgnoreCase(matcherName)) {
-                return Arrays.asList(STRICT_TRANSPORT_MATCHER);
+                return List.of(STRICT_TRANSPORT_MATCHER);
             } else if (DefaultMatchers.NOSNIFF.equalsIgnoreCase(matcherName)) {
-                return Arrays.asList(X_CONTENT_TYPE_OPTIONS_MATCHER);
+                return List.of(X_CONTENT_TYPE_OPTIONS_MATCHER);
             } else if (DefaultMatchers.NOFRAME.equalsIgnoreCase(matcherName)) {
-                return Arrays.asList(X_FRAME_OPTIONS_MATCHER);
+                return List.of(X_FRAME_OPTIONS_MATCHER);
             } else if (DefaultMatchers.XSSPROTECTION.equalsIgnoreCase(matcherName)) {
-                return Arrays.asList(XSS_PROTECTION_MATCHER);
+                return List.of(XSS_PROTECTION_MATCHER);
             } else if (DefaultMatchers.NOCACHE.equalsIgnoreCase(matcherName)) {
-                return Arrays.asList(CACHE_CONTROL_MATCHER);
+                return List.of(CACHE_CONTROL_MATCHER);
             } else if (DefaultMatchers.CSRF_TOKEN.equalsIgnoreCase(matcherName)) {
-                return Arrays.asList(CSRF_TOKEN_MATCHER);
+                return List.of(CSRF_TOKEN_MATCHER);
             } else if (DefaultMatchers.ALLOW_AJAX_REQUESTS.equalsIgnoreCase(matcherName)) {
-                return Arrays.asList(CORS_MATCHER);
+                return List.of(CORS_MATCHER);
             } else if (DefaultMatchers.GET.equalsIgnoreCase(matcherName)) {
-                return Arrays.asList(GET_MATCHER);
+                return List.of(GET_MATCHER);
             } else if (DefaultMatchers.POST.equalsIgnoreCase(matcherName)) {
-                return Arrays.asList(POST_MATCHER);
+                return List.of(POST_MATCHER);
             } else if (DefaultMatchers.PUT.equalsIgnoreCase(matcherName)) {
-                return Arrays.asList(PUT_MATCHER);
+                return List.of(PUT_MATCHER);
             } else if (DefaultMatchers.DELETE.equalsIgnoreCase(matcherName)) {
-                return Arrays.asList(DELETE_MATCHER);
+                return List.of(DELETE_MATCHER);
             }
         }
         return results;
@@ -200,11 +200,11 @@ public class DefaultMatchingChecker implements MatchingChecker {
     /**
      * <p>matches.</p>
      *
-     * @param ctx a {@link org.pac4j.core.context.CallContext} object
-     * @param matchers a {@link java.util.List} object
+     * @param ctx a {@link CallContext} object
+     * @param matchers a {@link List} object
      * @return a boolean
      */
-    protected boolean matches(final CallContext ctx, final List<Matcher> matchers) {
+    protected boolean matches(final CallContext ctx, final Collection<Matcher> matchers) {
         if (!matchers.isEmpty()) {
             // check matching using matchers: all must be satisfied
             for (val matcher : matchers) {

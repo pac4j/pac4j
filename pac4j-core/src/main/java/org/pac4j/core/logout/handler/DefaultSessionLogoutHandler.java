@@ -39,7 +39,7 @@ public class DefaultSessionLogoutHandler implements SessionLogoutHandler {
     /**
      * <p>Constructor for DefaultSessionLogoutHandler.</p>
      *
-     * @param store a {@link org.pac4j.core.store.Store} object
+     * @param store a {@link Store} object
      */
     public DefaultSessionLogoutHandler(final Store<String, Object> store) {
         this.store = store;
@@ -110,7 +110,7 @@ public class DefaultSessionLogoutHandler implements SessionLogoutHandler {
         }
 
         LOGGER.debug("TrackableSession: {} for key: {}", optTrackableSession, key);
-        if (!optTrackableSession.isPresent()) {
+        if (optTrackableSession.isEmpty()) {
             LOGGER.warn("No trackable session: cannot perform back channel logout");
         } else {
 
@@ -134,10 +134,10 @@ public class DefaultSessionLogoutHandler implements SessionLogoutHandler {
     /**
      * <p>destroy.</p>
      *
-     * @param webContext a {@link org.pac4j.core.context.WebContext} object
-     * @param sessionStore a {@link org.pac4j.core.context.session.SessionStore} object
-     * @param profileManagerFactory a {@link org.pac4j.core.profile.factory.ProfileManagerFactory} object
-     * @param channel a {@link java.lang.String} object
+     * @param webContext a {@link WebContext} object
+     * @param sessionStore a {@link SessionStore} object
+     * @param profileManagerFactory a {@link ProfileManagerFactory} object
+     * @param channel a {@link String} object
      */
     protected void destroy(final WebContext webContext, final SessionStore sessionStore,
                            final ProfileManagerFactory profileManagerFactory, final String channel) {

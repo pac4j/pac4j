@@ -2,6 +2,8 @@ package org.pac4j.core.profile;
 
 import lombok.ToString;
 
+import java.io.Serial;
+
 /**
  * Anonymous profile. Not to be used except for advanced use cases.
  *
@@ -11,6 +13,7 @@ import lombok.ToString;
 @ToString(callSuper = true)
 public class AnonymousProfile extends CommonProfile {
 
+    @Serial
     private static final long serialVersionUID = -7377022639833719511L;
 
     /** Constant <code>INSTANCE</code> */

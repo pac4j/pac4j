@@ -1,5 +1,6 @@
 package org.pac4j.saml.transport;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import net.shibboleth.shared.codec.Base64Support;
@@ -24,6 +25,7 @@ import org.opensaml.security.credential.Credential;
 import org.opensaml.security.credential.CredentialSupport;
 import org.opensaml.xmlsec.SignatureSigningParameters;
 import org.opensaml.xmlsec.crypto.XMLSigningUtil;
+import org.opensaml.xmlsec.signature.SignableXMLObject;
 import org.w3c.dom.Element;
 
 import java.io.ByteArrayOutputStream;
@@ -34,7 +36,7 @@ import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
 
 /**
- * Pac4j implementation extending directly the {@link org.opensaml.messaging.encoder.AbstractMessageEncoder}
+ * Pac4j implementation extending directly the {@link AbstractMessageEncoder}
  * as intermediate classes use the JEE HTTP response.
  * It's mostly a copy/paste of the source code of these intermediate opensaml classes.
  *
@@ -42,28 +44,19 @@ import java.util.zip.DeflaterOutputStream;
  * @since 1.8
  */
 @Slf4j
+@RequiredArgsConstructor
 public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder {
 
     private final Pac4jSAMLResponse responseAdapter;
     private final boolean isAuthnRequestSigned;
 
     /**
-     * <p>Constructor for Pac4jHTTPRedirectDeflateEncoder.</p>
-     *
-     * @param responseAdapter a {@link org.pac4j.saml.transport.Pac4jSAMLResponse} object
-     * @param isAuthnRequestSigned a boolean
+     * {@inheritDoc}
      */
-    public Pac4jHTTPRedirectDeflateEncoder(final Pac4jSAMLResponse responseAdapter,
-                                           final boolean isAuthnRequestSigned) {
-        this.responseAdapter = responseAdapter;
-        this.isAuthnRequestSigned = isAuthnRequestSigned;
-    }
-
-    /** {@inheritDoc} */
     @Override
     protected void doEncode() throws MessageEncodingException {
         val messageContext = this.getMessageContext();
-        val outboundMessage = (SAMLObject)messageContext.getMessage();
+        val outboundMessage = (SAMLObject) messageContext.getMessage();
         val endpointURL = this.getEndpointURL(messageContext).toString();
 
         this.removeSignature(outboundMessage);
@@ -75,7 +68,9 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder {
         responseAdapter.setRedirectUrl(redirectURL);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void doInitialize() throws ComponentInitializationException {
         LOGGER.debug("Initialized {}", this.getClass().getSimpleName());
@@ -86,7 +81,7 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder {
      *
      * @param messageContext current message context
      * @return response URL from the message context
-     * @throws org.opensaml.messaging.encoder.MessageEncodingException throw if no relying party endpoint is available
+     * @throws MessageEncodingException throw if no relying party endpoint is available
      */
     protected URI getEndpointURL(final MessageContext messageContext) throws MessageEncodingException {
         try {
@@ -103,7 +98,7 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder {
      */
     protected void removeSignature(final SAMLObject message) {
         if (message instanceof SignableSAMLObject) {
-            val signableMessage = (SignableSAMLObject) message;
+            SignableXMLObject signableMessage = (SignableSAMLObject) message;
             if (signableMessage.isSigned()) {
                 LOGGER.debug("Removing SAML protocol message signature");
                 signableMessage.setSignature(null);
@@ -115,12 +110,10 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder {
      * DEFLATE (RFC1951) compresses the given SAML message.
      *
      * @param message SAML message
-     *
      * @return DEFLATE compressed message
-     *
      * @throws MessageEncodingException thrown if there is a problem compressing the message
      */
-    String deflateAndBase64Encode(final SAMLObject message) throws MessageEncodingException {
+    String deflateAndBase64Encode(final XMLObject message) throws MessageEncodingException {
         LOGGER.debug("Deflating and Base64 encoding SAML message");
         try {
             val messageStr = SerializeSupport.nodeToString(marshallMessage(message));
@@ -143,7 +136,7 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder {
      *
      * @param message message the marshall and serialize
      * @return marshalled message
-     * @throws org.opensaml.messaging.encoder.MessageEncodingException thrown if the give message can not be marshalled into DOM
+     * @throws MessageEncodingException thrown if the give message can not be marshalled into DOM
      */
     protected Element marshallMessage(final XMLObject message) throws MessageEncodingException {
         LOGGER.debug("Marshalling message");
@@ -159,13 +152,13 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder {
      * Builds the URL to redirect the client to.
      *
      * @param messageContext current message context
-     * @param endpoint endpoint URL to send encoded message to
-     * @param message Deflated and Base64 encoded message
+     * @param endpoint       endpoint URL to send encoded message to
+     * @param message        Deflated and Base64 encoded message
      * @return URL to redirect client to
-     * @throws org.opensaml.messaging.encoder.MessageEncodingException thrown if the SAML msg is neither a RequestAbstractType or Response
+     * @throws MessageEncodingException thrown if the SAML msg is neither a RequestAbstractType or Response
      */
     protected String buildRedirectURL(final MessageContext messageContext, final String endpoint, final String message)
-            throws MessageEncodingException {
+        throws MessageEncodingException {
         LOGGER.debug("Building URL to redirect client to");
 
         final URLBuilder urlBuilder;
@@ -179,10 +172,10 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder {
         // remove the query parameters set below
         queryParams.removeIf(p ->
             p.getFirst().equals("SAMLRequest") ||
-            p.getFirst().equals("SAMLResponse") ||
-            p.getFirst().equals("RelayState") ||
-            p.getFirst().equals("SigAlg") ||
-            p.getFirst().equals("Signature"));
+                p.getFirst().equals("SAMLResponse") ||
+                p.getFirst().equals("RelayState") ||
+                p.getFirst().equals("SigAlg") ||
+                p.getFirst().equals("Signature"));
 
         val outboundMessage = (SAMLObject) messageContext.getMessage();
 
@@ -192,7 +185,7 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder {
             queryParams.add(new Pair<>("SAMLResponse", message));
         } else {
             throw new MessageEncodingException(
-                    "SAML message is neither a SAML RequestAbstractType or StatusResponseType");
+                "SAML message is neither a SAML RequestAbstractType or StatusResponseType");
         }
 
         val relayState = SAMLBindingSupport.getRelayState(messageContext);
@@ -202,15 +195,15 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder {
 
         if (isAuthnRequestSigned) {
             val signingParameters =
-                    SAMLMessageSecuritySupport.getContextSigningParameters(messageContext);
+                SAMLMessageSecuritySupport.getContextSigningParameters(messageContext);
             if (signingParameters != null && signingParameters.getSigningCredential() != null) {
-                val sigAlgURI =  getSignatureAlgorithmURI(signingParameters);
-                val sigAlg = new Pair<String, String>("SigAlg", sigAlgURI);
+                val sigAlgURI = getSignatureAlgorithmURI(signingParameters);
+                val sigAlg = new Pair<>("SigAlg", sigAlgURI);
                 queryParams.add(sigAlg);
                 val sigMaterial = urlBuilder.buildQueryString();
 
                 queryParams.add(new Pair<>("Signature", generateSignature(
-                        signingParameters.getSigningCredential(), sigAlgURI, sigMaterial)));
+                    signingParameters.getSigningCredential(), sigAlgURI, sigMaterial)));
             } else {
                 LOGGER.debug("No signing credential was supplied, skipping HTTP-Redirect DEFLATE signing");
             }
@@ -224,11 +217,11 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder {
      *
      * @param signingParameters the signing parameters to use
      * @return signature algorithm to use with the associated signing credential
-     * @throws org.opensaml.messaging.encoder.MessageEncodingException thrown if the algorithm URI is not supplied explicitly and
-     *          could not be derived from the supplied credential
+     * @throws MessageEncodingException thrown if the algorithm URI is not supplied explicitly and
+     *                                  could not be derived from the supplied credential
      */
     protected String getSignatureAlgorithmURI(final SignatureSigningParameters signingParameters)
-            throws MessageEncodingException {
+        throws MessageEncodingException {
 
         if (signingParameters.getSignatureAlgorithm() != null) {
             return signingParameters.getSignatureAlgorithm();
@@ -241,21 +234,21 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder {
      * Generates the signature over the query string.
      *
      * @param signingCredential credential that will be used to sign query string
-     * @param algorithmURI algorithm URI of the signing credential
-     * @param queryString query string to be signed
+     * @param algorithmURI      algorithm URI of the signing credential
+     * @param queryString       query string to be signed
      * @return base64 encoded signature of query string
-     * @throws org.opensaml.messaging.encoder.MessageEncodingException there is an error computing the signature
+     * @throws MessageEncodingException there is an error computing the signature
      */
     protected String generateSignature(final Credential signingCredential, final String algorithmURI, final String queryString)
-            throws MessageEncodingException {
+        throws MessageEncodingException {
 
         LOGGER.debug(String.format("Generating signature with key type '%s', algorithm URI '%s' over query string '%s'",
-                CredentialSupport.extractSigningKey(signingCredential).getAlgorithm(), algorithmURI, queryString));
+            CredentialSupport.extractSigningKey(signingCredential).getAlgorithm(), algorithmURI, queryString));
 
         final String b64Signature;
         try {
             val rawSignature =
-                    XMLSigningUtil.signWithURI(signingCredential, algorithmURI, queryString.getBytes(StandardCharsets.UTF_8));
+                XMLSigningUtil.signWithURI(signingCredential, algorithmURI, queryString.getBytes(StandardCharsets.UTF_8));
             b64Signature = Base64Support.encode(rawSignature, Base64Support.UNCHUNKED);
             LOGGER.debug("Generated digital signature value (base64-encoded) {}", b64Signature);
         } catch (final Exception e) {

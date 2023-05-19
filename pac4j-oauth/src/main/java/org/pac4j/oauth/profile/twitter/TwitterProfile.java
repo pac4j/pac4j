@@ -1,5 +1,6 @@
 package org.pac4j.oauth.profile.twitter;
 
+import java.io.Serial;
 import java.net.URI;
 import java.util.Date;
 import java.util.Locale;
@@ -16,6 +17,7 @@ import org.pac4j.oauth.profile.OAuth10Profile;
  */
 public class TwitterProfile extends OAuth10Profile {
 
+    @Serial
     private static final long serialVersionUID = -6473348745856820192L;
 
     /** {@inheritDoc} */
@@ -51,7 +53,7 @@ public class TwitterProfile extends OAuth10Profile {
     /**
      * <p>getContributorsEnabled.</p>
      *
-     * @return a {@link java.lang.Boolean} object
+     * @return a {@link Boolean} object
      */
     public Boolean getContributorsEnabled() {
         return (Boolean) getAttribute(TwitterProfileDefinition.CONTRIBUTORS_ENABLED);
@@ -60,7 +62,7 @@ public class TwitterProfile extends OAuth10Profile {
     /**
      * <p>getCreatedAt.</p>
      *
-     * @return a {@link java.util.Date} object
+     * @return a {@link Date} object
      */
     public Date getCreatedAt() {
         return (Date) getAttribute(TwitterProfileDefinition.CREATED_AT);
@@ -69,7 +71,7 @@ public class TwitterProfile extends OAuth10Profile {
     /**
      * <p>getDefaultProfile.</p>
      *
-     * @return a {@link java.lang.Boolean} object
+     * @return a {@link Boolean} object
      */
     public Boolean getDefaultProfile() {
         return (Boolean) getAttribute(TwitterProfileDefinition.DEFAULT_PROFILE);
@@ -78,7 +80,7 @@ public class TwitterProfile extends OAuth10Profile {
     /**
      * <p>getDefaultProfileImage.</p>
      *
-     * @return a {@link java.lang.Boolean} object
+     * @return a {@link Boolean} object
      */
     public Boolean getDefaultProfileImage() {
         return (Boolean) getAttribute(TwitterProfileDefinition.DEFAULT_PROFILE_IMAGE);
@@ -87,7 +89,7 @@ public class TwitterProfile extends OAuth10Profile {
     /**
      * <p>getDescription.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getDescription() {
         return (String) getAttribute(TwitterProfileDefinition.DESCRIPTION);
@@ -96,7 +98,7 @@ public class TwitterProfile extends OAuth10Profile {
     /**
      * <p>getFavouritesCount.</p>
      *
-     * @return a {@link java.lang.Integer} object
+     * @return a {@link Integer} object
      */
     public Integer getFavouritesCount() {
         return (Integer) getAttribute(TwitterProfileDefinition.FAVOURITES_COUNT);
@@ -105,7 +107,7 @@ public class TwitterProfile extends OAuth10Profile {
     /**
      * <p>getFollowRequestSent.</p>
      *
-     * @return a {@link java.lang.Boolean} object
+     * @return a {@link Boolean} object
      */
     public Boolean getFollowRequestSent() {
         return (Boolean) getAttribute(TwitterProfileDefinition.FOLLOW_REQUEST_SENT);
@@ -114,7 +116,7 @@ public class TwitterProfile extends OAuth10Profile {
     /**
      * <p>getFollowersCount.</p>
      *
-     * @return a {@link java.lang.Integer} object
+     * @return a {@link Integer} object
      */
     public Integer getFollowersCount() {
         return (Integer) getAttribute(TwitterProfileDefinition.FOLLOWERS_COUNT);
@@ -123,7 +125,7 @@ public class TwitterProfile extends OAuth10Profile {
     /**
      * <p>getFollowing.</p>
      *
-     * @return a {@link java.lang.Boolean} object
+     * @return a {@link Boolean} object
      */
     public Boolean getFollowing() {
         return (Boolean) getAttribute(TwitterProfileDefinition.FOLLOWING);
@@ -132,7 +134,7 @@ public class TwitterProfile extends OAuth10Profile {
     /**
      * <p>getFriendsCount.</p>
      *
-     * @return a {@link java.lang.Integer} object
+     * @return a {@link Integer} object
      */
     public Integer getFriendsCount() {
         return (Integer) getAttribute(TwitterProfileDefinition.FRIENDS_COUNT);
@@ -141,7 +143,7 @@ public class TwitterProfile extends OAuth10Profile {
     /**
      * <p>getGeoEnabled.</p>
      *
-     * @return a {@link java.lang.Boolean} object
+     * @return a {@link Boolean} object
      */
     public Boolean getGeoEnabled() {
         return (Boolean) getAttribute(TwitterProfileDefinition.GEO_ENABLED);
@@ -150,7 +152,7 @@ public class TwitterProfile extends OAuth10Profile {
     /**
      * <p>getIsTranslator.</p>
      *
-     * @return a {@link java.lang.Boolean} object
+     * @return a {@link Boolean} object
      */
     public Boolean getIsTranslator() {
         return (Boolean) getAttribute(TwitterProfileDefinition.IS_TRANSLATOR);
@@ -159,7 +161,7 @@ public class TwitterProfile extends OAuth10Profile {
     /**
      * <p>getListedCount.</p>
      *
-     * @return a {@link java.lang.Integer} object
+     * @return a {@link Integer} object
      */
     public Integer getListedCount() {
         return (Integer) getAttribute(TwitterProfileDefinition.LISTED_COUNT);
@@ -168,7 +170,7 @@ public class TwitterProfile extends OAuth10Profile {
     /**
      * <p>getNotifications.</p>
      *
-     * @return a {@link java.lang.Boolean} object
+     * @return a {@link Boolean} object
      */
     public Boolean getNotifications() {
         return (Boolean) getAttribute(TwitterProfileDefinition.NOTIFICATIONS);
@@ -177,7 +179,7 @@ public class TwitterProfile extends OAuth10Profile {
     /**
      * <p>getProfileBackgroundColor.</p>
      *
-     * @return a {@link org.pac4j.core.profile.Color} object
+     * @return a {@link Color} object
      */
     public Color getProfileBackgroundColor() {
         return (Color) getAttribute(TwitterProfileDefinition.PROFILE_BACKGROUND_COLOR);
@@ -186,7 +188,7 @@ public class TwitterProfile extends OAuth10Profile {
     /**
      * <p>getProfileBackgroundImageUrl.</p>
      *
-     * @return a {@link java.net.URI} object
+     * @return a {@link URI} object
      */
     public URI getProfileBackgroundImageUrl() {
         return (URI) getAttribute(TwitterProfileDefinition.PROFILE_BACKGROUND_IMAGE_URL);
@@ -195,7 +197,7 @@ public class TwitterProfile extends OAuth10Profile {
     /**
      * <p>getProfileBackgroundImageUrlHttps.</p>
      *
-     * @return a {@link java.net.URI} object
+     * @return a {@link URI} object
      */
     public URI getProfileBackgroundImageUrlHttps() {
         return (URI) getAttribute(TwitterProfileDefinition.PROFILE_BACKGROUND_IMAGE_URL_HTTPS);
@@ -204,7 +206,7 @@ public class TwitterProfile extends OAuth10Profile {
     /**
      * <p>getProfileBackgroundTile.</p>
      *
-     * @return a {@link java.lang.Boolean} object
+     * @return a {@link Boolean} object
      */
     public Boolean getProfileBackgroundTile() {
         return (Boolean) getAttribute(TwitterProfileDefinition.PROFILE_BACKGROUND_TILE);
@@ -213,7 +215,7 @@ public class TwitterProfile extends OAuth10Profile {
     /**
      * <p>getProfileImageUrlHttps.</p>
      *
-     * @return a {@link java.net.URI} object
+     * @return a {@link URI} object
      */
     public URI getProfileImageUrlHttps() {
         return (URI) getAttribute(TwitterProfileDefinition.PROFILE_IMAGE_URL_HTTPS);
@@ -222,7 +224,7 @@ public class TwitterProfile extends OAuth10Profile {
     /**
      * <p>getProfileLinkColor.</p>
      *
-     * @return a {@link org.pac4j.core.profile.Color} object
+     * @return a {@link Color} object
      */
     public Color getProfileLinkColor() {
         return (Color) getAttribute(TwitterProfileDefinition.PROFILE_LINK_COLOR);
@@ -231,7 +233,7 @@ public class TwitterProfile extends OAuth10Profile {
     /**
      * <p>getProfileSidebarBorderColor.</p>
      *
-     * @return a {@link org.pac4j.core.profile.Color} object
+     * @return a {@link Color} object
      */
     public Color getProfileSidebarBorderColor() {
         return (Color) getAttribute(TwitterProfileDefinition.PROFILE_SIDEBAR_BORDER_COLOR);
@@ -240,7 +242,7 @@ public class TwitterProfile extends OAuth10Profile {
     /**
      * <p>getProfileSidebarFillColor.</p>
      *
-     * @return a {@link org.pac4j.core.profile.Color} object
+     * @return a {@link Color} object
      */
     public Color getProfileSidebarFillColor() {
         return (Color) getAttribute(TwitterProfileDefinition.PROFILE_SIDEBAR_FILL_COLOR);
@@ -249,7 +251,7 @@ public class TwitterProfile extends OAuth10Profile {
     /**
      * <p>getProfileTextColor.</p>
      *
-     * @return a {@link org.pac4j.core.profile.Color} object
+     * @return a {@link Color} object
      */
     public Color getProfileTextColor() {
         return (Color) getAttribute(TwitterProfileDefinition.PROFILE_TEXT_COLOR);
@@ -258,7 +260,7 @@ public class TwitterProfile extends OAuth10Profile {
     /**
      * <p>getProfileUseBackgroundImage.</p>
      *
-     * @return a {@link java.lang.Boolean} object
+     * @return a {@link Boolean} object
      */
     public Boolean getProfileUseBackgroundImage() {
         return (Boolean) getAttribute(TwitterProfileDefinition.PROFILE_USE_BACKGROUND_IMAGE);
@@ -267,7 +269,7 @@ public class TwitterProfile extends OAuth10Profile {
     /**
      * <p>getProtected.</p>
      *
-     * @return a {@link java.lang.Boolean} object
+     * @return a {@link Boolean} object
      */
     public Boolean getProtected() {
         return (Boolean) getAttribute(TwitterProfileDefinition.PROTECTED);
@@ -276,7 +278,7 @@ public class TwitterProfile extends OAuth10Profile {
     /**
      * <p>getShowAllInlineMedia.</p>
      *
-     * @return a {@link java.lang.Boolean} object
+     * @return a {@link Boolean} object
      */
     public Boolean getShowAllInlineMedia() {
         return (Boolean) getAttribute(TwitterProfileDefinition.SHOW_ALL_INLINE_MEDIA);
@@ -285,7 +287,7 @@ public class TwitterProfile extends OAuth10Profile {
     /**
      * <p>getStatusesCount.</p>
      *
-     * @return a {@link java.lang.Integer} object
+     * @return a {@link Integer} object
      */
     public Integer getStatusesCount() {
         return (Integer) getAttribute(TwitterProfileDefinition.STATUSES_COUNT);
@@ -294,7 +296,7 @@ public class TwitterProfile extends OAuth10Profile {
     /**
      * <p>getTimeZone.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getTimeZone() {
         return (String) getAttribute(TwitterProfileDefinition.TIME_ZONE);
@@ -303,7 +305,7 @@ public class TwitterProfile extends OAuth10Profile {
     /**
      * <p>getUtcOffset.</p>
      *
-     * @return a {@link java.lang.Integer} object
+     * @return a {@link Integer} object
      */
     public Integer getUtcOffset() {
         return (Integer) getAttribute(TwitterProfileDefinition.UTC_OFFSET);
@@ -312,7 +314,7 @@ public class TwitterProfile extends OAuth10Profile {
     /**
      * <p>getVerified.</p>
      *
-     * @return a {@link java.lang.Boolean} object
+     * @return a {@link Boolean} object
      */
     public Boolean getVerified() {
         return (Boolean) getAttribute(TwitterProfileDefinition.VERIFIED);

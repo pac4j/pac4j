@@ -61,7 +61,7 @@ public class SAML2LogoutProcessor implements LogoutProcessor {
     /**
      * <p>Constructor for SAML2LogoutProcessor.</p>
      *
-     * @param client a {@link org.pac4j.saml.client.SAML2Client} object
+     * @param client a {@link SAML2Client} object
      */
     public SAML2LogoutProcessor(final SAML2Client client) {
         this.contextProvider = client.getContextProvider();
@@ -100,8 +100,8 @@ public class SAML2LogoutProcessor implements LogoutProcessor {
     /**
      * <p>sendLogoutResponse.</p>
      *
-     * @param samlContext a {@link org.pac4j.saml.context.SAML2MessageContext} object
-     * @param saml2Credentials a {@link org.pac4j.saml.credentials.SAML2Credentials} object
+     * @param samlContext a {@link SAML2MessageContext} object
+     * @param saml2Credentials a {@link SAML2Credentials} object
      */
     protected void sendLogoutResponse(final SAML2MessageContext samlContext, final SAML2Credentials saml2Credentials) {
         samlContext.getSAMLBindingContext().setRelayState(saml2Credentials.getContext().getSAMLBindingContext().getRelayState());
@@ -113,9 +113,9 @@ public class SAML2LogoutProcessor implements LogoutProcessor {
     /**
      * <p>adaptLogoutResponseToBinding.</p>
      *
-     * @param context a {@link org.pac4j.core.context.WebContext} object
-     * @param samlContext a {@link org.pac4j.saml.context.SAML2MessageContext} object
-     * @return a {@link org.pac4j.core.exception.http.HttpAction} object
+     * @param context a {@link WebContext} object
+     * @param samlContext a {@link SAML2MessageContext} object
+     * @return a {@link HttpAction} object
      */
     protected HttpAction adaptLogoutResponseToBinding(final WebContext context, final SAML2MessageContext samlContext) {
         val adapter = samlContext.getProfileRequestContextOutboundMessageTransportResponse();
@@ -131,8 +131,8 @@ public class SAML2LogoutProcessor implements LogoutProcessor {
     /**
      * <p>handlePostLogoutResponse.</p>
      *
-     * @param context a {@link org.pac4j.saml.context.SAML2MessageContext} object
-     * @return a {@link org.pac4j.core.exception.http.HttpAction} object
+     * @param context a {@link SAML2MessageContext} object
+     * @return a {@link HttpAction} object
      */
     protected HttpAction handlePostLogoutResponse(final SAML2MessageContext context) {
         if (CommonHelper.isNotBlank(postLogoutURL)) {

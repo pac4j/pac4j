@@ -30,8 +30,8 @@ public class DefaultCallbackClientFinder implements ClientFinder {
     @Override
     public List<Client> find(final Clients clients, final WebContext context, final String clientNames) {
 
-        val result = new ArrayList<Client>();
-        val indirectClients = new ArrayList<Client>();
+        List<Client> result = new ArrayList<>();
+        List<Client> indirectClients = new ArrayList<>();
 
         for (val client : clients.findAllClients()) {
             if (client instanceof IndirectClient indirectClient) {

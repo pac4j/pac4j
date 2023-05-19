@@ -9,8 +9,10 @@ import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.FoundAction;
+import org.pac4j.core.exception.http.WithLocationAction;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
@@ -70,7 +72,7 @@ public final class FormClientTests implements TestsConstants {
     public void testRedirectionUrl() {
         val formClient = getFormClient();
         var context = MockWebContext.create();
-        val action = (FoundAction) formClient.getRedirectionAction(new CallContext(context, new MockSessionStore())).get();
+        WithLocationAction action = (FoundAction) formClient.getRedirectionAction(new CallContext(context, new MockSessionStore())).get();
         assertEquals(LOGIN_URL, action.getLocation());
     }
 
@@ -124,7 +126,7 @@ public final class FormClientTests implements TestsConstants {
         val formClient = getFormClient();
         formClient.setProfileCreator((ctx, credentials) -> {
             var username = ((UsernamePasswordCredentials) credentials).getUsername();
-            val profile = new CommonProfile();
+            UserProfile profile = new CommonProfile();
             profile.setId(username);
             profile.addAttribute(Pac4jConstants.USERNAME, username);
             return Optional.of(profile);

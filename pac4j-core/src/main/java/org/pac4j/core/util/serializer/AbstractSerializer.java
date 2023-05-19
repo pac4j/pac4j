@@ -26,8 +26,8 @@ public abstract class AbstractSerializer implements Serializer {
     /**
      * <p>internalSerializeToString.</p>
      *
-     * @param obj a {@link java.lang.Object} object
-     * @return a {@link java.lang.String} object
+     * @param obj a {@link Object} object
+     * @return a {@link String} object
      */
     protected String internalSerializeToString(final Object obj) {
         return Base64.getEncoder().encodeToString(internalSerializeToBytes(obj));
@@ -46,7 +46,7 @@ public abstract class AbstractSerializer implements Serializer {
     /**
      * <p>internalSerializeToBytes.</p>
      *
-     * @param obj a {@link java.lang.Object} object
+     * @param obj a {@link Object} object
      * @return an array of {@link byte} objects
      */
     protected byte[] internalSerializeToBytes(final Object obj) {
@@ -66,8 +66,8 @@ public abstract class AbstractSerializer implements Serializer {
     /**
      * <p>internalDeserializeFromString.</p>
      *
-     * @param encoded a {@link java.lang.String} object
-     * @return a {@link java.lang.Object} object
+     * @param encoded a {@link String} object
+     * @return a {@link Object} object
      */
     protected Object internalDeserializeFromString(final String encoded) {
         val enc = Base64.getDecoder().decode(encoded);
@@ -88,7 +88,7 @@ public abstract class AbstractSerializer implements Serializer {
      * <p>internalDeserializeFromBytes.</p>
      *
      * @param encoded an array of {@link byte} objects
-     * @return a {@link java.lang.Object} object
+     * @return a {@link Object} object
      */
     protected Object internalDeserializeFromBytes(final byte[] encoded) {
         return internalDeserializeFromString(new String(encoded, StandardCharsets.UTF_8));

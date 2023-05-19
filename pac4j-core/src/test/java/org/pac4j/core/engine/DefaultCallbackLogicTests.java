@@ -26,6 +26,7 @@ import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
@@ -126,7 +127,7 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
         config.setClients(new Clients(CALLBACK_URL, indirectClient));
         call();
         val newSessionId = sessionStore.getSessionId(context, false);
-        val profiles =
+        Map<String, CommonProfile> profiles =
             (LinkedHashMap<String, CommonProfile>) sessionStore.get(context, Pac4jConstants.USER_PROFILES).get();
         assertTrue(profiles.containsValue(profile));
         assertEquals(1, profiles.size());
@@ -155,7 +156,7 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
         config.setClients(new Clients(CALLBACK_URL, indirectClient));
         call();
         val newSessionId = sessionStore.getSessionId(context, false);
-        val profiles =
+        Map<String, CommonProfile> profiles =
             (LinkedHashMap<String, CommonProfile>) sessionStore.get(context, Pac4jConstants.USER_PROFILES).get();
         assertTrue(profiles.containsValue(profile));
         assertEquals(1, profiles.size());
@@ -178,7 +179,7 @@ public final class DefaultCallbackLogicTests implements TestsConstants {
         renewSession = false;
         call();
         val newSessionId = sessionStore.getSessionId(context, false);
-        val profiles =
+        Map<String, CommonProfile> profiles =
             (LinkedHashMap<String, CommonProfile>) sessionStore.get(context, Pac4jConstants.USER_PROFILES).get();
         assertTrue(profiles.containsValue(profile));
         assertEquals(1, profiles.size());

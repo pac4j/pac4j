@@ -9,6 +9,7 @@ import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.exception.http.HttpAction;
+import org.pac4j.core.exception.http.WithLocationAction;
 import org.pac4j.core.profile.AnonymousProfile;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
@@ -34,7 +35,7 @@ public final class BaseClientTests implements TestsConstants {
         client.setCallbackUrl(CALLBACK_URL);
         val context = MockWebContext.create();
         final SessionStore sessionStore = new MockSessionStore();
-        val action = (FoundAction) client.getRedirectionAction(new CallContext(context, sessionStore)).get();
+        WithLocationAction action = (FoundAction) client.getRedirectionAction(new CallContext(context, sessionStore)).get();
         val redirectionUrl = action.getLocation();
         assertEquals(LOGIN_URL, redirectionUrl);
         val credentials = client.getCredentials(new CallContext(context, sessionStore));
@@ -47,7 +48,7 @@ public final class BaseClientTests implements TestsConstants {
             new MockIndirectClient(TYPE, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
         client.setCallbackUrl(CALLBACK_URL);
         val context = MockWebContext.create();
-        val action = (FoundAction) client.getRedirectionAction(new CallContext(context, new MockSessionStore())).get();
+        WithLocationAction action = (FoundAction) client.getRedirectionAction(new CallContext(context, new MockSessionStore())).get();
         val redirectionUrl = action.getLocation();
         assertEquals(LOGIN_URL, redirectionUrl);
     }

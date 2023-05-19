@@ -28,7 +28,7 @@ public class WechatJsonExtractor extends OAuth2AccessTokenJsonExtractor {
     /**
      * <p>instance.</p>
      *
-     * @return a {@link org.pac4j.scribe.extractors.WechatJsonExtractor} object
+     * @return a {@link WechatJsonExtractor} object
      */
     public static WechatJsonExtractor instance() {
         return WechatJsonExtractor.InstanceHolder.INSTANCE;

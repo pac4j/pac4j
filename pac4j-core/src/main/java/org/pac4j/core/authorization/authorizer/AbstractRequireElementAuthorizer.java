@@ -40,7 +40,7 @@ public abstract class AbstractRequireElementAuthorizer<E extends Object> extends
     /**
      * <p>Getter for the field <code>elements</code>.</p>
      *
-     * @return a {@link java.util.Set} object
+     * @return a {@link Set} object
      */
     public Set<E> getElements() {
         return elements;
@@ -49,7 +49,7 @@ public abstract class AbstractRequireElementAuthorizer<E extends Object> extends
     /**
      * <p>Setter for the field <code>elements</code>.</p>
      *
-     * @param elements a {@link java.util.Set} object
+     * @param elements a {@link Set} object
      */
     public void setElements(final Set<E> elements) {
         this.elements = elements;
@@ -58,7 +58,7 @@ public abstract class AbstractRequireElementAuthorizer<E extends Object> extends
     /**
      * <p>Setter for the field <code>elements</code>.</p>
      *
-     * @param elements a {@link java.util.List} object
+     * @param elements a {@link List} object
      */
     public void setElements(final List<E> elements) {
         if (elements != null) {

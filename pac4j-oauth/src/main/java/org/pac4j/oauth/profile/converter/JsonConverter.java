@@ -24,7 +24,7 @@ public final class JsonConverter implements AttributeConverter {
     /**
      * <p>Constructor for JsonConverter.</p>
      *
-     * @param clazz a {@link java.lang.Class} object
+     * @param clazz a {@link Class} object
      */
     public JsonConverter(final Class<? extends Object> clazz) {
         this.clazz = clazz;
@@ -33,8 +33,8 @@ public final class JsonConverter implements AttributeConverter {
     /**
      * <p>Constructor for JsonConverter.</p>
      *
-     * @param clazz a {@link java.lang.Class} object
-     * @param typeReference a {@link com.fasterxml.jackson.core.type.TypeReference} object
+     * @param clazz a {@link Class} object
+     * @param typeReference a {@link TypeReference} object
      */
     public JsonConverter(final Class<? extends Object> clazz, final TypeReference<? extends Object> typeReference) {
         this(clazz);

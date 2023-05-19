@@ -65,7 +65,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
     /**
      * <p>Constructor for JwtAuthenticator.</p>
      *
-     * @param signatureConfigurations a {@link java.util.List} object
+     * @param signatureConfigurations a {@link List} object
      */
     public JwtAuthenticator(final List<SignatureConfiguration> signatureConfigurations) {
         this.signatureConfigurations = signatureConfigurations;
@@ -74,8 +74,8 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
     /**
      * <p>Constructor for JwtAuthenticator.</p>
      *
-     * @param signatureConfigurations a {@link java.util.List} object
-     * @param encryptionConfigurations a {@link java.util.List} object
+     * @param signatureConfigurations a {@link List} object
+     * @param encryptionConfigurations a {@link List} object
      */
     public JwtAuthenticator(final List<SignatureConfiguration> signatureConfigurations,
         final List<EncryptionConfiguration> encryptionConfigurations) {
@@ -86,7 +86,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
     /**
      * <p>Constructor for JwtAuthenticator.</p>
      *
-     * @param signatureConfiguration a {@link org.pac4j.jwt.config.signature.SignatureConfiguration} object
+     * @param signatureConfiguration a {@link SignatureConfiguration} object
      */
     public JwtAuthenticator(final SignatureConfiguration signatureConfiguration) {
         setSignatureConfiguration(signatureConfiguration);
@@ -95,8 +95,8 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
     /**
      * <p>Constructor for JwtAuthenticator.</p>
      *
-     * @param signatureConfiguration a {@link org.pac4j.jwt.config.signature.SignatureConfiguration} object
-     * @param encryptionConfiguration a {@link org.pac4j.jwt.config.encryption.EncryptionConfiguration} object
+     * @param signatureConfiguration a {@link SignatureConfiguration} object
+     * @param encryptionConfiguration a {@link EncryptionConfiguration} object
      */
     public JwtAuthenticator(final SignatureConfiguration signatureConfiguration, final EncryptionConfiguration encryptionConfiguration) {
         setSignatureConfiguration(signatureConfiguration);
@@ -183,10 +183,9 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
                 }
 
                 // encrypted?
-                if (jwt instanceof EncryptedJWT) {
+                if (jwt instanceof EncryptedJWT encryptedJWT) {
                     logger.debug("JWT is encrypted");
 
-                    val encryptedJWT = (EncryptedJWT) jwt;
                     var found = false;
                     val header = encryptedJWT.getHeader();
                     val algorithm = header.getAlgorithm();
@@ -254,10 +253,10 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
     /**
      * <p>createJwtProfile.</p>
      *
-     * @param ctx a {@link org.pac4j.core.context.CallContext} object
-     * @param credentials a {@link org.pac4j.core.credentials.TokenCredentials} object
-     * @param jwt a {@link com.nimbusds.jwt.JWT} object
-     * @throws java.text.ParseException if any.
+     * @param ctx a {@link CallContext} object
+     * @param credentials a {@link TokenCredentials} object
+     * @param jwt a {@link JWT} object
+     * @throws ParseException if any.
      */
     @SuppressWarnings("unchecked")
     protected void createJwtProfile(final CallContext ctx, final TokenCredentials credentials, final JWT jwt) throws ParseException {
@@ -285,10 +284,10 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
             }
         }
 
-        val attributes = new HashMap<String, Object>(claimSet.getClaims());
+        val attributes = new HashMap<>(claimSet.getClaims());
         attributes.remove(JwtClaims.SUBJECT);
 
-        val roles = (List<String>) attributes.get(JwtGenerator.INTERNAL_ROLES);
+        Collection<String> roles = (List<String>) attributes.get(JwtGenerator.INTERNAL_ROLES);
         attributes.remove(JwtGenerator.INTERNAL_ROLES);
         val linkedId = (String) attributes.get(JwtGenerator.INTERNAL_LINKEDID);
         attributes.remove(JwtGenerator.INTERNAL_LINKEDID);
@@ -309,7 +308,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
     /**
      * <p>setSignatureConfiguration.</p>
      *
-     * @param signatureConfiguration a {@link org.pac4j.jwt.config.signature.SignatureConfiguration} object
+     * @param signatureConfiguration a {@link SignatureConfiguration} object
      */
     public void setSignatureConfiguration(final SignatureConfiguration signatureConfiguration) {
         addSignatureConfiguration(signatureConfiguration);
@@ -318,7 +317,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
     /**
      * <p>addSignatureConfiguration.</p>
      *
-     * @param signatureConfiguration a {@link org.pac4j.jwt.config.signature.SignatureConfiguration} object
+     * @param signatureConfiguration a {@link SignatureConfiguration} object
      */
     public void addSignatureConfiguration(final SignatureConfiguration signatureConfiguration) {
         assertNotNull("signatureConfiguration", signatureConfiguration);
@@ -328,7 +327,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
     /**
      * <p>Setter for the field <code>signatureConfigurations</code>.</p>
      *
-     * @param signatureConfigurations a {@link java.util.List} object
+     * @param signatureConfigurations a {@link List} object
      */
     public void setSignatureConfigurations(final List<SignatureConfiguration> signatureConfigurations) {
         assertNotNull("signatureConfigurations", signatureConfigurations);
@@ -338,7 +337,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
     /**
      * <p>setEncryptionConfiguration.</p>
      *
-     * @param encryptionConfiguration a {@link org.pac4j.jwt.config.encryption.EncryptionConfiguration} object
+     * @param encryptionConfiguration a {@link EncryptionConfiguration} object
      */
     public void setEncryptionConfiguration(final EncryptionConfiguration encryptionConfiguration) {
         addEncryptionConfiguration(encryptionConfiguration);
@@ -347,7 +346,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
     /**
      * <p>addEncryptionConfiguration.</p>
      *
-     * @param encryptionConfiguration a {@link org.pac4j.jwt.config.encryption.EncryptionConfiguration} object
+     * @param encryptionConfiguration a {@link EncryptionConfiguration} object
      */
     public void addEncryptionConfiguration(final EncryptionConfiguration encryptionConfiguration) {
         assertNotNull("encryptionConfiguration", encryptionConfiguration);
@@ -357,7 +356,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
     /**
      * <p>Setter for the field <code>encryptionConfigurations</code>.</p>
      *
-     * @param encryptionConfigurations a {@link java.util.List} object
+     * @param encryptionConfigurations a {@link List} object
      */
     public void setEncryptionConfigurations(final List<EncryptionConfiguration> encryptionConfigurations) {
         assertNotNull("encryptionConfigurations", encryptionConfigurations);
@@ -367,7 +366,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
     /**
      * <p>Setter for the field <code>expirationTime</code>.</p>
      *
-     * @param expirationTime a {@link java.util.Date} object
+     * @param expirationTime a {@link Date} object
      */
     public void setExpirationTime(final Date expirationTime) {
         this.expirationTime = new Date(expirationTime.getTime());
@@ -376,7 +375,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
     /**
      * <p>Getter for the field <code>expirationTime</code>.</p>
      *
-     * @return a {@link java.util.Date} object
+     * @return a {@link Date} object
      */
     public Date getExpirationTime() {
         return new Date(expirationTime.getTime());

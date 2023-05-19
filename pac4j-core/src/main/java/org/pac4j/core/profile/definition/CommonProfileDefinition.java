@@ -60,7 +60,7 @@ public class CommonProfileDefinition extends ProfileDefinition {
     /**
      * <p>Constructor for CommonProfileDefinition.</p>
      *
-     * @param profileFactory a {@link org.pac4j.core.profile.factory.ProfileFactory} object
+     * @param profileFactory a {@link ProfileFactory} object
      */
     public CommonProfileDefinition(final ProfileFactory profileFactory) {
         this();

@@ -32,8 +32,8 @@ public class FacebookProfileCreator extends OAuth20ProfileCreator {
     /**
      * <p>Constructor for FacebookProfileCreator.</p>
      *
-     * @param configuration a {@link org.pac4j.oauth.config.OAuth20Configuration} object
-     * @param client a {@link org.pac4j.core.client.IndirectClient} object
+     * @param configuration a {@link OAuth20Configuration} object
+     * @param client a {@link IndirectClient} object
      */
     public FacebookProfileCreator(final OAuth20Configuration configuration, final IndirectClient client) {
         super(configuration, client);
@@ -50,7 +50,7 @@ public class FacebookProfileCreator extends OAuth20ProfileCreator {
         if (body == null) {
             throw new HttpCommunicationException("Not data found for accessToken: " + accessToken);
         }
-        val profile = (FacebookProfile) profileDefinition.extractUserProfile(body);
+        UserProfile profile = (FacebookProfile) profileDefinition.extractUserProfile(body);
         addTokenToProfile(profile, accessToken);
         if (profile != null && facebookConfiguration.isRequiresExtendedToken()) {
             var url = CommonHelper.addParameter(EXCHANGE_TOKEN_URL, OAuthConstants.CLIENT_ID, configuration.getKey());

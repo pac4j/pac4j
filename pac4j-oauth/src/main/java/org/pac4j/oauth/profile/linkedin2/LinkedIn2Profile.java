@@ -4,6 +4,7 @@ import lombok.val;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.OAuth20Profile;
 
+import java.io.Serial;
 import java.net.URI;
 
 /**
@@ -12,12 +13,13 @@ import java.net.URI;
  * @author Vassilis Virvilis
  */
 public class LinkedIn2Profile extends OAuth20Profile {
+    @Serial
     private static final long serialVersionUID = 100L;
 
     /**
      * <p>getLocalizedFirstName.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getLocalizedFirstName() {
         return (String) getAttribute(LinkedIn2ProfileDefinition.LOCALIZED_FIRST_NAME);
@@ -26,7 +28,7 @@ public class LinkedIn2Profile extends OAuth20Profile {
     /**
      * <p>getLocalizedLastName.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getLocalizedLastName() {
         return (String) getAttribute(LinkedIn2ProfileDefinition.LOCALIZED_LAST_NAME);
@@ -35,7 +37,7 @@ public class LinkedIn2Profile extends OAuth20Profile {
     /**
      * <p>getProfilePicture.</p>
      *
-     * @return a {@link org.pac4j.oauth.profile.linkedin2.LinkedIn2ProfilePicture} object
+     * @return a {@link LinkedIn2ProfilePicture} object
      */
     public LinkedIn2ProfilePicture getProfilePicture() {
         return (LinkedIn2ProfilePicture) getAttribute(LinkedIn2ProfileDefinition.PROFILE_PICTURE);
@@ -44,7 +46,7 @@ public class LinkedIn2Profile extends OAuth20Profile {
     /**
      * <p>getProfileEmails.</p>
      *
-     * @return a {@link org.pac4j.oauth.profile.linkedin2.LinkedIn2ProfileEmails} object
+     * @return a {@link LinkedIn2ProfileEmails} object
      */
     public LinkedIn2ProfileEmails getProfileEmails() {
         return (LinkedIn2ProfileEmails) getAttribute(LinkedIn2ProfileDefinition.PROFILE_EMAILS);

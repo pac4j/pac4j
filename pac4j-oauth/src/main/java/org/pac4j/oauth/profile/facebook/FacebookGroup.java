@@ -1,5 +1,6 @@
 package org.pac4j.oauth.profile.facebook;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -10,6 +11,7 @@ import java.io.Serializable;
  */
 public final class FacebookGroup implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -846266834053161809L;
 
     private String id;
@@ -21,7 +23,7 @@ public final class FacebookGroup implements Serializable {
     /**
      * <p>Getter for the field <code>id</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getId() {
         return id;
@@ -30,7 +32,7 @@ public final class FacebookGroup implements Serializable {
     /**
      * <p>Setter for the field <code>id</code>.</p>
      *
-     * @param id a {@link java.lang.String} object
+     * @param id a {@link String} object
      */
     public void setId(String id) {
         this.id = id;
@@ -39,7 +41,7 @@ public final class FacebookGroup implements Serializable {
     /**
      * <p>Getter for the field <code>name</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getName() {
         return name;
@@ -48,7 +50,7 @@ public final class FacebookGroup implements Serializable {
     /**
      * <p>Setter for the field <code>name</code>.</p>
      *
-     * @param name a {@link java.lang.String} object
+     * @param name a {@link String} object
      */
     public void setName(String name) {
         this.name = name;
@@ -57,7 +59,7 @@ public final class FacebookGroup implements Serializable {
     /**
      * <p>Getter for the field <code>privacy</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getPrivacy() {
         return privacy;
@@ -66,7 +68,7 @@ public final class FacebookGroup implements Serializable {
     /**
      * <p>Setter for the field <code>privacy</code>.</p>
      *
-     * @param privacy a {@link java.lang.String} object
+     * @param privacy a {@link String} object
      */
     public void setPrivacy(String privacy) {
         this.privacy = privacy;

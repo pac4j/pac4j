@@ -15,7 +15,7 @@ public interface ReplayCacheProvider {
     /**
      * <p>get.</p>
      *
-     * @return a {@link org.opensaml.storage.ReplayCache} object
+     * @return a {@link ReplayCache} object
      */
     ReplayCache get();
 }

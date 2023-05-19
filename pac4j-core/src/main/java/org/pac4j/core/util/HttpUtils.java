@@ -32,7 +32,7 @@ public final class HttpUtils {
      *
      * @param connection HttpURLConnection
      * @return String by combining response code, message and error stream
-     * @throws java.io.IOException an IO exception
+     * @throws IOException an IO exception
      */
     public static String buildHttpErrorMessage(final HttpURLConnection connection) throws IOException {
         val messageBuilder = new StringBuilder("(").append(connection.getResponseCode()).append(")");
@@ -57,9 +57,9 @@ public final class HttpUtils {
     /**
      * <p>openPostConnection.</p>
      *
-     * @param url a {@link java.net.URL} object
-     * @return a {@link java.net.HttpURLConnection} object
-     * @throws java.io.IOException if any.
+     * @param url a {@link URL} object
+     * @return a {@link HttpURLConnection} object
+     * @throws IOException if any.
      */
     public static HttpURLConnection openPostConnection(final URL url) throws IOException {
         return openConnection(url, HttpConstants.HTTP_METHOD.POST.name(), null);
@@ -68,10 +68,10 @@ public final class HttpUtils {
     /**
      * <p>openPostConnection.</p>
      *
-     * @param url a {@link java.net.URL} object
-     * @param headers a {@link java.util.Map} object
-     * @return a {@link java.net.HttpURLConnection} object
-     * @throws java.io.IOException if any.
+     * @param url a {@link URL} object
+     * @param headers a {@link Map} object
+     * @return a {@link HttpURLConnection} object
+     * @throws IOException if any.
      */
     public static HttpURLConnection openPostConnection(final URL url, final Map<String, String> headers) throws IOException {
         return openConnection(url, HttpConstants.HTTP_METHOD.POST.name(), headers);
@@ -80,9 +80,9 @@ public final class HttpUtils {
     /**
      * <p>openDeleteConnection.</p>
      *
-     * @param url a {@link java.net.URL} object
-     * @return a {@link java.net.HttpURLConnection} object
-     * @throws java.io.IOException if any.
+     * @param url a {@link URL} object
+     * @return a {@link HttpURLConnection} object
+     * @throws IOException if any.
      */
     public static HttpURLConnection openDeleteConnection(final URL url) throws IOException {
         return openConnection(url, HttpConstants.HTTP_METHOD.DELETE.name(), null);
@@ -91,11 +91,11 @@ public final class HttpUtils {
     /**
      * <p>openConnection.</p>
      *
-     * @param url a {@link java.net.URL} object
-     * @param requestMethod a {@link java.lang.String} object
-     * @param headers a {@link java.util.Map} object
-     * @return a {@link java.net.HttpURLConnection} object
-     * @throws java.io.IOException if any.
+     * @param url a {@link URL} object
+     * @param requestMethod a {@link String} object
+     * @param headers a {@link Map} object
+     * @return a {@link HttpURLConnection} object
+     * @throws IOException if any.
      */
     protected static HttpURLConnection openConnection(final URL url, final String requestMethod, final Map<String, String> headers)
         throws IOException {
@@ -116,9 +116,9 @@ public final class HttpUtils {
     /**
      * <p>readBody.</p>
      *
-     * @param connection a {@link java.net.HttpURLConnection} object
-     * @return a {@link java.lang.String} object
-     * @throws java.io.IOException if any.
+     * @param connection a {@link HttpURLConnection} object
+     * @return a {@link String} object
+     * @throws IOException if any.
      */
     public static String readBody(final HttpURLConnection connection) throws IOException {
         try (var isr = new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8);
@@ -135,9 +135,9 @@ public final class HttpUtils {
     /**
      * <p>encodeQueryParam.</p>
      *
-     * @param paramName a {@link java.lang.String} object
-     * @param paramValue a {@link java.lang.String} object
-     * @return a {@link java.lang.String} object
+     * @param paramName a {@link String} object
+     * @param paramValue a {@link String} object
+     * @return a {@link String} object
      */
     public static String encodeQueryParam(final String paramName, final String paramValue) {
         return CommonHelper.urlEncode(paramName) + "=" + CommonHelper.urlEncode(paramValue);
@@ -146,7 +146,7 @@ public final class HttpUtils {
     /**
      * <p>closeConnection.</p>
      *
-     * @param connection a {@link java.net.HttpURLConnection} object
+     * @param connection a {@link HttpURLConnection} object
      */
     public static void closeConnection(final HttpURLConnection connection) {
         if (connection != null) {

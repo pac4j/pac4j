@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * This implementation uses the JEE {@link jakarta.servlet.http.HttpServletRequest} and {@link jakarta.servlet.http.HttpServletResponse}.
+ * This implementation uses the JEE {@link HttpServletRequest} and {@link HttpServletResponse}.
  *
  * @author Jerome Leleu
  * @since 1.4.0

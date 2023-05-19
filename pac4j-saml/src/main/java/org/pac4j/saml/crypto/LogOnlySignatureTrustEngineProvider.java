@@ -24,7 +24,7 @@ public class LogOnlySignatureTrustEngineProvider implements SAML2SignatureTrustE
     /**
      * <p>Constructor for LogOnlySignatureTrustEngineProvider.</p>
      *
-     * @param wrapped a {@link org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider} object
+     * @param wrapped a {@link SAML2SignatureTrustEngineProvider} object
      */
     public LogOnlySignatureTrustEngineProvider(final SAML2SignatureTrustEngineProvider wrapped) {
         this.wrapped = wrapped;

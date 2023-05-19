@@ -23,7 +23,7 @@ public class WeiboJsonExtractor extends OAuth2AccessTokenJsonExtractor {
     /**
      * <p>instance.</p>
      *
-     * @return a {@link org.pac4j.scribe.extractors.WeiboJsonExtractor} object
+     * @return a {@link WeiboJsonExtractor} object
      */
     public static WeiboJsonExtractor instance() {
         return WeiboJsonExtractor.InstanceHolder.INSTANCE;

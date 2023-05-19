@@ -1,6 +1,7 @@
 package org.pac4j.saml.metadata;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.val;
 import org.apache.hc.client5.http.classic.HttpClient;
@@ -22,6 +23,7 @@ import java.time.Duration;
  * @author Misagh Moayyed
  * @since 4.0.1
  */
+@RequiredArgsConstructor
 public class SAML2HttpUrlMetadataGenerator extends BaseSAML2MetadataGenerator {
     @Getter
     private final URL metadataUrl;
@@ -36,16 +38,6 @@ public class SAML2HttpUrlMetadataGenerator extends BaseSAML2MetadataGenerator {
     @Setter
     private Duration minRefreshDelay;
 
-    /**
-     * <p>Constructor for SAML2HttpUrlMetadataGenerator.</p>
-     *
-     * @param metadataUrl a {@link java.net.URL} object
-     * @param httpClient a {@link org.apache.hc.client5.http.classic.HttpClient} object
-     */
-    public SAML2HttpUrlMetadataGenerator(final URL metadataUrl, final HttpClient httpClient) {
-        this.metadataUrl = metadataUrl;
-        this.httpClient = httpClient;
-    }
 
     /** {@inheritDoc} */
     @Override

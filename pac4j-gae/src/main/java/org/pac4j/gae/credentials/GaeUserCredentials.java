@@ -7,6 +7,8 @@ import lombok.Setter;
 import lombok.ToString;
 import org.pac4j.core.credentials.Credentials;
 
+import java.io.Serial;
+
 /**
  * Credential for Google App Engine.
  *
@@ -19,6 +21,7 @@ import org.pac4j.core.credentials.Credentials;
 @EqualsAndHashCode
 public class GaeUserCredentials extends Credentials {
 
+    @Serial
     private static final long serialVersionUID = -135519596194113906L;
 
     private User user;

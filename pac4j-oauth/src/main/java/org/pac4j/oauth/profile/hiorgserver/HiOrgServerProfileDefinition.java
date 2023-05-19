@@ -99,7 +99,7 @@ public class HiOrgServerProfileDefinition extends OAuthProfileDefinition {
     /**
      * <p>extractRoles.</p>
      *
-     * @param profile a {@link org.pac4j.oauth.profile.hiorgserver.HiOrgServerProfile} object
+     * @param profile a {@link HiOrgServerProfile} object
      */
     protected void extractRoles(HiOrgServerProfile profile) {
         final Integer rolesAsInt = profile.getRolesAsInteger();

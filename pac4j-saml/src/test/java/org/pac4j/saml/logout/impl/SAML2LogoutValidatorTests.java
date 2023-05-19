@@ -18,6 +18,7 @@ import org.pac4j.saml.crypto.ExplicitSignatureTrustEngineProvider;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.metadata.SAML2IdentityProviderMetadataResolver;
 import org.pac4j.saml.metadata.SAML2ServiceProviderMetadataResolver;
+import org.pac4j.saml.profile.api.SAML2ResponseValidator;
 import org.pac4j.saml.replay.ReplayCacheProvider;
 import org.pac4j.saml.util.Configuration;
 import org.pac4j.saml.util.ExcludingParametersURIComparator;
@@ -101,7 +102,7 @@ public class SAML2LogoutValidatorTests {
         try {
             val webContext = getMockWebContext();
             val context = getSaml2MessageContext(webContext, xml);
-            val validator = new SAML2LogoutValidator(
+            SAML2ResponseValidator validator = new SAML2LogoutValidator(
                 getTrustEngine(),
                 mock(Decrypter.class),
                 mock(SessionLogoutHandler.class),

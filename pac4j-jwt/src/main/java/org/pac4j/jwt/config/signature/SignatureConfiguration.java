@@ -34,7 +34,7 @@ public interface SignatureConfiguration {
      *
      * @param jwt the signed JWT
      * @return whether the signed JWT is verified
-     * @throws com.nimbusds.jose.JOSEException exception when verifying the JWT
+     * @throws JOSEException exception when verifying the JWT
      */
     boolean verify(SignedJWT jwt) throws JOSEException;
 }

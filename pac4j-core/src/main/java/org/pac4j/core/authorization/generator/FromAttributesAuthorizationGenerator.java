@@ -33,7 +33,7 @@ public class FromAttributesAuthorizationGenerator implements AuthorizationGenera
     /**
      * <p>Constructor for FromAttributesAuthorizationGenerator.</p>
      *
-     * @param roleAttributes a {@link java.util.Collection} object
+     * @param roleAttributes a {@link Collection} object
      */
     public FromAttributesAuthorizationGenerator(final Collection<String> roleAttributes) {
         this.roleAttributes = roleAttributes;
@@ -42,7 +42,7 @@ public class FromAttributesAuthorizationGenerator implements AuthorizationGenera
     /**
      * <p>Constructor for FromAttributesAuthorizationGenerator.</p>
      *
-     * @param roleAttributes an array of {@link java.lang.String} objects
+     * @param roleAttributes an array of {@link String} objects
      */
     public FromAttributesAuthorizationGenerator(final String[] roleAttributes) {
         if (roleAttributes != null) {

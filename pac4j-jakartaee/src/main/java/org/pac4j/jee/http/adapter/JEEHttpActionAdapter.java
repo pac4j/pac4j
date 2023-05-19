@@ -13,7 +13,7 @@ import org.pac4j.jee.context.JEEContext;
 import java.io.IOException;
 
 /**
- * The HTTP action adapter for the {@link org.pac4j.jee.context.JEEContext}.
+ * The HTTP action adapter for the {@link JEEContext}.
  *
  * @author Jerome Leleu
  * @since 1.9.0
@@ -21,7 +21,7 @@ import java.io.IOException;
 public class JEEHttpActionAdapter implements HttpActionAdapter {
 
     /** Constant <code>INSTANCE</code> */
-    public static final JEEHttpActionAdapter INSTANCE = new JEEHttpActionAdapter();
+    public static final HttpActionAdapter INSTANCE = new JEEHttpActionAdapter();
 
     /**
      * <p>Constructor for JEEHttpActionAdapter.</p>
@@ -45,12 +45,10 @@ public class JEEHttpActionAdapter implements HttpActionAdapter {
                 }
             }
 
-            if (action instanceof WithLocationAction) {
-                val withLocationAction = (WithLocationAction) action;
+            if (action instanceof WithLocationAction withLocationAction) {
                 context.setResponseHeader(HttpConstants.LOCATION_HEADER, withLocationAction.getLocation());
 
-            } else if (action instanceof WithContentAction) {
-                val withContentAction = (WithContentAction) action;
+            } else if (action instanceof WithContentAction withContentAction) {
                 val content = withContentAction.getContent();
 
                 if (content != null) {

@@ -1,5 +1,6 @@
 package org.pac4j.oauth.profile.yahoo;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -10,6 +11,7 @@ import java.io.Serializable;
  */
 public final class YahooEmail implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1195905995057732685L;
 
     private Integer id;
@@ -23,7 +25,7 @@ public final class YahooEmail implements Serializable {
     /**
      * <p>Getter for the field <code>id</code>.</p>
      *
-     * @return a {@link java.lang.Integer} object
+     * @return a {@link Integer} object
      */
     public Integer getId() {
         return id;
@@ -32,7 +34,7 @@ public final class YahooEmail implements Serializable {
     /**
      * <p>Setter for the field <code>id</code>.</p>
      *
-     * @param id a {@link java.lang.Integer} object
+     * @param id a {@link Integer} object
      */
     public void setId(Integer id) {
         this.id = id;
@@ -41,7 +43,7 @@ public final class YahooEmail implements Serializable {
     /**
      * <p>Getter for the field <code>primary</code>.</p>
      *
-     * @return a {@link java.lang.Boolean} object
+     * @return a {@link Boolean} object
      */
     public Boolean getPrimary() {
         return primary;
@@ -50,7 +52,7 @@ public final class YahooEmail implements Serializable {
     /**
      * <p>Setter for the field <code>primary</code>.</p>
      *
-     * @param primary a {@link java.lang.Boolean} object
+     * @param primary a {@link Boolean} object
      */
     public void setPrimary(Boolean primary) {
         this.primary = primary;
@@ -59,7 +61,7 @@ public final class YahooEmail implements Serializable {
     /**
      * <p>Getter for the field <code>handle</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getHandle() {
         return handle;
@@ -68,7 +70,7 @@ public final class YahooEmail implements Serializable {
     /**
      * <p>Setter for the field <code>handle</code>.</p>
      *
-     * @param handle a {@link java.lang.String} object
+     * @param handle a {@link String} object
      */
     public void setHandle(String handle) {
         this.handle = handle;
@@ -77,7 +79,7 @@ public final class YahooEmail implements Serializable {
     /**
      * <p>Getter for the field <code>type</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getType() {
         return type;
@@ -86,7 +88,7 @@ public final class YahooEmail implements Serializable {
     /**
      * <p>Setter for the field <code>type</code>.</p>
      *
-     * @param type a {@link java.lang.String} object
+     * @param type a {@link String} object
      */
     public void setType(String type) {
         this.type = type;

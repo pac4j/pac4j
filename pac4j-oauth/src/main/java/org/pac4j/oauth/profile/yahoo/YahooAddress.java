@@ -1,5 +1,6 @@
 package org.pac4j.oauth.profile.yahoo;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Locale;
 
@@ -11,6 +12,7 @@ import java.util.Locale;
  */
 public final class YahooAddress implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 5415315569181241541L;
 
     private Integer id;
@@ -32,7 +34,7 @@ public final class YahooAddress implements Serializable {
     /**
      * <p>Getter for the field <code>id</code>.</p>
      *
-     * @return a {@link java.lang.Integer} object
+     * @return a {@link Integer} object
      */
     public Integer getId() {
         return id;
@@ -41,7 +43,7 @@ public final class YahooAddress implements Serializable {
     /**
      * <p>Setter for the field <code>id</code>.</p>
      *
-     * @param id a {@link java.lang.Integer} object
+     * @param id a {@link Integer} object
      */
     public void setId(Integer id) {
         this.id = id;
@@ -50,7 +52,7 @@ public final class YahooAddress implements Serializable {
     /**
      * <p>Getter for the field <code>current</code>.</p>
      *
-     * @return a {@link java.lang.Boolean} object
+     * @return a {@link Boolean} object
      */
     public Boolean getCurrent() {
         return current;
@@ -59,7 +61,7 @@ public final class YahooAddress implements Serializable {
     /**
      * <p>Setter for the field <code>current</code>.</p>
      *
-     * @param current a {@link java.lang.Boolean} object
+     * @param current a {@link Boolean} object
      */
     public void setCurrent(Boolean current) {
         this.current = current;
@@ -68,7 +70,7 @@ public final class YahooAddress implements Serializable {
     /**
      * <p>Getter for the field <code>country</code>.</p>
      *
-     * @return a {@link java.util.Locale} object
+     * @return a {@link Locale} object
      */
     public Locale getCountry() {
         return country;
@@ -77,7 +79,7 @@ public final class YahooAddress implements Serializable {
     /**
      * <p>Setter for the field <code>country</code>.</p>
      *
-     * @param country a {@link java.util.Locale} object
+     * @param country a {@link Locale} object
      */
     public void setCountry(Locale country) {
         this.country = country;
@@ -86,7 +88,7 @@ public final class YahooAddress implements Serializable {
     /**
      * <p>Getter for the field <code>state</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getState() {
         return state;
@@ -95,7 +97,7 @@ public final class YahooAddress implements Serializable {
     /**
      * <p>Setter for the field <code>state</code>.</p>
      *
-     * @param state a {@link java.lang.String} object
+     * @param state a {@link String} object
      */
     public void setState(String state) {
         this.state = state;
@@ -104,7 +106,7 @@ public final class YahooAddress implements Serializable {
     /**
      * <p>Getter for the field <code>city</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getCity() {
         return city;
@@ -113,7 +115,7 @@ public final class YahooAddress implements Serializable {
     /**
      * <p>Setter for the field <code>city</code>.</p>
      *
-     * @param city a {@link java.lang.String} object
+     * @param city a {@link String} object
      */
     public void setCity(String city) {
         this.city = city;
@@ -122,7 +124,7 @@ public final class YahooAddress implements Serializable {
     /**
      * <p>Getter for the field <code>postalCode</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getPostalCode() {
         return postalCode;
@@ -131,7 +133,7 @@ public final class YahooAddress implements Serializable {
     /**
      * <p>Setter for the field <code>postalCode</code>.</p>
      *
-     * @param postalCode a {@link java.lang.String} object
+     * @param postalCode a {@link String} object
      */
     public void setPostalCode(String postalCode) {
         this.postalCode = postalCode;
@@ -140,7 +142,7 @@ public final class YahooAddress implements Serializable {
     /**
      * <p>Getter for the field <code>street</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getStreet() {
         return street;
@@ -149,7 +151,7 @@ public final class YahooAddress implements Serializable {
     /**
      * <p>Setter for the field <code>street</code>.</p>
      *
-     * @param street a {@link java.lang.String} object
+     * @param street a {@link String} object
      */
     public void setStreet(String street) {
         this.street = street;
@@ -158,7 +160,7 @@ public final class YahooAddress implements Serializable {
     /**
      * <p>Getter for the field <code>type</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getType() {
         return type;
@@ -167,7 +169,7 @@ public final class YahooAddress implements Serializable {
     /**
      * <p>Setter for the field <code>type</code>.</p>
      *
-     * @param type a {@link java.lang.String} object
+     * @param type a {@link String} object
      */
     public void setType(String type) {
         this.type = type;

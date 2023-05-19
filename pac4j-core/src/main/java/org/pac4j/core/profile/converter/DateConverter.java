@@ -31,7 +31,7 @@ public class DateConverter extends AbstractAttributeConverter {
     /**
      * <p>Constructor for DateConverter.</p>
      *
-     * @param format a {@link java.lang.String} object
+     * @param format a {@link String} object
      */
     public DateConverter(final String format) {
         super(Date.class);
@@ -41,8 +41,8 @@ public class DateConverter extends AbstractAttributeConverter {
     /**
      * <p>Constructor for DateConverter.</p>
      *
-     * @param format a {@link java.lang.String} object
-     * @param locale a {@link java.util.Locale} object
+     * @param format a {@link String} object
+     * @param locale a {@link Locale} object
      */
     public DateConverter(final String format, final Locale locale) {
         this(format);

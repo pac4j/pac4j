@@ -31,7 +31,7 @@ public final class CouchServer implements TestsConstants {
         couchDbClient.createDatabase("users");
         var stdHttpClient = new StdHttpClient(couchDbClient);
         var stdCouchDbInstance = new StdCouchDbInstance(stdHttpClient);
-        var couchDbConnector = new StdCouchDbConnector("users", stdCouchDbInstance);
+        CouchDbConnector couchDbConnector = new StdCouchDbConnector("users", stdCouchDbInstance);
 
         couchDbConnector.createDatabaseIfNotExists();
 

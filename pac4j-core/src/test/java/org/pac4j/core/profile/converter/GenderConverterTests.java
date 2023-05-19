@@ -14,9 +14,9 @@ import static org.junit.Assert.assertNull;
  */
 public final class GenderConverterTests {
 
-    private final GenderConverter converter = new GenderConverter();
-    private final GenderConverter converterNumber = new GenderConverter("2", "1");
-    private final GenderConverter converterChinese = new GenderConverter("男", "女");
+    private final AttributeConverter converter = new GenderConverter();
+    private final AttributeConverter converterNumber = new GenderConverter("2", "1");
+    private final AttributeConverter converterChinese = new GenderConverter("男", "女");
 
     @Test
     public void testNull() {

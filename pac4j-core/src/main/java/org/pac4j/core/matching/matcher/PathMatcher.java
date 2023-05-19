@@ -8,7 +8,6 @@ import org.pac4j.core.context.CallContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -51,8 +50,8 @@ public class PathMatcher implements Matcher {
     /**
      * <p>excludePaths.</p>
      *
-     * @param paths a {@link java.lang.String} object
-     * @return a {@link org.pac4j.core.matching.matcher.PathMatcher} object
+     * @param paths a {@link String} object
+     * @return a {@link PathMatcher} object
      */
     public PathMatcher excludePaths(final String... paths) {
         if (paths != null && paths.length > 0) {
@@ -66,8 +65,8 @@ public class PathMatcher implements Matcher {
     /**
      * <p>includePath.</p>
      *
-     * @param path a {@link java.lang.String} object
-     * @return a {@link org.pac4j.core.matching.matcher.PathMatcher} object
+     * @param path a {@link String} object
+     * @return a {@link PathMatcher} object
      */
     public PathMatcher includePath(final String path) {
         warnInclude();
@@ -79,8 +78,8 @@ public class PathMatcher implements Matcher {
     /**
      * <p>includePaths.</p>
      *
-     * @param paths a {@link java.lang.String} object
-     * @return a {@link org.pac4j.core.matching.matcher.PathMatcher} object
+     * @param paths a {@link String} object
+     * @return a {@link PathMatcher} object
      */
     public PathMatcher includePaths(final String... paths) {
         if (paths != null && paths.length > 0) {
@@ -186,7 +185,7 @@ public class PathMatcher implements Matcher {
      *
      * @param paths a {@link java.util.Collection} object
      */
-    public void setExcludedPaths(Collection<String> paths) {
+    public void setExcludedPaths(Iterable<String> paths) {
         excludedPaths.clear();
         paths.forEach(this::excludePath);
     }
@@ -196,7 +195,7 @@ public class PathMatcher implements Matcher {
      *
      * @param regularExpressions a {@link java.util.Collection} object
      */
-    public void setExcludedPatterns(Collection<String> regularExpressions) {
+    public void setExcludedPatterns(Iterable<String> regularExpressions) {
         excludedPatterns.clear();
         regularExpressions.forEach(this::excludeRegex);
     }
@@ -204,7 +203,7 @@ public class PathMatcher implements Matcher {
     /**
      * <p>setExcludedPath.</p>
      *
-     * @param path a {@link java.lang.String} object
+     * @param path a {@link String} object
      */
     public void setExcludedPath(final String path) {
         excludedPaths.clear();
@@ -214,7 +213,7 @@ public class PathMatcher implements Matcher {
     /**
      * <p>setExcludedPattern.</p>
      *
-     * @param regularExpression a {@link java.lang.String} object
+     * @param regularExpression a {@link String} object
      */
     public void setExcludedPattern(final String regularExpression) {
         excludedPatterns.clear();

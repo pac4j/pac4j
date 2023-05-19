@@ -98,7 +98,7 @@ public abstract class IndirectClient extends BaseClient {
     /**
      * <p>newDefaultCallbackUrlResolver.</p>
      *
-     * @return a {@link org.pac4j.core.http.callback.CallbackUrlResolver} object
+     * @return a {@link CallbackUrlResolver} object
      */
     protected CallbackUrlResolver newDefaultCallbackUrlResolver() {
         return new QueryParameterCallbackUrlResolver();
@@ -169,8 +169,8 @@ public abstract class IndirectClient extends BaseClient {
     /**
      * <p>computeFinalCallbackUrl.</p>
      *
-     * @param context a {@link org.pac4j.core.context.WebContext} object
-     * @return a {@link java.lang.String} object
+     * @param context a {@link WebContext} object
+     * @return a {@link String} object
      */
     public String computeFinalCallbackUrl(final WebContext context) {
         init();
@@ -190,7 +190,7 @@ public abstract class IndirectClient extends BaseClient {
     /**
      * <p>getStateSessionAttributeName.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getStateSessionAttributeName() {
         return getName() + STATE_SESSION_PARAMETER;
@@ -199,7 +199,7 @@ public abstract class IndirectClient extends BaseClient {
     /**
      * <p>getNonceSessionAttributeName.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getNonceSessionAttributeName() {
         return getName() + NONCE_SESSION_PARAMETER;
@@ -208,7 +208,7 @@ public abstract class IndirectClient extends BaseClient {
     /**
      * <p>getCodeVerifierSessionAttributeName.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getCodeVerifierSessionAttributeName() {
         return getName() + CODE_VERIFIER_SESSION_PARAMETER;
@@ -224,7 +224,7 @@ public abstract class IndirectClient extends BaseClient {
     /**
      * <p>setRedirectionActionBuilderIfUndefined.</p>
      *
-     * @param redirectActionBuilder a {@link org.pac4j.core.redirect.RedirectionActionBuilder} object
+     * @param redirectActionBuilder a {@link RedirectionActionBuilder} object
      */
     protected void setRedirectionActionBuilderIfUndefined(final RedirectionActionBuilder redirectActionBuilder) {
         if (this.redirectionActionBuilder == null) {
@@ -235,7 +235,7 @@ public abstract class IndirectClient extends BaseClient {
     /**
      * <p>setLogoutProcessorIfUndefined.</p>
      *
-     * @param logoutProcessor a {@link org.pac4j.core.logout.processor.LogoutProcessor} object
+     * @param logoutProcessor a {@link LogoutProcessor} object
      */
     protected void setLogoutProcessorIfUndefined(final LogoutProcessor logoutProcessor) {
         if (this.logoutProcessor == null) {
@@ -246,7 +246,7 @@ public abstract class IndirectClient extends BaseClient {
     /**
      * <p>setLogoutActionBuilderIfUndefined.</p>
      *
-     * @param logoutActionBuilder a {@link org.pac4j.core.logout.LogoutActionBuilder} object
+     * @param logoutActionBuilder a {@link LogoutActionBuilder} object
      */
     protected void setLogoutActionBuilderIfUndefined(final LogoutActionBuilder logoutActionBuilder) {
         if (this.logoutActionBuilder == null || this.logoutActionBuilder == NoLogoutActionBuilder.INSTANCE) {

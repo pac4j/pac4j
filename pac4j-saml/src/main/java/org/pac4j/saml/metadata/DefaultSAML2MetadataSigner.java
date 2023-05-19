@@ -18,7 +18,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * This is {@link org.pac4j.saml.metadata.DefaultSAML2MetadataSigner}.
+ * This is {@link DefaultSAML2MetadataSigner}.
  *
  * @author Misagh Moayyed
  * @since 5.0.0
@@ -35,7 +35,7 @@ public class DefaultSAML2MetadataSigner implements SAML2MetadataSigner {
     /**
      * <p>Constructor for DefaultSAML2MetadataSigner.</p>
      *
-     * @param configuration a {@link org.pac4j.saml.config.SAML2Configuration} object
+     * @param configuration a {@link SAML2Configuration} object
      */
     public DefaultSAML2MetadataSigner(final SAML2Configuration configuration) {
         this.configuration = configuration;
@@ -47,9 +47,9 @@ public class DefaultSAML2MetadataSigner implements SAML2MetadataSigner {
     /**
      * <p>Constructor for DefaultSAML2MetadataSigner.</p>
      *
-     * @param credentialProvider a {@link org.pac4j.saml.crypto.CredentialProvider} object
-     * @param signatureAlgorithm a {@link java.lang.String} object
-     * @param signatureReferenceDigestMethod a {@link java.lang.String} object
+     * @param credentialProvider a {@link CredentialProvider} object
+     * @param signatureAlgorithm a {@link String} object
+     * @param signatureReferenceDigestMethod a {@link String} object
      */
     public DefaultSAML2MetadataSigner(final CredentialProvider credentialProvider,
                                       final String signatureAlgorithm,

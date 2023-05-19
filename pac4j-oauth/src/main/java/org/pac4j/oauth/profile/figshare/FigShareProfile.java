@@ -12,7 +12,7 @@ public class FigShareProfile extends OAuth20Profile {
     /**
      * <p>getLastName.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getLastName() {
         return (String) getAttribute(FigShareProfileDefinition.LAST_NAME);

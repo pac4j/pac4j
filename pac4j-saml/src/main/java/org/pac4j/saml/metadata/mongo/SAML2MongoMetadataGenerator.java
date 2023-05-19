@@ -2,6 +2,9 @@ package org.pac4j.saml.metadata.mongo;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.val;
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -20,12 +23,15 @@ import java.util.Objects;
 import static com.mongodb.client.model.Filters.eq;
 
 /**
- * This is {@link org.pac4j.saml.metadata.mongo.SAML2MongoMetadataGenerator}
+ * This is {@link SAML2MongoMetadataGenerator}
  * that stores service provider metadata in a MongoDb database.
  *
  * @author Misagh Moayyed
  * @since 5.7.0
  */
+@RequiredArgsConstructor
+@Getter
+@Setter
 public class SAML2MongoMetadataGenerator extends BaseSAML2MetadataGenerator {
     private final MongoClient mongoClient;
     private final String entityId;
@@ -33,18 +39,6 @@ public class SAML2MongoMetadataGenerator extends BaseSAML2MetadataGenerator {
     private String metadataDatabase = "saml2";
 
     private String metadataCollection = "metadata";
-
-
-    /**
-     * <p>Constructor for SAML2MongoMetadataGenerator.</p>
-     *
-     * @param mongoClient a {@link com.mongodb.client.MongoClient} object
-     * @param entityId a {@link java.lang.String} object
-     */
-    public SAML2MongoMetadataGenerator(final MongoClient mongoClient, final String entityId) {
-        this.mongoClient = mongoClient;
-        this.entityId = entityId;
-    }
 
     /** {@inheritDoc} */
     @Override
@@ -65,8 +59,8 @@ public class SAML2MongoMetadataGenerator extends BaseSAML2MetadataGenerator {
     /**
      * <p>buildMetadataDocumentFilter.</p>
      *
-     * @param entityId a {@link java.lang.String} object
-     * @return a {@link org.bson.conversions.Bson} object
+     * @param entityId a {@link String} object
+     * @return a {@link Bson} object
      */
     protected Bson buildMetadataDocumentFilter(final String entityId) {
         return eq("entityId", entityId);
@@ -108,46 +102,10 @@ public class SAML2MongoMetadataGenerator extends BaseSAML2MetadataGenerator {
     /**
      * <p>getCollection.</p>
      *
-     * @return a {@link com.mongodb.client.MongoCollection} object
+     * @return a {@link MongoCollection} object
      */
     protected MongoCollection<Document> getCollection() {
         val db = mongoClient.getDatabase(metadataDatabase);
         return Objects.requireNonNull(db.getCollection(metadataCollection));
-    }
-
-    /**
-     * <p>Getter for the field <code>metadataDatabase</code>.</p>
-     *
-     * @return a {@link java.lang.String} object
-     */
-    public String getMetadataDatabase() {
-        return metadataDatabase;
-    }
-
-    /**
-     * <p>Setter for the field <code>metadataDatabase</code>.</p>
-     *
-     * @param metadataDatabase a {@link java.lang.String} object
-     */
-    public void setMetadataDatabase(String metadataDatabase) {
-        this.metadataDatabase = metadataDatabase;
-    }
-
-    /**
-     * <p>Getter for the field <code>metadataCollection</code>.</p>
-     *
-     * @return a {@link java.lang.String} object
-     */
-    public String getMetadataCollection() {
-        return metadataCollection;
-    }
-
-    /**
-     * <p>Setter for the field <code>metadataCollection</code>.</p>
-     *
-     * @param metadataCollection a {@link java.lang.String} object
-     */
-    public void setMetadataCollection(String metadataCollection) {
-        this.metadataCollection = metadataCollection;
     }
 }

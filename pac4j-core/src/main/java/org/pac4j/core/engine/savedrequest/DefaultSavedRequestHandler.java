@@ -14,7 +14,7 @@ import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.util.Pac4jConstants;
 
 /**
- * The default {@link org.pac4j.core.engine.savedrequest.SavedRequestHandler} which handles GET and POST requests.
+ * The default {@link SavedRequestHandler} which handles GET and POST requests.
  *
  * @author Jerome LELEU
  * @since 4.0.0
@@ -42,9 +42,9 @@ public class DefaultSavedRequestHandler implements SavedRequestHandler {
     /**
      * <p>getRequestedUrl.</p>
      *
-     * @param context a {@link org.pac4j.core.context.WebContext} object
-     * @param sessionStore a {@link org.pac4j.core.context.session.SessionStore} object
-     * @return a {@link java.lang.String} object
+     * @param context a {@link WebContext} object
+     * @param sessionStore a {@link SessionStore} object
+     * @return a {@link String} object
      */
     protected String getRequestedUrl(final WebContext context, final SessionStore sessionStore) {
         return context.getFullRequestURL();

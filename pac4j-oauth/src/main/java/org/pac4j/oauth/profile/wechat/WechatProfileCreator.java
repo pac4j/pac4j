@@ -21,8 +21,8 @@ public class WechatProfileCreator extends OAuth20ProfileCreator {
     /**
      * <p>Constructor for WechatProfileCreator.</p>
      *
-     * @param configuration a {@link org.pac4j.oauth.config.OAuth20Configuration} object
-     * @param client a {@link org.pac4j.core.client.IndirectClient} object
+     * @param configuration a {@link OAuth20Configuration} object
+     * @param client a {@link IndirectClient} object
      */
     public WechatProfileCreator(OAuth20Configuration configuration, IndirectClient client) {
         super(configuration, client);
@@ -33,7 +33,7 @@ public class WechatProfileCreator extends OAuth20ProfileCreator {
     protected Optional<UserProfile> retrieveUserProfileFromToken(final WebContext context, final Token accessToken) {
         val token = (WechatToken) accessToken;
         val profile = super.retrieveUserProfileFromToken(context, token);
-        ((WechatProfile) profile.get()).setId(token.getOpenid());
+        profile.get().setId(token.getOpenid());
         return profile;
     }
 }

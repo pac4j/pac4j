@@ -2,6 +2,7 @@ package org.pac4j.oauth.profile.strava;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -12,6 +13,7 @@ import java.io.Serializable;
  */
 public class StravaClub implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -1284645916528292643L;
 
     private String id;
@@ -25,7 +27,7 @@ public class StravaClub implements Serializable {
     /**
      * <p>Getter for the field <code>id</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getId() {
         return id;
@@ -34,7 +36,7 @@ public class StravaClub implements Serializable {
     /**
      * <p>Setter for the field <code>id</code>.</p>
      *
-     * @param id a {@link java.lang.String} object
+     * @param id a {@link String} object
      */
     public void setId(String id) {
         this.id = id;
@@ -43,7 +45,7 @@ public class StravaClub implements Serializable {
     /**
      * <p>Getter for the field <code>resourceState</code>.</p>
      *
-     * @return a {@link java.lang.Integer} object
+     * @return a {@link Integer} object
      */
     public Integer getResourceState() {
         return resourceState;
@@ -52,7 +54,7 @@ public class StravaClub implements Serializable {
     /**
      * <p>Setter for the field <code>resourceState</code>.</p>
      *
-     * @param resourceState a {@link java.lang.Integer} object
+     * @param resourceState a {@link Integer} object
      */
     public void setResourceState(Integer resourceState) {
         this.resourceState = resourceState;
@@ -61,7 +63,7 @@ public class StravaClub implements Serializable {
     /**
      * <p>Getter for the field <code>name</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getName() {
         return name;
@@ -70,7 +72,7 @@ public class StravaClub implements Serializable {
     /**
      * <p>Setter for the field <code>name</code>.</p>
      *
-     * @param name a {@link java.lang.String} object
+     * @param name a {@link String} object
      */
     public void setName(String name) {
         this.name = name;
@@ -79,7 +81,7 @@ public class StravaClub implements Serializable {
     /**
      * <p>Getter for the field <code>profileMedium</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getProfileMedium() {
         return profileMedium;
@@ -88,7 +90,7 @@ public class StravaClub implements Serializable {
     /**
      * <p>Setter for the field <code>profileMedium</code>.</p>
      *
-     * @param profileMedium a {@link java.lang.String} object
+     * @param profileMedium a {@link String} object
      */
     public void setProfileMedium(String profileMedium) {
         this.profileMedium = profileMedium;
@@ -97,7 +99,7 @@ public class StravaClub implements Serializable {
     /**
      * <p>Getter for the field <code>profile</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getProfile() {
         return profile;
@@ -106,7 +108,7 @@ public class StravaClub implements Serializable {
     /**
      * <p>Setter for the field <code>profile</code>.</p>
      *
-     * @param profile a {@link java.lang.String} object
+     * @param profile a {@link String} object
      */
     public void setProfile(String profile) {
         this.profile = profile;

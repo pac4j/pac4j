@@ -13,7 +13,7 @@ import org.pac4j.saml.metadata.SAML2MetadataResolver;
 import org.pac4j.saml.util.SAML2Utils;
 
 /**
- * Provider returning well configured {@link org.opensaml.xmlsec.signature.support.SignatureTrustEngine} instances.
+ * Provider returning well configured {@link SignatureTrustEngine} instances.
  *
  * @author Misagh Moayyed
  * @since 1.8.0
@@ -27,8 +27,8 @@ public class ExplicitSignatureTrustEngineProvider implements SAML2SignatureTrust
     /**
      * <p>Constructor for ExplicitSignatureTrustEngineProvider.</p>
      *
-     * @param idpMetadataResolver a {@link org.pac4j.saml.metadata.SAML2MetadataResolver} object
-     * @param spMetadataResolver a {@link org.pac4j.saml.metadata.SAML2MetadataResolver} object
+     * @param idpMetadataResolver a {@link SAML2MetadataResolver} object
+     * @param spMetadataResolver a {@link SAML2MetadataResolver} object
      */
     public ExplicitSignatureTrustEngineProvider(final SAML2MetadataResolver idpMetadataResolver,
                                                 final SAML2MetadataResolver spMetadataResolver) {

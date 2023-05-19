@@ -36,7 +36,7 @@ public class OidcLogoutActionBuilder implements LogoutActionBuilder {
     /**
      * <p>Constructor for OidcLogoutActionBuilder.</p>
      *
-     * @param configuration a {@link org.pac4j.oidc.config.OidcConfiguration} object
+     * @param configuration a {@link OidcConfiguration} object
      */
     public OidcLogoutActionBuilder(final OidcConfiguration configuration) {
         CommonHelper.assertNotNull("configuration", configuration);
@@ -78,7 +78,7 @@ public class OidcLogoutActionBuilder implements LogoutActionBuilder {
     /**
      * <p>Getter for the field <code>ajaxRequestResolver</code>.</p>
      *
-     * @return a {@link org.pac4j.core.http.ajax.AjaxRequestResolver} object
+     * @return a {@link AjaxRequestResolver} object
      */
     public AjaxRequestResolver getAjaxRequestResolver() {
         return ajaxRequestResolver;
@@ -87,7 +87,7 @@ public class OidcLogoutActionBuilder implements LogoutActionBuilder {
     /**
      * <p>Setter for the field <code>ajaxRequestResolver</code>.</p>
      *
-     * @param ajaxRequestResolver a {@link org.pac4j.core.http.ajax.AjaxRequestResolver} object
+     * @param ajaxRequestResolver a {@link AjaxRequestResolver} object
      */
     public void setAjaxRequestResolver(final AjaxRequestResolver ajaxRequestResolver) {
         CommonHelper.assertNotNull("ajaxRequestResolver", ajaxRequestResolver);

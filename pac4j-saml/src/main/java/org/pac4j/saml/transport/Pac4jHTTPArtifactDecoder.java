@@ -28,6 +28,7 @@ import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.common.binding.BindingDescriptor;
 import org.opensaml.saml.common.binding.EndpointResolver;
 import org.opensaml.saml.common.binding.SAMLBindingSupport;
+import org.opensaml.saml.common.binding.artifact.SAMLArtifact;
 import org.opensaml.saml.common.binding.artifact.SAMLSourceLocationArtifact;
 import org.opensaml.saml.common.binding.decoding.SAMLMessageDecoder;
 import org.opensaml.saml.common.binding.impl.DefaultEndpointResolver;
@@ -41,6 +42,7 @@ import org.opensaml.saml.saml2.binding.artifact.SAML2Artifact;
 import org.opensaml.saml.saml2.binding.artifact.SAML2ArtifactBuilderFactory;
 import org.opensaml.saml.saml2.core.*;
 import org.opensaml.saml.saml2.metadata.ArtifactResolutionService;
+import org.opensaml.saml.saml2.metadata.Endpoint;
 import org.opensaml.saml.saml2.metadata.RoleDescriptor;
 import org.opensaml.security.SecurityException;
 import org.opensaml.soap.client.SOAPClient;
@@ -73,6 +75,7 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
     /**
      * Parser pool used to deserialize the message.
      */
+    @Getter
     private ParserPool parserPool;
 
     /**
@@ -202,15 +205,6 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
     }
 
     /**
-     * Gets the parser pool used to deserialize incoming messages.
-     *
-     * @return parser pool used to deserialize incoming messages
-     */
-    public ParserPool getParserPool() {
-        return parserPool;
-    }
-
-    /**
      * Sets the parser pool used to deserialize incoming messages.
      *
      * @param pool parser pool used to deserialize incoming messages
@@ -319,7 +313,7 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
      */
     private SAMLObject dereferenceArtifact(final SAML2Artifact artifact,
                                            final RoleDescriptor peerRoleDescriptor,
-                                           final ArtifactResolutionService ars)
+                                           final Endpoint ars)
         throws MessageDecodingException {
 
         try {
@@ -385,7 +379,7 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
      * @param selfEntityID the entityID of this party, the issuer of the protocol request message
      * @return the SAML protocol message for artifact resolution
      */
-    private ArtifactResolve buildArtifactResolveRequestMessage(final SAML2Artifact artifact,
+    private ArtifactResolve buildArtifactResolveRequestMessage(final SAMLArtifact artifact,
                                                                final String endpoint,
                                                                final String selfEntityID) {
 
@@ -473,7 +467,7 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
         arsTemplate.setIndex(endpointIndex);
 
         val endpointCriterion =
-            new EndpointCriterion<ArtifactResolutionService>(arsTemplate, false);
+            new EndpointCriterion<>(arsTemplate, false);
 
         val criteriaSet = new CriteriaSet(roleDescriptorCriterion, endpointCriterion);
 

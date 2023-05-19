@@ -3,8 +3,10 @@ package org.pac4j.oauth.profile;
 import lombok.ToString;
 import org.pac4j.core.profile.CommonProfile;
 
+import java.io.Serial;
+
 /**
- * This class is the base OAuth 2.0 profile, extending from the base {@link org.pac4j.core.profile.CommonProfile}. It deals with the OAuth
+ * This class is the base OAuth 2.0 profile, extending from the base {@link CommonProfile}. It deals with the OAuth
  * access token.
  *
  * @author Jerome Leleu
@@ -13,6 +15,7 @@ import org.pac4j.core.profile.CommonProfile;
 @ToString(callSuper = true)
 public class OAuth20Profile extends CommonProfile {
 
+    @Serial
     private static final long serialVersionUID = -2313972372691233648L;
 
     private static final String ACCESS_TOKEN = "access_token";
@@ -21,7 +24,7 @@ public class OAuth20Profile extends CommonProfile {
     /**
      * <p>setAccessToken.</p>
      *
-     * @param accessToken a {@link java.lang.String} object
+     * @param accessToken a {@link String} object
      */
     public void setAccessToken(final String accessToken) {
         addAttribute(ACCESS_TOKEN, accessToken);
@@ -30,7 +33,7 @@ public class OAuth20Profile extends CommonProfile {
     /**
      * <p>getAccessToken.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getAccessToken() {
         return (String) getAttribute(ACCESS_TOKEN);
@@ -39,7 +42,7 @@ public class OAuth20Profile extends CommonProfile {
     /**
      * <p>setRefreshToken.</p>
      *
-     * @param refreshToken a {@link java.lang.String} object
+     * @param refreshToken a {@link String} object
      */
     public void setRefreshToken(final String refreshToken) {
         addAttribute(REFRESH_TOKEN, refreshToken);
@@ -48,7 +51,7 @@ public class OAuth20Profile extends CommonProfile {
     /**
      * <p>getRefreshToken.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getRefreshToken() {
         return (String) getAttribute(REFRESH_TOKEN);
