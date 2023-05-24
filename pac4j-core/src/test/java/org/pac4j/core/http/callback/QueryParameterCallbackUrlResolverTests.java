@@ -18,7 +18,7 @@ import static org.junit.Assert.*;
  */
 public final class QueryParameterCallbackUrlResolverTests implements TestsConstants {
 
-    private static final QueryParameterCallbackUrlResolver resolver = new QueryParameterCallbackUrlResolver();
+    private static final CallbackUrlResolver resolver = new QueryParameterCallbackUrlResolver();
 
     @Test
     public void testParams() {

@@ -2,6 +2,8 @@ package org.pac4j.oidc.profile.azuread;
 
 import org.pac4j.oidc.profile.OidcProfile;
 
+import java.io.Serial;
+
 /**
  * <p>This class is the user profile for Azure AD (using OpenID Connect protocol) with appropriate getters.</p>
  * <p>It is returned by the {@link org.pac4j.oidc.client.AzureAd2Client}.</p>
@@ -11,12 +13,13 @@ import org.pac4j.oidc.profile.OidcProfile;
  */
 public class AzureAdProfile extends OidcProfile {
 
+    @Serial
     private static final long serialVersionUID = -8659029290353954198L;
 
     /**
      * <p>getIdp.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getIdp() {
         return (String) getAttribute(AzureAdProfileDefinition.IDP);
@@ -25,7 +28,7 @@ public class AzureAdProfile extends OidcProfile {
     /**
      * <p>getOid.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getOid() {
         return (String) getAttribute(AzureAdProfileDefinition.OID);
@@ -34,7 +37,7 @@ public class AzureAdProfile extends OidcProfile {
     /**
      * <p>getTid.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getTid() {
         return (String) getAttribute(AzureAdProfileDefinition.TID);
@@ -43,7 +46,7 @@ public class AzureAdProfile extends OidcProfile {
     /**
      * <p>getVer.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getVer() {
         return (String) getAttribute(AzureAdProfileDefinition.VER);
@@ -52,7 +55,7 @@ public class AzureAdProfile extends OidcProfile {
     /**
      * <p>getUniqueName.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getUniqueName() {
         return (String) getAttribute(AzureAdProfileDefinition.UNQIUE_NAME);
@@ -61,7 +64,7 @@ public class AzureAdProfile extends OidcProfile {
     /**
      * <p>getIpaddr.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getIpaddr() {
         return (String) getAttribute(AzureAdProfileDefinition.IPADDR);
@@ -70,7 +73,7 @@ public class AzureAdProfile extends OidcProfile {
     /**
      * <p>getUpn.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getUpn() {
         return (String) getAttribute(AzureAdProfileDefinition.UPN);

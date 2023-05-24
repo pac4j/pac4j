@@ -1,5 +1,6 @@
 package org.pac4j.oauth.profile.facebook;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -10,6 +11,7 @@ import java.io.Serializable;
  */
 public final class FacebookMusicData implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 3242237840580051260L;
 
     private String id;
@@ -23,7 +25,7 @@ public final class FacebookMusicData implements Serializable {
     /**
      * <p>Getter for the field <code>id</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getId() {
         return id;
@@ -32,7 +34,7 @@ public final class FacebookMusicData implements Serializable {
     /**
      * <p>Setter for the field <code>id</code>.</p>
      *
-     * @param id a {@link java.lang.String} object
+     * @param id a {@link String} object
      */
     public void setId(String id) {
         this.id = id;
@@ -41,7 +43,7 @@ public final class FacebookMusicData implements Serializable {
     /**
      * <p>Getter for the field <code>url</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getUrl() {
         return url;
@@ -50,7 +52,7 @@ public final class FacebookMusicData implements Serializable {
     /**
      * <p>Setter for the field <code>url</code>.</p>
      *
-     * @param url a {@link java.lang.String} object
+     * @param url a {@link String} object
      */
     public void setUrl(String url) {
         this.url = url;
@@ -59,7 +61,7 @@ public final class FacebookMusicData implements Serializable {
     /**
      * <p>Getter for the field <code>type</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getType() {
         return type;
@@ -68,7 +70,7 @@ public final class FacebookMusicData implements Serializable {
     /**
      * <p>Setter for the field <code>type</code>.</p>
      *
-     * @param type a {@link java.lang.String} object
+     * @param type a {@link String} object
      */
     public void setType(String type) {
         this.type = type;
@@ -77,7 +79,7 @@ public final class FacebookMusicData implements Serializable {
     /**
      * <p>Getter for the field <code>title</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getTitle() {
         return title;
@@ -86,7 +88,7 @@ public final class FacebookMusicData implements Serializable {
     /**
      * <p>Setter for the field <code>title</code>.</p>
      *
-     * @param title a {@link java.lang.String} object
+     * @param title a {@link String} object
      */
     public void setTitle(String title) {
         this.title = title;

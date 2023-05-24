@@ -61,7 +61,7 @@ public class Config {
     /**
      * <p>Constructor for Config.</p>
      *
-     * @param client a {@link org.pac4j.core.client.Client} object
+     * @param client a {@link Client} object
      */
     public Config(final Client client) {
         this.clients = new Clients(client);
@@ -70,7 +70,7 @@ public class Config {
     /**
      * <p>Constructor for Config.</p>
      *
-     * @param clients a {@link org.pac4j.core.client.Clients} object
+     * @param clients a {@link Clients} object
      */
     public Config(final Clients clients) {
         this.clients = clients;
@@ -79,7 +79,7 @@ public class Config {
     /**
      * <p>Constructor for Config.</p>
      *
-     * @param clients a {@link java.util.List} object
+     * @param clients a {@link List} object
      */
     public Config(final List<Client> clients) {
         this.clients = new Clients(clients);
@@ -88,7 +88,7 @@ public class Config {
     /**
      * <p>Constructor for Config.</p>
      *
-     * @param clients a {@link org.pac4j.core.client.Client} object
+     * @param clients a {@link Client} object
      */
     public Config(final Client... clients) {
         this.clients = new Clients(clients);
@@ -97,8 +97,8 @@ public class Config {
     /**
      * <p>Constructor for Config.</p>
      *
-     * @param callbackUrl a {@link java.lang.String} object
-     * @param client a {@link org.pac4j.core.client.Client} object
+     * @param callbackUrl a {@link String} object
+     * @param client a {@link Client} object
      */
     public Config(final String callbackUrl, final Client client) {
         this.clients = new Clients(callbackUrl, client);
@@ -107,8 +107,8 @@ public class Config {
     /**
      * <p>Constructor for Config.</p>
      *
-     * @param callbackUrl a {@link java.lang.String} object
-     * @param clients a {@link org.pac4j.core.client.Client} object
+     * @param callbackUrl a {@link String} object
+     * @param clients a {@link Client} object
      */
     public Config(final String callbackUrl, final Client... clients) {
         this.clients = new Clients(callbackUrl, clients);
@@ -117,8 +117,8 @@ public class Config {
     /**
      * <p>Constructor for Config.</p>
      *
-     * @param callbackUrl a {@link java.lang.String} object
-     * @param clients a {@link java.util.List} object
+     * @param callbackUrl a {@link String} object
+     * @param clients a {@link List} object
      */
     public Config(final String callbackUrl, final List<Client> clients) {
         this.clients = new Clients(callbackUrl, clients);
@@ -127,7 +127,7 @@ public class Config {
     /**
      * <p>Constructor for Config.</p>
      *
-     * @param authorizers a {@link java.util.Map} object
+     * @param authorizers a {@link Map} object
      */
     public Config(final Map<String, Authorizer> authorizers) {
         setAuthorizers(authorizers);
@@ -136,8 +136,8 @@ public class Config {
     /**
      * <p>Constructor for Config.</p>
      *
-     * @param clients a {@link org.pac4j.core.client.Clients} object
-     * @param authorizers a {@link java.util.Map} object
+     * @param clients a {@link Clients} object
+     * @param authorizers a {@link Map} object
      */
     public Config(final Clients clients, final Map<String, Authorizer> authorizers) {
         this.clients = clients;
@@ -147,8 +147,8 @@ public class Config {
     /**
      * <p>Constructor for Config.</p>
      *
-     * @param client a {@link org.pac4j.core.client.Client} object
-     * @param authorizers a {@link java.util.Map} object
+     * @param client a {@link Client} object
+     * @param authorizers a {@link Map} object
      */
     public Config(final Client client, final Map<String, Authorizer> authorizers) {
         this.clients = new Clients(client);
@@ -158,8 +158,8 @@ public class Config {
     /**
      * <p>Constructor for Config.</p>
      *
-     * @param authorizers a {@link java.util.Map} object
-     * @param clients a {@link org.pac4j.core.client.Client} object
+     * @param authorizers a {@link Map} object
+     * @param clients a {@link Client} object
      */
     public Config(final Map<String, Authorizer> authorizers, final Client... clients) {
         this.clients = new Clients(clients);
@@ -169,9 +169,9 @@ public class Config {
     /**
      * <p>Constructor for Config.</p>
      *
-     * @param callbackUrl a {@link java.lang.String} object
-     * @param authorizers a {@link java.util.Map} object
-     * @param clients a {@link org.pac4j.core.client.Client} object
+     * @param callbackUrl a {@link String} object
+     * @param authorizers a {@link Map} object
+     * @param clients a {@link Client} object
      */
     public Config(final String callbackUrl, final Map<String, Authorizer> authorizers, final Client... clients) {
         this.clients = new Clients(callbackUrl, clients);
@@ -181,9 +181,9 @@ public class Config {
     /**
      * <p>Constructor for Config.</p>
      *
-     * @param callbackUrl a {@link java.lang.String} object
-     * @param client a {@link org.pac4j.core.client.Client} object
-     * @param authorizers a {@link java.util.Map} object
+     * @param callbackUrl a {@link String} object
+     * @param client a {@link Client} object
+     * @param authorizers a {@link Map} object
      */
     public Config(final String callbackUrl, final Client client, final Map<String, Authorizer> authorizers) {
         this.clients = new Clients(callbackUrl, client);
@@ -193,8 +193,8 @@ public class Config {
     /**
      * <p>Setter for the field <code>clients</code>.</p>
      *
-     * @param clients a {@link org.pac4j.core.client.Clients} object
-     * @return a {@link org.pac4j.core.config.Config} object
+     * @param clients a {@link Clients} object
+     * @return a {@link Config} object
      */
     public Config setClients(final Clients clients) {
         this.clients = clients;
@@ -204,8 +204,8 @@ public class Config {
     /**
      * <p>addClient.</p>
      *
-     * @param client a {@link org.pac4j.core.client.Client} object
-     * @return a {@link org.pac4j.core.config.Config} object
+     * @param client a {@link Client} object
+     * @return a {@link Config} object
      */
     public Config addClient(final Client client) {
         this.clients.addClient(client);
@@ -215,8 +215,8 @@ public class Config {
     /**
      * <p>setAuthorizer.</p>
      *
-     * @param authorizer a {@link org.pac4j.core.authorization.authorizer.Authorizer} object
-     * @return a {@link org.pac4j.core.config.Config} object
+     * @param authorizer a {@link Authorizer} object
+     * @return a {@link Config} object
      */
     public Config setAuthorizer(final Authorizer authorizer) {
         CommonHelper.assertNotNull("authorizer", authorizer);
@@ -227,8 +227,8 @@ public class Config {
     /**
      * <p>Setter for the field <code>authorizers</code>.</p>
      *
-     * @param authorizers a {@link java.util.Map} object
-     * @return a {@link org.pac4j.core.config.Config} object
+     * @param authorizers a {@link Map} object
+     * @return a {@link Config} object
      */
     public Config setAuthorizers(final Map<String, Authorizer> authorizers) {
         CommonHelper.assertNotNull("authorizers", authorizers);
@@ -239,9 +239,9 @@ public class Config {
     /**
      * <p>addAuthorizer.</p>
      *
-     * @param name a {@link java.lang.String} object
-     * @param authorizer a {@link org.pac4j.core.authorization.authorizer.Authorizer} object
-     * @return a {@link org.pac4j.core.config.Config} object
+     * @param name a {@link String} object
+     * @param authorizer a {@link Authorizer} object
+     * @return a {@link Config} object
      */
     public Config addAuthorizer(final String name, final Authorizer authorizer) {
         authorizers.put(name, authorizer);
@@ -251,8 +251,8 @@ public class Config {
     /**
      * <p>setMatcher.</p>
      *
-     * @param matcher a {@link org.pac4j.core.matching.matcher.Matcher} object
-     * @return a {@link org.pac4j.core.config.Config} object
+     * @param matcher a {@link Matcher} object
+     * @return a {@link Config} object
      */
     public Config setMatcher(final Matcher matcher) {
         CommonHelper.assertNotNull("matcher", matcher);
@@ -263,8 +263,8 @@ public class Config {
     /**
      * <p>Setter for the field <code>matchers</code>.</p>
      *
-     * @param matchers a {@link java.util.Map} object
-     * @return a {@link org.pac4j.core.config.Config} object
+     * @param matchers a {@link Map} object
+     * @return a {@link Config} object
      */
     public Config setMatchers(final Map<String, Matcher> matchers) {
         CommonHelper.assertNotNull("matchers", matchers);
@@ -275,9 +275,9 @@ public class Config {
     /**
      * <p>addMatcher.</p>
      *
-     * @param name a {@link java.lang.String} object
-     * @param matcher a {@link org.pac4j.core.matching.matcher.Matcher} object
-     * @return a {@link org.pac4j.core.config.Config} object
+     * @param name a {@link String} object
+     * @param matcher a {@link Matcher} object
+     * @return a {@link Config} object
      */
     public Config addMatcher(final String name, final Matcher matcher) {
         matchers.put(name, matcher);
@@ -287,8 +287,8 @@ public class Config {
     /**
      * <p>Setter for the field <code>securityLogic</code>.</p>
      *
-     * @param securityLogic a {@link org.pac4j.core.engine.SecurityLogic} object
-     * @return a {@link org.pac4j.core.config.Config} object
+     * @param securityLogic a {@link SecurityLogic} object
+     * @return a {@link Config} object
      */
     public Config setSecurityLogic(final SecurityLogic securityLogic) {
         this.securityLogic = securityLogic;
@@ -298,8 +298,8 @@ public class Config {
     /**
      * <p>Setter for the field <code>callbackLogic</code>.</p>
      *
-     * @param callbackLogic a {@link org.pac4j.core.engine.CallbackLogic} object
-     * @return a {@link org.pac4j.core.config.Config} object
+     * @param callbackLogic a {@link CallbackLogic} object
+     * @return a {@link Config} object
      */
     public Config setCallbackLogic(final CallbackLogic callbackLogic) {
         this.callbackLogic = callbackLogic;
@@ -309,8 +309,8 @@ public class Config {
     /**
      * <p>Setter for the field <code>logoutLogic</code>.</p>
      *
-     * @param logoutLogic a {@link org.pac4j.core.engine.LogoutLogic} object
-     * @return a {@link org.pac4j.core.config.Config} object
+     * @param logoutLogic a {@link LogoutLogic} object
+     * @return a {@link Config} object
      */
     public Config setLogoutLogic(final LogoutLogic logoutLogic) {
         this.logoutLogic = logoutLogic;
@@ -320,8 +320,8 @@ public class Config {
     /**
      * <p>Setter for the field <code>webContextFactory</code>.</p>
      *
-     * @param webContextFactory a {@link org.pac4j.core.context.WebContextFactory} object
-     * @return a {@link org.pac4j.core.config.Config} object
+     * @param webContextFactory a {@link WebContextFactory} object
+     * @return a {@link Config} object
      */
     public Config setWebContextFactory(final WebContextFactory webContextFactory) {
         this.webContextFactory = webContextFactory;
@@ -331,8 +331,8 @@ public class Config {
     /**
      * <p>Setter for the field <code>sessionStoreFactory</code>.</p>
      *
-     * @param sessionStoreFactory a {@link org.pac4j.core.context.session.SessionStoreFactory} object
-     * @return a {@link org.pac4j.core.config.Config} object
+     * @param sessionStoreFactory a {@link SessionStoreFactory} object
+     * @return a {@link Config} object
      */
     public Config setSessionStoreFactory(final SessionStoreFactory sessionStoreFactory) {
         this.sessionStoreFactory = sessionStoreFactory;
@@ -342,8 +342,8 @@ public class Config {
     /**
      * <p>Setter for the field <code>profileManagerFactory</code>.</p>
      *
-     * @param profileManagerFactory a {@link org.pac4j.core.profile.factory.ProfileManagerFactory} object
-     * @return a {@link org.pac4j.core.config.Config} object
+     * @param profileManagerFactory a {@link ProfileManagerFactory} object
+     * @return a {@link Config} object
      */
     public Config setProfileManagerFactory(final ProfileManagerFactory profileManagerFactory) {
         this.profileManagerFactory = profileManagerFactory;
@@ -353,8 +353,8 @@ public class Config {
     /**
      * <p>Setter for the field <code>httpActionAdapter</code>.</p>
      *
-     * @param httpActionAdapter a {@link org.pac4j.core.http.adapter.HttpActionAdapter} object
-     * @return a {@link org.pac4j.core.config.Config} object
+     * @param httpActionAdapter a {@link HttpActionAdapter} object
+     * @return a {@link Config} object
      */
     public Config setHttpActionAdapter(final HttpActionAdapter httpActionAdapter) {
         this.httpActionAdapter = httpActionAdapter;
@@ -364,7 +364,7 @@ public class Config {
     /**
      * <p>setSecurityLogicIfUndefined.</p>
      *
-     * @param securityLogic a {@link org.pac4j.core.engine.SecurityLogic} object
+     * @param securityLogic a {@link SecurityLogic} object
      */
     public void setSecurityLogicIfUndefined(final SecurityLogic securityLogic) {
         if (this.securityLogic == null) {
@@ -375,7 +375,7 @@ public class Config {
     /**
      * <p>setCallbackLogicIfUndefined.</p>
      *
-     * @param callbackLogic a {@link org.pac4j.core.engine.CallbackLogic} object
+     * @param callbackLogic a {@link CallbackLogic} object
      */
     public void setCallbackLogicIfUndefined(final CallbackLogic callbackLogic) {
         if (this.callbackLogic == null) {
@@ -386,7 +386,7 @@ public class Config {
     /**
      * <p>setLogoutLogicIfUndefined.</p>
      *
-     * @param logoutLogic a {@link org.pac4j.core.engine.LogoutLogic} object
+     * @param logoutLogic a {@link LogoutLogic} object
      */
     public void setLogoutLogicIfUndefined(final LogoutLogic logoutLogic) {
         if (this.logoutLogic == null) {
@@ -397,7 +397,7 @@ public class Config {
     /**
      * <p>setWebContextFactoryIfUndefined.</p>
      *
-     * @param webContextFactory a {@link org.pac4j.core.context.WebContextFactory} object
+     * @param webContextFactory a {@link WebContextFactory} object
      */
     public void setWebContextFactoryIfUndefined(final WebContextFactory webContextFactory) {
         if (this.webContextFactory == null) {
@@ -408,7 +408,7 @@ public class Config {
     /**
      * <p>setSessionStoreFactoryIfUndefined.</p>
      *
-     * @param sessionStoreFactory a {@link org.pac4j.core.context.session.SessionStoreFactory} object
+     * @param sessionStoreFactory a {@link SessionStoreFactory} object
      */
     public void setSessionStoreFactoryIfUndefined(final SessionStoreFactory sessionStoreFactory) {
         if (this.sessionStoreFactory == null) {
@@ -419,7 +419,7 @@ public class Config {
     /**
      * <p>setProfileManagerFactoryIfUndefined.</p>
      *
-     * @param profileManagerFactory a {@link org.pac4j.core.profile.factory.ProfileManagerFactory} object
+     * @param profileManagerFactory a {@link ProfileManagerFactory} object
      */
     public void setProfileManagerFactoryIfUndefined(final ProfileManagerFactory profileManagerFactory) {
         if (this.profileManagerFactory == null) {
@@ -430,7 +430,7 @@ public class Config {
     /**
      * <p>setHttpActionAdapterIfUndefined.</p>
      *
-     * @param httpActionAdapter a {@link org.pac4j.core.http.adapter.HttpActionAdapter} object
+     * @param httpActionAdapter a {@link HttpActionAdapter} object
      */
     public void setHttpActionAdapterIfUndefined(final HttpActionAdapter httpActionAdapter) {
         if (this.httpActionAdapter == null) {

@@ -134,7 +134,7 @@ public class GenericOAuth20Client extends OAuth20Client {
     /**
      * <p>getConverters.</p>
      *
-     * @return a {@link java.util.List} object
+     * @return a {@link List} object
      */
     public List<Class<? extends AbstractAttributeConverter>> getConverters() {
         return List.copyOf(converterClasses);

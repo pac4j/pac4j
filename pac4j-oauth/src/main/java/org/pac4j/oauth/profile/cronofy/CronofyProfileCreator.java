@@ -20,8 +20,8 @@ public class CronofyProfileCreator extends OAuth20ProfileCreator {
     /**
      * <p>Constructor for CronofyProfileCreator.</p>
      *
-     * @param configuration a {@link org.pac4j.oauth.config.OAuth20Configuration} object
-     * @param client a {@link org.pac4j.core.client.IndirectClient} object
+     * @param configuration a {@link OAuth20Configuration} object
+     * @param client a {@link IndirectClient} object
      */
     public CronofyProfileCreator(final OAuth20Configuration configuration, final IndirectClient client) {
         super(configuration, client);

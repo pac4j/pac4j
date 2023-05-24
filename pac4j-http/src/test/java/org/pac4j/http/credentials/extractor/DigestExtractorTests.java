@@ -6,6 +6,7 @@ import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
+import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.http.credentials.DigestCredentials;
 
@@ -19,7 +20,7 @@ import static org.junit.Assert.assertFalse;
  */
 public class DigestExtractorTests implements TestsConstants {
 
-    private final static DigestAuthExtractor digestExtractor = new DigestAuthExtractor();
+    private final static CredentialsExtractor digestExtractor = new DigestAuthExtractor();
 
     @Test
     public void testRetrieveDigestHeaderComponents() {

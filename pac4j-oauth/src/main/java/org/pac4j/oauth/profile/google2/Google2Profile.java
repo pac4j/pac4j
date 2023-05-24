@@ -1,5 +1,6 @@
 package org.pac4j.oauth.profile.google2;
 
+import java.io.Serial;
 import java.net.URI;
 
 import org.pac4j.oauth.profile.OAuth20Profile;
@@ -13,12 +14,13 @@ import org.pac4j.oauth.profile.OAuth20Profile;
  */
 public class Google2Profile extends OAuth20Profile {
 
+    @Serial
     private static final long serialVersionUID = -7486869356444327783L;
 
     /**
      * <p>getEmailVerified.</p>
      *
-     * @return a {@link java.lang.Boolean} object
+     * @return a {@link Boolean} object
      */
     public Boolean getEmailVerified() {
         return (Boolean) getAttribute(Google2ProfileDefinition.EMAIL_VERIFIED);

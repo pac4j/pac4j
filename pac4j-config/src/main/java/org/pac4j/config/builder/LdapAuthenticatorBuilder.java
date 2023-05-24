@@ -25,7 +25,7 @@ public class LdapAuthenticatorBuilder extends AbstractBuilder {
     /**
      * <p>Constructor for LdapAuthenticatorBuilder.</p>
      *
-     * @param properties a {@link java.util.Map} object
+     * @param properties a {@link Map} object
      */
     public LdapAuthenticatorBuilder(final Map<String, String> properties) {
         super(properties);
@@ -34,7 +34,7 @@ public class LdapAuthenticatorBuilder extends AbstractBuilder {
     /**
      * <p>tryBuildLdapAuthenticator.</p>
      *
-     * @param authenticators a {@link java.util.Map} object
+     * @param authenticators a {@link Map} object
      */
     public void tryBuildLdapAuthenticator(final Map<String, Authenticator> authenticators) {
         for (var i = 0; i <= MAX_NUM_AUTHENTICATORS; i++) {

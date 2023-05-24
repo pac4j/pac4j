@@ -100,9 +100,9 @@ public abstract class BaseClient extends InitializableObject implements Client {
     /**
      * <p>internalValidateCredentials.</p>
      *
-     * @param ctx a {@link org.pac4j.core.context.CallContext} object
-     * @param credentials a {@link org.pac4j.core.credentials.Credentials} object
-     * @return a {@link java.util.Optional} object
+     * @param ctx a {@link CallContext} object
+     * @param credentials a {@link Credentials} object
+     * @return a {@link Optional} object
      */
     protected Optional<Credentials> internalValidateCredentials(final CallContext ctx, final Credentials credentials) {
         try {
@@ -169,7 +169,7 @@ public abstract class BaseClient extends InitializableObject implements Client {
     /**
      * <p>Setter for the field <code>authorizationGenerators</code>.</p>
      *
-     * @param authorizationGenerators a {@link java.util.List} object
+     * @param authorizationGenerators a {@link List} object
      */
     public void setAuthorizationGenerators(final List<AuthorizationGenerator> authorizationGenerators) {
         CommonHelper.assertNotNull("authorizationGenerators", authorizationGenerators);
@@ -179,7 +179,7 @@ public abstract class BaseClient extends InitializableObject implements Client {
     /**
      * <p>Setter for the field <code>authorizationGenerators</code>.</p>
      *
-     * @param authorizationGenerators a {@link org.pac4j.core.authorization.generator.AuthorizationGenerator} object
+     * @param authorizationGenerators a {@link AuthorizationGenerator} object
      */
     public void setAuthorizationGenerators(final AuthorizationGenerator... authorizationGenerators) {
         CommonHelper.assertNotNull("authorizationGenerators", authorizationGenerators);
@@ -198,7 +198,7 @@ public abstract class BaseClient extends InitializableObject implements Client {
     /**
      * <p>addAuthorizationGenerator.</p>
      *
-     * @param authorizationGenerator a {@link org.pac4j.core.authorization.generator.AuthorizationGenerator} object
+     * @param authorizationGenerator a {@link AuthorizationGenerator} object
      */
     public void addAuthorizationGenerator(final AuthorizationGenerator authorizationGenerator) {
         CommonHelper.assertNotNull("authorizationGenerator", authorizationGenerator);
@@ -208,9 +208,9 @@ public abstract class BaseClient extends InitializableObject implements Client {
     /**
      * <p>addAuthorizationGenerators.</p>
      *
-     * @param authorizationGenerators a {@link java.util.List} object
+     * @param authorizationGenerators a {@link List} object
      */
-    public void addAuthorizationGenerators(final List<AuthorizationGenerator> authorizationGenerators) {
+    public void addAuthorizationGenerators(final Collection<AuthorizationGenerator> authorizationGenerators) {
         CommonHelper.assertNotNull("authorizationGenerators", authorizationGenerators);
         this.authorizationGenerators.addAll(authorizationGenerators);
     }
@@ -218,7 +218,7 @@ public abstract class BaseClient extends InitializableObject implements Client {
     /**
      * <p>setCredentialsExtractorIfUndefined.</p>
      *
-     * @param credentialsExtractor a {@link org.pac4j.core.credentials.extractor.CredentialsExtractor} object
+     * @param credentialsExtractor a {@link CredentialsExtractor} object
      */
     protected void setCredentialsExtractorIfUndefined(final CredentialsExtractor credentialsExtractor) {
         if (this.credentialsExtractor == null) {
@@ -229,7 +229,7 @@ public abstract class BaseClient extends InitializableObject implements Client {
     /**
      * <p>setAuthenticatorIfUndefined.</p>
      *
-     * @param authenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
+     * @param authenticator a {@link Authenticator} object
      */
     protected void setAuthenticatorIfUndefined(final Authenticator authenticator) {
         if (this.authenticator == null) {
@@ -240,7 +240,7 @@ public abstract class BaseClient extends InitializableObject implements Client {
     /**
      * <p>setProfileCreatorIfUndefined.</p>
      *
-     * @param profileCreator a {@link org.pac4j.core.profile.creator.ProfileCreator} object
+     * @param profileCreator a {@link ProfileCreator} object
      */
     protected void setProfileCreatorIfUndefined(final ProfileCreator profileCreator) {
         if (this.profileCreator == null || this.profileCreator == AuthenticatorProfileCreator.INSTANCE) {
@@ -251,7 +251,7 @@ public abstract class BaseClient extends InitializableObject implements Client {
     /**
      * <p>Setter for the field <code>customProperties</code>.</p>
      *
-     * @param customProperties a {@link java.util.Map} object
+     * @param customProperties a {@link Map} object
      */
     public void setCustomProperties(final Map<String, Object> customProperties) {
         CommonHelper.assertNotNull("customProperties", customProperties);
@@ -261,7 +261,7 @@ public abstract class BaseClient extends InitializableObject implements Client {
     /**
      * <p>Setter for the field <code>profileFactoryWhenNotAuthenticated</code>.</p>
      *
-     * @param profileFactoryWhenNotAuthenticated a {@link org.pac4j.core.profile.factory.ProfileFactory} object
+     * @param profileFactoryWhenNotAuthenticated a {@link ProfileFactory} object
      */
     public void setProfileFactoryWhenNotAuthenticated(final ProfileFactory profileFactoryWhenNotAuthenticated) {
         if (!warned) {
@@ -276,8 +276,8 @@ public abstract class BaseClient extends InitializableObject implements Client {
     /**
      * <p>isMultiProfile.</p>
      *
-     * @param context a {@link org.pac4j.core.context.WebContext} object
-     * @param profile a {@link org.pac4j.core.profile.UserProfile} object
+     * @param context a {@link WebContext} object
+     * @param profile a {@link UserProfile} object
      * @return a boolean
      */
     public boolean isMultiProfile(final WebContext context, final UserProfile profile) {
@@ -287,9 +287,9 @@ public abstract class BaseClient extends InitializableObject implements Client {
     /**
      * <p>Getter for the field <code>saveProfileInSession</code>.</p>
      *
-     * @param context a {@link org.pac4j.core.context.WebContext} object
-     * @param profile a {@link org.pac4j.core.profile.UserProfile} object
-     * @return a {@link java.lang.Boolean} object
+     * @param context a {@link WebContext} object
+     * @param profile a {@link UserProfile} object
+     * @return a {@link Boolean} object
      */
     public Boolean getSaveProfileInSession(final WebContext context, final UserProfile profile) {
         return saveProfileInSession;

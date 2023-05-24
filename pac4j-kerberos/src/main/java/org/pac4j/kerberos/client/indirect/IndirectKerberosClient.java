@@ -32,7 +32,7 @@ public class IndirectKerberosClient extends IndirectClient {
     /**
      * <p>Constructor for IndirectKerberosClient.</p>
      *
-     * @param authenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
+     * @param authenticator a {@link Authenticator} object
      */
     public IndirectKerberosClient(final Authenticator authenticator) {
         setAuthenticatorIfUndefined(authenticator);
@@ -41,8 +41,8 @@ public class IndirectKerberosClient extends IndirectClient {
     /**
      * <p>Constructor for IndirectKerberosClient.</p>
      *
-     * @param authenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
-     * @param profileCreator a {@link org.pac4j.core.profile.creator.ProfileCreator} object
+     * @param authenticator a {@link Authenticator} object
+     * @param profileCreator a {@link ProfileCreator} object
      */
     public IndirectKerberosClient(final Authenticator authenticator, final ProfileCreator profileCreator) {
         setAuthenticatorIfUndefined(authenticator);
@@ -73,7 +73,7 @@ public class IndirectKerberosClient extends IndirectClient {
         try {
             credentials = getCredentialsExtractor().extract(ctx);
             logger.debug("kerberos credentials : {}", credentials);
-            if (!credentials.isPresent()) {
+            if (credentials.isEmpty()) {
                 throw HttpActionHelper.buildUnauthenticatedAction(webContext);
             }
             return credentials;

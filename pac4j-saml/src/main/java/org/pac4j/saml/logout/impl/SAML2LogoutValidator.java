@@ -9,6 +9,7 @@ import org.opensaml.saml.saml2.core.LogoutRequest;
 import org.opensaml.saml.saml2.core.LogoutResponse;
 import org.opensaml.saml.saml2.core.Status;
 import org.opensaml.saml.saml2.core.StatusCode;
+import org.opensaml.saml.saml2.core.StatusResponseType;
 import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
 import org.pac4j.core.credentials.Credentials;
@@ -25,6 +26,7 @@ import org.pac4j.saml.replay.ReplayCacheProvider;
 import org.pac4j.saml.util.Configuration;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -53,11 +55,11 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
     /**
      * <p>Constructor for SAML2LogoutValidator.</p>
      *
-     * @param engine a {@link org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider} object
-     * @param decrypter a {@link org.opensaml.saml.saml2.encryption.Decrypter} object
-     * @param logoutHandler a {@link org.pac4j.core.logout.handler.SessionLogoutHandler} object
-     * @param replayCache a {@link org.pac4j.saml.replay.ReplayCacheProvider} object
-     * @param uriComparator a {@link net.shibboleth.shared.net.URIComparator} object
+     * @param engine a {@link SAML2SignatureTrustEngineProvider} object
+     * @param decrypter a {@link Decrypter} object
+     * @param logoutHandler a {@link SessionLogoutHandler} object
+     * @param replayCache a {@link ReplayCacheProvider} object
+     * @param uriComparator a {@link URIComparator} object
      */
     public SAML2LogoutValidator(final SAML2SignatureTrustEngineProvider engine, final Decrypter decrypter,
                                 final SessionLogoutHandler logoutHandler, final ReplayCacheProvider replayCache,
@@ -157,11 +159,11 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
     /**
      * <p>validateDestinationEndpoint.</p>
      *
-     * @param logoutResponse a {@link org.opensaml.saml.saml2.core.LogoutResponse} object
-     * @param context a {@link org.pac4j.saml.context.SAML2MessageContext} object
+     * @param logoutResponse a {@link LogoutResponse} object
+     * @param context a {@link SAML2MessageContext} object
      */
-    protected void validateDestinationEndpoint(final LogoutResponse logoutResponse, final SAML2MessageContext context) {
-        val expected = new ArrayList<String>();
+    protected void validateDestinationEndpoint(final StatusResponseType logoutResponse, final SAML2MessageContext context) {
+        List<String> expected = new ArrayList<>();
         if (CommonHelper.isBlank(this.expectedDestination)) {
             val endpoint = Objects.requireNonNull(context.getSPSSODescriptor().getSingleLogoutServices().get(0));
             if (endpoint.getLocation() != null) {

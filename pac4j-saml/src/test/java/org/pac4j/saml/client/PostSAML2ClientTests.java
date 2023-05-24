@@ -10,6 +10,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.http.OkAction;
+import org.pac4j.core.exception.http.WithContentAction;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.metadata.SAML2MetadataContactPerson;
 import org.pac4j.saml.metadata.SAML2MetadataUIInfo;
@@ -55,7 +56,8 @@ public final class PostSAML2ClientTests extends AbstractSAML2ClientTests {
         uiInfo.setLogos(Collections.singletonList(new SAML2MetadataUIInfo.SAML2MetadataUILogo("https://pac4j.org/logo.png", 16, 16)));
         client.getConfiguration().getMetadataUIInfos().add(uiInfo);
 
-        val action = (OkAction) client.getRedirectionAction(new CallContext(MockWebContext.create(), new MockSessionStore())).get();
+        WithContentAction action = (OkAction) client.getRedirectionAction(
+            new CallContext(MockWebContext.create(), new MockSessionStore())).get();
 
         val issuerJdk11 = "<saml2:Issuer "
                 + "xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\" "
@@ -69,7 +71,8 @@ public final class PostSAML2ClientTests extends AbstractSAML2ClientTests {
     public void testStandardSpEntityIdForPostBinding() {
         val client = getClient();
         client.getConfiguration().setServiceProviderEntityId("http://localhost:8080/cb");
-        val action = (OkAction) client.getRedirectionAction(new CallContext(MockWebContext.create(), new MockSessionStore())).get();
+        WithContentAction action = (OkAction) client.getRedirectionAction(
+            new CallContext(MockWebContext.create(), new MockSessionStore())).get();
 
         val issuerJdk11 = "<saml2:Issuer "
             + "xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\" "
@@ -82,7 +85,8 @@ public final class PostSAML2ClientTests extends AbstractSAML2ClientTests {
     public void testForceAuthIsSetForPostBinding() {
         val client =  getClient();
         client.getConfiguration().setForceAuth(true);
-        val action = (OkAction) client.getRedirectionAction(new CallContext(MockWebContext.create(), new MockSessionStore())).get();
+        WithContentAction action = (OkAction) client.getRedirectionAction(
+            new CallContext(MockWebContext.create(), new MockSessionStore())).get();
         assertTrue(getDecodedAuthnRequest(action.getContent()).contains("ForceAuthn=\"true\""));
     }
 
@@ -90,7 +94,8 @@ public final class PostSAML2ClientTests extends AbstractSAML2ClientTests {
     public void testSetComparisonTypeWithPostBinding() {
         val client = getClient();
         client.getConfiguration().setComparisonType(AuthnContextComparisonTypeEnumeration.EXACT.toString());
-        val action = (OkAction) client.getRedirectionAction(new CallContext(MockWebContext.create(), new MockSessionStore())).get();
+        WithContentAction action = (OkAction) client.getRedirectionAction(
+            new CallContext(MockWebContext.create(), new MockSessionStore())).get();
         assertTrue(getDecodedAuthnRequest(action.getContent()).contains("Comparison=\"exact\""));
     }
 
@@ -100,7 +105,7 @@ public final class PostSAML2ClientTests extends AbstractSAML2ClientTests {
         final WebContext context = MockWebContext.create();
         final SessionStore sessionStore = new MockSessionStore();
         sessionStore.set(context, SAML2StateGenerator.SAML_RELAY_STATE_ATTRIBUTE, "relayState");
-        val action = (OkAction) client.getRedirectionAction(new CallContext(context, sessionStore)).get();
+        WithContentAction action = (OkAction) client.getRedirectionAction(new CallContext(context, sessionStore)).get();
         assertTrue(action.getContent().contains("<input type=\"hidden\" name=\"RelayState\" value=\"relayState\"/>"));
     }
 
@@ -110,7 +115,8 @@ public final class PostSAML2ClientTests extends AbstractSAML2ClientTests {
         client.getConfiguration().setAuthnRequestBindingType(SAMLConstants.SAML2_POST_BINDING_URI);
         client.getConfiguration().setAuthnRequestSigned(true);
 
-        val action = (OkAction) client.getRedirectionAction(new CallContext(MockWebContext.create(), new MockSessionStore())).get();
+        WithContentAction action = (OkAction) client.getRedirectionAction(
+            new CallContext(MockWebContext.create(), new MockSessionStore())).get();
         assertFalse(getDecodedAuthnRequest(action.getContent()).isBlank());
     }
 

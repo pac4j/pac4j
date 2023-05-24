@@ -220,7 +220,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
     /**
      * <p>setDiscoveryURIIfUndefined.</p>
      *
-     * @param discoveryURI a {@link java.lang.String} object
+     * @param discoveryURI a {@link String} object
      */
     public void setDiscoveryURIIfUndefined(final String discoveryURI) {
         if (this.discoveryURI == null) {
@@ -231,8 +231,8 @@ public class OidcConfiguration extends BaseClientConfiguration {
     /**
      * <p>getCustomParam.</p>
      *
-     * @param name a {@link java.lang.String} object
-     * @return a {@link java.lang.String} object
+     * @param name a {@link String} object
+     * @return a {@link String} object
      */
     public String getCustomParam(String name) {
         return customParams.get(name);
@@ -241,7 +241,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
     /**
      * <p>Setter for the field <code>customParams</code>.</p>
      *
-     * @param customParams a {@link java.util.Map} object
+     * @param customParams a {@link Map} object
      */
     public void setCustomParams(final Map<String, String> customParams) {
         assertNotNull("customParams", customParams);
@@ -251,8 +251,8 @@ public class OidcConfiguration extends BaseClientConfiguration {
     /**
      * <p>addCustomParam.</p>
      *
-     * @param key a {@link java.lang.String} object
-     * @param value a {@link java.lang.String} object
+     * @param key a {@link String} object
+     * @param value a {@link String} object
      */
     public void addCustomParam(final String key, final String value) {
         this.customParams.put(key, value);
@@ -261,7 +261,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
     /**
      * <p>setClientAuthenticationMethodAsString.</p>
      *
-     * @param auth a {@link java.lang.String} object
+     * @param auth a {@link String} object
      */
     public void setClientAuthenticationMethodAsString(final String auth) {
         this.clientAuthenticationMethod = ClientAuthenticationMethod.parse(auth);
@@ -270,7 +270,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
     /**
      * <p>Getter for the field <code>supportedClientAuthenticationMethods</code>.</p>
      *
-     * @return a {@link java.util.Set} object
+     * @return a {@link Set} object
      */
     public Set<ClientAuthenticationMethod> getSupportedClientAuthenticationMethods() {
         return supportedClientAuthenticationMethods;
@@ -279,7 +279,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
     /**
      * <p>Setter for the field <code>supportedClientAuthenticationMethods</code>.</p>
      *
-     * @param supportedClientAuthenticationMethods a {@link java.util.Set} object
+     * @param supportedClientAuthenticationMethods a {@link Set} object
      */
     public void setSupportedClientAuthenticationMethods(
         Set<ClientAuthenticationMethod> supportedClientAuthenticationMethods) {
@@ -289,7 +289,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
     /**
      * <p>findPkceMethod.</p>
      *
-     * @return a {@link com.nimbusds.oauth2.sdk.pkce.CodeChallengeMethod} object
+     * @return a {@link CodeChallengeMethod} object
      */
     public CodeChallengeMethod findPkceMethod() {
         init();
@@ -314,7 +314,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
     /**
      * <p>setPreferredJwsAlgorithmAsString.</p>
      *
-     * @param preferredJwsAlgorithm a {@link java.lang.String} object
+     * @param preferredJwsAlgorithm a {@link String} object
      */
     public void setPreferredJwsAlgorithmAsString(final String preferredJwsAlgorithm) {
         this.preferredJwsAlgorithm = JWSAlgorithm.parse(preferredJwsAlgorithm);
@@ -323,7 +323,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
     /**
      * <p>configureHttpRequest.</p>
      *
-     * @param request a {@link com.nimbusds.oauth2.sdk.http.HTTPRequest} object
+     * @param request a {@link HTTPRequest} object
      */
     public void configureHttpRequest(HTTPRequest request) {
         request.setConnectTimeout(getConnectTimeout());
@@ -333,7 +333,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
     /**
      * <p>findResourceRetriever.</p>
      *
-     * @return a {@link com.nimbusds.jose.util.ResourceRetriever} object
+     * @return a {@link ResourceRetriever} object
      */
     public ResourceRetriever findResourceRetriever() {
         init();
@@ -344,7 +344,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
     /**
      * <p>Setter for the field <code>responseType</code>.</p>
      *
-     * @param responseType a {@link java.lang.String} object
+     * @param responseType a {@link String} object
      */
     public void setResponseType(final String responseType) {
         try {
@@ -357,7 +357,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
     /**
      * <p>findLogoutUrl.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String findLogoutUrl() {
         init();
@@ -381,7 +381,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
     /**
      * <p>Setter for the field <code>stateGenerator</code>.</p>
      *
-     * @param stateGenerator a {@link org.pac4j.core.util.generator.ValueGenerator} object
+     * @param stateGenerator a {@link ValueGenerator} object
      */
     public void setStateGenerator(final ValueGenerator stateGenerator) {
         assertNotNull("stateGenerator", stateGenerator);
@@ -391,7 +391,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
     /**
      * <p>Setter for the field <code>codeVerifierGenerator</code>.</p>
      *
-     * @param codeVerifierGenerator a {@link org.pac4j.core.util.generator.ValueGenerator} object
+     * @param codeVerifierGenerator a {@link ValueGenerator} object
      */
     public void setCodeVerifierGenerator(ValueGenerator codeVerifierGenerator) {
         assertNotNull("codeVerifierGenerator", codeVerifierGenerator);
@@ -401,7 +401,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
     /**
      * <p>Setter for the field <code>valueRetriever</code>.</p>
      *
-     * @param valueRetriever a {@link org.pac4j.oidc.util.ValueRetriever} object
+     * @param valueRetriever a {@link ValueRetriever} object
      */
     public void setValueRetriever(ValueRetriever valueRetriever) {
         assertNotNull("valueRetriever", valueRetriever);
@@ -411,7 +411,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
     /**
      * <p>findSessionLogoutHandler.</p>
      *
-     * @return a {@link org.pac4j.core.logout.handler.SessionLogoutHandler} object
+     * @return a {@link SessionLogoutHandler} object
      */
     public SessionLogoutHandler findSessionLogoutHandler() {
         init();
@@ -422,7 +422,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
     /**
      * <p>Getter for the field <code>responseType</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getResponseType() {
         return responseType.toString();

@@ -187,11 +187,7 @@ public final class MockWebContext implements WebContext {
 
     @Override
     public String getFullRequestURL() {
-        if (fullRequestURL != null) {
-            return fullRequestURL;
-        } else {
-            return scheme + "://" + serverName + ":" + serverPort + "/";
-        }
+        return Objects.requireNonNullElseGet(fullRequestURL, () -> scheme + "://" + serverName + ":" + serverPort + "/");
     }
 
     public MockWebContext setFullRequestURL(String fullRequestURL) {

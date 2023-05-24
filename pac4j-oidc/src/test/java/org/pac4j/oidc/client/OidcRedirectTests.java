@@ -10,6 +10,7 @@ import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.StatusAction;
+import org.pac4j.core.exception.http.WithLocationAction;
 import org.pac4j.core.http.ajax.AjaxRequestResolver;
 import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
@@ -82,7 +83,7 @@ public final class OidcRedirectTests implements TestsConstants {
         val sessionStore = new MockSessionStore();
         val ctx = new CallContext(webContext, sessionStore, ProfileManagerFactory.DEFAULT);
 
-        val firstRequestAction = (FoundAction) client.getRedirectionAction(ctx).orElse(null);
+        WithLocationAction firstRequestAction = (FoundAction) client.getRedirectionAction(ctx).orElse(null);
         var state = TestsHelper.splitQuery(new URL(firstRequestAction.getLocation())).get("state");
 
         try {

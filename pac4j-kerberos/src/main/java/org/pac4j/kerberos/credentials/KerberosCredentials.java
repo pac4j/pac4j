@@ -3,6 +3,7 @@ package org.pac4j.kerberos.credentials;
 import lombok.ToString;
 import org.pac4j.core.credentials.Credentials;
 
+import java.io.Serial;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -17,6 +18,7 @@ public class KerberosCredentials extends Credentials {
     /**
      *
      */
+    @Serial
     private static final long serialVersionUID = -4264156105410684508L;
 
     /**
@@ -31,7 +33,7 @@ public class KerberosCredentials extends Credentials {
     /**
      * <p>getKerberosTicketAsString.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getKerberosTicketAsString() {
         return getTicketAsString(kerberosTicket);

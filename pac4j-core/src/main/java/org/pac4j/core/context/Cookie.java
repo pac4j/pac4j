@@ -23,8 +23,8 @@ public final class Cookie {
     /**
      * <p>Constructor for Cookie.</p>
      *
-     * @param name a {@link java.lang.String} object
-     * @param value a {@link java.lang.String} object
+     * @param name a {@link String} object
+     * @param value a {@link String} object
      */
     public Cookie(final String name, final String value) {
         if (name == null || name.length() == 0) {
@@ -37,7 +37,7 @@ public final class Cookie {
     /**
      * <p>Getter for the field <code>name</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getName() {
         return name;
@@ -46,7 +46,7 @@ public final class Cookie {
     /**
      * <p>Setter for the field <code>name</code>.</p>
      *
-     * @param name a {@link java.lang.String} object
+     * @param name a {@link String} object
      */
     public void setName(final String name) {
         this.name = name;
@@ -55,7 +55,7 @@ public final class Cookie {
     /**
      * <p>Getter for the field <code>value</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getValue() {
         return value;
@@ -64,7 +64,7 @@ public final class Cookie {
     /**
      * <p>Setter for the field <code>value</code>.</p>
      *
-     * @param value a {@link java.lang.String} object
+     * @param value a {@link String} object
      */
     public void setValue(final String value) {
         this.value = value;
@@ -73,7 +73,7 @@ public final class Cookie {
     /**
      * <p>Getter for the field <code>domain</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getDomain() {
         return domain;
@@ -82,7 +82,7 @@ public final class Cookie {
     /**
      * <p>Setter for the field <code>domain</code>.</p>
      *
-     * @param domain a {@link java.lang.String} object
+     * @param domain a {@link String} object
      */
     public void setDomain(final String domain) {
         this.domain = domain;
@@ -109,7 +109,7 @@ public final class Cookie {
     /**
      * <p>Getter for the field <code>path</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getPath() {
         return path;
@@ -118,7 +118,7 @@ public final class Cookie {
     /**
      * <p>Setter for the field <code>path</code>.</p>
      *
-     * @param path a {@link java.lang.String} object
+     * @param path a {@link String} object
      */
     public void setPath(final String path) {
         this.path = path;
@@ -163,21 +163,21 @@ public final class Cookie {
     /**
      * <p>Getter for the field <code>sameSitePolicy</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getSameSitePolicy() { return sameSitePolicy; }
 
     /**
      * <p>Setter for the field <code>sameSitePolicy</code>.</p>
      *
-     * @param sameSitePolicy a {@link java.lang.String} object
+     * @param sameSitePolicy a {@link String} object
      */
     public void setSameSitePolicy(final String sameSitePolicy) { this.sameSitePolicy = sameSitePolicy; }
 
     /**
      * <p>Getter for the field <code>comment</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getComment() {
         return comment;
@@ -186,7 +186,7 @@ public final class Cookie {
     /**
      * <p>Setter for the field <code>comment</code>.</p>
      *
-     * @param comment a {@link java.lang.String} object
+     * @param comment a {@link String} object
      */
     public void setComment(final String comment) {
         this.comment = comment;

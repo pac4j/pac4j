@@ -1,5 +1,6 @@
 package org.pac4j.oauth.profile.dropbox;
 
+import java.io.Serial;
 import java.net.URI;
 import java.util.Locale;
 
@@ -14,6 +15,7 @@ import org.pac4j.oauth.profile.OAuth10Profile;
  */
 public class DropBoxProfile extends OAuth10Profile {
 
+    @Serial
     private static final long serialVersionUID = 6671295443243112368L;
 
     /** {@inheritDoc} */
@@ -31,7 +33,7 @@ public class DropBoxProfile extends OAuth10Profile {
     /**
      * <p>getEmailVerified.</p>
      *
-     * @return a {@link java.lang.Boolean} object
+     * @return a {@link Boolean} object
      */
     public Boolean getEmailVerified() {
         return (Boolean) getAttribute(DropBoxProfileDefinition.EMAIL_VERIFIED);

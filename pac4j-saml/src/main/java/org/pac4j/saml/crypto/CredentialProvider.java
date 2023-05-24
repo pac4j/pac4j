@@ -17,35 +17,35 @@ public interface CredentialProvider {
     /**
      * <p>getKeyInfo.</p>
      *
-     * @return a {@link org.opensaml.xmlsec.signature.KeyInfo} object
+     * @return a {@link KeyInfo} object
      */
     KeyInfo getKeyInfo();
 
     /**
      * <p>getCredentialResolver.</p>
      *
-     * @return a {@link org.opensaml.security.credential.CredentialResolver} object
+     * @return a {@link CredentialResolver} object
      */
     CredentialResolver getCredentialResolver();
 
     /**
      * <p>getKeyInfoCredentialResolver.</p>
      *
-     * @return a {@link org.opensaml.xmlsec.keyinfo.KeyInfoCredentialResolver} object
+     * @return a {@link KeyInfoCredentialResolver} object
      */
     KeyInfoCredentialResolver getKeyInfoCredentialResolver();
 
     /**
      * <p>getKeyInfoGenerator.</p>
      *
-     * @return a {@link org.opensaml.xmlsec.keyinfo.KeyInfoGenerator} object
+     * @return a {@link KeyInfoGenerator} object
      */
     KeyInfoGenerator getKeyInfoGenerator();
 
     /**
      * <p>getCredential.</p>
      *
-     * @return a {@link org.opensaml.security.credential.Credential} object
+     * @return a {@link Credential} object
      */
     Credential getCredential();
 }

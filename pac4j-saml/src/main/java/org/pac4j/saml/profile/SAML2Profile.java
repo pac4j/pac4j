@@ -4,6 +4,7 @@ import lombok.ToString;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.saml.credentials.authenticator.SAML2Authenticator;
 
+import java.io.Serial;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -19,6 +20,7 @@ import java.util.List;
 @ToString(callSuper = true)
 public class SAML2Profile extends CommonProfile {
 
+    @Serial
     private static final long serialVersionUID = -7811733390277407623L;
 
     /**
@@ -52,7 +54,7 @@ public class SAML2Profile extends CommonProfile {
     /**
      * <p>getNotBefore.</p>
      *
-     * @return a {@link java.time.ZonedDateTime} object
+     * @return a {@link ZonedDateTime} object
      */
     public ZonedDateTime getNotBefore() {
         return (ZonedDateTime) getAuthenticationAttribute(SAML2Authenticator.SAML_CONDITION_NOT_BEFORE_ATTRIBUTE);
@@ -61,7 +63,7 @@ public class SAML2Profile extends CommonProfile {
     /**
      * <p>setNotBefore.</p>
      *
-     * @param notBefore a {@link java.time.ZonedDateTime} object
+     * @param notBefore a {@link ZonedDateTime} object
      */
     public void setNotBefore(ZonedDateTime notBefore) {
         addAuthenticationAttribute(SAML2Authenticator.SAML_CONDITION_NOT_BEFORE_ATTRIBUTE, notBefore);
@@ -70,7 +72,7 @@ public class SAML2Profile extends CommonProfile {
     /**
      * <p>getNotOnOrAfter.</p>
      *
-     * @return a {@link java.time.ZonedDateTime} object
+     * @return a {@link ZonedDateTime} object
      */
     public ZonedDateTime getNotOnOrAfter() {
         return (ZonedDateTime) getAuthenticationAttribute(SAML2Authenticator.SAML_CONDITION_NOT_ON_OR_AFTER_ATTRIBUTE);
@@ -79,7 +81,7 @@ public class SAML2Profile extends CommonProfile {
     /**
      * <p>setNotOnOrAfter.</p>
      *
-     * @param notOnOrAfter a {@link java.time.ZonedDateTime} object
+     * @param notOnOrAfter a {@link ZonedDateTime} object
      */
     public void setNotOnOrAfter(ZonedDateTime notOnOrAfter) {
         addAuthenticationAttribute(SAML2Authenticator.SAML_CONDITION_NOT_ON_OR_AFTER_ATTRIBUTE, notOnOrAfter);
@@ -88,7 +90,7 @@ public class SAML2Profile extends CommonProfile {
     /**
      * <p>getSessionIndex.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getSessionIndex() {
         return (String) getAuthenticationAttribute(SAML2Authenticator.SESSION_INDEX);
@@ -97,7 +99,7 @@ public class SAML2Profile extends CommonProfile {
     /**
      * <p>setSessionIndex.</p>
      *
-     * @param sessionIndex a {@link java.lang.String} object
+     * @param sessionIndex a {@link String} object
      */
     public void setSessionIndex(String sessionIndex) {
         addAuthenticationAttribute(SAML2Authenticator.SESSION_INDEX, sessionIndex);
@@ -106,7 +108,7 @@ public class SAML2Profile extends CommonProfile {
     /**
      * <p>getIssuerEntityID.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getIssuerEntityID() {
         return (String) getAuthenticationAttribute(SAML2Authenticator.ISSUER_ID);
@@ -115,7 +117,7 @@ public class SAML2Profile extends CommonProfile {
     /**
      * <p>setIssuerEntityID.</p>
      *
-     * @param issuerEntityID a {@link java.lang.String} object
+     * @param issuerEntityID a {@link String} object
      */
     public void setIssuerEntityID(String issuerEntityID) {
         addAuthenticationAttribute(SAML2Authenticator.ISSUER_ID, issuerEntityID);
@@ -124,7 +126,7 @@ public class SAML2Profile extends CommonProfile {
     /**
      * <p>getAuthnContexts.</p>
      *
-     * @return a {@link java.util.List} object
+     * @return a {@link List} object
      */
     public List<String> getAuthnContexts() {
         return (List<String>) getAuthenticationAttribute(SAML2Authenticator.AUTHN_CONTEXT);
@@ -133,7 +135,7 @@ public class SAML2Profile extends CommonProfile {
     /**
      * <p>setAuthnContexts.</p>
      *
-     * @param authnContexts a {@link java.util.List} object
+     * @param authnContexts a {@link List} object
      */
     public void setAuthnContexts(List<String> authnContexts) {
         addAuthenticationAttribute(SAML2Authenticator.AUTHN_CONTEXT, authnContexts);
@@ -142,7 +144,7 @@ public class SAML2Profile extends CommonProfile {
     /**
      * <p>getSamlNameIdFormat.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getSamlNameIdFormat() {
         return (String) getAuthenticationAttribute(SAML2Authenticator.SAML_NAME_ID_FORMAT);
@@ -151,7 +153,7 @@ public class SAML2Profile extends CommonProfile {
     /**
      * <p>setSamlNameIdFormat.</p>
      *
-     * @param samlNameIdFormat a {@link java.lang.String} object
+     * @param samlNameIdFormat a {@link String} object
      */
     public void setSamlNameIdFormat(String samlNameIdFormat) {
         addAuthenticationAttribute(SAML2Authenticator.SAML_NAME_ID_FORMAT, samlNameIdFormat);
@@ -160,7 +162,7 @@ public class SAML2Profile extends CommonProfile {
     /**
      * <p>getSamlNameIdNameQualifier.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getSamlNameIdNameQualifier() {
         return (String) getAuthenticationAttribute(SAML2Authenticator.SAML_NAME_ID_NAME_QUALIFIER);
@@ -169,7 +171,7 @@ public class SAML2Profile extends CommonProfile {
     /**
      * <p>setSamlNameIdNameQualifier.</p>
      *
-     * @param samlNameIdNameQualifier a {@link java.lang.String} object
+     * @param samlNameIdNameQualifier a {@link String} object
      */
     public void setSamlNameIdNameQualifier(String samlNameIdNameQualifier) {
         addAuthenticationAttribute(SAML2Authenticator.SAML_NAME_ID_NAME_QUALIFIER, samlNameIdNameQualifier);
@@ -178,7 +180,7 @@ public class SAML2Profile extends CommonProfile {
     /**
      * <p>getSamlNameIdSpNameQualifier.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getSamlNameIdSpNameQualifier() {
         return (String) getAuthenticationAttribute(SAML2Authenticator.SAML_NAME_ID_SP_NAME_QUALIFIER);
@@ -187,7 +189,7 @@ public class SAML2Profile extends CommonProfile {
     /**
      * <p>setSamlNameIdSpNameQualifier.</p>
      *
-     * @param samlNameIdSpNameQualifier a {@link java.lang.String} object
+     * @param samlNameIdSpNameQualifier a {@link String} object
      */
     public void setSamlNameIdSpNameQualifier(String samlNameIdSpNameQualifier) {
         addAuthenticationAttribute(SAML2Authenticator.SAML_NAME_ID_SP_NAME_QUALIFIER, samlNameIdSpNameQualifier);
@@ -196,7 +198,7 @@ public class SAML2Profile extends CommonProfile {
     /**
      * <p>getSamlNameIdSpProviderId.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getSamlNameIdSpProviderId() {
         return (String) getAuthenticationAttribute(SAML2Authenticator.SAML_NAME_ID_SP_PROVIDED_ID);
@@ -205,7 +207,7 @@ public class SAML2Profile extends CommonProfile {
     /**
      * <p>setSamlNameIdSpProviderId.</p>
      *
-     * @param samlNameIdSpProviderId a {@link java.lang.String} object
+     * @param samlNameIdSpProviderId a {@link String} object
      */
     public void setSamlNameIdSpProviderId(String samlNameIdSpProviderId) {
         addAuthenticationAttribute(SAML2Authenticator.SAML_NAME_ID_SP_PROVIDED_ID, samlNameIdSpProviderId);

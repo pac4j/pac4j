@@ -43,7 +43,7 @@ public class JavaSerializer extends AbstractSerializer {
     protected byte[] internalSerializeToBytes(final Object o) {
         byte[] bytes = null;
         try (val baos = new ByteArrayOutputStream();
-             val oos = new ObjectOutputStream(baos)) {
+             ObjectOutput oos = new ObjectOutputStream(baos)) {
             oos.writeObject(o);
             oos.flush();
             bytes = baos.toByteArray();
@@ -91,7 +91,7 @@ public class JavaSerializer extends AbstractSerializer {
     /**
      * <p>addTrustedPackages.</p>
      *
-     * @param trustedPackages a {@link java.util.Collection} object
+     * @param trustedPackages a {@link Collection} object
      */
     public void addTrustedPackages(final Collection<String> trustedPackages) {
         this.trustedPackages.addAll(trustedPackages);
@@ -100,7 +100,7 @@ public class JavaSerializer extends AbstractSerializer {
     /**
      * <p>addTrustedPackage.</p>
      *
-     * @param trustedPackage a {@link java.lang.String} object
+     * @param trustedPackage a {@link String} object
      */
     public void addTrustedPackage(final String trustedPackage) {
         this.trustedPackages.add(trustedPackage);
@@ -116,7 +116,7 @@ public class JavaSerializer extends AbstractSerializer {
     /**
      * <p>addTrustedClasses.</p>
      *
-     * @param trustedClasses a {@link java.util.Collection} object
+     * @param trustedClasses a {@link Collection} object
      */
     public void addTrustedClasses(final Collection<Class<?>> trustedClasses) {
         this.trustedClasses.addAll(trustedClasses);
@@ -125,7 +125,7 @@ public class JavaSerializer extends AbstractSerializer {
     /**
      * <p>addTrustedClass.</p>
      *
-     * @param trustedClass a {@link java.lang.Class} object
+     * @param trustedClass a {@link Class} object
      */
     public void addTrustedClass(final Class<?> trustedClass) {
         this.trustedClasses.add(trustedClass);
@@ -148,7 +148,7 @@ public class JavaSerializer extends AbstractSerializer {
         private final Map<String, Class<?>> trustedClasses; // className -> Class
 
         private RestrictedObjectInputStream(final InputStream in, final Set<String> trustedPackages,
-                                            final Set<Class<?>> trustedClasses) throws IOException {
+                                            final Collection<Class<?>> trustedClasses) throws IOException {
             super(in);
             this.trustedPackages = trustedPackages;
             this.trustedClasses = trustedClasses.stream().collect(Collectors.toMap(Class::getName, Function.identity()));

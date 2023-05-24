@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.ToString;
 import org.pac4j.core.context.HttpConstants;
 
+import java.io.Serial;
+
 /**
  * An OK HTTP action.
  *
@@ -14,13 +16,14 @@ import org.pac4j.core.context.HttpConstants;
 @ToString(callSuper = true)
 public class OkAction extends RedirectionAction implements WithContentAction {
 
+    @Serial
     private static final long serialVersionUID = -8842651379112280831L;
     private final String content;
 
     /**
      * <p>Constructor for OkAction.</p>
      *
-     * @param content a {@link java.lang.String} object
+     * @param content a {@link String} object
      */
     public OkAction(final String content) {
         super(HttpConstants.OK);

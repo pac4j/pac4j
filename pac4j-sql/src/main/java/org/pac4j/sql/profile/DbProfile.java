@@ -3,6 +3,8 @@ package org.pac4j.sql.profile;
 import lombok.ToString;
 import org.pac4j.core.profile.CommonProfile;
 
+import java.io.Serial;
+
 /**
  * <p>The user profile returned by a DB authentication.</p>
  *
@@ -13,6 +15,7 @@ import org.pac4j.core.profile.CommonProfile;
 @ToString(callSuper = true)
 public class DbProfile extends CommonProfile {
 
+    @Serial
     private static final long serialVersionUID = 4740352872728540613L;
 
 }

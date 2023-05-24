@@ -28,7 +28,7 @@ public class ParameterExtractor implements CredentialsExtractor {
     /**
      * <p>Constructor for ParameterExtractor.</p>
      *
-     * @param parameterName a {@link java.lang.String} object
+     * @param parameterName a {@link String} object
      */
     public ParameterExtractor(final String parameterName) {
         this(parameterName, false, true);
@@ -37,7 +37,7 @@ public class ParameterExtractor implements CredentialsExtractor {
     /**
      * <p>Constructor for ParameterExtractor.</p>
      *
-     * @param parameterName a {@link java.lang.String} object
+     * @param parameterName a {@link String} object
      * @param supportGetRequest a boolean
      * @param supportPostRequest a boolean
      */
@@ -59,7 +59,7 @@ public class ParameterExtractor implements CredentialsExtractor {
         }
 
         val value = webContext.getRequestParameter(this.parameterName);
-        if (!value.isPresent()) {
+        if (value.isEmpty()) {
             return Optional.empty();
         }
 

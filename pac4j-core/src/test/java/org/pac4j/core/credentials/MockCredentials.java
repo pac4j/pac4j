@@ -1,5 +1,7 @@
 package org.pac4j.core.credentials;
 
+import java.io.Serial;
+
 /**
  * Mock a credentials.
  *
@@ -8,6 +10,7 @@ package org.pac4j.core.credentials;
  */
 public final class MockCredentials extends Credentials {
 
+    @Serial
     private static final long serialVersionUID = 7137723104269576820L;
 
     @Override

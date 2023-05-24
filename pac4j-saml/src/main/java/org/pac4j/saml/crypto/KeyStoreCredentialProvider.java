@@ -3,6 +3,7 @@ package org.pac4j.saml.crypto;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import net.shibboleth.shared.resolver.CriteriaSet;
+import net.shibboleth.shared.resolver.Criterion;
 import net.shibboleth.shared.resolver.ResolverException;
 import org.opensaml.core.criterion.EntityIdCriterion;
 import org.opensaml.security.credential.Credential;
@@ -23,7 +24,7 @@ import java.util.HashMap;
 
 /**
  * Class responsible for loading a private key from a JKS keystore and returning
- * the corresponding {@link org.opensaml.security.credential.Credential} opensaml object.
+ * the corresponding {@link Credential} opensaml object.
  *
  * @author Misagh Moayyed
  * @since 1.8.0
@@ -40,7 +41,7 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
     /**
      * <p>Constructor for KeyStoreCredentialProvider.</p>
      *
-     * @param configuration a {@link org.pac4j.saml.config.SAML2Configuration} object
+     * @param configuration a {@link SAML2Configuration} object
      */
     public KeyStoreCredentialProvider(final SAML2Configuration configuration) {
         CommonHelper.assertNotBlank("keystorePassword", configuration.getKeystorePassword());
@@ -75,9 +76,9 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
     /**
      * <p>Getter for the field <code>privateKeyAlias</code>.</p>
      *
-     * @param keyStore a {@link java.security.KeyStore} object
-     * @param keyStoreAlias a {@link java.lang.String} object
-     * @return a {@link java.lang.String} object
+     * @param keyStore a {@link KeyStore} object
+     * @param keyStoreAlias a {@link String} object
+     * @return a {@link String} object
      */
     protected static String getPrivateKeyAlias(final KeyStore keyStore, final String keyStoreAlias) {
         try {
@@ -130,7 +131,7 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
     public final Credential getCredential() {
         try {
             val cs = new CriteriaSet();
-            val criteria = new EntityIdCriterion(this.privateKeyAlias);
+            Criterion criteria = new EntityIdCriterion(this.privateKeyAlias);
             cs.add(criteria);
             return this.credentialResolver.resolveSingle(cs);
         } catch (final ResolverException e) {
@@ -141,8 +142,8 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
     /**
      * <p>generateKeyInfoForCredential.</p>
      *
-     * @param credential a {@link org.opensaml.security.credential.Credential} object
-     * @return a {@link org.opensaml.xmlsec.signature.KeyInfo} object
+     * @param credential a {@link Credential} object
+     * @return a {@link KeyInfo} object
      */
     protected final KeyInfo generateKeyInfoForCredential(final Credential credential) {
         try {

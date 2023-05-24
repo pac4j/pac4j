@@ -15,7 +15,7 @@ import static org.junit.Assert.assertTrue;
  */
 public final class JBCryptPasswordEncoderTests implements TestsConstants {
 
-    private final JBCryptPasswordEncoder encoder = new JBCryptPasswordEncoder();
+    private final PasswordEncoder encoder = new JBCryptPasswordEncoder();
 
     @Test
     public void test() {

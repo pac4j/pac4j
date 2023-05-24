@@ -6,10 +6,12 @@ import org.junit.Test;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.pac4j.cas.client.CasClient;
 import org.pac4j.cas.config.CasProtocol;
+import org.pac4j.core.config.ConfigFactory;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
+import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.http.client.direct.DirectBasicAuthClient;
@@ -129,7 +131,7 @@ public final class PropertiesConfigFactoryTests implements PropertiesConstants, 
             properties.put(REST_URL.concat(".3"), PAC4J_BASE_URL);
             properties.put(DIRECTBASICAUTH_AUTHENTICATOR.concat(".7"), "rest.3");
 
-            val factory = new PropertiesConfigFactory(CALLBACK_URL, properties);
+            ConfigFactory factory = new PropertiesConfigFactory(CALLBACK_URL, properties);
             val config = factory.build();
             val clients = config.getClients();
             assertEquals(13, clients.getClients().size());
@@ -194,7 +196,7 @@ public final class PropertiesConfigFactoryTests implements PropertiesConstants, 
             val indirectBasicAuthClient2 =
                 (IndirectBasicAuthClient) clients.findClient("IndirectBasicAuthClient.5").get();
             assertTrue(indirectBasicAuthClient2.getAuthenticator() instanceof DbProfileService);
-            val dbAuthenticator = (DbProfileService) indirectBasicAuthClient2.getAuthenticator();
+            Authenticator dbAuthenticator = (DbProfileService) indirectBasicAuthClient2.getAuthenticator();
             assertNotNull(dbAuthenticator);
             val dbCredentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
             dbAuthenticator.validate(new CallContext(MockWebContext.create(), new MockSessionStore()), dbCredentials);

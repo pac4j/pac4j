@@ -26,8 +26,8 @@ public class YahooClient extends OAuth10Client {
     /**
      * <p>Constructor for YahooClient.</p>
      *
-     * @param key a {@link java.lang.String} object
-     * @param secret a {@link java.lang.String} object
+     * @param key a {@link String} object
+     * @param secret a {@link String} object
      */
     public YahooClient(final String key, final String secret) {
         setKey(key);

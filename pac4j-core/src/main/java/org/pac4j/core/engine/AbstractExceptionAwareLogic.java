@@ -18,7 +18,7 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
 /**
  * <p>Abstract logic to handle exceptions:</p>
  * <ul>
- *     <li>if it's a {@link org.pac4j.core.exception.http.HttpAction}, the HTTP action
+ *     <li>if it's a {@link HttpAction}, the HTTP action
  *     (which has already been performed on the web context) is "adapted"</li>
  *     <li>else if an {@link #errorUrl} is defined, the user is redirected to this error URL</li>
  *     <li>otherwise the exception is thrown again</li>
@@ -75,9 +75,9 @@ public abstract class AbstractExceptionAwareLogic {
     /**
      * <p>buildContext.</p>
      *
-     * @param config a {@link org.pac4j.core.config.Config} object
-     * @param parameters a {@link org.pac4j.core.context.FrameworkParameters} object
-     * @return a {@link org.pac4j.core.context.CallContext} object
+     * @param config a {@link Config} object
+     * @param parameters a {@link FrameworkParameters} object
+     * @return a {@link CallContext} object
      */
     protected CallContext buildContext(final Config config, final FrameworkParameters parameters) {
         assertNotNull("config", config);

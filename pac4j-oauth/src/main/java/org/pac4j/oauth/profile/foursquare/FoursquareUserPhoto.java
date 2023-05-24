@@ -1,5 +1,6 @@
 package org.pac4j.oauth.profile.foursquare;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -10,6 +11,7 @@ import java.io.Serializable;
  */
 public class FoursquareUserPhoto implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -6808386671187616407L;
 
     private String prefix;
@@ -18,7 +20,7 @@ public class FoursquareUserPhoto implements Serializable {
     /**
      * <p>getPhotoUrl.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getPhotoUrl() {
         return prefix + "original" + suffix;
@@ -27,7 +29,7 @@ public class FoursquareUserPhoto implements Serializable {
     /**
      * <p>Getter for the field <code>prefix</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getPrefix() {
         return prefix;
@@ -36,7 +38,7 @@ public class FoursquareUserPhoto implements Serializable {
     /**
      * <p>Setter for the field <code>prefix</code>.</p>
      *
-     * @param prefix a {@link java.lang.String} object
+     * @param prefix a {@link String} object
      */
     public void setPrefix(String prefix) {
         this.prefix = prefix;
@@ -45,7 +47,7 @@ public class FoursquareUserPhoto implements Serializable {
     /**
      * <p>Getter for the field <code>suffix</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getSuffix() {
         return suffix;
@@ -54,7 +56,7 @@ public class FoursquareUserPhoto implements Serializable {
     /**
      * <p>Setter for the field <code>suffix</code>.</p>
      *
-     * @param suffix a {@link java.lang.String} object
+     * @param suffix a {@link String} object
      */
     public void setSuffix(String suffix) {
         this.suffix = suffix;

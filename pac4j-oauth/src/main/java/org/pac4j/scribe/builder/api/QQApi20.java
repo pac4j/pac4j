@@ -38,7 +38,7 @@ public class QQApi20 extends DefaultApi20 {
     /**
      * <p>instance.</p>
      *
-     * @return a {@link org.pac4j.scribe.builder.api.QQApi20} object
+     * @return a {@link QQApi20} object
      */
     public static QQApi20 instance() {
         return QQApi20.InstanceHolder.INSTANCE;

@@ -3,6 +3,7 @@ package org.pac4j.oauth.profile.foursquare;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.OAuth20Profile;
 
+import java.io.Serial;
 import java.net.URI;
 
 /**
@@ -14,12 +15,13 @@ import java.net.URI;
  */
 public class FoursquareProfile extends OAuth20Profile {
 
+    @Serial
     private static final long serialVersionUID = 8919122885219420820L;
 
     /**
      * <p>getBio.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getBio() {
         return (String) getAttribute(FoursquareProfileDefinition.BIO);
@@ -28,7 +30,7 @@ public class FoursquareProfile extends OAuth20Profile {
     /**
      * <p>getContact.</p>
      *
-     * @return a {@link org.pac4j.oauth.profile.foursquare.FoursquareUserContact} object
+     * @return a {@link FoursquareUserContact} object
      */
     public FoursquareUserContact getContact() {
         return (FoursquareUserContact) getAttribute(FoursquareProfileDefinition.CONTACT);
@@ -37,7 +39,7 @@ public class FoursquareProfile extends OAuth20Profile {
     /**
      * <p>getFriends.</p>
      *
-     * @return a {@link org.pac4j.oauth.profile.foursquare.FoursquareUserFriends} object
+     * @return a {@link FoursquareUserFriends} object
      */
     public FoursquareUserFriends getFriends() {
         return (FoursquareUserFriends) getAttribute(FoursquareProfileDefinition.FIRENDS);
@@ -46,7 +48,7 @@ public class FoursquareProfile extends OAuth20Profile {
     /**
      * <p>getPhoto.</p>
      *
-     * @return a {@link org.pac4j.oauth.profile.foursquare.FoursquareUserPhoto} object
+     * @return a {@link FoursquareUserPhoto} object
      */
     public FoursquareUserPhoto getPhoto() {
         return (FoursquareUserPhoto) getAttribute(FoursquareProfileDefinition.PHOTO);

@@ -5,6 +5,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.core5.http.ClassicHttpRequest;
 import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.HttpResponse;
 import org.apache.hc.core5.http.HttpStatus;
@@ -23,7 +24,7 @@ import java.security.cert.X509Certificate;
 import java.util.Base64;
 
 /**
- * This is {@link org.pac4j.saml.metadata.keystore.SAML2HttpUrlKeystoreGenerator}.
+ * This is {@link SAML2HttpUrlKeystoreGenerator}.
  *
  * @author Misagh Moayyed
  * @since 4.0.1
@@ -33,7 +34,7 @@ public class SAML2HttpUrlKeystoreGenerator extends BaseSAML2KeystoreGenerator {
     /**
      * <p>Constructor for SAML2HttpUrlKeystoreGenerator.</p>
      *
-     * @param configuration a {@link org.pac4j.saml.config.SAML2Configuration} object
+     * @param configuration a {@link SAML2Configuration} object
      */
     public SAML2HttpUrlKeystoreGenerator(final SAML2Configuration configuration) {
         super(configuration);
@@ -46,7 +47,7 @@ public class SAML2HttpUrlKeystoreGenerator extends BaseSAML2KeystoreGenerator {
 
         val url = saml2Configuration.getKeystoreResource().getURL().toExternalForm();
         logger.debug("Loading keystore from {}", url);
-        val httpGet = new HttpGet(url);
+        ClassicHttpRequest httpGet = new HttpGet(url);
         httpGet.addHeader("Accept", ContentType.TEXT_PLAIN.getMimeType());
         httpGet.addHeader("Content-Type", ContentType.TEXT_PLAIN.getMimeType());
         return saml2Configuration.getHttpClient().execute(httpGet, response -> {
@@ -62,7 +63,7 @@ public class SAML2HttpUrlKeystoreGenerator extends BaseSAML2KeystoreGenerator {
                 throw new SAMLException("Unable to retrieve keystore from " + url);
             } finally {
                 if (response != null && response instanceof CloseableHttpResponse) {
-                    ((CloseableHttpResponse) response).close();
+                    response.close();
                 }
             }
         });

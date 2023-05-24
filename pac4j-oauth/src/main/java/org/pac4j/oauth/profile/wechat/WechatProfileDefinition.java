@@ -77,8 +77,7 @@ public class WechatProfileDefinition extends OAuthProfileDefinition {
     /** {@inheritDoc} */
     @Override
     public String getProfileUrl(final Token accessToken, final OAuthConfiguration configuration) {
-        if (accessToken instanceof WechatToken) {
-            var token = (WechatToken) accessToken;
+        if (accessToken instanceof WechatToken token) {
             String profileUrl;
             if (WechatClient.WechatScope.SNSAPI_BASE.toString().equalsIgnoreCase(token.getScope())) {
                 profileUrl = "https://api.weixin.qq.com/sns/auth?openid=" + token.getOpenid();

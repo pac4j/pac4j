@@ -3,6 +3,7 @@ package org.pac4j.core.authorization.generator;
 import lombok.val;
 import org.junit.Test;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 
 import java.util.Arrays;
 import java.util.List;
@@ -27,8 +28,8 @@ public final class DefaultRolesAuthorizationGeneratorTests {
         checkEmptyProfile(generator);
     }
 
-    private void checkEmptyProfile(final DefaultRolesAuthorizationGenerator generator) {
-        val profile = new CommonProfile();
+    private void checkEmptyProfile(final AuthorizationGenerator generator) {
+        UserProfile profile = new CommonProfile();
         generator.generate(null, profile);
         assertEquals(0, profile.getRoles().size());
     }
@@ -45,8 +46,8 @@ public final class DefaultRolesAuthorizationGeneratorTests {
         checkProfile(generator);
     }
 
-    private void checkProfile(final DefaultRolesAuthorizationGenerator generator) {
-        val profile = new CommonProfile();
+    private void checkProfile(final AuthorizationGenerator generator) {
+        UserProfile profile = new CommonProfile();
         generator.generate(null, profile);
         val roles = profile.getRoles();
         assertEquals(2, roles.size());

@@ -7,6 +7,7 @@ import lombok.val;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.pac4j.core.client.Client;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
@@ -56,7 +57,7 @@ public final class GaeUserServiceClientTests implements TestsConstants {
 
     @Test(expected = TechnicalException.class)
     public void testCallbackMandatory() {
-        val localClient = new GaeUserServiceClient();
+        Client localClient = new GaeUserServiceClient();
         localClient.getRedirectionAction(new CallContext(context, new MockSessionStore()));
     }
 

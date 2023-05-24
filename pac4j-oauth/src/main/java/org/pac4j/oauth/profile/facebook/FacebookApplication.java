@@ -1,5 +1,6 @@
 package org.pac4j.oauth.profile.facebook;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -10,6 +11,7 @@ import java.io.Serializable;
  */
 public final class FacebookApplication implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 8888597071833762957L;
 
     private String namespace;
@@ -17,7 +19,7 @@ public final class FacebookApplication implements Serializable {
     /**
      * <p>Getter for the field <code>namespace</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getNamespace() {
         return namespace;
@@ -26,7 +28,7 @@ public final class FacebookApplication implements Serializable {
     /**
      * <p>Setter for the field <code>namespace</code>.</p>
      *
-     * @param namespace a {@link java.lang.String} object
+     * @param namespace a {@link String} object
      */
     public void setNamespace(String namespace) {
         this.namespace = namespace;

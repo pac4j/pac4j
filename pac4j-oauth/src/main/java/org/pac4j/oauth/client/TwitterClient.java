@@ -34,8 +34,8 @@ public class TwitterClient extends OAuth10Client {
     /**
      * <p>Constructor for TwitterClient.</p>
      *
-     * @param key a {@link java.lang.String} object
-     * @param secret a {@link java.lang.String} object
+     * @param key a {@link String} object
+     * @param secret a {@link String} object
      */
     public TwitterClient(final String key, final String secret) {
         this(key, secret, false);
@@ -44,8 +44,8 @@ public class TwitterClient extends OAuth10Client {
     /**
      * <p>Constructor for TwitterClient.</p>
      *
-     * @param key a {@link java.lang.String} object
-     * @param secret a {@link java.lang.String} object
+     * @param key a {@link String} object
+     * @param secret a {@link String} object
      * @param includeEmail a boolean
      */
     public TwitterClient(final String key, final String secret, boolean includeEmail) {
@@ -76,7 +76,7 @@ public class TwitterClient extends OAuth10Client {
     /**
      * <p>getApi.</p>
      *
-     * @return a {@link com.github.scribejava.core.builder.api.DefaultApi10a} object
+     * @return a {@link DefaultApi10a} object
      */
     protected DefaultApi10a getApi() {
         final DefaultApi10a api;

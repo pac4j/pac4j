@@ -1,5 +1,6 @@
 package org.pac4j.oauth.profile.facebook;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -16,6 +17,7 @@ import static org.pac4j.core.util.CommonHelper.newDate;
  */
 public final class FacebookPhoto implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -1230468571423177489L;
 
     private String id;
@@ -47,7 +49,7 @@ public final class FacebookPhoto implements Serializable {
     /**
      * <p>Getter for the field <code>id</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getId() {
         return id;
@@ -56,7 +58,7 @@ public final class FacebookPhoto implements Serializable {
     /**
      * <p>Setter for the field <code>id</code>.</p>
      *
-     * @param id a {@link java.lang.String} object
+     * @param id a {@link String} object
      */
     public void setId(String id) {
         this.id = id;
@@ -65,7 +67,7 @@ public final class FacebookPhoto implements Serializable {
     /**
      * <p>Getter for the field <code>from</code>.</p>
      *
-     * @return a {@link org.pac4j.oauth.profile.facebook.FacebookObject} object
+     * @return a {@link FacebookObject} object
      */
     public FacebookObject getFrom() {
         return from;
@@ -74,7 +76,7 @@ public final class FacebookPhoto implements Serializable {
     /**
      * <p>Setter for the field <code>from</code>.</p>
      *
-     * @param from a {@link org.pac4j.oauth.profile.facebook.FacebookObject} object
+     * @param from a {@link FacebookObject} object
      */
     public void setFrom(FacebookObject from) {
         this.from = from;
@@ -83,7 +85,7 @@ public final class FacebookPhoto implements Serializable {
     /**
      * <p>Getter for the field <code>name</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getName() {
         return name;
@@ -92,7 +94,7 @@ public final class FacebookPhoto implements Serializable {
     /**
      * <p>Setter for the field <code>name</code>.</p>
      *
-     * @param name a {@link java.lang.String} object
+     * @param name a {@link String} object
      */
     public void setName(String name) {
         this.name = name;
@@ -101,7 +103,7 @@ public final class FacebookPhoto implements Serializable {
     /**
      * <p>Getter for the field <code>link</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getLink() {
         return link;
@@ -110,7 +112,7 @@ public final class FacebookPhoto implements Serializable {
     /**
      * <p>Setter for the field <code>link</code>.</p>
      *
-     * @param link a {@link java.lang.String} object
+     * @param link a {@link String} object
      */
     public void setLink(String link) {
         this.link = link;
@@ -119,7 +121,7 @@ public final class FacebookPhoto implements Serializable {
     /**
      * <p>Getter for the field <code>coverPhoto</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getCoverPhoto() {
         return coverPhoto;
@@ -128,7 +130,7 @@ public final class FacebookPhoto implements Serializable {
     /**
      * <p>Setter for the field <code>coverPhoto</code>.</p>
      *
-     * @param coverPhoto a {@link java.lang.String} object
+     * @param coverPhoto a {@link String} object
      */
     public void setCoverPhoto(String coverPhoto) {
         this.coverPhoto = coverPhoto;
@@ -137,7 +139,7 @@ public final class FacebookPhoto implements Serializable {
     /**
      * <p>Getter for the field <code>privacy</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getPrivacy() {
         return privacy;
@@ -146,7 +148,7 @@ public final class FacebookPhoto implements Serializable {
     /**
      * <p>Setter for the field <code>privacy</code>.</p>
      *
-     * @param privacy a {@link java.lang.String} object
+     * @param privacy a {@link String} object
      */
     public void setPrivacy(String privacy) {
         this.privacy = privacy;
@@ -155,7 +157,7 @@ public final class FacebookPhoto implements Serializable {
     /**
      * <p>Getter for the field <code>count</code>.</p>
      *
-     * @return a {@link java.lang.Integer} object
+     * @return a {@link Integer} object
      */
     public Integer getCount() {
         return count;
@@ -164,7 +166,7 @@ public final class FacebookPhoto implements Serializable {
     /**
      * <p>Setter for the field <code>count</code>.</p>
      *
-     * @param count a {@link java.lang.Integer} object
+     * @param count a {@link Integer} object
      */
     public void setCount(Integer count) {
         this.count = count;
@@ -173,7 +175,7 @@ public final class FacebookPhoto implements Serializable {
     /**
      * <p>Getter for the field <code>type</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getType() {
         return type;
@@ -182,7 +184,7 @@ public final class FacebookPhoto implements Serializable {
     /**
      * <p>Setter for the field <code>type</code>.</p>
      *
-     * @param type a {@link java.lang.String} object
+     * @param type a {@link String} object
      */
     public void setType(String type) {
         this.type = type;
@@ -191,7 +193,7 @@ public final class FacebookPhoto implements Serializable {
     /**
      * <p>Getter for the field <code>createdTime</code>.</p>
      *
-     * @return a {@link java.util.Date} object
+     * @return a {@link Date} object
      */
     public Date getCreatedTime() {
         return newDate(createdTime);
@@ -200,7 +202,7 @@ public final class FacebookPhoto implements Serializable {
     /**
      * <p>Setter for the field <code>createdTime</code>.</p>
      *
-     * @param createdTime a {@link java.util.Date} object
+     * @param createdTime a {@link Date} object
      */
     public void setCreatedTime(Date createdTime) {
         this.createdTime = newDate(createdTime);
@@ -209,7 +211,7 @@ public final class FacebookPhoto implements Serializable {
     /**
      * <p>Getter for the field <code>updatedTime</code>.</p>
      *
-     * @return a {@link java.util.Date} object
+     * @return a {@link Date} object
      */
     public Date getUpdatedTime() {
         return newDate(updatedTime);
@@ -218,7 +220,7 @@ public final class FacebookPhoto implements Serializable {
     /**
      * <p>Setter for the field <code>updatedTime</code>.</p>
      *
-     * @param updatedTime a {@link java.util.Date} object
+     * @param updatedTime a {@link Date} object
      */
     public void setUpdatedTime(Date updatedTime) {
         this.updatedTime = newDate(updatedTime);
@@ -227,7 +229,7 @@ public final class FacebookPhoto implements Serializable {
     /**
      * <p>Getter for the field <code>canUpload</code>.</p>
      *
-     * @return a {@link java.lang.Boolean} object
+     * @return a {@link Boolean} object
      */
     public Boolean getCanUpload() {
         return canUpload;
@@ -236,7 +238,7 @@ public final class FacebookPhoto implements Serializable {
     /**
      * <p>Setter for the field <code>canUpload</code>.</p>
      *
-     * @param canUpload a {@link java.lang.Boolean} object
+     * @param canUpload a {@link Boolean} object
      */
     public void setCanUpload(Boolean canUpload) {
         this.canUpload = canUpload;

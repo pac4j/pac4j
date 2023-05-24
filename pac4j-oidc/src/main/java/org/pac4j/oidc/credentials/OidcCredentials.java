@@ -10,6 +10,8 @@ import lombok.Setter;
 import lombok.ToString;
 import org.pac4j.core.credentials.Credentials;
 
+import java.io.Serial;
+
 /**
  * Credentials containing the authorization code sent by the OpenID Connect server.
  *
@@ -23,6 +25,7 @@ import org.pac4j.core.credentials.Credentials;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class OidcCredentials extends Credentials {
 
+    @Serial
     private static final long serialVersionUID = 6772331801527223938L;
 
     @EqualsAndHashCode.Include

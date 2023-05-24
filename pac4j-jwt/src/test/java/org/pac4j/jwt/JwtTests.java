@@ -5,6 +5,7 @@ import com.nimbusds.jose.JWSAlgorithm;
 import lombok.val;
 import org.junit.Test;
 import org.pac4j.core.credentials.TokenCredentials;
+import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.Color;
@@ -34,7 +35,7 @@ import java.util.*;
 import static org.junit.Assert.*;
 
 /**
- * This class tests the {@link JwtGenerator} and {@link org.pac4j.jwt.credentials.authenticator.JwtAuthenticator}.
+ * This class tests the {@link JwtGenerator} and {@link JwtAuthenticator}.
  *
  * @author Jerome Leleu
  * @since 1.8.0
@@ -43,7 +44,7 @@ public final class JwtTests implements TestsConstants {
 
     private static final String KEY2 = "02ez4f7dsq==drrdz54z---++-6ef78=";
 
-    private static final Set<String> ROLES = new HashSet<>(Arrays.asList(new String[]{"role1", "role2"}));
+    private static final Collection<String> ROLES = new HashSet<>(Arrays.asList(new String[]{"role1", "role2"}));
 
     @Test
     public void testGenericJwt() {
@@ -53,7 +54,7 @@ public final class JwtTests implements TestsConstants {
             _YGb8TfIECPkpeG7wEgBG30sb1kH-F_vg9yjYfB4MiJCSFmY7cRqN9-9O23tz3wYv3b-eJh5ACr2CGSVNj2KcMsOMJ6bbALgz6pzQTIWk_
             fhcE9QSfaSY7RuZ8cRTV-UTjYgZk1gbd1LskgchS.ijMQmfPlObJv7oaPG8LCEg""";
         val credentials = new TokenCredentials(token);
-        val authenticator = new JwtAuthenticator(new SecretSignatureConfiguration(MAC_SECRET),
+        Authenticator authenticator = new JwtAuthenticator(new SecretSignatureConfiguration(MAC_SECRET),
             new SecretEncryptionConfiguration(MAC_SECRET));
         authenticator.validate(null, credentials);
         assertNotNull(credentials.getUserProfile());
@@ -62,7 +63,7 @@ public final class JwtTests implements TestsConstants {
     @Test
     public void testNestedClaimsJwt() {
         val generator = new JwtGenerator(new SecretSignatureConfiguration(MAC_SECRET));
-        var claimsMap = new HashMap<String, Object>();
+        Map<String, Object> claimsMap = new HashMap<>();
         claimsMap.put("userData", Map.of("id", "123345", "name", "pac4j"));
         claimsMap.put("iss", "https://pac4j.org");
         claimsMap.put("jti", "JTI");
@@ -72,7 +73,7 @@ public final class JwtTests implements TestsConstants {
 
         var token = generator.generate(claimsMap);
         val credentials = new TokenCredentials(token);
-        val authenticator = new JwtAuthenticator(new SecretSignatureConfiguration(MAC_SECRET));
+        Authenticator authenticator = new JwtAuthenticator(new SecretSignatureConfiguration(MAC_SECRET));
         authenticator.validate(null, credentials);
         assertNotNull(credentials.getUserProfile());
         assertTrue(credentials.getUserProfile().containsAttribute("id"));
@@ -109,7 +110,7 @@ public final class JwtTests implements TestsConstants {
     @Test
     public void testTwitterProfileJwt() {
         val generator = new JwtGenerator();
-        val profile = new TwitterProfile();
+        UserProfile profile = new TwitterProfile();
         profile.addAttribute(TwitterProfileDefinition.PROFILE_LINK_COLOR, new Color(1, 2, 3));
         val token = generator.generate(profile);
         assertNotNull(token);
@@ -217,11 +218,11 @@ public final class JwtTests implements TestsConstants {
             new SecretEncryptionConfiguration(MAC_SECRET));
         val profile = createProfile();
         val token = generator.generate(profile);
-        val authenticator = new JwtAuthenticator(new SecretSignatureConfiguration(MAC_SECRET),
+        Authenticator authenticator = new JwtAuthenticator(new SecretSignatureConfiguration(MAC_SECRET),
             new SecretEncryptionConfiguration(MAC_SECRET));
         val credentials = new TokenCredentials(token);
         authenticator.validate(null, credentials);
-        val profile2 = (FacebookProfile) credentials.getUserProfile();
+        UserProfile profile2 = (FacebookProfile) credentials.getUserProfile();
         generator.generate(profile2);
     }
 
@@ -347,7 +348,7 @@ public final class JwtTests implements TestsConstants {
             new SecretEncryptionConfiguration(MAC_SECRET)));
     }
 
-    private UserProfile assertToken(FacebookProfile profile, String token, JwtAuthenticator authenticator) {
+    private UserProfile assertToken(FacebookProfile profile, String token, Authenticator authenticator) {
         val credentials = new TokenCredentials(token);
         authenticator.validate(null, credentials);
         val profile2 = credentials.getUserProfile();
@@ -371,7 +372,7 @@ public final class JwtTests implements TestsConstants {
 
     @Test(expected = CredentialsException.class)
     public void testAuthenticateFailed() {
-        val authenticator =
+        Authenticator authenticator =
             new JwtAuthenticator(new SecretSignatureConfiguration(MAC_SECRET), new SecretEncryptionConfiguration(MAC_SECRET));
         val credentials = new TokenCredentials("fakeToken");
         authenticator.validate(null, credentials);

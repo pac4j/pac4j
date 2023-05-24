@@ -5,6 +5,7 @@ import lombok.val;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.core.util.Pac4jConstants;
 
+import java.io.Serial;
 import java.net.URI;
 import java.util.Date;
 import java.util.Locale;
@@ -18,6 +19,7 @@ import java.util.Locale;
 @ToString(callSuper = true)
 public class CommonProfile extends BasicUserProfile {
 
+    @Serial
     private static final long serialVersionUID = -1856159870249261877L;
 
     /**
@@ -138,8 +140,8 @@ public class CommonProfile extends BasicUserProfile {
     /**
      * <p>getAttributeAsString.</p>
      *
-     * @param name a {@link java.lang.String} object
-     * @return a {@link java.lang.String} object
+     * @param name a {@link String} object
+     * @return a {@link String} object
      */
     protected String getAttributeAsString(final String name) {
         val value = getAttribute(name);
@@ -154,8 +156,8 @@ public class CommonProfile extends BasicUserProfile {
     /**
      * <p>getAttributeAsType.</p>
      *
-     * @param name a {@link java.lang.String} object
-     * @param clazz a {@link java.lang.Class} object
+     * @param name a {@link String} object
+     * @param clazz a {@link Class} object
      * @param defaultValue a T object
      * @param <T> a T class
      * @return a T object
@@ -173,8 +175,8 @@ public class CommonProfile extends BasicUserProfile {
     /**
      * <p>getAttributeAsDate.</p>
      *
-     * @param name a {@link java.lang.String} object
-     * @return a {@link java.util.Date} object
+     * @param name a {@link String} object
+     * @return a {@link Date} object
      */
     protected Date getAttributeAsDate(final String name) {
         val value = getAttribute(name);

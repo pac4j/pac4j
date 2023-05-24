@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 public class JEESessionStore implements SessionStore {
 
     /** Constant <code>INSTANCE</code> */
-    public static final JEESessionStore INSTANCE = new JEESessionStore();
+    public static final SessionStore INSTANCE = new JEESessionStore();
 
     protected HttpSession httpSession;
 
@@ -37,7 +37,7 @@ public class JEESessionStore implements SessionStore {
     /**
      * <p>Constructor for JEESessionStore.</p>
      *
-     * @param httpSession a {@link jakarta.servlet.http.HttpSession} object
+     * @param httpSession a {@link HttpSession} object
      */
     protected JEESessionStore(final HttpSession httpSession) {
         this.httpSession = httpSession;
@@ -46,9 +46,9 @@ public class JEESessionStore implements SessionStore {
     /**
      * <p>getNativeSession.</p>
      *
-     * @param context a {@link org.pac4j.core.context.WebContext} object
+     * @param context a {@link WebContext} object
      * @param createSession a boolean
-     * @return a {@link java.util.Optional} object
+     * @return a {@link Optional} object
      */
     protected Optional<HttpSession> getNativeSession(final WebContext context, final boolean createSession) {
         if (httpSession != null) {

@@ -8,7 +8,7 @@ import org.pac4j.core.profile.UserProfile;
 import java.util.Optional;
 
 /**
- * Default {@link org.pac4j.core.authorization.generator.AuthorizationGenerator} implementation
+ * Default {@link AuthorizationGenerator} implementation
  * for a {@link org.pac4j.cas.client.CasClient} which is able to retrieve the isRemembered status
  * from the CAS response and put it in the profile.
  *
@@ -32,7 +32,7 @@ public class DefaultCasAuthorizationGenerator implements AuthorizationGenerator 
     /**
      * <p>Constructor for DefaultCasAuthorizationGenerator.</p>
      *
-     * @param rememberMeAttributeName a {@link java.lang.String} object
+     * @param rememberMeAttributeName a {@link String} object
      */
     public DefaultCasAuthorizationGenerator(final String rememberMeAttributeName) {
         this.rememberMeAttributeName = rememberMeAttributeName;

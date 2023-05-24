@@ -56,8 +56,8 @@ public class Clients extends InitializableObject {
     /**
      * <p>Constructor for Clients.</p>
      *
-     * @param callbackUrl a {@link java.lang.String} object
-     * @param clients a {@link java.util.List} object
+     * @param callbackUrl a {@link String} object
+     * @param clients a {@link List} object
      */
     public Clients(final String callbackUrl, final List<Client> clients) {
         setCallbackUrl(callbackUrl);
@@ -67,8 +67,8 @@ public class Clients extends InitializableObject {
     /**
      * <p>Constructor for Clients.</p>
      *
-     * @param callbackUrl a {@link java.lang.String} object
-     * @param clients a {@link org.pac4j.core.client.Client} object
+     * @param callbackUrl a {@link String} object
+     * @param clients a {@link Client} object
      */
     public Clients(final String callbackUrl, final Client... clients) {
         setCallbackUrl(callbackUrl);
@@ -78,7 +78,7 @@ public class Clients extends InitializableObject {
     /**
      * <p>Constructor for Clients.</p>
      *
-     * @param clients a {@link java.util.List} object
+     * @param clients a {@link List} object
      */
     public Clients(final List<Client> clients) {
         setClients(clients);
@@ -87,7 +87,7 @@ public class Clients extends InitializableObject {
     /**
      * <p>Constructor for Clients.</p>
      *
-     * @param clients a {@link org.pac4j.core.client.Client} object
+     * @param clients a {@link Client} object
      */
     public Clients(final Client... clients) {
         setClients(clients);
@@ -171,7 +171,7 @@ public class Clients extends InitializableObject {
     /**
      * <p>addClient.</p>
      *
-     * @param client a {@link org.pac4j.core.client.Client} object
+     * @param client a {@link Client} object
      */
     public void addClient(final Client client) {
         this.clients.add(client);
@@ -180,7 +180,7 @@ public class Clients extends InitializableObject {
     /**
      * <p>Setter for the field <code>clients</code>.</p>
      *
-     * @param clients a {@link java.util.List} object
+     * @param clients a {@link List} object
      */
     public void setClients(final List<Client> clients) {
         CommonHelper.assertNotNull("clients", clients);
@@ -190,7 +190,7 @@ public class Clients extends InitializableObject {
     /**
      * <p>Setter for the field <code>clients</code>.</p>
      *
-     * @param clients a {@link org.pac4j.core.client.Client} object
+     * @param clients a {@link Client} object
      */
     public void setClients(final Client... clients) {
         CommonHelper.assertNotNull("clients", clients);
@@ -200,7 +200,7 @@ public class Clients extends InitializableObject {
     /**
      * <p>Setter for the field <code>authorizationGenerators</code>.</p>
      *
-     * @param authorizationGenerators a {@link java.util.List} object
+     * @param authorizationGenerators a {@link List} object
      */
     public void setAuthorizationGenerators(final List<AuthorizationGenerator> authorizationGenerators) {
         CommonHelper.assertNotNull("authorizationGenerators", authorizationGenerators);
@@ -210,7 +210,7 @@ public class Clients extends InitializableObject {
     /**
      * <p>Setter for the field <code>authorizationGenerators</code>.</p>
      *
-     * @param authorizationGenerators a {@link org.pac4j.core.authorization.generator.AuthorizationGenerator} object
+     * @param authorizationGenerators a {@link AuthorizationGenerator} object
      */
     public void setAuthorizationGenerators(final AuthorizationGenerator... authorizationGenerators) {
         CommonHelper.assertNotNull("authorizationGenerators", authorizationGenerators);
@@ -220,7 +220,7 @@ public class Clients extends InitializableObject {
     /**
      * <p>setAuthorizationGenerator.</p>
      *
-     * @param authorizationGenerator a {@link org.pac4j.core.authorization.generator.AuthorizationGenerator} object
+     * @param authorizationGenerator a {@link AuthorizationGenerator} object
      */
     public void setAuthorizationGenerator(final AuthorizationGenerator authorizationGenerator) {
         addAuthorizationGenerator(authorizationGenerator);
@@ -229,7 +229,7 @@ public class Clients extends InitializableObject {
     /**
      * <p>addAuthorizationGenerator.</p>
      *
-     * @param authorizationGenerator a {@link org.pac4j.core.authorization.generator.AuthorizationGenerator} object
+     * @param authorizationGenerator a {@link AuthorizationGenerator} object
      */
     public void addAuthorizationGenerator(final AuthorizationGenerator authorizationGenerator) {
         CommonHelper.assertNotNull("authorizationGenerator", authorizationGenerator);

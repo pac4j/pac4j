@@ -14,8 +14,8 @@ public interface SessionStoreFactory {
     /**
      * <p>newSessionStore.</p>
      *
-     * @param parameters a {@link org.pac4j.core.context.FrameworkParameters} object
-     * @return a {@link org.pac4j.core.context.session.SessionStore} object
+     * @param parameters a {@link FrameworkParameters} object
+     * @return a {@link SessionStore} object
      */
     SessionStore newSessionStore(FrameworkParameters parameters);
 }

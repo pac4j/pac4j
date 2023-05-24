@@ -24,7 +24,7 @@ public final class CronofyApi20 extends DefaultApi20 {
     /**
      * <p>Constructor for CronofyApi20.</p>
      *
-     * @param sdkIdentifier a {@link java.lang.String} object
+     * @param sdkIdentifier a {@link String} object
      */
     public CronofyApi20(final String sdkIdentifier) {
         this.sdkIdentifier = sdkIdentifier;

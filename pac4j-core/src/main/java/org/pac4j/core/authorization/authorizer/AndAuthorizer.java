@@ -23,7 +23,7 @@ public class AndAuthorizer implements Authorizer {
     /**
      * <p>Constructor for AndAuthorizer.</p>
      *
-     * @param authorizers a {@link java.util.List} object
+     * @param authorizers a {@link List} object
      */
     public AndAuthorizer(List<Authorizer> authorizers) {
         this.authorizers = authorizers;
@@ -41,8 +41,8 @@ public class AndAuthorizer implements Authorizer {
     /**
      * <p>and.</p>
      *
-     * @param authorizers a {@link org.pac4j.core.authorization.authorizer.Authorizer} object
-     * @return a {@link org.pac4j.core.authorization.authorizer.Authorizer} object
+     * @param authorizers a {@link Authorizer} object
+     * @return a {@link Authorizer} object
      */
     public static Authorizer and(Authorizer... authorizers) {
         return new AndAuthorizer(asList(authorizers));

@@ -22,7 +22,7 @@ public class DbAuthenticatorBuilder extends AbstractBuilder {
     /**
      * <p>Constructor for DbAuthenticatorBuilder.</p>
      *
-     * @param properties a {@link java.util.Map} object
+     * @param properties a {@link Map} object
      */
     public DbAuthenticatorBuilder(final Map<String, String> properties) {
         super(properties);
@@ -31,8 +31,8 @@ public class DbAuthenticatorBuilder extends AbstractBuilder {
     /**
      * <p>tryBuildDbAuthenticator.</p>
      *
-     * @param authenticators a {@link java.util.Map} object
-     * @param encoders a {@link java.util.Map} object
+     * @param authenticators a {@link Map} object
+     * @param encoders a {@link Map} object
      */
     public void tryBuildDbAuthenticator(final Map<String, Authenticator> authenticators, final Map<String, PasswordEncoder> encoders) {
         for (var i = 0; i <= MAX_NUM_AUTHENTICATORS; i++) {

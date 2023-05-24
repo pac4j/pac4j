@@ -17,7 +17,7 @@ public class HazelcastSAMLMessageStoreFactory implements SAMLMessageStoreFactory
     /**
      * <p>Constructor for HazelcastSAMLMessageStoreFactory.</p>
      *
-     * @param hazelcastInstance a {@link com.hazelcast.core.HazelcastInstance} object
+     * @param hazelcastInstance a {@link HazelcastInstance} object
      */
     public HazelcastSAMLMessageStoreFactory(final HazelcastInstance hazelcastInstance) {
         this.hazelcastInstance = hazelcastInstance;

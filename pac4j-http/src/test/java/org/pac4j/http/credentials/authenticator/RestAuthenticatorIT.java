@@ -8,7 +8,9 @@ import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
+import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.http.profile.RestProfile;
@@ -39,10 +41,10 @@ public final class RestAuthenticatorIT implements TestsConstants {
 
     @Test
     public void testProfileOk() {
-        val authenticator = new RestAuthenticator("http://localhost:" + PORT + "?r=ok");
+        Authenticator authenticator = new RestAuthenticator("http://localhost:" + PORT + "?r=ok");
         val credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
         authenticator.validate(new CallContext(MockWebContext.create(), new MockSessionStore()), credentials);
-        val profile = (RestProfile) credentials.getUserProfile();
+        UserProfile profile = (RestProfile) credentials.getUserProfile();
         assertNotNull(profile);
         assertEquals(ID, profile.getId());
         assertEquals(1, profile.getRoles().size());
@@ -51,7 +53,7 @@ public final class RestAuthenticatorIT implements TestsConstants {
 
     @Test
     public void testNotFound() {
-        val authenticator = new RestAuthenticator("http://localhost:" + PORT + "?r=notfound");
+        Authenticator authenticator = new RestAuthenticator("http://localhost:" + PORT + "?r=notfound");
         val credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
         authenticator.validate(new CallContext(MockWebContext.create(), new MockSessionStore()), credentials);
         val profile = (RestProfile) credentials.getUserProfile();
@@ -70,7 +72,7 @@ public final class RestAuthenticatorIT implements TestsConstants {
 
     @Test
     public void testHttps() {
-        val authenticator = new RestAuthenticator("https://www.google.com");
+        Authenticator authenticator = new RestAuthenticator("https://www.google.com");
         val credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
         authenticator.validate(new CallContext(MockWebContext.create(), new MockSessionStore()), credentials);
     }

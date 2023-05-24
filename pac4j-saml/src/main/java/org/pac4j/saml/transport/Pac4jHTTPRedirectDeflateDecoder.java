@@ -1,6 +1,8 @@
 package org.pac4j.saml.transport;
 
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.opensaml.core.xml.XMLObject;
 import org.opensaml.messaging.decoder.MessageDecodingException;
 import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.common.binding.SAMLBindingSupport;
@@ -24,12 +26,13 @@ import java.util.zip.InflaterInputStream;
  * @author Jerome Leleu
  * @since 3.4.0
  */
+@Slf4j
 public class Pac4jHTTPRedirectDeflateDecoder extends AbstractPac4jDecoder {
 
     /**
      * <p>Constructor for Pac4jHTTPRedirectDeflateDecoder.</p>
      *
-     * @param context a {@link org.pac4j.core.context.CallContext} object
+     * @param context a {@link CallContext} object
      */
     public Pac4jHTTPRedirectDeflateDecoder(final CallContext context) {
         super(context);
@@ -42,15 +45,15 @@ public class Pac4jHTTPRedirectDeflateDecoder extends AbstractPac4jDecoder {
 
         if (WebContextHelper.isGet(callContext.webContext())) {
             val relayState = this.callContext.webContext().getRequestParameter("RelayState").orElse(null);
-            logger.debug("Decoded SAML relay state of: {}", relayState);
+            LOGGER.debug("Decoded SAML relay state of: {}", relayState);
             SAMLBindingSupport.setRelayState(messageContext.getMessageContext(), relayState);
 
             val base64DecodedMessage = this.getBase64DecodedMessage();
             val inflatedMessage = inflate(base64DecodedMessage);
-            val inboundMessage = (SAMLObject) this.unmarshallMessage(inflatedMessage);
+            XMLObject inboundMessage = (SAMLObject) this.unmarshallMessage(inflatedMessage);
             SAML2Utils.logProtocolMessage(inboundMessage);
             messageContext.getMessageContext().setMessage(inboundMessage);
-            logger.debug("Decoded SAML message");
+            LOGGER.debug("Decoded SAML message");
             this.populateBindingContext(messageContext);
             this.setMessageContext(messageContext.getMessageContext());
         } else {
@@ -62,8 +65,8 @@ public class Pac4jHTTPRedirectDeflateDecoder extends AbstractPac4jDecoder {
      * <p>inflate.</p>
      *
      * @param input an array of {@link byte} objects
-     * @return a {@link java.io.InputStream} object
-     * @throws org.opensaml.messaging.decoder.MessageDecodingException if any.
+     * @return a {@link InputStream} object
+     * @throws MessageDecodingException if any.
      */
     protected InputStream inflate(final byte[] input) throws MessageDecodingException {
         try {
@@ -74,7 +77,7 @@ public class Pac4jHTTPRedirectDeflateDecoder extends AbstractPac4jDecoder {
                 // deflate compression only
                 return internalInflate(input, new Inflater());
             } catch (final IOException e2) {
-                logger.warn("Cannot inflate message, returning it as is");
+                LOGGER.warn("Cannot inflate message, returning it as is");
                 return new ByteArrayInputStream(input);
             }
         }
@@ -84,9 +87,9 @@ public class Pac4jHTTPRedirectDeflateDecoder extends AbstractPac4jDecoder {
      * <p>internalInflate.</p>
      *
      * @param input an array of {@link byte} objects
-     * @param inflater a {@link java.util.zip.Inflater} object
-     * @return a {@link java.io.InputStream} object
-     * @throws java.io.IOException if any.
+     * @param inflater a {@link Inflater} object
+     * @return a {@link InputStream} object
+     * @throws IOException if any.
      */
     protected InputStream internalInflate(final byte[] input, final Inflater inflater) throws IOException {
         val baos = new ByteArrayOutputStream();
@@ -99,7 +102,7 @@ public class Pac4jHTTPRedirectDeflateDecoder extends AbstractPac4jDecoder {
             }
             val decodedBytes = baos.toByteArray();
             val decodedMessage = new String(decodedBytes, StandardCharsets.UTF_8);
-            logger.debug("Inflated SAML message: {}", decodedMessage);
+            LOGGER.debug("Inflated SAML message: {}", decodedMessage);
             return new ByteArrayInputStream(decodedBytes);
         } finally {
             baos.close();

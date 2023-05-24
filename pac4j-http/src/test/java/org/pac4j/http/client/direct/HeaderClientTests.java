@@ -2,6 +2,7 @@ package org.pac4j.http.client.direct;
 
 import lombok.val;
 import org.junit.Test;
+import org.pac4j.core.client.Client;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
@@ -57,23 +58,23 @@ public final class HeaderClientTests implements TestsConstants {
 
     @Test
     public void testAuthentication() {
-        val client = new HeaderClient(HEADER_NAME, PREFIX_HEADER, new SimpleTestTokenAuthenticator());
+        Client client = new HeaderClient(HEADER_NAME, PREFIX_HEADER, new SimpleTestTokenAuthenticator());
         val context = MockWebContext.create();
         context.addRequestHeader(HEADER_NAME, PREFIX_HEADER + VALUE);
         val ctx = new CallContext(context, new MockSessionStore());
         val credentials = (TokenCredentials) client.getCredentials(ctx).get();
         assertEquals(VALUE, credentials.getToken());
         val authnCredentials = client.validateCredentials(ctx, credentials).get();
-        val profile = (CommonProfile) client.getUserProfile(ctx, authnCredentials).get();
+        UserProfile profile = (CommonProfile) client.getUserProfile(ctx, authnCredentials).get();
         assertEquals(VALUE, profile.getId());
     }
 
     @Test
     public void testProfileCreation() {
-        val client = new HeaderClient(HEADER_NAME, PREFIX_HEADER, new ProfileCreator() {
+        Client client = new HeaderClient(HEADER_NAME, PREFIX_HEADER, new ProfileCreator() {
             @Override
             public Optional<UserProfile> create(final CallContext ctx, final Credentials credentials) {
-                val profile = new CommonProfile();
+                UserProfile profile = new CommonProfile();
                 profile.setId(KEY);
                 return Optional.of(profile);
             }
@@ -84,7 +85,7 @@ public final class HeaderClientTests implements TestsConstants {
         val credentials = (TokenCredentials) client.getCredentials(ctx).get();
         assertEquals(VALUE, credentials.getToken());
         val authnCredentials = client.validateCredentials(ctx, credentials).get();
-        val profile = (CommonProfile) client.getUserProfile(ctx, authnCredentials).get();
+        UserProfile profile = (CommonProfile) client.getUserProfile(ctx, authnCredentials).get();
         assertEquals(KEY, profile.getId());
     }
 }

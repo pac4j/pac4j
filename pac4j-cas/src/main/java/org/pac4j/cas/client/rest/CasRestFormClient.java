@@ -34,9 +34,9 @@ public class CasRestFormClient extends AbstractCasRestClient {
     /**
      * <p>Constructor for CasRestFormClient.</p>
      *
-     * @param configuration a {@link org.pac4j.cas.config.CasConfiguration} object
-     * @param usernameParameter a {@link java.lang.String} object
-     * @param passwordParameter a {@link java.lang.String} object
+     * @param configuration a {@link CasConfiguration} object
+     * @param usernameParameter a {@link String} object
+     * @param passwordParameter a {@link String} object
      */
     public CasRestFormClient(final CasConfiguration configuration, final String usernameParameter, final String passwordParameter) {
         this.configuration = configuration;

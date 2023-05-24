@@ -1,5 +1,6 @@
 package org.pac4j.oauth.profile.yahoo;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
@@ -11,6 +12,7 @@ import java.util.List;
  */
 public final class YahooInterest implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 3613314161531695788L;
 
     private List<String> declaredInterests;
@@ -20,7 +22,7 @@ public final class YahooInterest implements Serializable {
     /**
      * <p>Getter for the field <code>declaredInterests</code>.</p>
      *
-     * @return a {@link java.util.List} object
+     * @return a {@link List} object
      */
     public List<String> getDeclaredInterests() {
         return declaredInterests;
@@ -29,7 +31,7 @@ public final class YahooInterest implements Serializable {
     /**
      * <p>Setter for the field <code>declaredInterests</code>.</p>
      *
-     * @param declaredInterests a {@link java.util.List} object
+     * @param declaredInterests a {@link List} object
      */
     public void setDeclaredInterests(List<String> declaredInterests) {
         this.declaredInterests = declaredInterests;
@@ -38,7 +40,7 @@ public final class YahooInterest implements Serializable {
     /**
      * <p>Getter for the field <code>interestCategory</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getInterestCategory() {
         return interestCategory;
@@ -47,7 +49,7 @@ public final class YahooInterest implements Serializable {
     /**
      * <p>Setter for the field <code>interestCategory</code>.</p>
      *
-     * @param interestCategory a {@link java.lang.String} object
+     * @param interestCategory a {@link String} object
      */
     public void setInterestCategory(String interestCategory) {
         this.interestCategory = interestCategory;

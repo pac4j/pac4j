@@ -11,7 +11,7 @@ import org.pac4j.core.exception.TechnicalException;
 import java.util.Properties;
 
 /**
- * Factory returning a well configured {@link org.apache.velocity.app.VelocityEngine} instance required for
+ * Factory returning a well configured {@link VelocityEngine} instance required for
  * generating an HTML form used to POST SAML messages.
  *
  * @author Michael Remond
@@ -21,7 +21,7 @@ public class VelocityEngineFactory {
     /**
      * <p>getEngine.</p>
      *
-     * @return a {@link org.apache.velocity.app.VelocityEngine} object
+     * @return a {@link VelocityEngine} object
      */
     public static VelocityEngine getEngine() {
 

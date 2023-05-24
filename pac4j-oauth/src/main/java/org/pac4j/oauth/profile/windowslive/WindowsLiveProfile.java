@@ -1,5 +1,6 @@
 package org.pac4j.oauth.profile.windowslive;
 
+import java.io.Serial;
 import java.net.URI;
 
 import org.pac4j.oauth.profile.OAuth20Profile;
@@ -13,6 +14,7 @@ import org.pac4j.oauth.profile.OAuth20Profile;
  */
 public class WindowsLiveProfile extends OAuth20Profile {
 
+    @Serial
     private static final long serialVersionUID = 1648212768999086087L;
 
     /** {@inheritDoc} */

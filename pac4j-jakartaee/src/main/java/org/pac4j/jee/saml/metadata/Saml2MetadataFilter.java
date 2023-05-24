@@ -5,6 +5,8 @@ import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
@@ -29,6 +31,8 @@ import java.io.IOException;
  * @author Graham Leggett
  * @since 3.8.0
  */
+@Getter
+@Setter
 public class Saml2MetadataFilter extends AbstractConfigFilter {
 
     private String clientName;
@@ -64,23 +68,5 @@ public class Saml2MetadataFilter extends AbstractConfigFilter {
     /** {@inheritDoc} */
     @Override
     public void destroy() {
-    }
-
-    /**
-     * <p>Getter for the field <code>clientName</code>.</p>
-     *
-     * @return a {@link java.lang.String} object
-     */
-    public String getClientName() {
-        return clientName;
-    }
-
-    /**
-     * <p>Setter for the field <code>clientName</code>.</p>
-     *
-     * @param clientName a {@link java.lang.String} object
-     */
-    public void setClientName(final String clientName) {
-        this.clientName = clientName;
     }
 }

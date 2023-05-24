@@ -32,7 +32,7 @@ import java.util.Collections;
 /**
  * Resolve and download idp metadata to form a metadata resolver.
  * <p>
- * The resolver supports proxies using {@link java.net.Proxy} when fetching metadata over URL resources.
+ * The resolver supports proxies using {@link Proxy} when fetching metadata over URL resources.
  *
  * @author Misagh Moayyed
  * @since 1.7
@@ -52,7 +52,7 @@ public class SAML2IdentityProviderMetadataResolver extends SpringResourceLoader<
     /**
      * <p>Constructor for SAML2IdentityProviderMetadataResolver.</p>
      *
-     * @param configuration a {@link org.pac4j.saml.config.SAML2Configuration} object
+     * @param configuration a {@link SAML2Configuration} object
      */
     public SAML2IdentityProviderMetadataResolver(final SAML2Configuration configuration) {
         super(configuration.getIdentityProviderMetadataResource());
@@ -81,7 +81,7 @@ public class SAML2IdentityProviderMetadataResolver extends SpringResourceLoader<
     /**
      * <p>initializeMetadataResolver.</p>
      *
-     * @return a {@link org.opensaml.saml.metadata.resolver.impl.DOMMetadataResolver} object
+     * @return a {@link DOMMetadataResolver} object
      */
     protected DOMMetadataResolver initializeMetadataResolver() {
         try (var in = SpringResourceHelper.getResourceInputStream(

@@ -37,10 +37,10 @@ public class SAML2ArtifactBindingDecoder extends AbstractPac4jDecoder {
     /**
      * <p>Constructor for SAML2ArtifactBindingDecoder.</p>
      *
-     * @param context a {@link org.pac4j.core.context.CallContext} object
-     * @param idpMetadataResolver a {@link org.pac4j.saml.metadata.SAML2MetadataResolver} object
-     * @param spMetadataResolver a {@link org.pac4j.saml.metadata.SAML2MetadataResolver} object
-     * @param soapPipelineProvider a {@link org.pac4j.saml.sso.artifact.SOAPPipelineProvider} object
+     * @param context a {@link CallContext} object
+     * @param idpMetadataResolver a {@link SAML2MetadataResolver} object
+     * @param spMetadataResolver a {@link SAML2MetadataResolver} object
+     * @param soapPipelineProvider a {@link SOAPPipelineProvider} object
      */
     public SAML2ArtifactBindingDecoder(final CallContext context, final SAML2MetadataResolver idpMetadataResolver,
                                        final SAML2MetadataResolver spMetadataResolver, final SOAPPipelineProvider soapPipelineProvider) {
@@ -104,8 +104,8 @@ public class SAML2ArtifactBindingDecoder extends AbstractPac4jDecoder {
     /**
      * <p>transferContext.</p>
      *
-     * @param operationContext a {@link org.opensaml.messaging.context.InOutOperationContext} object
-     * @param messageContext a {@link org.pac4j.saml.context.SAML2MessageContext} object
+     * @param operationContext a {@link InOutOperationContext} object
+     * @param messageContext a {@link SAML2MessageContext} object
      */
     protected void transferContext(final InOutOperationContext operationContext, final SAML2MessageContext messageContext) {
         messageContext.getMessageContext()

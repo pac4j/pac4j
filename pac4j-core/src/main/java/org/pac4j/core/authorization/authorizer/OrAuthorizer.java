@@ -24,7 +24,7 @@ public class OrAuthorizer implements Authorizer {
     /**
      * <p>Constructor for OrAuthorizer.</p>
      *
-     * @param authorizers a {@link java.util.List} object
+     * @param authorizers a {@link List} object
      */
     public OrAuthorizer(List<Authorizer> authorizers) {
         this.authorizers = authorizers;
@@ -42,8 +42,8 @@ public class OrAuthorizer implements Authorizer {
     /**
      * <p>or.</p>
      *
-     * @param authorizers a {@link org.pac4j.core.authorization.authorizer.Authorizer} object
-     * @return a {@link org.pac4j.core.authorization.authorizer.OrAuthorizer} object
+     * @param authorizers a {@link Authorizer} object
+     * @return a {@link OrAuthorizer} object
      */
     public static OrAuthorizer or(Authorizer... authorizers) {
         return new OrAuthorizer(asList(authorizers));

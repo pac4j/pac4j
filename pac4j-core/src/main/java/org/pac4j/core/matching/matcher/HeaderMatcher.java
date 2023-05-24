@@ -34,8 +34,8 @@ public class HeaderMatcher implements Matcher {
     /**
      * <p>Constructor for HeaderMatcher.</p>
      *
-     * @param headerName a {@link java.lang.String} object
-     * @param expectedValue a {@link java.lang.String} object
+     * @param headerName a {@link String} object
+     * @param expectedValue a {@link String} object
      */
     public HeaderMatcher(final String headerName, final String expectedValue) {
         setHeaderName(headerName);
@@ -48,7 +48,7 @@ public class HeaderMatcher implements Matcher {
         CommonHelper.assertNotBlank("headerName", headerName);
 
         val headerValue = ctx.webContext().getRequestHeader(this.headerName);
-        val headerNull = expectedValue == null && !headerValue.isPresent();
+        val headerNull = expectedValue == null && headerValue.isEmpty();
         val headerMatches = headerValue.isPresent() && pattern != null && pattern.matcher(headerValue.get()).matches();
         return headerNull || headerMatches;
     }
@@ -56,7 +56,7 @@ public class HeaderMatcher implements Matcher {
     /**
      * <p>Setter for the field <code>expectedValue</code>.</p>
      *
-     * @param expectedValue a {@link java.lang.String} object
+     * @param expectedValue a {@link String} object
      */
     public void setExpectedValue(final String expectedValue) {
         this.expectedValue = expectedValue;

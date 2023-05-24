@@ -7,7 +7,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 /**
- * This class tests the {@link org.pac4j.core.profile.converter.IntegerConverter} class.
+ * This class tests the {@link IntegerConverter} class.
  *
  * @author Jerome Leleu
  * @since 1.1.0

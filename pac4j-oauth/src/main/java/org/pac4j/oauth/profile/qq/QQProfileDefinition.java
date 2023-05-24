@@ -88,9 +88,9 @@ public class QQProfileDefinition extends OAuthProfileDefinition {
     /**
      * <p>getOpenidUrl.</p>
      *
-     * @param accessToken a {@link com.github.scribejava.core.model.OAuth2AccessToken} object
-     * @param configuration a {@link org.pac4j.oauth.config.OAuth20Configuration} object
-     * @return a {@link java.lang.String} object
+     * @param accessToken a {@link OAuth2AccessToken} object
+     * @param configuration a {@link OAuth20Configuration} object
+     * @return a {@link String} object
      */
     public String getOpenidUrl(OAuth2AccessToken accessToken, OAuth20Configuration configuration) {
         return "https://graph.qq.com/oauth2.0/me";
@@ -121,8 +121,8 @@ public class QQProfileDefinition extends OAuthProfileDefinition {
     /**
      * <p>extractOpenid.</p>
      *
-     * @param body a {@link java.lang.String} object
-     * @return a {@link java.lang.String} object
+     * @param body a {@link String} object
+     * @return a {@link String} object
      */
     public String extractOpenid(String body) {
         var openid = extractParameter(body, OPENID_REGEX, true);
@@ -132,13 +132,13 @@ public class QQProfileDefinition extends OAuthProfileDefinition {
     /**
      * <p>extractParameter.</p>
      *
-     * @param response a {@link java.lang.String} object
-     * @param regexPattern a {@link java.util.regex.Pattern} object
+     * @param response a {@link String} object
+     * @param regexPattern a {@link Pattern} object
      * @param required a boolean
-     * @return a {@link java.lang.String} object
-     * @throws com.github.scribejava.core.exceptions.OAuthException if any.
+     * @return a {@link String} object
+     * @throws OAuthException if any.
      */
-    protected static String extractParameter(String response, Pattern regexPattern,
+    protected static String extractParameter(CharSequence response, Pattern regexPattern,
                                              boolean required)
         throws OAuthException {
         val matcher = regexPattern.matcher(response);

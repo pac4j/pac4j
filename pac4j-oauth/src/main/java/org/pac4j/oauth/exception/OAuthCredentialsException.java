@@ -2,6 +2,7 @@ package org.pac4j.oauth.exception;
 
 import org.pac4j.core.exception.CredentialsException;
 
+import java.io.Serial;
 import java.util.*;
 
 /**
@@ -12,6 +13,7 @@ import java.util.*;
  */
 public class OAuthCredentialsException extends CredentialsException {
 
+    @Serial
     private static final long serialVersionUID = -3540979749535811079L;
 
     /** Constant <code>ERROR="error"</code> */
@@ -35,7 +37,7 @@ public class OAuthCredentialsException extends CredentialsException {
     /**
      * <p>Constructor for OAuthCredentialsException.</p>
      *
-     * @param message a {@link java.lang.String} object
+     * @param message a {@link String} object
      */
     public OAuthCredentialsException(final String message) {
         super(message);
@@ -44,8 +46,8 @@ public class OAuthCredentialsException extends CredentialsException {
     /**
      * <p>setErrorMessage.</p>
      *
-     * @param name a {@link java.lang.String} object
-     * @param message a {@link java.lang.String} object
+     * @param name a {@link String} object
+     * @param message a {@link String} object
      */
     public void setErrorMessage(final String name, final String message) {
         this.errorMessages.put(name, message);
@@ -54,7 +56,7 @@ public class OAuthCredentialsException extends CredentialsException {
     /**
      * <p>Getter for the field <code>errorMessages</code>.</p>
      *
-     * @return a {@link java.util.Map} object
+     * @return a {@link Map} object
      */
     public Map<String, String> getErrorMessages() {
         return this.errorMessages;
@@ -63,7 +65,7 @@ public class OAuthCredentialsException extends CredentialsException {
     /**
      * <p>getError.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getError() {
         return this.errorMessages.get(ERROR);
@@ -72,7 +74,7 @@ public class OAuthCredentialsException extends CredentialsException {
     /**
      * <p>getErrorReason.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getErrorReason() {
         return this.errorMessages.get(ERROR_REASON);
@@ -81,7 +83,7 @@ public class OAuthCredentialsException extends CredentialsException {
     /**
      * <p>getErrorDescription.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getErrorDescription() {
         return this.errorMessages.get(ERROR_DESCRIPTION);
@@ -90,7 +92,7 @@ public class OAuthCredentialsException extends CredentialsException {
     /**
      * <p>getErrorUri.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getErrorUri() {
         return this.errorMessages.get(ERROR_URI);

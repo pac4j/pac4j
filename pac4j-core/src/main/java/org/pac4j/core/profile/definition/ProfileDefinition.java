@@ -21,7 +21,6 @@ import java.util.Map;
 
 import static org.pac4j.core.profile.AttributeLocation.AUTHENTICATION_ATTRIBUTE;
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
-import static org.pac4j.core.util.CommonHelper.assertNotNull;
 import static org.pac4j.core.util.CommonHelper.substringBefore;
 
 /**
@@ -59,9 +58,8 @@ public abstract class ProfileDefinition {
     public UserProfile newProfile(final Object... parameters) {
         if (restoreProfileFromTypedId) {
             val typedId = getParameter(parameters, 0);
-            if (typedId instanceof String) {
+            if (typedId instanceof String sTypedId) {
                 logger.debug("Building user profile based on typedId: {}", typedId);
-                val sTypedId = (String) typedId;
                 if (sTypedId.contains(Pac4jConstants.TYPED_ID_SEPARATOR)) {
                     val profileClass = substringBefore(sTypedId, Pac4jConstants.TYPED_ID_SEPARATOR);
                     for (val profileClassPrefix : ProfileHelper.getProfileClassPrefixes()) {
@@ -82,9 +80,9 @@ public abstract class ProfileDefinition {
     /**
      * <p>getParameter.</p>
      *
-     * @param parameters an array of {@link java.lang.Object} objects
+     * @param parameters an array of {@link Object} objects
      * @param num a int
-     * @return a {@link java.lang.Object} object
+     * @return a {@link Object} object
      */
     protected Object getParameter(final Object[] parameters, final int num) {
         if (parameters != null && parameters.length >= num) {
@@ -136,24 +134,15 @@ public abstract class ProfileDefinition {
             final Map<String, Object> profileAttributes,
             final Map<String, Object> authenticationAttributes) {
         if (profileAttributes != null) {
-            profileAttributes.entrySet().stream()
+            profileAttributes.entrySet()
                 .forEach(entry -> convertAndAdd(profile, PROFILE_ATTRIBUTE, entry.getKey(), entry.getValue()));
         }
         if (authenticationAttributes != null) {
-            authenticationAttributes.entrySet().stream()
+            authenticationAttributes.entrySet()
                 .forEach(entry -> convertAndAdd(profile, AUTHENTICATION_ATTRIBUTE, entry.getKey(), entry.getValue()));
         }
     }
 
-    /**
-     * Define the way to build the profile.
-     *
-     * @param profileFactory the way to build the profile
-     */
-    protected void setProfileFactory(final ProfileFactory profileFactory) {
-        assertNotNull("profileFactory", profileFactory);
-        this.profileFactory = profileFactory;
-    }
 
     /**
      * Add an attribute as a primary one and its converter.

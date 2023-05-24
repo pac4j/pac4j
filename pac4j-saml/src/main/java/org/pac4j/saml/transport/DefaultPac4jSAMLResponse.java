@@ -1,5 +1,7 @@
 package org.pac4j.saml.transport;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 import org.pac4j.core.context.WebContext;
 
@@ -8,7 +10,7 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 
 /**
- * Empty response adapter containing a {@link java.io.ByteArrayOutputStream} in order opensaml can write
+ * Empty response adapter containing a {@link ByteArrayOutputStream} in order opensaml can write
  * the saml messages. The content can be retrieved as a String from getOutgoingContent().
  *
  * @author Misagh Moayyed
@@ -16,15 +18,19 @@ import java.nio.charset.StandardCharsets;
  */
 public class DefaultPac4jSAMLResponse implements Pac4jSAMLResponse {
     private final ByteArrayOutputStream outputStream;
+    @Getter
     private final OutputStreamWriter outputStreamWriter;
+    @Getter
     private final WebContext webContext;
+
+    @Getter @Setter
     private String redirectUrl;
 
     /**
      * Constructs a response adaptor wrapping the given response.
      *
      * @param response the response
-     * @throws java.lang.IllegalArgumentException if the response is null
+     * @throws IllegalArgumentException if the response is null
      */
     public DefaultPac4jSAMLResponse(final WebContext response) {
         webContext = response;
@@ -41,20 +47,8 @@ public class DefaultPac4jSAMLResponse implements Pac4jSAMLResponse {
 
     /** {@inheritDoc} */
     @Override
-    public WebContext getWebContext() {
-        return webContext;
-    }
-
-    /** {@inheritDoc} */
-    @Override
     public void init() {
         setNoCacheHeaders();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public OutputStreamWriter getOutputStreamWriter() {
-        return this.outputStreamWriter;
     }
 
     /**
@@ -69,18 +63,6 @@ public class DefaultPac4jSAMLResponse implements Pac4jSAMLResponse {
     @Override
     public void setContentType(final String type) {
         webContext.setResponseContentType(type + ";charset=" + StandardCharsets.UTF_8);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public final void setRedirectUrl(final String redirectUrl) {
-        this.redirectUrl = redirectUrl;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getRedirectUrl() {
-        return this.redirectUrl;
     }
 
     private static class Pac4jServletOutputStreamWriter extends OutputStreamWriter {

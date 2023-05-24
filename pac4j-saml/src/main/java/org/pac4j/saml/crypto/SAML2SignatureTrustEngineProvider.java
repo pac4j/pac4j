@@ -13,7 +13,7 @@ public interface SAML2SignatureTrustEngineProvider {
     /**
      * <p>build.</p>
      *
-     * @return a {@link org.opensaml.xmlsec.signature.support.SignatureTrustEngine} object
+     * @return a {@link SignatureTrustEngine} object
      */
     SignatureTrustEngine build();
 }

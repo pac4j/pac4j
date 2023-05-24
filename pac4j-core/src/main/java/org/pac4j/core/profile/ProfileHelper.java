@@ -18,7 +18,7 @@ import static org.pac4j.core.util.CommonHelper.substringBefore;
  */
 public final class ProfileHelper {
 
-    private static List<String> profileClassPrefixes = Arrays.asList("org.pac4j.");
+    private static List<String> profileClassPrefixes = List.of("org.pac4j.");
 
     private ProfileHelper() {}
 
@@ -101,7 +101,7 @@ public final class ProfileHelper {
     /**
      * <p>Getter for the field <code>profileClassPrefixes</code>.</p>
      *
-     * @return a {@link java.util.List} object
+     * @return a {@link List} object
      */
     public static List<String> getProfileClassPrefixes() {
         return profileClassPrefixes;
@@ -110,7 +110,7 @@ public final class ProfileHelper {
     /**
      * <p>Setter for the field <code>profileClassPrefixes</code>.</p>
      *
-     * @param profileClassPrefixes a {@link java.util.List} object
+     * @param profileClassPrefixes a {@link List} object
      */
     public static void setProfileClassPrefixes(final List<String> profileClassPrefixes) {
         CommonHelper.assertNotNull("profileClassPrefixes", profileClassPrefixes);

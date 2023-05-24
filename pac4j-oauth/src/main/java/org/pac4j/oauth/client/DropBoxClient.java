@@ -26,8 +26,8 @@ public class DropBoxClient extends OAuth20Client {
     /**
      * <p>Constructor for DropBoxClient.</p>
      *
-     * @param key a {@link java.lang.String} object
-     * @param secret a {@link java.lang.String} object
+     * @param key a {@link String} object
+     * @param secret a {@link String} object
      */
     public DropBoxClient(final String key, final String secret) {
         setKey(key);

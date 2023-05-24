@@ -7,7 +7,7 @@ import org.pac4j.saml.client.SAML2Client;
 import org.pac4j.saml.config.SAML2Configuration;
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -24,7 +24,7 @@ public class Saml2ClientBuilder extends AbstractBuilder {
     /**
      * <p>Constructor for Saml2ClientBuilder.</p>
      *
-     * @param properties a {@link java.util.Map} object
+     * @param properties a {@link Map} object
      */
     public Saml2ClientBuilder(final Map<String, String> properties) {
         super(properties);
@@ -35,7 +35,7 @@ public class Saml2ClientBuilder extends AbstractBuilder {
      *
      * @param clients a {@link java.util.List} object
      */
-    public void tryCreateSaml2Client(final List<Client> clients) {
+    public void tryCreateSaml2Client(final Collection<Client> clients) {
         for (var i = 0; i <= MAX_NUM_CLIENTS; i++) {
             val keystorePassword = getProperty(SAML_KEYSTORE_PASSWORD, i);
             val privateKeyPassword = getProperty(SAML_PRIVATE_KEY_PASSWORD, i);

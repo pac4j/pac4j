@@ -16,7 +16,7 @@ public abstract class ProfileDefinitionAware extends InitializableObject {
     /**
      * <p>Getter for the field <code>profileDefinition</code>.</p>
      *
-     * @return a {@link org.pac4j.core.profile.definition.ProfileDefinition} object
+     * @return a {@link ProfileDefinition} object
      */
     public ProfileDefinition getProfileDefinition() {
         return profileDefinition;
@@ -25,7 +25,7 @@ public abstract class ProfileDefinitionAware extends InitializableObject {
     /**
      * <p>Setter for the field <code>profileDefinition</code>.</p>
      *
-     * @param profileDefinition a {@link org.pac4j.core.profile.definition.ProfileDefinition} object
+     * @param profileDefinition a {@link ProfileDefinition} object
      */
     public void setProfileDefinition(final ProfileDefinition profileDefinition) {
         CommonHelper.assertNotNull("profileDefinition", profileDefinition);
@@ -35,7 +35,7 @@ public abstract class ProfileDefinitionAware extends InitializableObject {
     /**
      * <p>setProfileDefinitionIfUndefined.</p>
      *
-     * @param profileDefinition a {@link org.pac4j.core.profile.definition.ProfileDefinition} object
+     * @param profileDefinition a {@link ProfileDefinition} object
      */
     protected void setProfileDefinitionIfUndefined(final ProfileDefinition profileDefinition) {
         CommonHelper.assertNotNull("profileDefinition", profileDefinition);

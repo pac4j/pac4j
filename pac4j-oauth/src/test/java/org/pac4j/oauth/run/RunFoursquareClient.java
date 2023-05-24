@@ -5,6 +5,7 @@ import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.run.RunClient;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oauth.client.FoursquareClient;
@@ -46,7 +47,7 @@ public class RunFoursquareClient extends RunClient {
 
     @Override
     protected void verifyProfile(CommonProfile userProfile) {
-        val profile = (FoursquareProfile) userProfile;
+        UserProfile profile = (FoursquareProfile) userProfile;
         assertEquals("81827700", profile.getId());
         assertEquals(FoursquareProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + "81827700", profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), FoursquareProfile.class));

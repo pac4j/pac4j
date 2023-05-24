@@ -16,6 +16,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.matching.matcher.csrf.CsrfTokenGenerator;
 import org.pac4j.core.matching.matcher.csrf.DefaultCsrfTokenGenerator;
 import org.pac4j.core.profile.AnonymousProfile;
 import org.pac4j.core.profile.BasicUserProfile;
@@ -219,7 +220,7 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
     @Test
     public void testCsrfCheckPost() {
         val context = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.POST.name());
-        val generator = new DefaultCsrfTokenGenerator();
+        CsrfTokenGenerator generator = new DefaultCsrfTokenGenerator();
         final SessionStore sessionStore = new MockSessionStore();
         generator.get(context, sessionStore);
         assertFalse(checker.isAuthorized(context, sessionStore, profiles, DefaultAuthorizers.CSRF_CHECK, new HashMap<>(),
@@ -268,26 +269,26 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
 
     @Test
     public void testDefaultAuthorizersNoClient() {
-        assertEquals(Arrays.asList(DefaultAuthorizationChecker.IS_AUTHENTICATED_AUTHORIZER),
+        assertEquals(List.of(DefaultAuthorizationChecker.IS_AUTHENTICATED_AUTHORIZER),
             checker.computeDefaultAuthorizers(MockWebContext.create(), new ArrayList<>(), new ArrayList<>(), new HashMap<>()));
     }
 
     @Test
     public void testDefaultAuthorizersAnonymousClient() {
-        final List<Client> clients = Arrays.asList(AnonymousClient.INSTANCE);
+        final List<Client> clients = List.of(AnonymousClient.INSTANCE);
         assertEquals(0, checker.computeDefaultAuthorizers(MockWebContext.create(), new ArrayList<>(), clients, new HashMap<>()).size());
     }
 
     @Test
     public void testDefaultAuthorizersDirectClient() {
-        final List<Client> clients = Arrays.asList(new MockDirectClient("test"));
-        assertEquals(Arrays.asList(DefaultAuthorizationChecker.IS_AUTHENTICATED_AUTHORIZER),
+        final List<Client> clients = List.of(new MockDirectClient("test"));
+        assertEquals(List.of(DefaultAuthorizationChecker.IS_AUTHENTICATED_AUTHORIZER),
             checker.computeDefaultAuthorizers(MockWebContext.create(), new ArrayList<>(), clients, new HashMap<>()));
     }
 
     @Test
     public void testDefaultAuthorizersIndirectClient() {
-        final List<Client> clients = Arrays.asList(new MockIndirectClient("test"));
+        final List<Client> clients = List.of(new MockIndirectClient("test"));
         assertEquals(Arrays.asList(DefaultAuthorizationChecker.CSRF_AUTHORIZER, DefaultAuthorizationChecker.IS_AUTHENTICATED_AUTHORIZER),
             checker.computeDefaultAuthorizers(MockWebContext.create(), new ArrayList<>(), clients, new HashMap<>()));
     }
@@ -295,13 +296,13 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
     @Test
     public void testDefaultAuthorizersIndirectAndAnonymousClients() {
         final List<Client> clients = Arrays.asList(new MockIndirectClient("test"), AnonymousClient.INSTANCE);
-        assertEquals(Arrays.asList(DefaultAuthorizationChecker.CSRF_AUTHORIZER),
+        assertEquals(List.of(DefaultAuthorizationChecker.CSRF_AUTHORIZER),
             checker.computeDefaultAuthorizers(MockWebContext.create(), new ArrayList<>(), clients, new HashMap<>()));
     }
 
     @Test
     public void testComputeAuthorizerNoClientIsFullyAuthenticated() {
-        assertEquals(Arrays.asList(DefaultAuthorizationChecker.IS_FULLY_AUTHENTICATED_AUTHORIZER),
+        assertEquals(List.of(DefaultAuthorizationChecker.IS_FULLY_AUTHENTICATED_AUTHORIZER),
             checker.computeAuthorizers(MockWebContext.create(), new ArrayList<>(),
                 DefaultAuthorizers.IS_FULLY_AUTHENTICATED, new HashMap<>(), new ArrayList<>()));
     }
@@ -318,7 +319,7 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
     public void testComputeAuthorizersOverrideDefault() {
         final Map<String, Authorizer> authorizers = new HashMap<>();
         authorizers.put(DefaultAuthorizers.IS_AUTHENTICATED, DefaultAuthorizationChecker.IS_FULLY_AUTHENTICATED_AUTHORIZER);
-        assertEquals(Arrays.asList(DefaultAuthorizationChecker.IS_FULLY_AUTHENTICATED_AUTHORIZER),
+        assertEquals(List.of(DefaultAuthorizationChecker.IS_FULLY_AUTHENTICATED_AUTHORIZER),
             checker.computeAuthorizers(MockWebContext.create(), new ArrayList<>(), DefaultAuthorizers.IS_AUTHENTICATED,
                 authorizers, new ArrayList<>()));
     }
@@ -327,7 +328,7 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
     public void testComputeAuthorizersOverrideEmptyDefault() {
         final Map<String, Authorizer> authorizers = new HashMap<>();
         authorizers.put(DefaultAuthorizers.IS_AUTHENTICATED, DefaultAuthorizationChecker.IS_FULLY_AUTHENTICATED_AUTHORIZER);
-        assertEquals(Arrays.asList(DefaultAuthorizationChecker.IS_FULLY_AUTHENTICATED_AUTHORIZER),
+        assertEquals(List.of(DefaultAuthorizationChecker.IS_FULLY_AUTHENTICATED_AUTHORIZER),
             checker.computeAuthorizers(MockWebContext.create(), new ArrayList<>(), null,
                 authorizers, new ArrayList<>()));
     }

@@ -6,6 +6,7 @@ import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.http.profile.IpProfile;
@@ -28,7 +29,7 @@ public class IpRegexpAuthenticator extends AbstractRegexpAuthenticator implement
     /**
      * <p>Constructor for IpRegexpAuthenticator.</p>
      *
-     * @param regexpPattern a {@link java.lang.String} object
+     * @param regexpPattern a {@link String} object
      */
     public IpRegexpAuthenticator(final String regexpPattern) {
         setRegexpPattern(regexpPattern);
@@ -52,7 +53,7 @@ public class IpRegexpAuthenticator extends AbstractRegexpAuthenticator implement
             throw new CredentialsException("Unauthorized IP address: " + ip);
         }
 
-        val profile = (IpProfile) getProfileDefinition().newProfile();
+        UserProfile profile = (IpProfile) getProfileDefinition().newProfile();
         profile.setId(ip);
         logger.debug("profile: {}", profile);
 

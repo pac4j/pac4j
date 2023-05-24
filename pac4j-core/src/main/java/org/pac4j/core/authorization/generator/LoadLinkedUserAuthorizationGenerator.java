@@ -35,7 +35,7 @@ public class LoadLinkedUserAuthorizationGenerator implements AuthorizationGenera
     /**
      * <p>Constructor for LoadLinkedUserAuthorizationGenerator.</p>
      *
-     * @param profileService a {@link org.pac4j.core.profile.service.ProfileService} object
+     * @param profileService a {@link ProfileService} object
      */
     public LoadLinkedUserAuthorizationGenerator(final ProfileService profileService) {
         this.profileService = profileService;

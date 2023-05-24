@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This is {@link org.pac4j.saml.metadata.SAML2MetadataUIInfo} that allows one to specify
+ * This is {@link SAML2MetadataUIInfo} that allows one to specify
  * metadata UI information in saml2 metadata generation.
  *
  * @author Misagh Moayyed
@@ -21,7 +21,7 @@ public class SAML2MetadataUIInfo {
     /**
      * <p>Getter for the field <code>logos</code>.</p>
      *
-     * @return a {@link java.util.List} object
+     * @return a {@link List} object
      */
     public List<SAML2MetadataUILogo> getLogos() {
         return logos;
@@ -30,7 +30,7 @@ public class SAML2MetadataUIInfo {
     /**
      * <p>Setter for the field <code>logos</code>.</p>
      *
-     * @param logos a {@link java.util.List} object
+     * @param logos a {@link List} object
      */
     public void setLogos(final List<SAML2MetadataUILogo> logos) {
         this.logos = logos;
@@ -39,7 +39,7 @@ public class SAML2MetadataUIInfo {
     /**
      * <p>Getter for the field <code>displayNames</code>.</p>
      *
-     * @return a {@link java.util.List} object
+     * @return a {@link List} object
      */
     public List<String> getDisplayNames() {
         return displayNames;
@@ -48,7 +48,7 @@ public class SAML2MetadataUIInfo {
     /**
      * <p>Setter for the field <code>displayNames</code>.</p>
      *
-     * @param displayNames a {@link java.util.List} object
+     * @param displayNames a {@link List} object
      */
     public void setDisplayNames(final List<String> displayNames) {
         this.displayNames = displayNames;
@@ -57,7 +57,7 @@ public class SAML2MetadataUIInfo {
     /**
      * <p>Getter for the field <code>descriptions</code>.</p>
      *
-     * @return a {@link java.util.List} object
+     * @return a {@link List} object
      */
     public List<String> getDescriptions() {
         return descriptions;
@@ -66,7 +66,7 @@ public class SAML2MetadataUIInfo {
     /**
      * <p>Setter for the field <code>descriptions</code>.</p>
      *
-     * @param descriptions a {@link java.util.List} object
+     * @param descriptions a {@link List} object
      */
     public void setDescriptions(final List<String> descriptions) {
         this.descriptions = descriptions;
@@ -75,7 +75,7 @@ public class SAML2MetadataUIInfo {
     /**
      * <p>Getter for the field <code>keywords</code>.</p>
      *
-     * @return a {@link java.util.List} object
+     * @return a {@link List} object
      */
     public List<String> getKeywords() {
         return keywords;
@@ -84,7 +84,7 @@ public class SAML2MetadataUIInfo {
     /**
      * <p>Setter for the field <code>keywords</code>.</p>
      *
-     * @param keywords a {@link java.util.List} object
+     * @param keywords a {@link List} object
      */
     public void setKeywords(final List<String> keywords) {
         this.keywords = keywords;
@@ -93,7 +93,7 @@ public class SAML2MetadataUIInfo {
     /**
      * <p>Getter for the field <code>informationUrls</code>.</p>
      *
-     * @return a {@link java.util.List} object
+     * @return a {@link List} object
      */
     public List<String> getInformationUrls() {
         return informationUrls;
@@ -102,7 +102,7 @@ public class SAML2MetadataUIInfo {
     /**
      * <p>Setter for the field <code>informationUrls</code>.</p>
      *
-     * @param informationUrls a {@link java.util.List} object
+     * @param informationUrls a {@link List} object
      */
     public void setInformationUrls(final List<String> informationUrls) {
         this.informationUrls = informationUrls;
@@ -111,7 +111,7 @@ public class SAML2MetadataUIInfo {
     /**
      * <p>Getter for the field <code>privacyUrls</code>.</p>
      *
-     * @return a {@link java.util.List} object
+     * @return a {@link List} object
      */
     public List<String> getPrivacyUrls() {
         return privacyUrls;
@@ -120,7 +120,7 @@ public class SAML2MetadataUIInfo {
     /**
      * <p>Setter for the field <code>privacyUrls</code>.</p>
      *
-     * @param privacyUrls a {@link java.util.List} object
+     * @param privacyUrls a {@link List} object
      */
     public void setPrivacyUrls(final List<String> privacyUrls) {
         this.privacyUrls = privacyUrls;

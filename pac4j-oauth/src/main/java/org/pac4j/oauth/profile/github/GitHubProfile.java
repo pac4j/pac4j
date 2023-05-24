@@ -1,5 +1,6 @@
 package org.pac4j.oauth.profile.github;
 
+import java.io.Serial;
 import java.net.URI;
 import java.util.Date;
 
@@ -14,6 +15,7 @@ import org.pac4j.oauth.profile.OAuth20Profile;
  */
 public class GitHubProfile extends OAuth20Profile {
 
+    @Serial
     private static final long serialVersionUID = -8030906034414268058L;
 
     /** {@inheritDoc} */
@@ -43,7 +45,7 @@ public class GitHubProfile extends OAuth20Profile {
     /**
      * <p>getCompany.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getCompany() {
         return (String) getAttribute(GitHubProfileDefinition.COMPANY);
@@ -52,7 +54,7 @@ public class GitHubProfile extends OAuth20Profile {
     /**
      * <p>getFollowing.</p>
      *
-     * @return a {@link java.lang.Integer} object
+     * @return a {@link Integer} object
      */
     public Integer getFollowing() {
         return (Integer) getAttribute(GitHubProfileDefinition.FOLLOWING);
@@ -61,7 +63,7 @@ public class GitHubProfile extends OAuth20Profile {
     /**
      * <p>getBlog.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getBlog() {
         return (String) getAttribute(GitHubProfileDefinition.BLOG);
@@ -70,7 +72,7 @@ public class GitHubProfile extends OAuth20Profile {
     /**
      * <p>getPublicRepos.</p>
      *
-     * @return a {@link java.lang.Integer} object
+     * @return a {@link Integer} object
      */
     public Integer getPublicRepos() {
         return (Integer) getAttribute(GitHubProfileDefinition.PUBLIC_REPOS);
@@ -79,7 +81,7 @@ public class GitHubProfile extends OAuth20Profile {
     /**
      * <p>getPublicGists.</p>
      *
-     * @return a {@link java.lang.Integer} object
+     * @return a {@link Integer} object
      */
     public Integer getPublicGists() {
         return (Integer) getAttribute(GitHubProfileDefinition.PUBLIC_GISTS);
@@ -88,7 +90,7 @@ public class GitHubProfile extends OAuth20Profile {
     /**
      * <p>getDiskUsage.</p>
      *
-     * @return a {@link java.lang.Integer} object
+     * @return a {@link Integer} object
      */
     public Integer getDiskUsage() {
         return (Integer) getAttribute(GitHubProfileDefinition.DISK_USAGE);
@@ -97,7 +99,7 @@ public class GitHubProfile extends OAuth20Profile {
     /**
      * <p>getCollaborators.</p>
      *
-     * @return a {@link java.lang.Integer} object
+     * @return a {@link Integer} object
      */
     public Integer getCollaborators() {
         return (Integer) getAttribute(GitHubProfileDefinition.COLLABORATORS);
@@ -106,7 +108,7 @@ public class GitHubProfile extends OAuth20Profile {
     /**
      * <p>getPlan.</p>
      *
-     * @return a {@link org.pac4j.oauth.profile.github.GitHubPlan} object
+     * @return a {@link GitHubPlan} object
      */
     public GitHubPlan getPlan() {
         return (GitHubPlan) getAttribute(GitHubProfileDefinition.PLAN);
@@ -115,7 +117,7 @@ public class GitHubProfile extends OAuth20Profile {
     /**
      * <p>getOwnedPrivateRepos.</p>
      *
-     * @return a {@link java.lang.Integer} object
+     * @return a {@link Integer} object
      */
     public Integer getOwnedPrivateRepos() {
         return (Integer) getAttribute(GitHubProfileDefinition.OWNED_PRIVATE_REPOS);
@@ -124,7 +126,7 @@ public class GitHubProfile extends OAuth20Profile {
     /**
      * <p>getTotalPrivateRepos.</p>
      *
-     * @return a {@link java.lang.Integer} object
+     * @return a {@link Integer} object
      */
     public Integer getTotalPrivateRepos() {
         return (Integer) getAttribute(GitHubProfileDefinition.TOTAL_PRIVATE_REPOS);
@@ -133,7 +135,7 @@ public class GitHubProfile extends OAuth20Profile {
     /**
      * <p>getPrivateGists.</p>
      *
-     * @return a {@link java.lang.Integer} object
+     * @return a {@link Integer} object
      */
     public Integer getPrivateGists() {
         return (Integer) getAttribute(GitHubProfileDefinition.PRIVATE_GISTS);
@@ -142,7 +144,7 @@ public class GitHubProfile extends OAuth20Profile {
     /**
      * <p>getFollowers.</p>
      *
-     * @return a {@link java.lang.Integer} object
+     * @return a {@link Integer} object
      */
     public Integer getFollowers() {
         return (Integer) getAttribute(GitHubProfileDefinition.FOLLOWERS);
@@ -151,7 +153,7 @@ public class GitHubProfile extends OAuth20Profile {
     /**
      * <p>getCreatedAt.</p>
      *
-     * @return a {@link java.util.Date} object
+     * @return a {@link Date} object
      */
     public Date getCreatedAt() {
         return (Date) getAttribute(GitHubProfileDefinition.CREATED_AT);
@@ -160,7 +162,7 @@ public class GitHubProfile extends OAuth20Profile {
     /**
      * <p>getUpdatedAt.</p>
      *
-     * @return a {@link java.util.Date} object
+     * @return a {@link Date} object
      */
     public Date getUpdatedAt() {
         return (Date) getAttribute(GitHubProfileDefinition.UPDATED_AT);
@@ -169,7 +171,7 @@ public class GitHubProfile extends OAuth20Profile {
     /**
      * <p>getType.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getType() {
         return (String) getAttribute(GitHubProfileDefinition.TYPE);
@@ -178,7 +180,7 @@ public class GitHubProfile extends OAuth20Profile {
     /**
      * <p>getGravatarId.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getGravatarId() {
         return (String) getAttribute(GitHubProfileDefinition.GRAVATAR_ID);
@@ -187,7 +189,7 @@ public class GitHubProfile extends OAuth20Profile {
     /**
      * <p>getUrl.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getUrl() {
         return (String) getAttribute(GitHubProfileDefinition.URL);
@@ -196,7 +198,7 @@ public class GitHubProfile extends OAuth20Profile {
     /**
      * <p>getHireable.</p>
      *
-     * @return a {@link java.lang.Boolean} object
+     * @return a {@link Boolean} object
      */
     public Boolean getHireable() {
         return (Boolean) getAttribute(GitHubProfileDefinition.HIREABLE);
@@ -205,7 +207,7 @@ public class GitHubProfile extends OAuth20Profile {
     /**
      * <p>getBio.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getBio() {
         return (String) getAttribute(GitHubProfileDefinition.BIO);

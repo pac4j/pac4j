@@ -11,6 +11,7 @@ import org.opensaml.saml.saml2.core.NameID;
 import org.pac4j.saml.profile.converter.SimpleSAML2AttributeConverter;
 import org.pac4j.saml.util.Configuration;
 
+import java.io.Serializable;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -60,8 +61,10 @@ public class SAML2CredentialsSerializationTests {
         attr.setName("pac4j");
         attr.setNameFormat("pac4j");
         attributes.add(attr);
-        val credentials = new SAML2AuthenticationCredentials(SAML2AuthenticationCredentials.SAMLNameID.from(nameid), "example.issuer.com",
-            SAML2AuthenticationCredentials.SAMLAttribute.from(new SimpleSAML2AttributeConverter(), attributes), conditions, "session-index",
+        Serializable credentials = new SAML2AuthenticationCredentials(
+            SAML2AuthenticationCredentials.SAMLNameID.from(nameid), "example.issuer.com",
+            SAML2AuthenticationCredentials.SAMLAttribute.from(
+                new SimpleSAML2AttributeConverter(), attributes), conditions, "session-index",
             contexts, List.of(), UUID.randomUUID().toString());
         val data = SerializationUtils.serialize(credentials);
         val result = (SAML2AuthenticationCredentials) SerializationUtils.deserialize(data);

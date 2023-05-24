@@ -26,8 +26,8 @@ public class FoursquareClient extends OAuth20Client {
     /**
      * <p>Constructor for FoursquareClient.</p>
      *
-     * @param key a {@link java.lang.String} object
-     * @param secret a {@link java.lang.String} object
+     * @param key a {@link String} object
+     * @param secret a {@link String} object
      */
     public FoursquareClient(String key, String secret) {
         setKey(key);

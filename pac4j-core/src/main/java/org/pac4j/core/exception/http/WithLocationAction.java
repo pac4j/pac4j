@@ -12,7 +12,7 @@ public interface WithLocationAction {
     /**
      * <p>getLocation.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     String getLocation();
 }

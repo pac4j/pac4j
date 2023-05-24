@@ -45,7 +45,7 @@ public class MongoProfileService extends AbstractProfileService<MongoProfile> {
     /**
      * <p>Constructor for MongoProfileService.</p>
      *
-     * @param mongoClient a {@link com.mongodb.client.MongoClient} object
+     * @param mongoClient a {@link MongoClient} object
      */
     public MongoProfileService(final MongoClient mongoClient) {
         this.mongoClient = mongoClient;
@@ -54,8 +54,8 @@ public class MongoProfileService extends AbstractProfileService<MongoProfile> {
     /**
      * <p>Constructor for MongoProfileService.</p>
      *
-     * @param mongoClient a {@link com.mongodb.client.MongoClient} object
-     * @param attributes a {@link java.lang.String} object
+     * @param mongoClient a {@link MongoClient} object
+     * @param attributes a {@link String} object
      */
     public MongoProfileService(final MongoClient mongoClient, final String attributes) {
         this.mongoClient = mongoClient;
@@ -65,9 +65,9 @@ public class MongoProfileService extends AbstractProfileService<MongoProfile> {
     /**
      * <p>Constructor for MongoProfileService.</p>
      *
-     * @param mongoClient a {@link com.mongodb.client.MongoClient} object
-     * @param attributes a {@link java.lang.String} object
-     * @param passwordEncoder a {@link org.pac4j.core.credentials.password.PasswordEncoder} object
+     * @param mongoClient a {@link MongoClient} object
+     * @param attributes a {@link String} object
+     * @param passwordEncoder a {@link PasswordEncoder} object
      */
     public MongoProfileService(final MongoClient mongoClient, final String attributes, final PasswordEncoder passwordEncoder) {
         this.mongoClient = mongoClient;
@@ -78,8 +78,8 @@ public class MongoProfileService extends AbstractProfileService<MongoProfile> {
     /**
      * <p>Constructor for MongoProfileService.</p>
      *
-     * @param mongoClient a {@link com.mongodb.client.MongoClient} object
-     * @param passwordEncoder a {@link org.pac4j.core.credentials.password.PasswordEncoder} object
+     * @param mongoClient a {@link MongoClient} object
+     * @param passwordEncoder a {@link PasswordEncoder} object
      */
     public MongoProfileService(final MongoClient mongoClient, final PasswordEncoder passwordEncoder) {
         this.mongoClient = mongoClient;
@@ -145,12 +145,12 @@ public class MongoProfileService extends AbstractProfileService<MongoProfile> {
     protected List<Map<String, Object>> read(final List<String> names, final String key, final String value) {
 
         logger.debug("Reading key / value: {} / {}", key, value);
-        val listAttributes = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> listAttributes = new ArrayList<>();
         try (val cursor = getCollection().find(eq(key, value)).iterator()) {
             var i = 0;
             while (cursor.hasNext() && i <= 2) {
                 val result = cursor.next();
-                val newAttributes = new HashMap<String, Object>();
+                Map<String, Object> newAttributes = new HashMap<>();
                 // filter on names
                 for (val entry : result.entrySet()) {
                     val name = entry.getKey();
@@ -170,7 +170,7 @@ public class MongoProfileService extends AbstractProfileService<MongoProfile> {
     /**
      * <p>getCollection.</p>
      *
-     * @return a {@link com.mongodb.client.MongoCollection} object
+     * @return a {@link MongoCollection} object
      */
     protected MongoCollection<Document> getCollection() {
         val db = mongoClient.getDatabase(usersDatabase);

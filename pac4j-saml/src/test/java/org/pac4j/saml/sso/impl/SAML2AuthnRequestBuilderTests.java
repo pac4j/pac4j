@@ -4,6 +4,7 @@ import lombok.val;
 import org.junit.Before;
 import org.junit.Test;
 import org.opensaml.saml.common.xml.SAMLConstants;
+import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
@@ -17,6 +18,7 @@ import org.pac4j.saml.client.AbstractSAML2ClientTests;
 import org.pac4j.saml.client.SAML2Client;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.context.SAML2MessageContext;
+import org.pac4j.saml.profile.api.SAML2ObjectBuilder;
 
 import java.util.Collections;
 
@@ -51,7 +53,7 @@ public class SAML2AuthnRequestBuilderTests extends AbstractSAML2ClientTests {
         val messageStoreFactory = configuration.getSamlMessageStoreFactory();
         val store = messageStoreFactory.getMessageStore(webContext, new MockSessionStore());
 
-        val builder = new SAML2AuthnRequestBuilder();
+        SAML2ObjectBuilder<AuthnRequest> builder = new SAML2AuthnRequestBuilder();
         val context = buildContext();
 
         val authnRequest = builder.build(context);
@@ -91,14 +93,14 @@ public class SAML2AuthnRequestBuilderTests extends AbstractSAML2ClientTests {
         configuration.setUseNameQualifier(true);
         configuration.setNameIdPolicyFormat("sample-nameid-format");
         configuration.setNameIdPolicyAllowCreate(null);
-        val builder = new SAML2AuthnRequestBuilder();
+        SAML2ObjectBuilder<AuthnRequest> builder = new SAML2AuthnRequestBuilder();
         val context = buildContext();
         assertNotNull(builder.build(context));
     }
 
     @Test
     public void testForceAuthAsRequestAttribute() {
-        val builder = new SAML2AuthnRequestBuilder();
+        SAML2ObjectBuilder<AuthnRequest> builder = new SAML2AuthnRequestBuilder();
         val context = buildContext();
         context.getCallContext().webContext().setRequestAttribute(RedirectionActionBuilder.ATTRIBUTE_FORCE_AUTHN, true);
         assertNotNull(builder.build(context));
@@ -106,7 +108,7 @@ public class SAML2AuthnRequestBuilderTests extends AbstractSAML2ClientTests {
 
     @Test
     public void testPassiveAuthAsRequestAttribute() {
-        val builder = new SAML2AuthnRequestBuilder();
+        SAML2ObjectBuilder<AuthnRequest> builder = new SAML2AuthnRequestBuilder();
         val context = buildContext();
         context.getCallContext().webContext().setRequestAttribute(RedirectionActionBuilder.ATTRIBUTE_PASSIVE, true);
         assertNotNull(builder.build(context));
@@ -114,7 +116,7 @@ public class SAML2AuthnRequestBuilderTests extends AbstractSAML2ClientTests {
 
     @Test
     public void testScopingIdentityProviders() {
-        val builder = new SAML2AuthnRequestBuilder();
+        SAML2ObjectBuilder<AuthnRequest> builder = new SAML2AuthnRequestBuilder();
         val context = buildContext();
         var authnRequest = builder.build(context);
         assertNotNull(authnRequest);

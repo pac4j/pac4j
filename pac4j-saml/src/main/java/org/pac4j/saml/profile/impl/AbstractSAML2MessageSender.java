@@ -7,6 +7,7 @@ import net.shibboleth.shared.component.ComponentInitializationException;
 import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.messaging.encoder.MessageEncoder;
 import org.opensaml.messaging.encoder.MessageEncodingException;
+import org.opensaml.messaging.handler.MessageHandler;
 import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.common.binding.impl.SAMLOutboundDestinationHandler;
 import org.opensaml.saml.common.binding.security.impl.EndpointURLSchemeSecurityHandler;
@@ -98,7 +99,7 @@ public abstract class AbstractSAML2MessageSender<T extends SAMLObject> implement
     /**
      * <p>storeMessage.</p>
      *
-     * @param context a {@link org.pac4j.saml.context.SAML2MessageContext} object
+     * @param context a {@link SAML2MessageContext} object
      * @param request a T object
      */
     protected void storeMessage(final SAML2MessageContext context, final T request) {
@@ -115,28 +116,28 @@ public abstract class AbstractSAML2MessageSender<T extends SAMLObject> implement
     /**
      * <p>getEndpoint.</p>
      *
-     * @param context a {@link org.pac4j.saml.context.SAML2MessageContext} object
-     * @return a {@link org.opensaml.saml.saml2.metadata.Endpoint} object
+     * @param context a {@link SAML2MessageContext} object
+     * @return a {@link Endpoint} object
      */
     protected abstract Endpoint getEndpoint(SAML2MessageContext context);
 
     /**
      * <p>invokeOutboundMessageHandlers.</p>
      *
-     * @param spDescriptor a {@link org.opensaml.saml.saml2.metadata.SPSSODescriptor} object
-     * @param idpssoDescriptor a {@link org.opensaml.saml.saml2.metadata.IDPSSODescriptor} object
-     * @param messageContext a {@link org.opensaml.messaging.context.MessageContext} object
+     * @param spDescriptor a {@link SPSSODescriptor} object
+     * @param idpssoDescriptor a {@link IDPSSODescriptor} object
+     * @param messageContext a {@link MessageContext} object
      */
     protected void invokeOutboundMessageHandlers(final SPSSODescriptor spDescriptor,
                                                        final IDPSSODescriptor idpssoDescriptor,
                                                        final MessageContext messageContext) {
         try {
-            val handlerEnd =
+            MessageHandler handlerEnd =
                 new EndpointURLSchemeSecurityHandler();
             handlerEnd.initialize();
             handlerEnd.invoke(messageContext);
 
-            val handlerDest =
+            MessageHandler handlerDest =
                 new SAMLOutboundDestinationHandler();
             handlerDest.initialize();
             handlerDest.invoke(messageContext);
@@ -158,8 +159,8 @@ public abstract class AbstractSAML2MessageSender<T extends SAMLObject> implement
     /**
      * <p>mustSignRequest.</p>
      *
-     * @param spDescriptor a {@link org.opensaml.saml.saml2.metadata.SPSSODescriptor} object
-     * @param idpssoDescriptor a {@link org.opensaml.saml.saml2.metadata.IDPSSODescriptor} object
+     * @param spDescriptor a {@link SPSSODescriptor} object
+     * @param idpssoDescriptor a {@link IDPSSODescriptor} object
      * @return a boolean
      */
     protected boolean mustSignRequest(final SPSSODescriptor spDescriptor, final IDPSSODescriptor idpssoDescriptor) {

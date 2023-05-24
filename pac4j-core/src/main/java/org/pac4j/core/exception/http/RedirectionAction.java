@@ -1,5 +1,7 @@
 package org.pac4j.core.exception.http;
 
+import java.io.Serial;
+
 /**
  * A "redirection" HTTP action.
  *
@@ -8,6 +10,7 @@ package org.pac4j.core.exception.http;
  */
 public abstract class RedirectionAction extends HttpAction {
 
+    @Serial
     private static final long serialVersionUID = -4985071484085124623L;
 
     /**

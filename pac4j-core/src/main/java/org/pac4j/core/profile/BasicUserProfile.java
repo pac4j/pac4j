@@ -14,6 +14,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.io.Serial;
 import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
 @ToString
 public class BasicUserProfile implements UserProfile, Externalizable {
 
+    @Serial
     private static final long serialVersionUID = 9020114478664816338L;
 
     protected transient final Logger logger = LoggerFactory.getLogger(getClass());
@@ -393,7 +395,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
     /**
      * <p>Setter for the field <code>roles</code>.</p>
      *
-     * @param roles a {@link java.util.Set} object
+     * @param roles a {@link Set} object
      */
     public void setRoles(Set<String> roles) {
         CommonHelper.assertNotNull("roles", roles);

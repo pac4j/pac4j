@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * Specific {@link org.pac4j.core.authorization.generator.AuthorizationGenerator} to Keycloak.
+ * Specific {@link AuthorizationGenerator} to Keycloak.
  *
  * @author Jerome Leleu
  * @since 3.4.0
@@ -36,7 +36,7 @@ public class KeycloakRolesAuthorizationGenerator implements AuthorizationGenerat
     /**
      * <p>Constructor for KeycloakRolesAuthorizationGenerator.</p>
      *
-     * @param clientId a {@link java.lang.String} object
+     * @param clientId a {@link String} object
      */
     public KeycloakRolesAuthorizationGenerator(final String clientId) {
         this.clientId = clientId;
@@ -53,9 +53,9 @@ public class KeycloakRolesAuthorizationGenerator implements AuthorizationGenerat
 
                 val realmRolesJsonObject = jwtClaimsSet.getJSONObjectClaim("realm_access");
                 if (realmRolesJsonObject != null) {
-                    val realmRolesJsonArray = (List<String>) realmRolesJsonObject.get("roles");
+                    Iterable<String> realmRolesJsonArray = (List<String>) realmRolesJsonObject.get("roles");
                     if (realmRolesJsonArray != null) {
-                        realmRolesJsonArray.forEach(role -> profile.addRole((String) role));
+                        realmRolesJsonArray.forEach(role -> profile.addRole(role));
                     }
                 }
 
@@ -64,7 +64,7 @@ public class KeycloakRolesAuthorizationGenerator implements AuthorizationGenerat
                     if (resourceAccess != null) {
                         val clientRolesJsonObject = (Map) resourceAccess.get(clientId);
                         if (clientRolesJsonObject != null) {
-                            val clientRolesJsonArray = (List<String>) clientRolesJsonObject.get("roles");
+                            Iterable<String> clientRolesJsonArray = (List<String>) clientRolesJsonObject.get("roles");
                             if (clientRolesJsonArray != null) {
                                 clientRolesJsonArray.forEach(profile::addRole);
                             }

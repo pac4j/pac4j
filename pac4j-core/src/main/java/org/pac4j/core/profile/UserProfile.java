@@ -17,50 +17,50 @@ public interface UserProfile extends Serializable {
     /**
      * <p>getId.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     String getId();
 
     /**
      * <p>setId.</p>
      *
-     * @param id a {@link java.lang.String} object
+     * @param id a {@link String} object
      */
     void setId(String id);
 
     /**
      * <p>getTypedId.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     String getTypedId();
 
     /**
      * <p>getUsername.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     String getUsername();
 
     /**
      * <p>getAttribute.</p>
      *
-     * @param name a {@link java.lang.String} object
-     * @return a {@link java.lang.Object} object
+     * @param name a {@link String} object
+     * @return a {@link Object} object
      */
     Object getAttribute(String name);
 
     /**
      * <p>getAttributes.</p>
      *
-     * @return a {@link java.util.Map} object
+     * @return a {@link Map} object
      */
     Map<String, Object> getAttributes();
 
     /**
      * <p>containsAttribute.</p>
      *
-     * @param name a {@link java.lang.String} object
+     * @param name a {@link String} object
      * @return a boolean
      */
     boolean containsAttribute(String name);
@@ -68,51 +68,51 @@ public interface UserProfile extends Serializable {
     /**
      * <p>addAttribute.</p>
      *
-     * @param key a {@link java.lang.String} object
-     * @param value a {@link java.lang.Object} object
+     * @param key a {@link String} object
+     * @param value a {@link Object} object
      */
     void addAttribute(String key, Object value);
 
     /**
      * <p>removeAttribute.</p>
      *
-     * @param key a {@link java.lang.String} object
+     * @param key a {@link String} object
      */
     void removeAttribute(String key);
 
     /**
      * <p>addAuthenticationAttribute.</p>
      *
-     * @param key a {@link java.lang.String} object
-     * @param value a {@link java.lang.Object} object
+     * @param key a {@link String} object
+     * @param value a {@link Object} object
      */
     void addAuthenticationAttribute(String key, Object value);
 
     /**
      * <p>removeAuthenticationAttribute.</p>
      *
-     * @param key a {@link java.lang.String} object
+     * @param key a {@link String} object
      */
     void removeAuthenticationAttribute(String key);
 
     /**
      * <p>addRole.</p>
      *
-     * @param role a {@link java.lang.String} object
+     * @param role a {@link String} object
      */
     void addRole(String role);
 
     /**
      * <p>addRoles.</p>
      *
-     * @param roles a {@link java.util.Collection} object
+     * @param roles a {@link Collection} object
      */
     void addRoles(Collection<String> roles);
 
     /**
      * <p>getRoles.</p>
      *
-     * @return a {@link java.util.Set} object
+     * @return a {@link Set} object
      */
     Set<String> getRoles();
 
@@ -133,28 +133,28 @@ public interface UserProfile extends Serializable {
     /**
      * <p>getClientName.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     String getClientName();
 
     /**
      * <p>setClientName.</p>
      *
-     * @param clientName a {@link java.lang.String} object
+     * @param clientName a {@link String} object
      */
     void setClientName(String clientName);
 
     /**
      * <p>getLinkedId.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     String getLinkedId();
 
     /**
      * <p>setLinkedId.</p>
      *
-     * @param linkedId a {@link java.lang.String} object
+     * @param linkedId a {@link String} object
      */
     void setLinkedId(String linkedId);
 
@@ -168,7 +168,7 @@ public interface UserProfile extends Serializable {
     /**
      * <p>asPrincipal.</p>
      *
-     * @return a {@link java.security.Principal} object
+     * @return a {@link Principal} object
      */
     Principal asPrincipal();
 }

@@ -9,6 +9,7 @@ import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.exception.http.OkAction;
 import org.pac4j.core.exception.http.SeeOtherAction;
+import org.pac4j.core.exception.http.WithContentAction;
 import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.util.TestsConstants;
@@ -33,7 +34,7 @@ public class DefaultSavedRequestHandlerTest implements TestsConstants {
         "</body>\n" +
         "</html>\n";
 
-    private DefaultSavedRequestHandler handler = new DefaultSavedRequestHandler();
+    private SavedRequestHandler handler = new DefaultSavedRequestHandler();
 
     @BeforeClass
     public static void beforeClass() {
@@ -55,7 +56,7 @@ public class DefaultSavedRequestHandlerTest implements TestsConstants {
         context.addRequestParameter(KEY, VALUE);
         val sessionStore = new MockSessionStore();
         handler.save(new CallContext(context, sessionStore));
-        val action = (OkAction) sessionStore.get(context, Pac4jConstants.REQUESTED_URL).get();
+        WithContentAction action = (OkAction) sessionStore.get(context, Pac4jConstants.REQUESTED_URL).get();
         assertEquals(FORM_DATA, action.getContent());
     }
 

@@ -35,7 +35,7 @@ public class KeyStoreDecryptionProvider implements DecryptionProvider {
     /**
      * <p>Constructor for KeyStoreDecryptionProvider.</p>
      *
-     * @param credentialProvider a {@link org.pac4j.saml.crypto.CredentialProvider} object
+     * @param credentialProvider a {@link CredentialProvider} object
      */
     public KeyStoreDecryptionProvider(final CredentialProvider credentialProvider) {
         this.credentialProvider = credentialProvider;

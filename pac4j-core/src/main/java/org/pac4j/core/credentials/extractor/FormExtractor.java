@@ -24,8 +24,8 @@ public class FormExtractor implements CredentialsExtractor {
     /**
      * <p>Constructor for FormExtractor.</p>
      *
-     * @param usernameParameter a {@link java.lang.String} object
-     * @param passwordParameter a {@link java.lang.String} object
+     * @param usernameParameter a {@link String} object
+     * @param passwordParameter a {@link String} object
      */
     public FormExtractor(final String usernameParameter, final String passwordParameter) {
         this.usernameParameter = usernameParameter;
@@ -38,7 +38,7 @@ public class FormExtractor implements CredentialsExtractor {
         val webContext = ctx.webContext();
         val username = webContext.getRequestParameter(this.usernameParameter);
         val password = webContext.getRequestParameter(this.passwordParameter);
-        if (!username.isPresent() || !password.isPresent()) {
+        if (username.isEmpty() || password.isEmpty()) {
             return Optional.empty();
         }
 

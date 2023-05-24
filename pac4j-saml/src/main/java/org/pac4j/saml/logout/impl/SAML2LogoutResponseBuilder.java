@@ -11,7 +11,7 @@ import org.opensaml.saml.saml2.core.Status;
 import org.opensaml.saml.saml2.core.StatusCode;
 import org.opensaml.saml.saml2.core.impl.RequestAbstractTypeImpl;
 import org.opensaml.saml.saml2.core.impl.StatusCodeBuilder;
-import org.opensaml.saml.saml2.metadata.SingleLogoutService;
+import org.opensaml.saml.saml2.metadata.Endpoint;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.util.Configuration;
 import org.pac4j.saml.util.SAML2Utils;
@@ -36,7 +36,7 @@ public class SAML2LogoutResponseBuilder {
     /**
      * <p>Constructor for SAML2LogoutResponseBuilder.</p>
      *
-     * @param bindingType a {@link java.lang.String} object
+     * @param bindingType a {@link String} object
      */
     public SAML2LogoutResponseBuilder(final String bindingType) {
         this.bindingType = bindingType;
@@ -45,8 +45,8 @@ public class SAML2LogoutResponseBuilder {
     /**
      * <p>build.</p>
      *
-     * @param context a {@link org.pac4j.saml.context.SAML2MessageContext} object
-     * @return a {@link org.opensaml.saml.saml2.core.LogoutResponse} object
+     * @param context a {@link SAML2MessageContext} object
+     * @return a {@link LogoutResponse} object
      */
     public LogoutResponse build(final SAML2MessageContext context) {
         val ssoService = context.getIDPSingleLogoutService(this.bindingType);
@@ -56,13 +56,13 @@ public class SAML2LogoutResponseBuilder {
     /**
      * <p>buildLogoutResponse.</p>
      *
-     * @param context a {@link org.pac4j.saml.context.SAML2MessageContext} object
+     * @param context a {@link SAML2MessageContext} object
      * @param ssoService a {@link org.opensaml.saml.saml2.metadata.SingleLogoutService} object
-     * @return a {@link org.opensaml.saml.saml2.core.LogoutResponse} object
+     * @return a {@link LogoutResponse} object
      */
     @SuppressWarnings("unchecked")
     protected final LogoutResponse buildLogoutResponse(final SAML2MessageContext context,
-                                                      final SingleLogoutService ssoService) {
+                                                      final Endpoint ssoService) {
 
         val builder = (SAMLObjectBuilder<LogoutResponse>) this.builderFactory
             .getBuilder(LogoutResponse.DEFAULT_ELEMENT_NAME);
@@ -87,7 +87,7 @@ public class SAML2LogoutResponseBuilder {
     /**
      * <p>getSuccess.</p>
      *
-     * @return a {@link org.opensaml.saml.saml2.core.Status} object
+     * @return a {@link Status} object
      */
     protected Status getSuccess() {
         val statusBuilder = (SAMLObjectBuilder<Status>) this.builderFactory
@@ -102,8 +102,8 @@ public class SAML2LogoutResponseBuilder {
     /**
      * <p>getIssuer.</p>
      *
-     * @param spEntityId a {@link java.lang.String} object
-     * @return a {@link org.opensaml.saml.saml2.core.Issuer} object
+     * @param spEntityId a {@link String} object
+     * @return a {@link Issuer} object
      */
     @SuppressWarnings("unchecked")
     protected final Issuer getIssuer(final String spEntityId) {
@@ -117,7 +117,7 @@ public class SAML2LogoutResponseBuilder {
     /**
      * <p>Setter for the field <code>bindingType</code>.</p>
      *
-     * @param bindingType a {@link java.lang.String} object
+     * @param bindingType a {@link String} object
      */
     public void setBindingType(final String bindingType) {
         this.bindingType = bindingType;

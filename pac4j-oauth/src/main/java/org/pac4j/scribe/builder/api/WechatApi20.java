@@ -51,7 +51,7 @@ public class WechatApi20 extends DefaultApi20 {
     /**
      * <p>instance.</p>
      *
-     * @return a {@link org.pac4j.scribe.builder.api.WechatApi20} object
+     * @return a {@link WechatApi20} object
      */
     public static WechatApi20 instance() {
         return WechatApi20.InstanceHolder.INSTANCE;

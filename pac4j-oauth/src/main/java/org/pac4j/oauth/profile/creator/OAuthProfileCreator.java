@@ -50,8 +50,8 @@ abstract class OAuthProfileCreator implements ProfileCreator {
     /**
      * <p>Constructor for OAuthProfileCreator.</p>
      *
-     * @param configuration a {@link org.pac4j.oauth.config.OAuthConfiguration} object
-     * @param client a {@link org.pac4j.core.client.IndirectClient} object
+     * @param configuration a {@link OAuthConfiguration} object
+     * @param client a {@link IndirectClient} object
      */
     protected OAuthProfileCreator(final OAuthConfiguration configuration, final IndirectClient client) {
         CommonHelper.assertNotNull("client", client);

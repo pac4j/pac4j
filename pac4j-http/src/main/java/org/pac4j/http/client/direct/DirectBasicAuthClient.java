@@ -39,7 +39,7 @@ public class DirectBasicAuthClient extends DirectClient {
     /**
      * <p>Constructor for DirectBasicAuthClient.</p>
      *
-     * @param usernamePasswordAuthenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
+     * @param usernamePasswordAuthenticator a {@link Authenticator} object
      */
     public DirectBasicAuthClient(final Authenticator usernamePasswordAuthenticator) {
         setAuthenticatorIfUndefined(usernamePasswordAuthenticator);
@@ -48,8 +48,8 @@ public class DirectBasicAuthClient extends DirectClient {
     /**
      * <p>Constructor for DirectBasicAuthClient.</p>
      *
-     * @param usernamePasswordAuthenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
-     * @param profileCreator a {@link org.pac4j.core.profile.creator.ProfileCreator} object
+     * @param usernamePasswordAuthenticator a {@link Authenticator} object
+     * @param profileCreator a {@link ProfileCreator} object
      */
     public DirectBasicAuthClient(final Authenticator usernamePasswordAuthenticator,
                                  final ProfileCreator profileCreator) {
@@ -76,7 +76,7 @@ public class DirectBasicAuthClient extends DirectClient {
     /**
      * <p>addAuthenticateHeader.</p>
      *
-     * @param context a {@link org.pac4j.core.context.WebContext} object
+     * @param context a {@link WebContext} object
      */
     protected void addAuthenticateHeader(final WebContext context) {
         // set the www-authenticate in case of error

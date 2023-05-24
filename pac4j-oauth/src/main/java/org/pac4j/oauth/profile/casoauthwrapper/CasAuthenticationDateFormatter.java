@@ -21,8 +21,7 @@ public class CasAuthenticationDateFormatter extends DateConverter {
     @Override
     public Object convert(final Object attribute) {
         var a = attribute;
-        if (a instanceof String) {
-            var s = (String) a;
+        if (a instanceof String s) {
             var pos = s.lastIndexOf("[");
             if (pos > 0) {
                 s = s.substring(0, pos);

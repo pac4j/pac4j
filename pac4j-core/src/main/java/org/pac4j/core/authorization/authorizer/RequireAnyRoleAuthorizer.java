@@ -24,7 +24,7 @@ public class RequireAnyRoleAuthorizer extends AbstractRequireAnyAuthorizer<Strin
     /**
      * <p>Constructor for RequireAnyRoleAuthorizer.</p>
      *
-     * @param roles a {@link java.lang.String} object
+     * @param roles a {@link String} object
      */
     public RequireAnyRoleAuthorizer(final String... roles) {
         setElements(roles);
@@ -33,7 +33,7 @@ public class RequireAnyRoleAuthorizer extends AbstractRequireAnyAuthorizer<Strin
     /**
      * <p>Constructor for RequireAnyRoleAuthorizer.</p>
      *
-     * @param roles a {@link java.util.List} object
+     * @param roles a {@link List} object
      */
     public RequireAnyRoleAuthorizer(final List<String> roles) {
         setElements(roles);
@@ -42,7 +42,7 @@ public class RequireAnyRoleAuthorizer extends AbstractRequireAnyAuthorizer<Strin
     /**
      * <p>Constructor for RequireAnyRoleAuthorizer.</p>
      *
-     * @param roles a {@link java.util.Set} object
+     * @param roles a {@link Set} object
      */
     public RequireAnyRoleAuthorizer(final Set<String> roles) { setElements(roles); }
 
@@ -62,8 +62,8 @@ public class RequireAnyRoleAuthorizer extends AbstractRequireAnyAuthorizer<Strin
     /**
      * <p>requireAnyRole.</p>
      *
-     * @param roles a {@link java.lang.String} object
-     * @return a {@link org.pac4j.core.authorization.authorizer.RequireAnyRoleAuthorizer} object
+     * @param roles a {@link String} object
+     * @return a {@link RequireAnyRoleAuthorizer} object
      */
     public static RequireAnyRoleAuthorizer requireAnyRole(String ... roles) {
         return new RequireAnyRoleAuthorizer(roles);
@@ -72,8 +72,8 @@ public class RequireAnyRoleAuthorizer extends AbstractRequireAnyAuthorizer<Strin
     /**
      * <p>requireAnyRole.</p>
      *
-     * @param roles a {@link java.util.List} object
-     * @return a {@link org.pac4j.core.authorization.authorizer.RequireAnyRoleAuthorizer} object
+     * @param roles a {@link List} object
+     * @return a {@link RequireAnyRoleAuthorizer} object
      */
     public static RequireAnyRoleAuthorizer requireAnyRole(List<String> roles) {
         return new RequireAnyRoleAuthorizer(roles);
@@ -82,8 +82,8 @@ public class RequireAnyRoleAuthorizer extends AbstractRequireAnyAuthorizer<Strin
     /**
      * <p>requireAnyRole.</p>
      *
-     * @param roles a {@link java.util.Set} object
-     * @return a {@link org.pac4j.core.authorization.authorizer.RequireAnyRoleAuthorizer} object
+     * @param roles a {@link Set} object
+     * @return a {@link RequireAnyRoleAuthorizer} object
      */
     public static RequireAnyRoleAuthorizer requireAnyRole(Set<String> roles) {
         return new RequireAnyRoleAuthorizer(roles);

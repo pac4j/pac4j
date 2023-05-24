@@ -6,6 +6,7 @@ import org.ldaptive.auth.Authenticator;
 import org.ldaptive.auth.FormatDnResolver;
 import org.ldaptive.auth.SimpleBindAuthenticationHandler;
 import org.ldaptive.pool.IdlePruneStrategy;
+import org.ldaptive.pool.PruneStrategy;
 
 import java.time.Duration;
 
@@ -32,9 +33,9 @@ public final class LdapClient {
 
         connectionFactory = new DefaultConnectionFactory(connectionConfig);
 
-        val searchValidator = new SearchConnectionValidator();
+        ConnectionValidator searchValidator = new SearchConnectionValidator();
 
-        val pruneStrategy = new IdlePruneStrategy();
+        PruneStrategy pruneStrategy = new IdlePruneStrategy();
 
         val pooledConnectionFactory = new PooledConnectionFactory(connectionConfig);
         pooledConnectionFactory.setMinPoolSize(1);

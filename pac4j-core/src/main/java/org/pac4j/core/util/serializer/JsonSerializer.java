@@ -24,7 +24,7 @@ public class JsonSerializer extends AbstractSerializer {
     /**
      * <p>Constructor for JsonSerializer.</p>
      *
-     * @param clazz a {@link java.lang.Class} object
+     * @param clazz a {@link Class} object
      */
     public JsonSerializer(final Class<? extends Object> clazz) {
         assertNotNull("clazz", clazz);
@@ -60,7 +60,7 @@ public class JsonSerializer extends AbstractSerializer {
     /**
      * <p>Getter for the field <code>objectMapper</code>.</p>
      *
-     * @return a {@link com.fasterxml.jackson.databind.ObjectMapper} object
+     * @return a {@link ObjectMapper} object
      */
     public ObjectMapper getObjectMapper() {
         return objectMapper;
@@ -69,7 +69,7 @@ public class JsonSerializer extends AbstractSerializer {
     /**
      * <p>Setter for the field <code>objectMapper</code>.</p>
      *
-     * @param objectMapper a {@link com.fasterxml.jackson.databind.ObjectMapper} object
+     * @param objectMapper a {@link ObjectMapper} object
      */
     public void setObjectMapper(final ObjectMapper objectMapper) {
         assertNotNull("objectMapper", objectMapper);

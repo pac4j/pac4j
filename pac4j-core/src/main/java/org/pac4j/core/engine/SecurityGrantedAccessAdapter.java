@@ -22,7 +22,7 @@ public interface SecurityGrantedAccessAdapter {
      * @param sessionStore the session store
      * @param profiles the profiles granted, can be empty
      * @return an adapted result
-     * @throws java.lang.Exception any exception
+     * @throws Exception any exception
      */
     Object adapt(WebContext context, SessionStore sessionStore, Collection<UserProfile> profiles) throws Exception;
 }

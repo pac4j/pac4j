@@ -4,6 +4,7 @@ import lombok.val;
 import org.junit.Test;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.saml.config.SAML2Configuration;
+import org.pac4j.saml.crypto.CredentialProvider;
 import org.pac4j.saml.crypto.KeyStoreCredentialProvider;
 import org.pac4j.saml.util.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -54,7 +55,7 @@ public final class SAML2ClientTests {
                         "resource:testshib-providers.xml");
         cfg.init();
 
-        val p = new KeyStoreCredentialProvider(cfg);
+        CredentialProvider p = new KeyStoreCredentialProvider(cfg);
         assertNotNull(p.getKeyInfoGenerator());
         assertNotNull(p.getCredentialResolver());
         assertNotNull(p.getKeyInfo());
@@ -75,7 +76,7 @@ public final class SAML2ClientTests {
                         new ClassPathResource("testshib-providers.xml"));
         cfg.init();
 
-        val p = new KeyStoreCredentialProvider(cfg);
+        CredentialProvider p = new KeyStoreCredentialProvider(cfg);
         assertNotNull(p.getKeyInfoGenerator());
         assertNotNull(p.getCredentialResolver());
         assertNotNull(p.getKeyInfo());

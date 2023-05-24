@@ -23,7 +23,7 @@ public class CookieExtractor implements CredentialsExtractor {
     /**
      * <p>Constructor for CookieExtractor.</p>
      *
-     * @param cookieName a {@link java.lang.String} object
+     * @param cookieName a {@link String} object
      */
     public CookieExtractor(final String cookieName) {
         this.cookieName = cookieName;

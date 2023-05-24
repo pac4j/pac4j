@@ -24,8 +24,10 @@ import java.security.interfaces.ECPublicKey;
 @Setter
 public class ECEncryptionConfiguration extends AbstractEncryptionConfiguration {
 
+    @Getter @Setter
     private ECPublicKey publicKey;
 
+    @Getter @Setter
     private ECPrivateKey privateKey;
 
     /**
@@ -37,7 +39,7 @@ public class ECEncryptionConfiguration extends AbstractEncryptionConfiguration {
     /**
      * <p>Constructor for ECEncryptionConfiguration.</p>
      *
-     * @param keyPair a {@link java.security.KeyPair} object
+     * @param keyPair a {@link KeyPair} object
      */
     public ECEncryptionConfiguration(final KeyPair keyPair) {
         setKeyPair(keyPair);
@@ -46,9 +48,9 @@ public class ECEncryptionConfiguration extends AbstractEncryptionConfiguration {
     /**
      * <p>Constructor for ECEncryptionConfiguration.</p>
      *
-     * @param keyPair a {@link java.security.KeyPair} object
-     * @param algorithm a {@link com.nimbusds.jose.JWEAlgorithm} object
-     * @param method a {@link com.nimbusds.jose.EncryptionMethod} object
+     * @param keyPair a {@link KeyPair} object
+     * @param algorithm a {@link JWEAlgorithm} object
+     * @param method a {@link EncryptionMethod} object
      */
     public ECEncryptionConfiguration(final KeyPair keyPair, final JWEAlgorithm algorithm, final EncryptionMethod method) {
         setKeyPair(keyPair);
@@ -103,7 +105,7 @@ public class ECEncryptionConfiguration extends AbstractEncryptionConfiguration {
     /**
      * <p>setKeyPair.</p>
      *
-     * @param keyPair a {@link java.security.KeyPair} object
+     * @param keyPair a {@link KeyPair} object
      */
     public void setKeyPair(final KeyPair keyPair) {
         CommonHelper.assertNotNull("keyPair", keyPair);
@@ -112,45 +114,9 @@ public class ECEncryptionConfiguration extends AbstractEncryptionConfiguration {
     }
 
     /**
-     * <p>Getter for the field <code>publicKey</code>.</p>
-     *
-     * @return a {@link java.security.interfaces.ECPublicKey} object
-     */
-    public ECPublicKey getPublicKey() {
-        return publicKey;
-    }
-
-    /**
-     * <p>Setter for the field <code>publicKey</code>.</p>
-     *
-     * @param publicKey a {@link java.security.interfaces.ECPublicKey} object
-     */
-    public void setPublicKey(final ECPublicKey publicKey) {
-        this.publicKey = publicKey;
-    }
-
-    /**
-     * <p>Getter for the field <code>privateKey</code>.</p>
-     *
-     * @return a {@link java.security.interfaces.ECPrivateKey} object
-     */
-    public ECPrivateKey getPrivateKey() {
-        return privateKey;
-    }
-
-    /**
-     * <p>Setter for the field <code>privateKey</code>.</p>
-     *
-     * @param privateKey a {@link java.security.interfaces.ECPrivateKey} object
-     */
-    public void setPrivateKey(final ECPrivateKey privateKey) {
-        this.privateKey = privateKey;
-    }
-
-    /**
      * <p>setKeysFromJwk.</p>
      *
-     * @param json a {@link java.lang.String} object
+     * @param json a {@link String} object
      */
     public void setKeysFromJwk(final String json) {
         val pair = JWKHelper.buildECKeyPairFromJwk(json);

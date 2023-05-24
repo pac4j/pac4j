@@ -7,7 +7,7 @@ import org.pac4j.core.profile.UserProfile;
 import java.util.Optional;
 
 /**
- * The {@link org.pac4j.core.exception.http.RedirectionAction} for logout.
+ * The {@link RedirectionAction} for logout.
  *
  * @author Jerome Leleu
  * @since 2.0.0
@@ -16,7 +16,7 @@ import java.util.Optional;
 public interface LogoutActionBuilder {
 
     /**
-     * Return the {@link org.pac4j.core.exception.http.RedirectionAction} for logout.
+     * Return the {@link RedirectionAction} for logout.
      *
      * @param ctx the context
      * @param currentProfile the current profile

@@ -28,7 +28,7 @@ public class SAML2Credentials extends Credentials {
     /**
      * <p>Constructor for SAML2Credentials.</p>
      *
-     * @param context a {@link org.pac4j.saml.context.SAML2MessageContext} object
+     * @param context a {@link SAML2MessageContext} object
      */
     public SAML2Credentials(final SAML2MessageContext context) {
         this.context = context;
@@ -37,8 +37,8 @@ public class SAML2Credentials extends Credentials {
     /**
      * <p>Constructor for SAML2Credentials.</p>
      *
-     * @param type a {@link org.pac4j.core.logout.LogoutType} object
-     * @param context a {@link org.pac4j.saml.context.SAML2MessageContext} object
+     * @param type a {@link LogoutType} object
+     * @param context a {@link SAML2MessageContext} object
      */
     public SAML2Credentials(final LogoutType type, final SAML2MessageContext context) {
         this.logoutType = type;

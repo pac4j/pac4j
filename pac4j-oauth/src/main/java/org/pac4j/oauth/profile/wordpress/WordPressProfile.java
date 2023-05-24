@@ -2,6 +2,7 @@ package org.pac4j.oauth.profile.wordpress;
 
 import org.pac4j.oauth.profile.OAuth20Profile;
 
+import java.io.Serial;
 import java.net.URI;
 
 /**
@@ -13,6 +14,7 @@ import java.net.URI;
  */
 public class WordPressProfile extends OAuth20Profile {
 
+    @Serial
     private static final long serialVersionUID = 6790248892408246089L;
 
     /** {@inheritDoc} */
@@ -30,7 +32,7 @@ public class WordPressProfile extends OAuth20Profile {
     /**
      * <p>getPrimaryBlog.</p>
      *
-     * @return a {@link java.lang.Integer} object
+     * @return a {@link Integer} object
      */
     public Integer getPrimaryBlog() {
         return (Integer) getAttribute(WordPressProfileDefinition.PRIMARY_BLOG);
@@ -39,7 +41,7 @@ public class WordPressProfile extends OAuth20Profile {
     /**
      * <p>getLinks.</p>
      *
-     * @return a {@link org.pac4j.oauth.profile.wordpress.WordPressLinks} object
+     * @return a {@link WordPressLinks} object
      */
     public WordPressLinks getLinks() {
         return (WordPressLinks) getAttribute(WordPressProfileDefinition.LINKS);

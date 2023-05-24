@@ -5,8 +5,10 @@ import org.junit.Test;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.credentials.TokenCredentials;
+import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.http.profile.IpProfile;
@@ -29,7 +31,7 @@ public final class IpRegexpAuthenticatorTests implements TestsConstants {
     @Test(expected = TechnicalException.class)
     public void testNoPattern() {
         val credentials = new TokenCredentials(GOOD_IP);
-        var authenticator = new IpRegexpAuthenticator();
+        Authenticator authenticator = new IpRegexpAuthenticator();
         authenticator.validate(new CallContext(null, new MockSessionStore()), credentials);
     }
 
@@ -37,7 +39,7 @@ public final class IpRegexpAuthenticatorTests implements TestsConstants {
     public void testValidateGoodIP() {
         val credentials = new TokenCredentials(GOOD_IP);
         authenticator.validate(new CallContext(null, new MockSessionStore()), credentials);
-        val profile = (IpProfile) credentials.getUserProfile();
+        UserProfile profile = (IpProfile) credentials.getUserProfile();
         assertEquals(GOOD_IP, profile.getId());
     }
 

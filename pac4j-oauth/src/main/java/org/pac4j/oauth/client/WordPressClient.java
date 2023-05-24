@@ -25,8 +25,8 @@ public class WordPressClient extends OAuth20Client {
     /**
      * <p>Constructor for WordPressClient.</p>
      *
-     * @param key a {@link java.lang.String} object
-     * @param secret a {@link java.lang.String} object
+     * @param key a {@link String} object
+     * @param secret a {@link String} object
      */
     public WordPressClient(final String key, final String secret) {
         setKey(key);

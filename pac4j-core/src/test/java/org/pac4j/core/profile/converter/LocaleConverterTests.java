@@ -9,7 +9,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 /**
- * This class tests the {@link org.pac4j.core.profile.converter.LocaleConverter} class.
+ * This class tests the {@link LocaleConverter} class.
  *
  * @author Jerome Leleu
  * @since 1.0.0

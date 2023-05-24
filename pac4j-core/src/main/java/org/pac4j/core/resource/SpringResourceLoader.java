@@ -9,6 +9,7 @@ import org.pac4j.core.util.InitializableObject;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 
+import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -22,7 +23,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public abstract class SpringResourceLoader<M> extends InitializableObject {
     private static final long NO_LAST_MODIFIED = -1;
 
-    private final ReentrantLock lock = new ReentrantLock();
+    private final Lock lock = new ReentrantLock();
     private final AtomicBoolean byteArrayHasChanged = new AtomicBoolean(true);
     @Getter
     private long lastModified = NO_LAST_MODIFIED;

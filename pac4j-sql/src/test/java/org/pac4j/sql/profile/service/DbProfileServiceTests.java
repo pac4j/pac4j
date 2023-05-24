@@ -7,6 +7,7 @@ import org.pac4j.core.exception.AccountNotFoundException;
 import org.pac4j.core.exception.BadCredentialsException;
 import org.pac4j.core.exception.MultipleAccountsFoundException;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.service.AbstractProfileService;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.util.TestsConstants;
@@ -15,6 +16,7 @@ import org.pac4j.sql.profile.DbProfile;
 import org.pac4j.sql.test.tools.DbServer;
 import org.skife.jdbi.v2.DBI;
 import org.skife.jdbi.v2.Handle;
+import org.skife.jdbi.v2.IDBI;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -70,7 +72,7 @@ public final class DbProfileServiceTests implements TestsConstants {
         val profile = credentials.getUserProfile();
         assertNotNull(profile);
         assertTrue(profile instanceof DbProfile);
-        val dbProfile = (DbProfile) profile;
+        UserProfile dbProfile = (DbProfile) profile;
         assertEquals(GOOD_USERNAME, dbProfile.getId());
         assertEquals(FIRSTNAME_VALUE, dbProfile.getAttribute(FIRSTNAME));
     }
@@ -82,7 +84,7 @@ public final class DbProfileServiceTests implements TestsConstants {
         val profile = credentials.getUserProfile();
         assertNotNull(profile);
         assertTrue(profile instanceof DbProfile);
-        val dbProfile = (DbProfile) profile;
+        UserProfile dbProfile = (DbProfile) profile;
         assertEquals(GOOD_USERNAME, dbProfile.getId());
         assertNull(dbProfile.getAttribute(FIRSTNAME));
     }
@@ -179,14 +181,14 @@ public final class DbProfileServiceTests implements TestsConstants {
     }
 
     private void alterTableChangeColumnName(String from, String to) {
-        val dbi = new DBI(ds);
+        IDBI dbi = new DBI(ds);
         try (var h = dbi.open()) {
             h.execute("alter table users rename column " + from + " to " + to);
         }
     }
 
     private List<Map<String, Object>> getData(final int id) {
-        val dbi = new DBI(ds);
+        IDBI dbi = new DBI(ds);
         Handle h = null;
         try {
             h = dbi.open();

@@ -25,8 +25,8 @@ public class BitbucketClient extends OAuth10Client {
     /**
      * <p>Constructor for BitbucketClient.</p>
      *
-     * @param key a {@link java.lang.String} object
-     * @param secret a {@link java.lang.String} object
+     * @param key a {@link String} object
+     * @param secret a {@link String} object
      */
     public BitbucketClient(final String key, final String secret) {
         setKey(key);

@@ -33,8 +33,8 @@ public class HeaderClient extends DirectClient {
     /**
      * <p>Constructor for HeaderClient.</p>
      *
-     * @param headerName a {@link java.lang.String} object
-     * @param tokenAuthenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
+     * @param headerName a {@link String} object
+     * @param tokenAuthenticator a {@link Authenticator} object
      */
     public HeaderClient(final String headerName, final Authenticator tokenAuthenticator) {
         this.headerName = headerName;
@@ -44,9 +44,9 @@ public class HeaderClient extends DirectClient {
     /**
      * <p>Constructor for HeaderClient.</p>
      *
-     * @param headerName a {@link java.lang.String} object
-     * @param prefixHeader a {@link java.lang.String} object
-     * @param tokenAuthenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
+     * @param headerName a {@link String} object
+     * @param prefixHeader a {@link String} object
+     * @param tokenAuthenticator a {@link Authenticator} object
      */
     public HeaderClient(final String headerName, final String prefixHeader,
                         final Authenticator tokenAuthenticator) {
@@ -58,9 +58,9 @@ public class HeaderClient extends DirectClient {
     /**
      * <p>Constructor for HeaderClient.</p>
      *
-     * @param headerName a {@link java.lang.String} object
-     * @param tokenAuthenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
-     * @param profileCreator a {@link org.pac4j.core.profile.creator.ProfileCreator} object
+     * @param headerName a {@link String} object
+     * @param tokenAuthenticator a {@link Authenticator} object
+     * @param profileCreator a {@link ProfileCreator} object
      */
     public HeaderClient(final String headerName, final Authenticator tokenAuthenticator,
                         final ProfileCreator profileCreator) {
@@ -72,8 +72,8 @@ public class HeaderClient extends DirectClient {
     /**
      * <p>Constructor for HeaderClient.</p>
      *
-     * @param headerName a {@link java.lang.String} object
-     * @param profileCreator a {@link org.pac4j.core.profile.creator.ProfileCreator} object
+     * @param headerName a {@link String} object
+     * @param profileCreator a {@link ProfileCreator} object
      */
     public HeaderClient(final String headerName, final ProfileCreator profileCreator) {
         this.headerName = headerName;
@@ -84,10 +84,10 @@ public class HeaderClient extends DirectClient {
     /**
      * <p>Constructor for HeaderClient.</p>
      *
-     * @param headerName a {@link java.lang.String} object
-     * @param prefixHeader a {@link java.lang.String} object
-     * @param tokenAuthenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
-     * @param profileCreator a {@link org.pac4j.core.profile.creator.ProfileCreator} object
+     * @param headerName a {@link String} object
+     * @param prefixHeader a {@link String} object
+     * @param tokenAuthenticator a {@link Authenticator} object
+     * @param profileCreator a {@link ProfileCreator} object
      */
     public HeaderClient(final String headerName, final String prefixHeader,
                         final Authenticator tokenAuthenticator, final ProfileCreator profileCreator) {
@@ -100,9 +100,9 @@ public class HeaderClient extends DirectClient {
     /**
      * <p>Constructor for HeaderClient.</p>
      *
-     * @param headerName a {@link java.lang.String} object
-     * @param prefixHeader a {@link java.lang.String} object
-     * @param profileCreator a {@link org.pac4j.core.profile.creator.ProfileCreator} object
+     * @param headerName a {@link String} object
+     * @param prefixHeader a {@link String} object
+     * @param profileCreator a {@link ProfileCreator} object
      */
     public HeaderClient(final String headerName, final String prefixHeader, final ProfileCreator profileCreator) {
         this.headerName = headerName;

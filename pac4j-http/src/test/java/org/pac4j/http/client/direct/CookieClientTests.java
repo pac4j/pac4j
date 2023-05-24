@@ -2,6 +2,7 @@ package org.pac4j.http.client.direct;
 
 import lombok.val;
 import org.junit.Test;
+import org.pac4j.core.client.Client;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.Cookie;
 import org.pac4j.core.context.MockWebContext;
@@ -9,6 +10,7 @@ import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestTokenAuthenticator;
@@ -55,7 +57,7 @@ public final class CookieClientTests implements TestsConstants {
 
     @Test
     public void testAuthentication() {
-        val client = new CookieClient(USERNAME, new SimpleTestTokenAuthenticator());
+        Client client = new CookieClient(USERNAME, new SimpleTestTokenAuthenticator());
         val context = MockWebContext.create();
 
         val c = new Cookie(USERNAME, Base64.getEncoder().encodeToString(getClass().getName().getBytes(StandardCharsets.UTF_8)));
@@ -63,7 +65,7 @@ public final class CookieClientTests implements TestsConstants {
         val ctx = new CallContext(context, new MockSessionStore());
         val credentials = (TokenCredentials) client.getCredentials(ctx).get();
         val authnCredentials = client.validateCredentials(ctx, credentials).get();
-        val profile = (CommonProfile) client.getUserProfile(ctx, authnCredentials).get();
+        UserProfile profile = (CommonProfile) client.getUserProfile(ctx, authnCredentials).get();
         assertEquals(c.getValue(), profile.getId());
     }
 }

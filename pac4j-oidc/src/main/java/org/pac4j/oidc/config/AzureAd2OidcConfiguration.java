@@ -34,7 +34,7 @@ public class AzureAd2OidcConfiguration extends OidcConfiguration {
     /**
      * <p>Constructor for AzureAd2OidcConfiguration.</p>
      *
-     * @param oidcConfiguration a {@link org.pac4j.oidc.config.OidcConfiguration} object
+     * @param oidcConfiguration a {@link OidcConfiguration} object
      */
     public AzureAd2OidcConfiguration(final OidcConfiguration oidcConfiguration) {
         this.setOpMetadataResolver(oidcConfiguration.getOpMetadataResolver());
@@ -84,8 +84,8 @@ public class AzureAd2OidcConfiguration extends OidcConfiguration {
     /**
      * <p>makeOauth2TokenRequest.</p>
      *
-     * @param refreshToken a {@link java.lang.String} object
-     * @return a {@link java.lang.String} object
+     * @param refreshToken a {@link String} object
+     * @return a {@link String} object
      */
     public String makeOauth2TokenRequest(String refreshToken) {
         var scope = this.getScope();

@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.ToString;
 import org.pac4j.core.exception.TechnicalException;
 
+import java.io.Serial;
+
 /**
  * The HTTP action, to perform on the web context by the appropriate {@link org.pac4j.core.http.adapter.HttpActionAdapter}.
  *
@@ -14,6 +16,7 @@ import org.pac4j.core.exception.TechnicalException;
 @ToString
 public abstract class HttpAction extends TechnicalException {
 
+    @Serial
     private static final long serialVersionUID = -3959659239684160075L;
 
     protected int code;

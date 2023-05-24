@@ -8,8 +8,8 @@ import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsHelper;
 
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.regex.PatternSyntaxException;
 
 import static org.junit.Assert.assertFalse;
@@ -25,7 +25,7 @@ public class PathMatcherTests {
 
     @Test
     public void testBlankPath() {
-        val pathMatcher = new PathMatcher();
+        Matcher pathMatcher = new PathMatcher();
         assertTrue(pathMatcher.matches(new CallContext(MockWebContext.create().setPath("/page.html"), new MockSessionStore())));
         assertTrue(pathMatcher.matches(new CallContext(MockWebContext.create(), new MockSessionStore())));
     }
@@ -86,9 +86,9 @@ public class PathMatcherTests {
 
     @Test
     public void testSetters() {
-        final Set<String> excludedPaths = new HashSet<>();
+        final Collection<String> excludedPaths = new HashSet<>();
         excludedPaths.add("/foo");
-        final Set<String> excludedRegexs = new HashSet<>();
+        final Collection<String> excludedRegexs = new HashSet<>();
         excludedRegexs.add("^/(img/.*|css/.*|page\\.html)$");
 
         val matcher = new PathMatcher();

@@ -11,6 +11,7 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.jwt.config.signature.SecretSignatureConfiguration;
+import org.pac4j.jwt.config.signature.SignatureConfiguration;
 
 import java.text.ParseException;
 
@@ -56,10 +57,10 @@ public final class SecretEncryptionConfigurationTests implements TestsConstants 
 
     @Test
     public void testEncryptDecryptSignedJWT() throws ParseException, JOSEException {
-        val macConfig = new SecretSignatureConfiguration(MAC_SECRET);
+        SignatureConfiguration macConfig = new SecretSignatureConfiguration(MAC_SECRET);
         val signedJWT = macConfig.sign(buildClaims());
 
-        val config = new SecretEncryptionConfiguration(MAC_SECRET);
+        EncryptionConfiguration config = new SecretEncryptionConfiguration(MAC_SECRET);
         val token = config.encrypt(signedJWT);
         val encryptedJwt = (EncryptedJWT) JWTParser.parse(token);
         config.decrypt(encryptedJwt);

@@ -6,6 +6,7 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jwt.JWTClaimsSet;
 import lombok.val;
 import org.pac4j.core.credentials.TokenCredentials;
+import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.jwt.config.signature.RSASignatureConfiguration;
 import org.pac4j.jwt.credentials.authenticator.JwtAuthenticator;
@@ -54,7 +55,7 @@ public class GenerateValidateJwtMain {
         var pub = (RSAPublicKey) pair.getPublic();
         config.setPublicKey(pub);
 
-        var authenticator = new JwtAuthenticator(config);
+        Authenticator authenticator = new JwtAuthenticator(config);
         authenticator.validate(null, new TokenCredentials(JWT));
         System.out.println("verified");
     }

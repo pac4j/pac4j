@@ -21,7 +21,7 @@ public class IpClient extends DirectClient {
     /**
      * <p>Constructor for IpClient.</p>
      *
-     * @param tokenAuthenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
+     * @param tokenAuthenticator a {@link Authenticator} object
      */
     public IpClient(final Authenticator tokenAuthenticator) {
         setAuthenticatorIfUndefined(tokenAuthenticator);
@@ -30,8 +30,8 @@ public class IpClient extends DirectClient {
     /**
      * <p>Constructor for IpClient.</p>
      *
-     * @param tokenAuthenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
-     * @param profileCreator a {@link org.pac4j.core.profile.creator.ProfileCreator} object
+     * @param tokenAuthenticator a {@link Authenticator} object
+     * @param profileCreator a {@link ProfileCreator} object
      */
     public IpClient(final Authenticator tokenAuthenticator, final ProfileCreator profileCreator) {
         setAuthenticatorIfUndefined(tokenAuthenticator);

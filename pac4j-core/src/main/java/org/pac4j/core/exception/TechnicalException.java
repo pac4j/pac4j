@@ -1,5 +1,7 @@
 package org.pac4j.core.exception;
 
+import java.io.Serial;
+
 /**
  * This class represents the root technical exception for the library.
  *
@@ -8,12 +10,13 @@ package org.pac4j.core.exception;
  */
 public class TechnicalException extends RuntimeException {
 
+    @Serial
     private static final long serialVersionUID = 536639932593211210L;
 
     /**
      * <p>Constructor for TechnicalException.</p>
      *
-     * @param message a {@link java.lang.String} object
+     * @param message a {@link String} object
      */
     public TechnicalException(final String message) {
         super(message);
@@ -22,7 +25,7 @@ public class TechnicalException extends RuntimeException {
     /**
      * <p>Constructor for TechnicalException.</p>
      *
-     * @param t a {@link java.lang.Throwable} object
+     * @param t a {@link Throwable} object
      */
     public TechnicalException(final Throwable t) {
         super(t);
@@ -31,8 +34,8 @@ public class TechnicalException extends RuntimeException {
     /**
      * <p>Constructor for TechnicalException.</p>
      *
-     * @param message a {@link java.lang.String} object
-     * @param t a {@link java.lang.Throwable} object
+     * @param message a {@link String} object
+     * @param t a {@link Throwable} object
      */
     public TechnicalException(final String message, final Throwable t) {
         super(message, t);

@@ -3,7 +3,7 @@ package org.pac4j.saml.metadata.keystore;
 import java.io.InputStream;
 
 /**
- * This is {@link org.pac4j.saml.metadata.keystore.SAML2KeystoreGenerator}.
+ * This is {@link SAML2KeystoreGenerator}.
  *
  * @author Misagh Moayyed
  * @since 4.0.1
@@ -24,8 +24,8 @@ public interface SAML2KeystoreGenerator {
     /**
      * <p>retrieve.</p>
      *
-     * @return a {@link java.io.InputStream} object
-     * @throws java.lang.Exception if any.
+     * @return a {@link InputStream} object
+     * @throws Exception if any.
      */
     InputStream retrieve() throws Exception;
 

@@ -1,7 +1,7 @@
 package org.pac4j.config.client;
 
 /**
- * Properties constants for the {@link org.pac4j.config.client.PropertiesConfigFactory}.
+ * Properties constants for the {@link PropertiesConfigFactory}.
  *
  * @author Jerome Leleu
  * @since 2.0.0

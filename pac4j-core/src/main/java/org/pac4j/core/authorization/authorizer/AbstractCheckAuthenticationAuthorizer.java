@@ -28,7 +28,7 @@ public abstract class AbstractCheckAuthenticationAuthorizer extends ProfileAutho
     /**
      * <p>Constructor for AbstractCheckAuthenticationAuthorizer.</p>
      *
-     * @param redirectionUrl a {@link java.lang.String} object
+     * @param redirectionUrl a {@link String} object
      */
     public AbstractCheckAuthenticationAuthorizer(final String redirectionUrl) {
         this.redirectionUrl = redirectionUrl;

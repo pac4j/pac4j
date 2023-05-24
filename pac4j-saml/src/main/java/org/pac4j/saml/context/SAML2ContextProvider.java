@@ -1,5 +1,6 @@
 package org.pac4j.saml.context;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import net.shibboleth.shared.resolver.CriteriaSet;
@@ -28,8 +29,8 @@ import org.pac4j.saml.util.SAML2Utils;
 import javax.xml.namespace.QName;
 
 /**
- * Responsible for building a {@link org.pac4j.saml.context.SAML2MessageContext} from given SAML2 properties (idpEntityId and metadata
- * manager) and current {@link org.pac4j.core.context.WebContext}.
+ * Responsible for building a {@link SAML2MessageContext} from given SAML2 properties (idpEntityId and metadata
+ * manager) and current {@link WebContext}.
  *
  * @author Michael Remond
  * @author Misagh Moayyed
@@ -37,6 +38,7 @@ import javax.xml.namespace.QName;
  */
 @SuppressWarnings("rawtypes")
 @Slf4j
+@RequiredArgsConstructor
 public class SAML2ContextProvider implements SAMLContextProvider {
     private static final String SAML2_WEBSSO_PROFILE_URI = "urn:oasis:names:tc:SAML:2.0:profiles:SSO:browser";
 
@@ -46,20 +48,6 @@ public class SAML2ContextProvider implements SAMLContextProvider {
 
     protected final SAMLMessageStoreFactory samlMessageStoreFactory;
 
-    /**
-     * <p>Constructor for SAML2ContextProvider.</p>
-     *
-     * @param idpEntityId a {@link org.pac4j.saml.metadata.SAML2MetadataResolver} object
-     * @param spEntityId a {@link org.pac4j.saml.metadata.SAML2MetadataResolver} object
-     * @param samlMessageStoreFactory a {@link org.pac4j.saml.store.SAMLMessageStoreFactory} object
-     */
-    public SAML2ContextProvider(final SAML2MetadataResolver idpEntityId,
-                                final SAML2MetadataResolver spEntityId,
-                                final SAMLMessageStoreFactory samlMessageStoreFactory) {
-        this.idpEntityId = idpEntityId;
-        this.spEntityId = spEntityId;
-        this.samlMessageStoreFactory = samlMessageStoreFactory;
-    }
 
     /** {@inheritDoc} */
     @Override
@@ -82,9 +70,9 @@ public class SAML2ContextProvider implements SAMLContextProvider {
     /**
      * <p>addTransportContext.</p>
      *
-     * @param webContext a {@link org.pac4j.core.context.WebContext} object
-     * @param sessionStore a {@link org.pac4j.core.context.session.SessionStore} object
-     * @param context a {@link org.pac4j.saml.context.SAML2MessageContext} object
+     * @param webContext a {@link WebContext} object
+     * @param sessionStore a {@link SessionStore} object
+     * @param context a {@link SAML2MessageContext} object
      */
     protected final void addTransportContext(final WebContext webContext, final SessionStore sessionStore,
                                              final SAML2MessageContext context) {
@@ -104,8 +92,8 @@ public class SAML2ContextProvider implements SAMLContextProvider {
     /**
      * <p>prepareOutboundMessageContext.</p>
      *
-     * @param webContext a {@link org.pac4j.core.context.WebContext} object
-     * @return a {@link org.opensaml.messaging.context.MessageContext} object
+     * @param webContext a {@link WebContext} object
+     * @return a {@link MessageContext} object
      */
     protected MessageContext prepareOutboundMessageContext(final WebContext webContext) {
         final Pac4jSAMLResponse outTransport = new DefaultPac4jSAMLResponse(webContext);
@@ -117,7 +105,7 @@ public class SAML2ContextProvider implements SAMLContextProvider {
     /**
      * <p>addSPContext.</p>
      *
-     * @param context a {@link org.pac4j.saml.context.SAML2MessageContext} object
+     * @param context a {@link SAML2MessageContext} object
      */
     protected final void addSPContext(final SAML2MessageContext context) {
         val selfContext = context.getSAMLSelfEntityContext();
@@ -129,7 +117,7 @@ public class SAML2ContextProvider implements SAMLContextProvider {
     /**
      * <p>addIDPContext.</p>
      *
-     * @param context a {@link org.pac4j.saml.context.SAML2MessageContext} object
+     * @param context a {@link SAML2MessageContext} object
      */
     protected final void addIDPContext(final SAML2MessageContext context) {
         val peerContext = context.getSAMLPeerEntityContext();
@@ -141,9 +129,9 @@ public class SAML2ContextProvider implements SAMLContextProvider {
     /**
      * <p>addContext.</p>
      *
-     * @param metadata a {@link org.pac4j.saml.metadata.SAML2MetadataResolver} object
-     * @param parentContext a {@link org.opensaml.messaging.context.BaseContext} object
-     * @param elementName a {@link javax.xml.namespace.QName} object
+     * @param metadata a {@link SAML2MetadataResolver} object
+     * @param parentContext a {@link BaseContext} object
+     * @param elementName a {@link QName} object
      */
     protected final void addContext(final SAML2MetadataResolver metadata, final BaseContext parentContext,
                                     final QName elementName) {

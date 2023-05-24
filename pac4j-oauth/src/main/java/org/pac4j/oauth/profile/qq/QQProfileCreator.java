@@ -26,8 +26,8 @@ public class QQProfileCreator extends OAuth20ProfileCreator {
     /**
      * <p>Constructor for QQProfileCreator.</p>
      *
-     * @param configuration a {@link org.pac4j.oauth.config.OAuth20Configuration} object
-     * @param client a {@link org.pac4j.core.client.IndirectClient} object
+     * @param configuration a {@link OAuth20Configuration} object
+     * @param client a {@link IndirectClient} object
      */
     public QQProfileCreator(final OAuth20Configuration configuration,
                             final IndirectClient client) {

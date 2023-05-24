@@ -4,6 +4,7 @@ import lombok.val;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.definition.ProfileDefinitionAware;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.credentials.SAML2AuthenticationCredentials;
@@ -69,10 +70,10 @@ public class SAML2Authenticator extends ProfileDefinitionAware implements Authen
     /**
      * <p>Constructor for SAML2Authenticator.</p>
      *
-     * @param loginValidator a {@link org.pac4j.saml.profile.api.SAML2ResponseValidator} object
-     * @param logoutValidator a {@link org.pac4j.saml.logout.impl.SAML2LogoutValidator} object
-     * @param attributeAsId a {@link java.lang.String} object
-     * @param mappedAttributes a {@link java.util.Map} object
+     * @param loginValidator a {@link SAML2ResponseValidator} object
+     * @param logoutValidator a {@link SAML2LogoutValidator} object
+     * @param attributeAsId a {@link String} object
+     * @param mappedAttributes a {@link Map} object
      */
     public SAML2Authenticator(final SAML2ResponseValidator loginValidator, final SAML2LogoutValidator logoutValidator,
                               final String attributeAsId, final Map<String, String> mappedAttributes) {
@@ -85,9 +86,9 @@ public class SAML2Authenticator extends ProfileDefinitionAware implements Authen
     /**
      * <p>Constructor for SAML2Authenticator.</p>
      *
-     * @param loginValidator a {@link org.pac4j.saml.profile.api.SAML2ResponseValidator} object
-     * @param logoutValidator a {@link org.pac4j.saml.logout.impl.SAML2LogoutValidator} object
-     * @param attributeAsId a {@link java.lang.String} object
+     * @param loginValidator a {@link SAML2ResponseValidator} object
+     * @param logoutValidator a {@link SAML2LogoutValidator} object
+     * @param attributeAsId a {@link String} object
      */
     public SAML2Authenticator(final SAML2ResponseValidator loginValidator, final SAML2LogoutValidator logoutValidator,
                               final String attributeAsId) {
@@ -121,10 +122,10 @@ public class SAML2Authenticator extends ProfileDefinitionAware implements Authen
     /**
      * <p>buildProfile.</p>
      *
-     * @param credentials a {@link org.pac4j.saml.credentials.SAML2AuthenticationCredentials} object
+     * @param credentials a {@link SAML2AuthenticationCredentials} object
      */
     protected void buildProfile(final SAML2AuthenticationCredentials credentials) {
-        val profile = (SAML2Profile) getProfileDefinition().newProfile();
+        UserProfile profile = (SAML2Profile) getProfileDefinition().newProfile();
 
         val nameId = credentials.getNameId();
         profile.setId(nameId.getValue());

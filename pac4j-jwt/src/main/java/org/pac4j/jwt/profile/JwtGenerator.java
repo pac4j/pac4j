@@ -45,7 +45,7 @@ public class JwtGenerator {
     /**
      * <p>Constructor for JwtGenerator.</p>
      *
-     * @param signatureConfiguration a {@link org.pac4j.jwt.config.signature.SignatureConfiguration} object
+     * @param signatureConfiguration a {@link SignatureConfiguration} object
      */
     public JwtGenerator(final SignatureConfiguration signatureConfiguration) {
         this.signatureConfiguration = signatureConfiguration;
@@ -54,8 +54,8 @@ public class JwtGenerator {
     /**
      * <p>Constructor for JwtGenerator.</p>
      *
-     * @param signatureConfiguration a {@link org.pac4j.jwt.config.signature.SignatureConfiguration} object
-     * @param encryptionConfiguration a {@link org.pac4j.jwt.config.encryption.EncryptionConfiguration} object
+     * @param signatureConfiguration a {@link SignatureConfiguration} object
+     * @param encryptionConfiguration a {@link EncryptionConfiguration} object
      */
     public JwtGenerator(final SignatureConfiguration signatureConfiguration, final EncryptionConfiguration encryptionConfiguration) {
         this.signatureConfiguration = signatureConfiguration;
@@ -120,7 +120,7 @@ public class JwtGenerator {
     /**
      * <p>verifyProfile.</p>
      *
-     * @param profile a {@link org.pac4j.core.profile.UserProfile} object
+     * @param profile a {@link UserProfile} object
      */
     protected void verifyProfile(final UserProfile profile) {
         CommonHelper.assertNotNull("profile", profile);
@@ -131,8 +131,8 @@ public class JwtGenerator {
     /**
      * <p>buildJwtClaimsSet.</p>
      *
-     * @param profile a {@link org.pac4j.core.profile.UserProfile} object
-     * @return a {@link com.nimbusds.jwt.JWTClaimsSet} object
+     * @param profile a {@link UserProfile} object
+     * @return a {@link JWTClaimsSet} object
      */
     protected JWTClaimsSet buildJwtClaimsSet(final UserProfile profile) {
         // claims builder with subject and issue time
@@ -160,7 +160,7 @@ public class JwtGenerator {
     /**
      * <p>Getter for the field <code>expirationTime</code>.</p>
      *
-     * @return a {@link java.util.Date} object
+     * @return a {@link Date} object
      */
     public Date getExpirationTime() {
         return new Date(expirationTime.getTime());
@@ -169,7 +169,7 @@ public class JwtGenerator {
     /**
      * <p>Setter for the field <code>expirationTime</code>.</p>
      *
-     * @param expirationTime a {@link java.util.Date} object
+     * @param expirationTime a {@link Date} object
      */
     public void setExpirationTime(final Date expirationTime) {
         this.expirationTime = new Date(expirationTime.getTime());

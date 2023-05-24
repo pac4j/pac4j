@@ -27,7 +27,7 @@ public class SpringEncoderBuilder extends AbstractBuilder {
     /**
      * <p>Constructor for SpringEncoderBuilder.</p>
      *
-     * @param properties a {@link java.util.Map} object
+     * @param properties a {@link Map} object
      */
     public SpringEncoderBuilder(final Map<String, String> properties) {
         super(properties);
@@ -36,7 +36,7 @@ public class SpringEncoderBuilder extends AbstractBuilder {
     /**
      * <p>tryCreatePasswordEncoder.</p>
      *
-     * @param encoders a {@link java.util.Map} object
+     * @param encoders a {@link Map} object
      */
     public void tryCreatePasswordEncoder(final Map<String, org.pac4j.core.credentials.password.PasswordEncoder> encoders) {
         for (var i = 0; i <= MAX_NUM_ENCODERS; i++) {

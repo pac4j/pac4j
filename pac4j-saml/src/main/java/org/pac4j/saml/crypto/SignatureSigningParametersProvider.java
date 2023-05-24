@@ -15,8 +15,8 @@ public interface SignatureSigningParametersProvider {
     /**
      * <p>build.</p>
      *
-     * @param descriptor a {@link org.opensaml.saml.saml2.metadata.SSODescriptor} object
-     * @return a {@link org.opensaml.xmlsec.SignatureSigningParameters} object
+     * @param descriptor a {@link SSODescriptor} object
+     * @return a {@link SignatureSigningParameters} object
      */
     SignatureSigningParameters build(final SSODescriptor descriptor);
 }

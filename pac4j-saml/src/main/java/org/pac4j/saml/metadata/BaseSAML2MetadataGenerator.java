@@ -24,6 +24,7 @@ import org.opensaml.xmlsec.algorithm.AlgorithmRegistry;
 import org.opensaml.xmlsec.algorithm.AlgorithmSupport;
 import org.opensaml.xmlsec.config.impl.DefaultSecurityConfigurationBootstrap;
 import org.opensaml.xmlsec.signature.KeyInfo;
+import org.opensaml.xmlsec.signature.SignableXMLObject;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.crypto.CredentialProvider;
 import org.pac4j.saml.util.Configuration;
@@ -117,8 +118,8 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
     /**
      * <p>createMetadataResolver.</p>
      *
-     * @return a {@link org.opensaml.saml.metadata.resolver.impl.AbstractMetadataResolver} object
-     * @throws java.lang.Exception if any.
+     * @return a {@link AbstractMetadataResolver} object
+     * @throws Exception if any.
      */
     protected abstract AbstractMetadataResolver createMetadataResolver() throws Exception;
 
@@ -150,9 +151,9 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
     /**
      * <p>signMetadata.</p>
      *
-     * @param descriptor a {@link org.opensaml.saml.saml2.metadata.EntityDescriptor} object
+     * @param descriptor a {@link EntityDescriptor} object
      */
-    protected void signMetadata(final EntityDescriptor descriptor) {
+    protected void signMetadata(final SignableXMLObject descriptor) {
         if (this.metadataSigner == null) {
             this.metadataSigner = new DefaultSAML2MetadataSigner(this.credentialProvider,
                 getSignatureAlgorithms().get(0),
@@ -164,7 +165,7 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
     /**
      * <p>generateMetadataExtensions.</p>
      *
-     * @return a {@link org.opensaml.saml.saml2.metadata.Extensions} object
+     * @return a {@link Extensions} object
      */
     protected Extensions generateMetadataExtensions() {
         val builderExt = (SAMLObjectBuilder<Extensions>)
@@ -200,7 +201,7 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
     /**
      * <p>buildSPSSODescriptor.</p>
      *
-     * @return a {@link org.opensaml.saml.saml2.metadata.SPSSODescriptor} object
+     * @return a {@link SPSSODescriptor} object
      */
     protected SPSSODescriptor buildSPSSODescriptor() {
         val builder = (SAMLObjectBuilder<SPSSODescriptor>)
@@ -417,7 +418,7 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
     /**
      * <p>buildNameIDFormat.</p>
      *
-     * @return a {@link java.util.Collection} object
+     * @return a {@link Collection} object
      */
     protected Collection<NameIDFormat> buildNameIDFormat() {
 
@@ -449,10 +450,10 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
     /**
      * <p>getAssertionConsumerService.</p>
      *
-     * @param binding a {@link java.lang.String} object
+     * @param binding a {@link String} object
      * @param index a int
      * @param isDefault a boolean
-     * @return a {@link org.opensaml.saml.saml2.metadata.AssertionConsumerService} object
+     * @return a {@link AssertionConsumerService} object
      */
     protected AssertionConsumerService getAssertionConsumerService(final String binding, final int index,
                                                                    final boolean isDefault) {
@@ -471,8 +472,8 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
     /**
      * <p>getSingleLogoutService.</p>
      *
-     * @param binding a {@link java.lang.String} object
-     * @return a {@link org.opensaml.saml.saml2.metadata.SingleLogoutService} object
+     * @param binding a {@link String} object
+     * @return a {@link SingleLogoutService} object
      */
     protected SingleLogoutService getSingleLogoutService(final String binding) {
         val builder = (SAMLObjectBuilder<SingleLogoutService>) this.builderFactory
@@ -486,9 +487,9 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
     /**
      * <p>getKeyDescriptor.</p>
      *
-     * @param type a {@link org.opensaml.security.credential.UsageType} object
-     * @param key a {@link org.opensaml.xmlsec.signature.KeyInfo} object
-     * @return a {@link org.opensaml.saml.saml2.metadata.KeyDescriptor} object
+     * @param type a {@link UsageType} object
+     * @param key a {@link KeyInfo} object
+     * @return a {@link KeyDescriptor} object
      */
     protected KeyDescriptor getKeyDescriptor(final UsageType type, final KeyInfo key) {
         val builder = (SAMLObjectBuilder<KeyDescriptor>)
@@ -503,7 +504,7 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
     /**
      * <p>Getter for the field <code>blackListedSignatureSigningAlgorithms</code>.</p>
      *
-     * @return a {@link java.util.List} object
+     * @return a {@link List} object
      */
     public List<String> getBlackListedSignatureSigningAlgorithms() {
         if (blackListedSignatureSigningAlgorithms == null) {
@@ -517,7 +518,7 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
     /**
      * <p>Getter for the field <code>signatureAlgorithms</code>.</p>
      *
-     * @return a {@link java.util.List} object
+     * @return a {@link List} object
      */
     public List<String> getSignatureAlgorithms() {
         if (signatureAlgorithms == null) {
@@ -530,7 +531,7 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
     /**
      * <p>Getter for the field <code>signatureReferenceDigestMethods</code>.</p>
      *
-     * @return a {@link java.util.List} object
+     * @return a {@link List} object
      */
     public List<String> getSignatureReferenceDigestMethods() {
         if (signatureReferenceDigestMethods == null) {
@@ -540,7 +541,7 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
     }
 
     private List<String> filterForRuntimeSupportedAlgorithms(final List<String> algorithms) {
-        final List<String> filteredAlgorithms = new ArrayList<>(algorithms);
+        final Collection<String> filteredAlgorithms = new ArrayList<>(algorithms);
         return filteredAlgorithms
             .stream()
             .filter(uri -> Objects.requireNonNull(globalAlgorithmRegistry).isRuntimeSupported(uri))

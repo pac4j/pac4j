@@ -24,7 +24,7 @@ public class AppleClient extends OidcClient {
     /**
      * <p>Constructor for AppleClient.</p>
      *
-     * @param configuration a {@link org.pac4j.oidc.config.AppleOidcConfiguration} object
+     * @param configuration a {@link AppleOidcConfiguration} object
      */
     public AppleClient(AppleOidcConfiguration configuration) {
         super(configuration);

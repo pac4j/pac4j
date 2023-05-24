@@ -27,8 +27,8 @@ public class CookieClient extends DirectClient {
     /**
      * <p>Constructor for CookieClient.</p>
      *
-     * @param cookieName a {@link java.lang.String} object
-     * @param cookieAuthenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
+     * @param cookieName a {@link String} object
+     * @param cookieAuthenticator a {@link Authenticator} object
      */
     public CookieClient(final String cookieName, final Authenticator cookieAuthenticator) {
         this.cookieName = cookieName;

@@ -63,7 +63,7 @@ public class DirectCasClient extends DirectClient {
     /**
      * <p>Constructor for DirectCasClient.</p>
      *
-     * @param casConfiguration a {@link org.pac4j.cas.config.CasConfiguration} object
+     * @param casConfiguration a {@link CasConfiguration} object
      */
     public DirectCasClient(final CasConfiguration casConfiguration) {
         this.configuration = casConfiguration;
@@ -92,7 +92,7 @@ public class DirectCasClient extends DirectClient {
             val loginUrl = configuration.computeFinalLoginUrl(webContext);
 
             val credentials = getCredentialsExtractor().extract(ctx);
-            if (!credentials.isPresent()) {
+            if (credentials.isEmpty()) {
                 // redirect to the login page
                 val redirectionUrl = CasRedirectionActionBuilder.constructRedirectUrl(loginUrl, CasConfiguration.SERVICE_PARAMETER,
                     callbackUrl, configuration.isRenew(), false, null);

@@ -9,7 +9,7 @@ import org.pac4j.saml.config.SAML2Configuration;
 import java.util.List;
 
 /**
- * This is {@link org.pac4j.saml.context.SAML2ConfigurationContext}.
+ * This is {@link SAML2ConfigurationContext}.
  *
  * @author Misagh Moayyed
  * @since 5.0.0
@@ -52,8 +52,8 @@ public class SAML2ConfigurationContext extends BaseContext {
     /**
      * <p>Constructor for SAML2ConfigurationContext.</p>
      *
-     * @param webContext a {@link org.pac4j.core.context.WebContext} object
-     * @param configuration a {@link org.pac4j.saml.config.SAML2Configuration} object
+     * @param webContext a {@link WebContext} object
+     * @param configuration a {@link SAML2Configuration} object
      */
     public SAML2ConfigurationContext(final WebContext webContext,
                                      final SAML2Configuration configuration) {
@@ -64,7 +64,7 @@ public class SAML2ConfigurationContext extends BaseContext {
     /**
      * <p>getSAML2Configuration.</p>
      *
-     * @return a {@link org.pac4j.saml.config.SAML2Configuration} object
+     * @return a {@link SAML2Configuration} object
      */
     public SAML2Configuration getSAML2Configuration() {
         return configuration;
@@ -73,7 +73,7 @@ public class SAML2ConfigurationContext extends BaseContext {
     /**
      * <p>getAuthnRequestBindingType.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getAuthnRequestBindingType() {
         return (String) webContext.getRequestAttribute(REQUEST_ATTR_AUTHN_REQUEST_BINDING_TYPE)
@@ -83,7 +83,7 @@ public class SAML2ConfigurationContext extends BaseContext {
     /**
      * <p>getAssertionConsumerServiceIndex.</p>
      *
-     * @return a {@link java.lang.Integer} object
+     * @return a {@link Integer} object
      */
     public Integer getAssertionConsumerServiceIndex() {
         return (Integer) webContext.getRequestAttribute(REQUEST_ATTR_ASSERTION_CONSUMER_SERVICE_INDEX)
@@ -93,7 +93,7 @@ public class SAML2ConfigurationContext extends BaseContext {
     /**
      * <p>getAttributeConsumingServiceIndex.</p>
      *
-     * @return a {@link java.lang.Integer} object
+     * @return a {@link Integer} object
      */
     public Integer getAttributeConsumingServiceIndex() {
         return (Integer) webContext.getRequestAttribute(REQUEST_ATTR_ATTRIBUTE_CONSUMING_SERVICE_INDEX)
@@ -103,7 +103,7 @@ public class SAML2ConfigurationContext extends BaseContext {
     /**
      * <p>getComparisonType.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getComparisonType() {
         return (String) webContext.getRequestAttribute(REQUEST_ATTR_COMPARISON_TYPE)
@@ -113,7 +113,7 @@ public class SAML2ConfigurationContext extends BaseContext {
     /**
      * <p>getNameIdPolicyFormat.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getNameIdPolicyFormat() {
         return (String) webContext.getRequestAttribute(REQUEST_ATTR_NAME_ID_POLICY_FORMAT)
@@ -123,7 +123,7 @@ public class SAML2ConfigurationContext extends BaseContext {
     /**
      * <p>isNameIdPolicyAllowCreate.</p>
      *
-     * @return a {@link java.lang.Boolean} object
+     * @return a {@link Boolean} object
      */
     public Boolean isNameIdPolicyAllowCreate() {
         return (Boolean) webContext.getRequestAttribute(REQUEST_ATTR_NAME_ID_POLICY_ALLOW_CREATE)
@@ -133,7 +133,7 @@ public class SAML2ConfigurationContext extends BaseContext {
     /**
      * <p>getProviderName.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getProviderName() {
         return (String) webContext.getRequestAttribute(REQUEST_ATTR_PROVIDER_NAME)
@@ -143,7 +143,7 @@ public class SAML2ConfigurationContext extends BaseContext {
     /**
      * <p>getIssuerFormat.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getIssuerFormat() {
         return (String) webContext.getRequestAttribute(REQUEST_ATTR_ISSUER_FORMAT)
@@ -153,7 +153,7 @@ public class SAML2ConfigurationContext extends BaseContext {
     /**
      * <p>isUseNameQualifier.</p>
      *
-     * @return a {@link java.lang.Boolean} object
+     * @return a {@link Boolean} object
      */
     public Boolean isUseNameQualifier() {
         return (Boolean) webContext.getRequestAttribute(REQUEST_ATTR_USE_NAME_QUALIFIER)
@@ -164,7 +164,7 @@ public class SAML2ConfigurationContext extends BaseContext {
     /**
      * <p>getAuthnContextClassRefs.</p>
      *
-     * @return a {@link java.util.List} object
+     * @return a {@link List} object
      */
     public List<String> getAuthnContextClassRefs() {
         return (List<String>) webContext.getRequestAttribute(REQUEST_ATTR_AUTHN_CONTEXT_CLASS_REFS)
@@ -174,7 +174,7 @@ public class SAML2ConfigurationContext extends BaseContext {
     /**
      * <p>isPassive.</p>
      *
-     * @return a {@link java.lang.Boolean} object
+     * @return a {@link Boolean} object
      */
     public Boolean isPassive() {
         return webContext.getRequestAttribute(RedirectionActionBuilder.ATTRIBUTE_PASSIVE).isPresent()
@@ -184,7 +184,7 @@ public class SAML2ConfigurationContext extends BaseContext {
     /**
      * <p>isForceAuth.</p>
      *
-     * @return a {@link java.lang.Boolean} object
+     * @return a {@link Boolean} object
      */
     public Boolean isForceAuth() {
         return webContext.getRequestAttribute(RedirectionActionBuilder.ATTRIBUTE_FORCE_AUTHN).isPresent()
@@ -194,7 +194,7 @@ public class SAML2ConfigurationContext extends BaseContext {
     /**
      * <p>getNameIdAttribute.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getNameIdAttribute() {
         return (String) webContext.getRequestAttribute(REQUEST_ATTR_NAME_ID_ATTRIBUTE)
@@ -204,7 +204,7 @@ public class SAML2ConfigurationContext extends BaseContext {
     /**
      * <p>isWantsAssertionsSigned.</p>
      *
-     * @return a {@link java.lang.Boolean} object
+     * @return a {@link Boolean} object
      */
     public Boolean isWantsAssertionsSigned() {
         return (Boolean) webContext.getRequestAttribute(REQUEST_ATTR_WANTS_ASSERTIONS_SIGNED)
@@ -214,7 +214,7 @@ public class SAML2ConfigurationContext extends BaseContext {
     /**
      * <p>getMaximumAuthenticationLifetime.</p>
      *
-     * @return a {@link java.lang.Long} object
+     * @return a {@link Long} object
      */
     public Long getMaximumAuthenticationLifetime() {
         return (Long) webContext.getRequestAttribute(REQUEST_ATTR_MAXIMUM_AUTHENTICATION_LIFETIME)

@@ -12,6 +12,7 @@ import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.Pac4jConstants;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -29,13 +30,13 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
     /** Constant <code>CSRF_AUTHORIZER</code> */
     protected static final CsrfAuthorizer CSRF_AUTHORIZER = new CsrfAuthorizer();
     /** Constant <code>IS_ANONYMOUS_AUTHORIZER</code> */
-    protected static final IsAnonymousAuthorizer IS_ANONYMOUS_AUTHORIZER = new IsAnonymousAuthorizer();
+    protected static final Authorizer IS_ANONYMOUS_AUTHORIZER = new IsAnonymousAuthorizer();
     /** Constant <code>IS_AUTHENTICATED_AUTHORIZER</code> */
     protected static final IsAuthenticatedAuthorizer IS_AUTHENTICATED_AUTHORIZER =new IsAuthenticatedAuthorizer();
     /** Constant <code>IS_FULLY_AUTHENTICATED_AUTHORIZER</code> */
     protected static final IsFullyAuthenticatedAuthorizer IS_FULLY_AUTHENTICATED_AUTHORIZER = new IsFullyAuthenticatedAuthorizer();
     /** Constant <code>IS_REMEMBERED_AUTHORIZER</code> */
-    protected static final IsRememberedAuthorizer IS_REMEMBERED_AUTHORIZER = new IsRememberedAuthorizer();
+    protected static final Authorizer IS_REMEMBERED_AUTHORIZER = new IsRememberedAuthorizer();
 
     /** {@inheritDoc} */
     @Override
@@ -49,12 +50,12 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
     /**
      * <p>computeAuthorizers.</p>
      *
-     * @param context a {@link org.pac4j.core.context.WebContext} object
-     * @param profiles a {@link java.util.List} object
-     * @param authorizersValue a {@link java.lang.String} object
-     * @param authorizersMap a {@link java.util.Map} object
-     * @param clients a {@link java.util.List} object
-     * @return a {@link java.util.List} object
+     * @param context a {@link WebContext} object
+     * @param profiles a {@link List} object
+     * @param authorizersValue a {@link String} object
+     * @param authorizersMap a {@link Map} object
+     * @param clients a {@link List} object
+     * @return a {@link List} object
      */
     protected List<Authorizer> computeAuthorizers(final WebContext context, final List<UserProfile> profiles, final String authorizersValue,
                                                   final Map<String, Authorizer> authorizersMap, final List<Client> clients) {
@@ -76,15 +77,15 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
     /**
      * <p>computeDefaultAuthorizers.</p>
      *
-     * @param context a {@link org.pac4j.core.context.WebContext} object
-     * @param profiles a {@link java.util.List} object
-     * @param clients a {@link java.util.List} object
-     * @param authorizersMap a {@link java.util.Map} object
-     * @return a {@link java.util.List} object
+     * @param context a {@link WebContext} object
+     * @param profiles a {@link List} object
+     * @param clients a {@link List} object
+     * @param authorizersMap a {@link Map} object
+     * @return a {@link List} object
      */
     protected List<Authorizer> computeDefaultAuthorizers(final WebContext context, final List<UserProfile> profiles,
                                                          final List<Client> clients, final Map<String, Authorizer> authorizersMap) {
-        val authorizers = new ArrayList<Authorizer>();
+        List<Authorizer> authorizers = new ArrayList<>();
         if (containsClientType(clients, IndirectClient.class)) {
             authorizers.add(retrieveAuthorizer(DefaultAuthorizers.CSRF_CHECK, authorizersMap));
         }
@@ -97,13 +98,13 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
     /**
      * <p>computeAuthorizersFromNames.</p>
      *
-     * @param authorizerNames a {@link java.lang.String} object
-     * @param authorizersMap a {@link java.util.Map} object
-     * @return a {@link java.util.List} object
+     * @param authorizerNames a {@link String} object
+     * @param authorizersMap a {@link Map} object
+     * @return a {@link List} object
      */
     protected List<Authorizer> computeAuthorizersFromNames(final String authorizerNames, final Map<String, Authorizer> authorizersMap) {
         assertNotNull("authorizersMap", authorizersMap);
-        val authorizers = new ArrayList<Authorizer>();
+        List<Authorizer> authorizers = new ArrayList<>();
         val names = authorizerNames.split(Pac4jConstants.ELEMENT_SEPARATOR);
         val nb = names.length;
         for (var i = 0; i < nb; i++) {
@@ -121,9 +122,9 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
     /**
      * <p>retrieveAuthorizer.</p>
      *
-     * @param authorizerName a {@link java.lang.String} object
-     * @param authorizersMap a {@link java.util.Map} object
-     * @return a {@link org.pac4j.core.authorization.authorizer.Authorizer} object
+     * @param authorizerName a {@link String} object
+     * @param authorizersMap a {@link Map} object
+     * @return a {@link Authorizer} object
      */
     protected Authorizer retrieveAuthorizer(final String authorizerName, final Map<String, Authorizer> authorizersMap) {
         Authorizer authorizer = null;
@@ -152,11 +153,11 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
     /**
      * <p>containsClientType.</p>
      *
-     * @param clients a {@link java.util.List} object
-     * @param clazz a {@link java.lang.Class} object
+     * @param clients a {@link List} object
+     * @param clazz a {@link Class} object
      * @return a boolean
      */
-    protected boolean containsClientType(final List<Client> clients, final Class<? extends Client> clazz) {
+    protected boolean containsClientType(final Iterable<Client> clients, final Class<? extends Client> clazz) {
         for (val client : clients) {
             if (clazz.isAssignableFrom(client.getClass())) {
                 return true;
@@ -168,14 +169,14 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
     /**
      * <p>isAuthorized.</p>
      *
-     * @param context a {@link org.pac4j.core.context.WebContext} object
-     * @param sessionStore a {@link org.pac4j.core.context.session.SessionStore} object
-     * @param profiles a {@link java.util.List} object
-     * @param authorizers a {@link java.util.List} object
+     * @param context a {@link WebContext} object
+     * @param sessionStore a {@link SessionStore} object
+     * @param profiles a {@link List} object
+     * @param authorizers a {@link List} object
      * @return a boolean
      */
     protected boolean isAuthorized(final WebContext context, final SessionStore sessionStore,
-                                   final List<UserProfile> profiles, final List<Authorizer> authorizers) {
+                                   final List<UserProfile> profiles, final Collection<Authorizer> authorizers) {
         // authorizations check comes after authentication and profile must not be null nor empty
         assertTrue(isNotEmpty(profiles), "profiles must not be null or empty");
         if (isNotEmpty(authorizers)) {

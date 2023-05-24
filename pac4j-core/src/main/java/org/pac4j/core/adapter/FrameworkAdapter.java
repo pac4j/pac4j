@@ -53,8 +53,8 @@ public abstract class FrameworkAdapter {
     /**
      * <p>compareManagers.</p>
      *
-     * @param obj1 a {@link java.lang.Object} object
-     * @param obj2 a {@link java.lang.Object} object
+     * @param obj1 a {@link Object} object
+     * @param obj2 a {@link Object} object
      * @return a int
      */
     public abstract int compareManagers(final Object obj1, final Object obj2);
@@ -62,7 +62,7 @@ public abstract class FrameworkAdapter {
     /**
      * <p>applyDefaultSettingsIfUndefined.</p>
      *
-     * @param config a {@link org.pac4j.core.config.Config} object
+     * @param config a {@link Config} object
      */
     public abstract void applyDefaultSettingsIfUndefined(final Config config);
 }

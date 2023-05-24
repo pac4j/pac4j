@@ -35,7 +35,7 @@ public interface EncryptionConfiguration {
      * Decrypt an encrypted JWT.
      *
      * @param encryptedJWT the encrypted JWT
-     * @throws com.nimbusds.jose.JOSEException exception when decrypting the JWT
+     * @throws JOSEException exception when decrypting the JWT
      */
     void decrypt(EncryptedJWT encryptedJWT) throws JOSEException;
 }

@@ -3,6 +3,8 @@ package org.pac4j.couch.profile;
 import lombok.ToString;
 import org.pac4j.core.profile.CommonProfile;
 
+import java.io.Serial;
+
 /**
  * <p>The user profile returned from a CouchDB.</p>
  *
@@ -13,5 +15,6 @@ import org.pac4j.core.profile.CommonProfile;
 @ToString(callSuper = true)
 public class CouchProfile extends CommonProfile {
 
+    @Serial
     private static final long serialVersionUID = 1527226102386684236L;
 }

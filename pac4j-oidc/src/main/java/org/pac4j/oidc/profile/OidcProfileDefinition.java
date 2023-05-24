@@ -115,7 +115,7 @@ public class OidcProfileDefinition extends CommonProfileDefinition {
     /**
      * <p>Constructor for OidcProfileDefinition.</p>
      *
-     * @param profileFactory a {@link org.pac4j.core.profile.factory.ProfileFactory} object
+     * @param profileFactory a {@link ProfileFactory} object
      */
     public OidcProfileDefinition(final ProfileFactory profileFactory) {
         this();

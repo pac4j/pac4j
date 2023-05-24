@@ -39,7 +39,7 @@ public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
     /**
      * <p>Constructor for OidcRedirectionActionBuilder.</p>
      *
-     * @param client a {@link org.pac4j.oidc.client.OidcClient} object
+     * @param client a {@link OidcClient} object
      */
     public OidcRedirectionActionBuilder(final OidcClient client) {
         CommonHelper.assertNotNull("client", client);
@@ -80,8 +80,8 @@ public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
     /**
      * <p>buildParams.</p>
      *
-     * @param webContext a {@link org.pac4j.core.context.WebContext} object
-     * @return a {@link java.util.Map} object
+     * @param webContext a {@link WebContext} object
+     * @return a {@link Map} object
      */
     protected Map<String, String> buildParams(final WebContext webContext) {
         val configContext = new OidcConfigurationContext(webContext, client.getConfiguration());
@@ -99,8 +99,8 @@ public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
     /**
      * <p>addStateAndNonceParameters.</p>
      *
-     * @param ctx a {@link org.pac4j.core.context.CallContext} object
-     * @param params a {@link java.util.Map} object
+     * @param ctx a {@link CallContext} object
+     * @param params a {@link Map} object
      */
     protected void addStateAndNonceParameters(final CallContext ctx, final Map<String, String> params) {
         val webContext = ctx.webContext();
@@ -133,8 +133,8 @@ public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
     /**
      * <p>buildAuthenticationRequestUrl.</p>
      *
-     * @param params a {@link java.util.Map} object
-     * @return a {@link java.lang.String} object
+     * @param params a {@link Map} object
+     * @return a {@link String} object
      */
     protected String buildAuthenticationRequestUrl(final Map<String, String> params) {
         // Build authentication request query string

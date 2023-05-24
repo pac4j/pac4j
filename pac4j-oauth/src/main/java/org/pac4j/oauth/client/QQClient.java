@@ -65,8 +65,8 @@ public class QQClient extends OAuth20Client {
     /**
      * <p>Constructor for QQClient.</p>
      *
-     * @param key a {@link java.lang.String} object
-     * @param secret a {@link java.lang.String} object
+     * @param key a {@link String} object
+     * @param secret a {@link String} object
      */
     public QQClient(final String key, final String secret) {
         setKey(key);
@@ -106,7 +106,7 @@ public class QQClient extends OAuth20Client {
     /**
      * <p>Getter for the field <code>scopes</code>.</p>
      *
-     * @return a {@link java.util.List} object
+     * @return a {@link List} object
      */
     public List<QQScope> getScopes() {
         return scopes;
@@ -115,7 +115,7 @@ public class QQClient extends OAuth20Client {
     /**
      * <p>Setter for the field <code>scopes</code>.</p>
      *
-     * @param scopes a {@link java.util.List} object
+     * @param scopes a {@link List} object
      */
     public void setScopes(List<QQScope> scopes) {
         this.scopes = scopes;
@@ -124,7 +124,7 @@ public class QQClient extends OAuth20Client {
     /**
      * <p>addScope.</p>
      *
-     * @param scopes a {@link org.pac4j.oauth.client.QQClient.QQScope} object
+     * @param scopes a {@link QQClient.QQScope} object
      */
     public void addScope(QQScope scopes) {
         if (this.scopes == null)

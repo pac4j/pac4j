@@ -25,8 +25,8 @@ public class OAuth10ProfileCreator extends OAuthProfileCreator {
     /**
      * <p>Constructor for OAuth10ProfileCreator.</p>
      *
-     * @param configuration a {@link org.pac4j.oauth.config.OAuth10Configuration} object
-     * @param client a {@link org.pac4j.core.client.IndirectClient} object
+     * @param configuration a {@link OAuth10Configuration} object
+     * @param client a {@link IndirectClient} object
      */
     public OAuth10ProfileCreator(final OAuth10Configuration configuration, final IndirectClient client) {
         super(configuration, client);

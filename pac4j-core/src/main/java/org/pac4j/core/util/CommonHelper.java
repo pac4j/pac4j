@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * This class gathers all the utilities methods.
@@ -100,7 +101,7 @@ public final class CommonHelper {
     }
 
     /**
-     * Verify that a boolean is true otherwise throw a {@link org.pac4j.core.exception.TechnicalException}.
+     * Verify that a boolean is true otherwise throw a {@link TechnicalException}.
      *
      * @param value   the value to be checked for truth
      * @param message the message to include in the exception if the value is false
@@ -112,7 +113,7 @@ public final class CommonHelper {
     }
 
     /**
-     * Verify that a String is not blank otherwise throw a {@link org.pac4j.core.exception.TechnicalException}.
+     * Verify that a String is not blank otherwise throw a {@link TechnicalException}.
      *
      * @param name  name if the string
      * @param value value of the string
@@ -123,7 +124,7 @@ public final class CommonHelper {
     }
 
     /**
-     * Verify that a String is not blank otherwise throw a {@link org.pac4j.core.exception.TechnicalException}.
+     * Verify that a String is not blank otherwise throw a {@link TechnicalException}.
      *
      * @param name  name if the string
      * @param value value of the string
@@ -133,7 +134,7 @@ public final class CommonHelper {
     }
 
     /**
-     * Verify that an Object is not <code>null</code> otherwise throw a {@link org.pac4j.core.exception.TechnicalException}.
+     * Verify that an Object is not <code>null</code> otherwise throw a {@link TechnicalException}.
      *
      * @param name name of the object
      * @param obj  object
@@ -143,7 +144,7 @@ public final class CommonHelper {
     }
 
     /**
-     * Verify that an Object is <code>null</code> otherwise throw a {@link org.pac4j.core.exception.TechnicalException}.
+     * Verify that an Object is <code>null</code> otherwise throw a {@link TechnicalException}.
      *
      * @param name name of the object
      * @param obj  object
@@ -205,7 +206,7 @@ public final class CommonHelper {
     public static String randomString(final int size) {
         val builder = new StringBuilder();
         while (builder.length() < size) {
-            val suffix = java.util.UUID.randomUUID().toString().replace("-", Pac4jConstants.EMPTY_STRING);
+            val suffix = UUID.randomUUID().toString().replace("-", Pac4jConstants.EMPTY_STRING);
             builder.append(suffix);
         }
         return builder.substring(0, size);
@@ -244,10 +245,10 @@ public final class CommonHelper {
     /**
      * <p>substringBetween.</p>
      *
-     * @param str a {@link java.lang.String} object
-     * @param open a {@link java.lang.String} object
-     * @param close a {@link java.lang.String} object
-     * @return a {@link java.lang.String} object
+     * @param str a {@link String} object
+     * @param open a {@link String} object
+     * @param close a {@link String} object
+     * @return a {@link String} object
      */
     public static String substringBetween(final String str, final String open, final String close) {
         if (str == null || open == null || close == null) {
@@ -266,9 +267,9 @@ public final class CommonHelper {
     /**
      * <p>substringAfter.</p>
      *
-     * @param str a {@link java.lang.String} object
-     * @param separator a {@link java.lang.String} object
-     * @return a {@link java.lang.String} object
+     * @param str a {@link String} object
+     * @param separator a {@link String} object
+     * @return a {@link String} object
      */
     public static String substringAfter(final String str, final String separator) {
         if (isEmpty(str)) {
@@ -287,9 +288,9 @@ public final class CommonHelper {
     /**
      * <p>substringBefore.</p>
      *
-     * @param str a {@link java.lang.String} object
-     * @param separator a {@link java.lang.String} object
-     * @return a {@link java.lang.String} object
+     * @param str a {@link String} object
+     * @param separator a {@link String} object
+     * @return a {@link String} object
      */
     public static String substringBefore(final String str, final String separator) {
         if (isEmpty(str) || separator == null) {
@@ -316,8 +317,8 @@ public final class CommonHelper {
      *
      * @param name the name of the class
      * @return the constructor
-     * @throws java.lang.ClassNotFoundException class not found
-     * @throws java.lang.NoSuchMethodException  method not found
+     * @throws ClassNotFoundException class not found
+     * @throws NoSuchMethodException  method not found
      */
     public static Constructor getConstructor(final String name) throws ClassNotFoundException, NoSuchMethodException {
         var constructor = constructorsCache.get(name);
@@ -349,9 +350,9 @@ public final class CommonHelper {
     /**
      * <p>ifBlank.</p>
      *
-     * @param value a {@link java.lang.String} object
-     * @param defaultValue a {@link java.lang.String} object
-     * @return a {@link java.lang.String} object
+     * @param value a {@link String} object
+     * @param defaultValue a {@link String} object
+     * @return a {@link String} object
      */
     public static String ifBlank(final String value, final String defaultValue) {
         return isBlank(value) ? defaultValue : value;

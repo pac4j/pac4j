@@ -36,9 +36,9 @@ public class CasRestBasicAuthClient extends AbstractCasRestClient {
     /**
      * <p>Constructor for CasRestBasicAuthClient.</p>
      *
-     * @param configuration a {@link org.pac4j.cas.config.CasConfiguration} object
-     * @param headerName a {@link java.lang.String} object
-     * @param prefixHeader a {@link java.lang.String} object
+     * @param configuration a {@link CasConfiguration} object
+     * @param headerName a {@link String} object
+     * @param prefixHeader a {@link String} object
      */
     public CasRestBasicAuthClient(final CasConfiguration configuration,
                                   final String headerName, final String prefixHeader) {

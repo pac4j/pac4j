@@ -32,7 +32,7 @@ public class LocalCachingProfileCreatorTests {
 
         @Override
         public Optional<UserProfile> create(final CallContext ctx, final Credentials credentials) {
-            final CommonProfile profile = new CommonProfile();
+            final UserProfile profile = new CommonProfile();
             profile.setId("" + generator++);
             return Optional.of(profile);
         }

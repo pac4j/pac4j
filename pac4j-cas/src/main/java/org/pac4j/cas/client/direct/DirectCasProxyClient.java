@@ -55,8 +55,8 @@ public class DirectCasProxyClient extends DirectClient {
     /**
      * <p>Constructor for DirectCasProxyClient.</p>
      *
-     * @param casConfiguration a {@link org.pac4j.cas.config.CasConfiguration} object
-     * @param serviceUrl a {@link java.lang.String} object
+     * @param casConfiguration a {@link CasConfiguration} object
+     * @param serviceUrl a {@link String} object
      */
     public DirectCasProxyClient(final CasConfiguration casConfiguration, final String serviceUrl) {
         this.configuration = casConfiguration;

@@ -1,5 +1,6 @@
 package org.pac4j.oauth.profile.facebook;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -16,6 +17,7 @@ import static org.pac4j.core.util.CommonHelper.newDate;
  */
 public final class FacebookEvent implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1790651609769453424L;
 
     private String id;
@@ -38,7 +40,7 @@ public final class FacebookEvent implements Serializable {
     /**
      * <p>Getter for the field <code>id</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getId() {
         return id;
@@ -47,7 +49,7 @@ public final class FacebookEvent implements Serializable {
     /**
      * <p>Setter for the field <code>id</code>.</p>
      *
-     * @param id a {@link java.lang.String} object
+     * @param id a {@link String} object
      */
     public void setId(String id) {
         this.id = id;
@@ -56,7 +58,7 @@ public final class FacebookEvent implements Serializable {
     /**
      * <p>Getter for the field <code>name</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getName() {
         return name;
@@ -65,7 +67,7 @@ public final class FacebookEvent implements Serializable {
     /**
      * <p>Setter for the field <code>name</code>.</p>
      *
-     * @param name a {@link java.lang.String} object
+     * @param name a {@link String} object
      */
     public void setName(String name) {
         this.name = name;
@@ -74,7 +76,7 @@ public final class FacebookEvent implements Serializable {
     /**
      * <p>Getter for the field <code>startTime</code>.</p>
      *
-     * @return a {@link java.util.Date} object
+     * @return a {@link Date} object
      */
     public Date getStartTime() {
         return newDate(startTime);
@@ -83,7 +85,7 @@ public final class FacebookEvent implements Serializable {
     /**
      * <p>Setter for the field <code>startTime</code>.</p>
      *
-     * @param startTime a {@link java.util.Date} object
+     * @param startTime a {@link Date} object
      */
     public void setStartTime(Date startTime) {
         this.startTime = newDate(startTime);
@@ -92,7 +94,7 @@ public final class FacebookEvent implements Serializable {
     /**
      * <p>Getter for the field <code>endTime</code>.</p>
      *
-     * @return a {@link java.util.Date} object
+     * @return a {@link Date} object
      */
     public Date getEndTime() {
         return newDate(endTime);
@@ -101,7 +103,7 @@ public final class FacebookEvent implements Serializable {
     /**
      * <p>Setter for the field <code>endTime</code>.</p>
      *
-     * @param endTime a {@link java.util.Date} object
+     * @param endTime a {@link Date} object
      */
     public void setEndTime(Date endTime) {
         this.endTime = newDate(endTime);
@@ -110,7 +112,7 @@ public final class FacebookEvent implements Serializable {
     /**
      * <p>Getter for the field <code>location</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getLocation() {
         return location;
@@ -119,7 +121,7 @@ public final class FacebookEvent implements Serializable {
     /**
      * <p>Setter for the field <code>location</code>.</p>
      *
-     * @param location a {@link java.lang.String} object
+     * @param location a {@link String} object
      */
     public void setLocation(String location) {
         this.location = location;
@@ -128,7 +130,7 @@ public final class FacebookEvent implements Serializable {
     /**
      * <p>Getter for the field <code>rsvpStatus</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getRsvpStatus() {
         return rsvpStatus;
@@ -137,7 +139,7 @@ public final class FacebookEvent implements Serializable {
     /**
      * <p>Setter for the field <code>rsvpStatus</code>.</p>
      *
-     * @param rsvpStatus a {@link java.lang.String} object
+     * @param rsvpStatus a {@link String} object
      */
     public void setRsvpStatus(String rsvpStatus) {
         this.rsvpStatus = rsvpStatus;

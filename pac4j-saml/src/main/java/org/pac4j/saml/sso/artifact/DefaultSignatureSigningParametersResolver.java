@@ -13,9 +13,9 @@ import org.pac4j.saml.crypto.SignatureSigningParametersProvider;
 import java.util.Collections;
 
 /**
- * A {@link org.opensaml.xmlsec.SignatureSigningParametersResolver} that resolves the
- * {@link org.opensaml.xmlsec.SignatureSigningParameters} from the pac4j
- * {@link org.pac4j.saml.crypto.SignatureSigningParametersProvider}.
+ * A {@link SignatureSigningParametersResolver} that resolves the
+ * {@link SignatureSigningParameters} from the pac4j
+ * {@link SignatureSigningParametersProvider}.
  *
  * @since 3.8.0
  * @author bidou
@@ -26,7 +26,7 @@ public class DefaultSignatureSigningParametersResolver implements SignatureSigni
     /**
      * <p>Constructor for DefaultSignatureSigningParametersResolver.</p>
      *
-     * @param provider a {@link org.pac4j.saml.crypto.SignatureSigningParametersProvider} object
+     * @param provider a {@link SignatureSigningParametersProvider} object
      */
     public DefaultSignatureSigningParametersResolver(final SignatureSigningParametersProvider provider) {
         this.provider = provider;

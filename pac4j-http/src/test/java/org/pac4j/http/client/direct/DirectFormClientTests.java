@@ -10,6 +10,7 @@ import org.pac4j.core.credentials.authenticator.LocalCachingAuthenticator;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
@@ -95,7 +96,7 @@ public final class DirectFormClientTests implements TestsConstants {
         val formClient = getFormClient();
         formClient.setProfileCreator((ctx, credentials) -> {
             var username = ((UsernamePasswordCredentials) credentials).getUsername();
-            val profile = new CommonProfile();
+            UserProfile profile = new CommonProfile();
             profile.setId(username);
             profile.addAttribute(Pac4jConstants.USERNAME, username);
             return Optional.of(profile);

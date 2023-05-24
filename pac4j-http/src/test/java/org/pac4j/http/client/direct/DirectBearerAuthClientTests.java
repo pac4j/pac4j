@@ -66,7 +66,7 @@ public final class DirectBearerAuthClientTests implements TestsConstants {
         val credentials = (TokenCredentials) client.getCredentials(ctx).get();
         assertEquals(TOKEN, credentials.getToken());
         val authnCredentials = client.validateCredentials(ctx, credentials).get();
-        val profile = (CommonProfile) client.getUserProfile(ctx, authnCredentials).get();
+        UserProfile profile = (CommonProfile) client.getUserProfile(ctx, authnCredentials).get();
         assertEquals(TOKEN, profile.getId());
     }
 
@@ -75,7 +75,7 @@ public final class DirectBearerAuthClientTests implements TestsConstants {
         val client = new DirectBearerAuthClient(new ProfileCreator() {
             @Override
             public Optional<UserProfile> create(final CallContext ctx, final Credentials credentials) {
-                val profile = new CommonProfile();
+                UserProfile profile = new CommonProfile();
                 profile.setId(KEY);
                 return Optional.of(profile);
             }
@@ -87,7 +87,7 @@ public final class DirectBearerAuthClientTests implements TestsConstants {
         val credentials = (TokenCredentials) client.getCredentials(ctx).get();
         assertEquals(TOKEN, credentials.getToken());
         val authnCredentials = client.validateCredentials(ctx, credentials).get();
-        val profile = (CommonProfile) client.getUserProfile(ctx, authnCredentials).get();
+        UserProfile profile = (CommonProfile) client.getUserProfile(ctx, authnCredentials).get();
         assertEquals(KEY, profile.getId());
     }
 }

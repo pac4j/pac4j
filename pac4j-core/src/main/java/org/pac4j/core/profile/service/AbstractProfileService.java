@@ -27,7 +27,7 @@ import static org.pac4j.core.util.Pac4jConstants.PASSWORD;
 import static org.pac4j.core.util.Pac4jConstants.USERNAME;
 
 /**
- * Abstract implementation of the {@link org.pac4j.core.profile.service.ProfileService} for the storage: LDAP, SQL and MongoDB.
+ * Abstract implementation of the {@link ProfileService} for the storage: LDAP, SQL and MongoDB.
  *
  * @author Jerome Leleu
  * @since 2.0.0
@@ -149,7 +149,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
      * @return the attributes
      */
     protected Map<String, Object> convertProfileAndPasswordToAttributes(final U profile, final String password) {
-        val storageAttributes = new HashMap<String, Object>();
+        Map<String, Object> storageAttributes = new HashMap<>();
         storageAttributes.put(getIdAttribute(), profile.getId());
         storageAttributes.put(LINKEDID, profile.getLinkedId());
         storageAttributes.put(getUsernameAttribute(), profile.getUsername());
@@ -225,7 +225,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
      * @return the attributes
      */
     protected List<String> defineAttributesToRead() {
-        val names = new ArrayList<String>();
+        List<String> names = new ArrayList<>();
         names.add(getIdAttribute());
         names.add(LINKEDID);
         // legacy mode: 'getIdAttribute()' + linkedid + username + attributes

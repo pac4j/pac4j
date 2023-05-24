@@ -1,13 +1,12 @@
 package org.pac4j.saml.store;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.opensaml.core.xml.XMLObject;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.util.Configuration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.LinkedHashMap;
 import java.util.Optional;
@@ -15,19 +14,16 @@ import java.util.Optional;
 /**
  * Class implements store of SAML messages and uses HttpSession as underlying dataStore. As the XMLObjects
  * can't be serialized (which could lead to problems during failover), the messages are transformed into SAMLObject
- * which internally marshalls the content into XML during serialization.
+ * which internally marshals the content into XML during serialization.
  *
  * Messages are populated to a Hashtable and stored inside HttpSession. The Hashtable is lazily initialized
  * during first attempt to create or retrieve a message.
  *
  * @author Vladimir Schäfer
  */
+@Slf4j
+@RequiredArgsConstructor
 public class HttpSessionStore implements SAMLMessageStore {
-
-    /**
-     * Class logger.
-     */
-    protected final Logger log = LoggerFactory.getLogger(getClass());
 
     /**
      * The web context to store data.
@@ -46,22 +42,6 @@ public class HttpSessionStore implements SAMLMessageStore {
      */
     private static final String SAML_STORAGE_KEY = "_springSamlStorageKey";
 
-    /**
-     * Creates the store object. The session is manipulated only once caller tries to store
-     * or retrieve a message.
-     *
-     * In case request doesn't already have a started session, it will be created.
-     *
-     * @param context the web context
-     * @param sessionStore the session store
-     */
-    public HttpSessionStore(final WebContext context, final SessionStore sessionStore) {
-        CommonHelper.assertNotNull("context", context);
-        CommonHelper.assertNotNull("sessionStore", sessionStore);
-        this.context = context;
-        this.sessionStore = sessionStore;
-    }
-
 
     /**
      * {@inheritDoc}
@@ -71,7 +51,8 @@ public class HttpSessionStore implements SAMLMessageStore {
      */
     @Override
     public void set(final String messageID, final XMLObject message) {
-        log.debug("Storing message {} to session {}", messageID, sessionStore.getSessionId(context, true).get());
+        LOGGER.debug("Storing message {} to session {}", messageID,
+            sessionStore.getSessionId(context, true).orElseThrow());
         val messages = getMessages();
         messages.put(messageID, Configuration.serializeSamlObject(message).toString());
         updateSession(messages);
@@ -95,11 +76,11 @@ public class HttpSessionStore implements SAMLMessageStore {
         val messages = getMessages();
         val o = messages.get(messageID);
         if (o == null) {
-            log.debug("Message {} not found in session {}", messageID, sessionStore.getSessionId(context, true).get());
+            LOGGER.debug("Message {} not found in session {}", messageID, sessionStore.getSessionId(context, true).orElseThrow());
             return Optional.empty();
         }
 
-        log.debug("Message {} found in session {}, clearing", messageID, sessionStore.getSessionId(context, true).get());
+        LOGGER.debug("Message {} found in session {}, clearing", messageID, sessionStore.getSessionId(context, true).orElseThrow());
         messages.clear();
         updateSession(messages);
 
@@ -128,10 +109,10 @@ public class HttpSessionStore implements SAMLMessageStore {
     @SuppressWarnings("unchecked")
     private LinkedHashMap<String, String> initializeSession() {
         var messages = sessionStore.get(context, SAML_STORAGE_KEY);
-        if (!messages.isPresent()) {
+        if (messages.isEmpty()) {
             synchronized (context) {
                 messages = sessionStore.get(context, SAML_STORAGE_KEY);
-                if (!messages.isPresent()) {
+                if (messages.isEmpty()) {
                     messages = Optional.of(new LinkedHashMap<>());
                     updateSession((LinkedHashMap<String, String>) messages.get());
                 }

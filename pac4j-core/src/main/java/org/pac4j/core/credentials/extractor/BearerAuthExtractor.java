@@ -26,8 +26,8 @@ public class BearerAuthExtractor implements CredentialsExtractor {
     /**
      * <p>Constructor for BearerAuthExtractor.</p>
      *
-     * @param headerName a {@link java.lang.String} object
-     * @param prefixHeader a {@link java.lang.String} object
+     * @param headerName a {@link String} object
+     * @param prefixHeader a {@link String} object
      */
     public BearerAuthExtractor(final String headerName, final String prefixHeader) {
         this.extractor = new HeaderExtractor(headerName, prefixHeader);

@@ -14,9 +14,9 @@ public interface SAML2MessageSender<T extends SAMLObject> {
     /**
      * <p>sendMessage.</p>
      *
-     * @param context a {@link org.pac4j.saml.context.SAML2MessageContext} object
+     * @param context a {@link SAML2MessageContext} object
      * @param request a T object
-     * @param state a {@link java.lang.Object} object
+     * @param state a {@link Object} object
      */
     void sendMessage(SAML2MessageContext context,
                      T request,

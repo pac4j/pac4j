@@ -2,6 +2,8 @@ package org.pac4j.oidc.profile.apple;
 
 import org.pac4j.oidc.profile.OidcProfile;
 
+import java.io.Serial;
+
 /**
  * <p>This class is the user profile for Apple (using OpenID Connect protocol) with appropriate getters.</p>
  * <p>It is returned by the {@link org.pac4j.oidc.client.AppleClient}.</p>
@@ -11,5 +13,6 @@ import org.pac4j.oidc.profile.OidcProfile;
  */
 public class AppleProfile extends OidcProfile {
 
+    @Serial
     private static final long serialVersionUID = -2487273611921830541L;
 }

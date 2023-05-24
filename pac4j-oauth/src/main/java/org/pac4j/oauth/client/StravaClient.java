@@ -35,8 +35,8 @@ public class StravaClient extends OAuth20Client {
     /**
      * <p>Constructor for StravaClient.</p>
      *
-     * @param key a {@link java.lang.String} object
-     * @param secret a {@link java.lang.String} object
+     * @param key a {@link String} object
+     * @param secret a {@link String} object
      */
     public StravaClient(final String key, final String secret) {
         setKey(key);
@@ -57,7 +57,7 @@ public class StravaClient extends OAuth20Client {
     /**
      * <p>Getter for the field <code>approvalPrompt</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getApprovalPrompt() {
         return approvalPrompt;
@@ -66,7 +66,7 @@ public class StravaClient extends OAuth20Client {
     /**
      * <p>Setter for the field <code>approvalPrompt</code>.</p>
      *
-     * @param approvalPrompt a {@link java.lang.String} object
+     * @param approvalPrompt a {@link String} object
      */
     public void setApprovalPrompt(final String approvalPrompt) {
         this.approvalPrompt = approvalPrompt;
@@ -75,7 +75,7 @@ public class StravaClient extends OAuth20Client {
     /**
      * <p>getScope.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getScope() {
         return getConfiguration().getScope();
@@ -84,7 +84,7 @@ public class StravaClient extends OAuth20Client {
     /**
      * <p>setScope.</p>
      *
-     * @param scope a {@link java.lang.String} object
+     * @param scope a {@link String} object
      */
     public void setScope(final String scope) {
         getConfiguration().setScope(scope);

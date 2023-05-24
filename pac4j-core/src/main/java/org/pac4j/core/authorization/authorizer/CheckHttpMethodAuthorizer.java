@@ -25,7 +25,7 @@ public class CheckHttpMethodAuthorizer extends AbstractRequireAnyAuthorizer<Http
     /**
      * <p>Constructor for CheckHttpMethodAuthorizer.</p>
      *
-     * @param methods a {@link org.pac4j.core.context.HttpConstants.HTTP_METHOD} object
+     * @param methods a {@link HttpConstants.HTTP_METHOD} object
      */
     public CheckHttpMethodAuthorizer(final HttpConstants.HTTP_METHOD... methods) {
         setElements(methods);
@@ -34,7 +34,7 @@ public class CheckHttpMethodAuthorizer extends AbstractRequireAnyAuthorizer<Http
     /**
      * <p>Constructor for CheckHttpMethodAuthorizer.</p>
      *
-     * @param methods a {@link java.util.List} object
+     * @param methods a {@link List} object
      */
     public CheckHttpMethodAuthorizer(final List<HttpConstants.HTTP_METHOD> methods) {
         setElements(methods);
@@ -43,7 +43,7 @@ public class CheckHttpMethodAuthorizer extends AbstractRequireAnyAuthorizer<Http
     /**
      * <p>Constructor for CheckHttpMethodAuthorizer.</p>
      *
-     * @param methods a {@link java.util.Set} object
+     * @param methods a {@link Set} object
      */
     public CheckHttpMethodAuthorizer(final Set<HttpConstants.HTTP_METHOD> methods) {
         setElements(methods);
@@ -60,8 +60,8 @@ public class CheckHttpMethodAuthorizer extends AbstractRequireAnyAuthorizer<Http
     /**
      * <p>checkHttpMethod.</p>
      *
-     * @param methods a {@link org.pac4j.core.context.HttpConstants.HTTP_METHOD} object
-     * @return a {@link org.pac4j.core.authorization.authorizer.CheckHttpMethodAuthorizer} object
+     * @param methods a {@link HttpConstants.HTTP_METHOD} object
+     * @return a {@link CheckHttpMethodAuthorizer} object
      */
     public static CheckHttpMethodAuthorizer checkHttpMethod(HttpConstants.HTTP_METHOD... methods) {
         return new CheckHttpMethodAuthorizer(methods);
@@ -70,8 +70,8 @@ public class CheckHttpMethodAuthorizer extends AbstractRequireAnyAuthorizer<Http
     /**
      * <p>checkHttpMethod.</p>
      *
-     * @param methods a {@link java.util.List} object
-     * @return a {@link org.pac4j.core.authorization.authorizer.CheckHttpMethodAuthorizer} object
+     * @param methods a {@link List} object
+     * @return a {@link CheckHttpMethodAuthorizer} object
      */
     public static CheckHttpMethodAuthorizer checkHttpMethod(List<HttpConstants.HTTP_METHOD> methods) {
         return new CheckHttpMethodAuthorizer(methods);
@@ -80,8 +80,8 @@ public class CheckHttpMethodAuthorizer extends AbstractRequireAnyAuthorizer<Http
     /**
      * <p>checkHttpMethod.</p>
      *
-     * @param methods a {@link java.util.Set} object
-     * @return a {@link org.pac4j.core.authorization.authorizer.CheckHttpMethodAuthorizer} object
+     * @param methods a {@link Set} object
+     * @return a {@link CheckHttpMethodAuthorizer} object
      */
     public static CheckHttpMethodAuthorizer checkHttpMethod(Set<HttpConstants.HTTP_METHOD> methods) {
         return new CheckHttpMethodAuthorizer(methods);

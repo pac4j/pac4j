@@ -39,8 +39,8 @@ public class OidcAuthenticator implements Authenticator {
     /**
      * <p>Constructor for OidcAuthenticator.</p>
      *
-     * @param configuration a {@link org.pac4j.oidc.config.OidcConfiguration} object
-     * @param client a {@link org.pac4j.oidc.client.OidcClient} object
+     * @param configuration a {@link OidcConfiguration} object
+     * @param client a {@link OidcClient} object
      */
     public OidcAuthenticator(final OidcConfiguration configuration, final OidcClient client) {
         assertNotNull("configuration", configuration);
@@ -74,7 +74,7 @@ public class OidcAuthenticator implements Authenticator {
     /**
      * <p>refresh.</p>
      *
-     * @param credentials a {@link org.pac4j.oidc.credentials.OidcCredentials} object
+     * @param credentials a {@link OidcCredentials} object
      */
     public void refresh(final OidcCredentials credentials) {
         val refreshToken = credentials.getRefreshToken();
@@ -91,8 +91,8 @@ public class OidcAuthenticator implements Authenticator {
     /**
      * <p>createTokenRequest.</p>
      *
-     * @param grant a {@link com.nimbusds.oauth2.sdk.AuthorizationGrant} object
-     * @return a {@link com.nimbusds.oauth2.sdk.TokenRequest} object
+     * @param grant a {@link AuthorizationGrant} object
+     * @return a {@link TokenRequest} object
      */
     protected TokenRequest createTokenRequest(final AuthorizationGrant grant) {
         val metadataResolver = configuration.getOpMetadataResolver();
@@ -105,7 +105,7 @@ public class OidcAuthenticator implements Authenticator {
         }
     }
 
-    private void executeTokenRequest(TokenRequest request, OidcCredentials credentials) throws IOException, ParseException {
+    private void executeTokenRequest(Request request, OidcCredentials credentials) throws IOException, ParseException {
         val tokenHttpRequest = request.toHTTPRequest();
         configuration.configureHttpRequest(tokenHttpRequest);
 

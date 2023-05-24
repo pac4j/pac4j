@@ -43,7 +43,7 @@ public class AzureAd2Client extends OidcClient {
     /**
      * <p>Constructor for AzureAd2Client.</p>
      *
-     * @param configuration a {@link org.pac4j.oidc.config.AzureAd2OidcConfiguration} object
+     * @param configuration a {@link AzureAd2OidcConfiguration} object
      */
     public AzureAd2Client(AzureAd2OidcConfiguration configuration) {
         super(configuration);
@@ -69,8 +69,8 @@ public class AzureAd2Client extends OidcClient {
      * <p>Refresh the access token</p>
      * <p>https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow#refresh-the-access-token</p>
      *
-     * @param azureAdProfile a {@link org.pac4j.oidc.profile.azuread.AzureAdProfile} object
-     * @return a {@link java.lang.String} object
+     * @param azureAdProfile a {@link AzureAdProfile} object
+     * @return a {@link String} object
      */
     public String getAccessTokenFromRefreshToken(final AzureAdProfile azureAdProfile) {
         val azureConfig = (AzureAd2OidcConfiguration) getConfiguration();

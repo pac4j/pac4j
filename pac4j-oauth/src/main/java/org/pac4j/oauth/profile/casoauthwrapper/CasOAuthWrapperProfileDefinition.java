@@ -6,7 +6,6 @@ import com.github.scribejava.core.model.Token;
 import lombok.val;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.config.OAuthConfiguration;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
@@ -15,7 +14,7 @@ import org.pac4j.scribe.builder.api.CasOAuthWrapperApi20;
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
 /**
- * {@link org.pac4j.oauth.profile.casoauthwrapper.CasOAuthWrapperProfile} profile definition.
+ * {@link CasOAuthWrapperProfile} profile definition.
  *
  * @author Jerome Leleu
  * @since 1.9.2
@@ -48,7 +47,7 @@ public class CasOAuthWrapperProfileDefinition extends OAuthProfileDefinition {
     /** {@inheritDoc} */
     @Override
     public String getProfileUrl(final Token accessToken, final OAuthConfiguration configuration) {
-        return ((CasOAuthWrapperApi20) ((OAuth20Configuration) configuration).getApi()).getCasServerUrl() + "/profile";
+        return ((CasOAuthWrapperApi20) configuration.getApi()).getCasServerUrl() + "/profile";
     }
 
     /** {@inheritDoc} */

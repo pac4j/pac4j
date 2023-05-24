@@ -26,6 +26,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -53,7 +54,7 @@ public class RestAuthenticator extends ProfileDefinitionAware implements Authent
     /**
      * <p>Constructor for RestAuthenticator.</p>
      *
-     * @param url a {@link java.lang.String} object
+     * @param url a {@link String} object
      */
     public RestAuthenticator(final String url) {
         this.url = url;
@@ -97,8 +98,8 @@ public class RestAuthenticator extends ProfileDefinitionAware implements Authent
     /**
      * <p>buildProfile.</p>
      *
-     * @param credentials a {@link org.pac4j.core.credentials.UsernamePasswordCredentials} object
-     * @param body a {@link java.lang.String} object
+     * @param credentials a {@link UsernamePasswordCredentials} object
+     * @param body a {@link String} object
      */
     protected void buildProfile(final UsernamePasswordCredentials credentials, final String body) {
         val profileClass = (RestProfile) getProfileDefinition().newProfile();
@@ -123,7 +124,7 @@ public class RestAuthenticator extends ProfileDefinitionAware implements Authent
     protected String callRestApi(final String username, final String password) {
 
         val basicAuth = Base64.getEncoder().encodeToString((username + ":" + password).getBytes(StandardCharsets.UTF_8));
-        val headers = new HashMap<String, String>();
+        Map<String, String> headers = new HashMap<>();
         headers.put(HttpConstants.AUTHORIZATION_HEADER, HttpConstants.BASIC_HEADER_PREFIX + basicAuth);
 
         HttpURLConnection connection = null;

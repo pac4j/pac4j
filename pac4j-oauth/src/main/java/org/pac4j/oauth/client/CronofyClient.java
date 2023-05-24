@@ -26,8 +26,8 @@ public class CronofyClient extends OAuth20Client {
     /**
      * <p>Constructor for CronofyClient.</p>
      *
-     * @param key a {@link java.lang.String} object
-     * @param secret a {@link java.lang.String} object
+     * @param key a {@link String} object
+     * @param secret a {@link String} object
      */
     public CronofyClient(final String key, final String secret) {
         setKey(key);
@@ -49,7 +49,7 @@ public class CronofyClient extends OAuth20Client {
     /**
      * <p>Getter for the field <code>scope</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getScope() {
         return scope;
@@ -58,7 +58,7 @@ public class CronofyClient extends OAuth20Client {
     /**
      * <p>Setter for the field <code>scope</code>.</p>
      *
-     * @param scope a {@link java.lang.String} object
+     * @param scope a {@link String} object
      */
     public void setScope(final String scope) {
         this.scope = scope;
@@ -67,7 +67,7 @@ public class CronofyClient extends OAuth20Client {
     /**
      * <p>Getter for the field <code>sdkIdentifier</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getSdkIdentifier() {
         return sdkIdentifier;
@@ -76,7 +76,7 @@ public class CronofyClient extends OAuth20Client {
     /**
      * <p>Setter for the field <code>sdkIdentifier</code>.</p>
      *
-     * @param sdkIdentifier a {@link java.lang.String} object
+     * @param sdkIdentifier a {@link String} object
      */
     public void setSdkIdentifier(final String sdkIdentifier) {
         this.sdkIdentifier = sdkIdentifier;

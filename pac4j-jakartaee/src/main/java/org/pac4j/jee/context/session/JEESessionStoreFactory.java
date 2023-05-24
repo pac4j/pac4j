@@ -13,7 +13,7 @@ import org.pac4j.core.context.session.SessionStoreFactory;
 public class JEESessionStoreFactory implements SessionStoreFactory {
 
     /** Constant <code>INSTANCE</code> */
-    public static final JEESessionStoreFactory INSTANCE = new JEESessionStoreFactory();
+    public static final SessionStoreFactory INSTANCE = new JEESessionStoreFactory();
 
     /**
      * {@inheritDoc}

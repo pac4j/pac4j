@@ -7,6 +7,7 @@ import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -42,7 +43,7 @@ public class LocalCachingAuthenticatorTests {
 
         @Override
         public Optional<Credentials> validate(final CallContext ctx, final Credentials credentials) {
-            val profile = new CommonProfile();
+            UserProfile profile = new CommonProfile();
             profile.setId(((UsernamePasswordCredentials) credentials).getUsername());
             credentials.setUserProfile(profile);
             return Optional.of(credentials);

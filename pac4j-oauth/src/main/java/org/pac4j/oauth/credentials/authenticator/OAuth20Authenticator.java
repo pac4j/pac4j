@@ -24,8 +24,8 @@ public class OAuth20Authenticator extends OAuthAuthenticator {
     /**
      * <p>Constructor for OAuth20Authenticator.</p>
      *
-     * @param configuration a {@link org.pac4j.oauth.config.OAuth20Configuration} object
-     * @param client a {@link org.pac4j.core.client.IndirectClient} object
+     * @param configuration a {@link OAuth20Configuration} object
+     * @param client a {@link IndirectClient} object
      */
     public OAuth20Authenticator(final OAuth20Configuration configuration, final IndirectClient client) {
         super(configuration, client);

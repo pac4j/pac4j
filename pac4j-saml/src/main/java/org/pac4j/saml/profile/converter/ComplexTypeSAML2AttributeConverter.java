@@ -26,7 +26,7 @@ public class ComplexTypeSAML2AttributeConverter implements AttributeConverter {
     public Object convert(final Object a) {
         val attribute = (Attribute) a;
 
-        val extractedAttributes = new ArrayList<SAML2AuthenticationCredentials.SAMLAttribute>();
+        List<SAML2AuthenticationCredentials.SAMLAttribute> extractedAttributes = new ArrayList<>();
 
         // collect all complex values
         attribute.getAttributeValues().stream()
@@ -62,7 +62,7 @@ public class ComplexTypeSAML2AttributeConverter implements AttributeConverter {
 
     private List<SAML2AuthenticationCredentials.SAMLAttribute> collectAttributesFromNodeList(NodeList nodeList)  {
 
-        var results = new ArrayList<SAML2AuthenticationCredentials.SAMLAttribute>();
+        List<SAML2AuthenticationCredentials.SAMLAttribute> results = new ArrayList<>();
 
         if (nodeList == null) {
             return results;

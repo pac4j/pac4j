@@ -27,8 +27,8 @@ public class VkClient extends OAuth20Client {
     /**
      * <p>Constructor for VkClient.</p>
      *
-     * @param key a {@link java.lang.String} object
-     * @param secret a {@link java.lang.String} object
+     * @param key a {@link String} object
+     * @param secret a {@link String} object
      */
     public VkClient(final String key, final String secret) {
         configuration = new VkConfiguration();
@@ -54,7 +54,7 @@ public class VkClient extends OAuth20Client {
     /**
      * <p>getScope.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getScope() {
         return this.configuration.getScope();
@@ -63,7 +63,7 @@ public class VkClient extends OAuth20Client {
     /**
      * <p>setScope.</p>
      *
-     * @param scope a {@link java.lang.String} object
+     * @param scope a {@link String} object
      */
     public void setScope(final String scope) {
         this.configuration.setScope(scope);
@@ -72,7 +72,7 @@ public class VkClient extends OAuth20Client {
     /**
      * <p>getFields.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getFields() {
         return getConfiguration().getFields();
@@ -81,7 +81,7 @@ public class VkClient extends OAuth20Client {
     /**
      * <p>setFields.</p>
      *
-     * @param fields a {@link java.lang.String} object
+     * @param fields a {@link String} object
      */
     public void setFields(final String fields) {
         getConfiguration().setFields(fields);

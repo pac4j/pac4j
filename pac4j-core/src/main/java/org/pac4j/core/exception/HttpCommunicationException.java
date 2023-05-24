@@ -1,5 +1,7 @@
 package org.pac4j.core.exception;
 
+import java.io.Serial;
+
 /**
  * This class represents an exception which can happen during HTTP communication (with status code and message body).
  *
@@ -8,6 +10,7 @@ package org.pac4j.core.exception;
  */
 public class HttpCommunicationException extends CommunicationException {
 
+    @Serial
     private static final long serialVersionUID = -7972641539531738263L;
 
     private final int code;
@@ -18,7 +21,7 @@ public class HttpCommunicationException extends CommunicationException {
      * <p>Constructor for HttpCommunicationException.</p>
      *
      * @param code a int
-     * @param body a {@link java.lang.String} object
+     * @param body a {@link String} object
      */
     public HttpCommunicationException(final int code, final String body) {
         super("Failed to retrieve data / failed code : " + code + " and body : " + body);
@@ -29,7 +32,7 @@ public class HttpCommunicationException extends CommunicationException {
     /**
      * <p>Constructor for HttpCommunicationException.</p>
      *
-     * @param t a {@link java.lang.Throwable} object
+     * @param t a {@link Throwable} object
      */
     public HttpCommunicationException(final Throwable t) {
         super(t);
@@ -40,7 +43,7 @@ public class HttpCommunicationException extends CommunicationException {
     /**
      * <p>Constructor for HttpCommunicationException.</p>
      *
-     * @param message a {@link java.lang.String} object
+     * @param message a {@link String} object
      */
     public HttpCommunicationException(final String message) {
         super(message);
@@ -60,7 +63,7 @@ public class HttpCommunicationException extends CommunicationException {
     /**
      * <p>Getter for the field <code>body</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getBody() {
         return this.body;

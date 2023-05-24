@@ -94,7 +94,7 @@ public class SAML2Client extends IndirectClient {
     /**
      * <p>Constructor for SAML2Client.</p>
      *
-     * @param configuration a {@link org.pac4j.saml.config.SAML2Configuration} object
+     * @param configuration a {@link SAML2Configuration} object
      */
     public SAML2Client(final SAML2Configuration configuration) {
         this.configuration = configuration;
@@ -140,7 +140,7 @@ public class SAML2Client extends IndirectClient {
     /**
      * <p>getLogoutRequestMessageSender.</p>
      *
-     * @return a {@link org.pac4j.saml.logout.impl.SAML2LogoutRequestMessageSender} object
+     * @return a {@link SAML2LogoutRequestMessageSender} object
      */
     public SAML2LogoutRequestMessageSender getLogoutRequestMessageSender() {
         return new SAML2LogoutRequestMessageSender(this.signatureSigningParametersProvider,
@@ -151,7 +151,7 @@ public class SAML2Client extends IndirectClient {
     /**
      * <p>getSSOMessageSender.</p>
      *
-     * @return a {@link org.pac4j.saml.sso.impl.SAML2WebSSOMessageSender} object
+     * @return a {@link SAML2WebSSOMessageSender} object
      */
     public SAML2WebSSOMessageSender getSSOMessageSender() {
         return new SAML2WebSSOMessageSender(this.signatureSigningParametersProvider,
@@ -257,7 +257,7 @@ public class SAML2Client extends IndirectClient {
     /**
      * <p>getIdentityProviderResolvedEntityId.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public final String getIdentityProviderResolvedEntityId() {
         return this.identityProviderMetadataResolver.getEntityId();
@@ -266,7 +266,7 @@ public class SAML2Client extends IndirectClient {
     /**
      * <p>getServiceProviderResolvedEntityId.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public final String getServiceProviderResolvedEntityId() {
         return this.serviceProviderMetadataResolver.getEntityId();

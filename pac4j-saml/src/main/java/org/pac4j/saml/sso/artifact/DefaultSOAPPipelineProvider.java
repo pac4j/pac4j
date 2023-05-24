@@ -5,7 +5,7 @@ import org.opensaml.messaging.pipeline.httpclient.HttpClientMessagePipelineFacto
 import org.pac4j.saml.client.SAML2Client;
 
 /**
- * A default implementation of {@link org.pac4j.saml.sso.artifact.SOAPPipelineProvider}, which enforces the
+ * A default implementation of {@link SOAPPipelineProvider}, which enforces the
  * default rules set by the SAML SSO Profile.
  *
  * @since 3.8.0
@@ -17,7 +17,7 @@ public class DefaultSOAPPipelineProvider implements SOAPPipelineProvider {
     /**
      * <p>Constructor for DefaultSOAPPipelineProvider.</p>
      *
-     * @param client a {@link org.pac4j.saml.client.SAML2Client} object
+     * @param client a {@link SAML2Client} object
      */
     public DefaultSOAPPipelineProvider(final SAML2Client client) {
         this.client = client;

@@ -6,7 +6,7 @@ import org.pac4j.core.client.direct.AnonymousClient;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.http.client.direct.DirectBasicAuthClient;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 
 import static org.pac4j.core.util.CommonHelper.isNotBlank;
@@ -22,8 +22,8 @@ public class DirectClientBuilder extends AbstractBuilder {
     /**
      * <p>Constructor for DirectClientBuilder.</p>
      *
-     * @param properties a {@link java.util.Map} object
-     * @param authenticators a {@link java.util.Map} object
+     * @param properties a {@link Map} object
+     * @param authenticators a {@link Map} object
      */
     public DirectClientBuilder(final Map<String, String> properties, final Map<String, Authenticator> authenticators) {
         super(properties, authenticators);
@@ -34,7 +34,7 @@ public class DirectClientBuilder extends AbstractBuilder {
      *
      * @param clients a {@link java.util.List} object
      */
-    public void tryCreateAnonymousClient(final List<Client> clients) {
+    public void tryCreateAnonymousClient(final Collection<Client> clients) {
         val anonymous = getProperty(ANONYMOUS);
         if (isNotBlank(anonymous)) {
             clients.add(new AnonymousClient());
@@ -46,7 +46,7 @@ public class DirectClientBuilder extends AbstractBuilder {
      *
      * @param clients a {@link java.util.List} object
      */
-    public void tryCreateDirectBasciAuthClient(final List<Client> clients) {
+    public void tryCreateDirectBasciAuthClient(final Collection<Client> clients) {
         for (var i = 0; i <= MAX_NUM_CLIENTS; i++) {
             val authenticator = getProperty(DIRECTBASICAUTH_AUTHENTICATOR, i);
             if (isNotBlank(authenticator)) {

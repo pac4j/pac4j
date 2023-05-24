@@ -41,7 +41,7 @@ public class DirectDigestAuthClient extends DirectClient {
     /**
      * <p>Constructor for DirectDigestAuthClient.</p>
      *
-     * @param digestAuthenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
+     * @param digestAuthenticator a {@link Authenticator} object
      */
     public DirectDigestAuthClient(final Authenticator digestAuthenticator) {
         setAuthenticatorIfUndefined(digestAuthenticator);
@@ -50,8 +50,8 @@ public class DirectDigestAuthClient extends DirectClient {
     /**
      * <p>Constructor for DirectDigestAuthClient.</p>
      *
-     * @param digestAuthenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
-     * @param profileCreator a {@link org.pac4j.core.profile.creator.ProfileCreator} object
+     * @param digestAuthenticator a {@link Authenticator} object
+     * @param profileCreator a {@link ProfileCreator} object
      */
     public DirectDigestAuthClient(final Authenticator digestAuthenticator,
                                  final ProfileCreator profileCreator) {

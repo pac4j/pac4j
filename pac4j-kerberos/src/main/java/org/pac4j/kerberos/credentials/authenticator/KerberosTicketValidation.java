@@ -23,8 +23,8 @@ public class KerberosTicketValidation {
     /**
      * <p>Constructor for KerberosTicketValidation.</p>
      *
-     * @param username a {@link java.lang.String} object
-     * @param servicePrincipal a {@link java.lang.String} object
+     * @param username a {@link String} object
+     * @param servicePrincipal a {@link String} object
      * @param responseToken an array of {@link byte} objects
      * @param gssContext a GSSContext object
      */
@@ -42,7 +42,7 @@ public class KerberosTicketValidation {
     /**
      * <p>username.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String username() {
         return username;
@@ -69,7 +69,7 @@ public class KerberosTicketValidation {
     /**
      * <p>subject.</p>
      *
-     * @return a {@link javax.security.auth.Subject} object
+     * @return a {@link Subject} object
      */
     public Subject subject() {
         final Set<KerberosPrincipal> princs = new HashSet<>();

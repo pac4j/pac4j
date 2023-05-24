@@ -17,6 +17,7 @@ import org.pac4j.couch.profile.CouchProfile;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +37,8 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
 
     private CouchDbConnector couchDbConnector;
     private ObjectMapper objectMapper;
-    private static final TypeReference<HashMap<String,Object>> TYPE_REFERENCE = new TypeReference<HashMap<String,Object>>() {};
+    private static final TypeReference<HashMap<String,Object>> TYPE_REFERENCE = new TypeReference<>() {
+    };
 
     /** Constant <code>COUCH_ID="_id"</code> */
     public static final String COUCH_ID = "_id";
@@ -44,9 +46,9 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
     /**
      * <p>Constructor for CouchProfileService.</p>
      *
-     * @param couchDbConnector a {@link org.ektorp.CouchDbConnector} object
-     * @param attributes a {@link java.lang.String} object
-     * @param passwordEncoder a {@link org.pac4j.core.credentials.password.PasswordEncoder} object
+     * @param couchDbConnector a {@link CouchDbConnector} object
+     * @param attributes a {@link String} object
+     * @param passwordEncoder a {@link PasswordEncoder} object
      */
     public CouchProfileService(final CouchDbConnector couchDbConnector, final String attributes, final PasswordEncoder passwordEncoder) {
         setIdAttribute(COUCH_ID);
@@ -66,7 +68,7 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
     /**
      * <p>Constructor for CouchProfileService.</p>
      *
-     * @param couchDbConnector a {@link org.ektorp.CouchDbConnector} object
+     * @param couchDbConnector a {@link CouchDbConnector} object
      */
     public CouchProfileService(final CouchDbConnector couchDbConnector) {
         this(couchDbConnector, null, null);
@@ -75,8 +77,8 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
     /**
      * <p>Constructor for CouchProfileService.</p>
      *
-     * @param couchDbConnector a {@link org.ektorp.CouchDbConnector} object
-     * @param attributes a {@link java.lang.String} object
+     * @param couchDbConnector a {@link CouchDbConnector} object
+     * @param attributes a {@link String} object
      */
     public CouchProfileService(final CouchDbConnector couchDbConnector, final String attributes) {
         this(couchDbConnector, attributes, null);
@@ -85,8 +87,8 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
     /**
      * <p>Constructor for CouchProfileService.</p>
      *
-     * @param couchDbConnector a {@link org.ektorp.CouchDbConnector} object
-     * @param passwordEncoder a {@link org.pac4j.core.credentials.password.PasswordEncoder} object
+     * @param couchDbConnector a {@link CouchDbConnector} object
+     * @param passwordEncoder a {@link PasswordEncoder} object
      */
     public CouchProfileService(final CouchDbConnector couchDbConnector, final PasswordEncoder passwordEncoder) {
         this(couchDbConnector, null, passwordEncoder);
@@ -145,8 +147,8 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
         }
     }
 
-    private Map<String, Object> populateAttributes(final Map<String, Object> rowAttributes, final List<String> names) {
-        val newAttributes = new HashMap<String, Object>();
+    private Map<String, Object> populateAttributes(final Map<String, Object> rowAttributes, final Collection<String> names) {
+        Map<String, Object> newAttributes = new HashMap<>();
         for (val entry : rowAttributes.entrySet()) {
             val name = entry.getKey();
             if (names == null || names.contains(name)) {
@@ -160,7 +162,7 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
     @Override
     protected List<Map<String, Object>> read(final List<String> names, final String key, final String value) {
         logger.debug("Reading key / value: {} / {}", key, value);
-        val listAttributes = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> listAttributes = new ArrayList<>();
         if (key.equals(COUCH_ID)) {
             try {
                 val oldDocStream = couchDbConnector.getAsStream(value);

@@ -24,7 +24,7 @@ public class AzureAdIdTokenValidator extends IDTokenValidator {
     /**
      * <p>Constructor for AzureAdIdTokenValidator.</p>
      *
-     * @param base a {@link com.nimbusds.openid.connect.sdk.validators.IDTokenValidator} object
+     * @param base a {@link IDTokenValidator} object
      */
     public AzureAdIdTokenValidator(final IDTokenValidator base) {
         super(base.getExpectedIssuer(), base.getClientID());

@@ -20,8 +20,8 @@ public class SAML2WebSSOMessageSender extends AbstractSAML2MessageSender<AuthnRe
     /**
      * <p>Constructor for SAML2WebSSOMessageSender.</p>
      *
-     * @param signatureSigningParametersProvider a {@link org.pac4j.saml.crypto.SignatureSigningParametersProvider} object
-     * @param destinationBindingType a {@link java.lang.String} object
+     * @param signatureSigningParametersProvider a {@link SignatureSigningParametersProvider} object
+     * @param destinationBindingType a {@link String} object
      * @param signErrorResponses a boolean
      * @param isAuthnRequestSigned a boolean
      */

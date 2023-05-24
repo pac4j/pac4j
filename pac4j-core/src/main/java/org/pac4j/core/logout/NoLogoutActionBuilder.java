@@ -7,7 +7,7 @@ import org.pac4j.core.profile.UserProfile;
 import java.util.Optional;
 
 /**
- * No {@link org.pac4j.core.exception.http.RedirectionAction} for logout.
+ * No {@link RedirectionAction} for logout.
  *
  * @author Jerome Leleu
  * @since 2.0.0
@@ -15,7 +15,7 @@ import java.util.Optional;
 public class NoLogoutActionBuilder implements LogoutActionBuilder {
 
     /** Constant <code>INSTANCE</code> */
-    public static final NoLogoutActionBuilder INSTANCE = new NoLogoutActionBuilder();
+    public static final LogoutActionBuilder INSTANCE = new NoLogoutActionBuilder();
 
     /** {@inheritDoc} */
     @Override

@@ -7,7 +7,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 /**
- * This class tests the {@link org.pac4j.core.profile.converter.LongConverter} class.
+ * This class tests the {@link LongConverter} class.
  *
  * @author Jerome Leleu
  * @since 1.2.0
@@ -41,6 +41,6 @@ public final class LongConverterTests {
 
     @Test
     public void testInteger() {
-        assertEquals((long) INT_VALUE, (long) this.converter.convert(Integer.valueOf(INT_VALUE)));
+        assertEquals(INT_VALUE, (long) this.converter.convert(Integer.valueOf(INT_VALUE)));
     }
 }

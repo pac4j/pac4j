@@ -7,6 +7,7 @@ import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.CommonHelper;
 
 import java.util.Optional;
@@ -30,7 +31,7 @@ public class SimpleTestTokenAuthenticator implements Authenticator {
             throw new CredentialsException("token must not be blank");
         }
         val token = credentials.getToken();
-        val profile = new CommonProfile();
+        UserProfile profile = new CommonProfile();
         profile.setId(token);
         credentials.setUserProfile(profile);
 

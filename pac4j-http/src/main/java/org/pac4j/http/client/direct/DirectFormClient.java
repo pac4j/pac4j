@@ -34,7 +34,7 @@ public class DirectFormClient extends DirectClient {
     /**
      * <p>Constructor for DirectFormClient.</p>
      *
-     * @param usernamePasswordAuthenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
+     * @param usernamePasswordAuthenticator a {@link Authenticator} object
      */
     public DirectFormClient(final Authenticator usernamePasswordAuthenticator) {
         setAuthenticatorIfUndefined(usernamePasswordAuthenticator);
@@ -43,9 +43,9 @@ public class DirectFormClient extends DirectClient {
     /**
      * <p>Constructor for DirectFormClient.</p>
      *
-     * @param usernameParameter a {@link java.lang.String} object
-     * @param passwordParameter a {@link java.lang.String} object
-     * @param usernamePasswordAuthenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
+     * @param usernameParameter a {@link String} object
+     * @param passwordParameter a {@link String} object
+     * @param usernamePasswordAuthenticator a {@link Authenticator} object
      */
     public DirectFormClient(final String usernameParameter, final String passwordParameter,
                             final Authenticator usernamePasswordAuthenticator) {
@@ -57,8 +57,8 @@ public class DirectFormClient extends DirectClient {
     /**
      * <p>Constructor for DirectFormClient.</p>
      *
-     * @param usernamePasswordAuthenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
-     * @param profileCreator a {@link org.pac4j.core.profile.creator.ProfileCreator} object
+     * @param usernamePasswordAuthenticator a {@link Authenticator} object
+     * @param profileCreator a {@link ProfileCreator} object
      */
     public DirectFormClient(final Authenticator usernamePasswordAuthenticator,
                             final ProfileCreator profileCreator) {

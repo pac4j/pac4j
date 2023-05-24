@@ -45,7 +45,7 @@ public class OidcClient extends IndirectClient {
     /**
      * <p>Constructor for OidcClient.</p>
      *
-     * @param configuration a {@link org.pac4j.oidc.config.OidcConfiguration} object
+     * @param configuration a {@link OidcConfiguration} object
      */
     public OidcClient(final OidcConfiguration configuration) {
         setConfiguration(configuration);

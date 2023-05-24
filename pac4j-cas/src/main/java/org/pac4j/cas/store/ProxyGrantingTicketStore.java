@@ -6,7 +6,7 @@ import org.apereo.cas.client.proxy.ProxyGrantingTicketStorage;
 import org.pac4j.core.store.Store;
 
 /**
- * Apereo CAS client {@link org.apereo.cas.client.proxy.ProxyGrantingTicketStorage} wrapper of a pac4j {@link org.pac4j.core.store.Store}.
+ * Apereo CAS client {@link ProxyGrantingTicketStorage} wrapper of a pac4j {@link Store}.
  *
  * @author Jerome Leleu
  * @since 2.0.0
@@ -20,7 +20,7 @@ public class ProxyGrantingTicketStore implements ProxyGrantingTicketStorage {
     /**
      * <p>Constructor for ProxyGrantingTicketStore.</p>
      *
-     * @param store a {@link org.pac4j.core.store.Store} object
+     * @param store a {@link Store} object
      */
     public ProxyGrantingTicketStore(final Store<String, String> store) {
         this.store = store;

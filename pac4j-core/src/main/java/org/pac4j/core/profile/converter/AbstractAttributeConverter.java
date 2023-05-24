@@ -17,7 +17,7 @@ public abstract class AbstractAttributeConverter implements AttributeConverter {
     /**
      * <p>Constructor for AbstractAttributeConverter.</p>
      *
-     * @param clazz a {@link java.lang.Class} object
+     * @param clazz a {@link Class} object
      */
     protected AbstractAttributeConverter(final Class<? extends Object> clazz) {
         this.clazz = clazz;
@@ -30,8 +30,7 @@ public abstract class AbstractAttributeConverter implements AttributeConverter {
         if (attribute != null) {
             if (clazz.isAssignableFrom(attribute.getClass())) {
                 t = attribute;
-            } else if (attribute instanceof List) {
-                val l = (List) attribute;
+            } else if (attribute instanceof List l) {
                 if (l.size() > 0) {
                     val element = l.get(0);
                     if (clazz.isAssignableFrom(element.getClass())) {
@@ -54,8 +53,8 @@ public abstract class AbstractAttributeConverter implements AttributeConverter {
     /**
      * <p>internalConvert.</p>
      *
-     * @param attribute a {@link java.lang.Object} object
-     * @return a {@link java.lang.Object} object
+     * @param attribute a {@link Object} object
+     * @return a {@link Object} object
      */
     protected Object internalConvert(final Object attribute) {
         return null;
@@ -64,7 +63,7 @@ public abstract class AbstractAttributeConverter implements AttributeConverter {
     /**
      * <p>defaultValue.</p>
      *
-     * @return a {@link java.lang.Object} object
+     * @return a {@link Object} object
      */
     protected Object defaultValue() {
         return null;
@@ -73,8 +72,8 @@ public abstract class AbstractAttributeConverter implements AttributeConverter {
     /**
      * <p>accept.</p>
      *
-     * @param typeName a {@link java.lang.String} object
-     * @return a {@link java.lang.Boolean} object
+     * @param typeName a {@link String} object
+     * @return a {@link Boolean} object
      */
     public Boolean accept(final String typeName){
         return clazz.getSimpleName().equals(typeName);

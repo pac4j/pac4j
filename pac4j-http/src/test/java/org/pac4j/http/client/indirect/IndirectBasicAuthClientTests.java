@@ -10,6 +10,7 @@ import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.exception.http.HttpAction;
+import org.pac4j.core.exception.http.WithLocationAction;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
@@ -77,7 +78,8 @@ public final class IndirectBasicAuthClientTests implements TestsConstants {
     public void testRedirectionUrl() {
         val basicAuthClient = getBasicAuthClient();
         var context = MockWebContext.create();
-        val action = (FoundAction) basicAuthClient.getRedirectionAction(new CallContext(context, new MockSessionStore())).get();
+        WithLocationAction action = (FoundAction) basicAuthClient.getRedirectionAction(
+            new CallContext(context, new MockSessionStore())).get();
         assertEquals(CALLBACK_URL + "?" + Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER + "=" + basicAuthClient.getName(),
             action.getLocation());
     }

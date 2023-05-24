@@ -28,8 +28,8 @@ public class CasLogoutActionBuilder implements LogoutActionBuilder {
     /**
      * <p>Constructor for CasLogoutActionBuilder.</p>
      *
-     * @param serverLogoutUrl a {@link java.lang.String} object
-     * @param postLogoutUrlParameter a {@link java.lang.String} object
+     * @param serverLogoutUrl a {@link String} object
+     * @param postLogoutUrlParameter a {@link String} object
      */
     public CasLogoutActionBuilder(final String serverLogoutUrl, final String postLogoutUrlParameter) {
         if (isNotBlank(serverLogoutUrl)) {

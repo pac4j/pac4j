@@ -4,7 +4,7 @@ import org.pac4j.kerberos.client.direct.DirectKerberosClient;
 
 /**
  * Implementations of this interface are used in
- * {@link org.pac4j.kerberos.client.direct.DirectKerberosClient} to validate a Kerberos/SPNEGO
+ * {@link DirectKerberosClient} to validate a Kerberos/SPNEGO
  * Ticket.
  *
  * @author Garry Boyce

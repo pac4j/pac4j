@@ -183,7 +183,7 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
      * @param ctx the context
      * @param manager the profile manager
      * @param clients the current clients
-     * @return a {@link java.util.List} object
+     * @return a {@link List} object
      */
     protected List<UserProfile> loadProfiles(final CallContext ctx, final ProfileManager manager, final List<Client> clients) {
         return manager.getProfiles();
@@ -236,7 +236,7 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
      * @return the performed redirection
      */
     protected HttpAction redirectToIdentityProvider(final CallContext ctx, final List<Client> currentClients) {
-        val currentClient = (IndirectClient) currentClients.get(0);
+        Client currentClient = (IndirectClient) currentClients.get(0);
         return currentClient.getRedirectionAction(ctx).get();
     }
 

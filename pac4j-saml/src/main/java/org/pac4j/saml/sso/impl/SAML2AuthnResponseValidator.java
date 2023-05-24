@@ -2,12 +2,14 @@ package org.pac4j.saml.sso.impl;
 
 import com.google.common.annotations.VisibleForTesting;
 import lombok.val;
+import org.opensaml.core.xml.schema.XSString;
 import org.opensaml.core.xml.schema.XSURI;
 import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.common.SAMLVersion;
 import org.opensaml.saml.saml2.core.*;
 import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
+import org.opensaml.saml.saml2.metadata.IndexedEndpoint;
 import org.opensaml.xmlsec.encryption.support.DecryptionException;
 import org.opensaml.xmlsec.signature.Signature;
 import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
@@ -32,7 +34,7 @@ import java.util.stream.Collectors;
 
 /**
  * Class responsible for executing every required checks for validating a SAML response.
- * The method validate populates the given {@link org.pac4j.saml.context.SAML2MessageContext}
+ * The method validate populates the given {@link SAML2MessageContext}
  * with the correct SAML assertion and the corresponding nameID's Bearer subject if every checks succeeds.
  *
  * @author Michael Remond
@@ -46,10 +48,10 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
     /**
      * <p>Constructor for SAML2AuthnResponseValidator.</p>
      *
-     * @param engine a {@link org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider} object
-     * @param decrypter a {@link org.opensaml.saml.saml2.encryption.Decrypter} object
-     * @param replayCache a {@link org.pac4j.saml.replay.ReplayCacheProvider} object
-     * @param saml2Configuration a {@link org.pac4j.saml.config.SAML2Configuration} object
+     * @param engine a {@link SAML2SignatureTrustEngineProvider} object
+     * @param decrypter a {@link Decrypter} object
+     * @param replayCache a {@link ReplayCacheProvider} object
+     * @param saml2Configuration a {@link SAML2Configuration} object
      */
     public SAML2AuthnResponseValidator(
         final SAML2SignatureTrustEngineProvider engine,
@@ -66,11 +68,10 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
 
         val message = (SAMLObject) context.getMessageContext().getMessage();
 
-        if (!(message instanceof Response)) {
+        if (!(message instanceof Response response)) {
             throw new SAMLException("Must be a Response type");
         }
 
-        val response = (Response) message;
         val engine = this.signatureTrustEngineProvider.build();
         verifyMessageReplay(context);
         validateSamlProtocolResponse(response, context, engine);
@@ -86,12 +87,12 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
     /**
      * <p>buildSAML2Credentials.</p>
      *
-     * @param context a {@link org.pac4j.saml.context.SAML2MessageContext} object
-     * @param response a {@link org.opensaml.saml.saml2.core.Response} object
-     * @return a {@link org.pac4j.saml.credentials.SAML2AuthenticationCredentials} object
+     * @param context a {@link SAML2MessageContext} object
+     * @param response a {@link Response} object
+     * @return a {@link SAML2AuthenticationCredentials} object
      */
     protected SAML2AuthenticationCredentials buildSAML2Credentials(final SAML2MessageContext context,
-                                                                   final Response response) {
+                                                                   final StatusResponseType response) {
         val subjectAssertion = context.getSubjectAssertion();
 
         val samlAttributes = collectAssertionAttributes(subjectAssertion);
@@ -126,8 +127,8 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
     /**
      * <p>collectAssertionAttributes.</p>
      *
-     * @param subjectAssertion a {@link org.opensaml.saml.saml2.core.Assertion} object
-     * @return a {@link java.util.List} object
+     * @param subjectAssertion a {@link Assertion} object
+     * @return a {@link List} object
      */
     protected List<Attribute> collectAssertionAttributes(final Assertion subjectAssertion) {
         final List<Attribute> attributes = new ArrayList<>();
@@ -155,12 +156,12 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
     /**
      * <p>determineNameID.</p>
      *
-     * @param context a {@link org.pac4j.saml.context.SAML2MessageContext} object
-     * @param attributes a {@link java.util.List} object
-     * @return a {@link org.pac4j.saml.credentials.SAML2AuthenticationCredentials.SAMLNameID} object
+     * @param context a {@link SAML2MessageContext} object
+     * @param attributes a {@link List} object
+     * @return a {@link SAML2AuthenticationCredentials.SAMLNameID} object
      */
     protected SAML2AuthenticationCredentials.SAMLNameID determineNameID(final SAML2MessageContext context,
-                final List<SAML2AuthenticationCredentials.SAMLAttribute> attributes) {
+                final Collection<SAML2AuthenticationCredentials.SAMLAttribute> attributes) {
         var configContext = context.getConfigurationContext();
         if (configContext.getNameIdAttribute() != null) {
             val nameId = attributes
@@ -204,7 +205,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
      * @param context  the context
      * @param engine   the engine
      */
-    protected void validateSamlProtocolResponse(final Response response, final SAML2MessageContext context,
+    protected void validateSamlProtocolResponse(final StatusResponseType response, final SAML2MessageContext context,
                                                 final SignatureTrustEngine engine) {
         var configContext = context.getConfigurationContext();
 
@@ -268,12 +269,12 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
     /**
      * <p>verifyRequest.</p>
      *
-     * @param request a {@link org.opensaml.saml.saml2.core.AuthnRequest} object
-     * @param context a {@link org.pac4j.saml.context.SAML2MessageContext} object
+     * @param request a {@link AuthnRequest} object
+     * @param context a {@link SAML2MessageContext} object
      */
     protected void verifyRequest(final AuthnRequest request, final SAML2MessageContext context) {
         // Verify endpoint requested in the original request
-        val assertionConsumerService = (AssertionConsumerService) context.
+        IndexedEndpoint assertionConsumerService = (AssertionConsumerService) context.
             getSAMLEndpointContext()
             .getEndpoint();
         if (request.getAssertionConsumerServiceIndex() != null) {
@@ -304,7 +305,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
 
     /**
      * Validates the SAML SSO response by finding a valid assertion with authn statements.
-     * Populates the {@link org.pac4j.saml.context.SAML2MessageContext} with a subjectAssertion and a subjectNameIdentifier.
+     * Populates the {@link SAML2MessageContext} with a subjectAssertion and a subjectNameIdentifier.
      *
      * @param response  the response
      * @param context   the context
@@ -344,7 +345,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
             if (configContext.getNameIdAttribute() != null) {
                 logger.debug("NameID will be determined from attribute {}", configContext.getNameIdAttribute());
             } else {
-                val nameIdentifier = (NameID) context.getSAMLSubjectNameIdentifierContext().getSubjectNameIdentifier();
+                XSString nameIdentifier = (NameID) context.getSAMLSubjectNameIdentifierContext().getSubjectNameIdentifier();
                 if ((nameIdentifier == null || nameIdentifier.getValue() == null) && context.getBaseID() == null
                     && (subjectConfirmations == null || subjectConfirmations.isEmpty())) {
                     throw new SAMLException(
@@ -603,14 +604,14 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
      * @param audienceRestrictions the audience restrictions
      * @param spEntityId           the sp entity id
      */
-    protected void validateAudienceRestrictions(final List<AudienceRestriction> audienceRestrictions,
+    protected void validateAudienceRestrictions(final Collection<AudienceRestriction> audienceRestrictions,
                                                 final String spEntityId) {
 
         if (audienceRestrictions == null || audienceRestrictions.isEmpty()) {
             throw new SAMLAssertionAudienceException("Audience restrictions cannot be null or empty");
         }
 
-        final Set<String> audienceUris = new HashSet<>();
+        final Collection<String> audienceUris = new HashSet<>();
         for (val audienceRestriction : audienceRestrictions) {
             if (audienceRestriction.getAudiences() != null) {
                 for (val audience : audienceRestriction.getAudiences()) {
@@ -632,7 +633,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
      * @param authnStatements the authn statements
      * @param context         the context
      */
-    protected void validateAuthenticationStatements(final List<AuthnStatement> authnStatements,
+    protected void validateAuthenticationStatements(final Iterable<AuthnStatement> authnStatements,
                                                     final SAML2MessageContext context) {
         final List<String> authnClassRefs = new ArrayList<>();
         val now = ZonedDateTime.now(ZoneOffset.UTC).toInstant();
@@ -657,8 +658,8 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
     /**
      * <p>validateAuthnContextClassRefs.</p>
      *
-     * @param context a {@link org.pac4j.saml.context.SAML2MessageContext} object
-     * @param providedAuthnContextClassRefs a {@link java.util.List} object
+     * @param context a {@link SAML2MessageContext} object
+     * @param providedAuthnContextClassRefs a {@link List} object
      */
     protected void validateAuthnContextClassRefs(final SAML2MessageContext context, final List<String> providedAuthnContextClassRefs) {
         var configContext = context.getConfigurationContext();

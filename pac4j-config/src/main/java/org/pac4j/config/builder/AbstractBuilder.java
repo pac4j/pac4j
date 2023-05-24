@@ -33,7 +33,7 @@ public abstract class AbstractBuilder implements PropertiesConstants {
     /**
      * <p>Constructor for AbstractBuilder.</p>
      *
-     * @param properties a {@link java.util.Map} object
+     * @param properties a {@link Map} object
      */
     protected AbstractBuilder(final Map<String, String> properties) {
         this.properties = properties;
@@ -43,8 +43,8 @@ public abstract class AbstractBuilder implements PropertiesConstants {
     /**
      * <p>Constructor for AbstractBuilder.</p>
      *
-     * @param properties a {@link java.util.Map} object
-     * @param authenticators a {@link java.util.Map} object
+     * @param properties a {@link Map} object
+     * @param authenticators a {@link Map} object
      */
     protected AbstractBuilder(final Map<String, String> properties, final Map<String, Authenticator> authenticators) {
         this.properties = properties;
@@ -54,9 +54,9 @@ public abstract class AbstractBuilder implements PropertiesConstants {
     /**
      * <p>concat.</p>
      *
-     * @param value a {@link java.lang.String} object
+     * @param value a {@link String} object
      * @param num a int
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     protected String concat(final String value, int num) {
         return value.concat(num == 0 ? Pac4jConstants.EMPTY_STRING : "." + num);
@@ -65,8 +65,8 @@ public abstract class AbstractBuilder implements PropertiesConstants {
     /**
      * <p>getProperty.</p>
      *
-     * @param name a {@link java.lang.String} object
-     * @return a {@link java.lang.String} object
+     * @param name a {@link String} object
+     * @return a {@link String} object
      */
     protected String getProperty(final String name) {
         return properties.get(name);
@@ -75,9 +75,9 @@ public abstract class AbstractBuilder implements PropertiesConstants {
     /**
      * <p>getProperty.</p>
      *
-     * @param name a {@link java.lang.String} object
+     * @param name a {@link String} object
      * @param num a int
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     protected String getProperty(final String name, final int num) {
         return getProperty(concat(name, num));
@@ -86,7 +86,7 @@ public abstract class AbstractBuilder implements PropertiesConstants {
     /**
      * <p>containsProperty.</p>
      *
-     * @param name a {@link java.lang.String} object
+     * @param name a {@link String} object
      * @param num a int
      * @return a boolean
      */
@@ -97,7 +97,7 @@ public abstract class AbstractBuilder implements PropertiesConstants {
     /**
      * <p>getPropertyAsBoolean.</p>
      *
-     * @param name a {@link java.lang.String} object
+     * @param name a {@link String} object
      * @param num a int
      * @return a boolean
      */
@@ -108,7 +108,7 @@ public abstract class AbstractBuilder implements PropertiesConstants {
     /**
      * <p>getPropertyAsInteger.</p>
      *
-     * @param name a {@link java.lang.String} object
+     * @param name a {@link String} object
      * @param num a int
      * @return a int
      */
@@ -119,7 +119,7 @@ public abstract class AbstractBuilder implements PropertiesConstants {
     /**
      * <p>getPropertyAsLong.</p>
      *
-     * @param name a {@link java.lang.String} object
+     * @param name a {@link String} object
      * @param num a int
      * @return a long
      */
@@ -130,8 +130,8 @@ public abstract class AbstractBuilder implements PropertiesConstants {
     /**
      * <p>getAuthenticator.</p>
      *
-     * @param name a {@link java.lang.String} object
-     * @return a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
+     * @param name a {@link String} object
+     * @return a {@link Authenticator} object
      */
     protected Authenticator getAuthenticator(final String name) {
         if (AUTHENTICATOR_TEST_TOKEN.equals(name)) {

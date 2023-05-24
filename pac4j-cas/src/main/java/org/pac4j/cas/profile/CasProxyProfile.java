@@ -3,6 +3,8 @@ package org.pac4j.cas.profile;
 import lombok.val;
 import org.apereo.cas.client.authentication.AttributePrincipal;
 
+import java.io.Serial;
+
 /**
  * <p>This class is the user profile for sites using CAS protocol with proxy capabilities.</p>
  * <p>It is returned by the {@link org.pac4j.cas.client.CasClient} coupled with the {@link org.pac4j.cas.client.CasProxyReceptor}.</p>
@@ -16,6 +18,7 @@ import org.apereo.cas.client.authentication.AttributePrincipal;
  */
 public class CasProxyProfile extends CasProfile {
 
+    @Serial
     private static final long serialVersionUID = 4956675835922254493L;
 
     protected AttributePrincipal attributePrincipal = null;

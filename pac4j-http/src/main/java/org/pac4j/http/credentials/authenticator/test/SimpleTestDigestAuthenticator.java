@@ -6,6 +6,7 @@ import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.http.credentials.DigestCredentials;
 
@@ -38,7 +39,7 @@ public class SimpleTestDigestAuthenticator implements Authenticator {
             throw new CredentialsException("Token cannot be blank");
         }
 
-        val profile = new CommonProfile();
+        UserProfile profile = new CommonProfile();
         profile.setId(username);
         digestCredentials.setUserProfile(profile);
 

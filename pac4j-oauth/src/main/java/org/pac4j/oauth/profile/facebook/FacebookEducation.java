@@ -1,5 +1,6 @@
 package org.pac4j.oauth.profile.facebook;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
@@ -11,6 +12,7 @@ import java.util.List;
  */
 public final class FacebookEducation implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 3587603107957633824L;
 
     private FacebookObject school;
@@ -26,7 +28,7 @@ public final class FacebookEducation implements Serializable {
     /**
      * <p>Getter for the field <code>school</code>.</p>
      *
-     * @return a {@link org.pac4j.oauth.profile.facebook.FacebookObject} object
+     * @return a {@link FacebookObject} object
      */
     public FacebookObject getSchool() {
         return school;
@@ -35,7 +37,7 @@ public final class FacebookEducation implements Serializable {
     /**
      * <p>Setter for the field <code>school</code>.</p>
      *
-     * @param school a {@link org.pac4j.oauth.profile.facebook.FacebookObject} object
+     * @param school a {@link FacebookObject} object
      */
     public void setSchool(FacebookObject school) {
         this.school = school;
@@ -44,7 +46,7 @@ public final class FacebookEducation implements Serializable {
     /**
      * <p>Getter for the field <code>degree</code>.</p>
      *
-     * @return a {@link org.pac4j.oauth.profile.facebook.FacebookObject} object
+     * @return a {@link FacebookObject} object
      */
     public FacebookObject getDegree() {
         return degree;
@@ -53,7 +55,7 @@ public final class FacebookEducation implements Serializable {
     /**
      * <p>Setter for the field <code>degree</code>.</p>
      *
-     * @param degree a {@link org.pac4j.oauth.profile.facebook.FacebookObject} object
+     * @param degree a {@link FacebookObject} object
      */
     public void setDegree(FacebookObject degree) {
         this.degree = degree;
@@ -62,7 +64,7 @@ public final class FacebookEducation implements Serializable {
     /**
      * <p>Getter for the field <code>year</code>.</p>
      *
-     * @return a {@link org.pac4j.oauth.profile.facebook.FacebookObject} object
+     * @return a {@link FacebookObject} object
      */
     public FacebookObject getYear() {
         return year;
@@ -71,7 +73,7 @@ public final class FacebookEducation implements Serializable {
     /**
      * <p>Setter for the field <code>year</code>.</p>
      *
-     * @param year a {@link org.pac4j.oauth.profile.facebook.FacebookObject} object
+     * @param year a {@link FacebookObject} object
      */
     public void setYear(FacebookObject year) {
         this.year = year;
@@ -80,7 +82,7 @@ public final class FacebookEducation implements Serializable {
     /**
      * <p>Getter for the field <code>concentration</code>.</p>
      *
-     * @return a {@link java.util.List} object
+     * @return a {@link List} object
      */
     public List<FacebookObject> getConcentration() {
         return concentration;
@@ -89,7 +91,7 @@ public final class FacebookEducation implements Serializable {
     /**
      * <p>Setter for the field <code>concentration</code>.</p>
      *
-     * @param concentration a {@link java.util.List} object
+     * @param concentration a {@link List} object
      */
     public void setConcentration(List<FacebookObject> concentration) {
         this.concentration = concentration;
@@ -98,7 +100,7 @@ public final class FacebookEducation implements Serializable {
     /**
      * <p>Getter for the field <code>type</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getType() {
         return type;
@@ -107,7 +109,7 @@ public final class FacebookEducation implements Serializable {
     /**
      * <p>Setter for the field <code>type</code>.</p>
      *
-     * @param type a {@link java.lang.String} object
+     * @param type a {@link String} object
      */
     public void setType(String type) {
         this.type = type;

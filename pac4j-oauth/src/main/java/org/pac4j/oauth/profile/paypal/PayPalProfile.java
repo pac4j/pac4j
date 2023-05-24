@@ -1,5 +1,6 @@
 package org.pac4j.oauth.profile.paypal;
 
+import java.io.Serial;
 import java.util.Locale;
 
 import org.pac4j.oauth.profile.OAuth20Profile;
@@ -13,6 +14,7 @@ import org.pac4j.oauth.profile.OAuth20Profile;
  */
 public class PayPalProfile extends OAuth20Profile {
 
+    @Serial
     private static final long serialVersionUID = -9019988559486637233L;
 
     /** {@inheritDoc} */
@@ -36,7 +38,7 @@ public class PayPalProfile extends OAuth20Profile {
     /**
      * <p>getLanguage.</p>
      *
-     * @return a {@link java.util.Locale} object
+     * @return a {@link Locale} object
      */
     public Locale getLanguage() {
         return (Locale) getAttribute(PayPalProfileDefinition.LANGUAGE);
@@ -45,7 +47,7 @@ public class PayPalProfile extends OAuth20Profile {
     /**
      * <p>getAddress.</p>
      *
-     * @return a {@link org.pac4j.oauth.profile.paypal.PayPalAddress} object
+     * @return a {@link PayPalAddress} object
      */
     public PayPalAddress getAddress() {
         return (PayPalAddress) getAttribute(PayPalProfileDefinition.ADDRESS);

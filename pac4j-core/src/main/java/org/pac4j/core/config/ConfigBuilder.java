@@ -17,9 +17,9 @@ public final class ConfigBuilder {
     /**
      * <p>build.</p>
      *
-     * @param factoryName a {@link java.lang.String} object
-     * @param parameters a {@link java.lang.Object} object
-     * @return a {@link org.pac4j.core.config.Config} object
+     * @param factoryName a {@link String} object
+     * @param parameters a {@link Object} object
+     * @return a {@link Config} object
      */
     @SuppressWarnings("unchecked")
     public synchronized static Config build(final String factoryName, final Object... parameters) {

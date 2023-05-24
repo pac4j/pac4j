@@ -46,8 +46,8 @@ public class ProfileManager {
     /**
      * <p>Constructor for ProfileManager.</p>
      *
-     * @param context a {@link org.pac4j.core.context.WebContext} object
-     * @param sessionStore a {@link org.pac4j.core.context.session.SessionStore} object
+     * @param context a {@link WebContext} object
+     * @param sessionStore a {@link SessionStore} object
      */
     public ProfileManager(final WebContext context, final SessionStore sessionStore) {
         CommonHelper.assertNotNull("context", context);
@@ -57,7 +57,7 @@ public class ProfileManager {
     }
 
     /**
-     * Retrieve the first user profile if it exists, ignoring any {@link org.pac4j.core.profile.AnonymousProfile} if possible.
+     * Retrieve the first user profile if it exists, ignoring any {@link AnonymousProfile} if possible.
      *
      * @return the user profile
      */
@@ -69,9 +69,9 @@ public class ProfileManager {
     /**
      * <p>getProfile.</p>
      *
-     * @param clazz a {@link java.lang.Class} object
+     * @param clazz a {@link Class} object
      * @param <U> a U class
-     * @return a {@link java.util.Optional} object
+     * @return a {@link Optional} object
      */
     public <U extends UserProfile> Optional<U> getProfile(final Class<U> clazz) {
         return (Optional<U>) getProfile();
@@ -116,7 +116,7 @@ public class ProfileManager {
     /**
      * <p>removeOrRenewExpiredProfiles.</p>
      *
-     * @param profiles a {@link java.util.LinkedHashMap} object
+     * @param profiles a {@link LinkedHashMap} object
      * @param readFromSession a boolean
      */
     protected void removeOrRenewExpiredProfiles(final LinkedHashMap<String, UserProfile> profiles, final boolean readFromSession) {
@@ -187,8 +187,8 @@ public class ProfileManager {
     /**
      * <p>retrieveClientName.</p>
      *
-     * @param profile a {@link org.pac4j.core.profile.UserProfile} object
-     * @return a {@link java.lang.String} object
+     * @param profile a {@link UserProfile} object
+     * @return a {@link String} object
      */
     protected String retrieveClientName(final UserProfile profile) {
         var clientName = profile.getClientName();
@@ -201,7 +201,7 @@ public class ProfileManager {
     /**
      * <p>saveAll.</p>
      *
-     * @param profiles a {@link java.util.LinkedHashMap} object
+     * @param profiles a {@link LinkedHashMap} object
      * @param saveInSession a boolean
      */
     protected void saveAll(LinkedHashMap<String, UserProfile> profiles, final boolean saveInSession) {
@@ -215,7 +215,7 @@ public class ProfileManager {
 
     /**
      * Tests if the current user is authenticated (meaning a user profile exists
-     * which is not an {@link org.pac4j.core.profile.AnonymousProfile}).
+     * which is not an {@link AnonymousProfile}).
      *
      * @return whether the current user is authenticated
      */

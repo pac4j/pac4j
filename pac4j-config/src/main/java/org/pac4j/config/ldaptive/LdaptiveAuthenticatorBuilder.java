@@ -16,8 +16,6 @@ import org.ldaptive.ssl.X509CredentialConfig;
 import org.pac4j.core.util.CommonHelper;
 
 import java.time.Duration;
-import java.util.Arrays;
-import java.util.stream.Collectors;
 
 /**
  * Copy/pasted from CAS server v5.0.4: Beans + LdapAuthenticationConfiguration classes, only the Ldaptive stuffs are kept.
@@ -44,8 +42,8 @@ public class LdaptiveAuthenticatorBuilder {
     /**
      * <p>getAuthenticator.</p>
      *
-     * @param l a {@link org.pac4j.config.ldaptive.LdapAuthenticationProperties} object
-     * @return a {@link org.ldaptive.auth.Authenticator} object
+     * @param l a {@link LdapAuthenticationProperties} object
+     * @return a {@link Authenticator} object
      */
     public static Authenticator getAuthenticator(final LdapAuthenticationProperties l) {
         if (l.getType() == LdapAuthenticationProperties.AuthenticationTypes.AD) {
@@ -170,7 +168,7 @@ public class LdaptiveAuthenticatorBuilder {
      */
     public static ConnectionConfig newConnectionConfig(final AbstractLdapProperties l) {
         val cc = new ConnectionConfig();
-        val urls = Arrays.stream(l.getLdapUrl().split(",")).collect(Collectors.joining(" "));
+        val urls = String.join(" ", l.getLdapUrl().split(","));
         LOGGER.debug("Transformed LDAP urls from [{}] to [{}]", l.getLdapUrl(), urls);
         cc.setLdapUrl(urls);
         cc.setUseStartTLS(l.isUseStartTls());

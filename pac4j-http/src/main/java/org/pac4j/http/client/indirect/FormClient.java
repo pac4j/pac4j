@@ -55,8 +55,8 @@ public class FormClient extends IndirectClient {
     /**
      * <p>Constructor for FormClient.</p>
      *
-     * @param loginUrl a {@link java.lang.String} object
-     * @param usernamePasswordAuthenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
+     * @param loginUrl a {@link String} object
+     * @param usernamePasswordAuthenticator a {@link Authenticator} object
      */
     public FormClient(final String loginUrl, final Authenticator usernamePasswordAuthenticator) {
         this.loginUrl = loginUrl;
@@ -66,10 +66,10 @@ public class FormClient extends IndirectClient {
     /**
      * <p>Constructor for FormClient.</p>
      *
-     * @param loginUrl a {@link java.lang.String} object
-     * @param usernameParameter a {@link java.lang.String} object
-     * @param passwordParameter a {@link java.lang.String} object
-     * @param usernamePasswordAuthenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
+     * @param loginUrl a {@link String} object
+     * @param usernameParameter a {@link String} object
+     * @param passwordParameter a {@link String} object
+     * @param usernamePasswordAuthenticator a {@link Authenticator} object
      */
     public FormClient(final String loginUrl, final String usernameParameter, final String passwordParameter,
                       final Authenticator usernamePasswordAuthenticator) {
@@ -82,9 +82,9 @@ public class FormClient extends IndirectClient {
     /**
      * <p>Constructor for FormClient.</p>
      *
-     * @param loginUrl a {@link java.lang.String} object
-     * @param usernamePasswordAuthenticator a {@link org.pac4j.core.credentials.authenticator.Authenticator} object
-     * @param profileCreator a {@link org.pac4j.core.profile.creator.ProfileCreator} object
+     * @param loginUrl a {@link String} object
+     * @param usernamePasswordAuthenticator a {@link Authenticator} object
+     * @param profileCreator a {@link ProfileCreator} object
      */
     public FormClient(final String loginUrl, final Authenticator usernamePasswordAuthenticator,
                       final ProfileCreator profileCreator) {
@@ -119,7 +119,7 @@ public class FormClient extends IndirectClient {
         try {
             credentials = getCredentialsExtractor().extract(ctx);
             logger.debug("usernamePasswordCredentials: {}", credentials);
-            if (!credentials.isPresent()) {
+            if (credentials.isEmpty()) {
                 throw handleInvalidCredentials(ctx, username,
                     "Username and password cannot be blank -> return to the form with error", MISSING_FIELD_ERROR);
             }
@@ -147,11 +147,11 @@ public class FormClient extends IndirectClient {
     /**
      * <p>handleInvalidCredentials.</p>
      *
-     * @param ctx a {@link org.pac4j.core.context.CallContext} object
-     * @param username a {@link java.lang.String} object
-     * @param message a {@link java.lang.String} object
-     * @param errorMessage a {@link java.lang.String} object
-     * @return a {@link org.pac4j.core.exception.http.HttpAction} object
+     * @param ctx a {@link CallContext} object
+     * @param username a {@link String} object
+     * @param message a {@link String} object
+     * @param errorMessage a {@link String} object
+     * @return a {@link HttpAction} object
      */
     protected HttpAction handleInvalidCredentials(final CallContext ctx, final String username, String message, String errorMessage) {
         val webContext = ctx.webContext();

@@ -9,6 +9,7 @@ import org.ldaptive.auth.Authenticator;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.exception.BadCredentialsException;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.service.AbstractProfileService;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.util.TestsConstants;
@@ -96,7 +97,7 @@ public final class LdapProfileServiceTests implements TestsConstants {
         val profile = credentials.getUserProfile();
         assertNotNull(profile);
         assertTrue(profile instanceof LdapProfile);
-        val ldapProfile = (LdapProfile) profile;
+        UserProfile ldapProfile = (LdapProfile) profile;
         assertEquals(GOOD_USERNAME, ldapProfile.getId());
         assertEquals(0, ldapProfile.getAttributes().size());
     }
@@ -112,7 +113,7 @@ public final class LdapProfileServiceTests implements TestsConstants {
         val profile = credentials.getUserProfile();
         assertNotNull(profile);
         assertTrue(profile instanceof LdapProfile);
-        val ldapProfile = (LdapProfile) profile;
+        UserProfile ldapProfile = (LdapProfile) profile;
         assertEquals(GOOD_USERNAME, ldapProfile.getId());
         assertEquals(1, ldapProfile.getAttributes().size());
         assertEquals(FIRSTNAME_VALUE, ldapProfile.getAttribute(LdapServer.SN));

@@ -28,7 +28,7 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
     /**
      * <p>Constructor for PropertiesConfigFactory.</p>
      *
-     * @param properties a {@link java.util.Map} object
+     * @param properties a {@link Map} object
      */
     public PropertiesConfigFactory(final Map<String, String> properties) {
         this(null, properties);
@@ -37,8 +37,8 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
     /**
      * <p>Constructor for PropertiesConfigFactory.</p>
      *
-     * @param callbackUrl a {@link java.lang.String} object
-     * @param properties a {@link java.util.Map} object
+     * @param callbackUrl a {@link String} object
+     * @param properties a {@link Map} object
      */
     public PropertiesConfigFactory(final String callbackUrl, final Map<String, String> properties) {
         super(properties);

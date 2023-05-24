@@ -5,8 +5,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.model.Token;
 import lombok.val;
+import org.apache.commons.codec.binary.Hex;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.ProfileHelper;
+import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.profile.converter.AttributeConverter;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.core.profile.converter.DateConverter;
 import org.pac4j.core.util.CommonHelper;
@@ -20,6 +23,7 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
+import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.List;
@@ -121,9 +125,9 @@ public class FacebookProfileDefinition extends OAuthProfileDefinition {
         primary(TIMEZONE, Converters.INTEGER);
         primary(VERIFIED, Converters.BOOLEAN);
         primary(LINK, Converters.URL);
-        val objectConverter = new JsonConverter(FacebookObject.class);
-        val multiObjectConverter = new JsonConverter(List.class, new TypeReference<List<FacebookObject>>() {});
-        val multiInfoConverter = new JsonConverter(List.class, new TypeReference<List<FacebookInfo>>() {});
+        AttributeConverter objectConverter = new JsonConverter(FacebookObject.class);
+        AttributeConverter multiObjectConverter = new JsonConverter(List.class, new TypeReference<List<FacebookObject>>() {});
+        AttributeConverter multiInfoConverter = new JsonConverter(List.class, new TypeReference<List<FacebookInfo>>() {});
         primary(UPDATED_TIME, Converters.DATE_TZ_GENERAL);
         primary(BIRTHDAY, new DateConverter("MM/dd/yyyy"));
         primary(RELATIONSHIP_STATUS, new FacebookRelationshipStatusConverter());
@@ -176,9 +180,9 @@ public class FacebookProfileDefinition extends OAuthProfileDefinition {
     public String computeAppSecretProof(final String url, final OAuth2AccessToken token, final FacebookConfiguration configuration) {
         try {
             var sha256_HMAC = Mac.getInstance("HmacSHA256");
-            var secret_key = new SecretKeySpec(configuration.getSecret().getBytes(StandardCharsets.UTF_8), "HmacSHA256");
+            Key secret_key = new SecretKeySpec(configuration.getSecret().getBytes(StandardCharsets.UTF_8), "HmacSHA256");
             sha256_HMAC.init(secret_key);
-            var proof = org.apache.commons.codec.binary.Hex.encodeHexString(sha256_HMAC.doFinal(token.getAccessToken()
+            var proof = Hex.encodeHexString(sha256_HMAC.doFinal(token.getAccessToken()
                 .getBytes(StandardCharsets.UTF_8)));
             val computedUrl = CommonHelper.addParameter(url, APPSECRET_PARAMETER, proof);
             return computedUrl;
@@ -216,11 +220,11 @@ public class FacebookProfileDefinition extends OAuthProfileDefinition {
     /**
      * <p>extractData.</p>
      *
-     * @param profile a {@link org.pac4j.oauth.profile.facebook.FacebookProfile} object
-     * @param json a {@link com.fasterxml.jackson.databind.JsonNode} object
-     * @param name a {@link java.lang.String} object
+     * @param profile a {@link FacebookProfile} object
+     * @param json a {@link JsonNode} object
+     * @param name a {@link String} object
      */
-    protected void extractData(final FacebookProfile profile, final JsonNode json, final String name) {
+    protected void extractData(final UserProfile profile, final JsonNode json, final String name) {
         val data = (JsonNode) JsonHelper.getElement(json, name);
         if (data != null) {
             convertAndAdd(profile, PROFILE_ATTRIBUTE, name, JsonHelper.getElement(data, "data"));

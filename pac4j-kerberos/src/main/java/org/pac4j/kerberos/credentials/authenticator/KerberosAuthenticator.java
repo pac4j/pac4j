@@ -4,6 +4,7 @@ import lombok.val;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.kerberos.credentials.KerberosCredentials;
 import org.pac4j.kerberos.profile.KerberosProfile;
@@ -47,7 +48,7 @@ public class KerberosAuthenticator implements Authenticator {
         var subject = ticketValidation.username();
         logger.debug("Succesfully validated " + subject);
 
-        var profile = new KerberosProfile(ticketValidation.getGssContext());
+        UserProfile profile = new KerberosProfile(ticketValidation.getGssContext());
         profile.setId(subject);
         credentials.setUserProfile(profile);
         return Optional.of(credentials);

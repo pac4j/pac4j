@@ -65,7 +65,7 @@ public class OAuth20Configuration extends OAuthConfiguration {
     /**
      * <p>Setter for the field <code>stateGenerator</code>.</p>
      *
-     * @param stateGenerator a {@link org.pac4j.core.util.generator.ValueGenerator} object
+     * @param stateGenerator a {@link ValueGenerator} object
      */
     public void setStateGenerator(final ValueGenerator stateGenerator) {
         CommonHelper.assertNotNull("stateGenerator", stateGenerator);

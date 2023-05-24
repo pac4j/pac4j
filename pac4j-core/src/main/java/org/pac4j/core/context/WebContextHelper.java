@@ -7,7 +7,6 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Collection;
 import java.util.Locale;
 
 /**
@@ -32,7 +31,7 @@ public final class WebContextHelper implements HttpConstants {
      * @param name the name of the cookie
      * @return the cookie
      */
-    public static Cookie getCookie(final Collection<Cookie> cookies, final String name) {
+    public static Cookie getCookie(final Iterable<Cookie> cookies, final String name) {
         if (cookies != null) {
             for (val cookie : cookies) {
                 if (cookie != null && CommonHelper.areEquals(name, cookie.getName())) {
@@ -140,7 +139,7 @@ public final class WebContextHelper implements HttpConstants {
      * a SameSite policy.
      *
      * @param cookie pac4j Cookie object
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public static String createCookieHeader(Cookie cookie) {
         var builder = new StringBuilder();

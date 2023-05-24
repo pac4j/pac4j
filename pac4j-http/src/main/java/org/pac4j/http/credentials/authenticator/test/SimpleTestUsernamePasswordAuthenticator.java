@@ -7,6 +7,7 @@ import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 
@@ -38,7 +39,7 @@ public class SimpleTestUsernamePasswordAuthenticator implements Authenticator {
         if (CommonHelper.areNotEquals(username, password)) {
             throw new CredentialsException("Username : '" + username + "' does not match password");
         }
-        val profile = new CommonProfile();
+        UserProfile profile = new CommonProfile();
         profile.setId(username);
         profile.addAttribute(Pac4jConstants.USERNAME, username);
         credentials.setUserProfile(profile);

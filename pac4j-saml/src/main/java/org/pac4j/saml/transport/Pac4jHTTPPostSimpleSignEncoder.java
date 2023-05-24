@@ -14,7 +14,7 @@ import java.net.URI;
 
 /**
  * Pac4j implementation for HTTP Post Simple-Sign extending openSAML
- * {@link org.opensaml.saml.saml2.binding.encoding.impl.HTTPPostSimpleSignEncoder}.
+ * {@link HTTPPostSimpleSignEncoder}.
  *
  * @author Vincent Marmin
  * @since 3.7.0
@@ -27,7 +27,7 @@ public class Pac4jHTTPPostSimpleSignEncoder extends HTTPPostSimpleSignEncoder {
     /**
      * <p>Constructor for Pac4jHTTPPostSimpleSignEncoder.</p>
      *
-     * @param responseAdapter a {@link org.pac4j.saml.transport.Pac4jSAMLResponse} object
+     * @param responseAdapter a {@link Pac4jSAMLResponse} object
      */
     public Pac4jHTTPPostSimpleSignEncoder(final Pac4jSAMLResponse responseAdapter) {
         this.responseAdapter = responseAdapter;

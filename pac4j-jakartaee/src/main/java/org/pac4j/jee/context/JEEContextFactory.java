@@ -13,7 +13,7 @@ import org.pac4j.core.exception.TechnicalException;
 public class JEEContextFactory implements WebContextFactory {
 
     /** Constant <code>INSTANCE</code> */
-    public static final JEEContextFactory INSTANCE = new JEEContextFactory();
+    public static final WebContextFactory INSTANCE = new JEEContextFactory();
 
     /** {@inheritDoc} */
     @Override

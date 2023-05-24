@@ -6,7 +6,7 @@ import org.pac4j.core.credentials.Credentials;
 import java.util.Optional;
 
 /**
- * An authenticator is responsible for validating {@link org.pac4j.core.credentials.Credentials}
+ * An authenticator is responsible for validating {@link Credentials}
  * and should throw a {@link org.pac4j.core.exception.CredentialsException} if the authentication fails.
  *
  * @author Jerome Leleu

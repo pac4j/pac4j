@@ -20,7 +20,7 @@ public class DefaultRolesAuthorizationGenerator implements AuthorizationGenerato
     /**
      * <p>Constructor for DefaultRolesAuthorizationGenerator.</p>
      *
-     * @param defaultRoles a {@link java.util.Collection} object
+     * @param defaultRoles a {@link Collection} object
      */
     public DefaultRolesAuthorizationGenerator(final Collection<String> defaultRoles) {
         this.defaultRoles = defaultRoles;
@@ -29,7 +29,7 @@ public class DefaultRolesAuthorizationGenerator implements AuthorizationGenerato
     /**
      * <p>Constructor for DefaultRolesAuthorizationGenerator.</p>
      *
-     * @param defaultRoles an array of {@link java.lang.String} objects
+     * @param defaultRoles an array of {@link String} objects
      */
     public DefaultRolesAuthorizationGenerator(final String[] defaultRoles) {
         if (defaultRoles != null) {

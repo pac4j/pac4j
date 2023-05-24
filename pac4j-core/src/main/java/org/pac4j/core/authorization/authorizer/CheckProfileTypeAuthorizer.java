@@ -23,7 +23,7 @@ public class CheckProfileTypeAuthorizer extends AbstractRequireAnyAuthorizer<Cla
     /**
      * <p>Constructor for CheckProfileTypeAuthorizer.</p>
      *
-     * @param types a {@link java.lang.Class} object
+     * @param types a {@link Class} object
      */
     public CheckProfileTypeAuthorizer(final Class... types) {
         setElements(types);
@@ -32,7 +32,7 @@ public class CheckProfileTypeAuthorizer extends AbstractRequireAnyAuthorizer<Cla
     /**
      * <p>Constructor for CheckProfileTypeAuthorizer.</p>
      *
-     * @param types a {@link java.util.List} object
+     * @param types a {@link List} object
      */
     public CheckProfileTypeAuthorizer(final List<Class> types) {
         setElements(types);
@@ -41,7 +41,7 @@ public class CheckProfileTypeAuthorizer extends AbstractRequireAnyAuthorizer<Cla
     /**
      * <p>Constructor for CheckProfileTypeAuthorizer.</p>
      *
-     * @param types a {@link java.util.Set} object
+     * @param types a {@link Set} object
      */
     public CheckProfileTypeAuthorizer(final Set<Class> types) {
         setElements(types);
@@ -56,8 +56,8 @@ public class CheckProfileTypeAuthorizer extends AbstractRequireAnyAuthorizer<Cla
     /**
      * <p>checkProfileType.</p>
      *
-     * @param types a {@link java.lang.Class} object
-     * @return a {@link org.pac4j.core.authorization.authorizer.CheckProfileTypeAuthorizer} object
+     * @param types a {@link Class} object
+     * @return a {@link CheckProfileTypeAuthorizer} object
      */
     public static CheckProfileTypeAuthorizer checkProfileType(Class... types) {
         return new CheckProfileTypeAuthorizer(types);
@@ -66,8 +66,8 @@ public class CheckProfileTypeAuthorizer extends AbstractRequireAnyAuthorizer<Cla
     /**
      * <p>checkProfileType.</p>
      *
-     * @param types a {@link java.util.List} object
-     * @return a {@link org.pac4j.core.authorization.authorizer.CheckProfileTypeAuthorizer} object
+     * @param types a {@link List} object
+     * @return a {@link CheckProfileTypeAuthorizer} object
      */
     public static CheckProfileTypeAuthorizer checkProfileType(List<Class> types) {
         return new CheckProfileTypeAuthorizer(types);
@@ -76,8 +76,8 @@ public class CheckProfileTypeAuthorizer extends AbstractRequireAnyAuthorizer<Cla
     /**
      * <p>checkProfileType.</p>
      *
-     * @param types a {@link java.util.Set} object
-     * @return a {@link org.pac4j.core.authorization.authorizer.CheckProfileTypeAuthorizer} object
+     * @param types a {@link Set} object
+     * @return a {@link CheckProfileTypeAuthorizer} object
      */
     public static CheckProfileTypeAuthorizer checkProfileType(Set<Class> types) {
         return new CheckProfileTypeAuthorizer(types);

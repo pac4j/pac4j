@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.util.TokenBuffer;
 import lombok.val;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Arrays;
 
@@ -16,12 +17,15 @@ import java.util.Arrays;
  * @since 3.8.0
  */
 public class LinkedIn2ProfilePicture implements Serializable {
+    @Serial
     private static final long serialVersionUID = 100L;
 
     public static class DisplayImageTilde implements Serializable {
+        @Serial
         private static final long serialVersionUID = 1L;
 
         public static class Paging implements Serializable {
+            @Serial
             private static final long serialVersionUID = 1L;
 
             private int count;
@@ -59,15 +63,19 @@ public class LinkedIn2ProfilePicture implements Serializable {
         }
 
         public static class Element implements Serializable {
+            @Serial
             private static final long serialVersionUID = 1L;
 
             public static class Data implements Serializable {
+                @Serial
                 private static final long serialVersionUID = 1L;
 
                 public static class StillImage implements Serializable {
+                    @Serial
                     private static final long serialVersionUID = 1L;
 
                     public static class Size implements Serializable {
+                        @Serial
                         private static final long serialVersionUID = 1L;
 
                         private int width;
@@ -100,6 +108,7 @@ public class LinkedIn2ProfilePicture implements Serializable {
                     }
 
                     public static class DisplaySize extends Size implements Serializable {
+                        @Serial
                         private static final long serialVersionUID = 1L;
 
                         private String uom;
@@ -119,6 +128,7 @@ public class LinkedIn2ProfilePicture implements Serializable {
                     }
 
                     public static class AspectRatio implements Serializable {
+                        @Serial
                         private static final long serialVersionUID = 1L;
 
                         private double widthAspect;
@@ -157,6 +167,7 @@ public class LinkedIn2ProfilePicture implements Serializable {
                     }
 
                     public static class RawCodecSpec implements Serializable {
+                        @Serial
                         private static final long serialVersionUID = 1L;
 
                         private String name;
@@ -268,6 +279,7 @@ public class LinkedIn2ProfilePicture implements Serializable {
             }
 
             public static class Identifier implements Serializable {
+                @Serial
                 private static final long serialVersionUID = 1L;
 
                 private String identifier;
@@ -409,7 +421,7 @@ public class LinkedIn2ProfilePicture implements Serializable {
     /**
      * <p>Getter for the field <code>displayImage</code>.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getDisplayImage() {
         return displayImage;
@@ -418,7 +430,7 @@ public class LinkedIn2ProfilePicture implements Serializable {
     /**
      * <p>Setter for the field <code>displayImage</code>.</p>
      *
-     * @param displayImage a {@link java.lang.String} object
+     * @param displayImage a {@link String} object
      */
     public void setDisplayImage(String displayImage) {
         this.displayImage = displayImage;
@@ -427,7 +439,7 @@ public class LinkedIn2ProfilePicture implements Serializable {
     /**
      * <p>Getter for the field <code>displayImageTilde</code>.</p>
      *
-     * @return a {@link org.pac4j.oauth.profile.linkedin2.LinkedIn2ProfilePicture.DisplayImageTilde} object
+     * @return a {@link LinkedIn2ProfilePicture.DisplayImageTilde} object
      */
     public DisplayImageTilde getDisplayImageTilde() {
         return displayImageTilde;
@@ -436,7 +448,7 @@ public class LinkedIn2ProfilePicture implements Serializable {
     /**
      * <p>Setter for the field <code>displayImageTilde</code>.</p>
      *
-     * @param displayImageTilde a {@link org.pac4j.oauth.profile.linkedin2.LinkedIn2ProfilePicture.DisplayImageTilde} object
+     * @param displayImageTilde a {@link LinkedIn2ProfilePicture.DisplayImageTilde} object
      */
     public void setDisplayImageTilde(DisplayImageTilde displayImageTilde) {
         this.displayImageTilde = displayImageTilde;

@@ -34,7 +34,7 @@ public class IpRegexpAuthorizer implements Authorizer {
     /**
      * <p>Constructor for IpRegexpAuthorizer.</p>
      *
-     * @param regexpPattern a {@link java.lang.String} object
+     * @param regexpPattern a {@link String} object
      */
     public IpRegexpAuthorizer(final String regexpPattern) {
         setRegexpPattern(regexpPattern);
@@ -52,7 +52,7 @@ public class IpRegexpAuthorizer implements Authorizer {
     /**
      * <p>setRegexpPattern.</p>
      *
-     * @param regexpPattern a {@link java.lang.String} object
+     * @param regexpPattern a {@link String} object
      */
     public void setRegexpPattern(final String regexpPattern) {
         this.regexPattern = regexpPattern;

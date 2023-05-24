@@ -21,7 +21,7 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
  * <p>The url of the proxy receptor is defined via the <code>setCallbackUrl(String)</code> method, it's the <code>proxyReceptorUrl</code>
  * concept of the Jasig CAS client.</p>
  *
- * <p>The proxy granting tickets and associations are stored by default in a {@link org.pac4j.core.store.Store} class,
+ * <p>The proxy granting tickets and associations are stored by default in a {@link Store} class,
  * which can be overridden by using the <code>setStore(Store)</code> method.</p>
  *
  * @author Jerome Leleu
@@ -55,7 +55,7 @@ public final class CasProxyReceptor extends IndirectClient {
             val proxyGrantingTicket = webContext.getRequestParameter(PARAM_PROXY_GRANTING_TICKET);
             logger.debug("proxyGrantingTicket: {}", proxyGrantingTicket);
 
-            if (!proxyGrantingTicket.isPresent() || !proxyGrantingTicketIou.isPresent()) {
+            if (proxyGrantingTicket.isEmpty() || proxyGrantingTicketIou.isEmpty()) {
                 logger.warn("Missing proxyGrantingTicket or proxyGrantingTicketIou -> returns ok");
                 throw new OkAction(Pac4jConstants.EMPTY_STRING);
             }

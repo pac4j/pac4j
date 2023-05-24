@@ -31,8 +31,8 @@ public class GitHubClient extends OAuth20Client {
     /**
      * <p>Constructor for GitHubClient.</p>
      *
-     * @param key a {@link java.lang.String} object
-     * @param secret a {@link java.lang.String} object
+     * @param key a {@link String} object
+     * @param secret a {@link String} object
      */
     public GitHubClient(final String key, final String secret) {
         setScope(DEFAULT_SCOPE);
@@ -55,7 +55,7 @@ public class GitHubClient extends OAuth20Client {
     /**
      * <p>getScope.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     public String getScope() {
         return getConfiguration().getScope();
@@ -64,7 +64,7 @@ public class GitHubClient extends OAuth20Client {
     /**
      * <p>setScope.</p>
      *
-     * @param scope a {@link java.lang.String} object
+     * @param scope a {@link String} object
      */
     public void setScope(final String scope) {
         getConfiguration().setScope(scope);

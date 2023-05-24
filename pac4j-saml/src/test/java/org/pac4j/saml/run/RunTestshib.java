@@ -6,6 +6,7 @@ import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.run.RunClient;
 import org.pac4j.saml.client.SAML2Client;
 import org.pac4j.saml.config.SAML2Configuration;
@@ -54,7 +55,7 @@ public class RunTestshib extends RunClient {
 
     @Override
     protected void verifyProfile(final CommonProfile userProfile) {
-        val profile = (SAML2Profile) userProfile;
+        UserProfile profile = (SAML2Profile) userProfile;
         assertEquals("[Member, Staff]", profile.getAttribute("urn:oid:1.3.6.1.4.1.5923.1.1.1.1").toString());
         assertEquals("[myself]", profile.getAttribute("urn:oid:0.9.2342.19200300.100.1.1").toString());
         assertEquals("[Me Myself And I]", profile.getAttribute("urn:oid:2.5.4.3").toString());

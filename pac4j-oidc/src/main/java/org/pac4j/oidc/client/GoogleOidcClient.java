@@ -25,7 +25,7 @@ public class GoogleOidcClient extends OidcClient {
     /**
      * <p>Constructor for GoogleOidcClient.</p>
      *
-     * @param configuration a {@link org.pac4j.oidc.config.OidcConfiguration} object
+     * @param configuration a {@link OidcConfiguration} object
      */
     public GoogleOidcClient(final OidcConfiguration configuration) {
         super(configuration);

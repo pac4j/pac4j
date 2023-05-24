@@ -29,7 +29,7 @@ public final class ProfileHelperTests implements TestsConstants {
 
     @Test
     public void testBuildUserProfileByClassCompleteName() {
-        val profile = new CommonProfile();
+        UserProfile profile = new CommonProfile();
         profile.setId(ID);
         profile.addAttribute(NAME, VALUE);
         val profile2 = ProfileHelper.buildUserProfileByClassCompleteName(CommonProfile.class.getName());
@@ -58,7 +58,7 @@ public final class ProfileHelperTests implements TestsConstants {
 
     @Test
     public void testFlatIntoOneProfileOneAnonymousProfile() {
-        final List<CommonProfile> profiles = Arrays.asList( AnonymousProfile.INSTANCE );
+        final List<CommonProfile> profiles = List.of(AnonymousProfile.INSTANCE);
         assertEquals(AnonymousProfile.INSTANCE, ProfileHelper.flatIntoOneProfile(profiles).get());
     }
 
@@ -72,7 +72,7 @@ public final class ProfileHelperTests implements TestsConstants {
     public void testFlatIntoOneProfileOneProfile() {
         val profile1 = new CommonProfile();
         profile1.setId("ONE");
-        val profiles = Arrays.asList( profile1 );
+        val profiles = List.of(profile1);
         assertEquals(profile1, ProfileHelper.flatIntoOneProfile(profiles).get());
     }
 

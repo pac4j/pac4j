@@ -4,10 +4,12 @@ import lombok.val;
 import org.junit.Test;
 import org.pac4j.core.authorization.authorizer.Authorizer;
 import org.pac4j.core.authorization.authorizer.RequireAnyRoleAuthorizer;
+import org.pac4j.core.client.Client;
 import org.pac4j.core.client.MockIndirectClient;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.matching.matcher.CacheControlMatcher;
+import org.pac4j.core.matching.matcher.Matcher;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
 
@@ -38,7 +40,7 @@ public final class ConfigTests implements TestsConstants {
     @Test
     public void testAddAuthorizer() {
         val config = new Config();
-        val authorizer = new RequireAnyRoleAuthorizer();
+        Authorizer authorizer = new RequireAnyRoleAuthorizer();
         config.addAuthorizer(NAME, authorizer);
         assertEquals(authorizer, config.getAuthorizers().get(NAME));
     }
@@ -54,9 +56,9 @@ public final class ConfigTests implements TestsConstants {
 
     @Test
     public void testFluent() {
-        val client = new MockIndirectClient(NAME, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
-        val authorizer = new RequireAnyRoleAuthorizer();
-        val matcher = new CacheControlMatcher();
+        Client client = new MockIndirectClient(NAME, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
+        Authorizer authorizer = new RequireAnyRoleAuthorizer();
+        Matcher matcher = new CacheControlMatcher();
         val config = new Config(CALLBACK_URL).addClient(client).addAuthorizer(NAME, authorizer).addMatcher(NAME, matcher);
         assertEquals(CALLBACK_URL, config.getClients().getCallbackUrl());
         assertEquals(1, config.getClients().findAllClients().size());

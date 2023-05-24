@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.scribejava.core.model.Token;
 import lombok.val;
 import org.pac4j.core.profile.ProfileHelper;
+import org.pac4j.core.profile.converter.AttributeConverter;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.oauth.config.OAuthConfiguration;
 import org.pac4j.oauth.profile.JsonHelper;
@@ -87,7 +88,7 @@ public class StravaProfileDefinition extends OAuthProfileDefinition {
         primary(CREATED_AT, Converters.DATE_TZ_RFC822);
         primary(UPDATED_AT, Converters.DATE_TZ_RFC822);
         primary(CLUBS, new JsonConverter(List.class, new TypeReference<List<StravaClub>>() {}));
-        val multiGearConverter = new JsonConverter(List.class, new TypeReference<List<StravaGear>>() {});
+        AttributeConverter multiGearConverter = new JsonConverter(List.class, new TypeReference<List<StravaGear>>() {});
         primary(BIKES, multiGearConverter);
         primary(SHOES, multiGearConverter);
         primary(PROFILE, Converters.URL);

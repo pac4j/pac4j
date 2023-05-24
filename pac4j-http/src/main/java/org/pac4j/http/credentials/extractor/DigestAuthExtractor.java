@@ -39,8 +39,8 @@ public class DigestAuthExtractor implements CredentialsExtractor {
     /**
      * <p>Constructor for DigestAuthExtractor.</p>
      *
-     * @param headerName a {@link java.lang.String} object
-     * @param prefixHeader a {@link java.lang.String} object
+     * @param headerName a {@link String} object
+     * @param prefixHeader a {@link String} object
      */
     public DigestAuthExtractor(final String headerName, final String prefixHeader) {
         this.extractor = new HeaderExtractor(headerName, prefixHeader);
@@ -66,7 +66,7 @@ public class DigestAuthExtractor implements CredentialsExtractor {
     @Override
     public Optional<Credentials> extract(final CallContext ctx) {
         val credentials = this.extractor.extract(ctx);
-        if (!credentials.isPresent()) {
+        if (credentials.isEmpty()) {
             return Optional.empty();
         }
 
@@ -92,7 +92,7 @@ public class DigestAuthExtractor implements CredentialsExtractor {
     private Map<String, String> parseTokenValue(String token) {
         val tokenizer = new StringTokenizer(token, ", ");
         String keyval;
-        val map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
         while (tokenizer.hasMoreElements()) {
             keyval = tokenizer.nextToken();
             if (keyval.contains("=")) {

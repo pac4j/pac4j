@@ -13,28 +13,28 @@ public interface SAML2MetadataResolver {
     /**
      * <p>resolve.</p>
      *
-     * @return a {@link org.opensaml.saml.metadata.resolver.MetadataResolver} object
+     * @return a {@link MetadataResolver} object
      */
     MetadataResolver resolve();
 
     /**
      * <p>getEntityId.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     String getEntityId();
 
     /**
      * <p>getMetadata.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     String getMetadata();
 
     /**
      * <p>getEntityDescriptorElement.</p>
      *
-     * @return a {@link org.opensaml.core.xml.XMLObject} object
+     * @return a {@link XMLObject} object
      */
     XMLObject getEntityDescriptorElement();
 }

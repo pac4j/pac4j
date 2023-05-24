@@ -16,7 +16,7 @@ import static org.junit.Assert.*;
  */
 public final class PathParameterCallbackUrlResolverTests implements TestsConstants {
 
-    private static final PathParameterCallbackUrlResolver resolver = new PathParameterCallbackUrlResolver();
+    private static final CallbackUrlResolver resolver = new PathParameterCallbackUrlResolver();
 
     @Test
     public void testCompute() {

@@ -13,7 +13,7 @@ public interface DecryptionProvider {
     /**
      * <p>build.</p>
      *
-     * @return a {@link org.opensaml.saml.saml2.encryption.Decrypter} object
+     * @return a {@link Decrypter} object
      */
     Decrypter build();
 }

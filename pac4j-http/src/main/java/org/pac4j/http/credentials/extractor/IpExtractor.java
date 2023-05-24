@@ -45,7 +45,7 @@ public class IpExtractor implements CredentialsExtractor {
     /**
      * <p>Constructor for IpExtractor.</p>
      *
-     * @param alternateIpHeaders a {@link java.lang.String} object
+     * @param alternateIpHeaders a {@link String} object
      */
     public IpExtractor(String... alternateIpHeaders) {
         this.alternateIpHeaders = Arrays.asList(alternateIpHeaders);
@@ -71,7 +71,7 @@ public class IpExtractor implements CredentialsExtractor {
             }
         }
 
-        if (!ip.isPresent()) {
+        if (ip.isEmpty()) {
             return Optional.empty();
         }
 

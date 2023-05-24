@@ -16,7 +16,7 @@ public class AzureAdOpMetadataResolver extends OidcOpMetadataResolver {
     /**
      * <p>Constructor for AzureAdOpMetadataResolver.</p>
      *
-     * @param configuration a {@link org.pac4j.oidc.config.OidcConfiguration} object
+     * @param configuration a {@link OidcConfiguration} object
      */
     public AzureAdOpMetadataResolver(final OidcConfiguration configuration) {
         super(configuration);

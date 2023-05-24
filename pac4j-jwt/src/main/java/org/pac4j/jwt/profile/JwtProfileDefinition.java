@@ -7,7 +7,7 @@ import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import java.util.Map;
 
 /**
- * This is {@link org.pac4j.jwt.profile.JwtProfileDefinition}.
+ * This is {@link JwtProfileDefinition}.
  *
  * @author Misagh Moayyed
  * @since 5.0.1

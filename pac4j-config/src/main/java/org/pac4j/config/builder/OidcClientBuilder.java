@@ -10,7 +10,7 @@ import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.AzureAd2OidcConfiguration;
 import org.pac4j.oidc.config.OidcConfiguration;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 
 import static org.pac4j.core.util.CommonHelper.isNotBlank;
@@ -26,7 +26,7 @@ public class OidcClientBuilder extends AbstractBuilder {
     /**
      * <p>Constructor for OidcClientBuilder.</p>
      *
-     * @param properties a {@link java.util.Map} object
+     * @param properties a {@link Map} object
      */
     public OidcClientBuilder(final Map<String, String> properties) {
         super(properties);
@@ -37,7 +37,7 @@ public class OidcClientBuilder extends AbstractBuilder {
      *
      * @param clients a {@link java.util.List} object
      */
-    public void tryCreateOidcClient(final List<Client> clients) {
+    public void tryCreateOidcClient(final Collection<Client> clients) {
         for (var i = 0; i <= MAX_NUM_CLIENTS; i++) {
             val id = getProperty(OIDC_ID, i);
             if (isNotBlank(id)) {

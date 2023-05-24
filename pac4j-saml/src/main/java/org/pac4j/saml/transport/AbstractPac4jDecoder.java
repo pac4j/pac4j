@@ -3,6 +3,8 @@ package org.pac4j.saml.transport;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import net.shibboleth.shared.codec.Base64Support;
 import net.shibboleth.shared.component.ComponentInitializationException;
@@ -18,10 +20,7 @@ import org.opensaml.messaging.decoder.MessageDecodingException;
 import org.opensaml.saml.common.binding.SAMLBindingSupport;
 import org.opensaml.saml.common.messaging.context.SAMLBindingContext;
 import org.pac4j.core.context.CallContext;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.context.SAML2MessageContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -33,33 +32,25 @@ import java.util.Optional;
  * @author Jerome Leleu
  * @since 3.4.0
  */
+@Slf4j
+@RequiredArgsConstructor
 public abstract class AbstractPac4jDecoder extends AbstractMessageDecoder {
 
     static final String[] SAML_PARAMETERS = {"SAMLRequest", "SAMLResponse", "logoutRequest"};
 
-    protected final Logger logger = LoggerFactory.getLogger(getClass());
-
     /** Parser pool used to deserialize the message. */
+    @Getter
     protected ParserPool parserPool;
 
     @Getter
     protected final CallContext callContext;
 
-    /**
-     * <p>Constructor for AbstractPac4jDecoder.</p>
-     *
-     * @param context a {@link org.pac4j.core.context.CallContext} object
-     */
-    public AbstractPac4jDecoder(final CallContext context) {
-        CommonHelper.assertNotNull("context", context);
-        this.callContext = context;
-    }
 
     /**
      * <p>getBase64DecodedMessage.</p>
      *
      * @return an array of {@link byte} objects
-     * @throws org.opensaml.messaging.decoder.MessageDecodingException if any.
+     * @throws MessageDecodingException if any.
      */
     protected byte[] getBase64DecodedMessage() throws MessageDecodingException {
         Optional<String> encodedMessage = Optional.empty();
@@ -69,7 +60,7 @@ public abstract class AbstractPac4jDecoder extends AbstractMessageDecoder {
                 break;
             }
         }
-        if (!encodedMessage.isPresent()) {
+        if (encodedMessage.isEmpty()) {
             encodedMessage = Optional.ofNullable(this.callContext.webContext().getRequestContent());
             // we have a body, it may be the SAML request/response directly
             // but we also try to parse it as a list key=value where the value is the SAML request/response
@@ -89,18 +80,18 @@ public abstract class AbstractPac4jDecoder extends AbstractMessageDecoder {
             }
         }
 
-        if (!encodedMessage.isPresent()) {
+        if (encodedMessage.isEmpty()) {
             throw new MessageDecodingException("Request did not contain either a SAMLRequest parameter, a SAMLResponse parameter, "
                 + "a logoutRequest parameter or a body content");
         } else {
             if (encodedMessage.get().contains("<")) {
-                logger.trace("Raw SAML message:\n{}", encodedMessage);
+                LOGGER.trace("Raw SAML message:\n{}", encodedMessage);
                 return encodedMessage.get().getBytes(StandardCharsets.UTF_8);
             } else {
 
                 try {
                     val decodedBytes = Base64Support.decode(encodedMessage.get());
-                    logger.trace("Decoded SAML message:\n{}", new String(decodedBytes, StandardCharsets.UTF_8));
+                    LOGGER.trace("Decoded SAML message:\n{}", new String(decodedBytes, StandardCharsets.UTF_8));
                     return decodedBytes;
                 } catch (final Exception e) {
                     throw new MessageDecodingException(e);
@@ -121,7 +112,7 @@ public abstract class AbstractPac4jDecoder extends AbstractMessageDecoder {
     @Override
     protected void doInitialize() throws ComponentInitializationException {
         super.doInitialize();
-        logger.debug("Initialized {}", this.getClass().getSimpleName());
+        LOGGER.debug("Initialized {}", this.getClass().getSimpleName());
 
         if (parserPool == null) {
             throw new ComponentInitializationException("Parser pool cannot be null");
@@ -154,7 +145,7 @@ public abstract class AbstractPac4jDecoder extends AbstractMessageDecoder {
      *
      * @param messageStream input stream containing the message
      * @return the inbound message
-     * @throws org.opensaml.messaging.decoder.MessageDecodingException thrown if there is a problem deserializing/unmarshalling the message
+     * @throws MessageDecodingException thrown if there is a problem deserializing/unmarshalling the message
      */
     protected XMLObject unmarshallMessage(final InputStream messageStream) throws MessageDecodingException {
         try {
@@ -165,15 +156,6 @@ public abstract class AbstractPac4jDecoder extends AbstractMessageDecoder {
         } catch (final UnmarshallingException e) {
             throw new MessageDecodingException("Error unmarshalling message from input stream", e);
         }
-    }
-
-    /**
-     * Gets the parser pool used to deserialize incoming messages.
-     *
-     * @return parser pool used to deserialize incoming messages
-     */
-    public ParserPool getParserPool() {
-        return parserPool;
     }
 
     /**

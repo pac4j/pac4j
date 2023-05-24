@@ -80,7 +80,7 @@ class SpnegoServiceTicketHelper {
         assertNotNull(tgt);
 
         // Get the service ticket
-        var action =
+        PrivilegedExceptionAction<byte[]> action =
             new KerberosClientExceptionAction(clientPrincipals.iterator().next(), serviceName);
         var ticketBytes = Subject.doAs(clientSubject, action);
         assertNotNull(ticketBytes);

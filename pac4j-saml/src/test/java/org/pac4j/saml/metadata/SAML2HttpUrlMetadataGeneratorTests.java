@@ -57,7 +57,7 @@ public class SAML2HttpUrlMetadataGeneratorTests {
                     .withHeader("Content-Type", ContentType.APPLICATION_XML.getMimeType())));
         wireMockServer.start();
         try {
-            var metadataGenerator =
+            SAML2MetadataGenerator metadataGenerator =
                 new SAML2HttpUrlMetadataGenerator(new URL("http://localhost:8088/saml"), new SAML2HttpClientBuilder().build());
             val entity = metadataGenerator.buildEntityDescriptor();
             assertNotNull(entity);

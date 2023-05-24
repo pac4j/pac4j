@@ -26,7 +26,7 @@ public class OidcLogoutProcessor implements LogoutProcessor {
     /**
      * <p>Constructor for OidcLogoutProcessor.</p>
      *
-     * @param configuration a {@link org.pac4j.oidc.config.OidcConfiguration} object
+     * @param configuration a {@link OidcConfiguration} object
      */
     public OidcLogoutProcessor(final OidcConfiguration configuration) {
         CommonHelper.assertNotNull("configuration", configuration);

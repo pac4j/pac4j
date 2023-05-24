@@ -15,7 +15,7 @@ public interface SAML2ObjectBuilder<T extends SAMLObject> {
     /**
      * <p>build.</p>
      *
-     * @param context a {@link org.pac4j.saml.context.SAML2MessageContext} object
+     * @param context a {@link SAML2MessageContext} object
      * @return a T object
      */
     T build(SAML2MessageContext context);

@@ -23,7 +23,7 @@ public class IsFullyAuthenticatedAuthorizer extends AbstractCheckAuthenticationA
     /**
      * <p>Constructor for IsFullyAuthenticatedAuthorizer.</p>
      *
-     * @param redirectionUrl a {@link java.lang.String} object
+     * @param redirectionUrl a {@link String} object
      */
     public IsFullyAuthenticatedAuthorizer(final String redirectionUrl) {
         super(redirectionUrl);
@@ -44,7 +44,7 @@ public class IsFullyAuthenticatedAuthorizer extends AbstractCheckAuthenticationA
     /**
      * <p>isFullyAuthenticated.</p>
      *
-     * @return a {@link org.pac4j.core.authorization.authorizer.IsFullyAuthenticatedAuthorizer} object
+     * @return a {@link IsFullyAuthenticatedAuthorizer} object
      */
     public static IsFullyAuthenticatedAuthorizer isFullyAuthenticated() {
         return new IsFullyAuthenticatedAuthorizer();

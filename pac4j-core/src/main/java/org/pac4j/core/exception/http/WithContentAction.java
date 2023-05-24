@@ -12,7 +12,7 @@ public interface WithContentAction {
     /**
      * <p>getContent.</p>
      *
-     * @return a {@link java.lang.String} object
+     * @return a {@link String} object
      */
     String getContent();
 }

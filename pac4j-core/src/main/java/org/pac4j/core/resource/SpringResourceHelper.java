@@ -35,14 +35,14 @@ public final class SpringResourceHelper {
     /**
      * <p>getResourceInputStream.</p>
      *
-     * @param resource a {@link org.springframework.core.io.Resource} object
-     * @param proxy a {@link java.net.Proxy} object
-     * @param sslSocketFactory a {@link javax.net.ssl.SSLSocketFactory} object
-     * @param hostnameVerifier a {@link javax.net.ssl.HostnameVerifier} object
+     * @param resource a {@link Resource} object
+     * @param proxy a {@link Proxy} object
+     * @param sslSocketFactory a {@link SSLSocketFactory} object
+     * @param hostnameVerifier a {@link HostnameVerifier} object
      * @param connectTimeout a int
      * @param readTimeout a int
-     * @return a {@link java.io.InputStream} object
-     * @throws java.io.IOException if any.
+     * @return a {@link InputStream} object
+     * @throws IOException if any.
      */
     public static InputStream getResourceInputStream(final Resource resource, final Proxy proxy, final SSLSocketFactory sslSocketFactory,
                                                      final HostnameVerifier hostnameVerifier, final int connectTimeout,
@@ -54,8 +54,7 @@ public final class SpringResourceHelper {
             } else {
                 con = resource.getURL().openConnection();
             }
-            if (con instanceof HttpsURLConnection) {
-                HttpsURLConnection connection = (HttpsURLConnection) con;
+            if (con instanceof HttpsURLConnection connection) {
                 if (sslSocketFactory != null) {
                     connection.setSSLSocketFactory(sslSocketFactory);
                 }
@@ -82,8 +81,8 @@ public final class SpringResourceHelper {
     /**
      * <p>buildResourceFromPath.</p>
      *
-     * @param path a {@link java.lang.String} object
-     * @return a {@link org.springframework.core.io.Resource} object
+     * @param path a {@link String} object
+     * @return a {@link Resource} object
      */
     public static Resource buildResourceFromPath(final String path) {
         CommonHelper.assertNotBlank("path", path);
@@ -110,8 +109,8 @@ public final class SpringResourceHelper {
     /**
      * <p>newUrlResource.</p>
      *
-     * @param url a {@link java.lang.String} object
-     * @return a {@link org.springframework.core.io.UrlResource} object
+     * @param url a {@link String} object
+     * @return a {@link UrlResource} object
      */
     public static UrlResource newUrlResource(final String url) {
         try {
