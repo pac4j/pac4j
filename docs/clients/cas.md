@@ -13,7 +13,7 @@ title: CAS
 
 It supports all CAS protocol versions (v1.0, v2.0 and v3.0).
 
-<div class="warning"><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i> The CAS server can also act as a SAML IdP or as an OpenID Connect provider. In that case, you must not use the CAS support, but the appropriate SAML or OpenID Connect supports.</div>
+<div class="warning"><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i>This CAS support requires to run in a <code>jakarta.*</code> environment.</div>
 
 ## 0) Dependency
 
