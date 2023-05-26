@@ -13,7 +13,7 @@
     <name>pac4j: Java web security for CAS</name>
 
     <properties>
-        <cas.version>4.0.1</cas.version>
+        <cas.version>4.0.2</cas.version>
     </properties>
 
     <dependencies>
@@ -34,6 +34,10 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
         </dependency>
         <!-- for testing -->
         <dependency>
