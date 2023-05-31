@@ -80,7 +80,7 @@
         <unboundid.version>6.0.8</unboundid.version>
         <h2.version>2.1.214</h2.version>
 		<java.version>17</java.version>
-        <jackson.version>2.15.1</jackson.version>
+        <jackson.version>2.15.2</jackson.version>
         <reflections.version>0.10.2</reflections.version>
         <nanohttpd.version>2.3.1</nanohttpd.version>
         <mockserver.version>5.10</mockserver.version>
@@ -225,7 +225,7 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-                <version>2.15.2</version>
+                <version>${jackson.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.reflections</groupId>
