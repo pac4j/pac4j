@@ -127,12 +127,17 @@ public class JEEContext implements WebContext {
 
     @Override
     public String getScheme() {
-        return this.request.getScheme();
+        return this.getProto(this.request);
     }
 
     @Override
     public boolean isSecure() {
-        return this.request.isSecure();
+        return this.request.isSecure() || "https".equalsIgnoreCase(getProto(request));
+    }
+
+    private String getProto(HttpServletRequest request) {
+        final String proto = this.request.getHeader("X-Forwarded-Proto");
+        return StringUtils.isBlank(proto) ? request.getScheme() : proto;
     }
 
     @Override
