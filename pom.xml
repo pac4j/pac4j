@@ -71,7 +71,7 @@
 		<guava.version>32.0.1-jre</guava.version>
 		<nimbus-jose-jwt.version>9.31</nimbus-jose-jwt.version>
 		<spring.version>6.0.10</spring.version>
-		<spring.security.version>6.1.0</spring.security.version>
+		<spring.security.version>6.1.1</spring.security.version>
 		<shiro.version>1.11.0</shiro.version>
         <jbcrypt.version>0.4.3</jbcrypt.version>
         <snakeyaml.version>2.0</snakeyaml.version>
