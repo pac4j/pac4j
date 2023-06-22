@@ -13,7 +13,7 @@
     <name>pac4j: Java web security for OpenID Connect</name>
 
     <properties>
-        <oauth-oidc-sdk.version>10.9.1</oauth-oidc-sdk.version>
+        <oauth-oidc-sdk.version>10.9.2</oauth-oidc-sdk.version>
     </properties>
 
     <dependencies>
