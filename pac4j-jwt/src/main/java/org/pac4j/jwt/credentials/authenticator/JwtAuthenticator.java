@@ -142,7 +142,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
         } catch (final HttpAction e) {
             throw new TechnicalException(e);
         } catch (final CredentialsException e) {
-            logger.info("Failed to retrieve or validate credentials: {}", e.getMessage());
+            logger.warn("Failed to retrieve or validate credentials: {}", e.getMessage());
             logger.debug("Failed to retrieve or validate credentials", e);
             return null;
         }
