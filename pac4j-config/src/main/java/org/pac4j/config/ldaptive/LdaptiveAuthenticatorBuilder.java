@@ -5,7 +5,7 @@ import lombok.val;
 import org.ldaptive.*;
 import org.ldaptive.ad.extended.FastBindConnectionInitializer;
 import org.ldaptive.auth.*;
-import org.ldaptive.control.PasswordPolicyControl;
+import org.ldaptive.auth.ext.*;
 import org.ldaptive.pool.BindConnectionPassivator;
 import org.ldaptive.pool.IdlePruneStrategy;
 import org.ldaptive.sasl.Mechanism;
@@ -95,6 +95,12 @@ public class LdaptiveAuthenticatorBuilder {
         if (l.isEnhanceWithEntryResolver()) {
             auth.setEntryResolver(newSearchEntryResolver(l));
         }
+
+        if (l.isEnablePasswordPolicy()) {
+            auth.setRequestHandlers(new PasswordPolicyAuthenticationRequestHandler());
+            auth.setResponseHandlers(
+                new PasswordPolicyAuthenticationResponseHandler(), new PasswordExpirationAuthenticationResponseHandler());
+        }
         return auth;
     }
 
@@ -107,6 +113,12 @@ public class LdaptiveAuthenticatorBuilder {
 
         if (l.isEnhanceWithEntryResolver()) {
             authenticator.setEntryResolver(newSearchEntryResolver(l));
+        }
+
+        if (l.isEnablePasswordPolicy()) {
+            authenticator.setRequestHandlers(new PasswordPolicyAuthenticationRequestHandler());
+            authenticator.setResponseHandlers(
+                new PasswordPolicyAuthenticationResponseHandler(), new PasswordExpirationAuthenticationResponseHandler());
         }
         return authenticator;
     }
@@ -121,13 +133,15 @@ public class LdaptiveAuthenticatorBuilder {
         if (l.isEnhanceWithEntryResolver()) {
             authn.setEntryResolver(newSearchEntryResolver(l));
         }
+
+        if (l.isEnablePasswordPolicy()) {
+            authn.setResponseHandlers(new ActiveDirectoryAuthenticationResponseHandler());
+        }
         return authn;
     }
 
     private static SimpleBindAuthenticationHandler getPooledBindAuthenticationHandler(final LdapAuthenticationProperties l) {
-        val handler = new SimpleBindAuthenticationHandler(newPooledConnectionFactory(l));
-        handler.setAuthenticationControls(new PasswordPolicyControl());
-        return handler;
+        return new SimpleBindAuthenticationHandler(newPooledConnectionFactory(l));
     }
 
     private static CompareAuthenticationHandler getPooledCompareAuthenticationHandler(final LdapAuthenticationProperties l) {
@@ -161,7 +175,7 @@ public class LdaptiveAuthenticatorBuilder {
 
 
     /**
-     * New connection config connection config.
+     * New connection config.
      *
      * @param l the ldap properties
      * @return the connection config
@@ -201,6 +215,12 @@ public class LdaptiveAuthenticatorBuilder {
             sc.setMutualAuthentication(l.getSaslMutualAuth());
             sc.setQualityOfProtection(l.getSaslQualityOfProtection());
             sc.setSecurityStrength(l.getSaslSecurityStrength());
+            if (CommonHelper.isNotBlank(l.getBindDn())) {
+                bc.setBindDn(l.getBindDn());
+                if (CommonHelper.isNotBlank(l.getBindCredential())) {
+                    bc.setBindCredential(new Credential(l.getBindCredential()));
+                }
+            }
             bc.setBindSaslConfig(sc);
             cc.setConnectionInitializers(bc);
         } else if (CommonHelper.areEquals(l.getBindCredential(), "*") && CommonHelper.areEquals(l.getBindDn(), "*")) {
