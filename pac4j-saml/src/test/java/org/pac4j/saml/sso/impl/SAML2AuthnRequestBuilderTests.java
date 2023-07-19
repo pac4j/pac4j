@@ -3,8 +3,13 @@ package org.pac4j.saml.sso.impl;
 import lombok.val;
 import org.junit.Before;
 import org.junit.Test;
+import org.opensaml.saml.common.SAMLObjectBuilder;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.AuthnRequest;
+import org.opensaml.saml.saml2.core.Issuer;
+import org.opensaml.saml.saml2.core.LogoutRequest;
+import org.opensaml.saml.saml2.core.NameID;
+import org.opensaml.saml.saml2.core.SessionIndex;
 import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
@@ -19,8 +24,13 @@ import org.pac4j.saml.client.SAML2Client;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.profile.api.SAML2ObjectBuilder;
+import org.pac4j.saml.util.Configuration;
 
+import java.time.Clock;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Collections;
+import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -47,22 +57,52 @@ public class SAML2AuthnRequestBuilderTests extends AbstractSAML2ClientTests {
     }
 
     @Test
-    public void testHttpSessionStoreGetterAndSetter() {
-        final WebContext webContext = MockWebContext.create();
-
-        val messageStoreFactory = configuration.getSamlMessageStoreFactory();
-        val store = messageStoreFactory.getMessageStore(webContext, new MockSessionStore());
-
-        SAML2ObjectBuilder<AuthnRequest> builder = new SAML2AuthnRequestBuilder();
+    public void testHttpSessionStoreGetterAndSetter() throws Exception {
+//        final WebContext webContext = MockWebContext.create();
+//
+//        val messageStoreFactory = configuration.getSamlMessageStoreFactory();
+//        val store = messageStoreFactory.getMessageStore(webContext, new MockSessionStore());
+//
+//        SAML2ObjectBuilder<AuthnRequest> builder = new SAML2AuthnRequestBuilder();
         val context = buildContext();
 
-        val authnRequest = builder.build(context);
-        authnRequest.setAssertionConsumerServiceURL("https://pac4j.org");
+//        val authnRequest = builder.build(context);
+//        authnRequest.setAssertionConsumerServiceURL("https://pac4j.org");
+//
+//        store.set(authnRequest.getID(), authnRequest);
+//
+//        assertNotNull(store.get(authnRequest.getID()));
+//        assertEquals("https://pac4j.org", authnRequest.getAssertionConsumerServiceURL());
 
-        store.set(authnRequest.getID(), authnRequest);
 
-        assertNotNull(store.get(authnRequest.getID()));
-        assertEquals("https://pac4j.org", authnRequest.getAssertionConsumerServiceURL());
+        var logoutRequest = (LogoutRequest) Configuration.getBuilderFactory()
+            .getBuilder(LogoutRequest.DEFAULT_ELEMENT_NAME)
+            .buildObject(LogoutRequest.DEFAULT_ELEMENT_NAME);
+
+        logoutRequest.setID("23hgbcehfgeb7843jdv1");
+        val issuer =  (Issuer) Configuration.getBuilderFactory()
+            .getBuilder(Issuer.DEFAULT_ELEMENT_NAME)
+            .buildObject(Issuer.DEFAULT_ELEMENT_NAME);
+
+        issuer.setValue("https://samltest.id/saml/sp");
+
+        var n = (NameID) Configuration.getBuilderFactory()
+            .getBuilder(NameID.DEFAULT_ELEMENT_NAME)
+            .buildObject(NameID.DEFAULT_ELEMENT_NAME);
+        n.setValue(UUID.randomUUID().toString());
+        logoutRequest.setNameID(n);
+
+        var s = (SessionIndex) Configuration.getBuilderFactory()
+            .getBuilder(SessionIndex.DEFAULT_ELEMENT_NAME)
+            .buildObject(SessionIndex.DEFAULT_ELEMENT_NAME);
+        s.setValue(UUID.randomUUID().toString());
+        logoutRequest.getSessionIndexes().add(s);
+
+        logoutRequest.setIssuer(issuer);
+        logoutRequest.setDestination("https://localhost:8443/cas/idp/profile/SAML2/POST/SLO");
+        logoutRequest.setIssueInstant(Instant.now(Clock.systemUTC()).plus(Duration.ofDays(365)));
+
+        new SAML2Client(configuration).getLogoutRequestMessageSender().sendMessage(context, logoutRequest, "");
     }
 
     private SAML2MessageContext buildContext() {

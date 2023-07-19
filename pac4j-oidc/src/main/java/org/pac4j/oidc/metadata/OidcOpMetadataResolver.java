@@ -3,10 +3,16 @@ package org.pac4j.oidc.metadata;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.util.IOUtils;
 import com.nimbusds.oauth2.sdk.ParseException;
-import com.nimbusds.oauth2.sdk.auth.*;
+import com.nimbusds.oauth2.sdk.auth.ClientAuthentication;
+import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
+import com.nimbusds.oauth2.sdk.auth.ClientSecretBasic;
+import com.nimbusds.oauth2.sdk.auth.ClientSecretPost;
+import com.nimbusds.oauth2.sdk.auth.PrivateKeyJWT;
+import com.nimbusds.oauth2.sdk.auth.Secret;
 import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.pac4j.core.resource.SpringResourceHelper;
@@ -18,6 +24,7 @@ import org.pac4j.oidc.exceptions.OidcUnsupportedClientAuthMethodException;
 import org.pac4j.oidc.profile.creator.TokenValidator;
 import org.springframework.core.io.Resource;
 
+import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
 import java.io.IOException;
 import java.util.Arrays;
@@ -49,6 +56,9 @@ public class OidcOpMetadataResolver extends SpringResourceLoader<OIDCProviderMet
 
     @Getter
     protected TokenValidator tokenValidator;
+
+    @Setter
+    protected HostnameVerifier hostnameVerifier;
 
     /**
      * <p>Constructor for OidcOpMetadataResolver.</p>
@@ -94,7 +104,7 @@ public class OidcOpMetadataResolver extends SpringResourceLoader<OIDCProviderMet
             resource,
             null,
             sslSocketFactory,
-            null,
+            hostnameVerifier,
             configuration.getConnectTimeout(),
             configuration.getReadTimeout()
         )) {
@@ -164,7 +174,7 @@ public class OidcOpMetadataResolver extends SpringResourceLoader<OIDCProviderMet
         return null;
     }
 
-    private ClientAuthenticationMethod getPreferredAuthenticationMethod(OidcConfiguration config) {
+    private static ClientAuthenticationMethod getPreferredAuthenticationMethod(OidcConfiguration config) {
         val configurationMethod = config.getClientAuthenticationMethod();
         if (configurationMethod == null) {
             return null;

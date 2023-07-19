@@ -23,6 +23,7 @@ import org.pac4j.oidc.metadata.OidcOpMetadataResolver;
 import org.pac4j.oidc.util.SessionStoreValueRetriever;
 import org.pac4j.oidc.util.ValueRetriever;
 
+import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
