@@ -214,6 +214,8 @@ public interface PropertiesConstants {
     String LDAP_USER_FILTER = "ldap.userFilter";
     /** Constant <code>LDAP_ENHANCE_WITH_ENTRY_RESOLVER="ldap.enhanceWithEntryResolver"</code> */
     String LDAP_ENHANCE_WITH_ENTRY_RESOLVER = "ldap.enhanceWithEntryResolver";
+    /** Constant <code>LDAP_ENABLE_PASSWORD_POLICY="ldap.enablePasswordPolicy"</code> */
+    String LDAP_ENABLE_PASSWORD_POLICY = "ldap.enablePasswordPolicy";
     /** Constant <code>LDAP_TRUST_CERTIFICATES="ldap.trustCertificates"</code> */
     String LDAP_TRUST_CERTIFICATES = "ldap.trustCertificates";
     /** Constant <code>LDAP_KEYSTORE="ldap.keystore"</code> */

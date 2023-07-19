@@ -49,5 +49,7 @@ public class LdapAuthenticationProperties extends AbstractLdapProperties {
     private String userFilter;
 
     private boolean enhanceWithEntryResolver = true;
+
+    private boolean enablePasswordPolicy;
 }
 
