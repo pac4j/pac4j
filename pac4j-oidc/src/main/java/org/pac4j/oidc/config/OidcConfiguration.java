@@ -15,7 +15,6 @@ import org.pac4j.core.client.config.BaseClientConfiguration;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.logout.handler.DefaultSessionLogoutHandler;
 import org.pac4j.core.logout.handler.SessionLogoutHandler;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.generator.RandomValueGenerator;
 import org.pac4j.core.util.generator.ValueGenerator;
 import org.pac4j.oidc.exceptions.OidcConfigurationException;
@@ -23,9 +22,7 @@ import org.pac4j.oidc.metadata.OidcOpMetadataResolver;
 import org.pac4j.oidc.util.SessionStoreValueRetriever;
 import org.pac4j.oidc.util.ValueRetriever;
 
-import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 import static org.pac4j.core.util.CommonHelper.assertNotBlank;
@@ -174,7 +171,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
      */
     private boolean includeAccessTokenClaimsInProfile = false;
 
-    private String SSLFactory;
+    private SSLSocketFactory sslSocketFactory;
 
     protected OidcOpMetadataResolver opMetadataResolver;
 
@@ -198,12 +195,10 @@ public class OidcConfiguration extends BaseClientConfiguration {
         // default value
         if (getResourceRetriever() == null) {
             try {
-                setResourceRetriever(SSLFactory == null ?
-                    new DefaultResourceRetriever(getConnectTimeout(),getReadTimeout()) :
-                    new DefaultResourceRetriever(getConnectTimeout(),getReadTimeout(), 0, false,
-                        (SSLSocketFactory) CommonHelper.getConstructor(SSLFactory).newInstance()));
-            } catch (ClassNotFoundException | InvocationTargetException | InstantiationException
-                     | IllegalAccessException | NoSuchMethodException e) {
+                setResourceRetriever(sslSocketFactory == null
+                    ? new DefaultResourceRetriever(getConnectTimeout(),getReadTimeout())
+                    : new DefaultResourceRetriever(getConnectTimeout(),getReadTimeout(), 0, false, sslSocketFactory));
+            } catch (final Exception e) {
                 throw new OidcConfigurationException("SSLFactory loaded fail, please check your configuration");
             }
         }

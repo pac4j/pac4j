@@ -17,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.pac4j.core.resource.SpringResourceHelper;
 import org.pac4j.core.resource.SpringResourceLoader;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.exceptions.OidcException;
 import org.pac4j.oidc.exceptions.OidcUnsupportedClientAuthMethodException;
@@ -25,7 +24,6 @@ import org.pac4j.oidc.profile.creator.TokenValidator;
 import org.springframework.core.io.Resource;
 
 import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLSocketFactory;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
@@ -93,17 +91,10 @@ public class OidcOpMetadataResolver extends SpringResourceLoader<OIDCProviderMet
      * @return a {@link OIDCProviderMetadata} object
      */
     protected OIDCProviderMetadata retrieveMetadata() {
-        val sslFactoryName = configuration.getSSLFactory();
-        SSLSocketFactory sslSocketFactory = null;
-        try {
-            sslSocketFactory = sslFactoryName == null ? null : (SSLSocketFactory) CommonHelper.getConstructor(sslFactoryName).newInstance();
-        } catch (final Exception e) {
-            throw new OidcException(e);
-        }
         try (val in = SpringResourceHelper.getResourceInputStream(
             resource,
             null,
-            sslSocketFactory,
+            configuration.getSslSocketFactory(),
             hostnameVerifier,
             configuration.getConnectTimeout(),
             configuration.getReadTimeout()
