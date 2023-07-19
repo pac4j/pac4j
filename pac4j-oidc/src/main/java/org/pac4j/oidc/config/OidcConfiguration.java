@@ -36,7 +36,7 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
  */
 @Getter
 @Setter
-@ToString(exclude = {"secret", "providerMetadata"})
+@ToString(exclude = "secret")
 @Accessors(chain = true)
 @With
 @AllArgsConstructor
@@ -324,6 +324,8 @@ public class OidcConfiguration extends BaseClientConfiguration {
     public void configureHttpRequest(HTTPRequest request) {
         request.setConnectTimeout(getConnectTimeout());
         request.setReadTimeout(getReadTimeout());
+        request.setSSLSocketFactory(sslSocketFactory);
+        request.setHostnameVerifier(getOpMetadataResolver().getHostnameVerifier());
     }
 
     /**
