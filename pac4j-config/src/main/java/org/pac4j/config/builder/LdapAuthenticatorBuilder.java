@@ -76,6 +76,9 @@ public class LdapAuthenticatorBuilder extends AbstractBuilder {
         if (containsProperty(LDAP_ENHANCE_WITH_ENTRY_RESOLVER, i)) {
             ldapProp.setEnhanceWithEntryResolver(getPropertyAsBoolean(LDAP_ENHANCE_WITH_ENTRY_RESOLVER, i));
         }
+        if (containsProperty(LDAP_ENABLE_PASSWORD_POLICY, i)) {
+            ldapProp.setEnablePasswordPolicy(getPropertyAsBoolean(LDAP_ENABLE_PASSWORD_POLICY, i));
+        }
         ldapProp.setLdapUrl(getProperty(LDAP_URL, i));
         if (containsProperty(LDAP_TRUST_CERTIFICATES, i)) {
             ldapProp.setTrustCertificates(getProperty(LDAP_TRUST_CERTIFICATES, i));
