@@ -67,7 +67,7 @@
 		<logback.version>1.4.8</logback.version>
 		<commons-codec.version>1.16.0</commons-codec.version>
 		<commons-io.version>2.13.0</commons-io.version>
-		<commons-lang3.version>3.12.0</commons-lang3.version>
+		<commons-lang3.version>3.13.0</commons-lang3.version>
 		<guava.version>32.1.1-jre</guava.version>
 		<nimbus-jose-jwt.version>9.31</nimbus-jose-jwt.version>
 		<spring.version>6.0.11</spring.version>
