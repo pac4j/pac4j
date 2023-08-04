@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.pac4j</groupId>
         <artifactId>pac4j-parent</artifactId>
-        <version>6.0.0-RC8</version>
+        <version>6.0.0-RC9-SNAPSHOT</version>
     </parent>
 
     <artifactId>pac4j-config</artifactId>
