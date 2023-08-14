@@ -12,7 +12,6 @@ import com.nimbusds.oauth2.sdk.auth.Secret;
 import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.pac4j.core.resource.SpringResourceHelper;
@@ -23,7 +22,6 @@ import org.pac4j.oidc.exceptions.OidcUnsupportedClientAuthMethodException;
 import org.pac4j.oidc.profile.creator.TokenValidator;
 import org.springframework.core.io.Resource;
 
-import javax.net.ssl.HostnameVerifier;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
