@@ -55,10 +55,6 @@ public class OidcOpMetadataResolver extends SpringResourceLoader<OIDCProviderMet
     @Getter
     protected TokenValidator tokenValidator;
 
-    @Setter
-    @Getter
-    protected HostnameVerifier hostnameVerifier;
-
     /**
      * <p>Constructor for OidcOpMetadataResolver.</p>
      *
@@ -96,7 +92,7 @@ public class OidcOpMetadataResolver extends SpringResourceLoader<OIDCProviderMet
             resource,
             null,
             configuration.getSslSocketFactory(),
-            hostnameVerifier,
+            configuration.getHostnameVerifier(),
             configuration.getConnectTimeout(),
             configuration.getReadTimeout()
         )) {
