@@ -22,6 +22,7 @@ import org.pac4j.oidc.metadata.OidcOpMetadataResolver;
 import org.pac4j.oidc.util.SessionStoreValueRetriever;
 import org.pac4j.oidc.util.ValueRetriever;
 
+import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
 import java.util.*;
 
@@ -173,6 +174,8 @@ public class OidcConfiguration extends BaseClientConfiguration {
 
     private SSLSocketFactory sslSocketFactory;
 
+    private HostnameVerifier hostnameVerifier;
+
     protected OidcOpMetadataResolver opMetadataResolver;
 
     /** {@inheritDoc} */
@@ -264,15 +267,6 @@ public class OidcConfiguration extends BaseClientConfiguration {
     }
 
     /**
-     * <p>Getter for the field <code>supportedClientAuthenticationMethods</code>.</p>
-     *
-     * @return a {@link Set} object
-     */
-    public Set<ClientAuthenticationMethod> getSupportedClientAuthenticationMethods() {
-        return supportedClientAuthenticationMethods;
-    }
-
-    /**
      * <p>Setter for the field <code>supportedClientAuthenticationMethods</code>.</p>
      *
      * @param supportedClientAuthenticationMethods a {@link Set} object
@@ -325,7 +319,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
         request.setConnectTimeout(getConnectTimeout());
         request.setReadTimeout(getReadTimeout());
         request.setSSLSocketFactory(sslSocketFactory);
-        request.setHostnameVerifier(getOpMetadataResolver().getHostnameVerifier());
+        request.setHostnameVerifier(hostnameVerifier);
     }
 
     /**
