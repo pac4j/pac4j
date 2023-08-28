@@ -174,6 +174,8 @@ public class OidcConfiguration extends BaseClientConfiguration {
 
     private SSLSocketFactory sslSocketFactory;
 
+    private boolean callUserInfoEndpoint = true;
+
     private HostnameVerifier hostnameVerifier;
 
     protected OidcOpMetadataResolver opMetadataResolver;

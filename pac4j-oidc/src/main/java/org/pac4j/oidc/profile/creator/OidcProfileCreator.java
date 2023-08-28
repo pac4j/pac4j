@@ -24,10 +24,12 @@ import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.credentials.OidcCredentials;
 import org.pac4j.oidc.exceptions.OidcException;
+import org.pac4j.oidc.exceptions.UserInfoErrorResponseException;
 import org.pac4j.oidc.profile.OidcProfile;
 import org.pac4j.oidc.profile.OidcProfileDefinition;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.Optional;
 
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
@@ -120,37 +122,14 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
                 }
             }
 
-            // User Info request
-            val opMetadata = configuration.getOpMetadataResolver().load();
-            if (opMetadata.getUserInfoEndpointURI() != null && accessToken != null) {
-                Request userInfoRequest = new UserInfoRequest(opMetadata.getUserInfoEndpointURI(), accessToken);
-                val userInfoHttpRequest = userInfoRequest.toHTTPRequest();
-                configuration.configureHttpRequest(userInfoHttpRequest);
-                val httpResponse = userInfoHttpRequest.send();
-                LOGGER.debug("User info response: status={}, content={}", httpResponse.getStatusCode(),
-                    httpResponse.getContent());
-
-                val userInfoResponse = UserInfoResponse.parse(httpResponse);
-                if (userInfoResponse instanceof UserInfoErrorResponse) {
-                    LOGGER.error("Bad User Info response, error={}",
-                        ((UserInfoErrorResponse) userInfoResponse).getErrorObject());
-
+            if (configuration.isCallUserInfoEndpoint()) {
+                final var uri = configuration.getOpMetadataResolver().load().getUserInfoEndpointURI();
+                try {
+                    callUserInfoEndpoint(uri, accessToken, profile);
+                } catch (final UserInfoErrorResponseException e) {
                     // bearer call -> no profile returned
                     if (!regularOidcFlow) {
                         return Optional.empty();
-                    }
-                } else {
-                    val userInfoSuccessResponse = (UserInfoSuccessResponse) userInfoResponse;
-                    final JWTClaimsSet userInfoClaimsSet;
-                    if (userInfoSuccessResponse.getUserInfo() != null) {
-                        userInfoClaimsSet = userInfoSuccessResponse.getUserInfo().toJWTClaimsSet();
-                    } else {
-                        userInfoClaimsSet = userInfoSuccessResponse.getUserInfoJWT().getJWTClaimsSet();
-                    }
-                    if (userInfoClaimsSet != null) {
-                        getProfileDefinition().convertAndAdd(profile, userInfoClaimsSet.getClaims(), null);
-                    } else {
-                        LOGGER.warn("Cannot retrieve claims from user info");
                     }
                 }
             }
@@ -177,6 +156,40 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
             return Optional.of(profile);
         } catch (final IOException | ParseException | JOSEException | BadJOSEException | java.text.ParseException e) {
             throw new OidcException(e);
+        }
+    }
+
+    public void callUserInfoEndpoint(final URI userInfoEndpointUri, final AccessToken accessToken, final UserProfile profile)
+        throws IOException, ParseException, java.text.ParseException, UserInfoErrorResponseException {
+        val opMetadata = configuration.getOpMetadataResolver().load();
+        if (opMetadata.getUserInfoEndpointURI() != null && accessToken != null) {
+            Request userInfoRequest = new UserInfoRequest(opMetadata.getUserInfoEndpointURI(), accessToken);
+            val userInfoHttpRequest = userInfoRequest.toHTTPRequest();
+            configuration.configureHttpRequest(userInfoHttpRequest);
+            val httpResponse = userInfoHttpRequest.send();
+            LOGGER.debug("User info response: status={}, content={}", httpResponse.getStatusCode(),
+                httpResponse.getContent());
+
+            val userInfoResponse = UserInfoResponse.parse(httpResponse);
+            if (userInfoResponse instanceof UserInfoErrorResponse) {
+                LOGGER.error("Bad User Info response, error={}",
+                    ((UserInfoErrorResponse) userInfoResponse).getErrorObject());
+
+                throw UserInfoErrorResponseException.INSTANCE;
+            } else {
+                val userInfoSuccessResponse = (UserInfoSuccessResponse) userInfoResponse;
+                final JWTClaimsSet userInfoClaimsSet;
+                if (userInfoSuccessResponse.getUserInfo() != null) {
+                    userInfoClaimsSet = userInfoSuccessResponse.getUserInfo().toJWTClaimsSet();
+                } else {
+                    userInfoClaimsSet = userInfoSuccessResponse.getUserInfoJWT().getJWTClaimsSet();
+                }
+                if (userInfoClaimsSet != null) {
+                    getProfileDefinition().convertAndAdd(profile, userInfoClaimsSet.getClaims(), null);
+                } else {
+                    LOGGER.warn("Cannot retrieve claims from user info");
+                }
+            }
         }
     }
 
