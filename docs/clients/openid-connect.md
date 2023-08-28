@@ -158,6 +158,12 @@ The additional param `TokenExpirationAdvance` allows to set the time in seconds,
 config.setTokenExpirationAdvance(10);
 ```
 
+You can disable the call to the user info endpoint using:
+
+```java
+config.setCallUserInfoEndpoint(false);
+```
+
 Since version 5.2 and to reinforce security, the `none` alogithm for ID tokens (meaning no signature validation) must be explicitly accepted by using:
 
 ```java
