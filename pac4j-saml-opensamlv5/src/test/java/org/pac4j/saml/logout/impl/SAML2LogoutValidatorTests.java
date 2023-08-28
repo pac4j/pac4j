@@ -92,11 +92,11 @@ public class SAML2LogoutValidatorTests {
             "ID=\"_6c3737282f007720e736f0f4028feed8cb9b40291c\" Version=\"2.0\" " +
             "IssueInstant=\"" + ZonedDateTime.now(ZoneOffset.UTC)
             + "\" Destination=\"http://sp.example.com/demo1/logout?x=1000%26y=1234\" " +
-            "InResponseTo=\"ONELOGIN_21df91a89767879fc0f7df6a1490c6000c81644d\">%n" +
-            "  <saml:Issuer>http://idp.example.com/metadata.php</saml:Issuer>%n" +
-            "  <samlp:Status>%n" +
-            "    <samlp:StatusCode Value=\"urn:oasis:names:tc:SAML:2.0:status:Success\"/>%n" +
-            "  </samlp:Status>%n" +
+            "InResponseTo=\"ONELOGIN_21df91a89767879fc0f7df6a1490c6000c81644d\">\n" +
+            "  <saml:Issuer>http://idp.example.com/metadata.php</saml:Issuer>\n" +
+            "  <samlp:Status>\n" +
+            "    <samlp:StatusCode Value=\"urn:oasis:names:tc:SAML:2.0:status:Success\"/>\n" +
+            "  </samlp:Status>\n" +
             "</samlp:LogoutResponse>";
 
         try {

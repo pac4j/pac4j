@@ -22,12 +22,14 @@ import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.credentials.OidcCredentials;
+import org.pac4j.oidc.exceptions.UserInfoErrorResponseException;
 import org.pac4j.oidc.profile.OidcProfile;
 import org.pac4j.oidc.profile.OidcProfileDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.Optional;
 
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
@@ -113,36 +115,14 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
                 }
             }
 
-            // User Info request
-            if (configuration.findProviderMetadata().getUserInfoEndpointURI() != null && accessToken != null) {
-                final var userInfoRequest = new UserInfoRequest(configuration.findProviderMetadata().getUserInfoEndpointURI(), accessToken);
-                final var userInfoHttpRequest = userInfoRequest.toHTTPRequest();
-                configuration.configureHttpRequest(userInfoHttpRequest);
-                final var httpResponse = userInfoHttpRequest.send();
-                logger.debug("User info response: status={}, content={}", httpResponse.getStatusCode(),
-                    httpResponse.getContent());
-
-                final var userInfoResponse = UserInfoResponse.parse(httpResponse);
-                if (userInfoResponse instanceof UserInfoErrorResponse) {
-                    logger.error("Bad User Info response, error={}",
-                        ((UserInfoErrorResponse) userInfoResponse).getErrorObject());
-
+            if (configuration.isCallUserInfoEndpoint()) {
+                final var uri = configuration.findProviderMetadata().getUserInfoEndpointURI();
+                try {
+                    callUserInfoEndpoint(uri, accessToken, profile);
+                } catch (final UserInfoErrorResponseException e) {
                     // bearer call -> no profile returned
                     if (!regularOidcFlow) {
                         return Optional.empty();
-                    }
-                } else {
-                    final var userInfoSuccessResponse = (UserInfoSuccessResponse) userInfoResponse;
-                    final JWTClaimsSet userInfoClaimsSet;
-                    if (userInfoSuccessResponse.getUserInfo() != null) {
-                        userInfoClaimsSet = userInfoSuccessResponse.getUserInfo().toJWTClaimsSet();
-                    } else {
-                        userInfoClaimsSet = userInfoSuccessResponse.getUserInfoJWT().getJWTClaimsSet();
-                    }
-                    if (userInfoClaimsSet != null) {
-                        getProfileDefinition().convertAndAdd(profile, userInfoClaimsSet.getClaims(), null);
-                    } else {
-                        logger.warn("Cannot retrieve claims from user info");
                     }
                 }
             }
@@ -169,6 +149,39 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
             return Optional.of(profile);
         } catch (final IOException | ParseException | JOSEException | BadJOSEException | java.text.ParseException e) {
             throw new TechnicalException(e);
+        }
+    }
+
+    public void callUserInfoEndpoint(final URI userInfoEndpointUri, final AccessToken accessToken, final UserProfile profile)
+        throws IOException, ParseException, java.text.ParseException, UserInfoErrorResponseException {
+        if (userInfoEndpointUri != null && accessToken != null) {
+            final var userInfoRequest = new UserInfoRequest(userInfoEndpointUri, accessToken);
+            final var userInfoHttpRequest = userInfoRequest.toHTTPRequest();
+            configuration.configureHttpRequest(userInfoHttpRequest);
+            final var httpResponse = userInfoHttpRequest.send();
+            logger.debug("User info response: status={}, content={}", httpResponse.getStatusCode(),
+                httpResponse.getContent());
+
+            final var userInfoResponse = UserInfoResponse.parse(httpResponse);
+            if (userInfoResponse instanceof UserInfoErrorResponse) {
+                logger.error("Bad User Info response, error={}",
+                    ((UserInfoErrorResponse) userInfoResponse).getErrorObject());
+
+                throw UserInfoErrorResponseException.INSTANCE;
+            } else {
+                final var userInfoSuccessResponse = (UserInfoSuccessResponse) userInfoResponse;
+                final JWTClaimsSet userInfoClaimsSet;
+                if (userInfoSuccessResponse.getUserInfo() != null) {
+                    userInfoClaimsSet = userInfoSuccessResponse.getUserInfo().toJWTClaimsSet();
+                } else {
+                    userInfoClaimsSet = userInfoSuccessResponse.getUserInfoJWT().getJWTClaimsSet();
+                }
+                if (userInfoClaimsSet != null) {
+                    getProfileDefinition().convertAndAdd(profile, userInfoClaimsSet.getClaims(), null);
+                } else {
+                    logger.warn("Cannot retrieve claims from user info");
+                }
+            }
         }
     }
 

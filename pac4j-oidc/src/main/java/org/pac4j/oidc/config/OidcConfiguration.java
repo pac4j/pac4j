@@ -155,6 +155,8 @@ public class OidcConfiguration extends BaseClientConfiguration {
 
     private String SSLFactory;
 
+    private boolean callUserInfoEndpoint = true;
+
     @Override
     protected void internalInit(final boolean forceReinit) {
         // checks
@@ -554,6 +556,14 @@ public class OidcConfiguration extends BaseClientConfiguration {
         this.privateKeyJWTClientAuthnMethodConfig = privateKeyJWTClientAuthnMethodConfig;
     }
 
+    public boolean isCallUserInfoEndpoint() {
+        return callUserInfoEndpoint;
+    }
+
+    public void setCallUserInfoEndpoint(final boolean callUserInfoEndpoint) {
+        this.callUserInfoEndpoint = callUserInfoEndpoint;
+    }
+
     @Override
     public String toString() {
         return toNiceString(this.getClass(), "clientId", clientId, "secret", "[protected]",
@@ -564,6 +574,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
             "responseType", responseType, "responseMode", responseMode, "logoutUrl", logoutUrl,
             "withState", withState, "stateGenerator", stateGenerator, "logoutHandler", logoutHandler,
             "tokenValidator", tokenValidator, "mappedClaims", mappedClaims, "allowUnsignedIdTokens", allowUnsignedIdTokens,
-            "SSLFactory", SSLFactory, "privateKeyJWTClientAuthnMethodConfig", privateKeyJWTClientAuthnMethodConfig);
+            "SSLFactory", SSLFactory, "privateKeyJWTClientAuthnMethodConfig", privateKeyJWTClientAuthnMethodConfig,
+            "callUserInfoEndpoint", callUserInfoEndpoint);
     }
 }
