@@ -8,7 +8,7 @@ package org.pac4j.oidc.exceptions;
  */
 public class UserInfoErrorResponseException extends Exception {
 
-    public static final UserInfoErrorResponseException INSTANCE = new UserInfoErrorResponseException();
-
-    private UserInfoErrorResponseException() {}
+    public UserInfoErrorResponseException(final String message) {
+        super("Cannot retrieve user info: " + message);
+    }
 }

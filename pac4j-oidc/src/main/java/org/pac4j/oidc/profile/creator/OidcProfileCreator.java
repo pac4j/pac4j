@@ -164,10 +164,10 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
 
             final var userInfoResponse = UserInfoResponse.parse(httpResponse);
             if (userInfoResponse instanceof UserInfoErrorResponse) {
-                logger.error("Bad User Info response, error={}",
-                    ((UserInfoErrorResponse) userInfoResponse).getErrorObject());
+                final var error = ((UserInfoErrorResponse) userInfoResponse).getErrorObject();
+                logger.error("Bad User Info response, error={}", error);
 
-                throw UserInfoErrorResponseException.INSTANCE;
+                throw new UserInfoErrorResponseException(error.toString());
             } else {
                 final var userInfoSuccessResponse = (UserInfoSuccessResponse) userInfoResponse;
                 final JWTClaimsSet userInfoClaimsSet;
