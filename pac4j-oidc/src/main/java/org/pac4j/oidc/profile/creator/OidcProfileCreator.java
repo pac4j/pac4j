@@ -172,10 +172,10 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
 
             val userInfoResponse = UserInfoResponse.parse(httpResponse);
             if (userInfoResponse instanceof UserInfoErrorResponse) {
-                LOGGER.error("Bad User Info response, error={}",
-                    ((UserInfoErrorResponse) userInfoResponse).getErrorObject());
+                final var error = ((UserInfoErrorResponse) userInfoResponse).getErrorObject();
+                LOGGER.error("Bad User Info response, error={}", error);
 
-                throw UserInfoErrorResponseException.INSTANCE;
+                throw new UserInfoErrorResponseException(error.toString());
             } else {
                 val userInfoSuccessResponse = (UserInfoSuccessResponse) userInfoResponse;
                 final JWTClaimsSet userInfoClaimsSet;
