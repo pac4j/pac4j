@@ -85,7 +85,9 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
         profile.setAccessToken(accessToken);
 
         if (oidcCredentials != null) {
-            profile.setIdTokenString(oidcCredentials.getIdToken().getParsedString());
+            if (oidcCredentials.getIdToken() != null){
+                profile.setIdTokenString(oidcCredentials.getIdToken().getParsedString());
+            }
             // Check if there is a refresh token
             final var refreshToken = oidcCredentials.getRefreshToken();
             if (refreshToken != null && !refreshToken.getValue().isEmpty()) {
@@ -103,7 +105,7 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
                 nonce = null;
             }
             // Check ID Token
-            if (oidcCredentials != null) {
+            if (oidcCredentials != null && oidcCredentials.getIdToken() != null) {
                 final var claimsSet = configuration.findTokenValidator().validate(oidcCredentials.getIdToken(), nonce);
                 assertNotNull("claimsSet", claimsSet);
                 profile.setId(ProfileHelper.sanitizeIdentifier(claimsSet.getSubject()));
@@ -128,7 +130,7 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
             }
 
             // add attributes of the ID token if they don't already exist
-            if (oidcCredentials != null) {
+            if (oidcCredentials != null && oidcCredentials.getIdToken() != null) {
                 for (final var entry : oidcCredentials.getIdToken().getJWTClaimsSet().getClaims().entrySet()) {
                     final var key = entry.getKey();
                     final var value = entry.getValue();
