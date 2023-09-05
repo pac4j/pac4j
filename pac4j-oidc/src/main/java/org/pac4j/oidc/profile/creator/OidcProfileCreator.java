@@ -92,7 +92,9 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
         profile.setAccessToken(accessToken);
 
         if (oidcCredentials != null) {
-            profile.setIdTokenString(oidcCredentials.getIdToken().getParsedString());
+            if (oidcCredentials.getIdToken() != null) {
+                profile.setIdTokenString(oidcCredentials.getIdToken().getParsedString());
+            }
             // Check if there is a refresh token
             val refreshToken = oidcCredentials.getRefreshToken();
             if (refreshToken != null && !refreshToken.getValue().isEmpty()) {
@@ -110,7 +112,7 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
                 nonce = null;
             }
             // Check ID Token
-            if (oidcCredentials != null) {
+            if (oidcCredentials != null && oidcCredentials.getIdToken() != null) {
                 val claimsSet = configuration.getOpMetadataResolver().getTokenValidator().validate(oidcCredentials.getIdToken(), nonce);
                 assertNotNull("claimsSet", claimsSet);
                 profile.setId(ProfileHelper.sanitizeIdentifier(claimsSet.getSubject()));
@@ -135,7 +137,7 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
             }
 
             // add attributes of the ID token if they don't already exist
-            if (oidcCredentials != null) {
+            if (oidcCredentials != null && oidcCredentials.getIdToken() != null) {
                 for (val entry : oidcCredentials.getIdToken().getJWTClaimsSet().getClaims().entrySet()) {
                     val key = entry.getKey();
                     val value = entry.getValue();
