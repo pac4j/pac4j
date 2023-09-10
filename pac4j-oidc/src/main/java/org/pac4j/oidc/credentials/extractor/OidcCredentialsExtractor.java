@@ -133,17 +133,17 @@ public class OidcCredentialsExtractor implements CredentialsExtractor {
             // get authorization code
             val code = successResponse.getAuthorizationCode();
             if (code != null) {
-                credentials.setCode(code);
+                credentials.setCode(code.getValue());
             }
             // get ID token
             val idToken = successResponse.getIDToken();
             if (idToken != null) {
-                credentials.setIdToken(idToken);
+                credentials.setIdToken(idToken.serialize());
             }
             // get access token
             val accessToken = successResponse.getAccessToken();
             if (accessToken != null) {
-                credentials.setAccessToken(accessToken);
+                credentials.setAccessToken(accessToken.toJSONObject());
             }
 
             return Optional.of(credentials);

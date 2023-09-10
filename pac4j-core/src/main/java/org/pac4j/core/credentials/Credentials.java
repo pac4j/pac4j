@@ -1,5 +1,6 @@
 package org.pac4j.core.credentials;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -35,6 +36,7 @@ public abstract class Credentials implements Serializable {
      *
      * @return a boolean
      */
+    @JsonIgnore
     public boolean isForAuthentication() {
         return logoutType == null;
     }

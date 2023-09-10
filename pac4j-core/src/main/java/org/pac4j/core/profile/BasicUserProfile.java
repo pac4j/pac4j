@@ -345,7 +345,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
         return getAttributeByType(name, clazz, attribute);
     }
 
-    private <T> T getAttributeByType(final String name, final Class<T> clazz, final Object attribute) {
+    private static <T> T getAttributeByType(final String name, final Class<T> clazz, final Object attribute) {
 
         if (attribute == null) {
             return null;
