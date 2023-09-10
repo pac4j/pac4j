@@ -1,19 +1,26 @@
 package org.pac4j.oidc.profile;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTParser;
 import com.nimbusds.oauth2.sdk.token.AccessToken;
 import com.nimbusds.oauth2.sdk.token.RefreshToken;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.val;
+import net.minidev.json.JSONObject;
 import org.pac4j.core.profile.jwt.AbstractJwtProfile;
 import org.pac4j.oidc.exceptions.OidcException;
 
 import java.io.Serial;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.time.Instant;
+import java.util.Base64;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * <p>This class is the user profile for sites using OpenID Connect protocol.</p>
@@ -23,159 +30,108 @@ import java.util.Date;
  * @version 1.7.0
  */
 @ToString(callSuper = true)
+@NoArgsConstructor
 public class OidcProfile extends AbstractJwtProfile {
 
     @Serial
     private static final long serialVersionUID = -52855988661742374L;
 
-    /**
-     * <p>Constructor for OidcProfile.</p>
-     */
-    public OidcProfile() { }
-
-    /** {@inheritDoc} */
     @Override
+    @JsonIgnore
     public String getFirstName() {
         return (String) getAttribute(OidcProfileDefinition.GIVEN_NAME);
     }
 
-    /**
-     * <p>getMiddleName.</p>
-     *
-     * @return a {@link String} object
-     */
+    @JsonIgnore
     public String getMiddleName() {
         return (String) getAttribute(OidcProfileDefinition.MIDDLE_NAME);
     }
 
-    /** {@inheritDoc} */
     @Override
+    @JsonIgnore
     public String getDisplayName() {
         return (String) getAttribute(OidcProfileDefinition.NAME);
     }
 
-    /**
-     * <p>getNickname.</p>
-     *
-     * @return a {@link String} object
-     */
+    @JsonIgnore
     public String getNickname() {
         return (String) getAttribute(OidcProfileDefinition.NICKNAME);
     }
 
-    /** {@inheritDoc} */
     @Override
+    @JsonIgnore
     public String getUsername() {
         return (String) getAttribute(OidcProfileDefinition.PREFERRED_USERNAME);
     }
 
-    /** {@inheritDoc} */
     @Override
+    @JsonIgnore
     public URI getPictureUrl() {
         return (URI) getAttribute(OidcProfileDefinition.PICTURE);
     }
 
-    /** {@inheritDoc} */
     @Override
+    @JsonIgnore
     public URI getProfileUrl() {
         return (URI) getAttribute(OidcProfileDefinition.PROFILE);
     }
 
-    /** {@inheritDoc} */
     @Override
+    @JsonIgnore
     public String getLocation() {
         return (String) getAttribute(OidcProfileDefinition.ZONEINFO);
     }
 
-    /**
-     * <p>getEmailVerified.</p>
-     *
-     * @return a {@link Boolean} object
-     */
+    @JsonIgnore
     public Boolean getEmailVerified() {
         return (Boolean) getAttribute(OidcProfileDefinition.EMAIL_VERIFIED);
     }
 
-    /**
-     * <p>getPhoneNumber.</p>
-     *
-     * @return a {@link String} object
-     */
+    @JsonIgnore
     public String getPhoneNumber() {
         return (String) getAttribute(OidcProfileDefinition.PHONE_NUMBER);
     }
 
-    /**
-     * <p>getPhoneNumberVerified.</p>
-     *
-     * @return a {@link Boolean} object
-     */
+    @JsonIgnore
     public Boolean getPhoneNumberVerified() {
         return (Boolean) getAttribute(OidcProfileDefinition.PHONE_NUMBER_VERIFIED);
     }
 
-    /**
-     * <p>getUpdatedAt.</p>
-     *
-     * @return a {@link Date} object
-     */
+    @JsonIgnore
     public Date getUpdatedAt() {
         return getAttributeAsDate(OidcProfileDefinition.UPDATED_AT);
     }
 
-    /**
-     * <p>getAuthTime.</p>
-     *
-     * @return a {@link Date} object
-     */
+    @JsonIgnore
     public Date getAuthTime() {
         return (Date) getAttribute(OidcProfileDefinition.AUTH_TIME);
     }
 
-    /**
-     * <p>getNonce.</p>
-     *
-     * @return a {@link String} object
-     */
+    @JsonIgnore
     public String getNonce() {
         return (String) getAttribute(OidcProfileDefinition.NONCE);
     }
 
-    /**
-     * <p>getAcr.</p>
-     *
-     * @return a {@link String} object
-     */
+    @JsonIgnore
     public String getAcr() {
         return (String) getAttribute(OidcProfileDefinition.ACR);
     }
 
-    /**
-     * <p>getAmr.</p>
-     *
-     * @return a {@link Object} object
-     */
+    @JsonIgnore
     public Object getAmr() {
         return getAttribute(OidcProfileDefinition.AMR);
     }
 
-    /**
-     * <p>getAzp.</p>
-     *
-     * @return a {@link String} object
-     */
+    @JsonIgnore
     public String getAzp() {
         return (String) getAttribute(OidcProfileDefinition.AZP);
     }
 
-    /**
-     * <p>setAccessToken.</p>
-     *
-     * @param accessToken a {@link AccessToken} object
-     */
     public void setAccessToken(final AccessToken accessToken) {
-        addAttribute(OidcProfileDefinition.ACCESS_TOKEN, accessToken);
         if (accessToken != null) {
+            val accessTokenBase64 = Base64.getEncoder().encodeToString(
+                accessToken.toJSONString().getBytes(StandardCharsets.UTF_8));
+            addAttribute(OidcProfileDefinition.ACCESS_TOKEN, accessTokenBase64);
             if (accessToken.getLifetime() != 0) {
                 setExpiration(Date.from(Instant.now().plusSeconds(accessToken.getLifetime())));
             } else {
@@ -193,40 +149,34 @@ public class OidcProfile extends AbstractJwtProfile {
         }
     }
 
-    /**
-     * <p>getAccessToken.</p>
-     *
-     * @return a {@link AccessToken} object
-     */
+    @JsonIgnore
     public AccessToken getAccessToken() {
-        return (AccessToken) getAttribute(OidcProfileDefinition.ACCESS_TOKEN);
+        try {
+            val accessTokenObject = getAttribute(OidcProfileDefinition.ACCESS_TOKEN);
+            if (accessTokenObject != null) {
+                val accessTokenBase64 = accessTokenObject.toString();
+                val base64Decoded = new String(Base64.getDecoder().decode(accessTokenBase64), StandardCharsets.UTF_8);
+                val accessTokenJSON = new JSONObject(new ObjectMapper().readValue(base64Decoded, Map.class));
+                return AccessToken.parse(accessTokenJSON);
+            }
+            return null;
+        } catch (final Exception e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
-    /**
-     * <p>getIdTokenString.</p>
-     *
-     * @return a {@link String} object
-     */
+    @JsonIgnore
     public String getIdTokenString() {
         return (String) getAttribute(OidcProfileDefinition.ID_TOKEN);
     }
 
-    /**
-     * <p>setIdTokenString.</p>
-     *
-     * @param idToken a {@link String} object
-     */
     public void setIdTokenString(final String idToken) {
         addAttribute(OidcProfileDefinition.ID_TOKEN, idToken);
     }
 
-    /**
-     * <p>getIdToken.</p>
-     *
-     * @return a {@link JWT} object
-     */
+    @JsonIgnore
     public JWT getIdToken() {
-        if(getIdTokenString() != null){
+        if (getIdTokenString() != null) {
             try {
                 return JWTParser.parse(getIdTokenString());
             } catch (final ParseException e) {
@@ -237,25 +187,25 @@ public class OidcProfile extends AbstractJwtProfile {
         }
     }
 
-    /**
-     * <p>getRefreshToken.</p>
-     *
-     * @return a {@link RefreshToken} object
-     */
+    @JsonIgnore
     public RefreshToken getRefreshToken() {
-        return (RefreshToken) getAttribute(OidcProfileDefinition.REFRESH_TOKEN);
+        try {
+            val refreshTokenObject = getAttribute(OidcProfileDefinition.REFRESH_TOKEN);
+            if (refreshTokenObject != null) {
+                return new RefreshToken(refreshTokenObject.toString());
+            }
+            return null;
+        } catch (final Exception e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
-    /**
-     * <p>setRefreshToken.</p>
-     *
-     * @param refreshToken a {@link RefreshToken} object
-     */
     public void setRefreshToken(final RefreshToken refreshToken) {
-        addAttribute(OidcProfileDefinition.REFRESH_TOKEN, refreshToken);
+        if (refreshToken != null) {
+            addAttribute(OidcProfileDefinition.REFRESH_TOKEN, refreshToken.getValue());
+        }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void removeLoginData() {
         removeAttribute(OidcProfileDefinition.ID_TOKEN);
@@ -263,11 +213,7 @@ public class OidcProfile extends AbstractJwtProfile {
         removeAttribute(OidcProfileDefinition.REFRESH_TOKEN);
     }
 
-    /**
-     * <p>getTokenExpirationAdvance.</p>
-     *
-     * @return a int
-     */
+    @JsonIgnore
     public int getTokenExpirationAdvance() {
         var tokenExpirationAdvance = getAttribute(OidcProfileDefinition.TOKEN_EXPIRATION_ADVANCE);
         if (tokenExpirationAdvance != null) {
@@ -280,29 +226,16 @@ public class OidcProfile extends AbstractJwtProfile {
         return 0;
     }
 
-    /**
-     * <p>setTokenExpirationAdvance.</p>
-     *
-     * @param tokenExpirationAdvance a int
-     */
+    @JsonIgnore
     public void setTokenExpirationAdvance(int tokenExpirationAdvance) {
         addAttribute(OidcProfileDefinition.TOKEN_EXPIRATION_ADVANCE, tokenExpirationAdvance);
     }
 
-    /**
-     * <p>getExpiration.</p>
-     *
-     * @return a {@link Date} object
-     */
+    @JsonIgnore
     public Date getExpiration() {
         return getAttributeAsDate(OidcProfileDefinition.EXPIRATION);
     }
 
-    /**
-     * <p>setExpiration.</p>
-     *
-     * @param expiration a {@link Date} object
-     */
     public void setExpiration(final Date expiration) {
         if (expiration != null) {
             addAttribute(OidcProfileDefinition.EXPIRATION, expiration.getTime());
@@ -311,8 +244,7 @@ public class OidcProfile extends AbstractJwtProfile {
         }
     }
 
-    /** {@inheritDoc} */
-    @Override
+    @JsonIgnore
     public boolean isExpired() {
         var tokenExpirationAdvance = getTokenExpirationAdvance();
         if (tokenExpirationAdvance < 0) {
@@ -320,6 +252,6 @@ public class OidcProfile extends AbstractJwtProfile {
         }
         var expiration = getExpiration();
         return expiration != null
-                && expiration.toInstant().isBefore(Instant.now().plusSeconds(tokenExpirationAdvance));
+            && expiration.toInstant().isBefore(Instant.now().plusSeconds(tokenExpirationAdvance));
     }
 }
