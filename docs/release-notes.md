@@ -26,7 +26,7 @@ title: Release notes&#58;
 - Renamed the `LogoutHandler` as `SessionLogoutHandler`
 - Created the `SpringResourceLoader` for OIDC/SAML metadata loading: for the OIDC support, the `discoveryURI` can use the "file:", "classpath:" or "resource:" prefix in addition to HTTP/HTTPS URLs
 - The `DefaultSessionLogoutHandler` smartly tries a front channel logout and then a back channel logout
-
+- The `OidcProfile` will internally encode/decode codes, access and refresh tokens. Asking the profile to return back the actual object will effectively reconstruct it, to avoid  issues with JSON serialization.
 ---
 
 ### JDK11:
