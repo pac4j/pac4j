@@ -32,7 +32,7 @@ import static org.junit.Assert.*;
  */
 public final class OidcProfileTests implements TestsConstants {
 
-    private static final JavaSerializer serializer = new JavaSerializer();
+    private static final JavaSerializer JAVA_SERIALIZER = new JavaSerializer();
 
     public static final String ID_TOKEN = "eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJpc3MiOiJodHRwczovL2p3dC1pZHAuZXhhbX"
             + "BsZS5jb20iLCJzdWIiOiJtYWlsdG86cGVyc29uQGV4YW1wbGUuY29tIiwibmJmIjoxNDQwMTEyMDE1LCJleHAiOjE0NDAxMTU2"
@@ -66,8 +66,8 @@ public final class OidcProfileTests implements TestsConstants {
         profile.setIdTokenString(ID_TOKEN);
         profile.setRefreshToken(new RefreshToken(REFRESH_TOKEN));
 
-        var result = serializer.serializeToBytes(profile);
-        profile = (OidcProfile) serializer.deserializeFromBytes(result);
+        var result = JAVA_SERIALIZER.serializeToBytes(profile);
+        profile = (OidcProfile) JAVA_SERIALIZER.deserializeFromBytes(result);
 
         assertNotNull("accessToken", profile.getAccessToken());
         assertNotNull("value", profile.getAccessToken().getValue());
@@ -85,8 +85,8 @@ public final class OidcProfileTests implements TestsConstants {
         var profile = new OidcProfile();
         profile.setIdTokenString(ID_TOKEN);
         profile.setRefreshToken(new RefreshToken(REFRESH_TOKEN));
-        var result = serializer.serializeToBytes(profile);
-        profile = (OidcProfile) serializer.deserializeFromBytes(result);
+        var result = JAVA_SERIALIZER.serializeToBytes(profile);
+        profile = (OidcProfile) JAVA_SERIALIZER.deserializeFromBytes(result);
         assertNull(profile.getAccessToken());
         assertEquals(profile.getIdTokenString(), ID_TOKEN);
         assertEquals(profile.getRefreshToken().getValue(), REFRESH_TOKEN);
@@ -100,8 +100,8 @@ public final class OidcProfileTests implements TestsConstants {
         var profile = new OidcProfile();
         profile.setAccessToken(populatedAccessToken);
         profile.setRefreshToken(new RefreshToken(REFRESH_TOKEN));
-        var result = serializer.serializeToBytes(profile);
-        profile = (OidcProfile) serializer.deserializeFromBytes(result);
+        var result = JAVA_SERIALIZER.serializeToBytes(profile);
+        profile = (OidcProfile) JAVA_SERIALIZER.deserializeFromBytes(result);
         assertNotNull("accessToken", profile.getAccessToken());
         assertNotNull("value", profile.getAccessToken().getValue());
         assertEquals(profile.getAccessToken().getLifetime(), populatedAccessToken.getLifetime());
@@ -118,8 +118,8 @@ public final class OidcProfileTests implements TestsConstants {
         var profile = new OidcProfile();
         profile.setAccessToken(populatedAccessToken);
         profile.setIdTokenString(ID_TOKEN);
-        var result = serializer.serializeToBytes(profile);
-        profile = (OidcProfile) serializer.deserializeFromBytes(result);
+        var result = JAVA_SERIALIZER.serializeToBytes(profile);
+        profile = (OidcProfile) JAVA_SERIALIZER.deserializeFromBytes(result);
         assertNotNull("accessToken", profile.getAccessToken());
         assertNotNull("value", profile.getAccessToken().getValue());
         assertEquals(profile.getAccessToken().getLifetime(), populatedAccessToken.getLifetime());
@@ -138,8 +138,8 @@ public final class OidcProfileTests implements TestsConstants {
         profile.setAccessToken(populatedAccessToken);
         profile.removeLoginData();
 
-        var result = serializer.serializeToBytes(profile);
-        profile = (OidcProfile) serializer.deserializeFromBytes(result);
+        var result = JAVA_SERIALIZER.serializeToBytes(profile);
+        profile = (OidcProfile) JAVA_SERIALIZER.deserializeFromBytes(result);
         assertNull(profile.getAccessToken());
         assertNull(profile.getIdTokenString());
         assertNull(profile.getRefreshToken());

@@ -78,9 +78,9 @@ public class OidcProfileCreatorTests implements TestsConstants {
         ProfileCreator creator = new OidcProfileCreator(configuration, new OidcClient(configuration));
         var webContext = MockWebContext.create();
         var credentials = new OidcCredentials();
-        credentials.setAccessToken(new BearerAccessToken(UUID.randomUUID().toString()));
+        credentials.setAccessToken(new BearerAccessToken(UUID.randomUUID().toString()).toJSONObject());
         JWT idToken = new PlainJWT(idTokenClaims.toJWTClaimsSet());
-        credentials.setIdToken(idToken);
+        credentials.setIdToken(idToken.serialize());
         assertTrue(creator.create(new CallContext(webContext, new MockSessionStore()), credentials).isPresent());
     }
 
@@ -91,8 +91,8 @@ public class OidcProfileCreatorTests implements TestsConstants {
         var webContext = MockWebContext.create();
         var credentials = new OidcCredentials();
         credentials.setAccessToken(null);
-        JWT idToken = new PlainJWT(idTokenClaims.toJWTClaimsSet());
-        credentials.setIdToken(idToken);
+        var idToken = new PlainJWT(idTokenClaims.toJWTClaimsSet());
+        credentials.setIdToken(idToken.serialize());
         assertTrue(creator.create(new CallContext(webContext, new MockSessionStore()), credentials).isPresent());
     }
 
@@ -105,10 +105,10 @@ public class OidcProfileCreatorTests implements TestsConstants {
 
         var accessTokenClaims = new JWTClaimsSet.Builder(idTokenClaims.toJWTClaimsSet()).claim("client", "pac4j").build();
         var accessTokenToken = new PlainJWT(accessTokenClaims);
-        credentials.setAccessToken(new BearerAccessToken(accessTokenToken.serialize()));
+        credentials.setAccessToken(new BearerAccessToken(accessTokenToken.serialize()).toJSONObject());
 
         JWT idToken = new PlainJWT(idTokenClaims.toJWTClaimsSet());
-        credentials.setIdToken(idToken);
+        credentials.setIdToken(idToken.serialize());
         Optional<UserProfile> profile = creator.create(new CallContext(webContext, new MockSessionStore()), credentials);
         assertTrue(profile.isPresent());
         assertNull(profile.get().getAttribute("client"));

@@ -53,7 +53,7 @@ public class OidcAuthenticator implements Authenticator {
     @Override
     public Optional<Credentials> validate(final CallContext ctx, final Credentials cred) {
         if (cred instanceof OidcCredentials credentials) {
-            val code = credentials.getCode();
+            val code = credentials.toAuthorizationCode();
             // if we have a code
             if (code != null) {
                 try {
@@ -77,7 +77,7 @@ public class OidcAuthenticator implements Authenticator {
      * @param credentials a {@link OidcCredentials} object
      */
     public void refresh(final OidcCredentials credentials) {
-        val refreshToken = credentials.getRefreshToken();
+        val refreshToken = credentials.toRefreshToken();
         if (refreshToken != null) {
             try {
                 val request = createTokenRequest(new RefreshTokenGrant(refreshToken));
@@ -123,10 +123,10 @@ public class OidcAuthenticator implements Authenticator {
         val tokenSuccessResponse = (OIDCTokenResponse) response;
 
         val oidcTokens = tokenSuccessResponse.getOIDCTokens();
-        credentials.setAccessToken(oidcTokens.getAccessToken());
-        credentials.setRefreshToken(oidcTokens.getRefreshToken());
+        credentials.setAccessToken(oidcTokens.getAccessToken().toJSONObject());
+        credentials.setRefreshToken(oidcTokens.getRefreshToken().toJSONObject());
         if (oidcTokens.getIDToken() != null) {
-            credentials.setIdToken(oidcTokens.getIDToken());
+            credentials.setIdToken(oidcTokens.getIDToken().serialize());
         }
     }
 }

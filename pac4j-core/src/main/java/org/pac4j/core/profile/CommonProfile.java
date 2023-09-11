@@ -1,5 +1,6 @@
 package org.pac4j.core.profile;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.ToString;
 import lombok.val;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
@@ -45,6 +46,7 @@ public class CommonProfile extends BasicUserProfile {
      *
      * @return the email of the user
      */
+    @JsonIgnore
     public String getEmail() {
         return getAttributeAsString(CommonProfileDefinition.EMAIL);
     }
@@ -54,6 +56,7 @@ public class CommonProfile extends BasicUserProfile {
      *
      * @return the first name of the user
      */
+    @JsonIgnore
     public String getFirstName() {
         return getAttributeAsString(CommonProfileDefinition.FIRST_NAME);
     }
@@ -63,6 +66,7 @@ public class CommonProfile extends BasicUserProfile {
      *
      * @return the family name of the user
      */
+    @JsonIgnore
     public String getFamilyName() {
         return getAttributeAsString(CommonProfileDefinition.FAMILY_NAME);
     }
@@ -72,6 +76,7 @@ public class CommonProfile extends BasicUserProfile {
      *
      * @return the displayed name of the user
      */
+    @JsonIgnore
     public String getDisplayName() {
         return getAttributeAsString(CommonProfileDefinition.DISPLAY_NAME);
     }
@@ -81,6 +86,7 @@ public class CommonProfile extends BasicUserProfile {
      *
      * Return the username of the user. It can be a login or a specific username.
      */
+    @JsonIgnore
     @Override
     public String getUsername() {
         return getAttributeAsString(Pac4jConstants.USERNAME);
@@ -91,6 +97,7 @@ public class CommonProfile extends BasicUserProfile {
      *
      * @return the gender of the user
      */
+    @JsonIgnore
     public Gender getGender() {
         return getAttributeAsType(CommonProfileDefinition.GENDER, Gender.class, Gender.UNSPECIFIED);
     }
@@ -100,6 +107,7 @@ public class CommonProfile extends BasicUserProfile {
      *
      * @return the locale of the user
      */
+    @JsonIgnore
     public Locale getLocale() {
         return getAttributeAsType(CommonProfileDefinition.LOCALE, Locale.class, null);
     }
@@ -109,6 +117,7 @@ public class CommonProfile extends BasicUserProfile {
      *
      * @return the url of the picture of the user.
      */
+    @JsonIgnore
     public URI getPictureUrl() {
         return getAttributeAsType(CommonProfileDefinition.PICTURE_URL, URI.class, null);
     }
@@ -118,6 +127,7 @@ public class CommonProfile extends BasicUserProfile {
      *
      * @return the url of the profile of the user.
      */
+    @JsonIgnore
     public URI getProfileUrl() {
         return getAttributeAsType(CommonProfileDefinition.PROFILE_URL, URI.class, null);
     }
@@ -127,11 +137,12 @@ public class CommonProfile extends BasicUserProfile {
      *
      * @return the location of the user
      */
+    @JsonIgnore
     public String getLocation() {
         return getAttributeAsString(CommonProfileDefinition.LOCATION);
     }
 
-    /** {@inheritDoc} */
+    @JsonIgnore
     @Override
     public boolean isExpired() {
         return false;

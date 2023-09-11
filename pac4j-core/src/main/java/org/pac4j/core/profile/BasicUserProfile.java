@@ -1,5 +1,6 @@
 package org.pac4j.core.profile;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.Streams;
 import lombok.Getter;
 import lombok.Setter;
@@ -115,6 +116,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
      * This identifier is unique through all providers.
      */
     @Override
+    @JsonIgnore
     public String getTypedId() {
         return this.getClass().getName() + Pac4jConstants.TYPED_ID_SEPARATOR + this.id;
     }
@@ -125,8 +127,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
         return null;
     }
 
-    private void addAttributeToMap(final Map<String, Object> map, final String key, final Object value)
-    {
+    private void addAttributeToMap(final Map<String, Object> map, final String key, final Object value) {
         if (value != null) {
             logger.debug("adding => key: {} / value: {} / {}", key, value, value.getClass());
             var valueForMap = getValueForMap(map, key, value);
@@ -154,28 +155,16 @@ public class BasicUserProfile implements UserProfile, Externalizable {
         return this.canAttributesBeMerged && preparedValue instanceof Collection && map.get(key) instanceof Collection;
     }
 
-    private <T> Collection<T> mergeCollectionAttributes(final Collection<T> existingCollection, final Collection<T> newCollection)
+    private static <T> Collection<T> mergeCollectionAttributes(final Collection<T> existingCollection, final Collection<T> newCollection)
     {
         return Streams.concat(existingCollection.stream(), newCollection.stream()).collect(Collectors.toList());
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * Add an attribute.
-     *
-     * If existing attribute value is collection and the new value is collection - merge the collections
-     */
     @Override
     public void addAttribute(final String key, final Object value) {
         addAttributeToMap(this.attributes, key, value);
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * Add an authentication-related attribute
-     */
     @Override
     public void addAuthenticationAttribute(final String key, final Object value) {
         addAttributeToMap(this.authenticationAttributes, key, value);
@@ -345,7 +334,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
         return getAttributeByType(name, clazz, attribute);
     }
 
-    private <T> T getAttributeByType(final String name, final Class<T> clazz, final Object attribute) {
+    private static <T> T getAttributeByType(final String name, final Class<T> clazz, final Object attribute) {
 
         if (attribute == null) {
             return null;

@@ -66,7 +66,7 @@ public class SAML2ServiceProviderMetadataResolverTest {
     public void resolveServiceProviderMetadataViaUrl() throws Exception {
         val restBody = IOUtils.toString(
             new ClassPathResource("sample-sp-metadata.xml").getInputStream(), StandardCharsets.UTF_8);
-        val wireMockServer = new WireMockServer(8081);
+        val wireMockServer = new WireMockServer(8181);
         wireMockServer.stubFor(
             get(urlPathEqualTo("/saml"))
                 .willReturn(aResponse()
@@ -89,8 +89,8 @@ public class SAML2ServiceProviderMetadataResolverTest {
         try {
             wireMockServer.start();
             val configuration =
-                initializeConfiguration(new FileUrlResource(new URL("http://localhost:8081/saml")),
-                    "http://localhost:8081/keystore");
+                initializeConfiguration(new FileUrlResource(new URL("http://localhost:8181/saml")),
+                    "http://localhost:8181/keystore");
             final SAML2MetadataResolver metadataResolver = new SAML2ServiceProviderMetadataResolver(configuration);
             assertNotNull(metadataResolver.resolve());
         } finally {

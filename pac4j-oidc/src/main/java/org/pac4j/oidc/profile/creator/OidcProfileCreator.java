@@ -80,7 +80,7 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
         val regularOidcFlow = credentials instanceof OidcCredentials;
         if (regularOidcFlow) {
             oidcCredentials = (OidcCredentials) credentials;
-            accessToken = oidcCredentials.getAccessToken();
+            accessToken = oidcCredentials.toAccessToken();
         } else {
             // we assume the access token only has been passed: it can be a bearer call (HTTP client)
             val token = ((TokenCredentials) credentials).getToken();
@@ -93,10 +93,10 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
 
         if (oidcCredentials != null) {
             if (oidcCredentials.getIdToken() != null) {
-                profile.setIdTokenString(oidcCredentials.getIdToken().getParsedString());
+                profile.setIdTokenString(oidcCredentials.toIdToken().getParsedString());
             }
             // Check if there is a refresh token
-            val refreshToken = oidcCredentials.getRefreshToken();
+            val refreshToken = oidcCredentials.toRefreshToken();
             if (refreshToken != null && !refreshToken.getValue().isEmpty()) {
                 profile.setRefreshToken(refreshToken);
                 LOGGER.debug("Refresh Token successful retrieved");
@@ -113,7 +113,7 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
             }
             // Check ID Token
             if (oidcCredentials != null && oidcCredentials.getIdToken() != null) {
-                val claimsSet = configuration.getOpMetadataResolver().getTokenValidator().validate(oidcCredentials.getIdToken(), nonce);
+                val claimsSet = configuration.getOpMetadataResolver().getTokenValidator().validate(oidcCredentials.toIdToken(), nonce);
                 assertNotNull("claimsSet", claimsSet);
                 profile.setId(ProfileHelper.sanitizeIdentifier(claimsSet.getSubject()));
 
@@ -138,7 +138,7 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
 
             // add attributes of the ID token if they don't already exist
             if (oidcCredentials != null && oidcCredentials.getIdToken() != null) {
-                for (val entry : oidcCredentials.getIdToken().getJWTClaimsSet().getClaims().entrySet()) {
+                for (val entry : oidcCredentials.toIdToken().getJWTClaimsSet().getClaims().entrySet()) {
                     val key = entry.getKey();
                     val value = entry.getValue();
                     // it's not the subject and this attribute does not already exist, add it
@@ -198,7 +198,7 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
     private void collectClaimsFromAccessTokenIfAny(final OidcCredentials credentials,
                                                    final Nonce nonce, UserProfile profile) {
         try {
-            final AccessToken accessToken = credentials.getAccessToken();
+            var accessToken = credentials.toAccessToken();
             if (accessToken != null) {
                 var accessTokenJwt = JWTParser.parse(accessToken.getValue());
                 var accessTokenClaims = configuration.getOpMetadataResolver().getTokenValidator().validate(accessTokenJwt, nonce);
