@@ -148,7 +148,7 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
                 }
             }
 
-            if (oidcCredentials != null && oconfiguration.isIncludeAccessTokenClaimsInProfile()) {
+            if (oidcCredentials != null && configuration.isIncludeAccessTokenClaimsInProfile()) {
                 collectClaimsFromAccessTokenIfAny(oidcCredentials, nonce, profile);
             }
 
