@@ -123,8 +123,12 @@ public class OidcAuthenticator implements Authenticator {
         val tokenSuccessResponse = (OIDCTokenResponse) response;
 
         val oidcTokens = tokenSuccessResponse.getOIDCTokens();
-        credentials.setAccessToken(oidcTokens.getAccessToken().toJSONObject());
-        credentials.setRefreshToken(oidcTokens.getRefreshToken().toJSONObject());
+        if (oidcTokens.getAccessToken() != null) {
+            credentials.setAccessToken(oidcTokens.getAccessToken().toJSONObject());
+        }
+        if (oidcTokens.getRefreshToken() != null) {
+            credentials.setRefreshToken(oidcTokens.getRefreshToken().toJSONObject());
+        }
         if (oidcTokens.getIDToken() != null) {
             credentials.setIdToken(oidcTokens.getIDToken().serialize());
         }
