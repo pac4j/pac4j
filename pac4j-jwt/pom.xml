@@ -13,7 +13,7 @@
     <name>pac4j: Java web security for JWT</name>
 
     <properties>
-        <bcprov.version>1.70</bcprov.version>
+        <bcprov.version>1.76</bcprov.version>
     </properties>
 
     <dependencies>
@@ -27,7 +27,7 @@
         </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk15on</artifactId>
+            <artifactId>bcprov-jdk18on</artifactId>
             <version>${bcprov.version}</version>
         </dependency>
         <dependency>
