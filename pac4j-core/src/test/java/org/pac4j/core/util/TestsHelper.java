@@ -53,4 +53,8 @@ public final class TestsHelper {
             throw new RuntimeException(e);
         }
     }
+
+    public static int getJdkVersion() {
+        return Runtime.version().version().get(0);
+    }
 }

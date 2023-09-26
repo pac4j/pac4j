@@ -43,6 +43,9 @@ public final class ECSignatureConfigurationTests extends AbstractKeyEncryptionCo
     @Test
     public void testMissingPublicKey() {
         val config = new ECSignatureConfiguration();
+        if (TestsHelper.getJdkVersion() > 17) {
+            config.setAlgorithm(JWSAlgorithm.ES384);
+        }
         config.setPrivateKey((ECPrivateKey) buildKeyPair().getPrivate());
         val signedJWT = config.sign(buildClaims());
         TestsHelper.expectException(() -> config.verify(signedJWT), TechnicalException.class, "publicKey cannot be null");
@@ -63,13 +66,22 @@ public final class ECSignatureConfigurationTests extends AbstractKeyEncryptionCo
 
     @Test
     public void buildFromJwk() {
-        val json = new ECKey.Builder(Curve.P_256, (ECPublicKey) buildKeyPair().getPublic()).build().toJSONString();
+        final Curve curve;
+        if (TestsHelper.getJdkVersion() > 17) {
+            curve = Curve.P_384;
+        } else {
+            curve = Curve.P_256;
+        }
+        val json = new ECKey.Builder(curve, (ECPublicKey) buildKeyPair().getPublic()).build().toJSONString();
         JWKHelper.buildECKeyPairFromJwk(json);
     }
 
     @Test
     public void testSignVerify() throws JOSEException {
-        SignatureConfiguration config = new ECSignatureConfiguration(buildKeyPair());
+        val config = new ECSignatureConfiguration(buildKeyPair());
+        if (TestsHelper.getJdkVersion() > 17) {
+            config.setAlgorithm(JWSAlgorithm.ES384);
+        }
         val claims = new JWTClaimsSet.Builder().subject(VALUE).build();
         val signedJwt = config.sign(claims);
         assertTrue(config.verify(signedJwt));

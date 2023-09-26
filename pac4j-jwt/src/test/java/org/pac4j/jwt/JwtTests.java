@@ -404,6 +404,10 @@ public final class JwtTests implements TestsConstants {
     private ECSignatureConfiguration buildECSignatureConfiguration() throws NoSuchAlgorithmException {
         val keyGen = KeyPairGenerator.getInstance("EC");
         val keyPair = keyGen.generateKeyPair();
-        return new ECSignatureConfiguration(keyPair, JWSAlgorithm.ES256);
+        if (TestsHelper.getJdkVersion() > 17) {
+            return new ECSignatureConfiguration(keyPair, JWSAlgorithm.ES384);
+        } else {
+            return new ECSignatureConfiguration(keyPair, JWSAlgorithm.ES256);
+        }
     }
 }
