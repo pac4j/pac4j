@@ -5,6 +5,7 @@ import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.PrefixedSessionStore;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.jee.context.JEEContext;
 
@@ -22,7 +23,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @ToString
-public class JEESessionStore implements SessionStore {
+public class JEESessionStore extends PrefixedSessionStore {
 
     /** Constant <code>INSTANCE</code> */
     public static final SessionStore INSTANCE = new JEESessionStore();
@@ -80,12 +81,13 @@ public class JEESessionStore implements SessionStore {
     @Override
     public Optional<Object> get(final WebContext context, final String key) {
         val httpSession = getNativeSession(context, false);
+        val prefixedKey = computePrefixedKey(key);
         if (httpSession.isPresent()) {
-            val value = httpSession.get().getAttribute(key);
-            LOGGER.debug("Get value: {} for key: {}", value, key);
+            val value = httpSession.get().getAttribute(prefixedKey);
+            LOGGER.debug("Get value: {} for key: {}", value, prefixedKey);
             return Optional.ofNullable(value);
         } else {
-            LOGGER.debug("Can't get value for key: {}, no session available", key);
+            LOGGER.debug("Can't get value for key: {}, no session available", prefixedKey);
             return Optional.empty();
         }
     }
@@ -93,20 +95,21 @@ public class JEESessionStore implements SessionStore {
     /** {@inheritDoc} */
     @Override
     public void set(final WebContext context, final String key, final Object value) {
+        val prefixedKey = computePrefixedKey(key);
         if (value == null) {
             val httpSession = getNativeSession(context, false);
             if (httpSession.isPresent()) {
-                LOGGER.debug("Remove value for key: {}", key);
-                httpSession.get().removeAttribute(key);
+                LOGGER.debug("Remove value for key: {}", prefixedKey);
+                httpSession.get().removeAttribute(prefixedKey);
             }
         } else {
             val httpSession = getNativeSession(context, true);
             if (value instanceof Exception) {
-                LOGGER.debug("Set key: {} for value: {}", key, value.toString());
+                LOGGER.debug("Set key: {} for value: {}", prefixedKey, value.toString());
             } else {
-                LOGGER.debug("Set key: {} for value: {}", key, value);
+                LOGGER.debug("Set key: {} for value: {}", prefixedKey, value);
             }
-            httpSession.get().setAttribute(key, value);
+            httpSession.get().setAttribute(prefixedKey, value);
         }
     }
 

@@ -13,7 +13,7 @@ import java.util.Optional;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public class MockSessionStore implements SessionStore {
+public class MockSessionStore extends PrefixedSessionStore {
 
     protected Map<String, Object> store = new HashMap<>();
 
@@ -41,13 +41,13 @@ public class MockSessionStore implements SessionStore {
 
     @Override
     public Optional get(final WebContext context, final String key) {
-        return Optional.ofNullable(store.get(key));
+        return Optional.ofNullable(store.get(computePrefixedKey(key)));
     }
 
     @Override
     public void set(final WebContext context, final String key, final Object value) {
         generateIdIfNecessary();
-        store.put(key, value);
+        store.put(computePrefixedKey(key), value);
     }
 
     @Override
