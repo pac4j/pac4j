@@ -4,6 +4,8 @@ title: Release notes&#58;
 ---
 
 **v5.7.2**:
+- Allow to disable user info endpoint calls (OIDC)
+- Handle non-existing ID tokens (OIDC)
 - Added prefixed `SessionStore`
 
 **v5.7.1**:

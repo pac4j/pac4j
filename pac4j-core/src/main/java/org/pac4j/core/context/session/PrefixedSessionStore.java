@@ -1,5 +1,7 @@
 package org.pac4j.core.context.session;
 
+import org.pac4j.core.util.Pac4jConstants;
+
 /**
  * Session store with prefix.
  *
@@ -8,7 +10,7 @@ package org.pac4j.core.context.session;
  */
 public abstract class PrefixedSessionStore implements SessionStore {
 
-    private String prefix = "";
+    private String prefix = Pac4jConstants.EMPTY_STRING;
 
     public String getPrefix() {
         return prefix;
