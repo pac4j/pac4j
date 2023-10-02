@@ -11,6 +11,7 @@ title: Release notes&#58;
 - Renamed the `pac4j-cas-clientv4` module as `pac4j-cas`
 - Renamed the `pac4j-saml-opensamlv5` module as `pac4j-saml`
 - Renamed the `pac4j-springbootv3` module as `pac4j-springboot`
+- Removed the `JEESessionStore.INSTANCE`
 - Removed deprecated concepts and components
 - `Authenticator` now returns an `Optional<Credentials>`
 - Usage of Lombok

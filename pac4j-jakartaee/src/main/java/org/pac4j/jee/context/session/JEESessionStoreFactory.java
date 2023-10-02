@@ -15,6 +15,8 @@ public class JEESessionStoreFactory implements SessionStoreFactory {
     /** Constant <code>INSTANCE</code> */
     public static final SessionStoreFactory INSTANCE = new JEESessionStoreFactory();
 
+    private static final JEESessionStore JEE_SESSION_STORE = new JEESessionStore();
+
     /**
      * {@inheritDoc}
      *
@@ -22,6 +24,6 @@ public class JEESessionStoreFactory implements SessionStoreFactory {
      */
     @Override
     public SessionStore newSessionStore(final FrameworkParameters parameters) {
-        return JEESessionStore.INSTANCE;
+        return JEE_SESSION_STORE;
     }
 }

@@ -25,15 +25,12 @@ import java.util.stream.Collectors;
 @ToString
 public class JEESessionStore extends PrefixedSessionStore {
 
-    /** Constant <code>INSTANCE</code> */
-    public static final SessionStore INSTANCE = new JEESessionStore();
-
     protected HttpSession httpSession;
 
     /**
      * <p>Constructor for JEESessionStore.</p>
      */
-    protected JEESessionStore() {}
+    public JEESessionStore() {}
 
     /**
      * <p>Constructor for JEESessionStore.</p>
@@ -144,7 +141,9 @@ public class JEESessionStore extends PrefixedSessionStore {
     public Optional<SessionStore> buildFromTrackableSession(final WebContext context, final Object trackableSession) {
         if (trackableSession != null) {
             LOGGER.debug("Rebuild session from trackable session: {}", trackableSession);
-            return Optional.of(new JEESessionStore((HttpSession) trackableSession));
+            val sessionStore = new JEESessionStore((HttpSession) trackableSession);
+            sessionStore.setPrefix(this.getPrefix());
+            return Optional.of(sessionStore);
         } else {
             LOGGER.debug("Unable to build session from trackable session");
             return Optional.empty();
