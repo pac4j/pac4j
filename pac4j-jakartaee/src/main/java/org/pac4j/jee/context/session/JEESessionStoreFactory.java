@@ -13,6 +13,8 @@ public class JEESessionStoreFactory implements SessionStoreFactory {
 
     public static final JEESessionStoreFactory INSTANCE = new JEESessionStoreFactory();
 
+    private static final JEESessionStore JEE_SESSION_STORE = new JEESessionStore();
+
     /**
      * Create the session store.
      *
@@ -21,6 +23,6 @@ public class JEESessionStoreFactory implements SessionStoreFactory {
      */
     @Override
     public SessionStore newSessionStore(final Object... parameters) {
-        return JEESessionStore.INSTANCE;
+        return JEE_SESSION_STORE;
     }
 }

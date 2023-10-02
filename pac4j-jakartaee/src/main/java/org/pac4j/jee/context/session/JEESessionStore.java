@@ -22,13 +22,14 @@ import java.util.stream.Collectors;
  */
 public class JEESessionStore extends PrefixedSessionStore {
 
+    @Deprecated
     public static final JEESessionStore INSTANCE = new JEESessionStore();
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JEESessionStore.class);
 
     protected HttpSession httpSession;
 
-    protected JEESessionStore() {}
+    public JEESessionStore() {}
 
     protected JEESessionStore(final HttpSession httpSession) {
         this.httpSession = httpSession;
@@ -121,7 +122,9 @@ public class JEESessionStore extends PrefixedSessionStore {
     public Optional<SessionStore> buildFromTrackableSession(final WebContext context, final Object trackableSession) {
         if (trackableSession != null) {
             LOGGER.debug("Rebuild session from trackable session: {}", trackableSession);
-            return Optional.of(new JEESessionStore((HttpSession) trackableSession));
+            final var sessionStore = new JEESessionStore((HttpSession) trackableSession);
+            sessionStore.setPrefix(this.getPrefix());
+            return Optional.of(sessionStore);
         } else {
             LOGGER.debug("Unable to build session from trackable session");
             return Optional.empty();
