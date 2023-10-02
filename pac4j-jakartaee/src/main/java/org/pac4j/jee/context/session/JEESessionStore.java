@@ -1,12 +1,13 @@
 package org.pac4j.jee.context.session;
 
+import jakarta.servlet.http.HttpSession;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.PrefixedSessionStore;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.jee.context.JEEContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jakarta.servlet.http.HttpSession;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +20,7 @@ import java.util.stream.Collectors;
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public class JEESessionStore implements SessionStore {
+public class JEESessionStore extends PrefixedSessionStore {
 
     public static final JEESessionStore INSTANCE = new JEESessionStore();
 
@@ -61,32 +62,34 @@ public class JEESessionStore implements SessionStore {
     @Override
     public Optional<Object> get(final WebContext context, final String key) {
         final var httpSession = getNativeSession(context, false);
+        final var prefixedKey = computePrefixedKey(key);
         if (httpSession.isPresent()) {
-            final var value = httpSession.get().getAttribute(key);
-            LOGGER.debug("Get value: {} for key: {}", value, key);
+            final var value = httpSession.get().getAttribute(prefixedKey);
+            LOGGER.debug("Get value: {} for key: {}", value, prefixedKey);
             return Optional.ofNullable(value);
         } else {
-            LOGGER.debug("Can't get value for key: {}, no session available", key);
+            LOGGER.debug("Can't get value for key: {}, no session available", prefixedKey);
             return Optional.empty();
         }
     }
 
     @Override
     public void set(final WebContext context, final String key, final Object value) {
+        final var prefixedKey = computePrefixedKey(key);
         if (value == null) {
             final var httpSession = getNativeSession(context, false);
             if (httpSession.isPresent()) {
-                LOGGER.debug("Remove value for key: {}", key);
-                httpSession.get().removeAttribute(key);
+                LOGGER.debug("Remove value for key: {}", prefixedKey);
+                httpSession.get().removeAttribute(prefixedKey);
             }
         } else {
             final var httpSession = getNativeSession(context, true);
             if (value instanceof Exception) {
-                LOGGER.debug("Set key: {} for value: {}", key, value.toString());
+                LOGGER.debug("Set key: {} for value: {}", prefixedKey, value.toString());
             } else {
-                LOGGER.debug("Set key: {} for value: {}", key, value);
+                LOGGER.debug("Set key: {} for value: {}", prefixedKey, value);
             }
-            httpSession.get().setAttribute(key, value);
+            httpSession.get().setAttribute(prefixedKey, value);
         }
     }
 

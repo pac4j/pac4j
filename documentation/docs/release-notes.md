@@ -3,6 +3,9 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v5.7.2**:
+- Added prefixed `SessionStore`
+
 **v5.7.1**:
 - Allow to disable tokens rotation on the `DefaultCsrfTokenGenerator`
 
