@@ -40,7 +40,7 @@ public class JEESessionStore extends PrefixedSessionStore {
      *
      * @param httpSession a {@link HttpSession} object
      */
-    protected JEESessionStore(final HttpSession httpSession) {
+    public JEESessionStore(final HttpSession httpSession) {
         this.httpSession = httpSession;
     }
 
