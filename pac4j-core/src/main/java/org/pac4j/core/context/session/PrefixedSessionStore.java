@@ -16,7 +16,7 @@ public abstract class PrefixedSessionStore implements SessionStore {
 
     private String prefix = Pac4jConstants.EMPTY_STRING;
 
-    protected String computePrefixedKey(final String key) {
+    public String computePrefixedKey(final String key) {
         return prefix + key;
     }
 }
