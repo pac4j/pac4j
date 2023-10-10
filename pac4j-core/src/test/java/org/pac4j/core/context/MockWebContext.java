@@ -49,6 +49,8 @@ public final class MockWebContext implements WebContext {
 
     protected final Collection<Cookie> responseCookies = new LinkedHashSet<>();
 
+    protected String queryString = null;
+
     protected MockWebContext() {
     }
 
@@ -255,5 +257,13 @@ public final class MockWebContext implements WebContext {
         }
     }
 
+    @Override
+    public Optional<String> getQueryString() {
+        return Optional.ofNullable(this.queryString);
+    }
 
+    public MockWebContext setQueryString(final String queryString) {
+        this.queryString = queryString;
+        return this;
+    }
 }

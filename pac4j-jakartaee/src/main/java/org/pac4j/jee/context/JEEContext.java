@@ -248,4 +248,10 @@ public class JEEContext implements WebContext {
     public String getProtocol() {
         return request.getProtocol();
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public Optional<String> getQueryString() {
+        return Optional.ofNullable(request.getQueryString());
+    }
 }
