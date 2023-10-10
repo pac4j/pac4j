@@ -2,6 +2,7 @@ package org.pac4j.core.profile;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.Streams;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
  * @author Jerome Leleu
  * @since 1.0.0
  */
+@EqualsAndHashCode
 @ToString
 public class BasicUserProfile implements UserProfile, Externalizable {
 
