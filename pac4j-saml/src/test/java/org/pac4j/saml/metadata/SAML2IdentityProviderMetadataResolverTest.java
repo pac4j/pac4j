@@ -3,6 +3,7 @@ package org.pac4j.saml.metadata;
 import net.shibboleth.shared.resolver.CriteriaSet;
 import net.shibboleth.shared.xml.XMLParserException;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.opensaml.core.criterion.EntityIdCriterion;
 import org.pac4j.core.exception.TechnicalException;
@@ -72,6 +73,7 @@ public class SAML2IdentityProviderMetadataResolverTest {
     }
 
     @Test
+    @Ignore
     public void resolveMetadataOverUrlWithHostnameVerifierFromConfig() throws Exception {
         var configuration = new SAML2Configuration();
         configuration.setIdentityProviderMetadataResource(new UrlResource("https://self-signed.badssl.com"));
@@ -86,6 +88,7 @@ public class SAML2IdentityProviderMetadataResolverTest {
     }
 
     @Test
+    @Ignore
     public void resolveMetadataOverUrlWithHostnameVerifier() throws Exception {
         var configuration = new SAML2Configuration();
         configuration.setIdentityProviderMetadataResource(new UrlResource("https://self-signed.badssl.com"));
