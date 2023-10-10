@@ -175,4 +175,19 @@ public final class WebContextHelper implements HttpConstants {
         }
         return value;
     }
+
+    /**
+     * Checks whether this parameter is part of the query string.
+     *
+     * @param context the web context
+     * @param name the parameter name
+     * @return whether this parameter is part of the query string
+     */
+    public static boolean isQueryStringParameter(final WebContext context, final String name) {
+        val queryString = context.getQueryString();
+        if (queryString.isPresent()) {
+            return context.getRequestParameter(name).isPresent() && queryString.get().contains(name + '=');
+        }
+        return false;
+    }
 }
