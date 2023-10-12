@@ -17,7 +17,7 @@ import java.io.Serial;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 public class CasProxyProfile extends CasProfile {
 
     @Serial

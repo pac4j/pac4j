@@ -1,5 +1,6 @@
 package org.pac4j.kerberos.profile;
 
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.ietf.jgss.GSSContext;
 import org.pac4j.core.profile.CommonProfile;
@@ -12,6 +13,7 @@ import java.io.Serial;
  * @author Garry Boyce
  * @since 2.1.0
  */
+@EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class KerberosProfile extends CommonProfile {
 
