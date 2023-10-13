@@ -182,4 +182,11 @@ public interface WebContext {
     default String getProtocol() {
         return "HTTP/1.0";
     }
+
+    /**
+     * Get the query string.
+     *
+     * @return the query string
+     */
+    Optional<String> getQueryString();
 }
