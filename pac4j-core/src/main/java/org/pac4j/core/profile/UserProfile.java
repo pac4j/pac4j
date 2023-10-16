@@ -1,5 +1,7 @@
 package org.pac4j.core.profile;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 import java.io.Serializable;
 import java.security.Principal;
 import java.util.Collection;
@@ -12,6 +14,7 @@ import java.util.Set;
  * @author Jerome Leleu
  * @since 4.0.0
  */
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "class")
 public interface UserProfile extends Serializable {
 
     /**

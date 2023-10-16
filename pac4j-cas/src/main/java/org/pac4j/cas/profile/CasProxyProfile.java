@@ -1,5 +1,6 @@
 package org.pac4j.cas.profile;
 
+import lombok.EqualsAndHashCode;
 import lombok.val;
 import org.apereo.cas.client.authentication.AttributePrincipal;
 
@@ -16,6 +17,7 @@ import java.io.Serial;
  * @author Jerome Leleu
  * @since 1.4.0
  */
+@EqualsAndHashCode(callSuper = true)
 public class CasProxyProfile extends CasProfile {
 
     @Serial
