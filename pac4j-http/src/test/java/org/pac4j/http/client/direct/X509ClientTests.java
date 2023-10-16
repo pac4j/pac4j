@@ -2,7 +2,6 @@ package org.pac4j.http.client.direct;
 
 import lombok.val;
 import org.junit.Test;
-import org.pac4j.core.client.Client;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
@@ -48,17 +47,27 @@ public final class X509ClientTests implements TestsConstants {
         "RLrT3lejJyf1GVhZvxOcXPglcXdQyX1vGxf15mRW91LbyghsGUF3REAmE6K1hWCe" +
         "YT/h4KtrPV/aOyx+fVMum0AuskOTaKF+QQ==";
 
-    private Client client = new X509Client();
-
     @Test
     public void testOk() throws CertificateException {
+        verifyCertificateWithClient(new X509Client());
+
+        val customHeaderClient = new X509Client();
+        customHeaderClient.setCredentialsExtractor(new X509CredentialsExtractor("custom.header"));
+        verifyCertificateWithClient(customHeaderClient);
+    }
+
+    private static void verifyCertificateWithClient(final X509Client client) throws CertificateException {
+        if (!client.isInitialized()) {
+            client.init();
+        }
         val context = MockWebContext.create();
         val certificateData = Base64.getDecoder().decode(CERTIFICATE);
         val cert = (X509Certificate) CertificateFactory.getInstance("X.509")
             .generateCertificate(new ByteArrayInputStream(certificateData));
         val certs = new X509Certificate[1];
         certs[0] = cert;
-        context.setRequestAttribute(X509CredentialsExtractor.CERTIFICATE_REQUEST_ATTRIBUTE, certs);
+        val credentialsExtractor = (X509CredentialsExtractor) client.getCredentialsExtractor();
+        context.setRequestAttribute(credentialsExtractor.getHeaderName(), certs);
         val ctx = new CallContext(context, new MockSessionStore());
         val credentials = (X509Credentials) client.getCredentials(ctx).get();
         val authnCredentials = client.validateCredentials(ctx, credentials).get();

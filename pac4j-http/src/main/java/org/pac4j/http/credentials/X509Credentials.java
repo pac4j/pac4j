@@ -13,7 +13,7 @@ import java.security.cert.X509Certificate;
  * @author Jerome Leleu
  * @since 3.3.0
  */
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 @Getter
 public class X509Credentials extends Credentials {
 
