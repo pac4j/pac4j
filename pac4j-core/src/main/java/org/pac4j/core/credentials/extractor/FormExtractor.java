@@ -5,8 +5,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import org.apache.hc.core5.net.URIBuilder;
 import org.pac4j.core.context.CallContext;
+import org.pac4j.core.context.WebContextHelper;
 import org.pac4j.core.credentials.CredentialSource;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
@@ -44,9 +44,12 @@ public class FormExtractor implements CredentialsExtractor {
                 break;
             case QUERY_PARAM:
                 try {
-                    val uriBuilder = new URIBuilder(webContext.getFullRequestURL());
-                    username = Optional.ofNullable(uriBuilder.getFirstQueryParam(this.usernameParameter).getValue());
-                    password = Optional.ofNullable(uriBuilder.getFirstQueryParam(this.passwordParameter).getValue());
+                    if (WebContextHelper.isQueryStringParameter(webContext, this.usernameParameter)) {
+                        username = webContext.getRequestParameter(this.usernameParameter);
+                    }
+                    if (WebContextHelper.isQueryStringParameter(webContext, this.passwordParameter)) {
+                        username = webContext.getRequestParameter(this.usernameParameter);
+                    }
                 } catch (final Exception e) {
                     LOGGER.warn(e.getMessage(), e);
                 }
