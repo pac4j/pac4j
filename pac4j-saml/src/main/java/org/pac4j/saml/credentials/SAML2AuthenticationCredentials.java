@@ -24,6 +24,7 @@ import java.util.List;
  */
 @Slf4j
 @Getter
+@Setter
 @EqualsAndHashCode(callSuper = false)
 @ToString
 public class SAML2AuthenticationCredentials extends Credentials {
@@ -31,20 +32,22 @@ public class SAML2AuthenticationCredentials extends Credentials {
     @Serial
     private static final long serialVersionUID = 5040516205957826527L;
 
-    private final SAMLNameID nameId;
+    private SAMLNameID nameId;
 
-    private final String sessionIndex;
+    private String sessionIndex;
 
-    private final List<SAMLAttribute> attributes;
+    private List<SAMLAttribute> attributes;
 
-    private final SAMLConditions conditions;
+    private SAMLConditions conditions;
 
-    private final String issuerId;
+    private String issuerId;
 
-    private final List<String> authnContexts;
-    private final List<String> authnContextAuthorities;
+    private List<String> authnContexts;
+    private List<String> authnContextAuthorities;
 
-    private final String inResponseTo;
+    private String inResponseTo;
+
+    public SAML2AuthenticationCredentials() {}
 
     /**
      * <p>Constructor for SAML2AuthenticationCredentials.</p>
