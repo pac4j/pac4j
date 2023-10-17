@@ -50,7 +50,7 @@ public class BasicAuthExtractor implements CredentialsExtractor {
                 throw new CredentialsException("Bad format of the basic auth header");
             }
             val upc = new UsernamePasswordCredentials(token.substring(0, delim), token.substring(delim + 1));
-            upc.setSource(CredentialSource.HEADER);
+            upc.setSource(CredentialSource.HEADER.name());
             return upc;
         });
     }

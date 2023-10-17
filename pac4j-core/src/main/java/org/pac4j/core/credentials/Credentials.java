@@ -31,9 +31,17 @@ public abstract class Credentials implements Serializable {
     @Getter
     protected LogoutType logoutType = null;
 
+    /**
+     * Indicates the source of the credentials.
+     * This is typically configured and set during the credential
+     * extraction process and authentication is then able to accept
+     * or reject a credential based on the source, if necessary.
+     * Values assigned to the source may be defined freely,
+     * though official sources typically should use values from {@link CredentialSource}.
+     */
     @Getter
     @Setter
-    protected CredentialSource source = CredentialSource.OTHER;
+    protected String source = CredentialSource.OTHER.name();
 
     /**
      * <p>isForAuthentication.</p>

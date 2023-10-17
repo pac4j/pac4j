@@ -30,6 +30,7 @@ title: Release notes&#58;
 - The `OidcProfile` will internally encode/decode codes, access and refresh tokens. Asking the profile to return back the actual object will effectively reconstruct it, to avoid  issues with JSON serialization.
 - Added `getQueryString` on the `WebContext`
 - `X509CredentialsExtractor` is now given the ability to specify a custom header for certificate extraction.
+- `Credentials` are now able to specify and carry their source, typically set by the credential extraction process.
 ---
 
 ### JDK11:

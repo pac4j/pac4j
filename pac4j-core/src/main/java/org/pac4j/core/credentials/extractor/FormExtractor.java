@@ -33,7 +33,7 @@ public class FormExtractor implements CredentialsExtractor {
             return Optional.empty();
         }
         val upc = new UsernamePasswordCredentials(username.get(), password.get());
-        upc.setSource(CredentialSource.FORM);
+        upc.setSource(CredentialSource.FORM.name());
         return Optional.of(upc);
     }
 }
