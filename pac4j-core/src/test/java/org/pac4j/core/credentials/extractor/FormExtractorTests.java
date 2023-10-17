@@ -29,7 +29,9 @@ public class FormExtractorTests {
     public void testExtractionFromQueryString() {
         val context = MockWebContext.create()
             .setRequestMethod("get")
-            .setFullRequestURL("http://localhost?username=pac4j&password=pac4j");
+            .addRequestParameter("username", "pac4j")
+            .addRequestParameter("password", "pac4j")
+            .setQueryString("username=pac4j&password=pac4j");
         val extractor = new FormExtractor("username", "password");
         extractor.setExtractionMode(FormExtractor.ExtractionMode.QUERY_PARAM);
         assertTrue(extractor.extract(new CallContext(context, null)).isPresent());

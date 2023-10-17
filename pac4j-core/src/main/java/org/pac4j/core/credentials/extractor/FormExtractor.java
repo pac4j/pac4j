@@ -48,7 +48,7 @@ public class FormExtractor implements CredentialsExtractor {
                         username = webContext.getRequestParameter(this.usernameParameter);
                     }
                     if (WebContextHelper.isQueryStringParameter(webContext, this.passwordParameter)) {
-                        username = webContext.getRequestParameter(this.usernameParameter);
+                        password = webContext.getRequestParameter(this.passwordParameter);
                     }
                 } catch (final Exception e) {
                     LOGGER.warn(e.getMessage(), e);
@@ -56,8 +56,12 @@ public class FormExtractor implements CredentialsExtractor {
                 break;
             case REQUEST_BODY:
                 if ("POST".equalsIgnoreCase(webContext.getRequestMethod())) {
-                    username = webContext.getRequestParameter(this.usernameParameter);
-                    password = webContext.getRequestParameter(this.passwordParameter);
+                    if (!WebContextHelper.isQueryStringParameter(webContext, this.usernameParameter)) {
+                        username = webContext.getRequestParameter(this.usernameParameter);
+                    }
+                    if (!WebContextHelper.isQueryStringParameter(webContext, this.passwordParameter)) {
+                        password = webContext.getRequestParameter(this.passwordParameter);
+                    }
                 }
                 break;
         }
