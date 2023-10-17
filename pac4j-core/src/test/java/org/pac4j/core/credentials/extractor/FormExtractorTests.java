@@ -11,7 +11,7 @@ import static org.junit.Assert.assertTrue;
  * This is {@link FormExtractorTests}.
  *
  * @author Misagh Moayyed
- * @since 7.0.0
+ * @since 6.0.0
  */
 public class FormExtractorTests {
     @Test
