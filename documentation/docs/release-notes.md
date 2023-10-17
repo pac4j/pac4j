@@ -31,6 +31,7 @@ title: Release notes&#58;
 - Added `getQueryString` on the `WebContext`
 - `X509CredentialsExtractor` is now given the ability to specify a custom header for certificate extraction.
 - `Credentials` are now able to specify and carry their source, typically set by the credential extraction process.
+- It is now possible to specify extraction modes for `FormExtractor`.
 ---
 
 ### JDK11:
