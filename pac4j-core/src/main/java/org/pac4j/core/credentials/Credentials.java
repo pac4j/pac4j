@@ -31,6 +31,10 @@ public abstract class Credentials implements Serializable {
     @Getter
     protected LogoutType logoutType = null;
 
+    @Getter
+    @Setter
+    protected CredentialSource source = CredentialSource.OTHER;
+
     /**
      * <p>isForAuthentication.</p>
      *
