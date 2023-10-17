@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
+import org.pac4j.core.credentials.CredentialSource;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.TechnicalException;
@@ -119,6 +120,7 @@ public final class FormClientTests implements TestsConstants {
                 .addRequestParameter(formClient.getPasswordParameter(), USERNAME), new MockSessionStore())).get();
         assertEquals(USERNAME, credentials.getUsername());
         assertEquals(USERNAME, credentials.getPassword());
+        assertEquals(CredentialSource.FORM.name(), credentials.getSource());
     }
 
     @Test
