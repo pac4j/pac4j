@@ -5,11 +5,13 @@ import org.pac4j.core.context.CallContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.http.credentials.X509Credentials;
 import org.pac4j.http.profile.X509Profile;
 
+import javax.security.auth.x500.X500Principal;
+import java.security.Principal;
+import java.util.Base64;
 import java.util.Optional;
 
 /**
@@ -20,29 +22,19 @@ import java.util.Optional;
  */
 public class X509Authenticator extends AbstractRegexpAuthenticator implements Authenticator {
 
-    /**
-     * <p>Constructor for X509Authenticator.</p>
-     */
     public X509Authenticator() {
         setRegexpPattern("CN=(.*?)(?:,|$)");
     }
 
-    /**
-     * <p>Constructor for X509Authenticator.</p>
-     *
-     * @param regexpPattern a {@link String} object
-     */
     public X509Authenticator(final String regexpPattern) {
         setRegexpPattern(regexpPattern);
     }
 
-    /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
         setProfileDefinitionIfUndefined(new CommonProfileDefinition(x -> new X509Profile()));
     }
 
-    /** {@inheritDoc} */
     @Override
     public Optional<Credentials> validate(final CallContext ctx, final Credentials credentials) {
         init();
@@ -71,12 +63,31 @@ public class X509Authenticator extends AbstractRegexpAuthenticator implements Au
         }
 
         if (matcher.groupCount() != 1) {
-            throw new CredentialsException("Too many matchings for pattern: " +  regexpPattern + " in subjectDN: " + subjectDN);
+            throw new CredentialsException("Too many matches for pattern: " +  regexpPattern + " in subjectDN: " + subjectDN);
         }
 
         val id = matcher.group(1);
-        UserProfile profile = (X509Profile) getProfileDefinition().newProfile();
+        val profile = getProfileDefinition().newProfile();
         profile.setId(id);
+        try {
+            profile.addAttribute("x509-certificate", Base64.getEncoder().encodeToString(certificate.getEncoded()));
+        } catch (final Exception e) {
+            throw new CredentialsException("Unable to encode the certificate", e);
+        }
+        profile.addAttribute("x509-subjectDN", subjectDN);
+        profile.addAttribute("x509-notAfter", certificate.getNotAfter());
+        profile.addAttribute("x509-notBefore", certificate.getNotBefore());
+        profile.addAttribute("x509-sigAlgName", certificate.getSigAlgName());
+        profile.addAttribute("x509-sigAlgOid", certificate.getSigAlgOID());
+        Principal issuerDN = certificate.getIssuerDN();
+        if (issuerDN != null) {
+            profile.addAttribute("x509-issuer", issuerDN.getName());
+        }
+        X500Principal issuerX500Principal = certificate.getIssuerX500Principal();
+        if (issuerX500Principal != null) {
+            profile.addAttribute("x509-issuerX500", issuerX500Principal.getName());
+        }
+
         logger.debug("profile: {}", profile);
 
         credentials.setUserProfile(profile);
