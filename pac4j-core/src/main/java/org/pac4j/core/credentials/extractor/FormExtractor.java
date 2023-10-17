@@ -1,11 +1,13 @@
 package org.pac4j.core.credentials.extractor;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.hc.core5.net.URIBuilder;
 import org.pac4j.core.context.CallContext;
+import org.pac4j.core.credentials.CredentialSource;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 
@@ -18,6 +20,7 @@ import java.util.Optional;
  * @since 1.8.0
  */
 @Getter
+@RequiredArgsConstructor
 @Slf4j
 public class FormExtractor implements CredentialsExtractor {
 
@@ -28,18 +31,6 @@ public class FormExtractor implements CredentialsExtractor {
     @Setter
     private ExtractionMode extractionMode = ExtractionMode.ALL;
 
-    /**
-     * <p>Constructor for FormExtractor.</p>
-     *
-     * @param usernameParameter a {@link String} object
-     * @param passwordParameter a {@link String} object
-     */
-    public FormExtractor(final String usernameParameter, final String passwordParameter) {
-        this.usernameParameter = usernameParameter;
-        this.passwordParameter = passwordParameter;
-    }
-
-    /** {@inheritDoc} */
     @Override
     public Optional<Credentials> extract(final CallContext ctx) {
         val webContext = ctx.webContext();
@@ -71,8 +62,9 @@ public class FormExtractor implements CredentialsExtractor {
         if (username.isEmpty() || password.isEmpty()) {
             return Optional.empty();
         }
-
-        return Optional.of(new UsernamePasswordCredentials(username.get(), password.get()));
+        val upc = new UsernamePasswordCredentials(username.get(), password.get());
+        upc.setSource(CredentialSource.FORM.name());
+        return Optional.of(upc);
     }
 
     public enum ExtractionMode {

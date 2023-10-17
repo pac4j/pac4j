@@ -6,6 +6,7 @@ import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
+import org.pac4j.core.credentials.CredentialSource;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
@@ -55,10 +56,10 @@ public final class DirectBasicAuthClientTests implements TestsConstants {
         context.addRequestHeader(HttpConstants.AUTHORIZATION_HEADER,
             "Basic " + Base64.getEncoder().encodeToString(header.getBytes(StandardCharsets.UTF_8)));
         val ctx = new CallContext(context, new MockSessionStore());
-        val credentials =
-            (UsernamePasswordCredentials) client.getCredentials(ctx).get();
+        val credentials = (UsernamePasswordCredentials) client.getCredentials(ctx).get();
+        assertEquals(CredentialSource.HEADER.name(), credentials.getSource());
         val authnCredentials = client.validateCredentials(ctx, credentials).get();
-        UserProfile profile = (CommonProfile) client.getUserProfile(ctx, authnCredentials).get();
+        val profile = (CommonProfile) client.getUserProfile(ctx, authnCredentials).get();
         assertEquals(USERNAME, profile.getId());
     }
 

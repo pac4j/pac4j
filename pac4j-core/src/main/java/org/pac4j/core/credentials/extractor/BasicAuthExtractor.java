@@ -3,6 +3,7 @@ package org.pac4j.core.credentials.extractor;
 import lombok.val;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
+import org.pac4j.core.credentials.CredentialSource;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
@@ -22,24 +23,14 @@ public class BasicAuthExtractor implements CredentialsExtractor {
 
     private final HeaderExtractor extractor;
 
-    /**
-     * <p>Constructor for BasicAuthExtractor.</p>
-     */
     public BasicAuthExtractor() {
         this(HttpConstants.AUTHORIZATION_HEADER, HttpConstants.BASIC_HEADER_PREFIX);
     }
 
-    /**
-     * <p>Constructor for BasicAuthExtractor.</p>
-     *
-     * @param headerName a {@link String} object
-     * @param prefixHeader a {@link String} object
-     */
     public BasicAuthExtractor(final String headerName, final String prefixHeader) {
         this.extractor = new HeaderExtractor(headerName, prefixHeader);
     }
 
-    /** {@inheritDoc} */
     @Override
     public Optional<Credentials> extract(final CallContext ctx) {
         val optCredentials = this.extractor.extract(ctx);
@@ -54,11 +45,13 @@ public class BasicAuthExtractor implements CredentialsExtractor {
             }
             val token = new String(decoded, StandardCharsets.UTF_8);
 
-            val delim = token.indexOf(":");
+            val delim = token.indexOf(':');
             if (delim < 0) {
                 throw new CredentialsException("Bad format of the basic auth header");
             }
-            return new UsernamePasswordCredentials(token.substring(0, delim), token.substring(delim + 1));
+            val upc = new UsernamePasswordCredentials(token.substring(0, delim), token.substring(delim + 1));
+            upc.setSource(CredentialSource.HEADER.name());
+            return upc;
         });
     }
 }
