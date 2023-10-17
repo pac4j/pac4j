@@ -15,15 +15,9 @@ import java.util.Optional;
 @FunctionalInterface
 public interface Authenticator {
 
-    Authenticator ALWAYS_VALIDATE = new Authenticator() {
-        @Override
-        public Optional<Credentials> validate(CallContext ctx, Credentials credentials) {
-            return Optional.of(credentials);
-        }
-    /** Constant <code>ALWAYS_VALIDATE</code> */
-    /** Constant <code>ALWAYS_VALIDATE</code> */
-    /** Constant <code>ALWAYS_VALIDATE</code> */
-    };
+    Authenticator ALWAYS_VALIDATE = (ctx, credentials) -> Optional.of(credentials);
+
+    Authenticator NEVER_VALIDATE = (ctx, credentials) -> Optional.empty();
 
     /**
      * Validate the credentials. It should throw a {@link org.pac4j.core.exception.CredentialsException} in case of failure.
