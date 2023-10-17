@@ -5,7 +5,6 @@ import org.junit.Test;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
-import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.http.credentials.X509Credentials;
 import org.pac4j.http.credentials.extractor.X509CredentialsExtractor;
@@ -18,6 +17,7 @@ import java.security.cert.X509Certificate;
 import java.util.Base64;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests {@link X509Client}.
@@ -71,7 +71,9 @@ public final class X509ClientTests implements TestsConstants {
         val ctx = new CallContext(context, new MockSessionStore());
         val credentials = (X509Credentials) client.getCredentials(ctx).get();
         val authnCredentials = client.validateCredentials(ctx, credentials).get();
-        UserProfile profile = (X509Profile) client.getUserProfile(ctx, authnCredentials).get();
+        val profile = (X509Profile) client.getUserProfile(ctx, authnCredentials).get();
         assertEquals("jerome", profile.getId());
+        assertEquals("CN=jerome, OU=Unknown, O=Unknown, L=Unknown, ST=Unknown, C=Unknown", profile.getAttribute("x509-subjectDN"));
+        assertTrue(profile.containsAttribute("x509-certificate"));
     }
 }

@@ -25,8 +25,8 @@ import java.util.Optional;
 @Getter
 public class X509CredentialsExtractor implements CredentialsExtractor  {
 
-    /** Constant <code>CERTIFICATE_REQUEST_ATTRIBUTE="javax.servlet.request.X509Certificate"</code> */
-    public static final String CERTIFICATE_REQUEST_ATTRIBUTE = "javax.servlet.request.X509Certificate";
+    /** Constant <code>CERTIFICATE_REQUEST_ATTRIBUTE="jakarta.servlet.request.X509Certificate"</code> */
+    public static final String CERTIFICATE_REQUEST_ATTRIBUTE = "jakarta.servlet.request.X509Certificate";
 
     private String headerName = CERTIFICATE_REQUEST_ATTRIBUTE;
 
