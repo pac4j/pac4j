@@ -5,12 +5,12 @@ import org.pac4j.core.context.CallContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.http.credentials.X509Credentials;
 import org.pac4j.http.profile.X509Profile;
 
-import javax.security.auth.x500.X500Principal;
-import java.security.Principal;
+import java.security.cert.X509Certificate;
 import java.util.Base64;
 import java.util.Optional;
 
@@ -79,11 +79,19 @@ public class X509Authenticator extends AbstractRegexpAuthenticator implements Au
         profile.addAttribute("x509-notBefore", certificate.getNotBefore());
         profile.addAttribute("x509-sigAlgName", certificate.getSigAlgName());
         profile.addAttribute("x509-sigAlgOid", certificate.getSigAlgOID());
-        Principal issuerDN = certificate.getIssuerDN();
+
+        extractExtensionFromCertificate(profile, certificate, "x509-sanEmail", 1);
+        extractExtensionFromCertificate(profile, certificate, "x509-sanDNS", 2);
+        extractExtensionFromCertificate(profile, certificate, "x509-sanURI", 6);
+        extractExtensionFromCertificate(profile, certificate, "x509-sanIP", 7);
+        extractExtensionFromCertificate(profile, certificate, "x509-sanRegisteredID", 8);
+        extractExtensionFromCertificate(profile, certificate, "x509-sanDirectory", 9);
+
+        val issuerDN = certificate.getIssuerDN();
         if (issuerDN != null) {
             profile.addAttribute("x509-issuer", issuerDN.getName());
         }
-        X500Principal issuerX500Principal = certificate.getIssuerX500Principal();
+        val issuerX500Principal = certificate.getIssuerX500Principal();
         if (issuerX500Principal != null) {
             profile.addAttribute("x509-issuerX500", issuerX500Principal.getName());
         }
@@ -93,5 +101,25 @@ public class X509Authenticator extends AbstractRegexpAuthenticator implements Au
         credentials.setUserProfile(profile);
 
         return Optional.of(credentials);
+    }
+
+    protected void extractExtensionFromCertificate(UserProfile profile, final X509Certificate certificate,
+                                                   final String attribute, final int oid) {
+        try {
+            val subjectAlternativeNames = certificate.getSubjectAlternativeNames();
+            if (subjectAlternativeNames != null) {
+                val values = subjectAlternativeNames
+                    .stream()
+                    .filter(entry -> entry.size() == 2)
+                    .filter(entry -> entry.get(0).equals(oid))
+                    .map(entry -> entry.get(1).toString())
+                    .toList();
+                if (!values.isEmpty()) {
+                    profile.addAttribute(attribute, values);
+                }
+            }
+        } catch (Exception e) {
+            logger.debug("Unable to extract extension", e);
+        }
     }
 }
