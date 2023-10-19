@@ -16,7 +16,7 @@
         <opensaml.version>5.0.0</opensaml.version>
         <joda-time.version>2.12.5</joda-time.version>
         <velocity.version>2.3</velocity.version>
-        <xmlsec.version>3.0.2</xmlsec.version>
+        <xmlsec.version>3.0.3</xmlsec.version>
         <cryptacular.version>1.2.6</cryptacular.version>
         <hazelcast.version>5.3.2</hazelcast.version>
     </properties>
