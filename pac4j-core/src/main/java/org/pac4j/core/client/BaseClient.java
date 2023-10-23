@@ -1,7 +1,5 @@
 package org.pac4j.core.client;
 
-import java.util.*;
-
 import org.pac4j.core.authorization.generator.AuthorizationGenerator;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
@@ -17,6 +15,8 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.*;
 
 /**
  * <p>This class is the default implementation of an authentication client (whatever the mechanism). It has the core concepts:</p>
@@ -68,6 +68,7 @@ public abstract class BaseClient extends InitializableObject implements Client {
      */
     protected Optional<Credentials> retrieveCredentials(final WebContext context, final SessionStore sessionStore) {
         try {
+            CommonHelper.assertNotNull("credentialsExtractor", this.credentialsExtractor);
             final var optCredentials = this.credentialsExtractor.extract(context, sessionStore);
             optCredentials.ifPresent(credentials -> {
                 final var t0 = System.currentTimeMillis();
