@@ -71,6 +71,7 @@ public final class JsonHelperTests implements TestsConstants {
         val object = new FacebookObject();
         object.setId(ID);
         object.setName(NAME);
-        assertEquals("\"{\\\"id\\\":\\\"id\\\",\\\"name\\\":\\\"name\\\"}\"", JsonHelper.toJSONString(JsonHelper.toJSONString(object)));
+        String objectstr = JsonHelper.toJSONString(object);
+        assertTrue(objectstr.equals("{\"id\":\"id\",\"name\":\"name\"}") || objectstr.equals("{\"name\":\"name\",\"id\":\"id\"}"));
     }
 }
