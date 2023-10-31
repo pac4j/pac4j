@@ -68,6 +68,7 @@ public abstract class BaseClient extends InitializableObject implements Client {
      */
     protected Optional<Credentials> retrieveCredentials(final WebContext context, final SessionStore sessionStore) {
         try {
+            init();
             CommonHelper.assertNotNull("credentialsExtractor", this.credentialsExtractor);
             final var optCredentials = this.credentialsExtractor.extract(context, sessionStore);
             optCredentials.ifPresent(credentials -> {
