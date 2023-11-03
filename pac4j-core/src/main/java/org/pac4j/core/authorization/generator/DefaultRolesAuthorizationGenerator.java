@@ -19,6 +19,11 @@ public class DefaultRolesAuthorizationGenerator implements AuthorizationGenerato
 
     /**
      * <p>Constructor for DefaultRolesAuthorizationGenerator.</p>
+     */
+    public DefaultRolesPermissionsAuthorizationGenerator() {}
+
+    /**
+     * <p>Constructor for DefaultRolesAuthorizationGenerator.</p>
      *
      * @param defaultRoles a {@link Collection} object
      */
@@ -46,5 +51,23 @@ public class DefaultRolesAuthorizationGenerator implements AuthorizationGenerato
             profile.addRoles(defaultRoles);
         }
         return Optional.of(profile);
+    }
+
+    /**
+     * Setter for defaultRoles
+     *
+     * @param defaultRolesStr a coma-separated string of role names
+     */
+    public void setDefaultRoles(final String defaultRolesStr) {
+        this.defaultRoles = Arrays.asList(defaultRolesStr.split(","));
+    }
+
+    /**
+     * Setter for setDefaultPermissions
+     *
+     * @param defaultPermissionsStr a coma-separated string of permissions
+     */
+    public void setDefaultPermissions(final String defaultPermissionsStr) {
+        this.defaultPermissions = Arrays.asList(defaultPermissionsStr.split(","));
     }
 }
