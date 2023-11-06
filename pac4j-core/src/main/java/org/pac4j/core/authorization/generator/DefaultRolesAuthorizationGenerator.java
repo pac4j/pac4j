@@ -20,7 +20,7 @@ public class DefaultRolesAuthorizationGenerator implements AuthorizationGenerato
     /**
      * <p>Constructor for DefaultRolesAuthorizationGenerator.</p>
      */
-    public DefaultRolesPermissionsAuthorizationGenerator() {}
+    public DefaultRolesAuthorizationGenerator() {}
 
     /**
      * <p>Constructor for DefaultRolesAuthorizationGenerator.</p>
