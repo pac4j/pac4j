@@ -15,7 +15,7 @@ import java.util.Optional;
  */
 public class DefaultRolesAuthorizationGenerator implements AuthorizationGenerator {
 
-    private final Collection<String> defaultRoles;
+    private Collection<String> defaultRoles;
 
     /**
      * <p>Constructor for DefaultRolesAuthorizationGenerator.</p>
