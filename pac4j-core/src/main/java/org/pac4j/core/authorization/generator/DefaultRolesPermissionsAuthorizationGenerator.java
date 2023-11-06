@@ -20,6 +20,11 @@ public class DefaultRolesPermissionsAuthorizationGenerator implements Authorizat
 
     private final Collection<String> defaultPermissions;
 
+    /**
+     * <p>Constructor for DefaultRolesAuthorizationGenerator.</p>
+     */
+    public DefaultRolesAuthorizationGenerator() {}
+
     public DefaultRolesPermissionsAuthorizationGenerator(final Collection<String> defaultRoles,
         final Collection<String> defaultPermissions) {
         this.defaultRoles = defaultRoles;
@@ -48,5 +53,23 @@ public class DefaultRolesPermissionsAuthorizationGenerator implements Authorizat
             profile.addPermissions(defaultPermissions);
         }
         return Optional.of(profile);
+    }
+
+    /**
+     * Setter for defaultRoles
+     *
+     * @param defaultRolesStr a coma-separated string of role names
+     */
+    public void setDefaultRoles(final String defaultRolesStr) {
+        this.defaultRoles = Arrays.asList(defaultRolesStr.split(","));
+    }
+
+    /**
+     * Setter for setDefaultPermissions
+     *
+     * @param defaultPermissionsStr a coma-separated string of permissions
+     */
+    public void setDefaultPermissions(final String defaultPermissionsStr) {
+        this.defaultPermissions = Arrays.asList(defaultPermissionsStr.split(","));
     }
 }
