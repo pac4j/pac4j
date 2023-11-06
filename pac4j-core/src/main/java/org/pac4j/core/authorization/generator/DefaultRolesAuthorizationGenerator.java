@@ -15,7 +15,12 @@ import java.util.Optional;
  */
 public class DefaultRolesAuthorizationGenerator implements AuthorizationGenerator {
 
-    private final Collection<String> defaultRoles;
+    private Collection<String> defaultRoles;
+
+    /**
+     * <p>Constructor for DefaultRolesAuthorizationGenerator.</p>
+     */
+    public DefaultRolesAuthorizationGenerator() {}
 
     /**
      * <p>Constructor for DefaultRolesAuthorizationGenerator.</p>
@@ -46,5 +51,14 @@ public class DefaultRolesAuthorizationGenerator implements AuthorizationGenerato
             profile.addRoles(defaultRoles);
         }
         return Optional.of(profile);
+    }
+
+    /**
+     * Setter for defaultRoles
+     *
+     * @param defaultRolesStr a coma-separated string of role names
+     */
+    public void setDefaultRoles(final String defaultRolesStr) {
+        this.defaultRoles = Arrays.asList(defaultRolesStr.split(","));
     }
 }
