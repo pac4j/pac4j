@@ -61,13 +61,4 @@ public class DefaultRolesAuthorizationGenerator implements AuthorizationGenerato
     public void setDefaultRoles(final String defaultRolesStr) {
         this.defaultRoles = Arrays.asList(defaultRolesStr.split(","));
     }
-
-    /**
-     * Setter for setDefaultPermissions
-     *
-     * @param defaultPermissionsStr a coma-separated string of permissions
-     */
-    public void setDefaultPermissions(final String defaultPermissionsStr) {
-        this.defaultPermissions = Arrays.asList(defaultPermissionsStr.split(","));
-    }
 }
