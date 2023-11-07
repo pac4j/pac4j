@@ -16,14 +16,14 @@ import java.util.Optional;
  */
 public class DefaultRolesPermissionsAuthorizationGenerator implements AuthorizationGenerator {
 
-    private final Collection<String> defaultRoles;
+    private Collection<String> defaultRoles;
 
-    private final Collection<String> defaultPermissions;
+    private Collection<String> defaultPermissions;
 
     /**
      * <p>Constructor for DefaultRolesAuthorizationGenerator.</p>
      */
-    public DefaultRolesAuthorizationGenerator() {}
+    public DefaultRolesPermissionsAuthorizationGenerator () {}
 
     public DefaultRolesPermissionsAuthorizationGenerator(final Collection<String> defaultRoles,
         final Collection<String> defaultPermissions) {
