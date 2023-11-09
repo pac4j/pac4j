@@ -30,7 +30,6 @@ import org.pac4j.oidc.exceptions.OidcException;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-@SuppressWarnings("unchecked")
 @Slf4j
 public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
 
@@ -46,7 +45,6 @@ public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
         this.client = client;
     }
 
-    /** {@inheritDoc} */
     @Override
     public Optional<RedirectionAction> getRedirectionAction(final CallContext ctx) {
         val webContext = ctx.webContext();
@@ -87,7 +85,7 @@ public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
         val configContext = new OidcConfigurationContext(webContext, client.getConfiguration());
 
         val authParams = new HashMap<String, String>();
-        authParams.put(OidcConfiguration.SCOPE, configContext.getScope());
+        authParams.put(OidcConfiguration.SCOPE, configContext.getScope().replace(",", " "));
         authParams.put(OidcConfiguration.RESPONSE_TYPE, configContext.getResponseType());
         authParams.put(OidcConfiguration.RESPONSE_MODE, configContext.getResponseMode());
         authParams.putAll(configContext.getCustomParams());
@@ -96,12 +94,6 @@ public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
         return new HashMap<>(authParams);
     }
 
-    /**
-     * <p>addStateAndNonceParameters.</p>
-     *
-     * @param ctx a {@link CallContext} object
-     * @param params a {@link Map} object
-     */
     protected void addStateAndNonceParameters(final CallContext ctx, final Map<String, String> params) {
         val webContext = ctx.webContext();
         val sessionStore = ctx.sessionStore();
@@ -122,20 +114,13 @@ public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
 
         var pkceMethod = client.getConfiguration().findPkceMethod();
         if (pkceMethod != null) {
-            val verfifier = new CodeVerifier(
-                client.getConfiguration().getCodeVerifierGenerator().generateValue(ctx));
-            sessionStore.set(webContext, client.getCodeVerifierSessionAttributeName(), verfifier);
-            params.put(OidcConfiguration.CODE_CHALLENGE, CodeChallenge.compute(pkceMethod, verfifier).getValue());
+            val verifier = new CodeVerifier(client.getConfiguration().getCodeVerifierGenerator().generateValue(ctx));
+            sessionStore.set(webContext, client.getCodeVerifierSessionAttributeName(), verifier);
+            params.put(OidcConfiguration.CODE_CHALLENGE, CodeChallenge.compute(pkceMethod, verifier).getValue());
             params.put(OidcConfiguration.CODE_CHALLENGE_METHOD, pkceMethod.getValue());
         }
     }
 
-    /**
-     * <p>buildAuthenticationRequestUrl.</p>
-     *
-     * @param params a {@link Map} object
-     * @return a {@link String} object
-     */
     protected String buildAuthenticationRequestUrl(final Map<String, String> params) {
         // Build authentication request query string
         String queryString;
