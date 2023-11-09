@@ -36,7 +36,7 @@ import static org.mockito.Mockito.when;
  */
 public final class OidcRedirectTests implements TestsConstants {
 
-    private OidcClient getClient() throws URISyntaxException {
+    private static OidcClient getClient() throws URISyntaxException {
 
         var providerMetadata = mock(OIDCProviderMetadata.class);
         when(providerMetadata.getAuthorizationEndpointURI()).thenReturn(new java.net.URI("http://localhost:8080/auth"));
