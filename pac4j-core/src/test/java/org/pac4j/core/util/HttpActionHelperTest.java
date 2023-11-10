@@ -8,8 +8,7 @@ import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.http.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * Tests {@link HttpActionHelper}.
@@ -52,29 +51,92 @@ public final class HttpActionHelperTest implements TestsConstants {
     }
 
     @Test
-    public void testFormPostContentAfterGet() {
-        HttpActionHelper.setUseModernHttpCodes(true);
+    public void testFormPostContentAction() {
         val action = HttpActionHelper.buildFormPostContentAction(MockWebContext.create(), VALUE);
         assertTrue(action instanceof OkAction);
+        assertFalse(action instanceof AutomaticFormPostAction);
         assertEquals(VALUE, ((OkAction) action).getContent());
     }
 
     @Test
-    public void testFormPostContentAfterPost() {
-        HttpActionHelper.setUseModernHttpCodes(true);
-        val action = HttpActionHelper
-            .buildFormPostContentAction(MockWebContext.create().setRequestMethod("POST"), VALUE);
-        assertTrue(action instanceof OkAction);
-        assertEquals(VALUE, ((OkAction) action).getContent());
+    public void testFormPostContentActionSamlRequest() {
+        val content = """
+            <!DOCTYPE html>
+            <html>
+                <head>
+                    <meta charset="utf-8" />
+                </head>
+                <body onload="document.forms[0].submit()">
+                    <noscript>
+                        <p>
+                            <strong>Note:</strong> Since your browser does not support JavaScript,
+                            you must press the Continue button once to proceed.
+                        </p>
+                    </noscript>
+                   \s
+            <form action="http&#x3a;&#x2f;&#x2f;local&#x3a;8080&#x2f;cas&#x2f;idp&#x2f;profile&#x2f;SAML2&#x2f;POST&#x2f;SSO" method="post">
+                        <div>
+            <input type="hidden" name="RelayState" value="rs"/>               \s
+            <input type="hidden" name="SAMLRequest" value="sr"/>               \s
+                           \s
+                        </div>
+                        <noscript>
+                            <div>
+                                <input type="submit" value="Continue"/>
+                            </div>
+                        </noscript>
+                    </form>
+                </body>
+            </html>
+            """;
+        val action = HttpActionHelper.buildFormPostContentAction(MockWebContext.create(), content);
+        assertTrue(action instanceof AutomaticFormPostAction);
+        val afpAction = (AutomaticFormPostAction) action;
+        assertEquals(content, afpAction.getContent());
+        assertEquals("http://local:8080/cas/idp/profile/SAML2/POST/SSO", afpAction.getUrl());
+        assertEquals(2, afpAction.getData().size());
+        assertEquals("sr", afpAction.getData().get("SAMLRequest"));
+        assertEquals("rs", afpAction.getData().get("RelayState"));
     }
 
     @Test
-    public void testFormPostContentAfterPostWithoutModernCode() {
-        HttpActionHelper.setUseModernHttpCodes(false);
-        val action = HttpActionHelper
-            .buildFormPostContentAction(MockWebContext.create().setRequestMethod("POST"), VALUE);
-        assertTrue(action instanceof OkAction);
-        assertEquals(VALUE, ((OkAction) action).getContent());
+    public void testFormPostContentActionSamlResponse() {
+        val content = """
+            <!DOCTYPE html>
+            <html>
+                <head>
+                    <meta charset="utf-8" />
+                </head>
+                <body onload="document.forms[0].submit()">
+                    <noscript>
+                        <p>
+                            <strong>Note:</strong> Since your browser does not support JavaScript,
+                            you must press the Continue button once to proceed.
+                        </p>
+                    </noscript>
+                   \s
+                    <form action="http&#x3a;&#x2f;&#x2f;localhost&#x3a;8081&#x2f;callback&#x3f;client_name&#x3d;SAML2Client" method="post">
+                        <div>
+                           \s
+                           \s
+            <input type="hidden" name="SAMLResponse" value="sr"/>               \s
+                        </div>
+                        <noscript>
+                            <div>
+                                <input type="submit" value="Continue"/>
+                            </div>
+                        </noscript>
+                    </form>
+                </body>
+            </html>
+            """;
+        val action = HttpActionHelper.buildFormPostContentAction(MockWebContext.create(), content);
+        assertTrue(action instanceof AutomaticFormPostAction);
+        val afpAction = (AutomaticFormPostAction) action;
+        assertEquals(content, afpAction.getContent());
+        assertEquals("http://localhost:8081/callback?client_name=SAML2Client", afpAction.getUrl());
+        assertEquals(1, afpAction.getData().size());
+        assertEquals("sr", afpAction.getData().get("SAMLResponse"));
     }
 
     @Test
