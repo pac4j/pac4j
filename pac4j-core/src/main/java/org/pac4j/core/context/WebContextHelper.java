@@ -17,12 +17,13 @@ import java.util.Locale;
  */
 public final class WebContextHelper implements HttpConstants {
 
-    private static ZoneId GMT = ZoneId.of("GMT");
+    private static final ZoneId GMT = ZoneId.of("GMT");
     /**
      * Date formats with time zone as specified in the HTTP RFC to use for formatting.
      * @see <a href="https://tools.ietf.org/html/rfc7231#section-7.1.1.1">Section 7.1.1.1 of RFC 7231</a>
      */
-    private static DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US).withZone(GMT);
+    private static final DateTimeFormatter DATE_FORMATTER =
+        DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US).withZone(GMT);
 
     /**
      * Get a specific cookie by its name.
@@ -185,9 +186,6 @@ public final class WebContextHelper implements HttpConstants {
      */
     public static boolean isQueryStringParameter(final WebContext context, final String name) {
         val queryString = context.getQueryString();
-        if (queryString.isPresent()) {
-            return context.getRequestParameter(name).isPresent() && queryString.get().contains(name + '=');
-        }
-        return false;
+        return queryString.filter(s -> context.getRequestParameter(name).isPresent() && s.contains(name + '=')).isPresent();
     }
 }
