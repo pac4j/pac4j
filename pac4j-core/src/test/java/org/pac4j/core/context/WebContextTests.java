@@ -17,6 +17,7 @@ public class WebContextTests {
         val attribute = Map.of("Hello", "World");
         context.setRequestAttribute("pac4j", attribute);
         assertTrue(context.getRequestAttribute("pac4j", Map.class).isPresent());
-        assertThrows(ClassCastException.class, () -> context.getRequestAttribute("pac4j", List.class).isPresent());
+        assertThrows(ClassCastException.class,
+            () -> context.getRequestAttribute("pac4j", List.class).isPresent());
     }
 }
