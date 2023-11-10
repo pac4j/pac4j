@@ -38,6 +38,18 @@ public interface WebContext {
     Optional getRequestAttribute(String name);
 
     /**
+     * Return a request attribute typed to a strong type.
+     * The attribute, if found, will be casted down to the given type.
+     * @param <T>   the type parameter
+     * @param name  the name of the attribute
+     * @param clazz the clazz
+     * @return the attribute
+     */
+    default <T> Optional<T> getRequestAttribute(final String name, final Class<T> clazz) {
+        return getRequestAttribute(name).map(clazz::cast);
+    }
+
+    /**
      * Save a request attribute.
      *
      * @param name  the name of the attribute

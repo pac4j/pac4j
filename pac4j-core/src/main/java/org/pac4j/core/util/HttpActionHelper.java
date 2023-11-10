@@ -1,7 +1,7 @@
 package org.pac4j.core.util;
 
 import lombok.val;
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.WebContextHelper;
