@@ -9,9 +9,7 @@ import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.context.session.SessionStore;
-import org.pac4j.core.exception.http.OkAction;
-import org.pac4j.core.exception.http.WithContentAction;
-import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.exception.http.AutomaticFormPostAction;
 import org.pac4j.saml.metadata.SAML2MetadataContactPerson;
 import org.pac4j.saml.metadata.SAML2MetadataUIInfo;
 import org.pac4j.saml.state.SAML2StateGenerator;
@@ -20,8 +18,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Collections;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * POST tests on the {@link SAML2Client}.
@@ -56,14 +53,14 @@ public final class PostSAML2ClientTests extends AbstractSAML2ClientTests {
         uiInfo.setLogos(Collections.singletonList(new SAML2MetadataUIInfo.SAML2MetadataUILogo("https://pac4j.org/logo.png", 16, 16)));
         client.getConfiguration().getMetadataUIInfos().add(uiInfo);
 
-        WithContentAction action = (OkAction) client.getRedirectionAction(
+        val action = (AutomaticFormPostAction) client.getRedirectionAction(
             new CallContext(MockWebContext.create(), new MockSessionStore())).get();
 
         val issuerJdk11 = "<saml2:Issuer "
                 + "xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\" "
                 + "Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:entity\" "
                 + "NameQualifier=\"http://localhost:8080/cb\">http://localhost:8080/cb</saml2:Issuer>";
-        val decodedAuthnRequest = getDecodedAuthnRequest(action.getContent());
+        val decodedAuthnRequest = getDecodedAuthnRequest(action);
         assertTrue(decodedAuthnRequest.contains(issuerJdk11));
     }
 
@@ -71,13 +68,13 @@ public final class PostSAML2ClientTests extends AbstractSAML2ClientTests {
     public void testStandardSpEntityIdForPostBinding() {
         val client = getClient();
         client.getConfiguration().setServiceProviderEntityId("http://localhost:8080/cb");
-        WithContentAction action = (OkAction) client.getRedirectionAction(
+        val action = (AutomaticFormPostAction) client.getRedirectionAction(
             new CallContext(MockWebContext.create(), new MockSessionStore())).get();
 
         val issuerJdk11 = "<saml2:Issuer "
             + "xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\" "
             + "Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:entity\">http://localhost:8080/cb</saml2:Issuer>";
-        val decodedAuthnRequest = getDecodedAuthnRequest(action.getContent());
+        val decodedAuthnRequest = getDecodedAuthnRequest(action);
         assertTrue(decodedAuthnRequest.contains(issuerJdk11));
     }
 
@@ -85,18 +82,18 @@ public final class PostSAML2ClientTests extends AbstractSAML2ClientTests {
     public void testForceAuthIsSetForPostBinding() {
         val client =  getClient();
         client.getConfiguration().setForceAuth(true);
-        WithContentAction action = (OkAction) client.getRedirectionAction(
+        val action = (AutomaticFormPostAction) client.getRedirectionAction(
             new CallContext(MockWebContext.create(), new MockSessionStore())).get();
-        assertTrue(getDecodedAuthnRequest(action.getContent()).contains("ForceAuthn=\"true\""));
+        assertTrue(getDecodedAuthnRequest(action).contains("ForceAuthn=\"true\""));
     }
 
     @Test
     public void testSetComparisonTypeWithPostBinding() {
         val client = getClient();
         client.getConfiguration().setComparisonType(AuthnContextComparisonTypeEnumeration.EXACT.toString());
-        WithContentAction action = (OkAction) client.getRedirectionAction(
+        val action = (AutomaticFormPostAction) client.getRedirectionAction(
             new CallContext(MockWebContext.create(), new MockSessionStore())).get();
-        assertTrue(getDecodedAuthnRequest(action.getContent()).contains("Comparison=\"exact\""));
+        assertTrue(getDecodedAuthnRequest(action).contains("Comparison=\"exact\""));
     }
 
     @Test
@@ -105,8 +102,14 @@ public final class PostSAML2ClientTests extends AbstractSAML2ClientTests {
         final WebContext context = MockWebContext.create();
         final SessionStore sessionStore = new MockSessionStore();
         sessionStore.set(context, SAML2StateGenerator.SAML_RELAY_STATE_ATTRIBUTE, "relayState");
-        WithContentAction action = (OkAction) client.getRedirectionAction(new CallContext(context, sessionStore)).get();
-        assertTrue(action.getContent().contains("<input type=\"hidden\" name=\"RelayState\" value=\"relayState\"/>"));
+        val action = client.getRedirectionAction(new CallContext(context, sessionStore)).get();
+        assertTrue(action instanceof AutomaticFormPostAction);
+        val afpAction = (AutomaticFormPostAction) action;
+        assertNotNull(afpAction.getContent());
+        assertEquals("https://idp.testshib.org/idp/profile/SAML2/POST/SSO", afpAction.getUrl());
+        assertEquals(2, afpAction.getData().size());
+        assertNotNull(afpAction.getData().get("SAMLRequest"));
+        assertEquals("relayState", afpAction.getData().get("RelayState"));
     }
 
     @Test
@@ -115,9 +118,9 @@ public final class PostSAML2ClientTests extends AbstractSAML2ClientTests {
         client.getConfiguration().setAuthnRequestBindingType(SAMLConstants.SAML2_POST_BINDING_URI);
         client.getConfiguration().setAuthnRequestSigned(true);
 
-        WithContentAction action = (OkAction) client.getRedirectionAction(
+        val action = (AutomaticFormPostAction) client.getRedirectionAction(
             new CallContext(MockWebContext.create(), new MockSessionStore())).get();
-        assertFalse(getDecodedAuthnRequest(action.getContent()).isBlank());
+        assertFalse(getDecodedAuthnRequest(action).isBlank());
     }
 
     @Override
@@ -130,10 +133,8 @@ public final class PostSAML2ClientTests extends AbstractSAML2ClientTests {
         return SAMLConstants.SAML2_POST_BINDING_URI;
     }
 
-    private static String getDecodedAuthnRequest(final String content) {
-        assertTrue(content.contains("<form"));
-        val samlRequestField = CommonHelper.substringBetween(content, "SAMLRequest", "</div");
-        val value = CommonHelper.substringBetween(samlRequestField, "value=\"", "\"");
+    private static String getDecodedAuthnRequest(final AutomaticFormPostAction action) {
+        val value = action.getData().get("SAMLRequest");
         return new String(Base64.getDecoder().decode(value), StandardCharsets.UTF_8);
     }
 }
