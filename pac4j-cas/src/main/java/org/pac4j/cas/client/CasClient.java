@@ -3,6 +3,7 @@ package org.pac4j.cas.client;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.val;
 import org.pac4j.cas.authorization.DefaultCasAuthorizationGenerator;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.credentials.authenticator.CasAuthenticator;
@@ -81,6 +82,9 @@ public class CasClient extends IndirectClient {
     /** {@inheritDoc} */
     @Override
     public void notifySessionRenewal(final CallContext ctx, final String oldSessionId) {
-        findSessionLogoutHandler().renewSession(ctx, oldSessionId);
+        val sessionLogoutHandler = findSessionLogoutHandler();
+        if (sessionLogoutHandler != null) {
+            findSessionLogoutHandler().renewSession(ctx, oldSessionId);
+        }
     }
 }

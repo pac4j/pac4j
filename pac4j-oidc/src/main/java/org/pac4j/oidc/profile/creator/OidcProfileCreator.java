@@ -119,8 +119,9 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
 
                 // keep the session ID if provided
                 val sid = (String) claimsSet.getClaim(Pac4jConstants.OIDC_CLAIM_SESSIONID);
-                if (isNotBlank(sid)) {
-                    client.findSessionLogoutHandler().recordSession(ctx, sid);
+                val sessionLogoutHandler = client.findSessionLogoutHandler();
+                if (isNotBlank(sid) && sessionLogoutHandler != null) {
+                    sessionLogoutHandler.recordSession(ctx, sid);
                 }
             }
 

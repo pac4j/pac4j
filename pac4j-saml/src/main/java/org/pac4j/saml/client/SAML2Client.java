@@ -252,7 +252,10 @@ public class SAML2Client extends IndirectClient {
     /** {@inheritDoc} */
     @Override
     public void notifySessionRenewal(final CallContext ctx, final String oldSessionId) {
-        findSessionLogoutHandler().renewSession(ctx, oldSessionId);
+        val sessionLogoutHandler = findSessionLogoutHandler();
+        if (sessionLogoutHandler != null) {
+            sessionLogoutHandler.renewSession(ctx, oldSessionId);
+        }
     }
 
     /**
