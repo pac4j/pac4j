@@ -67,7 +67,7 @@ public class OidcClient extends IndirectClient {
         setCredentialsExtractorIfUndefined(new OidcCredentialsExtractor(configuration, this));
         setAuthenticatorIfUndefined(new OidcAuthenticator(configuration, this));
         setProfileCreatorIfUndefined(new OidcProfileCreator(configuration, this));
-        setLogoutProcessorIfUndefined(new OidcLogoutProcessor(configuration));
+        setLogoutProcessorIfUndefined(new OidcLogoutProcessor(configuration, findSessionLogoutHandler()));
         setLogoutActionBuilderIfUndefined(new OidcLogoutActionBuilder(configuration));
     }
 
@@ -94,6 +94,6 @@ public class OidcClient extends IndirectClient {
     /** {@inheritDoc} */
     @Override
     public void notifySessionRenewal(final CallContext ctx, final String oldSessionId) {
-        configuration.findSessionLogoutHandler().renewSession(ctx, oldSessionId);
+        findSessionLogoutHandler().renewSession(ctx, oldSessionId);
     }
 }

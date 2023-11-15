@@ -14,6 +14,7 @@ import org.opensaml.xmlsec.encryption.support.DecryptionException;
 import org.opensaml.xmlsec.signature.Signature;
 import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
 import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.logout.handler.SessionLogoutHandler;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.credentials.SAML2AuthenticationCredentials;
@@ -57,8 +58,9 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
         final SAML2SignatureTrustEngineProvider engine,
         final Decrypter decrypter,
         final ReplayCacheProvider replayCache,
-        final SAML2Configuration saml2Configuration) {
-        super(engine, decrypter, saml2Configuration.getSessionLogoutHandler(), replayCache, saml2Configuration.getUriComparator());
+        final SAML2Configuration saml2Configuration,
+        final SessionLogoutHandler sessionLogoutHandler) {
+        super(engine, decrypter, sessionLogoutHandler, replayCache, saml2Configuration.getUriComparator());
         this.configuration = saml2Configuration;
     }
 
@@ -101,7 +103,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
         val samlNameId = determineNameID(context, attributes);
         val sessionIndex = getSessionIndex(subjectAssertion);
         val sloKey = computeSloKey(sessionIndex, samlNameId);
-        if (sloKey != null) {
+        if (sloKey != null && logoutHandler != null) {
             logoutHandler.recordSession(context.getCallContext(), sloKey);
         }
 

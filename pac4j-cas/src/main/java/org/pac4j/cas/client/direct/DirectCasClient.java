@@ -77,7 +77,8 @@ public class DirectCasClient extends DirectClient {
 
         setCredentialsExtractorIfUndefined(new ParameterExtractor(CasConfiguration.TICKET_PARAMETER, true, false));
         // only a fake one for the initialization as we will build a new one with the current url for each request
-        super.setAuthenticatorIfUndefined(new CasAuthenticator(configuration, getName(), urlResolver, callbackUrlResolver, "fake"));
+        super.setAuthenticatorIfUndefined(new CasAuthenticator(configuration, getName(), urlResolver, callbackUrlResolver,
+            "fake", findSessionLogoutHandler()));
         addAuthorizationGenerator(new DefaultCasAuthorizationGenerator());
     }
 
@@ -117,8 +118,8 @@ public class DirectCasClient extends DirectClient {
             // clean url from ticket parameter
             callbackUrl = substringBefore(callbackUrl, "?" + CasConfiguration.TICKET_PARAMETER + "=");
             callbackUrl = substringBefore(callbackUrl, "&" + CasConfiguration.TICKET_PARAMETER + "=");
-            val casAuthenticator =
-                new CasAuthenticator(configuration, getName(), urlResolver, callbackUrlResolver, callbackUrl);
+            val casAuthenticator = new CasAuthenticator(configuration, getName(), urlResolver, callbackUrlResolver,
+                callbackUrl, findSessionLogoutHandler());
             casAuthenticator.init();
             casAuthenticator.validate(ctx, credentials);
 

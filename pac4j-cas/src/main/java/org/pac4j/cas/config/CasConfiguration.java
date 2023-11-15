@@ -12,8 +12,6 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.http.url.DefaultUrlResolver;
 import org.pac4j.core.http.url.UrlResolver;
-import org.pac4j.core.logout.handler.DefaultSessionLogoutHandler;
-import org.pac4j.core.logout.handler.SessionLogoutHandler;
 import org.pac4j.core.util.CommonHelper;
 
 import javax.net.ssl.HostnameVerifier;
@@ -74,8 +72,6 @@ public class CasConfiguration extends BaseClientConfiguration {
     private boolean acceptAnyProxy = false;
 
     private ProxyList allowedProxyChains = new ProxyList();
-
-    private SessionLogoutHandler sessionLogoutHandler;
 
     private TicketValidator defaultTicketValidator;
 
@@ -148,8 +144,6 @@ public class CasConfiguration extends BaseClientConfiguration {
 
         initializeClientConfiguration();
 
-        initializeLogoutHandler();
-
         if (privateKeyPath != null) {
             final String algo;
             algo = Objects.requireNonNullElse(privateKeyAlgorithm, "RSA");
@@ -175,15 +169,6 @@ public class CasConfiguration extends BaseClientConfiguration {
                 restUrl += "/";
             }
             restUrl += "v1/tickets";
-        }
-    }
-
-    /**
-     * <p>initializeLogoutHandler.</p>
-     */
-    protected void initializeLogoutHandler() {
-        if (this.sessionLogoutHandler == null) {
-            this.sessionLogoutHandler = new DefaultSessionLogoutHandler();
         }
     }
 
@@ -372,17 +357,6 @@ public class CasConfiguration extends BaseClientConfiguration {
             proxyChains.add(proxyChain);
         }
         this.allowedProxyChains = new ProxyList(proxyChains);
-    }
-
-    /**
-     * <p>findSessionLogoutHandler.</p>
-     *
-     * @return a {@link SessionLogoutHandler} object
-     */
-    public SessionLogoutHandler findSessionLogoutHandler() {
-        init();
-
-        return sessionLogoutHandler;
     }
 
     /**

@@ -15,6 +15,7 @@ import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.http.callback.CallbackUrlResolver;
 import org.pac4j.core.http.url.UrlResolver;
+import org.pac4j.core.logout.handler.SessionLogoutHandler;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.definition.ProfileDefinitionAware;
@@ -43,6 +44,8 @@ public class CasAuthenticator extends ProfileDefinitionAware implements Authenti
 
     protected String callbackUrl;
 
+    protected SessionLogoutHandler sessionLogoutHandler;
+
     /**
      * <p>Constructor for CasAuthenticator.</p>
      *
@@ -51,14 +54,17 @@ public class CasAuthenticator extends ProfileDefinitionAware implements Authenti
      * @param urlResolver a {@link UrlResolver} object
      * @param callbackUrlResolver a {@link CallbackUrlResolver} object
      * @param callbackUrl a {@link String} object
+     * @param sessionLogoutHandler the sessionLogoutHandler
      */
     public CasAuthenticator(final CasConfiguration configuration, final String clientName, final UrlResolver urlResolver,
-                            final CallbackUrlResolver callbackUrlResolver, final String callbackUrl) {
+                            final CallbackUrlResolver callbackUrlResolver, final String callbackUrl,
+                            final SessionLogoutHandler sessionLogoutHandler) {
         this.configuration = configuration;
         this.clientName = clientName;
         this.urlResolver = urlResolver;
         this.callbackUrlResolver = callbackUrlResolver;
         this.callbackUrl = callbackUrl;
+        this.sessionLogoutHandler = sessionLogoutHandler;
     }
 
     /** {@inheritDoc} */
@@ -104,7 +110,9 @@ public class CasAuthenticator extends ProfileDefinitionAware implements Authenti
     }
 
     protected void recordSession(final CallContext ctx, final String ticket) {
-        configuration.findSessionLogoutHandler().recordSession(ctx, ticket);
+        if (sessionLogoutHandler != null) {
+            sessionLogoutHandler.recordSession(ctx, ticket);
+        }
     }
 
     protected void createUserProfileAttributes(final Assertion assertion, final AttributePrincipal principal,

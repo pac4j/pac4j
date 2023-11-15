@@ -82,15 +82,21 @@ public class DefaultLogoutLogic extends AbstractExceptionAwareLogic implements L
             if (localLogout || profiles.size() > 1) {
                 LOGGER.debug("Performing application logout");
                 manager.removeProfiles();
-                if (destroySession) {
-                    if (sessionStore != null) {
+                String sessionId = null;
+                if (sessionStore != null) {
+                    sessionId = sessionStore.getSessionId(webContext, false).orElse(null);
+                    if (destroySession) {
                         val removed = sessionStore.destroySession(webContext);
                         if (!removed) {
                             LOGGER.error("Unable to destroy the web session. The session store may not support this feature");
                         }
-                    } else {
-                        LOGGER.error("No session store available for this web context");
                     }
+                } else {
+                    LOGGER.error("No session store available for this web context");
+                }
+                val sessionLogoutHandler = config.getSessionLogoutHandler();
+                if (sessionLogoutHandler != null && sessionId != null) {
+                    sessionLogoutHandler.cleanRecord(sessionId);
                 }
             }
 

@@ -11,6 +11,7 @@ import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.NoContentAction;
 import org.pac4j.core.exception.http.OkAction;
 import org.pac4j.core.logout.LogoutType;
+import org.pac4j.core.logout.handler.SessionLogoutHandler;
 import org.pac4j.core.logout.processor.LogoutProcessor;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.HttpActionHelper;
@@ -30,14 +31,18 @@ public class CasLogoutProcessor implements LogoutProcessor {
 
     protected CasConfiguration configuration;
 
+    protected SessionLogoutHandler sessionLogoutHandler;
+
     /**
      * <p>Constructor for CasLogoutProcessor.</p>
      *
      * @param configuration a {@link CasConfiguration} object
+     * @param sessionLogoutHandler a {@link SessionLogoutHandler} object
      */
-    public CasLogoutProcessor(final CasConfiguration configuration) {
+    public CasLogoutProcessor(final CasConfiguration configuration, final SessionLogoutHandler sessionLogoutHandler) {
         CommonHelper.assertNotNull("configuration", configuration);
         this.configuration = configuration;
+        this.sessionLogoutHandler = sessionLogoutHandler;
     }
 
     /** {@inheritDoc} */
@@ -47,17 +52,15 @@ public class CasLogoutProcessor implements LogoutProcessor {
         val credentials = (SessionKeyCredentials) logoutCredentials;
         val sessionKey = credentials.getSessionKey();
 
-        val logoutHandler = configuration.findSessionLogoutHandler();
-
         if (credentials.getLogoutType() == LogoutType.BACK) {
-            if (isNotBlank(sessionKey)) {
-                logoutHandler.destroySession(ctx, sessionKey);
+            if (isNotBlank(sessionKey) && sessionLogoutHandler != null) {
+                sessionLogoutHandler.destroySession(ctx, sessionKey);
             }
             LOGGER.debug("back logout: no content returned");
             return NoContentAction.INSTANCE;
         } else {
-            if (isNotBlank(sessionKey)) {
-                logoutHandler.destroySession(ctx, sessionKey);
+            if (isNotBlank(sessionKey) && sessionLogoutHandler != null) {
+                sessionLogoutHandler.destroySession(ctx, sessionKey);
             }
             val action = getFinalActionForFrontChannelLogout(ctx.webContext());
             LOGGER.debug("front logout, returning: {}", action);

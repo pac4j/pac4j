@@ -1,17 +1,19 @@
 package org.pac4j.core.config;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.With;
+import lombok.*;
 import lombok.experimental.Accessors;
 import org.pac4j.core.authorization.authorizer.Authorizer;
+import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.context.WebContextFactory;
 import org.pac4j.core.context.session.SessionStoreFactory;
-import org.pac4j.core.engine.*;
+import org.pac4j.core.engine.CallbackLogic;
+import org.pac4j.core.engine.LogoutLogic;
+import org.pac4j.core.engine.SecurityLogic;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
+import org.pac4j.core.logout.handler.DefaultSessionLogoutHandler;
+import org.pac4j.core.logout.handler.SessionLogoutHandler;
 import org.pac4j.core.matching.matcher.Matcher;
 import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.CommonHelper;
@@ -33,6 +35,8 @@ import java.util.Map;
 @Accessors(chain = true)
 public class Config {
 
+    private static final SessionLogoutHandler DEFAULT_SESSION_LOGOUT_HANDLER = new DefaultSessionLogoutHandler();
+
     private Clients clients = new Clients();
 
     private Map<String, Authorizer> authorizers = new HashMap<>();
@@ -53,6 +57,8 @@ public class Config {
 
     private HttpActionAdapter httpActionAdapter;
 
+    private SessionLogoutHandler sessionLogoutHandler = DEFAULT_SESSION_LOGOUT_HANDLER;
+
     /**
      * <p>Constructor for Config.</p>
      */
@@ -65,6 +71,15 @@ public class Config {
      */
     public Config(final Client client) {
         this.clients = new Clients(client);
+        setConfigForClients();
+    }
+
+    protected void setConfigForClients() {
+        if (this.clients != null) {
+            for (val client : this.clients.getClients()) {
+                ((BaseClient) client).setConfig(this);
+            }
+        }
     }
 
     /**
@@ -74,6 +89,7 @@ public class Config {
      */
     public Config(final Clients clients) {
         this.clients = clients;
+        setConfigForClients();
     }
 
     /**
@@ -83,6 +99,7 @@ public class Config {
      */
     public Config(final List<Client> clients) {
         this.clients = new Clients(clients);
+        setConfigForClients();
     }
 
     /**
@@ -92,6 +109,7 @@ public class Config {
      */
     public Config(final Client... clients) {
         this.clients = new Clients(clients);
+        setConfigForClients();
     }
 
     /**
@@ -102,6 +120,7 @@ public class Config {
      */
     public Config(final String callbackUrl, final Client client) {
         this.clients = new Clients(callbackUrl, client);
+        setConfigForClients();
     }
 
     /**
@@ -112,6 +131,7 @@ public class Config {
      */
     public Config(final String callbackUrl, final Client... clients) {
         this.clients = new Clients(callbackUrl, clients);
+        setConfigForClients();
     }
 
     /**
@@ -122,6 +142,7 @@ public class Config {
      */
     public Config(final String callbackUrl, final List<Client> clients) {
         this.clients = new Clients(callbackUrl, clients);
+        setConfigForClients();
     }
 
     /**
@@ -141,6 +162,7 @@ public class Config {
      */
     public Config(final Clients clients, final Map<String, Authorizer> authorizers) {
         this.clients = clients;
+        setConfigForClients();
         setAuthorizers(authorizers);
     }
 
@@ -152,6 +174,7 @@ public class Config {
      */
     public Config(final Client client, final Map<String, Authorizer> authorizers) {
         this.clients = new Clients(client);
+        setConfigForClients();
         setAuthorizers(authorizers);
     }
 
@@ -163,6 +186,7 @@ public class Config {
      */
     public Config(final Map<String, Authorizer> authorizers, final Client... clients) {
         this.clients = new Clients(clients);
+        setConfigForClients();
         setAuthorizers(authorizers);
     }
 
@@ -175,6 +199,7 @@ public class Config {
      */
     public Config(final String callbackUrl, final Map<String, Authorizer> authorizers, final Client... clients) {
         this.clients = new Clients(callbackUrl, clients);
+        setConfigForClients();
         setAuthorizers(authorizers);
     }
 
@@ -187,6 +212,7 @@ public class Config {
      */
     public Config(final String callbackUrl, final Client client, final Map<String, Authorizer> authorizers) {
         this.clients = new Clients(callbackUrl, client);
+        setConfigForClients();
         setAuthorizers(authorizers);
     }
 
@@ -198,6 +224,7 @@ public class Config {
      */
     public Config setClients(final Clients clients) {
         this.clients = clients;
+        setConfigForClients();
         return this;
     }
 
@@ -209,6 +236,7 @@ public class Config {
      */
     public Config addClient(final Client client) {
         this.clients.addClient(client);
+        setConfigForClients();
         return this;
     }
 

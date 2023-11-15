@@ -164,7 +164,7 @@ public class SAML2Client extends IndirectClient {
      */
     protected void initSAMLLogoutResponseValidator() {
         this.logoutValidator = new SAML2LogoutValidator(this.signatureTrustEngineProvider,
-            this.decrypter, this.configuration.getSessionLogoutHandler(),
+            this.decrypter, findSessionLogoutHandler(),
             this.replayCache, this.configuration.getUriComparator());
         this.logoutValidator.setAcceptedSkew(this.configuration.getAcceptedSkew());
         this.logoutValidator.setPartialLogoutTreatedAsSuccess(this.configuration.isPartialLogoutTreatedAsSuccess());
@@ -179,7 +179,8 @@ public class SAML2Client extends IndirectClient {
                 this.signatureTrustEngineProvider,
                 this.decrypter,
                 this.replayCache,
-                this.configuration);
+                this.configuration,
+            findSessionLogoutHandler());
         this.authnResponseValidator.setAcceptedSkew(this.configuration.getAcceptedSkew());
     }
 
@@ -251,7 +252,7 @@ public class SAML2Client extends IndirectClient {
     /** {@inheritDoc} */
     @Override
     public void notifySessionRenewal(final CallContext ctx, final String oldSessionId) {
-        configuration.findSessionLogoutHandler().renewSession(ctx, oldSessionId);
+        findSessionLogoutHandler().renewSession(ctx, oldSessionId);
     }
 
     /**

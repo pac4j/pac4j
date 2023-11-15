@@ -2,6 +2,8 @@ package org.pac4j.core.logout.handler;
 
 import org.pac4j.core.context.CallContext;
 
+import java.util.Optional;
+
 /**
  * This interface defines how to handle logout requests on client side.
  * For the CAS support, the key is the service ticket.
@@ -19,9 +21,7 @@ public interface SessionLogoutHandler {
      * @param ctx the context
      * @param key the key
      */
-    default void recordSession(CallContext ctx, String key) {
-        // do nothing by default
-    }
+    void recordSession(CallContext ctx, String key);
 
     /**
      * Destroys the current web session for the given key for a front or back channel logout.
@@ -29,9 +29,7 @@ public interface SessionLogoutHandler {
      * @param ctx the context
      * @param key the key
      */
-    default void destroySession(CallContext ctx, String key) {
-        // do nothing by default
-    }
+    void destroySession(CallContext ctx, String key);
 
     /**
      * Renew the web session.
@@ -39,7 +37,13 @@ public interface SessionLogoutHandler {
      * @param ctx the context
      * @param oldSessionId the old session identifier
      */
-    default void renewSession(CallContext ctx, String oldSessionId) {
-        // do nothing by default
-    }
+    void renewSession(CallContext ctx, String oldSessionId);
+
+    /**
+     * Clean a recorded sessionId.
+     *
+     * @param sessionId the sessionId
+     * @return the associated key.
+     */
+    Optional<String> cleanRecord(String sessionId);
 }

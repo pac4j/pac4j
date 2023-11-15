@@ -6,6 +6,7 @@ import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.SessionKeyCredentials;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.OkAction;
+import org.pac4j.core.logout.handler.SessionLogoutHandler;
 import org.pac4j.core.logout.processor.LogoutProcessor;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
@@ -21,16 +22,19 @@ import static org.pac4j.core.util.CommonHelper.assertTrue;
  */
 public class OidcLogoutProcessor implements LogoutProcessor {
 
-    protected OidcConfiguration configuration;
+    protected final OidcConfiguration configuration;
+
+    protected final SessionLogoutHandler sessionLogoutHandler;
 
     /**
      * <p>Constructor for OidcLogoutProcessor.</p>
      *
      * @param configuration a {@link OidcConfiguration} object
      */
-    public OidcLogoutProcessor(final OidcConfiguration configuration) {
+    public OidcLogoutProcessor(final OidcConfiguration configuration, final SessionLogoutHandler sessionLogoutHandler) {
         CommonHelper.assertNotNull("configuration", configuration);
         this.configuration = configuration;
+        this.sessionLogoutHandler = sessionLogoutHandler;
     }
 
     /** {@inheritDoc} */
@@ -40,8 +44,9 @@ public class OidcLogoutProcessor implements LogoutProcessor {
         val credentials = (SessionKeyCredentials) logoutCredentials;
         val sessionKey = credentials.getSessionKey();
 
-        val sessionLogoutHandler = configuration.findSessionLogoutHandler();
-        sessionLogoutHandler.destroySession(ctx, sessionKey);
+        if (sessionLogoutHandler != null) {
+            sessionLogoutHandler.destroySession(ctx, sessionKey);
+        }
 
         val webContext = ctx.webContext();
         webContext.setResponseHeader("Cache-Control", "no-cache, no-store");

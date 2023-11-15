@@ -13,6 +13,7 @@ import org.pac4j.core.store.GuavaStore;
 import org.pac4j.core.store.Store;
 import org.pac4j.core.util.CommonHelper;
 
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -103,7 +104,7 @@ public class DefaultSessionLogoutHandler implements SessionLogoutHandler {
                 destroy(webContext, sessionStore, ctx.profileManagerFactory(), "front");
                 return;
             } else {
-                LOGGER.debug("Unknown (new) web session: cannot perform front channel logout");
+                LOGGER.debug("Unknown/new web session: cannot perform front channel logout");
             }
         } else {
             LOGGER.debug("No web session: cannot perform front channel logout");
@@ -111,7 +112,7 @@ public class DefaultSessionLogoutHandler implements SessionLogoutHandler {
 
         LOGGER.debug("TrackableSession: {} for key: {}", optTrackableSession, key);
         if (optTrackableSession.isEmpty()) {
-            LOGGER.warn("No trackable session: cannot perform back channel logout");
+            LOGGER.debug("No trackable session: cannot perform back channel logout");
         } else {
 
             val optNewSessionStore = sessionStore
@@ -158,13 +159,21 @@ public class DefaultSessionLogoutHandler implements SessionLogoutHandler {
     /** {@inheritDoc} */
     @Override
     public void renewSession(final CallContext ctx, final String oldSessionId) {
-        val optKey = store.get(oldSessionId);
-        LOGGER.debug("oldSessionId: {} -> key: {}", oldSessionId, optKey);
+        val optKey = cleanRecord(oldSessionId);
         if (optKey.isPresent()) {
-            val key = (String) optKey.get();
-            store.remove(key);
-            store.remove(oldSessionId);
-            recordSession(ctx, key);
+            recordSession(ctx, optKey.get());
         }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Optional<String> cleanRecord(final String sessionId) {
+        val key = (String) store.get(sessionId).orElse(null);
+        store.remove(sessionId);
+        LOGGER.debug("cleaning sessionId: {} -> key: {}", sessionId, key);
+        if (key != null) {
+            store.remove(key);
+        }
+        return Optional.ofNullable(key);
     }
 }

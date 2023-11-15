@@ -13,8 +13,6 @@ import lombok.*;
 import lombok.experimental.Accessors;
 import org.pac4j.core.client.config.BaseClientConfiguration;
 import org.pac4j.core.context.HttpConstants;
-import org.pac4j.core.logout.handler.DefaultSessionLogoutHandler;
-import org.pac4j.core.logout.handler.SessionLogoutHandler;
 import org.pac4j.core.util.generator.RandomValueGenerator;
 import org.pac4j.core.util.generator.ValueGenerator;
 import org.pac4j.oidc.exceptions.OidcConfigurationException;
@@ -159,8 +157,6 @@ public class OidcConfiguration extends BaseClientConfiguration {
     /** time period advance (in seconds) for considering an access token expired */
     private int tokenExpirationAdvance = DEFAULT_TOKEN_EXPIRATION_ADVANCE;
 
-    private SessionLogoutHandler sessionLogoutHandler;
-
     private boolean allowUnsignedIdTokens;
 
     /** If enabled, try to process the access token as a JWT and include its claims in the profile.
@@ -211,10 +207,6 @@ public class OidcConfiguration extends BaseClientConfiguration {
         if (this.getOpMetadataResolver() == null) {
             assertNotBlank("discoveryURI", getDiscoveryURI());
             this.opMetadataResolver = new OidcOpMetadataResolver(this);
-        }
-
-        if (this.sessionLogoutHandler == null) {
-            this.sessionLogoutHandler = new DefaultSessionLogoutHandler();
         }
     }
 
@@ -400,17 +392,6 @@ public class OidcConfiguration extends BaseClientConfiguration {
     public void setValueRetriever(ValueRetriever valueRetriever) {
         assertNotNull("valueRetriever", valueRetriever);
         this.valueRetriever = valueRetriever;
-    }
-
-    /**
-     * <p>findSessionLogoutHandler.</p>
-     *
-     * @return a {@link SessionLogoutHandler} object
-     */
-    public SessionLogoutHandler findSessionLogoutHandler() {
-        init();
-
-        return sessionLogoutHandler;
     }
 
     /**

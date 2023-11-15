@@ -109,18 +109,7 @@ String proxyTicket = casProxyProfile.getProxyTicketFor(anotherCasServiceUrl);
 
 To correlate proxy information, the `CasProxyReceptor` uses an internal [`Store`](../store.html) that you can change via the `setStore` method (by default, Guava is used).
 
-
-### d) Logout configuration
-
-To handle CAS logout requests, a [`DefaultLogoutHandler`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/logout/handler/DefaultLogoutHandler.java) is automatically created. Unless you specify your own implementation of the [`LogoutHandler`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/logout/handler/LogoutHandler.java) interface.
-
-The `DefaultLogoutHandler`:
-
-- relies on the capabilities of the `SessionStore` (`destroySession`, `getTrackableSession` and `buildFromTrackableSession`  methods)
-- stores data in a [`Store`](../store.html) that you can change via the `setStore` method (by default, Guava is used).
-
-
-### e) In a stateless way
+### d) In a stateless way
 
 In fact, you can even login with the CAS login page using a **direct** [`DirectCasClient`](https://github.com/pac4j/pac4j/blob/master/pac4j-cas/src/main/java/org/pac4j/cas/client/direct/DirectCasClient.java). No callback URL will be involved: the requested URL will be called back after the CAS login. No session will be created and thus no logout will be necessary.
 

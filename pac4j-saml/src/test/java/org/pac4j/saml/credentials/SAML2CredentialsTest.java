@@ -10,7 +10,8 @@ import org.opensaml.saml.common.messaging.context.SAMLSubjectNameIdentifierConte
 import org.opensaml.saml.saml2.core.*;
 import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.opensaml.saml.saml2.metadata.Endpoint;
-import org.pac4j.core.logout.handler.SessionLogoutHandler;
+import org.pac4j.core.context.CallContext;
+import org.pac4j.core.logout.handler.DefaultSessionLogoutHandler;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.context.SAML2ConfigurationContext;
@@ -70,7 +71,6 @@ public class SAML2CredentialsTest {
         when(mockSAMLSubjectNameIdentifierContext.getSAML2SubjectNameID()).thenReturn(mock(NameID.class));
 
         saml2Configuration = new SAML2Configuration();
-        saml2Configuration.setSessionLogoutHandler(mock(SessionLogoutHandler.class));
 
         mockSaml2MessageContext = mock(SAML2MessageContext.class);
         when(mockSaml2MessageContext.getMessageContext()).thenReturn(mockMessageContext);
@@ -79,9 +79,10 @@ public class SAML2CredentialsTest {
         when(mockSaml2MessageContext.getSaml2Configuration()).thenReturn(mock(SAML2Configuration.class));
         when(mockSaml2MessageContext.getSAMLSubjectNameIdentifierContext()).thenReturn(mockSAMLSubjectNameIdentifierContext);
         when(mockSaml2MessageContext.getBaseID()).thenReturn(mock(BaseID.class));
+        when(mockSaml2MessageContext.getCallContext()).thenReturn(mock(CallContext.class));
 
         validator = new SAML2AuthnResponseValidator(mock(SAML2SignatureTrustEngineProvider.class),
-            mock(Decrypter.class), null, saml2Configuration);
+            mock(Decrypter.class), null, saml2Configuration, new DefaultSessionLogoutHandler());
     }
 
     @Test

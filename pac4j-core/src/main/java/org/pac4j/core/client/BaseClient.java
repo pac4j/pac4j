@@ -6,12 +6,14 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 import lombok.val;
 import org.pac4j.core.authorization.generator.AuthorizationGenerator;
+import org.pac4j.core.config.Config;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.exception.CredentialsException;
+import org.pac4j.core.logout.handler.SessionLogoutHandler;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.core.profile.creator.ProfileCreator;
@@ -56,6 +58,8 @@ public abstract class BaseClient extends InitializableObject implements Client {
     protected Boolean saveProfileInSession;
 
     private static boolean warned;
+
+    private Config config;
 
     /** {@inheritDoc} */
     @Override
@@ -293,5 +297,12 @@ public abstract class BaseClient extends InitializableObject implements Client {
      */
     public Boolean getSaveProfileInSession(final WebContext context, final UserProfile profile) {
         return saveProfileInSession;
+    }
+
+    public SessionLogoutHandler findSessionLogoutHandler() {
+        if (getConfig() != null) {
+            return getConfig().getSessionLogoutHandler();
+        }
+        return null;
     }
 }

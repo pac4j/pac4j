@@ -5,11 +5,7 @@ import lombok.Setter;
 import lombok.val;
 import net.shibboleth.shared.net.URIComparator;
 import org.opensaml.saml.common.SAMLObject;
-import org.opensaml.saml.saml2.core.LogoutRequest;
-import org.opensaml.saml.saml2.core.LogoutResponse;
-import org.opensaml.saml.saml2.core.Status;
-import org.opensaml.saml.saml2.core.StatusCode;
-import org.opensaml.saml.saml2.core.StatusResponseType;
+import org.opensaml.saml.saml2.core.*;
 import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
 import org.pac4j.core.credentials.Credentials;
@@ -129,7 +125,7 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
         }
 
         val sloKey = computeSloKey(sessionIndex, samlNameId);
-        if (sloKey != null) {
+        if (sloKey != null && logoutHandler != null) {
             logoutHandler.destroySession(context.getCallContext(), sloKey);
         }
     }

@@ -64,8 +64,9 @@ public class CasClient extends IndirectClient {
 
         setRedirectionActionBuilderIfUndefined(new CasRedirectionActionBuilder(configuration, this));
         setCredentialsExtractorIfUndefined(new CasCredentialsExtractor(configuration));
-        setAuthenticatorIfUndefined(new CasAuthenticator(configuration, getName(),getUrlResolver(), getCallbackUrlResolver(), callbackUrl));
-        setLogoutProcessorIfUndefined(new CasLogoutProcessor(configuration));
+        setAuthenticatorIfUndefined(new CasAuthenticator(configuration, getName(),getUrlResolver(), getCallbackUrlResolver(),
+            callbackUrl, findSessionLogoutHandler()));
+        setLogoutProcessorIfUndefined(new CasLogoutProcessor(configuration, findSessionLogoutHandler()));
         setLogoutActionBuilderIfUndefined(new CasLogoutActionBuilder(configuration.computeFinalPrefixUrl(null) + "logout",
             configuration.getPostLogoutUrlParameter()));
         addAuthorizationGenerator(new DefaultCasAuthorizationGenerator());
@@ -80,6 +81,6 @@ public class CasClient extends IndirectClient {
     /** {@inheritDoc} */
     @Override
     public void notifySessionRenewal(final CallContext ctx, final String oldSessionId) {
-        configuration.findSessionLogoutHandler().renewSession(ctx, oldSessionId);
+        findSessionLogoutHandler().renewSession(ctx, oldSessionId);
     }
 }

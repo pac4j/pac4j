@@ -33,6 +33,7 @@ title: Release notes&#58;
 - `Credentials` are now able to specify and carry their source, typically set by the credential extraction process.
 - It is now possible to specify extraction modes for `FormExtractor`
 - An `AutomaticFormPostAction` is inferred for SAML requests/responses
+- The `SessionLogoutHandler` is now part of the `Config` (and may be set to `null`)
 
 ---
 
