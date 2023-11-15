@@ -64,4 +64,5 @@ You can define at the `Config` level a few components that will be used by the s
 - `config.setSecurityLogic(x)` to set a specific `SecurityLogic`
 - `config.setCallbackLogic(x)` to set a specific `CallbackLogic`
 - `config.setLogoutLogic(x)` to set a specific `LogoutLogic`
-- `config.setWebContextFactory(x)` to set a specific [`WebContextFactory`](web-context.html).
+- `config.setWebContextFactory(x)` to set a specific [`WebContextFactory`](web-context.html)
+- `config.setSessionLogoutHandler` to set a specific `SessionLogoutHandler` (instead of the `DefaultSessionLogoutHandler` by default).
