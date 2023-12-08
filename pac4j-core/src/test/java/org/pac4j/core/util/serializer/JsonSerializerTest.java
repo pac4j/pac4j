@@ -6,6 +6,8 @@ import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 
+import java.util.LinkedHashMap;
+
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -18,7 +20,7 @@ public class JsonSerializerTest implements TestsConstants {
 
     @Test
     public void testString() {
-        UserProfile profile = new CommonProfile();
+        val profile = new CommonProfile();
         profile.setId(ID);
         profile.addAttribute(KEY, VALUE);
 
@@ -33,7 +35,7 @@ public class JsonSerializerTest implements TestsConstants {
 
     @Test
     public void testBytes() {
-        UserProfile profile = new CommonProfile();
+        val profile = new CommonProfile();
         profile.setId(ID);
         profile.addAttribute(KEY, VALUE);
 
@@ -44,5 +46,41 @@ public class JsonSerializerTest implements TestsConstants {
         assertEquals(decoded.getId(), profile.getId());
         assertEquals(1, profile.getAttributes().size());
         assertEquals(VALUE, profile.getAttribute(KEY));
+    }
+
+    @Test
+    public void testMultipleProfilesString() {
+        val profile = new CommonProfile();
+        profile.setId(ID);
+        profile.addAttribute(KEY, VALUE);
+        val profiles = new LinkedHashMap<String, UserProfile>();
+        profiles.put("myprofile", profile);
+
+        val serializer = new JsonSerializer();
+        val encoded = serializer.serializeToString(profiles);
+        val decoded = serializer.deserializeFromString(encoded);
+
+        assertEquals(LinkedHashMap.class, decoded.getClass());
+        val profiles2 = (LinkedHashMap<String, UserProfile>) decoded;
+        assertEquals(1, profiles2.size());
+        assertEquals(profile, profiles2.get("myprofile"));
+    }
+
+    @Test
+    public void testMultipleProfilesBytes() {
+        val profile = new CommonProfile();
+        profile.setId(ID);
+        profile.addAttribute(KEY, VALUE);
+        val profiles = new LinkedHashMap<String, UserProfile>();
+        profiles.put("myprofile", profile);
+
+        val serializer = new JsonSerializer();
+        val encoded = serializer.serializeToBytes(profiles);
+        val decoded = serializer.deserializeFromBytes(encoded);
+
+        assertEquals(LinkedHashMap.class, decoded.getClass());
+        val profiles2 = (LinkedHashMap<String, UserProfile>) decoded;
+        assertEquals(1, profiles2.size());
+        assertEquals(profile, profiles2.get("myprofile"));
     }
 }

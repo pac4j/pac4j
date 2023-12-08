@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import static org.pac4j.core.util.CommonHelper.assertNotNull;
@@ -17,12 +19,15 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
 @Slf4j
 public class JsonSerializer extends AbstractSerializer {
 
+    @Setter
+    @Getter
     private ObjectMapper objectMapper;
 
     private Class<? extends Object> clazz;
 
     public JsonSerializer() {
         this(Object.class);
+        objectMapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
     }
 
     /**
@@ -59,24 +64,5 @@ public class JsonSerializer extends AbstractSerializer {
             LOGGER.error("Cannot decode string", e);
             return null;
         }
-    }
-
-    /**
-     * <p>Getter for the field <code>objectMapper</code>.</p>
-     *
-     * @return a {@link ObjectMapper} object
-     */
-    public ObjectMapper getObjectMapper() {
-        return objectMapper;
-    }
-
-    /**
-     * <p>Setter for the field <code>objectMapper</code>.</p>
-     *
-     * @param objectMapper a {@link ObjectMapper} object
-     */
-    public void setObjectMapper(final ObjectMapper objectMapper) {
-        assertNotNull("objectMapper", objectMapper);
-        this.objectMapper = objectMapper;
     }
 }
