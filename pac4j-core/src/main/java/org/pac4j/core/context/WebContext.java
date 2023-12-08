@@ -1,6 +1,7 @@
 package org.pac4j.core.context;
 
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.util.CommonHelper;
 
 import java.util.Collection;
 import java.util.Map;
@@ -200,5 +201,7 @@ public interface WebContext {
      *
      * @return the query string
      */
-    Optional<String> getQueryString();
+    default Optional<String> getQueryString() {
+        return Optional.ofNullable(CommonHelper.substringAfter(getFullRequestURL(), "?"));
+    }
 }
