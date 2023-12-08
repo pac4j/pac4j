@@ -21,6 +21,10 @@ public class JsonSerializer extends AbstractSerializer {
 
     private Class<? extends Object> clazz;
 
+    public JsonSerializer() {
+        this(Object.class);
+    }
+
     /**
      * <p>Constructor for JsonSerializer.</p>
      *
