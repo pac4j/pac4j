@@ -5,6 +5,9 @@ title: Release notes&#58;
 
 ### JDK17:
 
+**v6.0.1**:
+- Fix the flatten OAuth profile attributes parsing (`CasOAuthWrapperClient`)
+
 **v6.0.0**:
 - Based on JDK17
 - Removed the deprecated `pac4j-saml`, `pac4j-cas` and `pac4j-springboot` modules
@@ -38,6 +41,9 @@ title: Release notes&#58;
 ---
 
 ### JDK11:
+
+**v5.7.3**:
+- Fix the flatten OAuth profile attributes parsing (`CasOAuthWrapperClient`)
 
 **v5.7.2**:
 - Allow to disable user info endpoint calls (OIDC)
