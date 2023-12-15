@@ -3,6 +3,9 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v5.7.3**:
+- Fix the flatten OAuth profile attributes parsing (`CasOAuthWrapperClient`)
+
 **v5.7.2**:
 - Allow to disable user info endpoint calls (OIDC)
 - Handle non-existing ID tokens (OIDC)

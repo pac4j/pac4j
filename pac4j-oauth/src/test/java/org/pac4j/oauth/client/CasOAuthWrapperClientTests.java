@@ -11,7 +11,7 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests the profile parsing from the {@link CasOAuthWrapperClient}.
@@ -66,6 +66,29 @@ public final class CasOAuthWrapperClientTests implements TestsConstants {
                 .writer()
                 .withDefaultPrettyPrinter()
                 .writeValueAsString(map);
+        final var client = new CasOAuthWrapperClient();
+        client.setKey(KEY);
+        client.setSecret(SECRET);
+        client.setCasOAuthUrl(CALLBACK_URL);
+        client.setCallbackUrl(CALLBACK_URL);
+        client.init();
+        final var profile = new CasOAuthWrapperProfileDefinition().extractUserProfile(body);
+        assertEquals(ID, profile.getId());
+        assertEquals(2, profile.getAttributes().size());
+        assertEquals(VALUE, profile.getAttribute(KEY));
+        assertEquals(TOKEN, profile.getAttribute(NAME));
+    }
+
+    @Test
+    public void testParsingFlattenAttributes() throws IOException {
+        final Map<String, Object> map = new HashMap<>();
+        map.put(ID, ID);
+        map.put(KEY, VALUE);
+        map.put(NAME, TOKEN);
+        final var body = new ObjectMapper()
+            .writer()
+            .withDefaultPrettyPrinter()
+            .writeValueAsString(map);
         final var client = new CasOAuthWrapperClient();
         client.setKey(KEY);
         client.setSecret(SECRET);

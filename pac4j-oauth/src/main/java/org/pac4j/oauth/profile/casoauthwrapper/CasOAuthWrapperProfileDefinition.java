@@ -1,5 +1,6 @@
 package org.pac4j.oauth.profile.casoauthwrapper;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.scribejava.core.model.Token;
@@ -20,6 +21,8 @@ import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
  * @since 1.9.2
  */
 public class CasOAuthWrapperProfileDefinition extends OAuthProfileDefinition {
+
+    private static final String ID = "id";
 
     public static final String IS_FROM_NEW_LOGIN = "isFromNewLogin";
     public static final String AUTHENTICATION_DATE = "authenticationDate";
@@ -44,34 +47,43 @@ public class CasOAuthWrapperProfileDefinition extends OAuthProfileDefinition {
     @Override
     public CasOAuthWrapperProfile extractUserProfile(final String body) {
         final var profile = (CasOAuthWrapperProfile) newProfile();
-        final var attributesNode = "attributes";
+
         var json = JsonHelper.getFirstNode(body);
         if (json != null) {
-            profile.setId(ProfileHelper.sanitizeIdentifier(JsonHelper.getElement(json, "id")));
-            json = json.get(attributesNode);
-            if (json != null) {
-                // CAS <= v4.2
-                if (json instanceof ArrayNode) {
-                    final var nodes = json.iterator();
-                    while (nodes.hasNext()) {
-                        json = nodes.next();
-                        final var attribute = json.fieldNames().next();
-                        convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
-                    }
-                    // CAS v5
-                } else if (json instanceof ObjectNode) {
-                    final var keys = json.fieldNames();
-                    while (keys.hasNext()) {
-                        final var key = keys.next();
-                        convertAndAdd(profile, PROFILE_ATTRIBUTE, key, JsonHelper.getElement(json, key));
-                    }
-                }
+            profile.setId(ProfileHelper.sanitizeIdentifier(JsonHelper.getElement(json, ID)));
+            final var attributes = json.get("attributes");
+            if (attributes != null) {
+                extractAttributes(attributes, profile);
             } else {
-                raiseProfileExtractionJsonError(body, attributesNode);
+                // flatten profiles
+                extractAttributes(json, profile);
             }
         } else {
             raiseProfileExtractionJsonError(body);
         }
         return profile;
+    }
+
+    protected void extractAttributes(final JsonNode json, final CasOAuthWrapperProfile profile) {
+        // CAS <= v4.2
+        if (json instanceof ArrayNode) {
+            final var nodes = json.iterator();
+            while (nodes.hasNext()) {
+                final var nextNode = nodes.next();
+                final var attribute = nextNode.fieldNames().next();
+                if (!ID.equals(attribute)) {
+                    convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(nextNode, attribute));
+                }
+            }
+            // CAS v5
+        } else if (json instanceof ObjectNode) {
+            final var keys = json.fieldNames();
+            while (keys.hasNext()) {
+                final var key = keys.next();
+                if (!ID.equals(key)) {
+                    convertAndAdd(profile, PROFILE_ATTRIBUTE, key, JsonHelper.getElement(json, key));
+                }
+            }
+        }
     }
 }
