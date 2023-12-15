@@ -79,4 +79,27 @@ public final class CasOAuthWrapperClientTests implements TestsConstants {
         assertEquals(VALUE, profile.getAttribute(KEY));
         assertEquals(TOKEN, profile.getAttribute(NAME));
     }
+
+    @Test
+    public void testParsingFlattenAttributes() throws IOException {
+        final Map<String, Object> map = new HashMap<>();
+        map.put(ID, ID);
+        map.put(KEY, VALUE);
+        map.put(NAME, TOKEN);
+        val body = new ObjectMapper()
+            .writer()
+            .withDefaultPrettyPrinter()
+            .writeValueAsString(map);
+        val client = new CasOAuthWrapperClient();
+        client.setKey(KEY);
+        client.setSecret(SECRET);
+        client.setCasOAuthUrl(CALLBACK_URL);
+        client.setCallbackUrl(CALLBACK_URL);
+        client.init();
+        val profile = new CasOAuthWrapperProfileDefinition().extractUserProfile(body);
+        assertEquals(ID, profile.getId());
+        assertEquals(2, profile.getAttributes().size());
+        assertEquals(VALUE, profile.getAttribute(KEY));
+        assertEquals(TOKEN, profile.getAttribute(NAME));
+    }
 }
