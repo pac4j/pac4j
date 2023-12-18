@@ -72,4 +72,14 @@ public class OidcCredentials extends Credentials {
             throw new IllegalArgumentException(e);
         }
     }
+
+    @JsonIgnore
+    public void setAccessTokenObject(final AccessToken accessToken) {
+        setAccessToken(accessToken.toJSONObject());
+    }
+
+    @JsonIgnore
+    public void setRefreshTokenObject(final RefreshToken refreshToken) {
+        setRefreshToken(refreshToken.toJSONObject());
+    }
 }
