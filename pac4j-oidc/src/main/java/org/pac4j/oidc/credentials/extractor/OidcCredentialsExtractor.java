@@ -21,15 +21,11 @@ import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.credentials.OidcCredentials;
+import org.pac4j.oidc.exceptions.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
-import org.pac4j.oidc.exceptions.OidcException;
-import org.pac4j.oidc.exceptions.OidcIssuerMismatchException;
-import org.pac4j.oidc.exceptions.OidcMissingSessionStateException;
-import org.pac4j.oidc.exceptions.OidcMissingStateParameterException;
-import org.pac4j.oidc.exceptions.OidcStateMismatchException;
 
 /**
  * Extract the OIDC credentials.
@@ -143,7 +139,7 @@ public class OidcCredentialsExtractor implements CredentialsExtractor {
             // get access token
             val accessToken = successResponse.getAccessToken();
             if (accessToken != null) {
-                credentials.setAccessToken(accessToken.toJSONObject());
+                credentials.setAccessTokenObject(accessToken);
             }
 
             return Optional.of(credentials);
