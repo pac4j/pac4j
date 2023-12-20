@@ -194,7 +194,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
         }
 
         // default value
-        if (getResourceRetriever() == null) {
+        if (forceReinit || getResourceRetriever() == null) {
             try {
                 setResourceRetriever(sslSocketFactory == null
                     ? new DefaultResourceRetriever(getConnectTimeout(),getReadTimeout())
@@ -204,7 +204,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
             }
         }
 
-        if (this.getOpMetadataResolver() == null) {
+        if (forceReinit || this.getOpMetadataResolver() == null) {
             assertNotBlank("discoveryURI", getDiscoveryURI());
             this.opMetadataResolver = new OidcOpMetadataResolver(this);
         }
