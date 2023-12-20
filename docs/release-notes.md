@@ -8,6 +8,7 @@ title: Release notes&#58;
 **v6.0.1**:
 - Fix the flatten OAuth profile attributes parsing (`CasOAuthWrapperClient`)
 - Added the `setAccessTokenObject` and `setRefreshTokenObject` methods to the `OidcCredentials`
+- Fix `forceReinit` behavior on `OidcConfiguration`
 
 **v6.0.0**:
 - Based on JDK17
