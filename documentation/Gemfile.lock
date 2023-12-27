@@ -1,7 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    addressable (2.8.1)
+    addressable (2.8.6)
       public_suffix (>= 2.0.2, < 6.0)
     colorator (1.1.0)
     concurrent-ruby (1.1.10)
@@ -14,7 +14,7 @@ GEM
     http_parser.rb (0.8.0)
     i18n (1.12.0)
       concurrent-ruby (~> 1.0)
-    jekyll (4.3.2)
+    jekyll (4.3.3)
       addressable (~> 2.4)
       colorator (~> 1.0)
       em-websocket (~> 0.5)
@@ -53,11 +53,11 @@ GEM
       jekyll-seo-tag (~> 2.1)
     pathutil (0.16.2)
       forwardable-extended (~> 2.6)
-    public_suffix (5.0.1)
+    public_suffix (5.0.4)
     rb-fsevent (0.11.2)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
-    rexml (3.2.5)
+    rexml (3.2.6)
     rouge (4.0.1)
     safe_yaml (1.0.5)
     sassc (2.4.0)
@@ -71,11 +71,11 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  jekyll (= 4.3.2)
+  jekyll (= 4.3.3)
   minima
 
 RUBY VERSION
-   ruby 2.7.2p137
+   ruby 3.3.0p0
 
 BUNDLED WITH
    2.1.4
