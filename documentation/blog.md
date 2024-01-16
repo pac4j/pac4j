@@ -3,6 +3,8 @@ layout: homeblog
 title: <i class="fa fa-info-circle" aria-hidden="true"></i> Blog&#58;
 ---
 
+## &bull; January 2024: [What's new in pac4j v6?](/blog/what_s_new_in_pac4j_v6.html)
+
 ## &bull; September 2022: [What's new with Spring and pac4j?](/blog/what_s_new_with_spring_and_pac4j.html)
 
 ## &bull; April 2022: [JakartaEE is coming](/blog/jakartaee_is_coming.html)
