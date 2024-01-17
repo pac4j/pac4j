@@ -22,7 +22,7 @@ CasProfile profile = manager.getProfile(CasProfile.class).get();
 
 ## 2) Custom profile managers
 
-By default, the profile manager is the [`ProfileMamager`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/ProfileManager.java) component.
+By default, the profile manager is the [`ProfileManager`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/ProfileManager.java) component.
 
 In some *pac4j* implementations, there are specific profile managers: `UndertowProfileManager`, `ShiroProfileManager`, etc.
 
