@@ -5,6 +5,7 @@ title: Release notes&#58;
 
 **v5.7.3**:
 - Fix the flatten OAuth profile attributes parsing (`CasOAuthWrapperClient`)
+- Upgrade the `nimbus-jose-jwt` library to version `9.37.2` for security reasons
 
 **v5.7.2**:
 - Allow to disable user info endpoint calls (OIDC)
