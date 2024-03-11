@@ -5,6 +5,9 @@ title: Release notes&#58;
 
 ### JDK17:
 
+**v6.0.2**:
+- Fix NPE on `SAML2FileSystemMetadataGenerator`
+
 **v6.0.1**:
 - Fix the flatten OAuth profile attributes parsing (`CasOAuthWrapperClient`)
 - Added the `setAccessTokenObject` and `setRefreshTokenObject` methods to the `OidcCredentials`
