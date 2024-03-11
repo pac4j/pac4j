@@ -31,7 +31,10 @@ public class SAML2FileSystemMetadataGenerator extends BaseSAML2MetadataGenerator
     /** {@inheritDoc} */
     @Override
     protected AbstractMetadataResolver createMetadataResolver() throws Exception {
-        return new FilesystemMetadataResolver(metadataResource.getFile());
+        if (metadataResource != null) {
+            return new FilesystemMetadataResolver(metadataResource.getFile());
+        }
+        return null;
     }
 
     /** {@inheritDoc} */
