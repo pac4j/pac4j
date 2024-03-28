@@ -73,7 +73,7 @@
 		<nimbus-jose-jwt.version>9.37.3</nimbus-jose-jwt.version>
 		<spring.version>6.1.5</spring.version>
 		<spring.security.version>6.2.3</spring.security.version>
-		<shiro.version>1.13.0</shiro.version>
+		<shiro.version>2.0.0</shiro.version>
         <jbcrypt.version>0.4.3</jbcrypt.version>
         <snakeyaml.version>2.2</snakeyaml.version>
 		<mockito.version>5.11.0</mockito.version>
