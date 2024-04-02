@@ -79,7 +79,7 @@ public class OidcClient extends IndirectClient {
         if (refreshToken != null) {
             val credentials = new OidcCredentials();
             credentials.setRefreshTokenObject(refreshToken);
-            val authenticator = new OidcAuthenticator(getConfiguration(), this);
+            val authenticator = (OidcAuthenticator)getAuthenticator();
             authenticator.refresh(credentials);
 
             // Create a profile if the refresh grant was successful
