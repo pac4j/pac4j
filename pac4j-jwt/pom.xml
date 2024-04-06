@@ -13,7 +13,7 @@
     <name>pac4j: Java web security for JWT</name>
 
     <properties>
-        <bcprov.version>1.77</bcprov.version>
+        <bcprov.version>1.78</bcprov.version>
     </properties>
 
     <dependencies>
