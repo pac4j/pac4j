@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.pac4j</groupId>
         <artifactId>pac4j-parent</artifactId>
-        <version>6.0.2-SNAPSHOT</version>
+        <version>6.0.3-SNAPSHOT</version>
     </parent>
 
     <artifactId>pac4j-ldap</artifactId>
@@ -13,7 +13,7 @@
     <name>pac4j for LDAP</name>
 
     <properties>
-        <ldaptive.version>2.3.1</ldaptive.version>
+        <ldaptive.version>2.3.2</ldaptive.version>
     </properties>
 
     <dependencies>

@@ -12,7 +12,7 @@
 	<artifactId>pac4j-parent</artifactId>
 	<packaging>pom</packaging>
 	<name>pac4j parent</name>
-	<version>6.0.2-SNAPSHOT</version>
+	<version>6.0.3-SNAPSHOT</version>
 	<description>Profile &amp; Authentication Client for Java</description>
 	<url>https://github.com/pac4j/pac4j</url>
 
@@ -59,25 +59,25 @@
 	</modules>
 
 	<properties>
-        <mongo-driver.version>5.0.0</mongo-driver.version>
+        <mongo-driver.version>5.0.1</mongo-driver.version>
         <flapdoodle.version>3.5.4</flapdoodle.version>
 		<junit.version>4.13.2</junit.version>
 		<servlet-api.version>4.0.1</servlet-api.version>
         <jakarta-servlet-api.version>6.0.0</jakarta-servlet-api.version>
-		<logback.version>1.5.3</logback.version>
+		<logback.version>1.5.6</logback.version>
 		<commons-codec.version>1.16.1</commons-codec.version>
-		<commons-io.version>2.15.1</commons-io.version>
+		<commons-io.version>2.16.1</commons-io.version>
 		<commons-lang3.version>3.14.0</commons-lang3.version>
-        <commons-text.version>1.11.0</commons-text.version>
-		<guava.version>33.0.0-jre</guava.version>
+        <commons-text.version>1.12.0</commons-text.version>
+		<guava.version>33.1.0-jre</guava.version>
 		<nimbus-jose-jwt.version>9.37.3</nimbus-jose-jwt.version>
-		<spring.version>6.1.4</spring.version>
-		<spring.security.version>6.2.2</spring.security.version>
+		<spring.version>6.1.6</spring.version>
+		<spring.security.version>6.2.4</spring.security.version>
 		<shiro.version>1.13.0</shiro.version>
         <jbcrypt.version>0.4.3</jbcrypt.version>
         <snakeyaml.version>2.2</snakeyaml.version>
 		<mockito.version>5.11.0</mockito.version>
-		<slf4j.version>2.0.12</slf4j.version>
+		<slf4j.version>2.0.13</slf4j.version>
         <httpclient.version>5.3.1</httpclient.version>
         <unboundid.version>7.0.0</unboundid.version>
         <h2.version>2.2.224</h2.version>
@@ -86,7 +86,7 @@
         <reflections.version>0.10.2</reflections.version>
         <nanohttpd.version>2.3.1</nanohttpd.version>
         <mockserver.version>5.10</mockserver.version>
-        <lombok.version>1.18.30</lombok.version>
+        <lombok.version>1.18.32</lombok.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
@@ -341,6 +341,7 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.google.code.findbugs</groupId>
@@ -387,7 +388,7 @@
 					<dependency>
 						<groupId>com.puppycrawl.tools</groupId>
 						<artifactId>checkstyle</artifactId>
-						<version>10.14.1</version>
+						<version>10.15.0</version>
 					</dependency>
 				</dependencies>
                 <configuration>
@@ -428,7 +429,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.12.1</version>
+				<version>3.13.0</version>
 				<configuration>
                     <source>${java.version}</source>
                     <release>${java.version}</release>
@@ -549,7 +550,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-jar-plugin</artifactId>
-					<version>3.3.0</version>
+					<version>3.4.0</version>
 					<configuration>
 						<archive>
 							<!-- configure plugin to use MANIFEST.MF
@@ -578,7 +579,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-source-plugin</artifactId>
-					<version>3.3.0</version>
+					<version>3.3.1</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.felix</groupId>
@@ -624,7 +625,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-gpg-plugin</artifactId>
-						<version>3.2.0</version>
+						<version>3.2.3</version>
 						<executions>
 							<execution>
 								<id>sign-artifacts</id>

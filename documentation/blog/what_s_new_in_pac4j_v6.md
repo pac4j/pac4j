@@ -12,7 +12,7 @@ First of all, pac4j v6 is based on the JDK 17 (LTS).
 It means that you must pick the right pac4j version according to your JDK:
 - pac4j v4.x for JDK 8
 - pac4j v5.x for JDK 11
-- pac4j v4.x for JDK 17
+- pac4j v6.x for JDK 17
 
 ### 2) Renaming/cleaning
 

@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.pac4j</groupId>
         <artifactId>pac4j-parent</artifactId>
-        <version>6.0.2-SNAPSHOT</version>
+        <version>6.0.3-SNAPSHOT</version>
     </parent>
 
     <artifactId>pac4j-saml</artifactId>
@@ -13,12 +13,12 @@
     <name>pac4j: Java web security for SAML</name>
 
     <properties>
-        <opensaml.version>5.0.0</opensaml.version>
+        <opensaml.version>5.1.2</opensaml.version>
         <joda-time.version>2.12.7</joda-time.version>
         <velocity.version>2.3</velocity.version>
         <xmlsec.version>4.0.2</xmlsec.version>
         <cryptacular.version>1.2.6</cryptacular.version>
-        <hazelcast.version>5.3.6</hazelcast.version>
+        <hazelcast.version>5.4.0</hazelcast.version>
     </properties>
 
     <dependencyManagement>
