@@ -186,8 +186,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
      */
     private Boolean nameIdPolicyAllowCreate = Boolean.TRUE;
 
-    private List<String> supportedProtocols = new ArrayList<>(Arrays.asList(SAMLConstants.SAML20P_NS,
-        SAMLConstants.SAML10P_NS, SAMLConstants.SAML11P_NS));
+    private List<String> supportedProtocols = new ArrayList<>(Arrays.asList(SAMLConstants.SAML20P_NS));
 
     public SAML2Configuration() {
     }

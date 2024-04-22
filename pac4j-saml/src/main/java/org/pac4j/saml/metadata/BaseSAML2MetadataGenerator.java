@@ -120,8 +120,7 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
 
     private List<SAML2MetadataUIInfo> metadataUIInfos = new ArrayList<>();
 
-    private List<String> supportedProtocols = new ArrayList<>(Arrays.asList(SAMLConstants.SAML20P_NS,
-        SAMLConstants.SAML10P_NS, SAMLConstants.SAML11P_NS));
+    private List<String> supportedProtocols = new ArrayList<>(Arrays.asList(SAMLConstants.SAML20P_NS));
 
     @Override
     public MetadataResolver buildMetadataResolver(final Resource metadataResource) throws Exception {

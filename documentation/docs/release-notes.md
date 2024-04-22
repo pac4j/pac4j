@@ -3,6 +3,12 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v4.5.8**:
+- Only 'SAML version 2' in metadata
+
+**v4.5.7**:
+- Security fix on the `logoutUrlPattern`
+
 **v4.5.6**:
 
 - Fix [CVE-2022-22965](https://spring.io/blog/2022/03/31/spring-framework-rce-early-announcement)
