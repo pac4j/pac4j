@@ -5,6 +5,9 @@ title: Release notes&#58;
 
 ### JDK17:
 
+**v6.0.3**:
+- Only 'SAML version 2' in metadata
+
 **v6.0.2**:
 - Fix NPE on `SAML2FileSystemMetadataGenerator`
 
@@ -46,6 +49,9 @@ title: Release notes&#58;
 ---
 
 ### JDK11:
+
+**v5.7.4**:
+- Only 'SAML version 2' in metadata
 
 **v5.7.3**:
 - Fix the flatten OAuth profile attributes parsing (`CasOAuthWrapperClient`)
@@ -211,6 +217,9 @@ title: Release notes&#58;
 ---
 
 ### JDK8:
+
+**v4.5.8**:
+- Only 'SAML version 2' in metadata
 
 **v4.5.7**:
 - Security fix on the `logoutUrlPattern`
