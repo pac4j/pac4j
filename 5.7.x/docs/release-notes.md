@@ -3,6 +3,9 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v5.7.4**:
+- Only 'SAML version 2' in metadata
+
 **v5.7.3**:
 - Fix the flatten OAuth profile attributes parsing (`CasOAuthWrapperClient`)
 - Upgrade the `nimbus-jose-jwt` library to version `9.37.2` for security reasons
@@ -165,6 +168,9 @@ title: Release notes&#58;
 - Authentication requests for protocols that support forced/passive authentication can now be modified on a per-request basis using pre-defined HTTP attributes to control the type of authentication request sent to the provider.
 
 ---
+
+**v4.5.8**:
+- Only 'SAML version 2' in metadata
 
 **v4.5.7**:
 - Security fix on the `logoutUrlPattern`
