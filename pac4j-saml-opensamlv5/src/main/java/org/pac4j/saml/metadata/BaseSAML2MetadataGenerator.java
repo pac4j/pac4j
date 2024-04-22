@@ -9,34 +9,12 @@ import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.ext.saml2alg.DigestMethod;
 import org.opensaml.saml.ext.saml2alg.SigningMethod;
 import org.opensaml.saml.ext.saml2mdreqinit.RequestInitiator;
-import org.opensaml.saml.ext.saml2mdui.Description;
-import org.opensaml.saml.ext.saml2mdui.DisplayName;
-import org.opensaml.saml.ext.saml2mdui.InformationURL;
-import org.opensaml.saml.ext.saml2mdui.Keywords;
-import org.opensaml.saml.ext.saml2mdui.Logo;
-import org.opensaml.saml.ext.saml2mdui.PrivacyStatementURL;
-import org.opensaml.saml.ext.saml2mdui.UIInfo;
+import org.opensaml.saml.ext.saml2mdui.*;
 import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.metadata.resolver.impl.AbstractMetadataResolver;
 import org.opensaml.saml.metadata.resolver.impl.DOMMetadataResolver;
 import org.opensaml.saml.saml2.core.NameIDType;
-import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
-import org.opensaml.saml.saml2.metadata.AttributeConsumingService;
-import org.opensaml.saml.saml2.metadata.Company;
-import org.opensaml.saml.saml2.metadata.ContactPerson;
-import org.opensaml.saml.saml2.metadata.ContactPersonTypeEnumeration;
-import org.opensaml.saml.saml2.metadata.EmailAddress;
-import org.opensaml.saml.saml2.metadata.EntityDescriptor;
-import org.opensaml.saml.saml2.metadata.Extensions;
-import org.opensaml.saml.saml2.metadata.GivenName;
-import org.opensaml.saml.saml2.metadata.KeyDescriptor;
-import org.opensaml.saml.saml2.metadata.NameIDFormat;
-import org.opensaml.saml.saml2.metadata.RequestedAttribute;
-import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
-import org.opensaml.saml.saml2.metadata.ServiceName;
-import org.opensaml.saml.saml2.metadata.SingleLogoutService;
-import org.opensaml.saml.saml2.metadata.SurName;
-import org.opensaml.saml.saml2.metadata.TelephoneNumber;
+import org.opensaml.saml.saml2.metadata.*;
 import org.opensaml.security.credential.UsageType;
 import org.opensaml.xmlsec.SignatureSigningConfiguration;
 import org.opensaml.xmlsec.algorithm.AlgorithmRegistry;
@@ -52,11 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -113,8 +87,7 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
 
     private List<SAML2MetadataUIInfo> metadataUIInfos = new ArrayList<>();
 
-    private List<String> supportedProtocols = new ArrayList<>(Arrays.asList(SAMLConstants.SAML20P_NS,
-        SAMLConstants.SAML10P_NS, SAMLConstants.SAML11P_NS));
+    private List<String> supportedProtocols = new ArrayList<>(Arrays.asList(SAMLConstants.SAML20P_NS));
 
     private SAML2MetadataSigner metadataSigner;
 
