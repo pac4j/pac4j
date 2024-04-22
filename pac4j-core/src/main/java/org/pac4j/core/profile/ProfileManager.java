@@ -17,10 +17,7 @@ import org.pac4j.core.util.Pac4jConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * This class is a generic way to manage the current user profile(s), i.e. the one(s) of the current authenticated user.
@@ -121,13 +118,14 @@ public class ProfileManager {
      */
     protected void removeOrRenewExpiredProfiles(final LinkedHashMap<String, UserProfile> profiles, final boolean readFromSession) {
         var profilesUpdated = false;
-        for (val entry : profiles.entrySet()) {
+        for (Iterator<Map.Entry<String, UserProfile>> profileIterator = profiles.entrySet().iterator(); profileIterator.hasNext(); ) {
+            val entry= profileIterator.next();
             val key = entry.getKey();
             val profile = entry.getValue();
             if (profile.isExpired()) {
                 LOGGER.debug("Expired profile: {}", profile);
                 profilesUpdated = true;
-                profiles.remove(key);
+                boolean removeEntry = true;
                 if (config != null && profile.getClientName() != null) {
                     val client = config.getClients().findClient(profile.getClientName());
                     if (client.isPresent()) {
@@ -135,13 +133,16 @@ public class ProfileManager {
                             val newProfile = client.get().renewUserProfile(new CallContext(context, sessionStore), profile);
                             if (newProfile.isPresent()) {
                                 LOGGER.debug("Renewed by profile: {}", newProfile);
-                                profiles.put(key, newProfile.get());
+                                removeEntry = false;
+                                entry.setValue(newProfile.get());
                             }
                         } catch (final RuntimeException e) {
                             logger.error("Unable to renew the user profile for key: {}", key, e);
                         }
                     }
                 }
+                if(removeEntry)
+                    profileIterator.remove();
             }
         }
         if (profilesUpdated) {
