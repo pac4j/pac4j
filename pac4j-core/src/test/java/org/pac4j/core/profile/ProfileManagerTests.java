@@ -262,6 +262,51 @@ public final class ProfileManagerTests {
     }
 
     @Test
+    public void testGetAllTwoProfilesOneExpiredRemoved() {
+        CommonProfile expiredProfile = mock(CommonProfile.class);
+        when(expiredProfile.getClientName()).thenReturn(CLIENT1);
+        when(expiredProfile.isExpired()).thenReturn(true);
+
+        CommonProfile renewedProfile = new CommonProfile();
+
+        profiles.put(CLIENT1, expiredProfile);
+        profiles.put(CLIENT2, profile2);
+        context.getSessionStore().set(context, Pac4jConstants.USER_PROFILES, profiles);
+
+        final BaseClient client1 = mock(BaseClient.class);
+        when(client1.getName()).thenReturn(CLIENT1);
+        when(client1.renewUserProfile(eq(expiredProfile), any())).thenReturn(Optional.of(renewedProfile));
+        profileManager.setConfig(new Config(client1));
+
+        final List<UserProfile> retrievedProfiles = profileManager.getAll(true);
+
+        assertEquals(2,retrievedProfiles.size());
+        assertSame(renewedProfile,retrievedProfiles.get(0));
+        assertSame(profile2, retrievedProfiles.get(1));
+    }
+
+    @Test
+    public void testGetAllTwoProfilesOneExpiredRenewed() {
+        CommonProfile expiredProfile = mock(CommonProfile.class);
+        when(expiredProfile.getClientName()).thenReturn(CLIENT1);
+        when(expiredProfile.isExpired()).thenReturn(true);
+
+        profiles.put(CLIENT1, expiredProfile);
+        profiles.put(CLIENT2, profile2);
+        context.getSessionStore().set(context, Pac4jConstants.USER_PROFILES, profiles);
+
+        final BaseClient client1 = mock(BaseClient.class);
+        when(client1.getName()).thenReturn(CLIENT1);
+        when(client1.renewUserProfile(eq(expiredProfile), any())).thenReturn(Optional.empty());
+        profileManager.setConfig(new Config(client1));
+
+        final List<UserProfile> retrievedProfiles = profileManager.getAll(true);
+
+        assertEquals(1,retrievedProfiles.size());
+        assertSame(profile2, retrievedProfiles.get(0));
+    }
+
+    @Test
     public void testRemoveSessionFalse() {
         profiles.put(CLIENT1, profile1);
         context.getSessionStore().set(context, Pac4jConstants.USER_PROFILES, profiles);

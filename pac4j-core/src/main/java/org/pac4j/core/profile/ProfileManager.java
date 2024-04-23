@@ -134,24 +134,29 @@ public class ProfileManager<U extends UserProfile> {
 
     protected void removeOrRenewExpiredProfiles(final LinkedHashMap<String, U> profiles, final boolean readFromSession) {
         boolean profilesUpdated = false;
-        for (final Map.Entry<String, U> entry : profiles.entrySet()) {
+        for (final Iterator<Map.Entry<String, U>> profileIterator = profiles.entrySet().iterator(); profileIterator.hasNext(); ) {
+            final Map.Entry<String, U> entry = profileIterator.next();
             final String key = entry.getKey();
             final U profile = entry.getValue();
             if (profile.isExpired()) {
                 profilesUpdated = true;
-                profiles.remove(key);
+                boolean removeEntry = true;
                 if (config != null && profile.getClientName() != null) {
                     final Optional<Client> client = config.getClients().findClient(profile.getClientName());
                     if (client.isPresent()) {
                         try {
                             final Optional<U> newProfile = client.get().renewUserProfile(profile, context);
                             if (newProfile.isPresent()) {
-                                profiles.put(key, newProfile.get());
+                                removeEntry = false;
+                                entry.setValue(newProfile.get());
                             }
                         } catch (final RuntimeException e) {
                             logger.error("Unable to renew the user profile for key: {}", key, e);
                         }
                     }
+                }
+                if (removeEntry) {
+                    profileIterator.remove();
                 }
             }
         }
