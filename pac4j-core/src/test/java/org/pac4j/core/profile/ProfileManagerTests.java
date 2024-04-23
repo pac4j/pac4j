@@ -15,8 +15,10 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
+import java.util.List;
 
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -207,6 +209,51 @@ public final class ProfileManagerTests {
         sessionStore.set(context, Pac4jConstants.USER_PROFILES, profiles2);
         assertEquals(profile1, profileManager.getProfiles().get(0));
         assertEquals(profile2, profileManager.getProfiles().get(1));
+    }
+
+    @Test
+    public void testGetAllTwoProfilesOneExpiredRemoved() {
+        CommonProfile expiredProfile = mock(CommonProfile.class);
+        when(expiredProfile.getClientName()).thenReturn(CLIENT1);
+        when(expiredProfile.isExpired()).thenReturn(true);
+
+        CommonProfile renewedProfile = new CommonProfile();
+
+        profiles.put(CLIENT1, expiredProfile);
+        profiles.put(CLIENT2, profile2);
+        sessionStore.set(context, Pac4jConstants.USER_PROFILES, profiles);
+
+        val client1 = mock(BaseClient.class);
+        when(client1.getName()).thenReturn(CLIENT1);
+        when(client1.renewUserProfile(any(),eq(expiredProfile))).thenReturn(Optional.of(renewedProfile));
+        profileManager.setConfig(new Config(client1));
+
+        final List<UserProfile> retrievedProfiles = profileManager.getProfiles();
+
+        assertEquals(2,retrievedProfiles.size());
+        assertSame(renewedProfile,retrievedProfiles.get(0));
+        assertSame(profile2, retrievedProfiles.get(1));
+    }
+
+    @Test
+    public void testGetAllTwoProfilesOneExpiredRenewed() {
+        CommonProfile expiredProfile = mock(CommonProfile.class);
+        when(expiredProfile.getClientName()).thenReturn(CLIENT1);
+        when(expiredProfile.isExpired()).thenReturn(true);
+
+        profiles.put(CLIENT1, expiredProfile);
+        profiles.put(CLIENT2, profile2);
+        sessionStore.set(context, Pac4jConstants.USER_PROFILES, profiles);
+
+        val client1 = mock(BaseClient.class);
+        when(client1.getName()).thenReturn(CLIENT1);
+        when(client1.renewUserProfile(any(),eq(expiredProfile))).thenReturn(Optional.empty());
+        profileManager.setConfig(new Config(client1));
+
+        final List<UserProfile> retrievedProfiles = profileManager.getProfiles();
+
+        assertEquals(1,retrievedProfiles.size());
+        assertSame(profile2, retrievedProfiles.get(0));
     }
 
     @Test
