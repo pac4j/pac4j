@@ -9,13 +9,10 @@ import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.util.Pac4jConstants;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.TreeMap;
+import java.util.*;
 
-import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 /**
  * Tests {@link ProfileManager}.
@@ -204,6 +201,51 @@ public final class ProfileManagerTests {
         sessionStore.set(context, Pac4jConstants.USER_PROFILES, profiles2);
         assertEquals(profile1, profileManager.getProfiles().get(0));
         assertEquals(profile2, profileManager.getProfiles().get(1));
+    }
+
+    @Test
+    public void testGetAllTwoProfilesOneExpiredRemoved() {
+        CommonProfile expiredProfile = mock(CommonProfile.class);
+        when(expiredProfile.getClientName()).thenReturn(CLIENT1);
+        when(expiredProfile.isExpired()).thenReturn(true);
+
+        CommonProfile renewedProfile = new CommonProfile();
+
+        profiles.put(CLIENT1, expiredProfile);
+        profiles.put(CLIENT2, profile2);
+        sessionStore.set(context, Pac4jConstants.USER_PROFILES, profiles);
+
+        final BaseClient client1 = mock(BaseClient.class);
+        when(client1.getName()).thenReturn(CLIENT1);
+        when(client1.renewUserProfile(eq(expiredProfile), any(), any())).thenReturn(Optional.of(renewedProfile));
+        profileManager.setConfig(new Config(client1));
+
+        final List<UserProfile> retrievedProfiles = profileManager.getProfiles();
+
+        assertEquals(2,retrievedProfiles.size());
+        assertSame(renewedProfile,retrievedProfiles.get(0));
+        assertSame(profile2, retrievedProfiles.get(1));
+    }
+
+    @Test
+    public void testGetAllTwoProfilesOneExpiredRenewed() {
+        CommonProfile expiredProfile = mock(CommonProfile.class);
+        when(expiredProfile.getClientName()).thenReturn(CLIENT1);
+        when(expiredProfile.isExpired()).thenReturn(true);
+
+        profiles.put(CLIENT1, expiredProfile);
+        profiles.put(CLIENT2, profile2);
+        sessionStore.set(context, Pac4jConstants.USER_PROFILES, profiles);
+
+        final BaseClient client1 = mock(BaseClient.class);
+        when(client1.getName()).thenReturn(CLIENT1);
+        when(client1.renewUserProfile(eq(expiredProfile), any(), any())).thenReturn(Optional.empty());
+        profileManager.setConfig(new Config(client1));
+
+        final List<UserProfile> retrievedProfiles = profileManager.getProfiles();
+
+        assertEquals(1,retrievedProfiles.size());
+        assertSame(profile2, retrievedProfiles.get(0));
     }
 
     @Test

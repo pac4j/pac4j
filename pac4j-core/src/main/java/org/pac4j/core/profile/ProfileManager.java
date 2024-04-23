@@ -3,12 +3,12 @@ package org.pac4j.core.profile;
 import org.pac4j.core.authorization.authorizer.Authorizer;
 import org.pac4j.core.authorization.authorizer.IsAuthenticatedAuthorizer;
 import org.pac4j.core.config.Config;
-import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
-import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.Pac4jConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -93,13 +93,14 @@ public class ProfileManager {
 
     protected void removeOrRenewExpiredProfiles(final LinkedHashMap<String, UserProfile> profiles, final boolean readFromSession) {
         var profilesUpdated = false;
-        for (final var entry : profiles.entrySet()) {
+        for (Iterator<Map.Entry<String, UserProfile>> profileIterator = profiles.entrySet().iterator(); profileIterator.hasNext(); ) {
+            final Map.Entry<String, UserProfile> entry = profileIterator.next();
             final var key = entry.getKey();
             final var profile = entry.getValue();
             if (profile.isExpired()) {
                 LOGGER.debug("Expired profile: {}", profile);
                 profilesUpdated = true;
-                profiles.remove(key);
+                boolean removeEntry = true;
                 if (config != null && profile.getClientName() != null) {
                     final var client = config.getClients().findClient(profile.getClientName());
                     if (client.isPresent()) {
@@ -107,12 +108,16 @@ public class ProfileManager {
                             final var newProfile = client.get().renewUserProfile(profile, context, sessionStore);
                             if (newProfile.isPresent()) {
                                 LOGGER.debug("Renewed by profile: {}", newProfile);
-                                profiles.put(key, newProfile.get());
+                                removeEntry = false;
+                                entry.setValue(newProfile.get());
                             }
                         } catch (final RuntimeException e) {
                             logger.error("Unable to renew the user profile for key: {}", key, e);
                         }
                     }
+                }
+                if (removeEntry) {
+                    profileIterator.remove();
                 }
             }
         }

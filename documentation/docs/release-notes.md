@@ -5,6 +5,7 @@ title: Release notes&#58;
 
 **v5.7.4**:
 - Only 'SAML version 2' in metadata
+- Fix `ConcurrentModificationException` in `ProfileManager.removeOrRenewExpiredProfiles`
 
 **v5.7.3**:
 - Fix the flatten OAuth profile attributes parsing (`CasOAuthWrapperClient`)
@@ -171,6 +172,7 @@ title: Release notes&#58;
 
 **v4.5.8**:
 - Only 'SAML version 2' in metadata
+- Fix `ConcurrentModificationException` in `ProfileManager.removeOrRenewExpiredProfiles`
 
 **v4.5.7**:
 - Security fix on the `logoutUrlPattern`
