@@ -38,7 +38,7 @@ It is licensed under the Apache 2 license.
 &bull; [Undertow](https://github.com/pac4j/undertow-pac4j)
 &bull; [Lagom](https://github.com/pac4j/lagom-pac4j)
 &bull; [Akka HTTP](https://github.com/StackVista/akka-http-pac4j)
-&bull; [Jooby](http://jooby.org)
+&bull; [Jooby](https://jooby.io/modules/pac4j)
 
 ## Authentication mechanisms:
 
