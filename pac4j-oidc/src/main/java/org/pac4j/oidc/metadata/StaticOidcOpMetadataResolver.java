@@ -32,6 +32,6 @@ public class StaticOidcOpMetadataResolver extends OidcOpMetadataResolver {
 
         this.clientAuthentication = computeClientAuthentication();
 
-        this.tokenValidator = new TokenValidator(configuration, this.loaded);
+        this.tokenValidator = createTokenValidator();
     }
 }

@@ -77,7 +77,7 @@ public class OidcOpMetadataResolver extends SpringResourceLoader<OIDCProviderMet
 
         this.clientAuthentication = computeClientAuthentication();
 
-        this.tokenValidator = new TokenValidator(configuration, this.loaded);
+        this.tokenValidator = createTokenValidator();
     }
 
     /**
@@ -175,8 +175,8 @@ public class OidcOpMetadataResolver extends SpringResourceLoader<OIDCProviderMet
     }
 
     private static ClientAuthenticationMethod firstSupportedMethod(
-            final Collection<ClientAuthenticationMethod> serverSupportedAuthMethods,
-            Collection<ClientAuthenticationMethod> clientSupportedAuthMethods) {
+        final Collection<ClientAuthenticationMethod> serverSupportedAuthMethods,
+        Collection<ClientAuthenticationMethod> clientSupportedAuthMethods) {
         Collection<ClientAuthenticationMethod> supportedMethods =
             clientSupportedAuthMethods != null ? clientSupportedAuthMethods : SUPPORTED_METHODS;
         var firstSupported =
@@ -187,5 +187,14 @@ public class OidcOpMetadataResolver extends SpringResourceLoader<OIDCProviderMet
             throw new OidcUnsupportedClientAuthMethodException("None of the Token endpoint provider metadata authentication methods are "
                 + "supported: " + serverSupportedAuthMethods);
         }
+    }
+
+    /**
+     * <p>createTokenValidator.</p>
+     *
+     * @return a {@link TokenValidator} object
+     */
+    protected TokenValidator createTokenValidator() {
+        return new TokenValidator(configuration, this.loaded);
     }
 }

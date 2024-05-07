@@ -3,6 +3,7 @@ package org.pac4j.oidc.metadata;
 import lombok.extern.slf4j.Slf4j;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.profile.azuread.AzureAdTokenValidator;
+import org.pac4j.oidc.profile.creator.TokenValidator;
 
 /**
  * The metadata resolver for AzureAd.
@@ -22,13 +23,8 @@ public class AzureAdOpMetadataResolver extends OidcOpMetadataResolver {
         super(configuration);
     }
 
-    /** {@inheritDoc} */
     @Override
-    protected void internalLoad() {
-        this.loaded = retrieveMetadata();
-
-        this.clientAuthentication = computeClientAuthentication();
-
-        this.tokenValidator = new AzureAdTokenValidator(configuration, this.loaded);
+    protected TokenValidator createTokenValidator() {
+        return new AzureAdTokenValidator(configuration, this.loaded);
     }
 }
