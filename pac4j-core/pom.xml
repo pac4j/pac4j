@@ -75,7 +75,7 @@
                         <Automatic-Module-Name>pac4j.core</Automatic-Module-Name>
                         <Bundle-SymbolicName>org.pac4j.core</Bundle-SymbolicName>
                         <Export-Package>org.pac4j.core.*;version=${project.version}</Export-Package>
-                        <Import-Package>*</Import-Package>
+                        <Import-Package>com.google.common.cache;version=!,com.google.common.collect;version=!,*</Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
