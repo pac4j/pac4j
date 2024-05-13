@@ -2,7 +2,6 @@ package org.pac4j.oidc.metadata;
 
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import org.pac4j.oidc.config.OidcConfiguration;
-import org.pac4j.oidc.profile.creator.TokenValidator;
 
 /**
  * An OP metadata resolver with static metadata.
@@ -32,6 +31,6 @@ public class StaticOidcOpMetadataResolver extends OidcOpMetadataResolver {
 
         this.clientAuthentication = computeClientAuthentication();
 
-        this.tokenValidator = new TokenValidator(configuration, this.loaded);
+        this.tokenValidator = createTokenValidator();
     }
 }
