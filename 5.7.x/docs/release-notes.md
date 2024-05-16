@@ -3,6 +3,9 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v5.7.5**:
+- Add the `oidc.withState` config property
+
 **v5.7.4**:
 - Only 'SAML version 2' in metadata
 - Fix `ConcurrentModificationException` in `ProfileManager.removeOrRenewExpiredProfiles`
