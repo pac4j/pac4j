@@ -84,6 +84,7 @@ public final class PropertiesConfigFactoryTests implements PropertiesConstants, 
             properties.put(OIDC_RESPONSE_TYPE, "id_token");
             properties.put(OIDC_RESPONSE_MODE, "form_post");
             properties.put(OIDC_USE_NONCE, "true");
+            properties.put(OIDC_WITH_STATE, "false");
             properties.put(OIDC_PREFERRED_JWS_ALGORITHM, "RS384");
             properties.put(OIDC_MAX_CLOCK_SKEW, "60");
             properties.put(OIDC_CLIENT_AUTHENTICATION_METHOD, "CLIENT_SECRET_POST");
@@ -162,6 +163,7 @@ public final class PropertiesConfigFactoryTests implements PropertiesConstants, 
             assertEquals(oidcClient.getConfiguration().getResponseMode(), "form_post");
             assertEquals(ClientAuthenticationMethod.CLIENT_SECRET_POST.toString(),
                 oidcClient.getConfiguration().getClientAuthenticationMethod().toString().toLowerCase());
+            assertFalse(oidcClient.getConfiguration().isWithState());
 
             val casClient1 = (CasClient) clients.findClient("CasClient.1").get();
             assertEquals(CasProtocol.CAS30, casClient1.getConfiguration().getProtocol());

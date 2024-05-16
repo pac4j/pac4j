@@ -8,6 +8,7 @@ title: Release notes&#58;
 **v6.0.3**:
 - Only 'SAML version 2' in metadata
 - Fix `ConcurrentModificationException` in `ProfileManager.removeOrRenewExpiredProfiles`
+- Add the `oidc.withState` config property
 
 **v6.0.2**:
 - Fix NPE on `SAML2FileSystemMetadataGenerator`
@@ -50,6 +51,9 @@ title: Release notes&#58;
 ---
 
 ### JDK11:
+
+**v5.7.5**:
+- Add the `oidc.withState` config property
 
 **v5.7.4**:
 - Only 'SAML version 2' in metadata

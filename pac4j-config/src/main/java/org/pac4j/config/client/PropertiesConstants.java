@@ -161,6 +161,7 @@ public interface PropertiesConstants {
     String OIDC_DISCOVERY_URI = "oidc.discoveryUri";
     /** Constant <code>OIDC_USE_NONCE="oidc.useNonce"</code> */
     String OIDC_USE_NONCE = "oidc.useNonce";
+    String OIDC_WITH_STATE = "oidc.withState";
     /** Constant <code>OIDC_PREFERRED_JWS_ALGORITHM="oidc.preferredJwsAlgorithm"</code> */
     String OIDC_PREFERRED_JWS_ALGORITHM = "oidc.preferredJwsAlgorithm";
     /** Constant <code>OIDC_MAX_CLOCK_SKEW="oidc.maxClockSkew"</code> */

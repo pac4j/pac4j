@@ -68,6 +68,10 @@ public class OidcClientBuilder extends AbstractBuilder {
                 if (isNotBlank(useNonce)) {
                     configuration.setUseNonce(Boolean.parseBoolean(useNonce));
                 }
+                val withState = getProperty(OIDC_WITH_STATE, i);
+                if (isNotBlank(withState)) {
+                    configuration.setWithState(Boolean.parseBoolean(withState));
+                }
                 val jwsAlgo = getProperty(OIDC_PREFERRED_JWS_ALGORITHM, i);
                 if (isNotBlank(jwsAlgo)) {
                     configuration.setPreferredJwsAlgorithm(JWSAlgorithm.parse(jwsAlgo));
