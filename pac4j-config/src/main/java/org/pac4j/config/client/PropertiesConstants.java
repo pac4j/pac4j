@@ -91,6 +91,7 @@ public interface PropertiesConstants {
     String OIDC_SCOPE = "oidc.scope";
     String OIDC_DISCOVERY_URI = "oidc.discoveryUri";
     String OIDC_USE_NONCE = "oidc.useNonce";
+    String OIDC_WITH_STATE = "oidc.withState";
     String OIDC_PREFERRED_JWS_ALGORITHM = "oidc.preferredJwsAlgorithm";
     String OIDC_MAX_CLOCK_SKEW = "oidc.maxClockSkew";
     String OIDC_CLIENT_AUTHENTICATION_METHOD = "oidc.clientAuthenticationMethod";
