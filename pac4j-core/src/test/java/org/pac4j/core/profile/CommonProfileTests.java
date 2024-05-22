@@ -147,6 +147,24 @@ public final class CommonProfileTests implements TestsConstants {
     }
 
     @Test
+    public void testAddAttributeDuplicateValues() {
+        UserProfile userProfile = new CommonProfile(true);
+        userProfile.addAttribute(KEY, List.of(VALUE));
+        userProfile.addAttribute(KEY, List.of(VALUE));
+        assertEquals(1, userProfile.getAttributes().size());
+        assertEquals(Arrays.asList(VALUE), userProfile.getAttribute(KEY));
+    }
+
+    @Test
+    public void testAddAttributeDeDuplicateValues() {
+        UserProfile userProfile = new CommonProfile(true);
+        userProfile.addAttribute(KEY, List.of(VALUE, "Value2"));
+        userProfile.addAttribute(KEY, List.of(VALUE, "Value3"));
+        assertEquals(1, userProfile.getAttributes().size());
+        assertEquals(Arrays.asList(VALUE, "Value2", "Value3"), userProfile.getAttribute(KEY));
+    }
+
+    @Test
     public void testAddAuthenticationAttribute() {
         val userProfile = new CommonProfile();
         assertEquals(0, userProfile.getAuthenticationAttributes().size());
