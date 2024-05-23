@@ -9,6 +9,7 @@ title: Release notes&#58;
 - Only 'SAML version 2' in metadata
 - Fix `ConcurrentModificationException` in `ProfileManager.removeOrRenewExpiredProfiles`
 - Add the `oidc.withState` config property
+- De-duplicate user profile attribute values (avoid memory overconsumption)
 
 **v6.0.2**:
 - Fix NPE on `SAML2FileSystemMetadataGenerator`
