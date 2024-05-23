@@ -150,7 +150,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
 
     private <T> Collection<T> mergeCollectionAttributes(final Collection<T> existingCollection, final Collection<T> newCollection)
     {
-        return Streams.concat(existingCollection.stream(), newCollection.stream()).collect(Collectors.toList());
+        return Streams.concat(existingCollection.stream(), newCollection.stream()).distinct().collect(Collectors.toList());
     }
 
     /**

@@ -1,15 +1,17 @@
 package org.pac4j.core.profile;
 
-import static org.junit.Assert.*;
+import org.junit.Test;
+import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.profile.definition.CommonProfileDefinition;
+import org.pac4j.core.util.Pac4jConstants;
+import org.pac4j.core.util.TestsConstants;
+import org.pac4j.core.util.TestsHelper;
+import org.pac4j.core.util.serializer.JavaSerializer;
 
 import java.net.URISyntaxException;
 import java.util.*;
 
-import org.junit.Test;
-import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.profile.definition.CommonProfileDefinition;
-import org.pac4j.core.util.*;
-import org.pac4j.core.util.serializer.JavaSerializer;
+import static org.junit.Assert.*;
 
 /**
  * This class tests the {@link CommonProfile} class.
@@ -138,6 +140,24 @@ public final class CommonProfileTests implements TestsConstants {
         userProfile.addAttribute(KEY, Arrays.asList("Value2", "Value3"));
         assertEquals(1, userProfile.getAttributes().size());
         assertEquals(Arrays.asList("Value2", "Value3"), userProfile.getAttribute(KEY));
+    }
+
+    @Test
+    public void testAddAttributeDuplicateValues() {
+        UserProfile userProfile = new CommonProfile(true);
+        userProfile.addAttribute(KEY, List.of(VALUE));
+        userProfile.addAttribute(KEY, List.of(VALUE));
+        assertEquals(1, userProfile.getAttributes().size());
+        assertEquals(Arrays.asList(VALUE), userProfile.getAttribute(KEY));
+    }
+
+    @Test
+    public void testAddAttributeDeDuplicateValues() {
+        UserProfile userProfile = new CommonProfile(true);
+        userProfile.addAttribute(KEY, List.of(VALUE, "Value2"));
+        userProfile.addAttribute(KEY, List.of(VALUE, "Value3"));
+        assertEquals(1, userProfile.getAttributes().size());
+        assertEquals(Arrays.asList(VALUE, "Value2", "Value3"), userProfile.getAttribute(KEY));
     }
 
     @Test

@@ -3,6 +3,9 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v5.7.6**:
+- De-duplicate user profile attribute values (avoid memory overconsumption)
+
 **v5.7.5**:
 - Add the `oidc.withState` config property
 
