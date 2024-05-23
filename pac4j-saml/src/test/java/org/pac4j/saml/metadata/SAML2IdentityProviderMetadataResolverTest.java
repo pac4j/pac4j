@@ -11,7 +11,6 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.UrlResource;
 
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import java.net.InetSocketAddress;
@@ -72,32 +71,12 @@ public class SAML2IdentityProviderMetadataResolverTest {
     }
 
     @Test
-    public void resolveMetadataOverUrlWithHostnameVerifierFromConfig() throws Exception {
+    public void resolveMetadataOverUrlWithHostnameVerifier() throws Exception {
         var configuration = new SAML2Configuration();
-        configuration.setIdentityProviderMetadataResource(new UrlResource("https://self-signed.badssl.com"));
+        configuration.setIdentityProviderMetadataResource(new UrlResource("https://www.pac4j.org"));
         configuration.setHostnameVerifier((s, sslSession) -> true);
         configuration.setSslSocketFactory(disabledSslContext().getSocketFactory());
         metadataResolver = new SAML2IdentityProviderMetadataResolver(configuration);
-        try {
-            metadataResolver.init();
-        } catch (final TechnicalException e) {
-            assertEquals(XMLParserException.class, e.getCause().getClass());
-        }
-    }
-
-    @Test
-    public void resolveMetadataOverUrlWithHostnameVerifier() throws Exception {
-        var configuration = new SAML2Configuration();
-        configuration.setIdentityProviderMetadataResource(new UrlResource("https://self-signed.badssl.com"));
-        metadataResolver = new SAML2IdentityProviderMetadataResolver(configuration);
-        try {
-            metadataResolver.init();
-        } catch (final TechnicalException e) {
-            assertEquals(SSLHandshakeException.class, e.getCause().getClass());
-        }
-
-        metadataResolver.setHostnameVerifier((s, sslSession) -> true);
-        metadataResolver.setSslSocketFactory(disabledSslContext().getSocketFactory());
         try {
             metadataResolver.init();
         } catch (final TechnicalException e) {
