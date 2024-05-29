@@ -70,12 +70,7 @@ public class OidcOpMetadataResolverTest {
     private static OidcOpMetadataResolver getMetadataResolver(OidcConfiguration configuration,
         List<ClientAuthenticationMethod> supportedAuthMethods) throws URISyntaxException {
         OIDCProviderMetadata providerMetadata = getOidcProviderMetadata(supportedAuthMethods);
-        OidcOpMetadataResolver oidcOpMetadataResolver = new OidcOpMetadataResolver(configuration) {
-            @Override
-            protected OIDCProviderMetadata retrieveMetadata() {
-                return providerMetadata;
-            }
-        };
+        OidcOpMetadataResolver oidcOpMetadataResolver = new StaticOidcOpMetadataResolver(configuration, providerMetadata);
 
         oidcOpMetadataResolver.init();
         return oidcOpMetadataResolver;
