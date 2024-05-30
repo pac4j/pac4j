@@ -64,7 +64,7 @@ public class OidcOpMetadataResolver extends SpringResourceLoader<OIDCProviderMet
     }
 
     private static Resource buildResource(final OidcConfiguration configuration) {
-        if (configuration != null) {
+        if (configuration != null && configuration.getDiscoveryURI() != null) {
             return SpringResourceHelper.buildResourceFromPath(configuration.getDiscoveryURI());
         }
         return null;
