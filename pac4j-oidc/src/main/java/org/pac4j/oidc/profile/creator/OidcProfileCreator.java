@@ -33,8 +33,7 @@ import java.net.URI;
 import java.util.Optional;
 
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
-import static org.pac4j.core.util.CommonHelper.assertNotNull;
-import static org.pac4j.core.util.CommonHelper.isNotBlank;
+import static org.pac4j.core.util.CommonHelper.*;
 
 /**
  * OpenID Connect profile creator.
@@ -179,6 +178,10 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
                     userInfoClaimsSet = userInfoSuccessResponse.getUserInfoJWT().getJWTClaimsSet();
                 }
                 if (userInfoClaimsSet != null) {
+                    final String subject = userInfoClaimsSet.getSubject();
+                    if (isBlank(profile.getId()) && isNotBlank(subject)) {
+                        profile.setId(ProfileHelper.sanitizeIdentifier(subject));
+                    }
                     getProfileDefinition().convertAndAdd(profile, userInfoClaimsSet.getClaims(), null);
                 } else {
                     logger.warn("Cannot retrieve claims from user info");
