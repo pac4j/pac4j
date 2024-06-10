@@ -8,6 +8,7 @@ title: Release notes&#58;
 **v6.0.4**:
 - OIDC support: set the profile identifier from the subject of the userinfo endpoint if need be
 - Fix: `StaticOidcOpMetadataResolver` should not enforce a discovery URI
+- `OidcOpMetadataResolver`: secret is not mandatory for `private_key_jwt` client authentication method
 
 **v6.0.3**:
 - Only 'SAML version 2' in metadata

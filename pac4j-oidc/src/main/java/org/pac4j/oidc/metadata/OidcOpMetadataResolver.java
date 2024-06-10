@@ -3,12 +3,7 @@ package org.pac4j.oidc.metadata;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.util.IOUtils;
 import com.nimbusds.oauth2.sdk.ParseException;
-import com.nimbusds.oauth2.sdk.auth.ClientAuthentication;
-import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
-import com.nimbusds.oauth2.sdk.auth.ClientSecretBasic;
-import com.nimbusds.oauth2.sdk.auth.ClientSecretPost;
-import com.nimbusds.oauth2.sdk.auth.PrivateKeyJWT;
-import com.nimbusds.oauth2.sdk.auth.Secret;
+import com.nimbusds.oauth2.sdk.auth.*;
 import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import lombok.Getter;
@@ -109,7 +104,7 @@ public class OidcOpMetadataResolver extends SpringResourceLoader<OIDCProviderMet
     protected ClientAuthentication computeClientAuthentication() {
         val _clientID = new ClientID(configuration.getClientId());
 
-        if (configuration.getSecret() != null) {
+        if (configuration.getSecret() != null || configuration.getPrivateKeyJWTClientAuthnMethodConfig() != null) {
             // check authentication methods
             val serverSupportedAuthMethods = this.loaded.getTokenEndpointAuthMethods();
             val preferredMethod = getPreferredAuthenticationMethod(configuration);
