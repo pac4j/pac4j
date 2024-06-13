@@ -7,7 +7,6 @@ import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.oauth2.sdk.pkce.CodeVerifier;
 import com.nimbusds.openid.connect.sdk.OIDCTokenResponse;
 import com.nimbusds.openid.connect.sdk.OIDCTokenResponseParser;
-import java.util.Set;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
@@ -25,6 +24,7 @@ import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import static org.pac4j.core.util.CommonHelper.assertNotNull;
 import static org.pac4j.core.util.CommonHelper.isNotEmpty;
@@ -60,7 +60,7 @@ public class OidcAuthenticator implements Authenticator {
 
         final var _clientID = new ClientID(configuration.getClientId());
 
-        if (configuration.getSecret() != null) {
+        if (configuration.getSecret() != null || configuration.getPrivateKeyJWTClientAuthnMethodConfig() != null) {
             // check authentication methods
             final var serverSupportedAuthMethods = configuration.findProviderMetadata()
                 .getTokenEndpointAuthMethods();
