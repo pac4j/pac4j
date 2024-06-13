@@ -58,6 +58,11 @@ title: Release notes&#58;
 
 ### JDK11:
 
+**v5.7.6**:
+- De-duplicate user profile attribute values (avoid memory overconsumption)
+- OIDC support: set the profile identifier from the subject of the userinfo endpoint if need be
+- `OidcAuthenticator`: secret is not mandatory for `private_key_jwt` client authentication method
+
 **v5.7.5**:
 - Add the `oidc.withState` config property
 
