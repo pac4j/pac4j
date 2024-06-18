@@ -79,7 +79,7 @@
 		<mockito.version>5.12.0</mockito.version>
 		<slf4j.version>2.0.13</slf4j.version>
         <httpclient.version>5.3.1</httpclient.version>
-        <unboundid.version>7.0.0</unboundid.version>
+        <unboundid.version>7.0.1</unboundid.version>
         <h2.version>2.2.224</h2.version>
 		<java.version>17</java.version>
         <jackson.version>2.17.1</jackson.version>
