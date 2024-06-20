@@ -59,6 +59,7 @@
 	</modules>
 
 	<properties>
+        <awssdk.version>2.26.0</awssdk.version>
         <mongo-driver.version>5.1.1</mongo-driver.version>
         <flapdoodle.version>3.5.4</flapdoodle.version>
 		<junit.version>4.13.2</junit.version>
@@ -157,6 +158,11 @@
                 <groupId>org.mongodb</groupId>
                 <artifactId>mongodb-driver-core</artifactId>
                 <version>${mongo-driver.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>software.amazon.awssdk</groupId>
+                <artifactId>s3</artifactId>
+                <version>${awssdk.version}</version>
             </dependency>
             <dependency>
 				<groupId>org.slf4j</groupId>
