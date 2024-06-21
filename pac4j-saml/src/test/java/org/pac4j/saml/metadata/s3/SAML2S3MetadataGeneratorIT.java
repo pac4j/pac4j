@@ -27,12 +27,9 @@ import software.amazon.awssdk.services.s3.model.S3Object;
 import java.io.InputStream;
 import java.util.UUID;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 /**
  * This is {@link SAML2S3MetadataGeneratorIT}.
@@ -43,7 +40,6 @@ import static org.mockito.Mockito.when;
 public class SAML2S3MetadataGeneratorIT implements TestsConstants {
     private static final String ENTITY_ID = "org:pac4j:example";
 
-    private String metadata;
     private final SAML2Configuration configuration = new SAML2Configuration();
 
     @Before
