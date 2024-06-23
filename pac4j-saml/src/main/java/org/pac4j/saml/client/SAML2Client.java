@@ -30,6 +30,9 @@ import org.pac4j.saml.sso.impl.SAML2WebSSOMessageSender;
 import org.pac4j.saml.state.SAML2StateGenerator;
 import org.pac4j.saml.util.Configuration;
 
+import java.io.Closeable;
+import java.io.IOException;
+
 import static org.pac4j.core.util.CommonHelper.assertNotNull;
 
 /**
@@ -41,7 +44,7 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
  * @author Jerome Leleu
  * @since 1.5.0
  */
-public class SAML2Client extends IndirectClient {
+public class SAML2Client extends IndirectClient implements Closeable {
 
     @Getter
     protected SAMLContextProvider contextProvider;
@@ -276,4 +279,8 @@ public class SAML2Client extends IndirectClient {
         return this.serviceProviderMetadataResolver.getEntityId();
     }
 
+    @Override
+    public void close() throws IOException {
+        destroy();
+    }
 }

@@ -186,6 +186,8 @@ public class SAML2Configuration extends BaseClientConfiguration {
 
     private String certificateSignatureAlg = "SHA1WithRSA";
 
+    private SAML2MetadataResolver defaultIdentityProviderMetadataResolverSupplier;
+
     private int privateKeySize = 2048;
 
     private List<SAML2MetadataContactPerson> contactPersons = new ArrayList<>();
@@ -293,6 +295,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
         this.providerName = providerName;
         this.authnRequestExtensions = authnRequestExtensions;
         this.attributeAsId = attributeAsId;
+        this.defaultIdentityProviderMetadataResolverSupplier = new SAML2IdentityProviderMetadataResolver(this);
     }
 
     /**
@@ -564,6 +567,6 @@ public class SAML2Configuration extends BaseClientConfiguration {
      * @return a {@link SAML2MetadataResolver} object
      */
     public SAML2MetadataResolver getIdentityProviderMetadataResolver() {
-        return Objects.requireNonNullElseGet(identityProviderMetadataResolver, () -> new SAML2IdentityProviderMetadataResolver(this));
+        return Objects.requireNonNullElse(identityProviderMetadataResolver, defaultIdentityProviderMetadataResolverSupplier);
     }
 }

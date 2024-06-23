@@ -16,6 +16,7 @@ import org.pac4j.saml.util.Configuration;
 import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.ChecksumAlgorithm;
 import software.amazon.awssdk.services.s3.model.CreateBucketRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectResponse;
@@ -25,7 +26,6 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.ByteArrayInputStream;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -50,6 +50,8 @@ public class SAML2S3MetadataGenerator extends BaseSAML2MetadataGenerator {
 
     private final String entityId;
 
+    private boolean createBucketIfNecessary = true;
+
     @Override
     public AbstractMetadataResolver createMetadataResolver() throws Exception {
         var bucketName = buildBucketName();
@@ -59,20 +61,20 @@ public class SAML2S3MetadataGenerator extends BaseSAML2MetadataGenerator {
         }
         var objects = result.contents();
         LOGGER.debug("Located {} S3 object(s) from bucket {}", objects.size(), bucketName);
-        if (objects.size() != 1) {
+        if (objects.isEmpty()) {
             throw new SAMLException("No metadata objects could be found in bucket " + bucketName);
         }
-        val objectKey = objects.get(0);
-        LOGGER.debug("Fetching object {} from bucket {}", objectKey.key(), bucketName);
-        var object = s3Client.getObject(GetObjectRequest.builder().bucket(bucketName).key(objectKey.key()).build());
-        if (object != null && object.available() > 0) {
+        val objectKey = this.entityId;
+        LOGGER.debug("Fetching object {} from bucket {}", objectKey, bucketName);
+        var object = s3Client.getObject(GetObjectRequest.builder().bucket(bucketName).key(objectKey).build());
+        if (object != null) {
             return buildMetadataResolver(object);
         }
         throw new SAMLException("Unable to locate metadata document for key " + objectKey);
     }
 
-    protected AbstractMetadataResolver buildMetadataResolver(final ResponseInputStream<GetObjectResponse> object) throws Exception {
-        try (var is = new ByteArrayInputStream(object.readAllBytes())) {
+    protected AbstractMetadataResolver buildMetadataResolver(final ResponseInputStream<GetObjectResponse> response) throws Exception {
+        try (var is = new ByteArrayInputStream(response.readAllBytes())) {
             var document = Configuration.getParserPool().parse(is);
             var root = document.getDocumentElement();
             return new DOMMetadataResolver(root);
@@ -103,7 +105,7 @@ public class SAML2S3MetadataGenerator extends BaseSAML2MetadataGenerator {
 
     protected void createMetadataBucketIfNecessary() {
         val bucketNameToUse = buildBucketName();
-        if (s3Client.listBuckets(ListBucketsRequest.builder().build())
+        if (createBucketIfNecessary && s3Client.listBuckets(ListBucketsRequest.builder().build())
             .buckets().stream().noneMatch(b -> b.name().equalsIgnoreCase(bucketNameToUse))) {
             LOGGER.debug("Bucket {} does not exist. Creating...", bucketNameToUse);
             var bucket = s3Client.createBucket(CreateBucketRequest.builder().bucket(bucketNameToUse).build());
@@ -119,6 +121,7 @@ public class SAML2S3MetadataGenerator extends BaseSAML2MetadataGenerator {
             .bucket(bucketNameToUse)
             .contentType(MediaType.XML_UTF_8.toString())
             .metadata(bucketMetadata)
+            .checksumAlgorithm(ChecksumAlgorithm.SHA256)
             .build();
         LOGGER.debug("Saving metadata {} in bucket {}", metadataToUse, bucketNameToUse);
         var putResponse = s3Client.putObject(request, RequestBody.fromString(metadataToUse));
@@ -132,6 +135,6 @@ public class SAML2S3MetadataGenerator extends BaseSAML2MetadataGenerator {
     }
 
     protected String buildBucketName() {
-        return (BUCKET_NAME_PREFIX + '-' + this.entityId).toLowerCase(Locale.ENGLISH);
+        return BUCKET_NAME_PREFIX;
     }
 }

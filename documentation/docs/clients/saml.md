@@ -284,6 +284,35 @@ You will need to include the following module, at a minimum, in your build:
 </dependency>
 ```
 
+### Managing metadata via AWS S3 Buckets
+
+Service provider metadata can alternatively be stored and managed via AWS S3 buckets.
+
+```java
+var configuration = new SAML2Configuration();
+...
+var generator = new SAML2S3MetadataGenerator(this.s3Client, entityId);
+generator.setCreateBucketIfNecessary(true);
+...
+configuration.setMetadataGenerator(generator);
+...
+configuration.init();
+```
+
+As you see above, the `SAML2S3MetadataGenerator` has the ability to create the bucket if necessary. The default bucket name
+is set to be `pac4j-saml-metadata`.
+
+This functionality expects S3 dependencies to already be available and does not explicitly declare or export those.
+You will need to include the following module, at a minimum, in your build:
+
+```xml
+<dependency>
+    <groupId>software.amazon.awssdk</groupId>
+    <artifactId>s3</artifactId>
+    <version>...</version>
+</dependency>
+```
+
 ## 3.2) Identity provider metadata resolution:
 
 Resolution of identity provider metadata can also be controlled and overridden as shown below:
