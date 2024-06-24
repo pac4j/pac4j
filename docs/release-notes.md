@@ -9,6 +9,7 @@ title: Release notes&#58;
 - OIDC support: set the profile identifier from the subject of the userinfo endpoint if need be
 - Fix: `StaticOidcOpMetadataResolver` should not enforce a discovery URI
 - `OidcOpMetadataResolver`: secret is not mandatory for `private_key_jwt` client authentication method
+- SAML2 support: service provider metadata can now be stored in AWS S3 buckets.
 
 **v6.0.3**:
 - Only 'SAML version 2' in metadata
