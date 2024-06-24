@@ -10,6 +10,7 @@ title: Release notes&#58;
 - Fix: `StaticOidcOpMetadataResolver` should not enforce a discovery URI
 - `OidcOpMetadataResolver`: secret is not mandatory for `private_key_jwt` client authentication method
 - SAML2 support: service provider metadata can now be stored in AWS S3 buckets.
+- Reinforce security on `JBCryptPasswordEncoder`
 
 **v6.0.3**:
 - Only 'SAML version 2' in metadata
@@ -63,6 +64,7 @@ title: Release notes&#58;
 - De-duplicate user profile attribute values (avoid memory overconsumption)
 - OIDC support: set the profile identifier from the subject of the userinfo endpoint if need be
 - `OidcAuthenticator`: secret is not mandatory for `private_key_jwt` client authentication method
+- Reinforce security on `JBCryptPasswordEncoder`
 
 **v5.7.5**:
 - Add the `oidc.withState` config property
