@@ -18,6 +18,6 @@ public class WebContextTests {
         context.setRequestAttribute("pac4j", attribute);
         assertTrue(context.getRequestAttribute("pac4j", Map.class).isPresent());
         assertThrows(ClassCastException.class,
-            () -> context.getRequestAttribute("pac4j", List.class).isPresent());
+            () -> context.getRequestAttribute("pac4j", List.class));
     }
 }
