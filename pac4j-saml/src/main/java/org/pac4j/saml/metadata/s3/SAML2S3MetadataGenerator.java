@@ -52,6 +52,8 @@ public class SAML2S3MetadataGenerator extends BaseSAML2MetadataGenerator {
 
     private boolean createBucketIfNecessary = true;
 
+    private ChecksumAlgorithm checksumAlgorithm = ChecksumAlgorithm.CRC32;
+
     @Override
     public AbstractMetadataResolver createMetadataResolver() throws Exception {
         var bucketName = buildBucketName();
@@ -114,18 +116,27 @@ public class SAML2S3MetadataGenerator extends BaseSAML2MetadataGenerator {
     }
 
     protected boolean putMetadataInBucket(final EntityDescriptor entityDescriptor, final String metadataToUse) {
+        val request = buildPutRequest(entityDescriptor);
+        LOGGER.debug("Saving metadata {} in bucket {}", metadataToUse, request.bucket());
+        var putResponse = s3Client.putObject(request, RequestBody.fromString(metadataToUse));
+        return putResponse != null && putResponse.sdkHttpResponse().isSuccessful();
+    }
+
+    protected PutObjectRequest buildPutRequest(final EntityDescriptor entityDescriptor) {
         var bucketMetadata = buildBucketMetadata(entityDescriptor);
         val bucketNameToUse = buildBucketName();
-        val request = PutObjectRequest.builder()
+        val builder = PutObjectRequest.builder()
             .key(entityDescriptor.getEntityID())
             .bucket(bucketNameToUse)
             .contentType(MediaType.XML_UTF_8.toString())
             .metadata(bucketMetadata)
-            .checksumAlgorithm(ChecksumAlgorithm.SHA256)
-            .build();
-        LOGGER.debug("Saving metadata {} in bucket {}", metadataToUse, bucketNameToUse);
-        var putResponse = s3Client.putObject(request, RequestBody.fromString(metadataToUse));
-        return putResponse != null && putResponse.sdkHttpResponse().isSuccessful();
+            .checksumAlgorithm(this.checksumAlgorithm);
+        return customizePutRequest(builder, entityDescriptor);
+    }
+
+    protected PutObjectRequest customizePutRequest(final PutObjectRequest.Builder builder,
+                                                   final EntityDescriptor entityDescriptor) {
+        return builder.build();
     }
 
     protected Map<String, String> buildBucketMetadata(final EntityDescriptor entityDescriptor) {
