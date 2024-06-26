@@ -21,6 +21,7 @@ import org.pac4j.core.resource.SpringResourceLoader;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.util.Configuration;
+import org.springframework.core.io.UrlResource;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
@@ -65,17 +66,21 @@ public class SAML2IdentityProviderMetadataResolver extends SpringResourceLoader<
         this.configuration = configuration;
     }
 
-    /** {@inheritDoc} */
     @Override
     public final MetadataResolver resolve() {
         return load();
     }
 
-    /**
-     * <p>internalLoad.</p>
-     */
     protected void internalLoad() {
         this.loaded = initializeMetadataResolver();
+    }
+
+    @Override
+    public boolean hasChanged() {
+        if (this.resource instanceof UrlResource) {
+            return true;
+        }
+        return super.hasChanged();
     }
 
     /**
