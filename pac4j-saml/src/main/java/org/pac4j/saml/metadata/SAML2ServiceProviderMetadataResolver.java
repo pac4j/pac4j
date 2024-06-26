@@ -64,7 +64,10 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
 
     /** {@inheritDoc} */
     @Override
-    public final MetadataResolver resolve() {
+    public final MetadataResolver resolve(final boolean force) {
+        if (force) {
+            this.metadataResolver = prepareServiceProviderMetadata();
+        }
         return this.metadataResolver;
     }
 

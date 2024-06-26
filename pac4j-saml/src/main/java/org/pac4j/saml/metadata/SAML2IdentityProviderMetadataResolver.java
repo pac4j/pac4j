@@ -65,9 +65,11 @@ public class SAML2IdentityProviderMetadataResolver extends SpringResourceLoader<
         this.configuration = configuration;
     }
 
-    /** {@inheritDoc} */
     @Override
-    public final MetadataResolver resolve() {
+    public final MetadataResolver resolve(final boolean force) {
+        if (force) {
+            internalLoad();
+        }
         return load();
     }
 
