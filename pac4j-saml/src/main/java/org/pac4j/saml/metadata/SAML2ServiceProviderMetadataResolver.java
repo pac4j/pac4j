@@ -93,7 +93,7 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
     @Override
     public XMLObject getEntityDescriptorElement() {
         try {
-            return resolve(false).resolveSingle(new CriteriaSet(new EntityIdCriterion(getEntityId())));
+            return resolve().resolveSingle(new CriteriaSet(new EntityIdCriterion(getEntityId())));
         } catch (final ResolverException e) {
             throw new SAMLException("Unable to resolve metadata", e);
         }
