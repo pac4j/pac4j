@@ -5,6 +5,9 @@ title: Release notes&#58;
 
 ### JDK17:
 
+**v6.0.5**:
+- Allow to force the reloading of the SAML metadata
+
 **v6.0.4**:
 - OIDC support: set the profile identifier from the subject of the userinfo endpoint if need be
 - Fix: `StaticOidcOpMetadataResolver` should not enforce a discovery URI
