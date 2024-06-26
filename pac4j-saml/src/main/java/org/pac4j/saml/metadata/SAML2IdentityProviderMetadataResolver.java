@@ -65,9 +65,11 @@ public class SAML2IdentityProviderMetadataResolver extends SpringResourceLoader<
         this.configuration = configuration;
     }
 
-    /** {@inheritDoc} */
     @Override
-    public final MetadataResolver resolve() {
+    public final MetadataResolver resolve(final boolean force) {
+        if (force) {
+            internalLoad();
+        }
         return load();
     }
 
@@ -161,7 +163,7 @@ public class SAML2IdentityProviderMetadataResolver extends SpringResourceLoader<
     public final XMLObject getEntityDescriptorElement() {
         try {
             var idpEntityId = determineIdentityProviderEntityId();
-            return resolve().resolveSingle(new CriteriaSet(new EntityIdCriterion(idpEntityId)));
+            return resolve(false).resolveSingle(new CriteriaSet(new EntityIdCriterion(idpEntityId)));
         } catch (final ResolverException e) {
             throw new SAMLException("Error initializing idpMetadataProvider", e);
         }

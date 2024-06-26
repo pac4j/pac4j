@@ -13,9 +13,10 @@ public interface SAML2MetadataResolver {
     /**
      * <p>resolve.</p>
      *
+     * @param force the force
      * @return a {@link MetadataResolver} object
      */
-    MetadataResolver resolve();
+    MetadataResolver resolve(boolean force);
 
     /**
      * <p>getEntityId.</p>
