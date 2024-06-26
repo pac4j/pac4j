@@ -93,8 +93,8 @@ public class SAML2IdentityProviderMetadataResolverTest {
         var resolver = metadataResolver.resolve();
         assertNotNull(resolver);
 
-        assertFalse(metadataResolver.hasChanged());
-        assertEquals(0, metadataResolver.getLastModified());
+        assertTrue(metadataResolver.hasChanged());
+        assertEquals(-1, metadataResolver.getLastModified());
         assertNotNull(metadataResolver.load());
 
         var addr = new InetSocketAddress("unknown.example.com", 8080);
