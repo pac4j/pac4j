@@ -1,5 +1,7 @@
 package org.pac4j.oidc.credentials.extractor;
 
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.proc.BadJOSEException;
 import com.nimbusds.jwt.JWTParser;
 import com.nimbusds.oauth2.sdk.ParseException;
 import com.nimbusds.oauth2.sdk.id.State;
@@ -64,13 +66,31 @@ public class OidcCredentialsExtractor implements CredentialsExtractor {
         if (logoutToken.isPresent()) {
             try {
                 val jwt = JWTParser.parse(logoutToken.get());
-                // we should use the tokenValidator, but we can't as validation fails on missing claims: exp, iat...
-                //final IDTokenClaimsSet claims = configuration.findTokenValidator().validate(jwt, null);
-                //final String sid = (String) claims.getClaim(Pac4jConstants.OIDC_CLAIM_SESSIONID);
-                val sessionId = (String) jwt.getJWTClaimsSet().getClaim(Pac4jConstants.OIDC_CLAIM_SESSIONID);
+                String sessionId;
+                if (configuration.isLogoutValidation()) {
+                    val claims = configuration.getOpMetadataResolver().getTokenValidator().validate(jwt, null);
+                    if (claims.getClaim(OidcConfiguration.NONCE) != null) {
+                        LOGGER.error("The nonce claim should not exist for logout requests");
+                        throw new BadRequestAction();
+                    }
+                    val events = claims.getClaim("events");
+                    if (!(events instanceof Map mapEvents)
+                        || !mapEvents.containsKey("http://schemas.openid.net/event/backchannel-logout")) {
+                        LOGGER.error("The events claim should contain the 'http://schemas.openid.net/event/backchannel-logout'"
+                            + " member name for logout requests");
+                        throw new BadRequestAction();
+                    }
+                    sessionId = (String) claims.getClaim(Pac4jConstants.OIDC_CLAIM_SESSIONID);
+                    if (CommonHelper.isBlank(sessionId)) {
+                        LOGGER.error("The sid claim is mandatory for logout requests");
+                        throw new BadRequestAction();
+                    }
+                } else {
+                    sessionId = (String) jwt.getJWTClaimsSet().getClaim(Pac4jConstants.OIDC_CLAIM_SESSIONID);
+                }
                 LOGGER.debug("Handling back-channel logout for sessionId: {}", sessionId);
                 return Optional.of(new SessionKeyCredentials(LogoutType.BACK, sessionId));
-            } catch (final java.text.ParseException e) {
+            } catch (final java.text.ParseException | BadJOSEException | JOSEException e) {
                 LOGGER.error("Cannot validate JWT logout token", e);
                 throw new BadRequestAction();
             }

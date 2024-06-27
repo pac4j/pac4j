@@ -176,6 +176,8 @@ public class OidcConfiguration extends BaseClientConfiguration {
 
     protected OidcOpMetadataResolver opMetadataResolver;
 
+    private boolean logoutValidation = true;
+
     /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
