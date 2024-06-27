@@ -2,6 +2,7 @@ package org.pac4j.oidc.credentials.extractor;
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.proc.BadJOSEException;
+import com.nimbusds.jwt.EncryptedJWT;
 import com.nimbusds.jwt.JWTParser;
 import com.nimbusds.oauth2.sdk.ParseException;
 import com.nimbusds.oauth2.sdk.id.State;
@@ -66,6 +67,10 @@ public class OidcCredentialsExtractor implements CredentialsExtractor {
         if (logoutToken.isPresent()) {
             try {
                 val jwt = JWTParser.parse(logoutToken.get());
+                if (jwt instanceof EncryptedJWT) {
+                    LOGGER.error("Encrypted JWTs are not accepted for logout requests");
+                    throw new BadRequestAction();
+                }
                 String sessionId;
                 if (configuration.isLogoutValidation()) {
                     val claims = configuration.getOpMetadataResolver().getTokenValidator().validate(jwt, null);
