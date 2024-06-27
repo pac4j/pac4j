@@ -163,3 +163,9 @@ Since version 5.2 and to reinforce security, the `none` alogithm for ID tokens (
 ```java
 config.setAllowUnsignedIdTokens(true);
 ```
+
+Since version 5.7.6 and to reinforce security, the logout requests are validated. This can be disabled using:
+
+```java
+config.setLogoutValidation(false);
+```
