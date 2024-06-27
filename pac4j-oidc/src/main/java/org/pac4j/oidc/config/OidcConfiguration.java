@@ -157,6 +157,8 @@ public class OidcConfiguration extends BaseClientConfiguration {
 
     private boolean callUserInfoEndpoint = true;
 
+    private boolean logoutValidation = true;
+
     @Override
     protected void internalInit(final boolean forceReinit) {
         // checks
@@ -562,6 +564,14 @@ public class OidcConfiguration extends BaseClientConfiguration {
 
     public void setCallUserInfoEndpoint(final boolean callUserInfoEndpoint) {
         this.callUserInfoEndpoint = callUserInfoEndpoint;
+    }
+
+    public boolean isLogoutValidation() {
+        return logoutValidation;
+    }
+
+    public void setLogoutValidation(final boolean logoutValidation) {
+        this.logoutValidation = logoutValidation;
     }
 
     @Override
