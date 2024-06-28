@@ -69,6 +69,7 @@ title: Release notes&#58;
 - OIDC support: set the profile identifier from the subject of the userinfo endpoint if need be
 - `OidcAuthenticator`: secret is not mandatory for `private_key_jwt` client authentication method
 - Reinforce security on `JBCryptPasswordEncoder`
+- Reinforce security by checking OIDC logout requests (can be disabled via `OidConfiguration.setLogoutValidation(false)`)
 
 **v5.7.5**:
 - Add the `oidc.withState` config property
