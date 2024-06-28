@@ -65,7 +65,6 @@ public class OidcOpMetadataResolver extends SpringResourceLoader<OIDCProviderMet
         return null;
     }
 
-    /** {@inheritDoc} */
     @Override
     protected void internalLoad() {
         this.loaded = retrieveMetadata();
@@ -184,11 +183,6 @@ public class OidcOpMetadataResolver extends SpringResourceLoader<OIDCProviderMet
         }
     }
 
-    /**
-     * <p>createTokenValidator.</p>
-     *
-     * @return a {@link TokenValidator} object
-     */
     protected TokenValidator createTokenValidator() {
         return new TokenValidator(configuration, this.loaded);
     }
