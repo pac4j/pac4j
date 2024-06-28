@@ -8,6 +8,7 @@ title: Release notes&#58;
 **v6.0.5**:
 - Allow to force the reloading of the SAML metadata
 - Reinforce security by checking OIDC logout requests (can be disabled via `OidConfiguration.setLogoutValidation(false)`)
+- Retrieving OIDC resources such as keys from a remote IDP now recognizes the OIDC configuration for remote hostname verification.
 
 **v6.0.4**:
 - OIDC support: set the profile identifier from the subject of the userinfo endpoint if need be

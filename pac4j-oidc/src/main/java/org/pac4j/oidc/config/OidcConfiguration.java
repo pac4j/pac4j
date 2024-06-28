@@ -451,8 +451,8 @@ public class OidcConfiguration extends BaseClientConfiguration {
     private class OidcResourceRetriever extends DefaultResourceRetriever {
 
         public OidcResourceRetriever() {
-            setConnectTimeout(getConnectTimeout());
-            setReadTimeout(getReadTimeout());
+            setConnectTimeout(OidcConfiguration.this.getConnectTimeout());
+            setReadTimeout(OidcConfiguration.this.getReadTimeout());
             if (sslSocketFactory != null) {
                 setSslSocketFactory(sslSocketFactory);
             }
