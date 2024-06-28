@@ -9,8 +9,14 @@ import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
 import com.nimbusds.oauth2.sdk.http.HTTPRequest;
 import com.nimbusds.oauth2.sdk.pkce.CodeChallengeMethod;
 import com.nimbusds.openid.connect.sdk.OIDCResponseTypeValue;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.With;
 import lombok.experimental.Accessors;
+import lombok.val;
 import org.pac4j.core.client.config.BaseClientConfiguration;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.util.generator.RandomValueGenerator;
@@ -21,8 +27,18 @@ import org.pac4j.oidc.util.SessionStoreValueRetriever;
 import org.pac4j.oidc.util.ValueRetriever;
 
 import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSocketFactory;
-import java.util.*;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static org.pac4j.core.util.CommonHelper.assertNotBlank;
 import static org.pac4j.core.util.CommonHelper.assertNotNull;
@@ -42,49 +58,83 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
 @NoArgsConstructor
 public class OidcConfiguration extends BaseClientConfiguration {
 
-    /** Constant <code>SCOPE="scope"</code> */
+    /**
+     * Constant <code>SCOPE="scope"</code>
+     */
     public static final String SCOPE = "scope";
-    /** Constant <code>CUSTOM_PARAMS="custom_params"</code> */
+    /**
+     * Constant <code>CUSTOM_PARAMS="custom_params"</code>
+     */
     public static final String CUSTOM_PARAMS = "custom_params";
-    /** Constant <code>RESPONSE_TYPE="response_type"</code> */
+    /**
+     * Constant <code>RESPONSE_TYPE="response_type"</code>
+     */
     public static final String RESPONSE_TYPE = "response_type";
-    /** Constant <code>RESPONSE_MODE="response_mode"</code> */
+    /**
+     * Constant <code>RESPONSE_MODE="response_mode"</code>
+     */
     public static final String RESPONSE_MODE = "response_mode";
-    /** Constant <code>REDIRECT_URI="redirect_uri"</code> */
+    /**
+     * Constant <code>REDIRECT_URI="redirect_uri"</code>
+     */
     public static final String REDIRECT_URI = "redirect_uri";
-    /** Constant <code>CLIENT_ID="client_id"</code> */
+    /**
+     * Constant <code>CLIENT_ID="client_id"</code>
+     */
     public static final String CLIENT_ID = "client_id";
-    /** Constant <code>STATE="state"</code> */
+    /**
+     * Constant <code>STATE="state"</code>
+     */
     public static final String STATE = "state";
-    /** Constant <code>MAX_AGE="max_age"</code> */
+    /**
+     * Constant <code>MAX_AGE="max_age"</code>
+     */
     public static final String MAX_AGE = "max_age";
-    /** Constant <code>PROMPT="prompt"</code> */
+    /**
+     * Constant <code>PROMPT="prompt"</code>
+     */
     public static final String PROMPT = "prompt";
-    /** Constant <code>NONCE="nonce"</code> */
+    /**
+     * Constant <code>NONCE="nonce"</code>
+     */
     public static final String NONCE = "nonce";
-    /** Constant <code>CODE_CHALLENGE="code_challenge"</code> */
+    /**
+     * Constant <code>CODE_CHALLENGE="code_challenge"</code>
+     */
     public static final String CODE_CHALLENGE = "code_challenge";
-    /** Constant <code>CODE_CHALLENGE_METHOD="code_challenge_method"</code> */
+    /**
+     * Constant <code>CODE_CHALLENGE_METHOD="code_challenge_method"</code>
+     */
     public static final String CODE_CHALLENGE_METHOD = "code_challenge_method";
 
-    /** Constant <code>AUTHORIZATION_CODE_FLOWS</code> */
+    /**
+     * Constant <code>AUTHORIZATION_CODE_FLOWS</code>
+     */
     public static final List<ResponseType> AUTHORIZATION_CODE_FLOWS = List.of(new ResponseType(ResponseType.Value.CODE));
-    /** Constant <code>IMPLICIT_FLOWS</code> */
+    /**
+     * Constant <code>IMPLICIT_FLOWS</code>
+     */
     public static final List<ResponseType> IMPLICIT_FLOWS = Collections
         .unmodifiableList(Arrays.asList(new ResponseType(OIDCResponseTypeValue.ID_TOKEN),
             new ResponseType(OIDCResponseTypeValue.ID_TOKEN, ResponseType.Value.TOKEN)));
-    /** Constant <code>HYBRID_CODE_FLOWS</code> */
+    /**
+     * Constant <code>HYBRID_CODE_FLOWS</code>
+     */
     public static final List<ResponseType> HYBRID_CODE_FLOWS = Collections.unmodifiableList(Arrays.asList(
         new ResponseType(ResponseType.Value.CODE, OIDCResponseTypeValue.ID_TOKEN),
         new ResponseType(ResponseType.Value.CODE, ResponseType.Value.TOKEN),
         new ResponseType(ResponseType.Value.CODE, OIDCResponseTypeValue.ID_TOKEN, ResponseType.Value.TOKEN)));
 
     /* default max clock skew */
-    /** Constant <code>DEFAULT_MAX_CLOCK_SKEW=30</code> */
+    /**
+     * Constant <code>DEFAULT_MAX_CLOCK_SKEW=30</code>
+     */
     public static final int DEFAULT_MAX_CLOCK_SKEW = 30;
 
     /* default time period advance (in seconds) for considering an access token expired */
-    /** Constant <code>DEFAULT_TOKEN_EXPIRATION_ADVANCE=0</code> */
+    /**
+     * Constant <code>DEFAULT_TOKEN_EXPIRATION_ADVANCE=0</code>
+     */
     public static final int DEFAULT_TOKEN_EXPIRATION_ADVANCE = 0;
 
     /* OpenID client identifier */
@@ -154,12 +204,15 @@ public class OidcConfiguration extends BaseClientConfiguration {
     /* checks if sessions expire with token expiration (see also `tokenExpirationAdvance`) */
     private boolean expireSessionWithToken = true;
 
-    /** time period advance (in seconds) for considering an access token expired */
+    /**
+     * time period advance (in seconds) for considering an access token expired
+     */
     private int tokenExpirationAdvance = DEFAULT_TOKEN_EXPIRATION_ADVANCE;
 
     private boolean allowUnsignedIdTokens;
 
-    /** If enabled, try to process the access token as a JWT and include its claims in the profile.
+    /**
+     * If enabled, try to process the access token as a JWT and include its claims in the profile.
      * Only enable this if there is an agreement between the IdP and the client about the format of
      * the access token. If not, the authorization server and the resource server might decide to
      * change the token format at any time (for example, by switching from this profile to opaque
@@ -178,7 +231,9 @@ public class OidcConfiguration extends BaseClientConfiguration {
 
     private boolean logoutValidation = true;
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void internalInit(final boolean forceReinit) {
         // checks
@@ -198,9 +253,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
         // default value
         if (forceReinit || getResourceRetriever() == null) {
             try {
-                setResourceRetriever(sslSocketFactory == null
-                    ? new DefaultResourceRetriever(getConnectTimeout(),getReadTimeout())
-                    : new DefaultResourceRetriever(getConnectTimeout(),getReadTimeout(), 0, false, sslSocketFactory));
+                setResourceRetriever(new OidcResourceRetriever());
             } catch (final Exception e) {
                 throw new OidcConfigurationException("SSLFactory loaded fail, please check your configuration");
             }
@@ -246,7 +299,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
     /**
      * <p>addCustomParam.</p>
      *
-     * @param key a {@link String} object
+     * @param key   a {@link String} object
      * @param value a {@link String} object
      */
     public void addCustomParam(final String key, final String value) {
@@ -260,16 +313,6 @@ public class OidcConfiguration extends BaseClientConfiguration {
      */
     public void setClientAuthenticationMethodAsString(final String auth) {
         this.clientAuthenticationMethod = ClientAuthenticationMethod.parse(auth);
-    }
-
-    /**
-     * <p>Setter for the field <code>supportedClientAuthenticationMethods</code>.</p>
-     *
-     * @param supportedClientAuthenticationMethods a {@link Set} object
-     */
-    public void setSupportedClientAuthenticationMethods(
-        Set<ClientAuthenticationMethod> supportedClientAuthenticationMethods) {
-        this.supportedClientAuthenticationMethods = supportedClientAuthenticationMethods;
     }
 
     /**
@@ -351,7 +394,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
         init();
 
         val opMetadataResolver = getOpMetadataResolver().load();
-        if(logoutUrl == null && opMetadataResolver.getEndSessionEndpointURI() != null) {
+        if (logoutUrl == null && opMetadataResolver.getEndSessionEndpointURI() != null) {
             return opMetadataResolver.getEndSessionEndpointURI().toString();
         }
         return logoutUrl;
@@ -403,5 +446,30 @@ public class OidcConfiguration extends BaseClientConfiguration {
      */
     public String getResponseType() {
         return responseType.toString();
+    }
+
+    private class OidcResourceRetriever extends DefaultResourceRetriever {
+
+        public OidcResourceRetriever() {
+            setConnectTimeout(OidcConfiguration.this.getConnectTimeout());
+            setReadTimeout(OidcConfiguration.this.getReadTimeout());
+            if (sslSocketFactory != null) {
+                setSslSocketFactory(sslSocketFactory);
+            }
+        }
+
+        @Override
+        protected HttpURLConnection openHTTPConnection(URL url) throws IOException {
+            var connection = super.openHTTPConnection(url);
+            if (connection instanceof HttpsURLConnection) {
+                if (sslSocketFactory != null) {
+                    ((HttpsURLConnection) connection).setSSLSocketFactory(sslSocketFactory);
+                }
+                if (hostnameVerifier != null) {
+                    ((HttpsURLConnection) connection).setHostnameVerifier(hostnameVerifier);
+                }
+            }
+            return connection;
+        }
     }
 }
