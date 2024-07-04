@@ -7,6 +7,7 @@ import org.springframework.core.io.FileSystemResource;
 
 import java.io.File;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -52,5 +53,22 @@ public class SAML2ConfigurationTests {
         assertTrue(signingCert.exists());
         val signingCertKey = new File("target/saml-signing-cert-" + certNameResult + ".key");
         assertTrue(signingCertKey.exists());
+    }
+
+    @Test
+    public void shouldBeAbleToUseAnIdpMetadataResourceWithTheDefaultMetadataResolver() {
+        var configuration = new SAML2Configuration();
+        configuration.setKeystorePath("target/keystore.jks");
+        configuration.setKeystorePassword("pac4j");
+        configuration.setPrivateKeyPassword("pac4j");
+
+        configuration.setIdentityProviderMetadataResource(new ClassPathResource("idp-metadata.xml"));
+        configuration.init();
+
+        var idpMetadataResolver = configuration.getIdentityProviderMetadataResolver();
+        idpMetadataResolver.resolve();
+
+        var result = idpMetadataResolver.getMetadata();
+        assertNotNull(result);
     }
 }
