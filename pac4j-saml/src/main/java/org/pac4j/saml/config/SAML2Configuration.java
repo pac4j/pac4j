@@ -295,7 +295,6 @@ public class SAML2Configuration extends BaseClientConfiguration {
         this.providerName = providerName;
         this.authnRequestExtensions = authnRequestExtensions;
         this.attributeAsId = attributeAsId;
-        this.defaultIdentityProviderMetadataResolverSupplier = new SAML2IdentityProviderMetadataResolver(this);
     }
 
     /**
@@ -325,6 +324,8 @@ public class SAML2Configuration extends BaseClientConfiguration {
      */
     @Override
     protected void internalInit(final boolean forceReinit) {
+        this.defaultIdentityProviderMetadataResolverSupplier = new SAML2IdentityProviderMetadataResolver(this);
+
         val keystoreGenerator = getKeystoreGenerator();
         if (keystoreGenerator.shouldGenerate()) {
             LOGGER.warn("Generating keystore one for/via: {}", this.keystoreResource);
