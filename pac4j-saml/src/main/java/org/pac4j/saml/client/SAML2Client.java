@@ -115,7 +115,7 @@ public class SAML2Client extends IndirectClient implements Closeable {
 
         initDecrypter();
         initSignatureSigningParametersProvider();
-        initIdentityProviderMetadataResolver();
+        initIdentityProviderMetadataResolver(forceReinit);
         initServiceProviderMetadataResolver();
         initSAMLContextProvider();
         initSignatureTrustEngineProvider();
@@ -216,12 +216,9 @@ public class SAML2Client extends IndirectClient implements Closeable {
         this.serviceProviderMetadataResolver.resolve();
     }
 
-    /**
-     * <p>initIdentityProviderMetadataResolver.</p>
-     */
-    protected void initIdentityProviderMetadataResolver() {
+    protected void initIdentityProviderMetadataResolver(final boolean forceReinit) {
         this.identityProviderMetadataResolver = this.configuration.getIdentityProviderMetadataResolver();
-        this.identityProviderMetadataResolver.resolve();
+        this.identityProviderMetadataResolver.resolve(forceReinit);
     }
 
     /**
