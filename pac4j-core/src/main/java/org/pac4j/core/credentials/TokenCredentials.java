@@ -19,12 +19,12 @@ import java.io.Serial;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class TokenCredentials extends Credentials {
 
     @Serial
     private static final long serialVersionUID = -4270718634364817595L;
 
-    @Getter
-    @Setter
     private String token;
 }

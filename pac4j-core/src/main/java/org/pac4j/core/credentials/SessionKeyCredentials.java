@@ -2,6 +2,8 @@ package org.pac4j.core.credentials;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 import org.pac4j.core.logout.LogoutType;
 
@@ -13,10 +15,12 @@ import org.pac4j.core.logout.LogoutType;
  */
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
+@NoArgsConstructor
+@Getter
+@Setter
 public class SessionKeyCredentials extends Credentials {
 
-    @Getter
-    private final String sessionKey;
+    private String sessionKey;
 
     /**
      * <p>Constructor for SessionKeyCredentials.</p>
