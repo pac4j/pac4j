@@ -57,6 +57,7 @@ public class OAuth20Credentials extends Credentials {
     @AllArgsConstructor
     @NoArgsConstructor
     @With
+    @EqualsAndHashCode
     public static class OAuth20AccessToken implements Serializable {
         @Serial
         private static final long serialVersionUID = -1370874913317625788L;
