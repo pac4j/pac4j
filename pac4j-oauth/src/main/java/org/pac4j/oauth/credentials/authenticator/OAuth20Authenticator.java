@@ -45,6 +45,6 @@ public class OAuth20Authenticator extends OAuthAuthenticator {
             throw new HttpCommunicationException("Error getting token:" + e.getMessage());
         }
         logger.debug("accessToken: {}", accessToken);
-        oAuth20Credentials.setAccessToken(accessToken);
+        oAuth20Credentials.setAccessToken(OAuth20Credentials.OAuth20AccessToken.from(accessToken));
     }
 }

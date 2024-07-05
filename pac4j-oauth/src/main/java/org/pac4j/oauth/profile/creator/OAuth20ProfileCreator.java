@@ -39,12 +39,12 @@ public class OAuth20ProfileCreator extends OAuthProfileCreator {
     @Override
     protected OAuth2AccessToken getAccessToken(final Credentials credentials) {
         // we assume the access token only has been passed: it can be a bearer call (HTTP client)
-        if (credentials instanceof TokenCredentials) {
-            val accessToken = ((TokenCredentials) credentials).getToken();
+        if (credentials instanceof TokenCredentials tokenCredentials) {
+            val accessToken = tokenCredentials.getToken();
             return new OAuth2AccessToken(accessToken);
         }
         // regular OAuth flow
-        return ((OAuth20Credentials) credentials).getAccessToken();
+        return ((OAuth20Credentials) credentials).toAccessToken();
     }
 
     /** {@inheritDoc} */
