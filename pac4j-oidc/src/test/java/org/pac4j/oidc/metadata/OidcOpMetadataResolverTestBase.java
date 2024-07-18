@@ -41,7 +41,8 @@ public class OidcOpMetadataResolverTestBase {
         return oidcOpMetadataResolver;
     }
     
-    protected static AzureAd2OidcConfiguration getAzureAd2OidcConfiguration(Set<ClientAuthenticationMethod> supportedClientAuthenticationMethods) {
+    protected static AzureAd2OidcConfiguration getAzureAd2OidcConfiguration(
+        final Set<ClientAuthenticationMethod> supportedClientAuthenticationMethods) {
         AzureAd2OidcConfiguration configuration = new AzureAd2OidcConfiguration();
         configuration.setClientId("clientId");
         configuration.setSecret("secret");
