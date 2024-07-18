@@ -8,8 +8,9 @@ title: Release notes&#58;
 **v6.0.5**:
 - Allow to force the reloading of the SAML metadata
 - Reinforce security by checking OIDC logout requests (can be disabled via `OidConfiguration.setLogoutValidation(false)`)
-- Retrieving OIDC resources such as keys from a remote IDP now recognizes the OIDC configuration for remote hostname verification.
-- OAuth2 credentials can now be serialized from/to JSON correctly using an intermediate object to carry the access token.
+- Retrieving OIDC resources such as keys from a remote IDP now recognizes the OIDC configuration for remote hostname verification
+- OAuth2 credentials can now be serialized from/to JSON correctly using an intermediate object to carry the access token
+- Properly handle the common tenant for Microsoft Azure OIDC
 
 **v6.0.4**:
 - OIDC support: set the profile identifier from the subject of the userinfo endpoint if need be
