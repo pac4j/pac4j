@@ -59,7 +59,7 @@
 	</modules>
 
 	<properties>
-        <awssdk.version>2.26.27</awssdk.version>
+        <awssdk.version>2.26.28</awssdk.version>
         <mongo-driver.version>5.1.2</mongo-driver.version>
         <flapdoodle.version>3.5.4</flapdoodle.version>
 		<junit.version>4.13.2</junit.version>
