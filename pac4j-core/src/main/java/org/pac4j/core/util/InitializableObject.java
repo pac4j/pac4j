@@ -19,17 +19,17 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Getter
 public abstract class InitializableObject {
 
-    private AtomicBoolean initialized = new AtomicBoolean(false);
+    private final AtomicBoolean initialized = new AtomicBoolean(false);
 
     @Setter
-    private int maxAttempts = 3;
+    private volatile int maxAttempts = 3;
 
-    private AtomicInteger nbAttempts = new AtomicInteger(0);
+    private final AtomicInteger nbAttempts = new AtomicInteger(0);
 
     private volatile Long lastAttempt;
 
     @Setter
-    private long minTimeIntervalBetweenAttemptsInMilliseconds = 5000;
+    private volatile long minTimeIntervalBetweenAttemptsInMilliseconds = 5000;
 
     /**
      * Initialize the object.
