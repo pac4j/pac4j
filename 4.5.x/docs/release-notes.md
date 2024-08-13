@@ -6,6 +6,7 @@ title: Release notes&#58;
 **v4.5.8**:
 - Only 'SAML version 2' in metadata
 - Fix `ConcurrentModificationException` in `ProfileManager.removeOrRenewExpiredProfiles`
+- Security fix: cannot accept empty OIDC credentials
 
 **v4.5.7**:
 - Security fix on the `logoutUrlPattern`
