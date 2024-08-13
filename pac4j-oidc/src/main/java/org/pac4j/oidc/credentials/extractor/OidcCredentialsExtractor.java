@@ -17,6 +17,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.SessionKeyCredentials;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.BadRequestAction;
 import org.pac4j.core.logout.LogoutType;
 import org.pac4j.core.util.CommonHelper;
@@ -165,6 +166,9 @@ public class OidcCredentialsExtractor implements CredentialsExtractor {
             val accessToken = successResponse.getAccessToken();
             if (accessToken != null) {
                 credentials.setAccessTokenObject(accessToken);
+            }
+            if (code == null && idToken == null && accessToken == null) {
+                throw new TechnicalException("Cannot accept empty OIDC credentials");
             }
 
             return Optional.of(credentials);
