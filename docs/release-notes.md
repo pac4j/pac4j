@@ -5,6 +5,9 @@ title: Release notes&#58;
 
 ### JDK17:
 
+**v6.0.6**:
+- Security fix: cannot accept empty OIDC credentials
+
 **v6.0.5**:
 - Allow to force the reloading of the SAML metadata
 - Reinforce security by checking OIDC logout requests (can be disabled via `OidConfiguration.setLogoutValidation(false)`)
@@ -66,6 +69,9 @@ title: Release notes&#58;
 ---
 
 ### JDK11:
+
+**v5.7.7**:
+- Security fix: cannot accept empty OIDC credentials
 
 **v5.7.6**:
 - De-duplicate user profile attribute values (avoid memory overconsumption)
@@ -249,6 +255,7 @@ title: Release notes&#58;
 **v4.5.8**:
 - Only 'SAML version 2' in metadata
 - Fix `ConcurrentModificationException` in `ProfileManager.removeOrRenewExpiredProfiles`
+- Security fix: cannot accept empty OIDC credentials
 
 **v4.5.7**:
 - Security fix on the `logoutUrlPattern`
