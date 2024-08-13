@@ -3,6 +3,9 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v5.7.7**:
+- Security fix: cannot accept empty OIDC credentials
+
 **v5.7.6**:
 - De-duplicate user profile attribute values (avoid memory overconsumption)
 - OIDC support: set the profile identifier from the subject of the userinfo endpoint if need be
@@ -183,6 +186,7 @@ title: Release notes&#58;
 **v4.5.8**:
 - Only 'SAML version 2' in metadata
 - Fix `ConcurrentModificationException` in `ProfileManager.removeOrRenewExpiredProfiles`
+- Security fix: cannot accept empty OIDC credentials
 
 **v4.5.7**:
 - Security fix on the `logoutUrlPattern`
