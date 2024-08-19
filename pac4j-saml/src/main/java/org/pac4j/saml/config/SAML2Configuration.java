@@ -102,7 +102,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
 
     private String serviceProviderEntityId;
 
-    private long maximumAuthenticationLifetime = 3600;
+    private long maximumAuthenticationLifetime;
 
     private long acceptedSkew = 300;
 
