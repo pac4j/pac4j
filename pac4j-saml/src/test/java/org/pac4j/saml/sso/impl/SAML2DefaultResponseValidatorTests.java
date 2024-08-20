@@ -363,4 +363,38 @@ public class SAML2DefaultResponseValidatorTests {
 
         assertNotNull(credentials);
     }
+
+    @Test
+    public void testAuthnInstantValidationDisabled() throws Exception {
+        val saml2Configuration = getSaml2Configuration(false, false);
+        saml2Configuration.setAllSignatureValidationDisabled(true);
+        saml2Configuration.setResponseDestinationAttributeMandatory(false);
+        saml2Configuration.setMaximumAuthenticationLifetime(-1);
+
+        val response = getResponse();
+        // Move the authn-instant back many years to simulate an "expired" assertion.
+        response.getAssertions().forEach(assertion ->
+            assertion.getAuthnStatements().forEach(authnStatement -> authnStatement.setAuthnInstant(
+                ZonedDateTime.now(ZoneOffset.UTC).minusYears(10).toInstant())));
+        response.setSignature(null);
+        response.getAssertions().get(0).setSignature(null);
+
+        val context = new SAML2MessageContext(new CallContext(MockWebContext.create(), new MockSessionStore()));
+        context.setSaml2Configuration(saml2Configuration);
+        context.getMessageContext().setMessage(response);
+
+        val samlSelfEntityContext = context.getSAMLSelfEntityContext();
+        samlSelfEntityContext.setEntityId("https://auth.izslt.it");
+
+        val endpoint = mock(Endpoint.class);
+        when(endpoint.getLocation()).thenReturn("https://auth.izslt.it/cas/login?client_name=idptest");
+
+        val samlEndpointContext = context.getSAMLEndpointContext();
+        samlEndpointContext.setEndpoint(endpoint);
+
+        val validator = createResponseValidatorWithSigningValidationOf(saml2Configuration);
+        var credentials = validator.validate(context);
+
+        assertNotNull(credentials);
+    }
 }

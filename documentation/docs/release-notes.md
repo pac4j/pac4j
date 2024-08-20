@@ -5,6 +5,9 @@ title: Release notes&#58;
 
 ### JDK17:
 
+**v6.0.7**:
+- SAML2: `maximumAuthenticationLifetime` is set to `0` by default to disable the validation of `authnInstant` in SAML2 assertions.
+
 **v6.0.6**:
 - Security fix: cannot accept empty OIDC credentials
 
