@@ -1,7 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>pac4j: security for Java</title>
+    <title>pac4j:
+        {% if page.path %}
+            {{ page.path | replace: "-"," " | replace: "_"," " | replace: ".md", "" | replace: ".html", "" }}
+        {% else %}
+            security for Java
+        {% endif %}
+    </title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <link rel="stylesheet" href="/css/main.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
