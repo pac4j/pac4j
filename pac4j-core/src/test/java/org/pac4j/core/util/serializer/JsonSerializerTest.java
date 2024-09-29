@@ -6,6 +6,7 @@ import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 
+import java.time.Instant;
 import java.util.LinkedHashMap;
 
 import static org.junit.Assert.assertEquals;
@@ -71,6 +72,25 @@ public class JsonSerializerTest implements TestsConstants {
         val profile = new CommonProfile();
         profile.setId(ID);
         profile.addAttribute(KEY, VALUE);
+        val profiles = new LinkedHashMap<String, UserProfile>();
+        profiles.put("myprofile", profile);
+
+        val serializer = new JsonSerializer();
+        val encoded = serializer.serializeToBytes(profiles);
+        val decoded = serializer.deserializeFromBytes(encoded);
+
+        assertEquals(LinkedHashMap.class, decoded.getClass());
+        val profiles2 = (LinkedHashMap<String, UserProfile>) decoded;
+        assertEquals(1, profiles2.size());
+        assertEquals(profile, profiles2.get("myprofile"));
+    }
+
+    @Test
+    public void testCanSerializeProfilesWithTimeValues() {
+        val now = Instant.now();
+        val profile = new CommonProfile();
+        profile.setId(ID);
+        profile.addAttribute("notOnOrAfter", now);
         val profiles = new LinkedHashMap<String, UserProfile>();
         profiles.put("myprofile", profile);
 

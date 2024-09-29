@@ -32,8 +32,8 @@ import org.pac4j.saml.util.SAML2Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -137,7 +137,7 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
             this.builderFactory.getBuilder(EntityDescriptor.DEFAULT_ELEMENT_NAME);
         val descriptor = Objects.requireNonNull(builder).buildObject();
         descriptor.setEntityID(this.entityId);
-        descriptor.setValidUntil(ZonedDateTime.now(ZoneOffset.UTC).plusYears(20).toInstant());
+        descriptor.setValidUntil(Instant.now().plus(20 * 365, ChronoUnit.DAYS));
         descriptor.setID(SAML2Utils.generateID());
         descriptor.setExtensions(generateMetadataExtensions());
         descriptor.getRoleDescriptors().add(buildSPSSODescriptor());

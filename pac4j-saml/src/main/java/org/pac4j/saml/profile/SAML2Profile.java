@@ -5,7 +5,7 @@ import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.saml.credentials.authenticator.SAML2Authenticator;
 
 import java.io.Serial;
-import java.time.ZonedDateTime;
+import java.time.Instant;
 import java.util.List;
 
 /**
@@ -54,36 +54,36 @@ public class SAML2Profile extends CommonProfile {
     /**
      * <p>getNotBefore.</p>
      *
-     * @return a {@link ZonedDateTime} object
+     * @return a {@link Instant} object
      */
-    public ZonedDateTime getNotBefore() {
-        return (ZonedDateTime) getAuthenticationAttribute(SAML2Authenticator.SAML_CONDITION_NOT_BEFORE_ATTRIBUTE);
+    public Instant getNotBefore() {
+        return (Instant) getAuthenticationAttribute(SAML2Authenticator.SAML_CONDITION_NOT_BEFORE_ATTRIBUTE);
     }
 
     /**
      * <p>setNotBefore.</p>
      *
-     * @param notBefore a {@link ZonedDateTime} object
+     * @param notBefore a {@link Instant} object
      */
-    public void setNotBefore(ZonedDateTime notBefore) {
+    public void setNotBefore(Instant notBefore) {
         addAuthenticationAttribute(SAML2Authenticator.SAML_CONDITION_NOT_BEFORE_ATTRIBUTE, notBefore);
     }
 
     /**
      * <p>getNotOnOrAfter.</p>
      *
-     * @return a {@link ZonedDateTime} object
+     * @return a {@link Instant} object
      */
-    public ZonedDateTime getNotOnOrAfter() {
-        return (ZonedDateTime) getAuthenticationAttribute(SAML2Authenticator.SAML_CONDITION_NOT_ON_OR_AFTER_ATTRIBUTE);
+    public Instant getNotOnOrAfter() {
+        return (Instant) getAuthenticationAttribute(SAML2Authenticator.SAML_CONDITION_NOT_ON_OR_AFTER_ATTRIBUTE);
     }
 
     /**
      * <p>setNotOnOrAfter.</p>
      *
-     * @param notOnOrAfter a {@link ZonedDateTime} object
+     * @param notOnOrAfter a {@link Instant} object
      */
-    public void setNotOnOrAfter(ZonedDateTime notOnOrAfter) {
+    public void setNotOnOrAfter(Instant notOnOrAfter) {
         addAuthenticationAttribute(SAML2Authenticator.SAML_CONDITION_NOT_ON_OR_AFTER_ATTRIBUTE, notOnOrAfter);
     }
 

@@ -52,8 +52,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.saml.util.SAML2Utils;
 
 import javax.xml.namespace.QName;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
+import java.time.Instant;
 
 /**
  * Decoder for the artifact binding: it's like the original {@link org.opensaml.saml.saml2.binding.decoding.impl.HTTPArtifactDecoder}
@@ -396,7 +395,7 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
 
         request.setID(idStrategy.generateIdentifier(true));
         request.setDestination(endpoint);
-        request.setIssueInstant(ZonedDateTime.now(ZoneOffset.UTC).toInstant());
+        request.setIssueInstant(Instant.now());
         request.setIssuer(buildIssuer(selfEntityID));
 
         return request;

@@ -18,8 +18,7 @@ import org.pac4j.saml.util.SAML2Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
+import java.time.Instant;
 
 /**
  * Build a SAML2 Authn Request from the given {@link org.opensaml.messaging.context.MessageContext}.
@@ -83,7 +82,7 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
 
         request.setID(SAML2Utils.generateID());
         request.setIssuer(getIssuer(context, selfContext.getEntityId()));
-        request.setIssueInstant(ZonedDateTime.now(ZoneOffset.UTC).plusSeconds(this.issueInstantSkewSeconds).toInstant());
+        request.setIssueInstant(Instant.now().plusSeconds(this.issueInstantSkewSeconds));
         request.setVersion(SAMLVersion.VERSION_20);
 
         request.setIsPassive(configContext.isPassive());
