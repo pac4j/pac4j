@@ -42,12 +42,29 @@ To secure your Java web application, **the reference implementation is to create
 - one endpoint to **receive callbacks** for stateful authentication processes (indirect clients)
 - another endpoint **to perform logout**.
 
-In your framework, you will need to create:
+In each of its component, you will always need to initialize the specific framework configuration by using: `FrameworkAdapter.INSTANCE.applyDefaultSettingsIfUndefined(config);`.
 
-1) a specific `EnvSpecificWebContext` implementing the [`WebContext`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/context/WebContext.java) interface except for JEE environment where you can already use the existing `JEEContext`.
-Your `EnvSpecificWebContext` should delegate to a [`SessionStore`](session-store.html) the calls regarding the web session management
+It will try to set the specific framework configuration :
 
-2) a specific `EnvSpecificHttpActionAdapter` implementing the [`HttpActionAdapter`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/http/adapter/HttpActionAdapter.java) to perform actions on the web context.
+1) from the `org.pac4j.framework.adapter.FrameworkAdapterImpl` class if it exists
+
+2) then from the `org.pac4j.jee.adapter.JEEFrameworkAdapter` class if it is available in the classpath
+
+3) and finally from the `DefaultFrameworkAdapter` class.
+
+In your framework, you will also need to create:
+
+1) a specific `EnvSpecificWebContext` implementing the `WebContext` interface. For JEE environment, you already have the `JEEContext`
+
+2) a specific `EnvSpecificWebContextFactory` implementing the `WebContextFactory` interface to instantiate the `EnvSpecificWebContext`. For JEE environment, you already have the `JEEContextFactory`
+
+3) a specific `EnvSpecificSessionStore` implementing the `SessionStore` interface to deal with the web session. For JEE environment, you already have the `JEESessionStore`
+
+4) a specific `EnvSpecificSessionStoreFactory` implementing the `SessionStoreFactory` interface to instantiate the `EnvSpecificSessionStore`. For JEE environment, you already have the `JEESessionStoreFactory`
+
+5) a specific `EnvSpecificHttpActionAdapter` implementing the `HttpActionAdapter` to perform actions on the web context. For JEE environment, you already have the `JEEHttpActionAdapter`
+
+6) a specific `EnvFrameworkParameters` implementing the `FrameworkParameters` to handle specific framework parameters. For JEE environment, you already have the `JEEFrameworkParameters`.
 
 
 ### A) Secure an URL
@@ -65,40 +82,49 @@ In your framework, you must define the appropriate "filter", "interceptor", "con
     protected final void internalFilter(final HttpServletRequest request, final HttpServletResponse response,
                                         final FilterChain filterChain) throws IOException, ServletException {
 
-        final Config config = getSharedConfig();
+        val config = getSharedConfig();
 
-        final SessionStore bestSessionStore = FindBest.sessionStore(null, config, JEESessionStore.INSTANCE);
-        final HttpActionAdapter bestAdapter = FindBest.httpActionAdapter(null, config, JEEHttpActionAdapter.INSTANCE);
-        final SecurityLogic bestLogic = FindBest.securityLogic(securityLogic, config, DefaultSecurityLogic.INSTANCE);
+        FrameworkAdapter.INSTANCE.applyDefaultSettingsIfUndefined(config);
 
-        final WebContext context = FindBest.webContextFactory(null, config, JEEContextFactory.INSTANCE).newContext(request, response);
-
-        bestLogic.perform(context, bestSessionStore, config, (ctx, session, profiles, parameters) -> {
+        config.getSecurityLogic().perform(config, (ctx, session, profiles) -> {
             // if no profiles are loaded, pac4j is not concerned with this request
             filterChain.doFilter(profiles.isEmpty() ? request : new Pac4JHttpServletRequestWrapper(request, profiles), response);
             return null;
-        }, bestAdapter, clients, authorizers, matchers);
+        }, clients, authorizers, matchers, new JEEFrameworkParameters(request, response));
     }
 ```
 
 - In Play:
 
 ```java
-    protected CompletionStage<Result> internalCall(final Http.Request req, final PlayWebContext webContext, final String clients, final String authorizers, final String matchers, final boolean multiProfile) throws Throwable {
+    protected CompletionStage<Result> internalCall(final PlayFrameworkParameters parameters, final String clients, final String authorizers, final String matchers) throws Throwable {
 
-        final HttpActionAdapter<Result, PlayWebContext> bestAdapter = FindBest.httpActionAdapter(null, config, PlayHttpActionAdapter.INSTANCE);
-        final SecurityLogic<CompletionStage<Result>, PlayWebContext> bestLogic = FindBest.securityLogic(securityLogic, config, DefaultSecurityLogic.INSTANCE);
+        FrameworkAdapter.INSTANCE.applyDefaultSettingsIfUndefined(config);
 
+        final HttpActionAdapter actionAdapterWrapper = (action, webCtx) -> CompletableFuture.completedFuture(config.getHttpActionAdapter().adapt(action, webCtx));
 
-        final HttpActionAdapter<CompletionStage<Result>, PlayWebContext> actionAdapterWrapper = (action, webCtx) -> CompletableFuture.completedFuture(bestAdapter.adapt(action, webCtx));
-        return bestLogic.perform(webContext, config, (webCtx, profiles, parameters) -> {
-	            // when called from Scala
-	            if (delegate == null) {
-	                return CompletableFuture.completedFuture(null);
-	            } else {
-	                return delegate.call(webCtx.supplementRequest(req));
-	            }
-            }, actionAdapterWrapper, clients, authorizers, matchers, multiProfile);
+        val configSecurity = new Config()
+            .withClients(config.getClients())
+            .withAuthorizers(config.getAuthorizers())
+            .withMatchers(config.getMatchers())
+            .withSecurityLogic(config.getSecurityLogic())
+            .withCallbackLogic(config.getCallbackLogic())
+            .withLogoutLogic(config.getLogoutLogic())
+            .withWebContextFactory(config.getWebContextFactory())
+            .withSessionStoreFactory(config.getSessionStoreFactory())
+            .withProfileManagerFactory(config.getProfileManagerFactory())
+            .withHttpActionAdapter(actionAdapterWrapper);
+
+        return (CompletionStage<Result>) configSecurity.getSecurityLogic().perform(configSecurity, (webCtx, session, profiles) -> {
+            val playWebContext = (PlayWebContext) webCtx;
+            // when called from Scala
+            if (delegate == null) {
+                return CompletableFuture.completedFuture(new PlayWebContextResultHolder(playWebContext));
+            } else {
+                return delegate.call(playWebContext.supplementRequest((Http.Request)
+                    playWebContext.getNativeJavaRequest())).thenApply(result -> playWebContext.supplementResponse(result));
+            }
+        }, clients, authorizers, matchers, parameters);
     }
 ```
 
@@ -116,17 +142,13 @@ In your framework, you must define the appropriate "controller" to reply to an H
 ```java
     @Override
     protected void internalFilter(final HttpServletRequest request, final HttpServletResponse response,
-                                           final FilterChain chain) throws IOException, ServletException {
+        final FilterChain chain) throws IOException, ServletException {
 
-        final Config config = getSharedConfig();
+        val config = getSharedConfig();
 
-        final SessionStore bestSessionStore = FindBest.sessionStore(null, config, JEESessionStore.INSTANCE);
-        final HttpActionAdapter bestAdapter = FindBest.httpActionAdapter(null, config, JEEHttpActionAdapter.INSTANCE);
-        final CallbackLogic bestLogic = FindBest.callbackLogic(callbackLogic, config, DefaultCallbackLogic.INSTANCE);
+        FrameworkAdapter.INSTANCE.applyDefaultSettingsIfUndefined(config);
 
-        final WebContext context = FindBest.webContextFactory(null, config, JEEContextFactory.INSTANCE).newContext(request, response);
-
-        bestLogic.perform(context, bestSessionStore, config, bestAdapter, this.defaultUrl, this.renewSession, this.defaultClient);
+        config.getCallbackLogic().perform(config, defaultUrl, renewSession, defaultClient, new JEEFrameworkParameters(request, response));
     }
 ```
 
@@ -135,12 +157,11 @@ In your framework, you must define the appropriate "controller" to reply to an H
 ```java
     public CompletionStage<Result> callback(final Http.Request request) {
 
-        final HttpActionAdapter<Result, PlayWebContext> bestAdapter = FindBest.httpActionAdapter(null, config, PlayHttpActionAdapter.INSTANCE);
-        final CallbackLogic<Result, PlayWebContext> bestLogic = FindBest.callbackLogic(callbackLogic, config, DefaultCallbackLogic.INSTANCE);
+        FrameworkAdapter.INSTANCE.applyDefaultSettingsIfUndefined(config);
 
-        final PlayWebContext playWebContext = new PlayWebContext(request, playSessionStore);
-        return CompletableFuture.supplyAsync(() -> bestLogic.perform(playWebContext, config, bestAdapter,
-                this.defaultUrl, this.saveInSession, this.multiProfile, this.renewSession, this.defaultClient), ec.current());
+        return CompletableFuture.supplyAsync(() ->
+                   (Result) config.getCallbackLogic().perform(config, defaultUrl, renewSession, defaultClient, new PlayFrameworkParameters(request))
+               , ec.current());
     }
 ```
 
@@ -157,17 +178,13 @@ In your framework, you must define the appropriate "controller" to reply to an H
 ```java
     @Override
     protected void internalFilter(final HttpServletRequest request, final HttpServletResponse response,
-                                           final FilterChain chain) throws IOException, ServletException {
+        final FilterChain chain) throws IOException, ServletException {
 
-        final Config config = getSharedConfig();
+        val config = getSharedConfig();
 
-        final SessionStore bestSessionStore = FindBest.sessionStore(null, config, JEESessionStore.INSTANCE);
-        final HttpActionAdapter bestAdapter = FindBest.httpActionAdapter(null, config, JEEHttpActionAdapter.INSTANCE);
-        final LogoutLogic bestLogic = FindBest.logoutLogic(logoutLogic, config, DefaultLogoutLogic.INSTANCE);
+        FrameworkAdapter.INSTANCE.applyDefaultSettingsIfUndefined(config);
 
-        final WebContext context = FindBest.webContextFactory(null, config, JEEContextFactory.INSTANCE).newContext(request, response);
-
-        bestLogic.perform(context, bestSessionStore, config, bestAdapter, this.defaultUrl, this.logoutUrlPattern, this.localLogout, this.destroySession, this.centralLogout);
+        config.getLogoutLogic().perform(config, defaultUrl, logoutUrlPattern, localLogout, destroySession, centralLogout, new JEEFrameworkParameters(request, response));
     }
 ```
 
@@ -176,11 +193,11 @@ In your framework, you must define the appropriate "controller" to reply to an H
 ```java
     public CompletionStage<Result> logout(final Http.Request request) {
 
-        final HttpActionAdapter<Result, PlayWebContext> bestAdapter = FindBest.httpActionAdapter(null, config, PlayHttpActionAdapter.INSTANCE);
-        final LogoutLogic<Result, PlayWebContext> bestLogic = FindBest.logoutLogic(logoutLogic, config, DefaultLogoutLogic.INSTANCE);
+        FrameworkAdapter.INSTANCE.applyDefaultSettingsIfUndefined(config);
 
-        final PlayWebContext playWebContext = new PlayWebContext(request, playSessionStore);
-        return CompletableFuture.supplyAsync(() -> bestLogic.perform(playWebContext, config, bestAdapter, this.defaultUrl,
-                this.logoutUrlPattern, this.localLogout, this.destroySession, this.centralLogout), ec.current());
+        return CompletableFuture.supplyAsync(() ->
+                   (Result) config.getLogoutLogic().perform(config, defaultUrl, logoutUrlPattern, localLogout,
+                       destroySession, centralLogout, new PlayFrameworkParameters(request))
+               , ec.current());
     }
 ```
