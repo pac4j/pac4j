@@ -1,6 +1,7 @@
 package org.pac4j.saml.metadata.keystore;
 
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.asn1.*;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
@@ -61,12 +62,12 @@ public abstract class BaseSAML2KeystoreGenerator implements SAML2KeystoreGenerat
     @Override
     public void generate() {
         try {
-            if (CommonHelper.isBlank(saml2Configuration.getKeyStoreAlias())) {
+            if (StringUtils.isBlank(saml2Configuration.getKeyStoreAlias())) {
                 saml2Configuration.setKeyStoreAlias(getClass().getSimpleName());
                 logger.warn("Defaulting keystore alias {}", saml2Configuration.getKeyStoreAlias());
             }
 
-            if (CommonHelper.isBlank(saml2Configuration.getKeyStoreType())) {
+            if (StringUtils.isBlank(saml2Configuration.getKeyStoreType())) {
                 saml2Configuration.setKeyStoreType(KeyStore.getDefaultType());
                 logger.warn("Defaulting keystore type {}", saml2Configuration.getKeyStoreType());
             }

@@ -13,14 +13,15 @@ import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import com.nimbusds.openid.connect.sdk.validators.IDTokenValidator;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oidc.config.OidcConfiguration;
+import org.pac4j.oidc.exceptions.OidcException;
+import org.pac4j.oidc.exceptions.OidcTokenException;
 
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
-import org.pac4j.oidc.exceptions.OidcException;
-import org.pac4j.oidc.exceptions.OidcTokenException;
 
 /**
  * ID Token validator.
@@ -80,7 +81,7 @@ public class TokenValidator {
                 }
                 LOGGER.warn("Allowing unsigned ID tokens");
                 idTokenValidator = new IDTokenValidator(metadata.getIssuer(), _clientID);
-            } else if (CommonHelper.isNotBlank(configuration.getSecret()) && (JWSAlgorithm.HS256.equals(jwsAlgorithm) ||
+            } else if (StringUtils.isNotBlank(configuration.getSecret()) && (JWSAlgorithm.HS256.equals(jwsAlgorithm) ||
                 JWSAlgorithm.HS384.equals(jwsAlgorithm) || JWSAlgorithm.HS512.equals(jwsAlgorithm))) {
                 val _secret = new Secret(configuration.getSecret());
                 idTokenValidator = createHMACTokenValidator(jwsAlgorithm, _clientID, _secret);

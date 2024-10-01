@@ -1,12 +1,12 @@
 package org.pac4j.oauth.run;
 
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.run.RunClient;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oauth.client.TwitterClient;
 import org.pac4j.oauth.profile.twitter.TwitterProfile;
@@ -58,7 +58,7 @@ public final class RunTwitterClient extends RunClient {
         assertEquals("488358057", profile.getId());
         assertEquals(TwitterProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + "488358057", profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), TwitterProfile.class));
-        assertTrue(CommonHelper.isNotBlank(profile.getAccessToken()));
+        assertTrue(StringUtils.isNotBlank(profile.getAccessToken()));
         assertCommonProfile(userProfile, null, null, null, "test scribeUP", "testscribeUP", Gender.UNSPECIFIED,
                 Locale.UK, ".twimg.com/sticky/default_profile_images/default_profile_normal.png",
                 "http://t.co/fNjYqp7wZ8", "New York");

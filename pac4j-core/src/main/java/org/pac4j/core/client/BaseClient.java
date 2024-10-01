@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.authorization.generator.AuthorizationGenerator;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.CallContext;
@@ -64,7 +65,7 @@ public abstract class BaseClient extends InitializableObject implements Client {
     /** {@inheritDoc} */
     @Override
     public String getName() {
-        if (CommonHelper.isBlank(this.name)) {
+        if (StringUtils.isBlank(this.name)) {
             return this.getClass().getSimpleName();
         }
         return this.name;

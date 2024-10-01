@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.opensaml.saml.metadata.resolver.impl.AbstractMetadataResolver;
@@ -69,7 +70,7 @@ public class SAML2MongoMetadataGenerator extends BaseSAML2MetadataGenerator {
     /** {@inheritDoc} */
     @Override
     public boolean storeMetadata(final String metadata, final boolean force) {
-        if (CommonHelper.isBlank(metadata)) {
+        if (StringUtils.isBlank(metadata)) {
             logger.info("No metadata is provided");
             return false;
         }

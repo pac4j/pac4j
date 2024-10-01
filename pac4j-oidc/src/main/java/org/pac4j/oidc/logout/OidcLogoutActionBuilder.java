@@ -2,6 +2,7 @@ package org.pac4j.oidc.logout;
 
 import com.nimbusds.openid.connect.sdk.LogoutRequest;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.exception.http.ForbiddenAction;
@@ -47,13 +48,13 @@ public class OidcLogoutActionBuilder implements LogoutActionBuilder {
     @Override
     public Optional<RedirectionAction> getLogoutAction(final CallContext ctx, final UserProfile currentProfile, final String targetUrl) {
         val logoutUrl = configuration.findLogoutUrl();
-        if (CommonHelper.isNotBlank(logoutUrl) && currentProfile instanceof OidcProfile) {
+        if (StringUtils.isNotBlank(logoutUrl) && currentProfile instanceof OidcProfile) {
             try {
                 val endSessionEndpoint = new URI(logoutUrl);
                 val idToken = ((OidcProfile) currentProfile).getIdToken();
 
                 LogoutRequest logoutRequest;
-                if (CommonHelper.isNotBlank(targetUrl)) {
+                if (StringUtils.isNotBlank(targetUrl)) {
                     logoutRequest = new LogoutRequest(endSessionEndpoint, idToken, new URI(targetUrl), null);
                 } else {
                     logoutRequest = new LogoutRequest(endSessionEndpoint, idToken);

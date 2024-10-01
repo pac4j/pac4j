@@ -4,6 +4,7 @@ import com.github.scribejava.core.model.Token;
 import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.oauth.OAuth10aService;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpCommunicationException;
@@ -42,7 +43,7 @@ public class YahooProfileCreator extends OAuth10ProfileCreator {
         var body = sendRequestForData(service, accessToken, profileUrl, profileDefinition.getProfileVerb());
         val guid = CommonHelper.substringBetween(body, "<value>", "</value>");
         logger.debug("guid : {}", guid);
-        if (CommonHelper.isBlank(guid)) {
+        if (StringUtils.isBlank(guid)) {
             throw new HttpCommunicationException("Cannot find guid from body : " + body);
         }
         body = sendRequestForData(service, accessToken, "https://social.yahooapis.com/v1/user/" + guid + "/profile?format=json", Verb.GET);

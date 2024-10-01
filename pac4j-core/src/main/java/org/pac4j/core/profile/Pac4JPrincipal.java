@@ -4,7 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.val;
-import org.pac4j.core.util.CommonHelper;
+import org.apache.commons.lang3.StringUtils;
 
 import java.security.Principal;
 
@@ -33,7 +33,7 @@ public class Pac4JPrincipal implements Principal {
      */
     public Pac4JPrincipal(final UserProfile profile) {
         val username = profile.getUsername();
-        if (CommonHelper.isNotBlank(username)) {
+        if (StringUtils.isNotBlank(username)) {
             this.name = username;
         } else {
             this.name = profile.getId();

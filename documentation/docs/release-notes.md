@@ -6,6 +6,7 @@ title: Release notes&#58;
 ### JDK17:
 
 **v6.1.0**:
+- Deprecate basic `CommonHelper` methods in favor of `commons-lang3`
 - Allow serializing SAML2Profiles using the JsonSerializer with default typing
 
 **v6.0.7**:

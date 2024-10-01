@@ -4,12 +4,12 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.WithLocationAction;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.util.Pac4jConstants;
 
@@ -52,7 +52,7 @@ public class DefaultAjaxRequestResolver implements AjaxRequestResolver, HttpCons
 
         val webContext = ctx.webContext();
         if (webContext.getRequestParameter(FACES_PARTIAL_AJAX_PARAMETER).isEmpty()) {
-            if (CommonHelper.isNotBlank(url)) {
+            if (StringUtils.isNotBlank(url)) {
                 webContext.setResponseHeader(HttpConstants.LOCATION_HEADER, url);
             }
             LOGGER.debug("Faces is not used: returning unauthenticated error for url: {}", url);
@@ -62,7 +62,7 @@ public class DefaultAjaxRequestResolver implements AjaxRequestResolver, HttpCons
         val buffer = new StringBuilder();
         buffer.append("<?xml version='1.0' encoding='UTF-8'?>");
         buffer.append("<partial-response>");
-        if (CommonHelper.isNotBlank(url)) {
+        if (StringUtils.isNotBlank(url)) {
             buffer.append("<redirect url=\"" + url.replaceAll("&", "&amp;") + "\"></redirect>");
         }
         buffer.append("</partial-response>");

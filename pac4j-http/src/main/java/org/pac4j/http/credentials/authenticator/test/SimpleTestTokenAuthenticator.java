@@ -1,6 +1,7 @@
 package org.pac4j.http.credentials.authenticator.test;
 
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.TokenCredentials;
@@ -8,7 +9,6 @@ import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.UserProfile;
-import org.pac4j.core.util.CommonHelper;
 
 import java.util.Optional;
 
@@ -27,7 +27,7 @@ public class SimpleTestTokenAuthenticator implements Authenticator {
             throw new CredentialsException("credentials must not be null");
         }
         val credentials = (TokenCredentials) cred;
-        if (CommonHelper.isBlank(credentials.getToken())) {
+        if (StringUtils.isBlank(credentials.getToken())) {
             throw new CredentialsException("token must not be blank");
         }
         val token = credentials.getToken();

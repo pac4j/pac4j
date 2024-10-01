@@ -1,12 +1,12 @@
 package org.pac4j.oauth.run;
 
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.run.RunClient;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oauth.client.WordPressClient;
 import org.pac4j.oauth.profile.wordpress.WordPressProfile;
@@ -52,7 +52,7 @@ public final class RunWordPressClient extends RunClient {
         assertEquals("35944437", profile.getId());
         assertEquals(WordPressProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + "35944437", profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), WordPressProfile.class));
-        assertTrue(CommonHelper.isNotBlank(profile.getAccessToken()));
+        assertTrue(StringUtils.isNotBlank(profile.getAccessToken()));
         assertCommonProfile(userProfile, "testscribeup@gmail.com", null, null, "testscribeup", "testscribeup",
                 Gender.UNSPECIFIED, null,
                 "https://0.gravatar.com/avatar/67c3844a672979889c1e3abbd8c4eb22?s=96&d=identicon&r=G",

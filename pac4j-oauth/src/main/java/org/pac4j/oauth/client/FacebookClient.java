@@ -2,6 +2,7 @@ package org.pac4j.oauth.client;
 
 import com.github.scribejava.apis.FacebookApi;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.profile.facebook.FacebookConfiguration;
@@ -63,7 +64,7 @@ public class FacebookClient extends OAuth20Client {
             val userDenied = "access_denied".equals(error) && "user_denied".equals(errorReason);
             val errorCode = ctx.getRequestParameter("error_code").orElse(null);
             val errorMessage = ctx.getRequestParameter("error_message").orElse(null);
-            val hasError = CommonHelper.isNotBlank(errorCode) || CommonHelper.isNotBlank(errorMessage);
+            val hasError = StringUtils.isNotBlank(errorCode) || StringUtils.isNotBlank(errorMessage);
             if (userDenied || hasError) {
                 return true;
             } else {

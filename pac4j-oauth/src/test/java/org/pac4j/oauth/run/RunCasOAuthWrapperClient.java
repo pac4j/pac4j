@@ -1,11 +1,11 @@
 package org.pac4j.oauth.run;
 
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.run.RunClient;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oauth.client.CasOAuthWrapperClient;
 import org.pac4j.oauth.profile.casoauthwrapper.CasOAuthWrapperProfile;
@@ -53,7 +53,7 @@ public final class RunCasOAuthWrapperClient extends RunClient {
         assertEquals(CasOAuthWrapperProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + getLogin(),
                 profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), CasOAuthWrapperProfile.class));
-        assertTrue(CommonHelper.isNotBlank(profile.getAccessToken()));
+        assertTrue(StringUtils.isNotBlank(profile.getAccessToken()));
         assertTrue(profile.isFromNewLogin());
         assertEquals("AcceptUsersAuthenticationHandler", profile.getAuthenticationMethod());
         assertFalse(profile.isLongTermAuthenticationRequestTokenUsed());

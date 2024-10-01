@@ -4,7 +4,7 @@ import com.github.scribejava.core.builder.api.DefaultApi20;
 import com.github.scribejava.core.httpclient.HttpClient;
 import com.github.scribejava.core.httpclient.HttpClientConfig;
 import com.github.scribejava.core.oauth.OAuth20Service;
-import org.pac4j.core.util.CommonHelper;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.scribe.service.CronofyService;
 
 import java.io.OutputStream;
@@ -43,7 +43,7 @@ public final class CronofyApi20 extends DefaultApi20 {
     }
 
     private String computeBaseUrl() {
-        if (CommonHelper.isNotBlank(sdkIdentifier)) {
+        if (StringUtils.isNotBlank(sdkIdentifier)) {
             return "https://app-" + sdkIdentifier + ".cronofy.com";
         } else {
             return "https://app.cronofy.com";

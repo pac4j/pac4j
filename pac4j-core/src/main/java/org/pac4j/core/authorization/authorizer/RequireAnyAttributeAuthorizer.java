@@ -1,10 +1,10 @@
 package org.pac4j.core.authorization.authorizer;
 
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.profile.UserProfile;
-import org.pac4j.core.util.CommonHelper;
 
 import java.util.Collection;
 
@@ -44,7 +44,7 @@ public class RequireAnyAttributeAuthorizer extends AbstractRequireAnyAuthorizer<
             return false;
         }
 
-        if (CommonHelper.isBlank(this.valueToMatch)) {
+        if (StringUtils.isBlank(this.valueToMatch)) {
             return true;
         }
 

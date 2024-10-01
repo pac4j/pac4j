@@ -1,6 +1,7 @@
 package org.pac4j.http.credentials.authenticator.test;
 
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
@@ -8,7 +9,6 @@ import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.UserProfile;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 
 import java.util.Optional;
@@ -30,13 +30,13 @@ public class SimpleTestUsernamePasswordAuthenticator implements Authenticator {
         val credentials = (UsernamePasswordCredentials) cred;
         var username = credentials.getUsername();
         var password = credentials.getPassword();
-        if (CommonHelper.isBlank(username)) {
+        if (StringUtils.isBlank(username)) {
             throw new CredentialsException("Username cannot be blank");
         }
-        if (CommonHelper.isBlank(password)) {
+        if (StringUtils.isBlank(password)) {
             throw new CredentialsException("Password cannot be blank");
         }
-        if (CommonHelper.areNotEquals(username, password)) {
+        if (!StringUtils.equals(username, password)) {
             throw new CredentialsException("Username : '" + username + "' does not match password");
         }
         UserProfile profile = new CommonProfile();

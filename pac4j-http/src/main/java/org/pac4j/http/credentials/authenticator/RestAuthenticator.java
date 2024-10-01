@@ -8,6 +8,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.credentials.Credentials;
@@ -81,7 +82,7 @@ public class RestAuthenticator extends ProfileDefinitionAware implements Authent
         val credentials = (UsernamePasswordCredentials) cred;
         val username = credentials.getUsername();
         val password = credentials.getPassword();
-        if (CommonHelper.isBlank(username) || CommonHelper.isBlank(password)) {
+        if (StringUtils.isBlank(username) || StringUtils.isBlank(password)) {
             LOGGER.info("Empty username or password");
             return Optional.of(credentials);
         }

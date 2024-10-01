@@ -17,7 +17,6 @@ import org.pac4j.core.client.config.BaseClientConfiguration;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.converter.AttributeConverter;
 import org.pac4j.core.resource.SpringResourceHelper;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.saml.crypto.CredentialProvider;
 import org.pac4j.saml.crypto.KeyStoreCredentialProvider;
@@ -305,7 +304,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
     public void setCallbackUrl(final String callbackUrl) {
         this.callbackUrl = callbackUrl;
         try {
-            if (CommonHelper.isBlank(getServiceProviderEntityId())) {
+            if (StringUtils.isBlank(getServiceProviderEntityId())) {
                 val url = new URL(callbackUrl);
                 if (url.getQuery() != null) {
                     setServiceProviderEntityId(url.toString().replace('?' + url.getQuery(), Pac4jConstants.EMPTY_STRING));
@@ -538,7 +537,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
      * @param generator a {@link BaseSAML2MetadataGenerator} object
      */
     protected void determineSingleSignOutServiceUrl(final BaseSAML2MetadataGenerator generator) {
-        val logoutUrl = CommonHelper.ifBlank(this.singleSignOutServiceUrl, callbackUrl);
+        val logoutUrl = StringUtils.defaultIfBlank(this.singleSignOutServiceUrl, callbackUrl);
         generator.setSingleLogoutServiceUrl(logoutUrl);
     }
 

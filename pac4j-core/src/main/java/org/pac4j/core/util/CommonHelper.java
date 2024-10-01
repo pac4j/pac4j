@@ -1,6 +1,7 @@
 package org.pac4j.core.util;
 
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.exception.TechnicalException;
 
 import java.io.UnsupportedEncodingException;
@@ -9,11 +10,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * This class gathers all the utilities methods.
@@ -22,37 +19,6 @@ import java.util.UUID;
  * @since 1.4.0
  */
 public final class CommonHelper {
-
-    /**
-     * Return if the String is not blank.
-     *
-     * @param s string
-     * @return if the String is not blank
-     */
-    public static boolean isNotBlank(final String s) {
-        return s != null && !s.isBlank();
-    }
-
-    /**
-     * Return if the String is blank.
-     *
-     * @param s string
-     * @return if the String is blank
-     */
-    public static boolean isBlank(final String s) {
-        return !isNotBlank(s);
-    }
-
-    /**
-     * Compare two String to see if they are equals (both null is ok).
-     *
-     * @param s1 string
-     * @param s2 string
-     * @return if two String are equals
-     */
-    public static boolean areEquals(final String s1, final String s2) {
-        return s1 == null ? s2 == null : s1.equals(s2);
-    }
 
     /**
      * Compare two String to see if they are equals ignoring the case and the blank spaces (both null is ok).
@@ -67,17 +33,6 @@ public final class CommonHelper {
         } else {
             return s1 != null && s2 != null && s1.trim().equalsIgnoreCase(s2.trim());
         }
-    }
-
-    /**
-     * Compare two String to see if they are not equals.
-     *
-     * @param s1 string
-     * @param s2 string
-     * @return if two String are not equals
-     */
-    public static boolean areNotEquals(final String s1, final String s2) {
-        return !areEquals(s1, s2);
     }
 
     /**
@@ -120,7 +75,7 @@ public final class CommonHelper {
      * @param msg   an expanatory message
      */
     public static void assertNotBlank(final String name, final String value, final String msg) {
-        assertTrue(!isBlank(value), name + " cannot be blank" + (msg != null ? ": " + msg : Pac4jConstants.EMPTY_STRING));
+        assertTrue(!StringUtils.isBlank(value), name + " cannot be blank" + (msg != null ? ": " + msg : Pac4jConstants.EMPTY_STRING));
     }
 
     /**
@@ -347,13 +302,27 @@ public final class CommonHelper {
         return constructor;
     }
 
-    /**
-     * <p>ifBlank.</p>
-     *
-     * @param value a {@link String} object
-     * @param defaultValue a {@link String} object
-     * @return a {@link String} object
-     */
+    @Deprecated
+    public static boolean isNotBlank(final String s) {
+        return s != null && !s.isBlank();
+    }
+
+    @Deprecated
+    public static boolean isBlank(final String s) {
+        return !isNotBlank(s);
+    }
+
+    @Deprecated
+    public static boolean areEquals(final String s1, final String s2) {
+        return s1 == null ? s2 == null : s1.equals(s2);
+    }
+
+    @Deprecated
+    public static boolean areNotEquals(final String s1, final String s2) {
+        return !areEquals(s1, s2);
+    }
+
+    @Deprecated
     public static String ifBlank(final String value, final String defaultValue) {
         return isBlank(value) ? defaultValue : value;
     }

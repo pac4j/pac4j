@@ -1,6 +1,7 @@
 package org.pac4j.config.client;
 
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.config.builder.*;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.config.Config;
@@ -12,8 +13,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static org.pac4j.core.util.CommonHelper.isNotBlank;
 
 /**
  * Build a configuration from properties.
@@ -124,7 +123,7 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
      */
     protected boolean hasShiroEncoder() {
         for (var i = 0; i <= MAX_NUM_ENCODERS; i++) {
-            if (isNotBlank(getProperty(SHIRO_ENCODER, i)) || containsProperty(SHIRO_ENCODER_GENERATE_PUBLIC_SALT, i)
+            if (StringUtils.isNotBlank(getProperty(SHIRO_ENCODER, i)) || containsProperty(SHIRO_ENCODER_GENERATE_PUBLIC_SALT, i)
                 || containsProperty(SHIRO_ENCODER_HASH_ALGORITHM_NAME, i) || containsProperty(SHIRO_ENCODER_HASH_ITERATIONS, i)
                 || containsProperty(SHIRO_ENCODER_PRIVATE_SALT, i)) {
                 return true;
@@ -141,7 +140,7 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
     protected boolean hasSpringEncoder() {
         for (var i = 0; i <= MAX_NUM_ENCODERS; i++) {
             val type = getProperty(SPRING_ENCODER_TYPE, i);
-            if (isNotBlank(type)) {
+            if (StringUtils.isNotBlank(type)) {
                 return true;
             }
         }
@@ -156,7 +155,7 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
     protected boolean hasLdapAuthenticator() {
         for (var i = 0; i <= MAX_NUM_AUTHENTICATORS; i++) {
             val type = getProperty(LDAP_TYPE, i);
-            if (isNotBlank(type)) {
+            if (StringUtils.isNotBlank(type)) {
                 return true;
             }
         }
@@ -172,7 +171,7 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
         for (var i = 0; i <= MAX_NUM_AUTHENTICATORS; i++) {
             val className = getProperty(DB_DATASOURCE_CLASS_NAME, i);
             val jdbcUrl = getProperty(DB_JDBC_URL, i);
-            if (isNotBlank(className) || isNotBlank(jdbcUrl)) {
+            if (StringUtils.isNotBlank(className) || StringUtils.isNotBlank(jdbcUrl)) {
                 return true;
             }
         }
@@ -185,35 +184,35 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
      * @return a boolean
      */
     protected boolean hasOAuthClients() {
-        if (isNotBlank(getProperty(LINKEDIN_ID)) && isNotBlank(getProperty(LINKEDIN_SECRET))) {
+        if (StringUtils.isNotBlank(getProperty(LINKEDIN_ID)) && StringUtils.isNotBlank(getProperty(LINKEDIN_SECRET))) {
             return true;
         }
-        if (isNotBlank(getProperty(FACEBOOK_ID)) && isNotBlank(getProperty(FACEBOOK_SECRET))) {
+        if (StringUtils.isNotBlank(getProperty(FACEBOOK_ID)) && StringUtils.isNotBlank(getProperty(FACEBOOK_SECRET))) {
             return true;
         }
-        if (isNotBlank(getProperty(WINDOWSLIVE_ID)) && isNotBlank(getProperty(WINDOWSLIVE_SECRET))) {
+        if (StringUtils.isNotBlank(getProperty(WINDOWSLIVE_ID)) && StringUtils.isNotBlank(getProperty(WINDOWSLIVE_SECRET))) {
             return true;
         }
-        if (isNotBlank(getProperty(FOURSQUARE_ID)) && isNotBlank(getProperty(FOURSQUARE_SECRET))) {
+        if (StringUtils.isNotBlank(getProperty(FOURSQUARE_ID)) && StringUtils.isNotBlank(getProperty(FOURSQUARE_SECRET))) {
             return true;
         }
-        if (isNotBlank(getProperty(GOOGLE_ID)) && isNotBlank(getProperty(GOOGLE_SECRET))) {
+        if (StringUtils.isNotBlank(getProperty(GOOGLE_ID)) && StringUtils.isNotBlank(getProperty(GOOGLE_SECRET))) {
             return true;
         }
-        if (isNotBlank(getProperty(YAHOO_ID)) && isNotBlank(getProperty(YAHOO_SECRET))) {
+        if (StringUtils.isNotBlank(getProperty(YAHOO_ID)) && StringUtils.isNotBlank(getProperty(YAHOO_SECRET))) {
             return true;
         }
-        if (isNotBlank(getProperty(DROPBOX_ID)) && isNotBlank(getProperty(DROPBOX_SECRET))) {
+        if (StringUtils.isNotBlank(getProperty(DROPBOX_ID)) && StringUtils.isNotBlank(getProperty(DROPBOX_SECRET))) {
             return true;
         }
-        if (isNotBlank(getProperty(GITHUB_ID)) && isNotBlank(getProperty(GITHUB_SECRET))) {
+        if (StringUtils.isNotBlank(getProperty(GITHUB_ID)) && StringUtils.isNotBlank(getProperty(GITHUB_SECRET))) {
             return true;
         }
-        if (isNotBlank(getProperty(TWITTER_ID)) && isNotBlank(getProperty(TWITTER_SECRET))) {
+        if (StringUtils.isNotBlank(getProperty(TWITTER_ID)) && StringUtils.isNotBlank(getProperty(TWITTER_SECRET))) {
             return true;
         }
-        if (isNotBlank(getProperty(OAUTH2_ID)) && isNotBlank(getProperty(OAUTH2_SECRET)) &&
-                isNotBlank(getProperty(OAUTH2_AUTH_URL)) && isNotBlank(getProperty(OAUTH2_TOKEN_URL))) {
+        if (StringUtils.isNotBlank(getProperty(OAUTH2_ID)) && StringUtils.isNotBlank(getProperty(OAUTH2_SECRET)) &&
+            StringUtils.isNotBlank(getProperty(OAUTH2_AUTH_URL)) && StringUtils.isNotBlank(getProperty(OAUTH2_TOKEN_URL))) {
             return true;
         }
         return false;
@@ -226,10 +225,10 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
      */
     protected boolean hasSaml2Clients() {
         for (var i = 0; i <= MAX_NUM_CLIENTS; i++) {
-            if (isNotBlank(getProperty(SAML_KEYSTORE_PASSWORD, i)) &&
-                    isNotBlank(getProperty(SAML_PRIVATE_KEY_PASSWORD, i)) &&
-                    isNotBlank(getProperty(SAML_KEYSTORE_PATH, i)) &&
-                    isNotBlank(getProperty(SAML_IDENTITY_PROVIDER_METADATA_PATH, i))) {
+            if (StringUtils.isNotBlank(getProperty(SAML_KEYSTORE_PASSWORD, i)) &&
+                StringUtils.isNotBlank(getProperty(SAML_PRIVATE_KEY_PASSWORD, i)) &&
+                StringUtils.isNotBlank(getProperty(SAML_KEYSTORE_PATH, i)) &&
+                StringUtils.isNotBlank(getProperty(SAML_IDENTITY_PROVIDER_METADATA_PATH, i))) {
                 return true;
             }
         }
@@ -243,7 +242,7 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
      */
     protected boolean hasCasClients() {
         for (var i = 0; i <= MAX_NUM_CLIENTS; i++) {
-            if (isNotBlank(getProperty(CAS_LOGIN_URL, i))) {
+            if (StringUtils.isNotBlank(getProperty(CAS_LOGIN_URL, i))) {
                 return true;
             }
         }
@@ -257,7 +256,7 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
      */
     protected boolean hasOidcClients() {
         for (var i = 0; i <= MAX_NUM_CLIENTS; i++) {
-            if (isNotBlank(getProperty(OIDC_ID, i)) && isNotBlank(getProperty(OIDC_SECRET, i))) {
+            if (StringUtils.isNotBlank(getProperty(OIDC_ID, i)) && StringUtils.isNotBlank(getProperty(OIDC_SECRET, i))) {
                 return true;
             }
         }
@@ -270,22 +269,23 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
      * @return a boolean
      */
     protected boolean hasHttpAuthenticatorsOrClients() {
-        if (isNotBlank(getProperty(ANONYMOUS))) {
+        if (StringUtils.isNotBlank(getProperty(ANONYMOUS))) {
             return true;
         }
         for (var i = 0; i <= MAX_NUM_AUTHENTICATORS; i++) {
-            if (isNotBlank(getProperty(REST_URL, i))) {
+            if (StringUtils.isNotBlank(getProperty(REST_URL, i))) {
                 return true;
             }
         }
         for (var i = 0; i <= MAX_NUM_CLIENTS; i++) {
-            if (isNotBlank(getProperty(FORMCLIENT_LOGIN_URL, i)) && isNotBlank(getProperty(FORMCLIENT_AUTHENTICATOR, i))) {
+            if (StringUtils.isNotBlank(getProperty(FORMCLIENT_LOGIN_URL, i))
+                && StringUtils.isNotBlank(getProperty(FORMCLIENT_AUTHENTICATOR, i))) {
                 return true;
             }
-            if (isNotBlank(getProperty(INDIRECTBASICAUTH_AUTHENTICATOR, i))) {
+            if (StringUtils.isNotBlank(getProperty(INDIRECTBASICAUTH_AUTHENTICATOR, i))) {
                 return true;
             }
-            if (isNotBlank(getProperty(DIRECTBASICAUTH_AUTHENTICATOR, i))) {
+            if (StringUtils.isNotBlank(getProperty(DIRECTBASICAUTH_AUTHENTICATOR, i))) {
                 return true;
             }
         }

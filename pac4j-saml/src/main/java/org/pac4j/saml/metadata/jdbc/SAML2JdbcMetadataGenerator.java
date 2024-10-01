@@ -3,6 +3,7 @@ package org.pac4j.saml.metadata.jdbc;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 import org.opensaml.saml.metadata.resolver.impl.AbstractMetadataResolver;
 import org.opensaml.saml.metadata.resolver.impl.DOMMetadataResolver;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
@@ -52,7 +53,7 @@ public class SAML2JdbcMetadataGenerator extends BaseSAML2MetadataGenerator {
     /** {@inheritDoc} */
     @Override
     public boolean storeMetadata(final String metadata, final boolean force) {
-        if (CommonHelper.isBlank(metadata)) {
+        if (StringUtils.isBlank(metadata)) {
             logger.info("No metadata is provided");
             return false;
         }

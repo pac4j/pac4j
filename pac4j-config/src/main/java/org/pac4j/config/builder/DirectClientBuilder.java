@@ -1,6 +1,7 @@
 package org.pac4j.config.builder;
 
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.direct.AnonymousClient;
 import org.pac4j.core.credentials.authenticator.Authenticator;
@@ -8,8 +9,6 @@ import org.pac4j.http.client.direct.DirectBasicAuthClient;
 
 import java.util.Collection;
 import java.util.Map;
-
-import static org.pac4j.core.util.CommonHelper.isNotBlank;
 
 /**
  * Builder for direct clients.
@@ -36,7 +35,7 @@ public class DirectClientBuilder extends AbstractBuilder {
      */
     public void tryCreateAnonymousClient(final Collection<Client> clients) {
         val anonymous = getProperty(ANONYMOUS);
-        if (isNotBlank(anonymous)) {
+        if (StringUtils.isNotBlank(anonymous)) {
             clients.add(new AnonymousClient());
         }
     }
@@ -49,7 +48,7 @@ public class DirectClientBuilder extends AbstractBuilder {
     public void tryCreateDirectBasciAuthClient(final Collection<Client> clients) {
         for (var i = 0; i <= MAX_NUM_CLIENTS; i++) {
             val authenticator = getProperty(DIRECTBASICAUTH_AUTHENTICATOR, i);
-            if (isNotBlank(authenticator)) {
+            if (StringUtils.isNotBlank(authenticator)) {
                 val directBasicAuthClient = new DirectBasicAuthClient();
                 directBasicAuthClient.setAuthenticator(getAuthenticator(authenticator));
                 directBasicAuthClient.setName(concat(directBasicAuthClient.getName(), i));

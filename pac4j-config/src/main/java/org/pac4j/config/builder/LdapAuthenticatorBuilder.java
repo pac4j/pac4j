@@ -1,6 +1,7 @@
 package org.pac4j.config.builder;
 
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.ldaptive.ConnectionFactoryManager;
 import org.ldaptive.sasl.Mechanism;
 import org.ldaptive.sasl.QualityOfProtection;
@@ -11,8 +12,6 @@ import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.ldap.profile.service.LdapProfileService;
 
 import java.util.Map;
-
-import static org.pac4j.core.util.CommonHelper.isNotBlank;
 
 /**
  * Builder for the LDAP authenticator.
@@ -39,7 +38,7 @@ public class LdapAuthenticatorBuilder extends AbstractBuilder {
     public void tryBuildLdapAuthenticator(final Map<String, Authenticator> authenticators) {
         for (var i = 0; i <= MAX_NUM_AUTHENTICATORS; i++) {
             val type = getProperty(LDAP_TYPE, i);
-            if (isNotBlank(type)) {
+            if (StringUtils.isNotBlank(type)) {
                 val ldapProp = buildLdapProperties(i);
                 val ldaptiveAuthenticator = LdaptiveAuthenticatorBuilder.getAuthenticator(ldapProp);
 

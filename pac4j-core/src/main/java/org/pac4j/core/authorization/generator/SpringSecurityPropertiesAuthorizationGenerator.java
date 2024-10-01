@@ -1,9 +1,9 @@
 package org.pac4j.core.authorization.generator;
 
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.profile.UserProfile;
-import org.pac4j.core.util.CommonHelper;
 
 import java.util.*;
 
@@ -32,7 +32,7 @@ public class SpringSecurityPropertiesAuthorizationGenerator implements Authoriza
         val keys = properties.stringPropertyNames();
         for (val key : keys) {
             val value = properties.getProperty(key);
-            if (CommonHelper.isNotBlank(value)) {
+            if (StringUtils.isNotBlank(value)) {
                 val parts = value.split(",");
                 val nb = parts.length;
                 if (nb > 1) {

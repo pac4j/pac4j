@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.context.WebContext;
@@ -48,7 +49,7 @@ public class DefaultSecurityClientFinder implements ClientFinder {
             }
         }
 
-        if (CommonHelper.isNotBlank(securityClientNames)) {
+        if (StringUtils.isNotBlank(securityClientNames)) {
             val names = Arrays.asList(securityClientNames.split(Pac4jConstants.ELEMENT_SEPARATOR));
             val clientOnRequest = context.getRequestParameter(clientNameParameter);
 

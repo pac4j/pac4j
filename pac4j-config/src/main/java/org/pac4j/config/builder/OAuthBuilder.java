@@ -1,13 +1,12 @@
 package org.pac4j.config.builder;
 
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.Client;
 import org.pac4j.oauth.client.*;
 
 import java.util.Collection;
 import java.util.Map;
-
-import static org.pac4j.core.util.CommonHelper.isNotBlank;
 
 /**
  * Builder for OAuth clients.
@@ -36,9 +35,9 @@ public class OAuthBuilder extends AbstractBuilder {
         val secret = getProperty(LINKEDIN_SECRET);
         val scope = getProperty(LINKEDIN_SCOPE);
 
-        if (isNotBlank(id) && isNotBlank(secret)) {
+        if (StringUtils.isNotBlank(id) && StringUtils.isNotBlank(secret)) {
             val linkedInClient = new LinkedIn2Client(id, secret);
-            if (isNotBlank(scope)) {
+            if (StringUtils.isNotBlank(scope)) {
                 linkedInClient.setScope(scope);
             }
             clients.add(linkedInClient);
@@ -55,12 +54,12 @@ public class OAuthBuilder extends AbstractBuilder {
         val secret = getProperty(FACEBOOK_SECRET);
         val scope = getProperty(FACEBOOK_SCOPE);
         val fields = getProperty(FACEBOOK_FIELDS);
-        if (isNotBlank(id) && isNotBlank(secret)) {
+        if (StringUtils.isNotBlank(id) && StringUtils.isNotBlank(secret)) {
             val facebookClient = new FacebookClient(id, secret);
-            if (isNotBlank(scope)) {
+            if (StringUtils.isNotBlank(scope)) {
                 facebookClient.setScope(scope);
             }
-            if (isNotBlank(fields)) {
+            if (StringUtils.isNotBlank(fields)) {
                 facebookClient.setFields(fields);
             }
             clients.add(facebookClient);
@@ -75,7 +74,7 @@ public class OAuthBuilder extends AbstractBuilder {
     public void tryCreateWindowsLiveClient(final Collection<Client> clients) {
         val id = getProperty(WINDOWSLIVE_ID);
         val secret = getProperty(WINDOWSLIVE_SECRET);
-        if (isNotBlank(id) && isNotBlank(secret)) {
+        if (StringUtils.isNotBlank(id) && StringUtils.isNotBlank(secret)) {
             Client client = new WindowsLiveClient(id, secret);
             clients.add(client);
         }
@@ -89,7 +88,7 @@ public class OAuthBuilder extends AbstractBuilder {
     public void tryCreateFoursquareClient(final Collection<Client> clients) {
         val id = getProperty(FOURSQUARE_ID);
         val secret = getProperty(FOURSQUARE_SECRET);
-        if (isNotBlank(id) && isNotBlank(secret)) {
+        if (StringUtils.isNotBlank(id) && StringUtils.isNotBlank(secret)) {
             Client client = new FoursquareClient(id, secret);
             clients.add(client);
         }
@@ -103,10 +102,10 @@ public class OAuthBuilder extends AbstractBuilder {
     public void tryCreateGoogleClient(final Collection<Client> clients) {
         val id = getProperty(GOOGLE_ID);
         val secret = getProperty(GOOGLE_SECRET);
-        if (isNotBlank(id) && isNotBlank(secret)) {
+        if (StringUtils.isNotBlank(id) && StringUtils.isNotBlank(secret)) {
             val client = new Google2Client(id, secret);
             val scope = getProperty(GOOGLE_SCOPE);
-            if (isNotBlank(scope)) {
+            if (StringUtils.isNotBlank(scope)) {
                 client.setScope(Google2Client.Google2Scope.valueOf(scope.toUpperCase()));
             }
             clients.add(client);
@@ -121,7 +120,7 @@ public class OAuthBuilder extends AbstractBuilder {
     public void tryCreateYahooClient(final Collection<Client> clients) {
         val id = getProperty(YAHOO_ID);
         val secret = getProperty(YAHOO_SECRET);
-        if (isNotBlank(id) && isNotBlank(secret)) {
+        if (StringUtils.isNotBlank(id) && StringUtils.isNotBlank(secret)) {
             Client client = new YahooClient(id, secret);
             clients.add(client);
         }
@@ -135,7 +134,7 @@ public class OAuthBuilder extends AbstractBuilder {
     public void tryCreateDropboxClient(final Collection<Client> clients) {
         val id = getProperty(DROPBOX_ID);
         val secret = getProperty(DROPBOX_SECRET);
-        if (isNotBlank(id) && isNotBlank(secret)) {
+        if (StringUtils.isNotBlank(id) && StringUtils.isNotBlank(secret)) {
             Client client = new DropBoxClient(id, secret);
             clients.add(client);
         }
@@ -149,7 +148,7 @@ public class OAuthBuilder extends AbstractBuilder {
     public void tryCreateGithubClient(final Collection<Client> clients) {
         val id = getProperty(GITHUB_ID);
         val secret = getProperty(GITHUB_SECRET);
-        if (isNotBlank(id) && isNotBlank(secret)) {
+        if (StringUtils.isNotBlank(id) && StringUtils.isNotBlank(secret)) {
             Client client = new GitHubClient(id, secret);
             clients.add(client);
         }
@@ -163,7 +162,7 @@ public class OAuthBuilder extends AbstractBuilder {
     public void tryCreateTwitterClient(final Collection<Client> clients) {
         val id = getProperty(TWITTER_ID);
         val secret = getProperty(TWITTER_SECRET);
-        if (isNotBlank(id) && isNotBlank(secret)) {
+        if (StringUtils.isNotBlank(id) && StringUtils.isNotBlank(secret)) {
             Client twitterClient = new TwitterClient(id, secret);
             clients.add(twitterClient);
         }
@@ -179,7 +178,7 @@ public class OAuthBuilder extends AbstractBuilder {
             val id = getProperty(OAUTH2_ID, i);
             val secret = getProperty(OAUTH2_SECRET, i);
 
-            if (isNotBlank(id) && isNotBlank(secret)) {
+            if (StringUtils.isNotBlank(id) && StringUtils.isNotBlank(secret)) {
                 val client = new GenericOAuth20Client();
                 client.setName(concat(client.getName(), i));
 

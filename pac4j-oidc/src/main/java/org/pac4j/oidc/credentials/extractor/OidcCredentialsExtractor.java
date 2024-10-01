@@ -12,6 +12,7 @@ import com.nimbusds.openid.connect.sdk.AuthenticationResponseParser;
 import com.nimbusds.openid.connect.sdk.AuthenticationSuccessResponse;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
@@ -87,7 +88,7 @@ public class OidcCredentialsExtractor implements CredentialsExtractor {
                         throw new BadRequestAction();
                     }
                     sessionId = (String) claims.getClaim(Pac4jConstants.OIDC_CLAIM_SESSIONID);
-                    if (CommonHelper.isBlank(sessionId)) {
+                    if (StringUtils.isBlank(sessionId)) {
                         LOGGER.error("The sid claim is mandatory for logout requests");
                         throw new BadRequestAction();
                     }

@@ -2,6 +2,7 @@ package org.pac4j.core.logout;
 
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.profile.UserProfile;
@@ -9,7 +10,8 @@ import org.pac4j.core.util.HttpActionHelper;
 
 import java.util.Optional;
 
-import static org.pac4j.core.util.CommonHelper.*;
+import static org.pac4j.core.util.CommonHelper.addParameter;
+import static org.pac4j.core.util.CommonHelper.assertNotBlank;
 
 /**
  * CAS logout action builder.
@@ -32,7 +34,7 @@ public class CasLogoutActionBuilder implements LogoutActionBuilder {
      * @param postLogoutUrlParameter a {@link String} object
      */
     public CasLogoutActionBuilder(final String serverLogoutUrl, final String postLogoutUrlParameter) {
-        if (isNotBlank(serverLogoutUrl)) {
+        if (StringUtils.isNotBlank(serverLogoutUrl)) {
             assertNotBlank("postLogoutUrlParameter", postLogoutUrlParameter);
         }
         this.serverLogoutUrl = serverLogoutUrl;
@@ -42,12 +44,12 @@ public class CasLogoutActionBuilder implements LogoutActionBuilder {
     /** {@inheritDoc} */
     @Override
     public Optional<RedirectionAction> getLogoutAction(final CallContext ctx, final UserProfile currentProfile, final String targetUrl) {
-        if (isBlank(serverLogoutUrl)) {
+        if (StringUtils.isBlank(serverLogoutUrl)) {
             return Optional.empty();
         }
 
         var redirectUrl = serverLogoutUrl;
-        if (isNotBlank(targetUrl)) {
+        if (StringUtils.isNotBlank(targetUrl)) {
             redirectUrl = addParameter(redirectUrl, postLogoutUrlParameter, targetUrl);
         }
         LOGGER.debug("redirectUrl: {}", redirectUrl);

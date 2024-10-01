@@ -2,11 +2,11 @@ package org.pac4j.oidc.config;
 
 import lombok.*;
 import lombok.experimental.Accessors;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.util.HttpUtils;
 import org.pac4j.oidc.metadata.AzureAdOpMetadataResolver;
 
 import static org.pac4j.core.util.CommonHelper.assertNotBlank;
-import static org.pac4j.core.util.CommonHelper.isBlank;
 
 /**
  * Microsoft Azure AD v2 OpenID Connect configuration.
@@ -61,7 +61,7 @@ public class AzureAd2OidcConfiguration extends OidcConfiguration {
     /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
-        if (isBlank(getTenant())){
+        if (StringUtils.isBlank(getTenant())){
             // default value
             setTenant("common");
         }
@@ -89,7 +89,7 @@ public class AzureAd2OidcConfiguration extends OidcConfiguration {
      */
     public String makeOauth2TokenRequest(String refreshToken) {
         var scope = this.getScope();
-        if (isBlank(scope)){
+        if (StringUtils.isBlank(scope)){
             // default values
             scope = "openid profile email";
         }

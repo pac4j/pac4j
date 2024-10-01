@@ -1,6 +1,7 @@
 package org.pac4j.saml.credentials.extractor;
 
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.opensaml.messaging.decoder.MessageDecoder;
 import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.common.messaging.context.SAMLBindingContext;
@@ -95,7 +96,7 @@ public class SAML2CredentialsExtractor implements CredentialsExtractor {
 
             // SOAP is considered back channel
             val binding = decodedCtx.getSAMLBindingContext().getBindingUri();
-            val type = CommonHelper.areEquals(binding, SAMLConstants.SAML2_SOAP11_BINDING_URI) ? LogoutType.BACK : LogoutType.FRONT;
+            val type = StringUtils.equals(binding, SAMLConstants.SAML2_SOAP11_BINDING_URI) ? LogoutType.BACK : LogoutType.FRONT;
 
             return Optional.of(new SAML2Credentials(type, decodedCtx));
         }

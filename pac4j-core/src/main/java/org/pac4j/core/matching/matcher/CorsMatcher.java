@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.util.CommonHelper;
@@ -44,7 +45,7 @@ public class CorsMatcher implements Matcher {
 
         webContext.setResponseHeader(HttpConstants.ACCESS_CONTROL_ALLOW_ORIGIN_HEADER, allowOrigin);
 
-        if (CommonHelper.isNotBlank(exposeHeaders)) {
+        if (StringUtils.isNotBlank(exposeHeaders)) {
             webContext.setResponseHeader(HttpConstants.ACCESS_CONTROL_EXPOSE_HEADERS_HEADER, exposeHeaders);
         }
 
@@ -61,7 +62,7 @@ public class CorsMatcher implements Matcher {
             webContext.setResponseHeader(HttpConstants.ACCESS_CONTROL_ALLOW_METHODS_HEADER, methods);
         }
 
-        if (CommonHelper.isNotBlank(allowHeaders)) {
+        if (StringUtils.isNotBlank(allowHeaders)) {
             webContext.setResponseHeader(HttpConstants.ACCESS_CONTROL_ALLOW_HEADERS_HEADER, allowHeaders);
         }
 

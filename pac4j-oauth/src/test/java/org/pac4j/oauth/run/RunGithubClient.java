@@ -1,13 +1,13 @@
 package org.pac4j.oauth.run;
 
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.core.run.RunClient;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oauth.client.GitHubClient;
 import org.pac4j.oauth.profile.github.GitHubProfile;
@@ -54,7 +54,7 @@ public class RunGithubClient extends RunClient {
         assertEquals("1412558", profile.getId());
         assertEquals(GitHubProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + "1412558", profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), GitHubProfile.class));
-        assertTrue(CommonHelper.isNotBlank(profile.getAccessToken()));
+        assertTrue(StringUtils.isNotBlank(profile.getAccessToken()));
         assertCommonProfile(userProfile, "testscribeup@gmail.com", null, null, "Test", "testscribeup",
                 Gender.UNSPECIFIED, null, "https://avatars2.githubusercontent.com/u/1412558?",
                 "https://github.com/testscribeup", "Paris");

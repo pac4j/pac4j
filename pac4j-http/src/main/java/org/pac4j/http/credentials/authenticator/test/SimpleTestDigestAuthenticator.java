@@ -1,13 +1,13 @@
 package org.pac4j.http.credentials.authenticator.test;
 
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.UserProfile;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.http.credentials.DigestCredentials;
 
 import java.util.Optional;
@@ -30,12 +30,12 @@ public class SimpleTestDigestAuthenticator implements Authenticator {
             throw new CredentialsException ("Unsupported credentials type " + cred.getClass());
         }
         var username = digestCredentials.getUsername();
-        if (CommonHelper.isBlank(username)) {
+        if (StringUtils.isBlank(username)) {
             throw new CredentialsException("Username cannot be blank");
         }
 
         val token = digestCredentials.getToken();
-        if (CommonHelper.isBlank(token)) {
+        if (StringUtils.isBlank(token)) {
             throw new CredentialsException("Token cannot be blank");
         }
 

@@ -2,6 +2,7 @@ package org.pac4j.config.builder;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.credentials.password.SpringSecurityPasswordEncoder;
 import org.pac4j.core.exception.TechnicalException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -12,8 +13,6 @@ import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
 
 import java.util.Map;
-
-import static org.pac4j.core.util.CommonHelper.isNotBlank;
 
 /**
  * Builder of Spring Crypto password encoder.
@@ -41,7 +40,7 @@ public class SpringEncoderBuilder extends AbstractBuilder {
     public void tryCreatePasswordEncoder(final Map<String, org.pac4j.core.credentials.password.PasswordEncoder> encoders) {
         for (var i = 0; i <= MAX_NUM_ENCODERS; i++) {
             val type = getProperty(SPRING_ENCODER_TYPE, i);
-            if (isNotBlank(type)) {
+            if (StringUtils.isNotBlank(type)) {
                 final PasswordEncoder encoder;
                 if (SpringEncoderType.NOOP.toString().equalsIgnoreCase(type)) {
                     LOGGER.debug("Please notice that the NOOP Spring encoder type is insecure and for tests only");

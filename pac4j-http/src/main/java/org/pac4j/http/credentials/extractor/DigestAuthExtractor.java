@@ -2,6 +2,7 @@ package org.pac4j.http.credentials.extractor;
 
 import lombok.ToString;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.credentials.Credentials;
@@ -9,7 +10,6 @@ import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.credentials.extractor.HeaderExtractor;
 import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.http.credentials.DigestCredentials;
 
@@ -75,7 +75,7 @@ public class DigestAuthExtractor implements CredentialsExtractor {
         val username = valueMap.get("username");
         val response = valueMap.get("response");
 
-        if (CommonHelper.isBlank(username) || CommonHelper.isBlank(response)) {
+        if (StringUtils.isBlank(username) || StringUtils.isBlank(response)) {
             throw new CredentialsException("Bad format of the digest auth header");
         }
         val realm = valueMap.get("realm");

@@ -2,10 +2,14 @@ package org.pac4j.config.ldaptive;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.ldaptive.*;
 import org.ldaptive.ad.extended.FastBindConnectionInitializer;
 import org.ldaptive.auth.*;
-import org.ldaptive.auth.ext.*;
+import org.ldaptive.auth.ext.ActiveDirectoryAuthenticationResponseHandler;
+import org.ldaptive.auth.ext.PasswordExpirationAuthenticationResponseHandler;
+import org.ldaptive.auth.ext.PasswordPolicyAuthenticationRequestHandler;
+import org.ldaptive.auth.ext.PasswordPolicyAuthenticationResponseHandler;
 import org.ldaptive.pool.BindConnectionPassivator;
 import org.ldaptive.pool.IdlePruneStrategy;
 import org.ldaptive.sasl.Mechanism;
@@ -13,7 +17,6 @@ import org.ldaptive.sasl.SaslConfig;
 import org.ldaptive.ssl.KeyStoreCredentialConfig;
 import org.ldaptive.ssl.SslConfig;
 import org.ldaptive.ssl.X509CredentialConfig;
-import org.pac4j.core.util.CommonHelper;
 
 import java.time.Duration;
 
@@ -86,7 +89,7 @@ public class LdaptiveAuthenticatorBuilder {
         resolver.setUserFilter(l.getUserFilter());
 
         final Authenticator auth;
-        if (CommonHelper.isBlank(l.getPrincipalAttributePassword())) {
+        if (StringUtils.isBlank(l.getPrincipalAttributePassword())) {
             auth = new Authenticator(resolver, getPooledBindAuthenticationHandler(l));
         } else {
             auth = new Authenticator(resolver, getPooledCompareAuthenticationHandler(l));
@@ -105,7 +108,7 @@ public class LdaptiveAuthenticatorBuilder {
     }
 
     private static Authenticator getDirectBindAuthenticator(final LdapAuthenticationProperties l) {
-        if (CommonHelper.isBlank(l.getDnFormat())) {
+        if (StringUtils.isBlank(l.getDnFormat())) {
             throw new IllegalArgumentException("Dn format cannot be empty/blank for direct bind authentication");
         }
         val resolver = new FormatDnResolver(l.getDnFormat());
@@ -124,7 +127,7 @@ public class LdaptiveAuthenticatorBuilder {
     }
 
     private static Authenticator getActiveDirectoryAuthenticator(final LdapAuthenticationProperties l) {
-        if (CommonHelper.isBlank(l.getDnFormat())) {
+        if (StringUtils.isBlank(l.getDnFormat())) {
             throw new IllegalArgumentException("Dn format cannot be empty/blank for active directory authentication");
         }
         val resolver = new FormatDnResolver(l.getDnFormat());
@@ -215,17 +218,17 @@ public class LdaptiveAuthenticatorBuilder {
             sc.setMutualAuthentication(l.getSaslMutualAuth());
             sc.setQualityOfProtection(l.getSaslQualityOfProtection());
             sc.setSecurityStrength(l.getSaslSecurityStrength());
-            if (CommonHelper.isNotBlank(l.getBindDn())) {
+            if (StringUtils.isNotBlank(l.getBindDn())) {
                 bc.setBindDn(l.getBindDn());
-                if (CommonHelper.isNotBlank(l.getBindCredential())) {
+                if (StringUtils.isNotBlank(l.getBindCredential())) {
                     bc.setBindCredential(new Credential(l.getBindCredential()));
                 }
             }
             bc.setBindSaslConfig(sc);
             cc.setConnectionInitializers(bc);
-        } else if (CommonHelper.areEquals(l.getBindCredential(), "*") && CommonHelper.areEquals(l.getBindDn(), "*")) {
+        } else if (StringUtils.equals(l.getBindCredential(), "*") && StringUtils.equals(l.getBindDn(), "*")) {
             cc.setConnectionInitializers(new FastBindConnectionInitializer());
-        } else if (CommonHelper.isNotBlank(l.getBindDn()) && CommonHelper.isNotBlank(l.getBindCredential())) {
+        } else if (StringUtils.isNotBlank(l.getBindDn()) && StringUtils.isNotBlank(l.getBindCredential())) {
             cc.setConnectionInitializers(new BindConnectionInitializer(l.getBindDn(), new Credential(l.getBindCredential())));
         }
         return cc;
@@ -257,7 +260,7 @@ public class LdaptiveAuthenticatorBuilder {
         validator.setValidatePeriod(newDuration(l.getValidatePeriod()));
         cf.setValidator(validator);
 
-        if (CommonHelper.isNotBlank(l.getPoolPassivator())) {
+        if (StringUtils.isNotBlank(l.getPoolPassivator())) {
             val pass =
                 AbstractLdapProperties.LdapConnectionPoolPassivator.valueOf(l.getPoolPassivator().toUpperCase());
             switch (pass) {

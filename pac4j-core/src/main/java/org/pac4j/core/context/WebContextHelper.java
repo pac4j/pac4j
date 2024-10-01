@@ -1,7 +1,7 @@
 package org.pac4j.core.context;
 
 import lombok.val;
-import org.pac4j.core.util.CommonHelper;
+import org.apache.commons.lang3.StringUtils;
 
 import java.time.Instant;
 import java.time.ZoneId;
@@ -35,7 +35,7 @@ public final class WebContextHelper implements HttpConstants {
     public static Cookie getCookie(final Iterable<Cookie> cookies, final String name) {
         if (cookies != null) {
             for (val cookie : cookies) {
-                if (cookie != null && CommonHelper.areEquals(name, cookie.getName())) {
+                if (cookie != null && StringUtils.equals(name, cookie.getName())) {
                     return cookie;
                 }
             }
@@ -153,10 +153,10 @@ public final class WebContextHelper implements HttpConstants {
             ZonedDateTime time = ZonedDateTime.ofInstant(instant, GMT);
             builder.append(String.format(" Expires=%s;", DATE_FORMATTER.format(time)));
         }
-        if (CommonHelper.isNotBlank(cookie.getDomain())) {
+        if (StringUtils.isNotBlank(cookie.getDomain())) {
             builder.append(String.format(" Domain=%s;", cookie.getDomain()));
         }
-        builder.append(String.format(" Path=%s;", CommonHelper.isNotBlank(cookie.getPath()) ? cookie.getPath() : "/"));
+        builder.append(String.format(" Path=%s;", StringUtils.isNotBlank(cookie.getPath()) ? cookie.getPath() : "/"));
 
         var sameSitePolicy = cookie.getSameSitePolicy() == null ? "lax" : cookie.getSameSitePolicy().toLowerCase();
         switch (sameSitePolicy) {

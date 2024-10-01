@@ -2,6 +2,7 @@ package org.pac4j.cas.config;
 
 import lombok.*;
 import lombok.experimental.Accessors;
+import org.apache.commons.lang3.StringUtils;
 import org.apereo.cas.client.ssl.HttpURLConnectionFactory;
 import org.apereo.cas.client.util.PrivateKeyUtils;
 import org.apereo.cas.client.validation.*;
@@ -12,7 +13,6 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.http.url.DefaultUrlResolver;
 import org.pac4j.core.http.url.UrlResolver;
-import org.pac4j.core.util.CommonHelper;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -135,7 +135,7 @@ public class CasConfiguration extends BaseClientConfiguration {
     /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
-        if (CommonHelper.isBlank(this.loginUrl) && CommonHelper.isBlank(this.prefixUrl) && CommonHelper.isBlank(this.restUrl)) {
+        if (StringUtils.isBlank(this.loginUrl) && StringUtils.isBlank(this.prefixUrl) && StringUtils.isBlank(this.restUrl)) {
             throw new TechnicalException("loginUrl, prefixUrl and restUrl cannot be all blank");
         }
         if (urlResolver == null) {
@@ -158,12 +158,12 @@ public class CasConfiguration extends BaseClientConfiguration {
         if (this.prefixUrl != null && !this.prefixUrl.endsWith("/")) {
             this.prefixUrl += "/";
         }
-        if (CommonHelper.isBlank(this.prefixUrl)) {
+        if (StringUtils.isBlank(this.prefixUrl)) {
             this.prefixUrl = this.loginUrl.replaceFirst("/login$", "/");
-        } else if (CommonHelper.isBlank(this.loginUrl)) {
+        } else if (StringUtils.isBlank(this.loginUrl)) {
             this.loginUrl = this.prefixUrl + "login";
         }
-        if (CommonHelper.isBlank(restUrl)) {
+        if (StringUtils.isBlank(restUrl)) {
             restUrl = prefixUrl;
             if (!restUrl.endsWith("/")) {
                 restUrl += "/";

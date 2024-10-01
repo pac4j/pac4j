@@ -1,11 +1,11 @@
 package org.pac4j.oauth.run;
 
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.run.RunClient;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oauth.client.BitbucketClient;
 import org.pac4j.oauth.profile.bitbucket.BitbucketProfile;
@@ -49,7 +49,7 @@ public class RunBitbucketClient extends RunClient {
         assertEquals("testscribeup", profile.getId());
         assertEquals(BitbucketProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + "testscribeup", profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), BitbucketProfile.class));
-        assertTrue(CommonHelper.isNotBlank(profile.getAccessToken()));
+        assertTrue(StringUtils.isNotBlank(profile.getAccessToken()));
         assertCommonProfile(userProfile, null, "Test", "Scribeup", "Test Scribeup", "testscribeup", Gender.UNSPECIFIED, null,
                 "https://bitbucket.org/account/testscribeup/avatar/32/?ts=", "/1.0/users/testscribeup", null);
         assertFalse(profile.isTeam());

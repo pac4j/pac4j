@@ -2,6 +2,7 @@ package org.pac4j.core.authorization.checker;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.authorization.authorizer.*;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.IndirectClient;
@@ -60,7 +61,7 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
     protected List<Authorizer> computeAuthorizers(final WebContext context, final List<UserProfile> profiles, final String authorizersValue,
                                                   final Map<String, Authorizer> authorizersMap, final List<Client> clients) {
         final List<Authorizer> authorizers;
-        if (isBlank(authorizersValue)) {
+        if (StringUtils.isBlank(authorizersValue)) {
             authorizers = computeDefaultAuthorizers(context, profiles, clients, authorizersMap);
         } else {
             if (authorizersValue.trim().startsWith(Pac4jConstants.ADD_ELEMENT)) {

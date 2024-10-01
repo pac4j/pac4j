@@ -1,6 +1,7 @@
 package org.pac4j.config.builder;
 
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.http.client.indirect.FormClient;
@@ -8,8 +9,6 @@ import org.pac4j.http.client.indirect.IndirectBasicAuthClient;
 
 import java.util.Collection;
 import java.util.Map;
-
-import static org.pac4j.core.util.CommonHelper.isNotBlank;
 
 /**
  * Builder for indirect HTTP clients.
@@ -38,7 +37,7 @@ public class IndirectHttpClientBuilder extends AbstractBuilder {
         for (var i = 0; i <= MAX_NUM_CLIENTS; i++) {
             val loginUrl = getProperty(FORMCLIENT_LOGIN_URL, i);
             val authenticator = getProperty(FORMCLIENT_AUTHENTICATOR, i);
-            if (isNotBlank(loginUrl) && isNotBlank(authenticator)) {
+            if (StringUtils.isNotBlank(loginUrl) && StringUtils.isNotBlank(authenticator)) {
                 val formClient = new FormClient();
                 formClient.setLoginUrl(loginUrl);
                 formClient.setAuthenticator(getAuthenticator(authenticator));
@@ -62,7 +61,7 @@ public class IndirectHttpClientBuilder extends AbstractBuilder {
     public void tryCreateIndirectBasicAuthClient(final Collection<Client> clients) {
         for (var i = 0; i <= MAX_NUM_CLIENTS; i++) {
             val authenticator = getProperty(INDIRECTBASICAUTH_AUTHENTICATOR, i);
-            if (isNotBlank(authenticator)) {
+            if (StringUtils.isNotBlank(authenticator)) {
                 val indirectBasicAuthClient = new IndirectBasicAuthClient();
                 indirectBasicAuthClient.setAuthenticator(getAuthenticator(authenticator));
                 if (containsProperty(INDIRECTBASICAUTH_REALM_NAME, i)) {

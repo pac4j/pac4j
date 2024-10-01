@@ -1,12 +1,12 @@
 package org.pac4j.oauth.run;
 
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.run.RunClient;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oauth.client.FacebookClient;
 import org.pac4j.oauth.profile.facebook.FacebookConfiguration;
@@ -70,14 +70,14 @@ public final class RunFacebookClient extends RunClient {
         assertEquals(FacebookProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + "771361542992890",
                 profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), FacebookProfile.class));
-        assertTrue(CommonHelper.isNotBlank(profile.getAccessToken()));
+        assertTrue(StringUtils.isNotBlank(profile.getAccessToken()));
         assertCommonProfile(userProfile, null, "Jerome", "Testscribeup", "Jerome Testscribeup", null, Gender.MALE,
                 Locale.FRANCE, "https://lookaside.facebook.com/platform/profilepic/?asid=771361542992890&height=50&width=50&ext=",
                 "https://www.facebook.com/app_scoped_user_id/771361542992890/", "New York, New York");
         assertNull(profile.getMiddleName());
         val languages = profile.getLanguages();
         assertTrue(languages.get(0).getName().startsWith("Fr"));
-        assertTrue(CommonHelper.isNotBlank(profile.getThirdPartyId()));
+        assertTrue(StringUtils.isNotBlank(profile.getThirdPartyId()));
         assertEquals(8, profile.getTimezone().intValue());
         assertTrue(profile.getVerified());
         assertEquals("A propos de moi", profile.getAbout());

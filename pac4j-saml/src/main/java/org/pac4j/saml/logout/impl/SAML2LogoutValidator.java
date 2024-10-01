@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 import net.shibboleth.shared.net.URIComparator;
+import org.apache.commons.lang3.StringUtils;
 import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.saml2.core.*;
 import org.opensaml.saml.saml2.encryption.Decrypter;
@@ -11,7 +12,6 @@ import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.logout.LogoutType;
 import org.pac4j.core.logout.handler.SessionLogoutHandler;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.credentials.SAML2AuthenticationCredentials;
 import org.pac4j.saml.credentials.SAML2Credentials;
@@ -160,7 +160,7 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
      */
     protected void validateDestinationEndpoint(final StatusResponseType logoutResponse, final SAML2MessageContext context) {
         List<String> expected = new ArrayList<>();
-        if (CommonHelper.isBlank(this.expectedDestination)) {
+        if (StringUtils.isBlank(this.expectedDestination)) {
             val endpoint = Objects.requireNonNull(context.getSPSSODescriptor().getSingleLogoutServices().get(0));
             if (endpoint.getLocation() != null) {
                 expected.add(endpoint.getLocation());

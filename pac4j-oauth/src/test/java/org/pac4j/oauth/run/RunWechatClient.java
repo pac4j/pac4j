@@ -1,12 +1,12 @@
 package org.pac4j.oauth.run;
 
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.run.RunClient;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oauth.client.WechatClient;
 import org.pac4j.oauth.profile.wechat.WechatProfile;
@@ -93,7 +93,7 @@ public final class RunWechatClient extends RunClient {
         assertEquals(WechatProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + openid,
             profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), WechatProfile.class));
-        assertTrue(CommonHelper.isNotBlank(profile.getAccessToken()));
+        assertTrue(StringUtils.isNotBlank(profile.getAccessToken()));
         String pictureUrl;
         if (QRCODE)
             pictureUrl = "http://thirdwx.qlogo.cn/mmopen/vi_32/" +

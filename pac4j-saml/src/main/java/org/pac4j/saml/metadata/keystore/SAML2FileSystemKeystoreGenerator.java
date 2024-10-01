@@ -1,6 +1,7 @@
 package org.pac4j.saml.metadata.keystore;
 
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemObjectGenerator;
 import org.bouncycastle.util.io.pem.PemWriter;
@@ -113,7 +114,7 @@ public class SAML2FileSystemKeystoreGenerator extends BaseSAML2KeystoreGenerator
      */
     private String getNormalizedCertificateName() {
         val certName = new StringBuilder(CERTIFICATES_PREFIX);
-        if (CommonHelper.isNotBlank(saml2Configuration.getCertificateNameToAppend())) {
+        if (StringUtils.isNotBlank(saml2Configuration.getCertificateNameToAppend())) {
             certName.append('-');
             certName.append(NORMALIZE_PATTERN.matcher(saml2Configuration.getCertificateNameToAppend())
                 .replaceAll(Pac4jConstants.EMPTY_STRING));

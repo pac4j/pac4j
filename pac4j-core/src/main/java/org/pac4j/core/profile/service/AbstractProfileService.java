@@ -3,6 +3,7 @@ package org.pac4j.core.profile.service;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
@@ -23,8 +24,7 @@ import java.util.*;
 
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 import static org.pac4j.core.util.CommonHelper.*;
-import static org.pac4j.core.util.Pac4jConstants.PASSWORD;
-import static org.pac4j.core.util.Pac4jConstants.USERNAME;
+import static org.pac4j.core.util.Pac4jConstants.*;
 
 /**
  * Abstract implementation of the {@link ProfileService} for the storage: LDAP, SQL and MongoDB.
@@ -79,7 +79,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
         assertNotBlank("idAttribute", this.idAttribute);
         assertNotNull("serializer", serializer);
 
-        if (isNotBlank(attributes)) {
+        if (StringUtils.isNotBlank(attributes)) {
             attributeNames = attributes.split(",");
             for (val attributeName : attributeNames) {
                 if (getIdAttribute().equalsIgnoreCase(attributeName) || LINKEDID.equalsIgnoreCase(attributeName) ||
@@ -154,7 +154,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
         storageAttributes.put(LINKEDID, profile.getLinkedId());
         storageAttributes.put(getUsernameAttribute(), profile.getUsername());
         // if a password has been provided, encode it
-        if (isNotBlank(password)) {
+        if (StringUtils.isNotBlank(password)) {
             final String encodedPassword;
             // encode password if we have a passwordEncoder (MongoDB, SQL but not for LDAP)
             if (passwordEncoder != null) {
@@ -265,7 +265,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
             } else {
                 profile.setId(username);
             }
-            if (isNotBlank(linkedId)) {
+            if (StringUtils.isNotBlank(linkedId)) {
                 profile.setLinkedId(linkedId);
             }
             return profile;
@@ -282,10 +282,10 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
                     "names you want to retrieve");
             }
             val id = storageAttributes.get(getIdAttribute());
-            if (isBlank(profile.getId()) && id != null) {
+            if (StringUtils.isBlank(profile.getId()) && id != null) {
                 profile.setId(ProfileHelper.sanitizeIdentifier(id));
             }
-            if (isBlank(profile.getLinkedId()) && isNotBlank(linkedId)) {
+            if (StringUtils.isBlank(profile.getLinkedId()) && StringUtils.isNotBlank(linkedId)) {
                 profile.setLinkedId(linkedId);
             }
             return profile;

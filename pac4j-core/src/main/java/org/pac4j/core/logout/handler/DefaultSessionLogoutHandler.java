@@ -5,13 +5,13 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.store.GuavaStore;
 import org.pac4j.core.store.Store;
-import org.pac4j.core.util.CommonHelper;
 
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -100,7 +100,7 @@ public class DefaultSessionLogoutHandler implements SessionLogoutHandler {
             LOGGER.debug("key associated to the current session: {}", key);
             store.remove(currentSessionId);
 
-            if (CommonHelper.areEquals(key, keyForCurrentSession)) {
+            if (StringUtils.equals(key, keyForCurrentSession)) {
                 destroy(webContext, sessionStore, ctx.profileManagerFactory(), "front");
                 return;
             } else {

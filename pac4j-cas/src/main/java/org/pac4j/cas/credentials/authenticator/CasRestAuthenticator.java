@@ -2,6 +2,7 @@ package org.pac4j.cas.credentials.authenticator;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.profile.CasRestProfile;
 import org.pac4j.core.context.CallContext;
@@ -52,7 +53,7 @@ public class CasRestAuthenticator implements Authenticator {
             throw new TechnicalException("Credentials are required");
         }
         val ticketGrantingTicketId = requestTicketGrantingTicket(credentials.getUsername(), credentials.getPassword(), ctx.webContext());
-        if (CommonHelper.isNotBlank(ticketGrantingTicketId)) {
+        if (StringUtils.isNotBlank(ticketGrantingTicketId)) {
             credentials.setUserProfile(new CasRestProfile(ticketGrantingTicketId, credentials.getUsername()));
         }
         return Optional.of(credentials);

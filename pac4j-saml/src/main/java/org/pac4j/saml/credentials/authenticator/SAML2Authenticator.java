@@ -1,12 +1,12 @@
 package org.pac4j.saml.credentials.authenticator;
 
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.definition.ProfileDefinitionAware;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.credentials.SAML2AuthenticationCredentials;
 import org.pac4j.saml.credentials.SAML2Credentials;
 import org.pac4j.saml.logout.impl.SAML2LogoutValidator;
@@ -144,7 +144,7 @@ public class SAML2Authenticator extends ProfileDefinitionAware implements Authen
 
             val values = attribute.getAttributeValues();
             if (!values.isEmpty()) {
-                if (CommonHelper.isNotBlank(attributeAsId)
+                if (StringUtils.isNotBlank(attributeAsId)
                     && (attributeAsId.equalsIgnoreCase(name) || attributeAsId.equalsIgnoreCase(friendlyName))) {
                     if (values.size() == 1) {
                         profile.setId(values.get(0));
@@ -164,7 +164,7 @@ public class SAML2Authenticator extends ProfileDefinitionAware implements Authen
                     getProfileDefinition().convertAndAdd(profile, PROFILE_ATTRIBUTE, name, values);
                 }
 
-                if (CommonHelper.isNotBlank(friendlyName) && CommonHelper.areNotEquals(friendlyName, actualName)) {
+                if (StringUtils.isNotBlank(friendlyName) && !StringUtils.equals(friendlyName, actualName)) {
                     logger.debug("Adding attribute {} to profile with values {}", friendlyName, values);
                     getProfileDefinition().convertAndAdd(profile, PROFILE_ATTRIBUTE, friendlyName, values);
                 }

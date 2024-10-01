@@ -25,7 +25,6 @@ import org.opensaml.xmlsec.algorithm.AlgorithmSupport;
 import org.opensaml.xmlsec.config.impl.DefaultSecurityConfigurationBootstrap;
 import org.opensaml.xmlsec.signature.KeyInfo;
 import org.opensaml.xmlsec.signature.SignableXMLObject;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.crypto.CredentialProvider;
 import org.pac4j.saml.util.Configuration;
 import org.pac4j.saml.util.SAML2Utils;
@@ -34,7 +33,10 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -288,7 +290,7 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
                 default -> person.setType(ContactPersonTypeEnumeration.OTHER);
             }
 
-            if (CommonHelper.isNotBlank(p.getSurname())) {
+            if (StringUtils.isNotBlank(p.getSurname())) {
                 val surnameBuilder =
                     (SAMLObjectBuilder<SurName>) this.builderFactory
                         .getBuilder(SurName.DEFAULT_ELEMENT_NAME);
@@ -297,7 +299,7 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
                 person.setSurName(surName);
             }
 
-            if (CommonHelper.isNotBlank(p.getGivenName())) {
+            if (StringUtils.isNotBlank(p.getGivenName())) {
                 val givenNameBuilder =
                     (SAMLObjectBuilder<GivenName>) this.builderFactory
                         .getBuilder(GivenName.DEFAULT_ELEMENT_NAME);

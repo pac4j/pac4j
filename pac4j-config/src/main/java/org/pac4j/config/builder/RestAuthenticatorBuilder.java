@@ -1,12 +1,11 @@
 package org.pac4j.config.builder;
 
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.http.credentials.authenticator.RestAuthenticator;
 
 import java.util.Map;
-
-import static org.pac4j.core.util.CommonHelper.isNotBlank;
 
 /**
  * Builder for the REST authenticator.
@@ -33,7 +32,7 @@ public class RestAuthenticatorBuilder extends AbstractBuilder {
     public void tryBuildRestAuthenticator(final Map<String, Authenticator> authenticators) {
         for (var i = 0; i <= MAX_NUM_AUTHENTICATORS; i++) {
             val url = getProperty(REST_URL, i);
-            if (isNotBlank(url)) {
+            if (StringUtils.isNotBlank(url)) {
                 authenticators.put(concat("rest", i), new RestAuthenticator(url));
             }
         }

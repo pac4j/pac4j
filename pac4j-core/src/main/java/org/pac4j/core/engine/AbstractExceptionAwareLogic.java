@@ -4,13 +4,13 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.FrameworkParameters;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.http.adapter.HttpActionAdapter;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.HttpActionHelper;
 
 import static org.pac4j.core.util.CommonHelper.assertNotNull;
@@ -49,7 +49,7 @@ public abstract class AbstractExceptionAwareLogic {
             LOGGER.debug("extra HTTP action required in security: {}", httpAction.getCode());
             return httpActionAdapter.adapt(httpAction, context);
         } else {
-            if (CommonHelper.isNotBlank(errorUrl)) {
+            if (StringUtils.isNotBlank(errorUrl)) {
                 val action = HttpActionHelper.buildRedirectUrlAction(context, errorUrl);
                 return httpActionAdapter.adapt(action, context);
             } else {

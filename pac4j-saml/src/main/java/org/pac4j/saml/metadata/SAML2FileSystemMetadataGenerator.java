@@ -2,9 +2,9 @@ package org.pac4j.saml.metadata;
 
 import lombok.RequiredArgsConstructor;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.opensaml.saml.metadata.resolver.impl.AbstractMetadataResolver;
 import org.opensaml.saml.metadata.resolver.impl.FilesystemMetadataResolver;
-import org.pac4j.core.util.CommonHelper;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.WritableResource;
 
@@ -40,7 +40,7 @@ public class SAML2FileSystemMetadataGenerator extends BaseSAML2MetadataGenerator
     /** {@inheritDoc} */
     @Override
     public boolean storeMetadata(final String metadata, final boolean force) throws Exception {
-        if (metadataResource == null || CommonHelper.isBlank(metadata)) {
+        if (metadataResource == null || StringUtils.isBlank(metadata)) {
             logger.info("No metadata or resource is provided");
             return false;
         }

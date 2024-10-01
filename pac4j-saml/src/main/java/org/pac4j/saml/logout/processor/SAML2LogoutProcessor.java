@@ -3,6 +3,7 @@ package org.pac4j.saml.logout.processor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.LogoutRequest;
@@ -15,7 +16,6 @@ import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.NoContentAction;
 import org.pac4j.core.exception.http.OkAction;
 import org.pac4j.core.logout.processor.LogoutProcessor;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.saml.client.SAML2Client;
@@ -135,7 +135,7 @@ public class SAML2LogoutProcessor implements LogoutProcessor {
      * @return a {@link HttpAction} object
      */
     protected HttpAction handlePostLogoutResponse(final SAML2MessageContext context) {
-        if (CommonHelper.isNotBlank(postLogoutURL)) {
+        if (StringUtils.isNotBlank(postLogoutURL)) {
             // if custom post logout URL is present then redirect to it
             return new FoundAction(postLogoutURL);
         }

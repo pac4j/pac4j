@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.Cookie;
 import org.pac4j.core.matching.matcher.Matcher;
@@ -67,12 +68,12 @@ public class CsrfTokenGeneratorMatcher implements Matcher {
 
             if (addTokenAsCookie) {
                 val cookie = new Cookie(Pac4jConstants.CSRF_TOKEN, token);
-                if (CommonHelper.isNotBlank(domain)) {
+                if (StringUtils.isNotBlank(domain)) {
                     cookie.setDomain(domain);
                 } else {
                     cookie.setDomain(webContext.getServerName());
                 }
-                if (CommonHelper.isNotBlank(path)) {
+                if (StringUtils.isNotBlank(path)) {
                     cookie.setPath(path);
                 }
                 if (httpOnly != null) {
@@ -84,7 +85,7 @@ public class CsrfTokenGeneratorMatcher implements Matcher {
                 if (maxAge != null) {
                     cookie.setMaxAge(maxAge.intValue());
                 }
-                if (CommonHelper.isNotBlank(sameSitePolicy)) {
+                if (StringUtils.isNotBlank(sameSitePolicy)) {
                     cookie.setSameSitePolicy(sameSitePolicy);
                 }
                 webContext.addResponseCookie(cookie);

@@ -1,6 +1,7 @@
 package org.pac4j.config.builder;
 
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.cas.client.CasClient;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.config.CasProtocol;
@@ -8,8 +9,6 @@ import org.pac4j.core.client.Client;
 
 import java.util.Collection;
 import java.util.Map;
-
-import static org.pac4j.core.util.CommonHelper.isNotBlank;
 
 /**
  * Builder for CAS clients.
@@ -37,11 +36,11 @@ public class CasClientBuilder extends AbstractBuilder {
         for (var i = 0; i <= MAX_NUM_CLIENTS; i++) {
             val loginUrl = getProperty(CAS_LOGIN_URL, i);
             val protocol = getProperty(CAS_PROTOCOL, i);
-            if (isNotBlank(loginUrl)) {
+            if (StringUtils.isNotBlank(loginUrl)) {
                 var configuration = new CasConfiguration();
                 val casClient = new CasClient(configuration);
                 configuration.setLoginUrl(loginUrl);
-                if (isNotBlank(protocol)) {
+                if (StringUtils.isNotBlank(protocol)) {
                     configuration.setProtocol(CasProtocol.valueOf(protocol));
                 }
                 casClient.setName(concat(casClient.getName(), i));

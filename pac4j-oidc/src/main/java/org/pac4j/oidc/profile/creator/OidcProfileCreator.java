@@ -11,6 +11,7 @@ import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
 import com.nimbusds.openid.connect.sdk.*;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.TokenCredentials;
@@ -33,7 +34,7 @@ import java.net.URI;
 import java.util.Optional;
 
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
-import static org.pac4j.core.util.CommonHelper.*;
+import static org.pac4j.core.util.CommonHelper.assertNotNull;
 
 /**
  * OpenID Connect profile creator.
@@ -119,7 +120,7 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
                 // keep the session ID if provided
                 val sid = (String) claimsSet.getClaim(Pac4jConstants.OIDC_CLAIM_SESSIONID);
                 val sessionLogoutHandler = client.findSessionLogoutHandler();
-                if (isNotBlank(sid) && sessionLogoutHandler != null) {
+                if (StringUtils.isNotBlank(sid) && sessionLogoutHandler != null) {
                     sessionLogoutHandler.recordSession(ctx, sid);
                 }
             }
@@ -188,7 +189,7 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
                 }
                 if (userInfoClaimsSet != null) {
                     final String subject = userInfoClaimsSet.getSubject();
-                    if (isBlank(profile.getId()) && isNotBlank(subject)) {
+                    if (StringUtils.isBlank(profile.getId()) && StringUtils.isNotBlank(subject)) {
                         profile.setId(ProfileHelper.sanitizeIdentifier(subject));
                     }
                     getProfileDefinition().convertAndAdd(profile, userInfoClaimsSet.getClaims(), null);

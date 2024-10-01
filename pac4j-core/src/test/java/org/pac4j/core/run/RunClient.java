@@ -1,6 +1,7 @@
 package org.pac4j.core.run;
 
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.MockWebContext;
@@ -9,7 +10,6 @@ import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.Gender;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.serializer.JavaSerializer;
 import org.slf4j.Logger;
@@ -38,7 +38,7 @@ public abstract class RunClient implements TestsConstants {
         final SessionStore sessionStore = new MockSessionStore();
         val url = ((FoundAction) client.getRedirectionAction(new CallContext(context, sessionStore)).get()).getLocation();
         logger.warn("Redirect to: \n{}", url);
-        if (CommonHelper.isNotBlank(getLogin()) && CommonHelper.isNotBlank(getPassword())) {
+        if (StringUtils.isNotBlank(getLogin()) && StringUtils.isNotBlank(getPassword())) {
             logger.warn("Use credentials: {} / {}", getLogin(), getPassword());
         } else {
             logger.warn("Use your own personal credentials");

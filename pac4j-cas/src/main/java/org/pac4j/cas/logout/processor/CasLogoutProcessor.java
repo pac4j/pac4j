@@ -2,6 +2,7 @@ package org.pac4j.cas.logout.processor;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.WebContext;
@@ -18,7 +19,6 @@ import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.util.Pac4jConstants;
 
 import static org.pac4j.core.util.CommonHelper.assertTrue;
-import static org.pac4j.core.util.CommonHelper.isNotBlank;
 
 /**
  * The CAS logout processor.
@@ -53,13 +53,13 @@ public class CasLogoutProcessor implements LogoutProcessor {
         val sessionKey = credentials.getSessionKey();
 
         if (credentials.getLogoutType() == LogoutType.BACK) {
-            if (isNotBlank(sessionKey) && sessionLogoutHandler != null) {
+            if (StringUtils.isNotBlank(sessionKey) && sessionLogoutHandler != null) {
                 sessionLogoutHandler.destroySession(ctx, sessionKey);
             }
             LOGGER.debug("back logout: no content returned");
             return NoContentAction.INSTANCE;
         } else {
-            if (isNotBlank(sessionKey) && sessionLogoutHandler != null) {
+            if (StringUtils.isNotBlank(sessionKey) && sessionLogoutHandler != null) {
                 sessionLogoutHandler.destroySession(ctx, sessionKey);
             }
             val action = getFinalActionForFrontChannelLogout(ctx.webContext());

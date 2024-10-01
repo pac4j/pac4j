@@ -1,6 +1,7 @@
 package org.pac4j.config.builder;
 
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authc.credential.DefaultPasswordService;
 import org.apache.shiro.crypto.hash.DefaultHashService;
 import org.apache.shiro.util.ByteSource;
@@ -8,8 +9,6 @@ import org.pac4j.core.credentials.password.PasswordEncoder;
 import org.pac4j.core.credentials.password.ShiroPasswordEncoder;
 
 import java.util.Map;
-
-import static org.pac4j.core.util.CommonHelper.isNotBlank;
 
 /**
  * Builder for Shiro (DefaultHashService and) DefaultPasswordService as password encoder.
@@ -39,7 +38,7 @@ public class ShiroEncoderBuilder extends AbstractBuilder {
             val hasProperty =  containsProperty(SHIRO_ENCODER_GENERATE_PUBLIC_SALT, i)
                 || containsProperty(SHIRO_ENCODER_HASH_ALGORITHM_NAME, i)
                 || containsProperty(SHIRO_ENCODER_HASH_ITERATIONS, i) || containsProperty(SHIRO_ENCODER_PRIVATE_SALT, i);
-            if (isNotBlank(exists) || hasProperty) {
+            if (StringUtils.isNotBlank(exists) || hasProperty) {
 
                 val passwordService = new DefaultPasswordService();
 

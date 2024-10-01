@@ -11,8 +11,6 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.pac4j.core.util.CommonHelper.isNotBlank;
-
 /**
  * Builder for SAML2 clients.
  *
@@ -43,8 +41,8 @@ public class Saml2ClientBuilder extends AbstractBuilder {
             val identityProviderMetadataPath = getProperty(SAML_IDENTITY_PROVIDER_METADATA_PATH, i);
 
 
-            if (isNotBlank(keystorePassword) && isNotBlank(privateKeyPassword)
-                    && isNotBlank(keystorePath) && isNotBlank(identityProviderMetadataPath)) {
+            if (StringUtils.isNotBlank(keystorePassword) && StringUtils.isNotBlank(privateKeyPassword)
+                    && StringUtils.isNotBlank(keystorePath) && StringUtils.isNotBlank(identityProviderMetadataPath)) {
 
                 val maximumAuthenticationLifetime = getProperty(SAML_MAXIMUM_AUTHENTICATION_LIFETIME, i);
                 val serviceProviderEntityId = getProperty(SAML_SERVICE_PROVIDER_ENTITY_ID, i);
@@ -54,64 +52,64 @@ public class Saml2ClientBuilder extends AbstractBuilder {
 
                 val cfg = new SAML2Configuration(keystorePath, keystorePassword,
                         privateKeyPassword, identityProviderMetadataPath);
-                if (isNotBlank(maximumAuthenticationLifetime)) {
+                if (StringUtils.isNotBlank(maximumAuthenticationLifetime)) {
                     cfg.setMaximumAuthenticationLifetime(Integer.parseInt(maximumAuthenticationLifetime));
                 }
-                if (isNotBlank(serviceProviderEntityId)) {
+                if (StringUtils.isNotBlank(serviceProviderEntityId)) {
                     cfg.setServiceProviderEntityId(serviceProviderEntityId);
                 }
-                if (isNotBlank(serviceProviderMetadataPath)) {
+                if (StringUtils.isNotBlank(serviceProviderMetadataPath)) {
                     cfg.setServiceProviderMetadataPath(serviceProviderMetadataPath);
                 }
-                if (isNotBlank(destinationBindingType)) {
+                if (StringUtils.isNotBlank(destinationBindingType)) {
                     cfg.setAuthnRequestBindingType(destinationBindingType);
                 }
-                if (isNotBlank(keystoreAlias)) {
+                if (StringUtils.isNotBlank(keystoreAlias)) {
                     cfg.setKeyStoreAlias(keystoreAlias);
                 }
 
                 val acceptedSkew = getProperty(SAML_ACCEPTED_SKEW, i);
-                if (isNotBlank(acceptedSkew)) {
+                if (StringUtils.isNotBlank(acceptedSkew)) {
                     cfg.setAcceptedSkew(Long.parseLong(acceptedSkew));
                 }
 
                 val assertionConsumerServiceIndex = getProperty(SAML_ASSERTION_CONSUMER_SERVICE_INDEX, i);
-                if (isNotBlank(assertionConsumerServiceIndex)) {
+                if (StringUtils.isNotBlank(assertionConsumerServiceIndex)) {
                     cfg.setAssertionConsumerServiceIndex(Integer.parseInt(assertionConsumerServiceIndex));
                 }
 
                 val forceAuth = getProperty(SAML_FORCE_AUTH, i);
-                if (isNotBlank(forceAuth)) {
+                if (StringUtils.isNotBlank(forceAuth)) {
                     cfg.setForceAuth(Boolean.parseBoolean(forceAuth));
                 }
 
                 val attributeAsId = getProperty(SAML_ATTRIBUTE_AS_ID, i);
-                if (isNotBlank(attributeAsId)) {
+                if (StringUtils.isNotBlank(attributeAsId)) {
                     cfg.setAttributeAsId(attributeAsId);
                 }
 
                 val authnContextClassRefs = getProperty(SAML_AUTHN_CONTEXT_CLASS_REFS, i);
-                if (isNotBlank(authnContextClassRefs)) {
+                if (StringUtils.isNotBlank(authnContextClassRefs)) {
                     cfg.setAuthnContextClassRefs(Arrays.stream(authnContextClassRefs.split(",")).collect(Collectors.toList()));
                 }
 
                 val comparisonType = getProperty(SAML_COMPARISON_TYPE, i);
-                if (isNotBlank(comparisonType)) {
+                if (StringUtils.isNotBlank(comparisonType)) {
                     cfg.setComparisonType(comparisonType);
                 }
 
                 val issuerFormat = getProperty(SAML_ISSUER_FORMAT, i);
-                if (isNotBlank(issuerFormat)) {
+                if (StringUtils.isNotBlank(issuerFormat)) {
                     cfg.setIssuerFormat(issuerFormat);
                 }
 
                 val authnRequestSigned = getProperty(SAML_AUTHN_REQUEST_SIGNED, i);
-                if (isNotBlank(authnRequestSigned)) {
+                if (StringUtils.isNotBlank(authnRequestSigned)) {
                     cfg.setAuthnRequestSigned(Boolean.parseBoolean(authnRequestSigned));
                 }
 
                 val mappedAttributes = getProperty(SAML_MAPPED_ATTRIBUTES, i);
-                if (isNotBlank(mappedAttributes)) {
+                if (StringUtils.isNotBlank(mappedAttributes)) {
                     var mapped = Arrays.stream(mappedAttributes.split(","))
                         .collect(Collectors.toMap(key -> key.split(":")[0],
                             value -> value.split(":")[1]));
@@ -119,27 +117,27 @@ public class Saml2ClientBuilder extends AbstractBuilder {
                 }
 
                 val nameIdAttribute = getProperty(SAML_NAMEID_ATTRIBUTE, i);
-                if (isNotBlank(nameIdAttribute)) {
+                if (StringUtils.isNotBlank(nameIdAttribute)) {
                     cfg.setNameIdAttribute(nameIdAttribute);
                 }
 
                 val passive = getProperty(SAML_PASSIVE, i);
-                if (isNotBlank(passive)) {
+                if (StringUtils.isNotBlank(passive)) {
                     cfg.setPassive(Boolean.parseBoolean(passive));
                 }
 
                 val responseBindingType = getProperty(SAML_RESPONSE_BINDING_TYPE, i);
-                if (isNotBlank(responseBindingType)) {
+                if (StringUtils.isNotBlank(responseBindingType)) {
                     cfg.setResponseBindingType(responseBindingType);
                 }
 
                 val wantsAssertionsSigned = getProperty(SAML_WANTS_ASSERTIONS_SIGNED, i);
-                if (isNotBlank(wantsAssertionsSigned)) {
+                if (StringUtils.isNotBlank(wantsAssertionsSigned)) {
                     cfg.setWantsAssertionsSigned(Boolean.parseBoolean(wantsAssertionsSigned));
                 }
 
                 val wantsResponsesSigned = getProperty(SAML_WANTS_RESPONSES_SIGNED, i);
-                if (isNotBlank(wantsResponsesSigned)) {
+                if (StringUtils.isNotBlank(wantsResponsesSigned)) {
                     cfg.setWantsResponsesSigned(Boolean.parseBoolean(wantsResponsesSigned));
                 }
 

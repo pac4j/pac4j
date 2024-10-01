@@ -2,11 +2,11 @@ package org.pac4j.core.client.finder;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.util.CommonHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +45,7 @@ public class DefaultCallbackClientFinder implements ClientFinder {
         LOGGER.debug("result: {}", result.stream().map(Client::getName).collect(Collectors.toList()));
 
         // fallback: no client found and we have a default client, use it
-        if (result.isEmpty() && CommonHelper.isNotBlank(clientNames)) {
+        if (result.isEmpty() && StringUtils.isNotBlank(clientNames)) {
             val defaultClient = clients.findClient(clientNames);
             if (defaultClient.isPresent()) {
                 LOGGER.debug("Defaulting to the configured client: {}", defaultClient);

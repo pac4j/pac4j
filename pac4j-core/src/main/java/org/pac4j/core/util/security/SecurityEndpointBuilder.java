@@ -1,12 +1,12 @@
 package org.pac4j.core.util.security;
 
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.authorization.authorizer.Authorizer;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.matching.matcher.Matcher;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 
 import java.util.ArrayList;
@@ -99,19 +99,19 @@ public class SecurityEndpointBuilder {
         }
 
         endpoint.setConfig(config);
-        if (CommonHelper.isNotBlank(clients)) {
+        if (StringUtils.isNotBlank(clients)) {
             endpoint.setClients(clients);
         }
-        if (CommonHelper.isNotBlank(authorizers)) {
+        if (StringUtils.isNotBlank(authorizers)) {
             endpoint.setAuthorizers(authorizers);
         }
-        if (CommonHelper.isNotBlank(matchers)) {
+        if (StringUtils.isNotBlank(matchers)) {
             endpoint.setMatchers(matchers);
         }
     }
 
     private static String addElement(final String elements, final String element) {
-        if (CommonHelper.isNotBlank(elements)) {
+        if (StringUtils.isNotBlank(elements)) {
             return elements + Pac4jConstants.ELEMENT_SEPARATOR + element;
         } else {
             return element;

@@ -1,12 +1,12 @@
 package org.pac4j.oauth.run;
 
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.run.RunClient;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oauth.client.PayPalClient;
 import org.pac4j.oauth.profile.paypal.PayPalProfile;
@@ -54,7 +54,7 @@ public final class RunPaypalClient extends RunClient {
         assertEquals(PayPalProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR
                 + "YAxf5WKSFn4BG_l3wqcBJUSObQTG1Aww5FY0EDf_ccw", profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), PayPalProfile.class));
-        assertTrue(CommonHelper.isNotBlank(profile.getAccessToken()));
+        assertTrue(StringUtils.isNotBlank(profile.getAccessToken()));
         assertCommonProfile(userProfile, "testscribeup@gmail.com", "Test", "ScribeUP", "Test ScribeUP", null,
                 Gender.UNSPECIFIED, Locale.FRANCE, null, null, "Europe/Berlin");
         val address = profile.getAddress();

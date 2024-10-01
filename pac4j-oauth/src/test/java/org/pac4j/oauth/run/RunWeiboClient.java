@@ -1,12 +1,12 @@
 package org.pac4j.oauth.run;
 
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.run.RunClient;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oauth.client.WeiboClient;
 import org.pac4j.oauth.profile.weibo.WeiboProfile;
@@ -70,7 +70,7 @@ public final class RunWeiboClient extends RunClient {
         assertEquals(WeiboProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + "6591860688",
             profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), WeiboProfile.class));
-        assertTrue(CommonHelper.isNotBlank(profile.getAccessToken()));
+        assertTrue(StringUtils.isNotBlank(profile.getAccessToken()));
         assertCommonProfile(userProfile, null, "OAuth2", null, "OAuth2", "OAuth2",
             Gender.MALE, Locale.SIMPLIFIED_CHINESE,
             "http://tvax4.sinaimg.cn/crop.7.6.386.386.1024/007c6M5Gly8fsyu16gbbhj30b40b4gm7.jpg",

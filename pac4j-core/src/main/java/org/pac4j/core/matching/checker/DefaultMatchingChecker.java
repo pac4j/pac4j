@@ -2,6 +2,7 @@ package org.pac4j.core.matching.checker;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.CallContext;
@@ -82,7 +83,7 @@ public class DefaultMatchingChecker implements MatchingChecker {
     protected List<Matcher> computeMatchers(final CallContext ctx, final String matchersValue,
                                             final Map<String, Matcher> matchersMap, final List<Client> clients) {
         String matcherNames;
-        if (isBlank(matchersValue)) {
+        if (StringUtils.isBlank(matchersValue)) {
             matcherNames = computeDefaultMatcherNames(ctx, clients, matchersMap);
         } else if (matchersValue.trim().startsWith(Pac4jConstants.ADD_ELEMENT)) {
             matcherNames = computeDefaultMatcherNames(ctx, clients, matchersMap) +

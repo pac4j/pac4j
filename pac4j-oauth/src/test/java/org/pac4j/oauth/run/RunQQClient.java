@@ -1,12 +1,12 @@
 package org.pac4j.oauth.run;
 
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.run.RunClient;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oauth.client.QQClient;
 import org.pac4j.oauth.profile.qq.QQProfile;
@@ -69,7 +69,7 @@ public final class RunQQClient extends RunClient {
         assertEquals(QQProfile.class.getName() + Pac4jConstants.TYPED_ID_SEPARATOR + "8585AB16822E1437050D63C27D277991",
             profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), QQProfile.class));
-        assertTrue(CommonHelper.isNotBlank(profile.getAccessToken()));
+        assertTrue(StringUtils.isNotBlank(profile.getAccessToken()));
         assertCommonProfile(userProfile, null, null, null, "PAC4J", "PAC4J",
             Gender.MALE, null,
             "http://thirdqq.qlogo.cn/qqapp/101481951/8585AB16822E1437050D63C27D277991/100",
