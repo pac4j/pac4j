@@ -12,8 +12,7 @@ import org.pac4j.saml.profile.converter.SimpleSAML2AttributeConverter;
 import org.pac4j.saml.util.Configuration;
 
 import java.io.Serializable;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -45,8 +44,8 @@ public class SAML2CredentialsSerializationTests {
         assertNotNull(conditionsBuilder);
 
         val conditions = conditionsBuilder.buildObject();
-        conditions.setNotBefore(ZonedDateTime.now(ZoneOffset.UTC).toInstant());
-        conditions.setNotOnOrAfter(ZonedDateTime.now(ZoneOffset.UTC).toInstant());
+        conditions.setNotBefore(Instant.now());
+        conditions.setNotOnOrAfter(Instant.now());
 
         final List<String> contexts = new ArrayList<>();
         contexts.add("cas-context");

@@ -18,8 +18,7 @@ import org.w3c.dom.Element;
 
 import javax.xml.namespace.QName;
 import java.net.URISyntaxException;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
+import java.time.Instant;
 import java.util.*;
 
 import static org.junit.Assert.*;
@@ -180,11 +179,11 @@ public class SAML2AuthenticatorTests {
         val conditions = conditionsBuilder.buildObject();
 
         if (includeNotBefore) {
-            conditions.setNotBefore(ZonedDateTime.now(ZoneOffset.UTC).toInstant());
+            conditions.setNotBefore(Instant.now());
         }
 
         if (includeNotOnOrAfter) {
-            conditions.setNotOnOrAfter(ZonedDateTime.now(ZoneOffset.UTC).toInstant());
+            conditions.setNotOnOrAfter(Instant.now());
         }
 
         final List<String> contexts = new ArrayList<>();

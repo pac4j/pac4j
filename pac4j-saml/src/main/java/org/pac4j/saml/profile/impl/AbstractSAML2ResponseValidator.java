@@ -36,8 +36,6 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.util.Collection;
 
 /**
@@ -216,11 +214,11 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
      * @return a boolean
      */
     protected boolean isDateValid(final Instant issueInstant, final long interval) {
-        val now = ZonedDateTime.now(ZoneOffset.UTC);
+        val now = Instant.now();
         val before = now.plusSeconds(acceptedSkew);
         val after = now.minusSeconds(acceptedSkew + interval);
 
-        val issueInstanceUtc = ZonedDateTime.ofInstant(issueInstant, ZoneOffset.UTC);
+        val issueInstanceUtc = Instant.now();
 
         val isDateValid = issueInstanceUtc.isBefore(before) && issueInstanceUtc.isAfter(after);
         if (!isDateValid) {

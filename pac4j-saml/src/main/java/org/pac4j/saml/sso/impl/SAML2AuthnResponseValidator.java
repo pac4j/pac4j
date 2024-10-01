@@ -28,8 +28,6 @@ import org.pac4j.saml.util.SAML2Utils;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Instant;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -509,7 +507,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
             return false;
         }
 
-        val now = ZonedDateTime.now(ZoneOffset.UTC).toInstant();
+        val now = Instant.now();
         val expired = data.getNotOnOrAfter().plusSeconds(acceptedSkew).isBefore(now);
 
         if (expired) {
@@ -581,7 +579,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
             return;
         }
 
-        val now = ZonedDateTime.now(ZoneOffset.UTC).toInstant();
+        val now = Instant.now();
         if (conditions.getNotBefore() != null) {
             val expired = conditions.getNotBefore().minusSeconds(acceptedSkew).isAfter(now);
             if (expired) {
@@ -638,7 +636,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
     protected void validateAuthenticationStatements(final Iterable<AuthnStatement> authnStatements,
                                                     final SAML2MessageContext context) {
         final List<String> authnClassRefs = new ArrayList<>();
-        val now = ZonedDateTime.now(ZoneOffset.UTC).toInstant();
+        val now = Instant.now();
         for (val statement : authnStatements) {
             if (!isAuthnInstantValid(context, statement.getAuthnInstant())) {
                 throw new SAMLAuthnInstantException("Authentication issue instant is too old or in the future");

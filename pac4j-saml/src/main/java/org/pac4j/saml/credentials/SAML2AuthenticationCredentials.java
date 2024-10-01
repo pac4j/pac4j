@@ -10,8 +10,7 @@ import org.pac4j.core.profile.converter.AttributeConverter;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -76,11 +75,11 @@ public class SAML2AuthenticationCredentials extends Credentials {
             this.conditions = new SAMLConditions();
 
             if (conditions.getNotBefore() != null) {
-                this.conditions.setNotBefore(ZonedDateTime.ofInstant(conditions.getNotBefore(), ZoneOffset.UTC));
+                this.conditions.setNotBefore(conditions.getNotBefore());
             }
 
             if (conditions.getNotOnOrAfter() != null) {
-                this.conditions.setNotOnOrAfter(ZonedDateTime.ofInstant(conditions.getNotOnOrAfter(), ZoneOffset.UTC));
+                this.conditions.setNotOnOrAfter(conditions.getNotOnOrAfter());
             }
         } else {
             this.conditions = null;
@@ -157,7 +156,7 @@ public class SAML2AuthenticationCredentials extends Credentials {
     public static class SAMLConditions implements Serializable {
         @Serial
         private static final long serialVersionUID = -8966585574672014553L;
-        private ZonedDateTime notBefore;
-        private ZonedDateTime notOnOrAfter;
+        private Instant notBefore;
+        private Instant notOnOrAfter;
     }
 }

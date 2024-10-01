@@ -15,8 +15,7 @@ import org.pac4j.saml.profile.SAML2Profile;
 import org.pac4j.saml.util.Configuration;
 import org.pac4j.saml.util.SAML2Utils;
 
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
+import java.time.Instant;
 
 /**
  * Build a SAML2 Logout Request
@@ -77,7 +76,7 @@ public class SAML2LogoutRequestBuilder {
 
         request.setID(SAML2Utils.generateID());
         request.setIssuer(getIssuer(selfContext.getEntityId()));
-        request.setIssueInstant(ZonedDateTime.now(ZoneOffset.UTC).plusSeconds(this.issueInstantSkewSeconds).toInstant());
+        request.setIssueInstant(Instant.now().plusSeconds(this.issueInstantSkewSeconds));
         request.setVersion(SAMLVersion.VERSION_20);
         request.setDestination(ssoService.getLocation());
 

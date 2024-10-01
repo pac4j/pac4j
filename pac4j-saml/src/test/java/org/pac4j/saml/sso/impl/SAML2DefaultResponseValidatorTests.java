@@ -36,8 +36,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -91,15 +91,15 @@ public class SAML2DefaultResponseValidatorTests {
             new InputStreamReader(new FileInputStream(file), Charset.defaultCharset()));
 
         val response = (Response) xmlObject;
-        response.setIssueInstant(ZonedDateTime.now(ZoneOffset.UTC).toInstant());
+        response.setIssueInstant(Instant.now());
         response.getAssertions().forEach(assertion -> {
-            assertion.setIssueInstant(ZonedDateTime.now(ZoneOffset.UTC).toInstant());
+            assertion.setIssueInstant(Instant.now());
             assertion.getSubject().getSubjectConfirmations().get(0).setMethod(SubjectConfirmation.METHOD_BEARER);
             assertion.getSubject().getSubjectConfirmations().get(0).
-                getSubjectConfirmationData().setNotOnOrAfter(ZonedDateTime.now(ZoneOffset.UTC).toInstant());
-            assertion.getConditions().setNotOnOrAfter(ZonedDateTime.now(ZoneOffset.UTC).toInstant());
+                getSubjectConfirmationData().setNotOnOrAfter(Instant.now());
+            assertion.getConditions().setNotOnOrAfter(Instant.now());
             assertion.getAuthnStatements().forEach(authnStatement -> authnStatement.setAuthnInstant(
-                ZonedDateTime.now(ZoneOffset.UTC).toInstant()));
+                Instant.now()));
         });
         return response;
     }
@@ -375,7 +375,7 @@ public class SAML2DefaultResponseValidatorTests {
         // Move the authn-instant back many years to simulate an "expired" assertion.
         response.getAssertions().forEach(assertion ->
             assertion.getAuthnStatements().forEach(authnStatement -> authnStatement.setAuthnInstant(
-                ZonedDateTime.now(ZoneOffset.UTC).minusYears(10).toInstant())));
+                Instant.now().minus(10 * 365, ChronoUnit.DAYS))));
         response.setSignature(null);
         response.getAssertions().get(0).setSignature(null);
 
