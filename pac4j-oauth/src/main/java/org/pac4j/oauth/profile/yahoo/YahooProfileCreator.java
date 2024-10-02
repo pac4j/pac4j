@@ -9,7 +9,6 @@ import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.core.profile.UserProfile;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.config.OAuth10Configuration;
 import org.pac4j.oauth.profile.creator.OAuth10ProfileCreator;
 
@@ -41,7 +40,7 @@ public class YahooProfileCreator extends OAuth10ProfileCreator {
         val profileUrl = profileDefinition.getProfileUrl(accessToken, this.configuration);
         val service = (OAuth10aService) configuration.buildService(context, client);
         var body = sendRequestForData(service, accessToken, profileUrl, profileDefinition.getProfileVerb());
-        val guid = CommonHelper.substringBetween(body, "<value>", "</value>");
+        val guid = StringUtils.substringBetween(body, "<value>", "</value>");
         logger.debug("guid : {}", guid);
         if (StringUtils.isBlank(guid)) {
             throw new HttpCommunicationException("Cannot find guid from body : " + body);

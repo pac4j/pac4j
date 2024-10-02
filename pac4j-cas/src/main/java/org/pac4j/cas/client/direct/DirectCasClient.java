@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.cas.authorization.DefaultCasAuthorizationGenerator;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.credentials.authenticator.CasAuthenticator;
@@ -23,7 +24,8 @@ import org.pac4j.core.util.HttpActionHelper;
 
 import java.util.Optional;
 
-import static org.pac4j.core.util.CommonHelper.*;
+import static org.pac4j.core.util.CommonHelper.assertNotNull;
+import static org.pac4j.core.util.CommonHelper.assertTrue;
 
 /**
  * <p>This class is the direct client to authenticate users on a CAS server for a web application in a stateless way: when trying to access
@@ -116,8 +118,8 @@ public class DirectCasClient extends DirectClient {
         try {
             var callbackUrl = callbackUrlResolver.compute(urlResolver, webContext.getFullRequestURL(), getName(), webContext);
             // clean url from ticket parameter
-            callbackUrl = substringBefore(callbackUrl, "?" + CasConfiguration.TICKET_PARAMETER + "=");
-            callbackUrl = substringBefore(callbackUrl, "&" + CasConfiguration.TICKET_PARAMETER + "=");
+            callbackUrl = StringUtils.substringBefore(callbackUrl, "?" + CasConfiguration.TICKET_PARAMETER + "=");
+            callbackUrl = StringUtils.substringBefore(callbackUrl, "&" + CasConfiguration.TICKET_PARAMETER + "=");
             val casAuthenticator = new CasAuthenticator(configuration, getName(), urlResolver, callbackUrlResolver,
                 callbackUrl, findSessionLogoutHandler());
             casAuthenticator.init();

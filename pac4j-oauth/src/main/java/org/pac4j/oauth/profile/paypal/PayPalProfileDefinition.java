@@ -2,8 +2,8 @@ package org.pac4j.oauth.profile.paypal;
 
 import com.github.scribejava.core.model.Token;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.config.OAuthConfiguration;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.converter.JsonConverter;
@@ -55,7 +55,7 @@ public class PayPalProfileDefinition extends OAuthProfileDefinition {
         val json = JsonHelper.getFirstNode(body);
         if (json != null) {
             val userId = (String) JsonHelper.getElement(json, "user_id");
-            profile.setId(CommonHelper.substringAfter(userId, "/user/"));
+            profile.setId(StringUtils.substringAfter(userId, "/user/"));
             for (val attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
             }

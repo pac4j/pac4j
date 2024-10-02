@@ -65,7 +65,7 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
             authorizers = computeDefaultAuthorizers(context, profiles, clients, authorizersMap);
         } else {
             if (authorizersValue.trim().startsWith(Pac4jConstants.ADD_ELEMENT)) {
-                val authorizerNames = substringAfter(authorizersValue, Pac4jConstants.ADD_ELEMENT);
+                val authorizerNames = StringUtils.substringAfter(authorizersValue, Pac4jConstants.ADD_ELEMENT);
                 authorizers = computeDefaultAuthorizers(context, profiles, clients, authorizersMap);
                 authorizers.addAll(computeAuthorizersFromNames(authorizerNames, authorizersMap));
             } else {

@@ -3,6 +3,7 @@ package org.pac4j.core.profile.definition;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.AttributeLocation;
 import org.pac4j.core.profile.CommonProfile;
@@ -21,7 +22,6 @@ import java.util.Map;
 
 import static org.pac4j.core.profile.AttributeLocation.AUTHENTICATION_ATTRIBUTE;
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
-import static org.pac4j.core.util.CommonHelper.substringBefore;
 
 /**
  * Define a profile (its class and attributes).
@@ -61,7 +61,7 @@ public abstract class ProfileDefinition {
             if (typedId instanceof String sTypedId) {
                 logger.debug("Building user profile based on typedId: {}", typedId);
                 if (sTypedId.contains(Pac4jConstants.TYPED_ID_SEPARATOR)) {
-                    val profileClass = substringBefore(sTypedId, Pac4jConstants.TYPED_ID_SEPARATOR);
+                    val profileClass = StringUtils.substringBefore(sTypedId, Pac4jConstants.TYPED_ID_SEPARATOR);
                     for (val profileClassPrefix : ProfileHelper.getProfileClassPrefixes()) {
                         if (profileClass.startsWith(profileClassPrefix)) {
                             try {

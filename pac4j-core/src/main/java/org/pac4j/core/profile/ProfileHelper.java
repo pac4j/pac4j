@@ -1,14 +1,13 @@
 package org.pac4j.core.profile;
 
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
-
-import static org.pac4j.core.util.CommonHelper.substringBefore;
 
 /**
  * This class is an helper for profiles.
@@ -86,7 +85,7 @@ public final class ProfileHelper {
         if (id != null) {
             var sId = id.toString();
             if (sId.contains(Pac4jConstants.TYPED_ID_SEPARATOR)) {
-                val profileClass = substringBefore(sId, Pac4jConstants.TYPED_ID_SEPARATOR);
+                val profileClass = StringUtils.substringBefore(sId, Pac4jConstants.TYPED_ID_SEPARATOR);
                 for (val profileClassPrefix : getProfileClassPrefixes()) {
                     if (profileClass.startsWith(profileClassPrefix)) {
                         return sId.substring(profileClass.length() + 1);

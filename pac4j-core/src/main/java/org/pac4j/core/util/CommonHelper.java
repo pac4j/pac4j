@@ -46,16 +46,6 @@ public final class CommonHelper {
     }
 
     /**
-     * Return if a collection is not empty.
-     *
-     * @param coll a collection
-     * @return whether it is not empty
-     */
-    public static boolean isNotEmpty(final Collection<?> coll) {
-        return !isEmpty(coll);
-    }
-
-    /**
      * Verify that a boolean is true otherwise throw a {@link TechnicalException}.
      *
      * @param value   the value to be checked for truth
@@ -191,80 +181,6 @@ public final class CommonHelper {
         }
     }
 
-    /**
-     * Taken from commons-lang3
-     */
-
-    private static final int INDEX_NOT_FOUND = -1;
-
-    /**
-     * <p>substringBetween.</p>
-     *
-     * @param str a {@link String} object
-     * @param open a {@link String} object
-     * @param close a {@link String} object
-     * @return a {@link String} object
-     */
-    public static String substringBetween(final String str, final String open, final String close) {
-        if (str == null || open == null || close == null) {
-            return null;
-        }
-        val start = str.indexOf(open);
-        if (start != INDEX_NOT_FOUND) {
-            val end = str.indexOf(close, start + open.length());
-            if (end != INDEX_NOT_FOUND) {
-                return str.substring(start + open.length(), end);
-            }
-        }
-        return null;
-    }
-
-    /**
-     * <p>substringAfter.</p>
-     *
-     * @param str a {@link String} object
-     * @param separator a {@link String} object
-     * @return a {@link String} object
-     */
-    public static String substringAfter(final String str, final String separator) {
-        if (isEmpty(str)) {
-            return str;
-        }
-        if (separator == null) {
-            return Pac4jConstants.EMPTY_STRING;
-        }
-        val pos = str.indexOf(separator);
-        if (pos == INDEX_NOT_FOUND) {
-            return Pac4jConstants.EMPTY_STRING;
-        }
-        return str.substring(pos + separator.length());
-    }
-
-    /**
-     * <p>substringBefore.</p>
-     *
-     * @param str a {@link String} object
-     * @param separator a {@link String} object
-     * @return a {@link String} object
-     */
-    public static String substringBefore(final String str, final String separator) {
-        if (isEmpty(str) || separator == null) {
-            return str;
-        }
-        if (separator.length() == 0) {
-            return Pac4jConstants.EMPTY_STRING;
-        }
-        val pos = str.indexOf(separator);
-        if (pos == INDEX_NOT_FOUND) {
-            return str;
-        }
-        return str.substring(0, pos);
-    }
-
-    private static boolean isEmpty(final CharSequence cs) {
-        return cs == null || cs.length() == 0;
-    }
-
     private static final Map<String, Constructor> constructorsCache = new HashMap<>();
 
     /**
@@ -325,5 +241,64 @@ public final class CommonHelper {
     @Deprecated
     public static String ifBlank(final String value, final String defaultValue) {
         return isBlank(value) ? defaultValue : value;
+    }
+
+    @Deprecated
+    public static boolean isNotEmpty(final Collection<?> coll) {
+        return !isEmpty(coll);
+    }
+
+    /**
+     * Taken from commons-lang3
+     */
+    private static final int INDEX_NOT_FOUND = -1;
+
+    @Deprecated
+    public static String substringBetween(final String str, final String open, final String close) {
+        if (str == null || open == null || close == null) {
+            return null;
+        }
+        val start = str.indexOf(open);
+        if (start != INDEX_NOT_FOUND) {
+            val end = str.indexOf(close, start + open.length());
+            if (end != INDEX_NOT_FOUND) {
+                return str.substring(start + open.length(), end);
+            }
+        }
+        return null;
+    }
+
+    @Deprecated
+    public static String substringAfter(final String str, final String separator) {
+        if (isEmpty(str)) {
+            return str;
+        }
+        if (separator == null) {
+            return Pac4jConstants.EMPTY_STRING;
+        }
+        val pos = str.indexOf(separator);
+        if (pos == INDEX_NOT_FOUND) {
+            return Pac4jConstants.EMPTY_STRING;
+        }
+        return str.substring(pos + separator.length());
+    }
+
+    @Deprecated
+    public static String substringBefore(final String str, final String separator) {
+        if (isEmpty(str) || separator == null) {
+            return str;
+        }
+        if (separator.length() == 0) {
+            return Pac4jConstants.EMPTY_STRING;
+        }
+        val pos = str.indexOf(separator);
+        if (pos == INDEX_NOT_FOUND) {
+            return str;
+        }
+        return str.substring(0, pos);
+    }
+
+    private static boolean isEmpty(final CharSequence cs) {
+        return cs == null || cs.length() == 0;
     }
 }

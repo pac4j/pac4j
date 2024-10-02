@@ -87,7 +87,7 @@ public class DefaultMatchingChecker implements MatchingChecker {
             matcherNames = computeDefaultMatcherNames(ctx, clients, matchersMap);
         } else if (matchersValue.trim().startsWith(Pac4jConstants.ADD_ELEMENT)) {
             matcherNames = computeDefaultMatcherNames(ctx, clients, matchersMap) +
-                Pac4jConstants.ELEMENT_SEPARATOR + substringAfter(matchersValue, Pac4jConstants.ADD_ELEMENT);
+                Pac4jConstants.ELEMENT_SEPARATOR + StringUtils.substringAfter(matchersValue, Pac4jConstants.ADD_ELEMENT);
         } else {
             matcherNames = matchersValue;
         }

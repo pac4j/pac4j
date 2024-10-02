@@ -109,7 +109,7 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
                 LOGGER.debug("Loaded profiles (from session: {}): {} ", this.loadProfilesFromSession, profiles);
 
                 // no profile and some current clients
-                if (isEmpty(profiles) && isNotEmpty(currentClients)) {
+                if (isEmpty(profiles) && !isEmpty(currentClients)) {
                     var updated = false;
                     // loop on all clients searching direct ones to perform authentication
                     for (val currentClient : currentClients) {
