@@ -13,7 +13,7 @@
     <name>pac4j: security configuration by properties</name>
 
     <properties>
-        <hikaricp.version>6.0.0</hikaricp.version>
+        <hikaricp.version>6.1.0</hikaricp.version>
     </properties>
 
     <dependencies>
