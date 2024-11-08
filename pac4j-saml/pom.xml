@@ -14,7 +14,6 @@
 
     <properties>
         <opensaml.version>5.1.3</opensaml.version>
-        <joda-time.version>2.13.0</joda-time.version>
         <velocity.version>2.4.1</velocity.version>
         <xmlsec.version>4.0.3</xmlsec.version>
         <cryptacular.version>1.2.7</cryptacular.version>
@@ -148,11 +147,6 @@
             <artifactId>commons-io</artifactId>
         </dependency>
         <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
-            <version>${joda-time.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.apache.velocity</groupId>
             <artifactId>velocity-engine-core</artifactId>
             <version>${velocity.version}</version>
@@ -249,7 +243,7 @@
                         <Automatic-Module-Name>pac4j.saml</Automatic-Module-Name>
                         <Bundle-SymbolicName>org.pac4j.saml2</Bundle-SymbolicName>
                         <Export-Package>org.pac4j.saml.*;version=${project.version}</Export-Package>
-                        <Import-Package>com.google.common.base;version=!,com.google.common.collect;version=!,org.joda.time;version="[1.6,3)",*</Import-Package>
+                        <Import-Package>com.google.common.base;version=!,com.google.common.collect;version=!,*</Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
