@@ -13,8 +13,6 @@ import java.util.Arrays;
  */
 public class AzureAdProfileDefinition extends OidcProfileDefinition {
 
-    /** Constant <code>EMAIL="email"</code> */
-    public static final String EMAIL = "email";
     /** Constant <code>IDP="idp"</code> */
     public static final String IDP = "idp";
     /** Constant <code>OID="oid"</code> */
@@ -35,7 +33,7 @@ public class AzureAdProfileDefinition extends OidcProfileDefinition {
      */
     public AzureAdProfileDefinition() {
         super();
-        Arrays.stream(new String[] {EMAIL, IDP, OID, PREFERRED_USERNAME, TID, VER, UNQIUE_NAME, IPADDR, UPN})
+        Arrays.stream(new String[] {IDP, OID, PREFERRED_USERNAME, TID, VER, UNQIUE_NAME, IPADDR, UPN})
             .forEach(a -> primary(a, Converters.STRING));
         setProfileFactory(x -> new AzureAdProfile());
     }

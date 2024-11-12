@@ -17,15 +17,6 @@ public class AzureAdProfile extends OidcProfile {
     private static final long serialVersionUID = -8659029290353954198L;
 
     /**
-     * <p>getEmail.</p>
-     *
-     * @return a {@link String} object
-     */
-    public String getEmail() {
-        return (String) getAttribute(AzureAdProfileDefinition.EMAIL);
-    }
-
-    /**
      * <p>getIdp.</p>
      *
      * @return a {@link String} object
