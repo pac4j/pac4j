@@ -82,6 +82,6 @@ public class AzureAdProfile extends OidcProfile {
     /** {@inheritDoc} */
     @Override
     public String getUsername() {
-        return (String) getAttribute(AzureAdProfileDefinition.UPN);
+        return (String) getAttribute(AzureAdProfileDefinition.PREFERRED_USERNAME);
     }
 }

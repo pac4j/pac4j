@@ -33,7 +33,8 @@ public class AzureAdProfileDefinition extends OidcProfileDefinition {
      */
     public AzureAdProfileDefinition() {
         super();
-        Arrays.stream(new String[] {IDP, OID, TID, VER, UNQIUE_NAME, IPADDR, UPN}).forEach(a -> primary(a, Converters.STRING));
+        Arrays.stream(new String[] {IDP, OID, PREFERRED_USERNAME, TID, VER, UNQIUE_NAME, IPADDR, UPN})
+            .forEach(a -> primary(a, Converters.STRING));
         setProfileFactory(x -> new AzureAdProfile());
     }
 }
