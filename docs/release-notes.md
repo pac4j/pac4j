@@ -5,6 +5,9 @@ title: Release notes&#58;
 
 ### JDK17:
 
+**v6.1.1**:
+- Protect the `getRequestAtrribute` method for Jetty 12.0.8+
+
 **v6.1.0**:
 - Deprecate basic `CommonHelper` methods in favor of `commons-lang3`
 - Allow serializing SAML2Profiles using the JsonSerializer with default typing
