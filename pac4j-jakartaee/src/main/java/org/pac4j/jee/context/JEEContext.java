@@ -52,7 +52,11 @@ public class JEEContext implements WebContext {
     /** {@inheritDoc} */
     @Override
     public Optional getRequestAttribute(final String name) {
-        return Optional.ofNullable(this.request.getAttribute(name));
+        try {
+            return Optional.ofNullable(this.request.getAttribute(name));
+        } catch (final Exception e) {
+            return Optional.empty();
+        }
     }
 
     /** {@inheritDoc} */
