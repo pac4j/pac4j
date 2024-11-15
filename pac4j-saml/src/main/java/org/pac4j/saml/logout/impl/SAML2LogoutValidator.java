@@ -140,7 +140,9 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
     protected void validateLogoutResponse(final LogoutResponse logoutResponse, final SAML2MessageContext context,
                                           final SignatureTrustEngine engine) {
 
-        logger.trace("Validating logout response:\n{}", Configuration.serializeSamlObject(logoutResponse));
+        if (logger.isTraceEnabled()) {
+            logger.trace("Validating logout response:\n{}", Configuration.serializeSamlObject(logoutResponse));
+        }
         validateSuccess(logoutResponse.getStatus());
 
         validateSignatureIfItExists(logoutResponse.getSignature(), context, engine);
