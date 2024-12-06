@@ -83,7 +83,8 @@ public final class HttpActionHelper {
             for (final var entry : parameters.entrySet()) {
                 final var values = entry.getValue();
                 if (values != null && values.length > 0) {
-                    buffer.append("<input type='hidden' name=\"" + escapeHtml(entry.getKey()) + "\" value=\"" + values[0] + "\" />\n");
+                    buffer.append("<input type='hidden' name=\"" + escapeHtml(entry.getKey())
+                        + "\" value=\"" + escapeHtml(values[0]) + "\" />\n");
                 }
             }
         }
