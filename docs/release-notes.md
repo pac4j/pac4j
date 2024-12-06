@@ -6,7 +6,8 @@ title: Release notes&#58;
 ### JDK17:
 
 **v6.1.1**:
-- Protect the `getRequestAtrribute` method for Jetty 12.0.8+
+- Protect the `getRequestAttribute` method for Jetty 12.0.8+
+- Fix bug for HTML values in POST forms
 
 **v6.1.0**:
 - Deprecate basic `CommonHelper` methods in favor of `commons-lang3`
@@ -79,6 +80,9 @@ title: Release notes&#58;
 ---
 
 ### JDK11:
+
+**v5.7.8**:
+- Fix bug for HTML values in POST forms
 
 **v5.7.7**:
 - Security fix: cannot accept empty OIDC credentials
