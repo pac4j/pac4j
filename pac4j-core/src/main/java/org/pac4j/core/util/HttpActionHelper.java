@@ -10,6 +10,8 @@ import org.pac4j.core.exception.http.*;
 
 import java.util.HashMap;
 
+import static org.apache.commons.text.StringEscapeUtils.escapeHtml4;
+
 /**
  * Helper to build the appropriate {@link HttpAction}.
  *
@@ -106,13 +108,13 @@ public final class HttpActionHelper {
         val buffer = new StringBuilder();
         buffer.append("<html>\n");
         buffer.append("<body>\n");
-        buffer.append("<form action=\"" + escapeHtml(requestedUrl) + "\" name=\"f\" method=\"post\">\n");
+        buffer.append("<form action=\"" + escapeHtml4(requestedUrl) + "\" name=\"f\" method=\"post\">\n");
         if (parameters != null) {
             for (val entry : parameters.entrySet()) {
                 val values = entry.getValue();
                 if (values != null && values.length > 0) {
-                    buffer.append("<input type='hidden' name=\"" + escapeHtml(entry.getKey())
-                        + "\" value=\"" + escapeHtml(values[0]) + "\" />\n");
+                    buffer.append("<input type='hidden' name=\"" + escapeHtml4(entry.getKey())
+                        + "\" value=\"" + escapeHtml4(values[0]) + "\" />\n");
                 }
             }
         }
@@ -122,16 +124,6 @@ public final class HttpActionHelper {
         buffer.append("</body>\n");
         buffer.append("</html>\n");
         return buffer.toString();
-    }
-
-    /**
-     * <p>escapeHtml.</p>
-     *
-     * @param s a {@link String} object
-     * @return a {@link String} object
-     */
-    protected static String escapeHtml(final String s) {
-        return s.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll("\"", "&quot;");
     }
 
     /**
