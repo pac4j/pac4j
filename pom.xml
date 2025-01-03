@@ -71,7 +71,7 @@
 		<commons-lang3.version>3.17.0</commons-lang3.version>
         <commons-text.version>1.13.0</commons-text.version>
 		<guava.version>33.4.0-jre</guava.version>
-		<nimbus-jose-jwt.version>10.0</nimbus-jose-jwt.version>
+		<nimbus-jose-jwt.version>10.0.1</nimbus-jose-jwt.version>
 		<spring.version>6.2.1</spring.version>
 		<spring.security.version>6.4.2</spring.security.version>
 		<shiro.version>1.13.0</shiro.version>
