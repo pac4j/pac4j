@@ -66,7 +66,7 @@
 		<servlet-api.version>4.0.1</servlet-api.version>
         <jakarta-servlet-api.version>6.0.0</jakarta-servlet-api.version>
 		<logback.version>1.5.16</logback.version>
-		<commons-codec.version>1.17.2</commons-codec.version>
+		<commons-codec.version>1.18.0</commons-codec.version>
 		<commons-io.version>2.18.0</commons-io.version>
 		<commons-lang3.version>3.17.0</commons-lang3.version>
         <commons-text.version>1.13.0</commons-text.version>
