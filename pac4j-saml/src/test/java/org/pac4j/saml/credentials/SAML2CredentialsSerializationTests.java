@@ -8,6 +8,11 @@ import org.opensaml.saml.common.SAMLObjectBuilder;
 import org.opensaml.saml.saml2.core.Attribute;
 import org.opensaml.saml.saml2.core.Conditions;
 import org.opensaml.saml.saml2.core.NameID;
+import org.pac4j.core.context.CallContext;
+import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.context.session.MockSessionStore;
+import org.pac4j.core.logout.LogoutType;
+import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.profile.converter.SimpleSAML2AttributeConverter;
 import org.pac4j.saml.util.Configuration;
 
@@ -26,6 +31,15 @@ import static org.junit.Assert.assertNotNull;
  */
 public class SAML2CredentialsSerializationTests {
     private final XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
+
+    @Test
+    public void verifySerialization() {
+        var mockWebContext = MockWebContext.create();
+        Serializable credentials = new SAML2Credentials(LogoutType.BACK,
+            new SAML2MessageContext(new CallContext(mockWebContext, new MockSessionStore())));
+        val data = SerializationUtils.serialize(credentials);
+        assertNotNull(data);
+    }
 
     @Test
     public void verifyOperation() {

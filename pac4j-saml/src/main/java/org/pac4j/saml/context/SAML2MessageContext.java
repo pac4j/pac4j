@@ -1,6 +1,7 @@
 package org.pac4j.saml.context;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.val;
@@ -35,6 +36,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
+@RequiredArgsConstructor
 public class SAML2MessageContext {
 
     /**
@@ -58,14 +60,6 @@ public class SAML2MessageContext {
 
     private SAMLMessageStore samlMessageStore;
 
-    /**
-     * <p>Constructor for SAML2MessageContext.</p>
-     *
-     * @param callContext a {@link CallContext} object
-     */
-    public SAML2MessageContext(final CallContext callContext) {
-        this.callContext = callContext;
-    }
 
     /**
      * <p>getConfigurationContext.</p>

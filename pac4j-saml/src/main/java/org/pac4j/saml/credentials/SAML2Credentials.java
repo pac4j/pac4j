@@ -2,6 +2,7 @@ package org.pac4j.saml.credentials;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.logout.LogoutType;
@@ -17,22 +18,14 @@ import java.io.Serial;
  */
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
+@RequiredArgsConstructor
 public class SAML2Credentials extends Credentials {
 
     @Serial
     private static final long serialVersionUID = -9127398090736952238L;
 
     @Getter
-    private final SAML2MessageContext context;
-
-    /**
-     * <p>Constructor for SAML2Credentials.</p>
-     *
-     * @param context a {@link SAML2MessageContext} object
-     */
-    public SAML2Credentials(final SAML2MessageContext context) {
-        this.context = context;
-    }
+    private final transient SAML2MessageContext context;
 
     /**
      * <p>Constructor for SAML2Credentials.</p>
@@ -41,7 +34,7 @@ public class SAML2Credentials extends Credentials {
      * @param context a {@link SAML2MessageContext} object
      */
     public SAML2Credentials(final LogoutType type, final SAML2MessageContext context) {
+        this(context);
         this.logoutType = type;
-        this.context = context;
     }
 }
