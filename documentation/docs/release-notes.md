@@ -8,6 +8,7 @@ title: Release notes&#58;
 **v6.1.1**:
 - Protect the `getRequestAttribute` method for Jetty 12.0.8+
 - Fix bug for HTML values in POST forms
+- Use the configured scope in OpenID Connect authenticator
 
 **v6.1.0**:
 - Deprecate basic `CommonHelper` methods in favor of `commons-lang3`
