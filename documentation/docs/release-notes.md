@@ -5,6 +5,9 @@ title: Release notes&#58;
 
 ### JDK17:
 
+**v6.1.2**:
+- Use the configured scope in OpenID Connect authenticator
+
 **v6.1.1**:
 - Protect the `getRequestAttribute` method for Jetty 12.0.8+
 - Fix bug for HTML values in POST forms
