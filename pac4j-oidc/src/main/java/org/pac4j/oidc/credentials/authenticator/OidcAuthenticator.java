@@ -99,9 +99,11 @@ public class OidcAuthenticator implements Authenticator {
         val tokenEndpointUri = metadataResolver.load().getTokenEndpointURI();
         val clientAuthentication = metadataResolver.getClientAuthentication();
         if (clientAuthentication != null) {
-            return new TokenRequest(tokenEndpointUri, clientAuthentication, grant);
+            return new TokenRequest(
+                    tokenEndpointUri, clientAuthentication, grant, Scope.parse(configuration.getScope()));
         } else {
-            return new TokenRequest(tokenEndpointUri, new ClientID(configuration.getClientId()), grant);
+            return new TokenRequest(
+                    tokenEndpointUri, new ClientID(configuration.getClientId()), grant, Scope.parse(configuration.getScope()));
         }
     }
 
@@ -110,8 +112,7 @@ public class OidcAuthenticator implements Authenticator {
         configuration.configureHttpRequest(tokenHttpRequest);
 
         val httpResponse = tokenHttpRequest.send();
-        LOGGER.debug("Token response: status={}, content={}", httpResponse.getStatusCode(),
-            httpResponse.getContent());
+        LOGGER.debug("Token response: status={}, content={}", httpResponse.getStatusCode(), httpResponse.getBody());
 
         val response = OIDCTokenResponseParser.parse(httpResponse);
         if (response instanceof TokenErrorResponse tokenErrorResponse) {
