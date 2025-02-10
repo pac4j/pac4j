@@ -5,6 +5,7 @@ title: Release notes&#58;
 
 **v5.7.8**:
 - Fix bug for HTML values in POST forms
+- Force reading the request content (not to lose it) before retrieving request parameters
 
 **v5.7.7**:
 - Security fix: cannot accept empty OIDC credentials
