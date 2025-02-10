@@ -47,8 +47,6 @@ public class JEEContext implements WebContext {
 
     @Override
     public Optional<String> getRequestParameter(final String name) {
-        // force reading request content not to lose it as request.getParameter may consume it
-        getRequestContent();
         return Optional.ofNullable(this.request.getParameter(name));
     }
 
