@@ -6,6 +6,7 @@ import com.nimbusds.oauth2.sdk.ParseException;
 import com.nimbusds.oauth2.sdk.auth.*;
 import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -16,8 +17,12 @@ import org.pac4j.oidc.exceptions.OidcException;
 import org.pac4j.oidc.exceptions.OidcUnsupportedClientAuthMethodException;
 import org.pac4j.oidc.profile.creator.TokenValidator;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 
+import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -60,7 +65,10 @@ public class OidcOpMetadataResolver extends SpringResourceLoader<OIDCProviderMet
 
     private static Resource buildResource(final OidcConfiguration configuration) {
         if (configuration != null && configuration.getDiscoveryURI() != null) {
-            return SpringResourceHelper.buildResourceFromPath(configuration.getDiscoveryURI());
+            var resource = SpringResourceHelper.buildResourceFromPath(configuration.getDiscoveryURI());
+            if (resource instanceof final UrlResource urlResource) {
+                return new OidcMetadataUrlResource(urlResource.getURL(), configuration);
+            }
         }
         return null;
     }
@@ -185,5 +193,28 @@ public class OidcOpMetadataResolver extends SpringResourceLoader<OIDCProviderMet
 
     protected TokenValidator createTokenValidator() {
         return new TokenValidator(configuration, this.loaded);
+    }
+
+    @EqualsAndHashCode(callSuper = true)
+    private static class OidcMetadataUrlResource extends UrlResource {
+        private final OidcConfiguration configuration;
+
+        public OidcMetadataUrlResource(final URL url, final OidcConfiguration configuration) {
+            super(url);
+            this.configuration = configuration;
+        }
+
+        @Override
+        protected void customizeConnection(final URLConnection connection) throws IOException {
+            if (connection instanceof final HttpsURLConnection httpsConnection) {
+                if (configuration.getHostnameVerifier() != null) {
+                    httpsConnection.setHostnameVerifier(configuration.getHostnameVerifier());
+                }
+                if (configuration.getSslSocketFactory() != null) {
+                    httpsConnection.setSSLSocketFactory(configuration.getSslSocketFactory());
+                }
+            }
+            super.customizeConnection(connection);
+        }
     }
 }
