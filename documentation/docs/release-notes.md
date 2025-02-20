@@ -5,6 +5,7 @@ title: Release notes&#58;
 
 **v5.7.8**:
 - Fix bug for HTML values in POST forms
+- Fix the `getFullRequestURL` method
 
 **v5.7.7**:
 - Security fix: cannot accept empty OIDC credentials
