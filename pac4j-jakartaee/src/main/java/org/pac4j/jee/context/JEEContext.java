@@ -177,7 +177,7 @@ public class JEEContext implements WebContext {
         if (queryString == null) {
             return requestURL.toString();
         }
-        return requestURL.append('?').append(queryString).toString();
+        return requestURL.toString() + '?' + queryString;
     }
 
     /** {@inheritDoc} */
