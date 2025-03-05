@@ -17,6 +17,7 @@ import org.pac4j.core.store.GuavaStore;
 import org.pac4j.core.store.Store;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oidc.exceptions.OidcException;
+import org.pac4j.oidc.metadata.OidcOpMetadataResolver;
 import org.pac4j.oidc.metadata.StaticOidcOpMetadataResolver;
 
 import java.net.URI;
@@ -79,21 +80,31 @@ public class AppleOidcConfiguration extends OidcConfiguration {
         if (store == null) {
             store = new GuavaStore<>(1000, (int) timeout.toSeconds(), TimeUnit.SECONDS);
         }
+
+        setClientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST);
+
+        super.internalInit(forceReinit);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected OidcOpMetadataResolver createNewOpMetadataResolver(){
         val providerMetadata =
             new OIDCProviderMetadata(
                 new Issuer("https://appleid.apple.com"),
                 Collections.singletonList(SubjectType.PAIRWISE),
                 // https://developer.apple.com/documentation/signinwithapplerestapi/fetch_apple_s_public_key_for_verifying_token_signature
                 URI.create("https://appleid.apple.com/auth/keys"));
+
 // https://developer.apple.com/documentation/sign_in_with_apple/sign_in_with_apple_js/incorporating_sign_in_with_apple_into_other_platforms
         providerMetadata.setAuthorizationEndpointURI(URI.create("https://appleid.apple.com/auth/authorize"));
         // https://developer.apple.com/documentation/sign_in_with_apple/generate_and_validate_tokens
         providerMetadata.setTokenEndpointURI(URI.create("https://appleid.apple.com/auth/token"));
         providerMetadata.setIDTokenJWSAlgs(Collections.singletonList(JWSAlgorithm.RS256));
-        this.opMetadataResolver = new StaticOidcOpMetadataResolver(this, providerMetadata);
-        setClientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST);
 
-        super.internalInit(forceReinit);
+        return new StaticOidcOpMetadataResolver(this, providerMetadata);
     }
 
     /**
