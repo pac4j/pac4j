@@ -8,6 +8,7 @@ title: Release notes&#58;
 **v6.1.2**:
 - Use the configured scope in OpenID Connect authenticator
 - Fix the `getFullRequestURL` method
+- Fixes setting proper implementation of OidcOpMetadataResolver in OidcConfiguration and its descendants when `internalInit` is called with `forceReinit` set to true
 
 **v6.1.1**:
 - Protect the `getRequestAttribute` method for Jetty 12.0.8+
