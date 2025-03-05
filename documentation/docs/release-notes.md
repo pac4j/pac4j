@@ -7,6 +7,7 @@ title: Release notes&#58;
 
 **v6.0.7**:
 - SAML2: `maximumAuthenticationLifetime` is set to `0` by default to disable the validation of `authnInstant` in SAML2 assertions.
+- Fixes setting proper implementation of OidcOpMetadataResolver in OidcConfiguration and its descendants when `internalInit` is called with `forceReinit` set to true
 
 **v6.0.6**:
 - Security fix: cannot accept empty OIDC credentials

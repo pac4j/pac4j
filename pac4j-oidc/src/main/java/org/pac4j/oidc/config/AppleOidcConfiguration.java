@@ -17,6 +17,7 @@ import org.pac4j.core.store.GuavaStore;
 import org.pac4j.core.store.Store;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oidc.exceptions.OidcException;
+import org.pac4j.oidc.metadata.OidcOpMetadataResolver;
 import org.pac4j.oidc.metadata.StaticOidcOpMetadataResolver;
 
 import java.net.URI;
@@ -79,6 +80,17 @@ public class AppleOidcConfiguration extends OidcConfiguration {
         if (store == null) {
             store = new GuavaStore<>(1000, (int) timeout.toSeconds(), TimeUnit.SECONDS);
         }
+
+        setClientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST);
+
+        super.internalInit(forceReinit);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected OidcOpMetadataResolver createNewOpMetadataResolver(){
         val providerMetadata =
             new OIDCProviderMetadata(
                 new Issuer("https://appleid.apple.com"),
@@ -90,10 +102,7 @@ public class AppleOidcConfiguration extends OidcConfiguration {
         // https://developer.apple.com/documentation/sign_in_with_apple/generate_and_validate_tokens
         providerMetadata.setTokenEndpointURI(URI.create("https://appleid.apple.com/auth/token"));
         providerMetadata.setIDTokenJWSAlgs(Collections.singletonList(JWSAlgorithm.RS256));
-        this.opMetadataResolver = new StaticOidcOpMetadataResolver(this, providerMetadata);
-        setClientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST);
-
-        super.internalInit(forceReinit);
+        return new StaticOidcOpMetadataResolver(this, providerMetadata);
     }
 
     /**

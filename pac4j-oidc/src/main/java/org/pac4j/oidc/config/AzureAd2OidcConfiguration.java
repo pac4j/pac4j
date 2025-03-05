@@ -4,8 +4,8 @@ import lombok.*;
 import lombok.experimental.Accessors;
 import org.pac4j.core.util.HttpUtils;
 import org.pac4j.oidc.metadata.AzureAdOpMetadataResolver;
+import org.pac4j.oidc.metadata.OidcOpMetadataResolver;
 
-import static org.pac4j.core.util.CommonHelper.assertNotBlank;
 import static org.pac4j.core.util.CommonHelper.isBlank;
 
 /**
@@ -66,13 +66,15 @@ public class AzureAd2OidcConfiguration extends OidcConfiguration {
             setTenant("common");
         }
 
-        if (this.getOpMetadataResolver() == null) {
-            assertNotBlank("discoveryURI", getDiscoveryURI());
-            this.opMetadataResolver = new AzureAdOpMetadataResolver(this);
-            this.opMetadataResolver.init();
-        }
-
         super.internalInit(forceReinit);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected OidcOpMetadataResolver createNewOpMetadataResolver(){
+        return new AzureAdOpMetadataResolver(this);
     }
 
     /** {@inheritDoc} */
