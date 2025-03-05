@@ -7,8 +7,6 @@ import org.pac4j.core.util.HttpUtils;
 import org.pac4j.oidc.metadata.AzureAdOpMetadataResolver;
 import org.pac4j.oidc.metadata.OidcOpMetadataResolver;
 
-import static org.pac4j.core.util.CommonHelper.assertNotBlank;
-
 /**
  * Microsoft Azure AD v2 OpenID Connect configuration.
  *
