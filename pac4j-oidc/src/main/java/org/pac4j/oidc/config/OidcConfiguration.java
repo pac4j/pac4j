@@ -261,8 +261,16 @@ public class OidcConfiguration extends BaseClientConfiguration {
 
         if (forceReinit || this.getOpMetadataResolver() == null) {
             assertNotBlank("discoveryURI", getDiscoveryURI());
-            this.opMetadataResolver = new OidcOpMetadataResolver(this);
+            this.opMetadataResolver = createNewOpMetadataResolver();
+            this.opMetadataResolver.init();
         }
+    }
+
+    /**
+     * <p>Creates proper implementation of OidcOpMetadataResolver.</p>
+     */
+    protected OidcOpMetadataResolver createNewOpMetadataResolver() {
+        return new OidcOpMetadataResolver(this);
     }
 
     /**
