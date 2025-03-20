@@ -70,7 +70,7 @@
 		<commons-io.version>2.18.0</commons-io.version>
 		<commons-lang3.version>3.17.0</commons-lang3.version>
         <commons-text.version>1.13.0</commons-text.version>
-		<guava.version>33.4.0-jre</guava.version>
+		<guava.version>33.4.5-jre</guava.version>
 		<nimbus-jose-jwt.version>10.0.2</nimbus-jose-jwt.version>
 		<spring.version>6.2.5</spring.version>
 		<spring.security.version>6.4.4</spring.security.version>
