@@ -11,10 +11,12 @@ import org.opensaml.core.criterion.EntityIdCriterion;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.saml.metadata.IterableMetadataSource;
 import org.opensaml.saml.metadata.resolver.MetadataResolver;
+import org.opensaml.saml.metadata.resolver.filter.impl.EntityRoleFilter;
 import org.opensaml.saml.metadata.resolver.impl.DOMMetadataResolver;
 import org.opensaml.saml.metadata.resolver.index.impl.RoleMetadataIndex;
 import org.opensaml.saml.saml2.metadata.EntitiesDescriptor;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
+import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.resource.SpringResourceHelper;
 import org.pac4j.core.resource.SpringResourceLoader;
@@ -28,7 +30,6 @@ import org.springframework.core.io.UrlResource;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSocketFactory;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -38,6 +39,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
@@ -129,9 +131,8 @@ public class SAML2IdentityProviderMetadataResolver extends SpringResourceLoader<
 
         var partSize = contentLength / numThreads;
         var executor = Executors.newFixedThreadPool(numThreads);
-        File destination = null;
         try {
-            destination = Files.createTempFile("idpmetadata", ".xml").toFile();
+            var destination = Files.createTempFile("idpmetadata", ".xml").toFile();
             LOGGER.debug("Downloading idp metadata to {}", destination.getAbsolutePath());
             var futures = new ArrayList<Future<Void>>();
 
@@ -175,10 +176,6 @@ public class SAML2IdentityProviderMetadataResolver extends SpringResourceLoader<
             return loadMetadataFromResource(resource);
         } catch (Exception e) {
             throw new TechnicalException("Error downloading idp metadata", e);
-        } finally {
-            if (destination != null) {
-                destination.delete();
-            }
         }
     }
 
@@ -200,6 +197,11 @@ public class SAML2IdentityProviderMetadataResolver extends SpringResourceLoader<
             resolver.setFailFastInitialization(true);
             resolver.setRequireValidMetadata(true);
             resolver.setId(resolver.getClass().getCanonicalName());
+
+            var entityRoleFilter = new EntityRoleFilter(List.of(IDPSSODescriptor.DEFAULT_ELEMENT_NAME));
+            entityRoleFilter.initialize();
+
+            resolver.setMetadataFilter(entityRoleFilter);
             resolver.initialize();
             return resolver;
         } catch (final FileNotFoundException e) {
