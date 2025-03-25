@@ -106,7 +106,7 @@ public class SAML2IdentityProviderMetadataResolver extends SpringResourceLoader<
                 }
                 conn.setRequestMethod("HEAD");
                 var supportsRange = "bytes".equalsIgnoreCase(conn.getHeaderField("Accept-Ranges"));
-                if (!supportsRange) {
+                if (supportsRange) {
                     var contentLength = conn.getContentLengthLong();
                     conn.disconnect();
                     return downloadMetadata(contentLength, fileUrl);
