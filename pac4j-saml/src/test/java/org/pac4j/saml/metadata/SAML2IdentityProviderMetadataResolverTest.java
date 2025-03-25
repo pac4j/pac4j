@@ -118,6 +118,16 @@ public class SAML2IdentityProviderMetadataResolverTest {
     }
 
     @Test
+    public void resolveMetadataConcurrently() throws Exception {
+        var configuration = new SAML2Configuration();
+        var resource = new UrlResource("https://md.incommon.org/InCommon/InCommon-metadata-idp-only.xml");
+        configuration.setIdentityProviderMetadataResource(resource);
+        metadataResolver = new SAML2IdentityProviderMetadataResolver(configuration);
+        var resolver = metadataResolver.resolve();
+        assertNotNull(resolver);
+    }
+
+    @Test
     public void resolveExpiringMetadata() {
         var configuration = new SAML2Configuration();
         configuration.setIdentityProviderMetadataResource(new ClassPathResource("expired-idp-metadata.xml"));
