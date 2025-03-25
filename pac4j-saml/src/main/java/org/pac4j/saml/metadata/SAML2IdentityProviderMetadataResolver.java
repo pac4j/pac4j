@@ -28,6 +28,7 @@ import org.springframework.core.io.UrlResource;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSocketFactory;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -128,8 +129,10 @@ public class SAML2IdentityProviderMetadataResolver extends SpringResourceLoader<
 
         var partSize = contentLength / numThreads;
         var executor = Executors.newFixedThreadPool(numThreads);
-        var destination = Files.createTempFile("idpmetadata", ".xml").toFile();
+        File destination = null;
         try {
+            destination = Files.createTempFile("idpmetadata", ".xml").toFile();
+            LOGGER.debug("Downloading idp metadata to {}", destination.getAbsolutePath());
             var futures = new ArrayList<Future<Void>>();
 
             for (var i = 0; i < numThreads; i++) {
@@ -167,16 +170,20 @@ public class SAML2IdentityProviderMetadataResolver extends SpringResourceLoader<
             }
             executor.shutdown();
 
+            LOGGER.debug("Finished downloading idp metadata to {}", destination.getAbsolutePath());
             var resource = new FileSystemResource(destination);
             return loadMetadataFromResource(resource);
         } catch (Exception e) {
             throw new TechnicalException("Error downloading idp metadata", e);
         } finally {
-            destination.delete();
+            if (destination != null) {
+                destination.delete();
+            }
         }
     }
 
     private DOMMetadataResolver loadMetadataFromResource(final Resource resource) {
+        LOGGER.debug("Loading idp metadata from {}", resource);
         try (var in = SpringResourceHelper.getResourceInputStream(
             resource,
             proxy,
