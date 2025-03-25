@@ -128,8 +128,8 @@ public class SAML2IdentityProviderMetadataResolver extends SpringResourceLoader<
 
         var partSize = contentLength / numThreads;
         var executor = Executors.newFixedThreadPool(numThreads);
+        var destination = Files.createTempFile("idpmetadata", ".xml").toFile();
         try {
-            var destination = Files.createTempFile("idpmetadata", ".xml").toFile();
             var futures = new ArrayList<Future<Void>>();
 
             for (var i = 0; i < numThreads; i++) {
@@ -171,6 +171,8 @@ public class SAML2IdentityProviderMetadataResolver extends SpringResourceLoader<
             return loadMetadataFromResource(resource);
         } catch (Exception e) {
             throw new TechnicalException("Error downloading idp metadata", e);
+        } finally {
+            destination.delete();
         }
     }
 
