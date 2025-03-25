@@ -30,7 +30,6 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSocketFactory;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.net.HttpURLConnection;
 import java.net.Proxy;
@@ -38,8 +37,6 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
@@ -88,7 +85,7 @@ public class SAML2IdentityProviderMetadataResolver extends SpringResourceLoader<
             this.loaded = initializeMetadataResolver();
         } finally {
             val t1 = System.currentTimeMillis();
-            LOGGER.error("Metadata resolution took: {} ms", t1 - t0);
+            LOGGER.debug("Metadata resolution took: {} ms", t1 - t0);
         }
 
     }
