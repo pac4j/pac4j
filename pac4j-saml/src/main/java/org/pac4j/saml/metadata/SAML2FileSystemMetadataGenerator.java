@@ -28,7 +28,6 @@ public class SAML2FileSystemMetadataGenerator extends BaseSAML2MetadataGenerator
 
     private final Resource metadataResource;
 
-    /** {@inheritDoc} */
     @Override
     protected AbstractMetadataResolver createMetadataResolver() throws Exception {
         if (metadataResource != null) {
@@ -37,7 +36,6 @@ public class SAML2FileSystemMetadataGenerator extends BaseSAML2MetadataGenerator
         return null;
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean storeMetadata(final String metadata, final boolean force) throws Exception {
         if (metadataResource == null || StringUtils.isBlank(metadata)) {

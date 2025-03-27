@@ -2,6 +2,7 @@ package org.pac4j.saml.metadata;
 
 import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
+import org.pac4j.saml.config.SAML2Configuration;
 
 /**
  * Builds metadata and the relevant resolvers.
@@ -42,4 +43,12 @@ public interface SAML2MetadataGenerator {
      * @throws Exception if any.
      */
     boolean storeMetadata(String metadata, boolean force) throws Exception;
+
+    /**
+     * Merge two entities together and store metadata.
+     *
+     * @return true if the merge was successful and saved. false if no metadata was changed/stored.
+     * @throws Exception the exception
+     */
+    boolean merge(SAML2Configuration configuration) throws Exception ;
 }

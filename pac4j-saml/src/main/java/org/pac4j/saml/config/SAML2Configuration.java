@@ -507,8 +507,8 @@ public class SAML2Configuration extends BaseClientConfiguration {
                 generator.setMetadataSigner(getMetadataSigner());
                 generator.setEntityId(getServiceProviderEntityId());
 
-                generator.setRequestInitiatorLocation(StringUtils.defaultString(this.requestInitiatorUrl, this.callbackUrl));
-                generator.setAssertionConsumerServiceUrl(StringUtils.defaultString(this.assertionConsumerServiceUrl, this.callbackUrl));
+                generator.setRequestInitiatorLocation(resolveRequestInitiatorLocation());
+                generator.setAssertionConsumerServiceUrl(resolveAssertionConsumerServiceUrl());
 
                 generator.setResponseBindingType(getResponseBindingType());
 
@@ -529,6 +529,14 @@ public class SAML2Configuration extends BaseClientConfiguration {
         } catch (final Exception e) {
             throw new TechnicalException(e);
         }
+    }
+
+    public String resolveAssertionConsumerServiceUrl() {
+        return StringUtils.defaultString(this.assertionConsumerServiceUrl, this.callbackUrl);
+    }
+
+    public String resolveRequestInitiatorLocation() {
+        return StringUtils.defaultString(this.requestInitiatorUrl, this.callbackUrl);
     }
 
     /**

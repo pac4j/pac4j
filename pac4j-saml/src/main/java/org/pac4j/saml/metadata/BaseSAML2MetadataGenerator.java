@@ -3,21 +3,49 @@ package org.pac4j.saml.metadata;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
+import net.shibboleth.shared.component.DestructableComponent;
+import net.shibboleth.shared.resolver.CriteriaSet;
 import net.shibboleth.shared.xml.SerializeSupport;
 import org.apache.commons.lang3.StringUtils;
+import org.opensaml.core.criterion.EntityIdCriterion;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
 import org.opensaml.core.xml.io.MarshallerFactory;
+import org.opensaml.core.xml.io.UnmarshallerFactory;
 import org.opensaml.saml.common.SAMLObjectBuilder;
 import org.opensaml.saml.common.xml.SAMLConstants;
+import org.opensaml.saml.criterion.EntityRoleCriterion;
 import org.opensaml.saml.ext.saml2alg.DigestMethod;
 import org.opensaml.saml.ext.saml2alg.SigningMethod;
 import org.opensaml.saml.ext.saml2mdreqinit.RequestInitiator;
-import org.opensaml.saml.ext.saml2mdui.*;
+import org.opensaml.saml.ext.saml2mdui.Description;
+import org.opensaml.saml.ext.saml2mdui.DisplayName;
+import org.opensaml.saml.ext.saml2mdui.InformationURL;
+import org.opensaml.saml.ext.saml2mdui.Keywords;
+import org.opensaml.saml.ext.saml2mdui.Logo;
+import org.opensaml.saml.ext.saml2mdui.PrivacyStatementURL;
+import org.opensaml.saml.ext.saml2mdui.UIInfo;
 import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.metadata.resolver.impl.AbstractMetadataResolver;
 import org.opensaml.saml.metadata.resolver.impl.DOMMetadataResolver;
+import org.opensaml.saml.metadata.resolver.impl.FilesystemMetadataResolver;
 import org.opensaml.saml.saml2.core.NameIDType;
-import org.opensaml.saml.saml2.metadata.*;
+import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
+import org.opensaml.saml.saml2.metadata.AttributeConsumingService;
+import org.opensaml.saml.saml2.metadata.Company;
+import org.opensaml.saml.saml2.metadata.ContactPerson;
+import org.opensaml.saml.saml2.metadata.ContactPersonTypeEnumeration;
+import org.opensaml.saml.saml2.metadata.EmailAddress;
+import org.opensaml.saml.saml2.metadata.EntityDescriptor;
+import org.opensaml.saml.saml2.metadata.Extensions;
+import org.opensaml.saml.saml2.metadata.GivenName;
+import org.opensaml.saml.saml2.metadata.KeyDescriptor;
+import org.opensaml.saml.saml2.metadata.NameIDFormat;
+import org.opensaml.saml.saml2.metadata.RequestedAttribute;
+import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
+import org.opensaml.saml.saml2.metadata.ServiceName;
+import org.opensaml.saml.saml2.metadata.SingleLogoutService;
+import org.opensaml.saml.saml2.metadata.SurName;
+import org.opensaml.saml.saml2.metadata.TelephoneNumber;
 import org.opensaml.security.credential.UsageType;
 import org.opensaml.xmlsec.SignatureSigningConfiguration;
 import org.opensaml.xmlsec.algorithm.AlgorithmRegistry;
@@ -25,18 +53,22 @@ import org.opensaml.xmlsec.algorithm.AlgorithmSupport;
 import org.opensaml.xmlsec.config.impl.DefaultSecurityConfigurationBootstrap;
 import org.opensaml.xmlsec.signature.KeyInfo;
 import org.opensaml.xmlsec.signature.SignableXMLObject;
+import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.crypto.CredentialProvider;
 import org.pac4j.saml.util.Configuration;
 import org.pac4j.saml.util.SAML2Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.FileSystemResource;
 
+import java.io.File;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 /**
@@ -45,6 +77,7 @@ import java.util.stream.Collectors;
  * @author Misagh Moayyed
  * @since 4.0.1
  */
+@SuppressWarnings("unchecked")
 @Getter
 @Setter
 public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerator {
@@ -54,6 +87,7 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
     protected final XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
 
     protected final MarshallerFactory marshallerFactory = Configuration.getMarshallerFactory();
+    protected final UnmarshallerFactory unmarshallerFactory = Configuration.getUnmarshallerFactory();
 
     protected final AlgorithmRegistry globalAlgorithmRegistry = AlgorithmSupport.getGlobalAlgorithmRegistry();
 
@@ -98,16 +132,14 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
 
     private SAML2MetadataSigner metadataSigner;
 
-    /** {@inheritDoc} */
     @Override
     public MetadataResolver buildMetadataResolver() throws Exception {
         var resolver = createMetadataResolver();
         if (resolver == null) {
             val md = buildEntityDescriptor();
-            val entityDescriptorElement = this.marshallerFactory.getMarshaller(md).marshall(md);
+            val entityDescriptorElement = Objects.requireNonNull(this.marshallerFactory.getMarshaller(md)).marshall(md);
             resolver = new DOMMetadataResolver(entityDescriptorElement);
         }
-
         resolver.setRequireValidMetadata(true);
         resolver.setFailFastInitialization(true);
         resolver.setId(resolver.getClass().getCanonicalName());
@@ -116,23 +148,84 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
         return resolver;
     }
 
-    /**
-     * <p>createMetadataResolver.</p>
-     *
-     * @return a {@link AbstractMetadataResolver} object
-     * @throws Exception if any.
-     */
     protected abstract AbstractMetadataResolver createMetadataResolver() throws Exception;
 
-    /** {@inheritDoc} */
     @Override
     public String getMetadata(final EntityDescriptor entityDescriptor) throws Exception {
-        val entityDescriptorElement = this.marshallerFactory
-            .getMarshaller(EntityDescriptor.DEFAULT_ELEMENT_NAME).marshall(entityDescriptor);
+        val entityDescriptorElement = Objects.requireNonNull(this.marshallerFactory
+            .getMarshaller(EntityDescriptor.DEFAULT_ELEMENT_NAME)).marshall(entityDescriptor);
         return SerializeSupport.nodeToString(entityDescriptorElement);
     }
 
-    /** {@inheritDoc} */
+    @Override
+    public boolean merge(final SAML2Configuration configuration) throws Exception {
+        var metadataResolver = buildMetadataResolver();
+        try {
+            var existingEntity = metadataResolver.resolveSingle(new CriteriaSet(
+                new EntityIdCriterion(entityId),
+                new EntityRoleCriterion(SPSSODescriptor.DEFAULT_ELEMENT_NAME)));
+            if (existingEntity != null) {
+                logger.debug("Merging metadata for entity id {}", existingEntity.getEntityID());
+                var currentEntity = buildEntityDescriptor();
+                var currentSP = Objects.requireNonNull(currentEntity.getSPSSODescriptor(SAMLConstants.SAML20P_NS));
+                var existingSP = Objects.requireNonNull(existingEntity.getSPSSODescriptor(SAMLConstants.SAML20P_NS));
+
+                var currentEntityHasChanged = new AtomicBoolean(false);
+                if (existingSP.getExtensions() != null) {
+                    var addInitiator = existingSP.getExtensions().getUnknownXMLObjects()
+                        .stream()
+                        .noneMatch(object -> object instanceof final RequestInitiator init
+                            && StringUtils.equalsIgnoreCase(init.getBinding(), RequestInitiator.DEFAULT_ELEMENT_NAME.getNamespaceURI())
+                            && StringUtils.equalsIgnoreCase(init.getLocation(), configuration.resolveRequestInitiatorLocation()));
+                    if (addInitiator) {
+                        var builderFactory = Configuration.getBuilderFactory();
+                        var builderReq = (SAMLObjectBuilder<RequestInitiator>)
+                            builderFactory.getBuilder(RequestInitiator.DEFAULT_ELEMENT_NAME);
+
+                        var requestInitiator = Objects.requireNonNull(builderReq).buildObject();
+                        requestInitiator.setLocation(configuration.resolveRequestInitiatorLocation());
+                        requestInitiator.setBinding(RequestInitiator.DEFAULT_ELEMENT_NAME.getNamespaceURI());
+                        existingSP.getExtensions().getUnknownXMLObjects().add(requestInitiator);
+                        logger.debug("Adding request initiator {} to existing entity", requestInitiator.getLocation());
+                        currentEntityHasChanged.set(true);
+                    }
+                }
+
+                currentSP.getSingleLogoutServices().forEach(service -> {
+                    if (!existingSP.getSingleLogoutServices().contains(service)) {
+                        service.detach();
+                        existingSP.getSingleLogoutServices().add(service);
+                        logger.debug("Adding single logout service {} to existing entity", service.getLocation());
+                        currentEntityHasChanged.set(true);
+                    }
+                });
+                currentSP.getAssertionConsumerServices().forEach(service -> {
+                    if (!existingSP.getAssertionConsumerServices().contains(service)) {
+                        service.detach();
+                        service.setIndex(existingSP.getAssertionConsumerServices().size());
+                        existingSP.getAssertionConsumerServices().add(service);
+                        logger.debug("Adding assertion consumer service {} to existing entity", service.getLocation());
+                        currentEntityHasChanged.set(true);
+                    }
+                });
+                if (currentEntityHasChanged.get()) {
+                    var metadata = getMetadata(existingEntity);
+                    logger.debug("Storing metadata after the merge: {}", metadata);
+                    return storeMetadata(metadata, true);
+                }
+            }
+            return false;
+        } finally {
+            if (metadataResolver instanceof DestructableComponent dc) {
+                try {
+                    dc.destroy();
+                } catch (final Exception e) {
+                    logger.error("Error destroying metadata resolver", e);
+                }
+            }
+        }
+    }
+
     @Override
     public EntityDescriptor buildEntityDescriptor() {
         val builder = (SAMLObjectBuilder<EntityDescriptor>)
@@ -149,11 +242,6 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
         return descriptor;
     }
 
-    /**
-     * <p>signMetadata.</p>
-     *
-     * @param descriptor a {@link EntityDescriptor} object
-     */
     protected void signMetadata(final SignableXMLObject descriptor) {
         if (this.metadataSigner == null) {
             this.metadataSigner = new DefaultSAML2MetadataSigner(this.credentialProvider,
@@ -172,7 +260,7 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
         val builderExt = (SAMLObjectBuilder<Extensions>)
             this.builderFactory.getBuilder(Extensions.DEFAULT_ELEMENT_NAME);
 
-        val extensions = builderExt.buildObject();
+        val extensions = Objects.requireNonNull(builderExt).buildObject();
         extensions.getNamespaceManager().registerAttributeName(SigningMethod.TYPE_NAME);
         extensions.getNamespaceManager().registerAttributeName(DigestMethod.TYPE_NAME);
 
@@ -250,11 +338,11 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
                     .getBuilder(AttributeConsumingService.DEFAULT_ELEMENT_NAME);
 
             val attributeService =
-                attrServiceBuilder.buildObject(AttributeConsumingService.DEFAULT_ELEMENT_NAME);
+                Objects.requireNonNull(attrServiceBuilder).buildObject(AttributeConsumingService.DEFAULT_ELEMENT_NAME);
             for (val attr : this.requestedAttributes) {
                 val attrBuilder = (SAMLObjectBuilder<RequestedAttribute>) this.builderFactory
                     .getBuilder(RequestedAttribute.DEFAULT_ELEMENT_NAME);
-                val requestAttribute = attrBuilder.buildObject(RequestedAttribute.DEFAULT_ELEMENT_NAME);
+                val requestAttribute = Objects.requireNonNull(attrBuilder).buildObject(RequestedAttribute.DEFAULT_ELEMENT_NAME);
                 requestAttribute.setIsRequired(attr.isRequired());
                 requestAttribute.setName(attr.getName());
                 requestAttribute.setFriendlyName(attr.getFriendlyName());
@@ -347,7 +435,7 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
                 (SAMLObjectBuilder<UIInfo>) this.builderFactory
                     .getBuilder(UIInfo.DEFAULT_ELEMENT_NAME);
 
-            val uiInfo = uiInfoBuilder.buildObject();
+            val uiInfo = Objects.requireNonNull(uiInfoBuilder).buildObject();
 
             metadataUIInfos.forEach(info -> {
 
@@ -355,7 +443,7 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
                     val uiBuilder =
                         (SAMLObjectBuilder<Description>) this.builderFactory
                             .getBuilder(Description.DEFAULT_ELEMENT_NAME);
-                    val description = uiBuilder.buildObject();
+                    val description = Objects.requireNonNull(uiBuilder).buildObject();
                     description.setValue(desc);
                     uiInfo.getDescriptions().add(description);
                 });
@@ -364,7 +452,7 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
                     val uiBuilder =
                         (SAMLObjectBuilder<DisplayName>) this.builderFactory
                             .getBuilder(DisplayName.DEFAULT_ELEMENT_NAME);
-                    val displayName = uiBuilder.buildObject();
+                    val displayName = Objects.requireNonNull(uiBuilder).buildObject();
                     displayName.setValue(name);
                     uiInfo.getDisplayNames().add(displayName);
                 });
@@ -373,7 +461,7 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
                     val uiBuilder =
                         (SAMLObjectBuilder<InformationURL>) this.builderFactory
                             .getBuilder(InformationURL.DEFAULT_ELEMENT_NAME);
-                    val informationURL = uiBuilder.buildObject();
+                    val informationURL = Objects.requireNonNull(uiBuilder).buildObject();
                     informationURL.setURI(url);
                     uiInfo.getInformationURLs().add(informationURL);
                 });
@@ -382,7 +470,7 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
                     val uiBuilder =
                         (SAMLObjectBuilder<PrivacyStatementURL>) this.builderFactory
                             .getBuilder(PrivacyStatementURL.DEFAULT_ELEMENT_NAME);
-                    val privacyStatementURL = uiBuilder.buildObject();
+                    val privacyStatementURL = Objects.requireNonNull(uiBuilder).buildObject();
                     privacyStatementURL.setURI(privacy);
                     uiInfo.getPrivacyStatementURLs().add(privacyStatementURL);
                 });
@@ -391,7 +479,7 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
                     val uiBuilder =
                         (SAMLObjectBuilder<Keywords>) this.builderFactory
                             .getBuilder(Keywords.DEFAULT_ELEMENT_NAME);
-                    val keyword = uiBuilder.buildObject();
+                    val keyword = Objects.requireNonNull(uiBuilder).buildObject();
                     keyword.setKeywords(new ArrayList<>(org.springframework.util.StringUtils.commaDelimitedListToSet(kword)));
                     uiInfo.getKeywords().add(keyword);
                 });
@@ -400,7 +488,7 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
                     val uiBuilder =
                         (SAMLObjectBuilder<Logo>) this.builderFactory
                             .getBuilder(Logo.DEFAULT_ELEMENT_NAME);
-                    val logo = uiBuilder.buildObject();
+                    val logo = Objects.requireNonNull(uiBuilder).buildObject();
                     logo.setURI(lg.getUrl());
                     logo.setHeight(lg.getHeight());
                     logo.setWidth(lg.getWidth());
@@ -451,8 +539,8 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
     /**
      * <p>getAssertionConsumerService.</p>
      *
-     * @param binding a {@link String} object
-     * @param index a int
+     * @param binding   a {@link String} object
+     * @param index     a int
      * @param isDefault a boolean
      * @return a {@link AssertionConsumerService} object
      */
@@ -489,7 +577,7 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
      * <p>getKeyDescriptor.</p>
      *
      * @param type a {@link UsageType} object
-     * @param key a {@link KeyInfo} object
+     * @param key  a {@link KeyInfo} object
      * @return a {@link KeyDescriptor} object
      */
     protected KeyDescriptor getKeyDescriptor(final UsageType type, final KeyInfo key) {
