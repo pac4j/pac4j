@@ -205,7 +205,7 @@ public class SAML2Client extends IndirectClient implements Closeable {
                 this.decrypter,
                 this.replayCache,
                 this.configuration,
-                findSessionLogoutiontHandler());
+                findSessionLogoutHandler());
             this.authnResponseValidator.setAcceptedSkew(this.configuration.getAcceptedSkew());
         }
     }
