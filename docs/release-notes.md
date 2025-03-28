@@ -10,6 +10,12 @@ title: Release notes&#58;
 - Fix the `getFullRequestURL` method
 - Fixes setting proper implementation of `OidcOpMetadataResolver` in `OidcConfiguration` and its descendants when `internalInit` is called with `forceReinit` set to true
 - SAML2 metadata URLs can be downloaded and resolved concurrently if the URL resource supports the `Accept-Ranges` header as `bytes`.
+- SAML2 clients that point to the same SP metadata resource can be merged together so the final SP metadata may reference all clients.
+- SAML2 `BasicParserPool` is adjusted to have a larger pool size.
+- SAML2 client fields and reference are only initialized if they are undefined.
+- There is `SAML2DelegatingMetadataResolver` that delegates resolution tasks to an existing metadata resolver.
+- There is `SAML2InMemoryMetadataGenerator` that keeps data in memory and acts as a virtual generator.
+- Removal of various code constructs in favor of Lombok.
 
 **v6.1.1**:
 - Protect the `getRequestAttribute` method for Jetty 12.0.8+
