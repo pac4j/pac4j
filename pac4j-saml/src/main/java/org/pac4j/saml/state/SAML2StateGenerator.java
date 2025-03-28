@@ -20,7 +20,6 @@ public class SAML2StateGenerator implements ValueGenerator {
 
     private final SAML2Client client;
 
-    /** {@inheritDoc} */
     @Override
     public String generateValue(final CallContext ctx) {
         val webContext = ctx.webContext();
@@ -31,6 +30,6 @@ public class SAML2StateGenerator implements ValueGenerator {
         if (relayState.isPresent()) {
             sessionStore.set(webContext, SAML_RELAY_STATE_ATTRIBUTE, null);
         }
-        return relayState.isPresent() ? (String) relayState.get() : client.computeFinalCallbackUrl(webContext);
+        return relayState.map(o -> (String) o).orElseGet(() -> client.computeFinalCallbackUrl(webContext));
     }
 }
