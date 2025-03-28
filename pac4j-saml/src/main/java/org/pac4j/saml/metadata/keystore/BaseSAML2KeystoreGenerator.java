@@ -64,12 +64,12 @@ public abstract class BaseSAML2KeystoreGenerator implements SAML2KeystoreGenerat
         try {
             if (StringUtils.isBlank(saml2Configuration.getKeyStoreAlias())) {
                 saml2Configuration.setKeyStoreAlias(getClass().getSimpleName());
-                logger.warn("Defaulting keystore alias {}", saml2Configuration.getKeyStoreAlias());
+                logger.info("Defaulting keystore alias {}", saml2Configuration.getKeyStoreAlias());
             }
 
             if (StringUtils.isBlank(saml2Configuration.getKeyStoreType())) {
                 saml2Configuration.setKeyStoreType(KeyStore.getDefaultType());
-                logger.warn("Defaulting keystore type {}", saml2Configuration.getKeyStoreType());
+                logger.info("Defaulting keystore type {}", saml2Configuration.getKeyStoreType());
             }
 
             validate();
