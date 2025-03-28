@@ -61,11 +61,10 @@ public abstract class IndirectClient extends BaseClient {
 
     private LogoutProcessor logoutProcessor;
 
-    private LogoutActionBuilder logoutActionBuilder = NoLogoutActionBuilder.INSTANCE;
+    private LogoutActionBuilder logoutActionBuilder;
 
     private boolean checkAuthenticationAttempt = true;
 
-    /** {@inheritDoc} */
     @Override
     protected void beforeInternalInit(final boolean forceReinit) {
         // check configuration
@@ -81,6 +80,9 @@ public abstract class IndirectClient extends BaseClient {
         }
         if (saveProfileInSession == null) {
             saveProfileInSession = true;
+        }
+        if (logoutActionBuilder == null) {
+            logoutActionBuilder = NoLogoutActionBuilder.INSTANCE;
         }
     }
 
@@ -249,8 +251,12 @@ public abstract class IndirectClient extends BaseClient {
      * @param logoutActionBuilder a {@link LogoutActionBuilder} object
      */
     protected void setLogoutActionBuilderIfUndefined(final LogoutActionBuilder logoutActionBuilder) {
-        if (this.logoutActionBuilder == null || this.logoutActionBuilder == NoLogoutActionBuilder.INSTANCE) {
+        if (isLogoutActionBuilderUndefined()) {
             this.logoutActionBuilder = logoutActionBuilder;
         }
+    }
+
+    protected boolean isLogoutActionBuilderUndefined() {
+        return this.logoutActionBuilder == null || this.logoutActionBuilder == NoLogoutActionBuilder.INSTANCE;
     }
 }

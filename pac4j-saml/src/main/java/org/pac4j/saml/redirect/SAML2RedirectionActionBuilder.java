@@ -25,25 +25,19 @@ public class SAML2RedirectionActionBuilder implements RedirectionActionBuilder {
     private final SAML2Client client;
     protected SAML2ObjectBuilder<AuthnRequest> saml2ObjectBuilder;
 
-    /**
-     * <p>Constructor for SAML2RedirectionActionBuilder.</p>
-     *
-     * @param client a {@link SAML2Client} object
-     */
     public SAML2RedirectionActionBuilder(final SAML2Client client) {
         CommonHelper.assertNotNull("client", client);
         this.client = client;
         this.saml2ObjectBuilder = new SAML2AuthnRequestBuilder();
     }
 
-    /** {@inheritDoc} */
     @Override
     public Optional<RedirectionAction> getRedirectionAction(final CallContext ctx) {
         val context = this.client.getContextProvider().buildContext(ctx, this.client);
         val relayState = this.client.getStateGenerator().generateValue(ctx);
 
         val authnRequest = this.saml2ObjectBuilder.build(context);
-        this.client.getSSOMessageSender().sendMessage(context, authnRequest, relayState);
+        this.client.getWebSsoMessageSender().sendMessage(context, authnRequest, relayState);
 
         val adapter = context.getProfileRequestContextOutboundMessageTransportResponse();
 

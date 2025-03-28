@@ -1,5 +1,6 @@
 package org.pac4j.saml.crypto;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import net.shibboleth.shared.resolver.CriteriaSet;
@@ -25,20 +26,10 @@ import java.util.List;
  * @since 1.7
  */
 @Slf4j
+@RequiredArgsConstructor
 public class DefaultSignatureSigningParametersProvider implements SignatureSigningParametersProvider {
 
     private final SAML2Configuration configuration;
-
-    /**
-     * <p>Constructor for DefaultSignatureSigningParametersProvider.</p>
-     *
-     * @param configuration a {@link SAML2Configuration} object
-     */
-    public DefaultSignatureSigningParametersProvider(final SAML2Configuration configuration) {
-        this.configuration = configuration;
-    }
-
-    /** {@inheritDoc} */
     @Override
     public SignatureSigningParameters build(final SSODescriptor descriptor) {
         try {

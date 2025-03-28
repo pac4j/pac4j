@@ -58,11 +58,6 @@ public class SAML2LogoutProcessor implements LogoutProcessor {
     @Setter
     private boolean actionOnSuccess = true;
 
-    /**
-     * <p>Constructor for SAML2LogoutProcessor.</p>
-     *
-     * @param client a {@link SAML2Client} object
-     */
     public SAML2LogoutProcessor(final SAML2Client client) {
         this.contextProvider = client.getContextProvider();
         this.saml2Client = client;

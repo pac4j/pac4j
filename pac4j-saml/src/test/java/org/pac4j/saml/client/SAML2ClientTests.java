@@ -2,6 +2,8 @@ package org.pac4j.saml.client;
 
 import lombok.val;
 import org.junit.Test;
+import org.opensaml.saml.common.xml.SAMLConstants;
+import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.crypto.CredentialProvider;
@@ -15,6 +17,7 @@ import org.springframework.core.io.UrlResource;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.nio.file.Files;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -49,10 +52,10 @@ public final class SAML2ClientTests {
         }
 
         val cfg =
-                new SAML2Configuration("testKeystore.jks",
-                        "pac4j-test-passwd",
-                        "pac4j-test-passwd",
-                        "resource:testshib-providers.xml");
+            new SAML2Configuration("testKeystore.jks",
+                "pac4j-test-passwd",
+                "pac4j-test-passwd",
+                "resource:testshib-providers.xml");
         cfg.init();
 
         CredentialProvider p = new KeyStoreCredentialProvider(cfg);
@@ -62,6 +65,7 @@ public final class SAML2ClientTests {
         assertNotNull(p.getKeyInfoCredentialResolver());
         assertNotNull(p.getCredential());
     }
+
     @Test
     public void testSaml2ConfigurationOfKeyStoreUsingResource() throws IOException {
         final Resource rs = new FileSystemResource("testKeystore.jks");
@@ -70,10 +74,10 @@ public final class SAML2ClientTests {
         }
 
         val cfg =
-                new SAML2Configuration(new FileSystemResource("testKeystore.jks"),
-                        "pac4j-test-passwd",
-                        "pac4j-test-passwd",
-                        new ClassPathResource("testshib-providers.xml"));
+            new SAML2Configuration(new FileSystemResource("testKeystore.jks"),
+                "pac4j-test-passwd",
+                "pac4j-test-passwd",
+                new ClassPathResource("testshib-providers.xml"));
         cfg.init();
 
         CredentialProvider p = new KeyStoreCredentialProvider(cfg);
@@ -84,7 +88,60 @@ public final class SAML2ClientTests {
         assertNotNull(p.getCredential());
     }
 
-    private void internalTestIdpMetadataParsing(final Resource resource) {
+    @Test
+    public void testMultipleSaml2ConfigurationsSharingMetadata() throws Exception {
+        var keystore = Files.createTempFile("keystore", ".jks");
+        final Resource rs = new FileSystemResource(keystore);
+        if (rs.exists() && !rs.getFile().delete()) {
+            throw new TechnicalException("File could not be deleted");
+        }
+
+        var spMetadata = Files.createTempFile("sp-metadata", ".xml").toFile();
+        if (spMetadata.exists() && !spMetadata.delete()) {
+            throw new TechnicalException("File could not be deleted");
+        }
+        var cfg1 = new SAML2Configuration(
+            new FileSystemResource("multiKeystore.jks"),
+            "pac4j-test-passwd",
+            "pac4j-test-passwd",
+            new ClassPathResource("testshib-providers.xml"));
+        cfg1.setServiceProviderEntityId("urn:mace:saml:pac4j.org");
+        cfg1.setServiceProviderMetadataResource(new FileSystemResource(spMetadata));
+
+        var saml2Client1 = new SAML2Client(cfg1);
+        saml2Client1.setName("SAML2Client1");
+        saml2Client1.setCallbackUrl("https://example.org/auth");
+        saml2Client1.init();
+
+        var cfg2 = new SAML2Configuration(
+            new FileSystemResource("multiKeystore.jks"),
+            "pac4j-test-passwd",
+            "pac4j-test-passwd",
+            new ClassPathResource("testshib-providers.xml"));
+        cfg2.setServiceProviderEntityId("urn:mace:saml:pac4j.org");
+        cfg2.setServiceProviderMetadataResource(new FileSystemResource(spMetadata));
+
+        var saml2Client2 = new SAML2Client(cfg2);
+        saml2Client2.setName("SAML2Client2");
+        saml2Client2.setCallbackUrl("https://example.org/auth");
+        saml2Client2.init();
+
+        var entityDescriptor = (EntityDescriptor) saml2Client1.getServiceProviderMetadataResolver().getEntityDescriptorElement();
+        var sp = entityDescriptor.getSPSSODescriptor(SAMLConstants.SAML20P_NS);
+        sp.getSingleLogoutServices().stream().anyMatch(service -> service.getLocation().contains("SAML2Client1"));
+        sp.getSingleLogoutServices().stream().anyMatch(service -> service.getLocation().contains("SAML2Client2"));
+        sp.getAssertionConsumerServices().stream().anyMatch(service -> service.getLocation().contains("SAML2Client1"));
+        sp.getAssertionConsumerServices().stream().anyMatch(service -> service.getLocation().contains("SAML2Client2"));
+
+        var totalSloServices = sp.getSingleLogoutServices().size();
+        var totalAssertionConsumerServices = sp.getAssertionConsumerServices().size();
+
+        saml2Client2.init(true);
+        assertEquals(totalAssertionConsumerServices, sp.getAssertionConsumerServices().size());
+        assertEquals(totalSloServices, sp.getSingleLogoutServices().size());
+    }
+
+    private static void internalTestIdpMetadataParsing(final Resource resource) {
         val client = getClient();
         client.getConfiguration().setIdentityProviderMetadataResource(resource);
         client.init();
@@ -94,12 +151,12 @@ public final class SAML2ClientTests {
         assertEquals("https://idp.testshib.org/idp/shibboleth", id);
     }
 
-    protected SAML2Client getClient() {
+    private static SAML2Client getClient() {
         val cfg =
-                new SAML2Configuration(new ClassPathResource("samlKeystore.jks"),
-                        "pac4j-demo-passwd",
-                        "pac4j-demo-passwd",
-                        new ClassPathResource("testshib-providers.xml"));
+            new SAML2Configuration(new ClassPathResource("samlKeystore.jks"),
+                "pac4j-demo-passwd",
+                "pac4j-demo-passwd",
+                new ClassPathResource("testshib-providers.xml"));
         cfg.setMaximumAuthenticationLifetime(3600);
         cfg.setServiceProviderEntityId("urn:mace:saml:pac4j.org");
         cfg.setServiceProviderMetadataResource(new FileSystemResource(new File("target", "sp-metadata.xml").getAbsolutePath()));

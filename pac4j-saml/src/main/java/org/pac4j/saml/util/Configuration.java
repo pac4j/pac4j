@@ -3,6 +3,7 @@ package org.pac4j.saml.util;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import net.shibboleth.shared.xml.ParserPool;
+import net.shibboleth.shared.xml.impl.BasicParserPool;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
 import org.opensaml.core.xml.config.XMLObjectProviderRegistrySupport;
@@ -56,6 +57,20 @@ public final class Configuration {
         if (!configurationManagerList.isEmpty()) {
             configurationManagerList.sort(FrameworkAdapter.INSTANCE::compareManagers);
             configurationManagerList.get(0).configure();
+        }
+
+        try {
+            var parserPool = new BasicParserPool();
+            parserPool.setMaxPoolSize(1_000);
+            parserPool.setCoalescing(true);
+            parserPool.setIgnoreComments(true);
+            parserPool.setNamespaceAware(true);
+            parserPool.setExpandEntityReferences(false);
+            parserPool.initialize();
+            XMLObjectProviderRegistrySupport.setParserPool(parserPool);
+        } catch (Exception e) {
+            LOGGER.error("Error initializing parser pool", e);
+            throw new SAMLException(e.getMessage(), e);
         }
     }
 
@@ -130,7 +145,7 @@ public final class Configuration {
      */
     public static Optional<XMLObject> deserializeSamlObject(final String obj) {
         try (val reader = new StringReader(obj)) {
-            return Optional.of(XMLObjectSupport.unmarshallFromReader(Configuration.getParserPool(), reader));
+            return Optional.of(XMLObjectSupport.unmarshallFromReader(getParserPool(), reader));
         } catch (final Exception e) {
             LOGGER.error("Error unmarshalling message from input stream", e);
             return Optional.empty();

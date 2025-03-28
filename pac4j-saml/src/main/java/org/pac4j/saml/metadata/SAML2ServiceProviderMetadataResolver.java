@@ -41,20 +41,19 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
         }
     }
 
-    /**
-     * <p>prepareServiceProviderMetadata.</p>
-     *
-     * @return a {@link MetadataResolver} object
-     */
+    @SuppressWarnings("unchecked")
     protected MetadataResolver prepareServiceProviderMetadata() {
         try {
             val metadataGenerator = configuration.toMetadataGenerator();
             val resource = configuration.getServiceProviderMetadataResource();
+
             if (resource == null || !resource.exists() || configuration.isForceServiceProviderMetadataGeneration()) {
                 val entity = metadataGenerator.buildEntityDescriptor();
                 val metadata = metadataGenerator.getMetadata(entity);
                 metadataGenerator.storeMetadata(metadata,
                     configuration.isForceServiceProviderMetadataGeneration());
+            } else if (resource.exists()) {
+                metadataGenerator.merge(configuration);
             }
             return metadataGenerator.buildMetadataResolver();
         } catch (final Exception e) {
@@ -62,7 +61,9 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
         }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public final MetadataResolver resolve(final boolean force) {
         if (force) {
@@ -71,13 +72,17 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
         return this.metadataResolver;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public final String getEntityId() {
         return configuration.getServiceProviderEntityId();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getMetadata() {
         try {
@@ -89,7 +94,9 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
         }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public XMLObject getEntityDescriptorElement() {
         try {
