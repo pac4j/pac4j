@@ -4,7 +4,6 @@ import lombok.val;
 import org.junit.Test;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.util.DefaultConfigurationManager;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ClassPathResource;
 
 import static org.junit.Assert.assertNotNull;

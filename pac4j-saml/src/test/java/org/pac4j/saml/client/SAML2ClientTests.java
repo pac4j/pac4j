@@ -1,7 +1,6 @@
 package org.pac4j.saml.client;
 
 import lombok.val;
-import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
