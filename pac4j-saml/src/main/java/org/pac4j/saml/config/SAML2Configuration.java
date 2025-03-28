@@ -327,7 +327,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
 
         val keystoreGenerator = getKeystoreGenerator();
         if (keystoreGenerator.shouldGenerate()) {
-            LOGGER.warn("Generating keystore one for/via: {}", this.keystoreResource);
+            LOGGER.info("Generating keystore one for/via: {}", this.keystoreResource);
             keystoreGenerator.generate();
         }
 
