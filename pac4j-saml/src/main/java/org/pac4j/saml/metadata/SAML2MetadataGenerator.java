@@ -51,4 +51,8 @@ public interface SAML2MetadataGenerator {
      * @throws Exception the exception
      */
     boolean merge(SAML2Configuration configuration) throws Exception ;
+
+    default boolean canMerge() {
+        return true;
+    }
 }

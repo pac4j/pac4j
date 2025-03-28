@@ -52,7 +52,7 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
                 val metadata = metadataGenerator.getMetadata(entity);
                 metadataGenerator.storeMetadata(metadata,
                     configuration.isForceServiceProviderMetadataGeneration());
-            } else if (resource.exists()) {
+            } else if (resource.exists() && metadataGenerator.canMerge()) {
                 metadataGenerator.merge(configuration);
             }
             return metadataGenerator.buildMetadataResolver();
