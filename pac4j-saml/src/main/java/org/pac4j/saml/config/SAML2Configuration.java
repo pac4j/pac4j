@@ -141,6 +141,8 @@ public class SAML2Configuration extends BaseClientConfiguration {
 
     private SAML2MetadataGenerator metadataGenerator;
 
+    private CredentialProvider credentialProvider;
+
     private boolean authnRequestSigned;
 
     private boolean spLogoutRequestSigned;
@@ -486,7 +488,10 @@ public class SAML2Configuration extends BaseClientConfiguration {
      * @return a {@link CredentialProvider} object
      */
     public CredentialProvider getCredentialProvider() {
-        return new KeyStoreCredentialProvider(this);
+        if (credentialProvider == null) {
+            credentialProvider = new KeyStoreCredentialProvider(this);
+        }
+        return credentialProvider;
     }
 
     /**
