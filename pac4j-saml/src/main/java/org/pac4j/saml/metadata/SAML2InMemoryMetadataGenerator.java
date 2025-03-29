@@ -27,4 +27,9 @@ public class SAML2InMemoryMetadataGenerator extends BaseSAML2MetadataGenerator {
         metadataResource = new ByteArrayResource(metadata.getBytes(StandardCharsets.UTF_8));
         return metadataResource.exists();
     }
+
+    @Override
+    public boolean canMerge() {
+        return false;
+    }
 }
