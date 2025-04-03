@@ -13,12 +13,6 @@ import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * This is {@link SAML2EntityDescriptorMetadataResolver}.
- *
- * @author Misagh Moayyed
- * @since 7.2.0
- */
 @Slf4j
 @Getter
 public class SAML2EntityDescriptorMetadataResolver extends AbstractBatchMetadataResolver {
