@@ -60,8 +60,10 @@ public class TokenValidator {
             jwsAlgorithms.add(preferredAlgorithm);
         } else {
             jwsAlgorithms = metadataAlgorithms;
-            LOGGER.warn("Preferred JWS algorithm: {} not available. Using all metadata algorithms: {}",
-                preferredAlgorithm, metadataAlgorithms);
+            if (preferredAlgorithm != null) {
+                LOGGER.info("Preferred JWS algorithm: {} not available. Using all metadata algorithms: {}",
+                    preferredAlgorithm, metadataAlgorithms);
+            }
         }
 
         idTokenValidators = new ArrayList<>();
