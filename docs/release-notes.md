@@ -5,6 +5,9 @@ title: Release notes&#58;
 
 ### JDK17:
 
+**v6.1.3**:
+- SAML2 operations that use `FilesystemMetadataResolver` are replaced with a DOM parser instead.
+
 **v6.1.2**:
 - Use the configured scope in OpenID Connect authenticator
 - Fix the `getFullRequestURL` method
