@@ -4,7 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.opensaml.saml.metadata.resolver.impl.AbstractMetadataResolver;
-import org.opensaml.saml.metadata.resolver.impl.FilesystemMetadataResolver;
+import org.opensaml.saml.metadata.resolver.impl.DOMMetadataResolver;
+import org.pac4j.saml.util.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.WritableResource;
 
@@ -30,8 +31,14 @@ public class SAML2FileSystemMetadataGenerator extends BaseSAML2MetadataGenerator
 
     @Override
     protected AbstractMetadataResolver createMetadataResolver() throws Exception {
-        if (metadataResource != null) {
-            return new FilesystemMetadataResolver(metadataResource.getFile());
+        if (metadataResource != null
+            && metadataResource.exists()
+            && metadataResource.isReadable()
+            && metadataResource.isFile()) {
+            try (val is = metadataResource.getInputStream()) {
+                var document = Configuration.getParserPool().parse(is);
+                return new DOMMetadataResolver(document.getDocumentElement());
+            }
         }
         return null;
     }

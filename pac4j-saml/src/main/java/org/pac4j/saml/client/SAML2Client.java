@@ -13,12 +13,7 @@ import org.pac4j.saml.context.SAML2ContextProvider;
 import org.pac4j.saml.context.SAMLContextProvider;
 import org.pac4j.saml.credentials.authenticator.SAML2Authenticator;
 import org.pac4j.saml.credentials.extractor.SAML2CredentialsExtractor;
-import org.pac4j.saml.crypto.DefaultSignatureSigningParametersProvider;
-import org.pac4j.saml.crypto.ExplicitSignatureTrustEngineProvider;
-import org.pac4j.saml.crypto.KeyStoreDecryptionProvider;
-import org.pac4j.saml.crypto.LogOnlySignatureTrustEngineProvider;
-import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
-import org.pac4j.saml.crypto.SignatureSigningParametersProvider;
+import org.pac4j.saml.crypto.*;
 import org.pac4j.saml.logout.SAML2LogoutActionBuilder;
 import org.pac4j.saml.logout.impl.SAML2LogoutRequestMessageSender;
 import org.pac4j.saml.logout.impl.SAML2LogoutValidator;
@@ -36,8 +31,6 @@ import org.pac4j.saml.sso.impl.SAML2WebSSOMessageSender;
 import org.pac4j.saml.state.SAML2StateGenerator;
 import org.pac4j.saml.util.Configuration;
 
-import java.io.Closeable;
-
 import static org.pac4j.core.util.CommonHelper.assertNotNull;
 
 /**
@@ -52,7 +45,7 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
 @NoArgsConstructor
 @Getter
 @Setter
-public class SAML2Client extends IndirectClient implements Closeable {
+public class SAML2Client extends IndirectClient {
 
     protected SAMLContextProvider contextProvider;
 
@@ -260,10 +253,6 @@ public class SAML2Client extends IndirectClient implements Closeable {
         }
     }
 
-    public void destroy() {
-        ((SAML2ServiceProviderMetadataResolver) serviceProviderMetadataResolver).destroy();
-    }
-
     @Override
     public void notifySessionRenewal(final CallContext ctx, final String oldSessionId) {
         val sessionLogoutHandler = findSessionLogoutHandler();
@@ -278,10 +267,5 @@ public class SAML2Client extends IndirectClient implements Closeable {
 
     public final String getServiceProviderResolvedEntityId() {
         return this.serviceProviderMetadataResolver.getEntityId();
-    }
-
-    @Override
-    public void close() {
-        destroy();
     }
 }
