@@ -28,21 +28,19 @@ import java.nio.charset.StandardCharsets;
 public class SAML2FileSystemMetadataGenerator extends BaseSAML2MetadataGenerator {
 
     private final Resource metadataResource;
-    private AbstractMetadataResolver metadataResolver;
 
     @Override
     protected AbstractMetadataResolver createMetadataResolver() throws Exception {
-        if (metadataResolver == null
-            && metadataResource != null
+        if (metadataResource != null
             && metadataResource.exists()
             && metadataResource.isReadable()
             && metadataResource.isFile()) {
             try (val is = metadataResource.getInputStream()) {
                 var document = Configuration.getParserPool().parse(is);
-                metadataResolver = new DOMMetadataResolver(document.getDocumentElement());
+                return new DOMMetadataResolver(document.getDocumentElement());
             }
         }
-        return metadataResolver;
+        return null;
     }
 
     @Override
