@@ -24,6 +24,7 @@ import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.credentials.OidcCredentials;
+import org.pac4j.oidc.exceptions.OidcConfigurationException;
 import org.pac4j.oidc.exceptions.OidcException;
 import org.pac4j.oidc.exceptions.UserInfoErrorResponseException;
 import org.pac4j.oidc.profile.OidcProfile;
@@ -33,6 +34,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Optional;
 
+import static org.pac4j.core.credentials.authenticator.Authenticator.ALWAYS_VALIDATE;
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 import static org.pac4j.core.util.CommonHelper.assertNotNull;
 
@@ -135,6 +137,11 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
                         return Optional.empty();
                     }
                 }
+            } else if (oidcCredentials == null
+                && (client.getAuthenticator() == null || client.getAuthenticator().equals(ALWAYS_VALIDATE))) {
+                // prevent creating a profile from an unvalidated access token
+                throw new OidcConfigurationException("You cannot disable the call to the UserInfo endpoint " +
+                    "without providing an authenticator");
             }
 
             // add attributes of the ID token if they don't already exist

@@ -14,12 +14,14 @@ import org.junit.Test;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
+import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.credentials.OidcCredentials;
+import org.pac4j.oidc.exceptions.OidcConfigurationException;
 import org.pac4j.oidc.metadata.OidcOpMetadataResolver;
 
 import java.net.URI;
@@ -117,5 +119,25 @@ public class OidcProfileCreatorTests implements TestsConstants {
         profile = creator.create(new CallContext(webContext, new MockSessionStore()), credentials);
         assertTrue(profile.isPresent());
         assertEquals("pac4j", profile.get().getAttribute("client"));
+    }
+
+    @Test
+    public void testNoOidcProfileWithoutAuthenticator() throws Exception {
+        when(configuration.isIncludeAccessTokenClaimsInProfile()).thenReturn(false);
+        when(configuration.isCallUserInfoEndpoint()).thenReturn(false);
+        ProfileCreator creator = new OidcProfileCreator(configuration, new OidcClient(configuration));
+        var webContext = MockWebContext.create();
+        var credentials = new TokenCredentials();
+
+        var accessTokenClaims = new JWTClaimsSet.Builder(idTokenClaims.toJWTClaimsSet()).claim("client", "pac4j").build();
+        var accessTokenToken = new PlainJWT(accessTokenClaims);
+        credentials.setToken(accessTokenToken.serialize());
+
+        try {
+            creator.create(new CallContext(webContext, new MockSessionStore()), credentials);
+            fail("The profile must not be created if CallUserInfoEndpoint is disabled and no authenticator is provided");
+        } catch (OidcConfigurationException e) {
+            // Expected
+        }
     }
 }
