@@ -133,11 +133,7 @@ public class OidcProfileCreatorTests implements TestsConstants {
         var accessTokenToken = new PlainJWT(accessTokenClaims);
         credentials.setToken(accessTokenToken.serialize());
 
-        try {
-            creator.create(new CallContext(webContext, new MockSessionStore()), credentials);
-            fail("The profile must not be created if CallUserInfoEndpoint is disabled and no authenticator is provided");
-        } catch (OidcConfigurationException e) {
-            // Expected
-        }
+        assertThrows(OidcConfigurationException.class,
+            () -> creator.create(new CallContext(webContext, new MockSessionStore()), credentials));
     }
 }
