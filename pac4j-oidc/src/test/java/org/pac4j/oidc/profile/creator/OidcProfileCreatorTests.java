@@ -21,6 +21,7 @@ import org.pac4j.core.util.TestsConstants;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.credentials.OidcCredentials;
+import org.pac4j.oidc.credentials.authenticator.OidcAuthenticator;
 import org.pac4j.oidc.exceptions.OidcConfigurationException;
 import org.pac4j.oidc.metadata.OidcOpMetadataResolver;
 
@@ -77,7 +78,9 @@ public class OidcProfileCreatorTests implements TestsConstants {
     @Test
     public void testCreateOidcProfile() throws Exception {
         when(configuration.isIncludeAccessTokenClaimsInProfile()).thenReturn(true);
-        ProfileCreator creator = new OidcProfileCreator(configuration, new OidcClient(configuration));
+        OidcClient client = new OidcClient(configuration);
+        client.setAuthenticator(new OidcAuthenticator(configuration, client));
+        ProfileCreator creator = new OidcProfileCreator(configuration, client);
         var webContext = MockWebContext.create();
         var credentials = new OidcCredentials();
         credentials.setAccessToken(new BearerAccessToken(UUID.randomUUID().toString()).toJSONObject());
@@ -89,7 +92,9 @@ public class OidcProfileCreatorTests implements TestsConstants {
     @Test
     public void testCreateOidcProfileWithoutAccessToken() throws Exception {
         when(configuration.isIncludeAccessTokenClaimsInProfile()).thenReturn(true);
-        ProfileCreator creator = new OidcProfileCreator(configuration, new OidcClient(configuration));
+        OidcClient client = new OidcClient(configuration);
+        client.setAuthenticator(new OidcAuthenticator(configuration, client));
+        ProfileCreator creator = new OidcProfileCreator(configuration, client);
         var webContext = MockWebContext.create();
         var credentials = new OidcCredentials();
         credentials.setAccessToken(null);
@@ -101,7 +106,9 @@ public class OidcProfileCreatorTests implements TestsConstants {
     @Test
     public void testCreateOidcProfileJwtAccessToken() throws Exception {
         when(configuration.isIncludeAccessTokenClaimsInProfile()).thenReturn(false);
-        ProfileCreator creator = new OidcProfileCreator(configuration, new OidcClient(configuration));
+        OidcClient client = new OidcClient(configuration);
+        client.setAuthenticator(new OidcAuthenticator(configuration, client));
+        ProfileCreator creator = new OidcProfileCreator(configuration, client);
         var webContext = MockWebContext.create();
         var credentials = new OidcCredentials();
 

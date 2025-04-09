@@ -68,6 +68,13 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
         assertNotNull("configuration", configuration);
 
         setProfileDefinitionIfUndefined(new OidcProfileDefinition());
+
+        if (!configuration.isCallUserInfoEndpoint()
+            && (client.getAuthenticator() == null || client.getAuthenticator() == ALWAYS_VALIDATE)) {
+            // prevent creating a profile from an unvalidated access token
+            throw new OidcConfigurationException("You cannot disable the call to the UserInfo endpoint " +
+                "without providing an authenticator");
+        }
     }
 
     /** {@inheritDoc} */
@@ -137,11 +144,6 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
                         return Optional.empty();
                     }
                 }
-            } else if (oidcCredentials == null
-                && (client.getAuthenticator() == null || client.getAuthenticator().equals(ALWAYS_VALIDATE))) {
-                // prevent creating a profile from an unvalidated access token
-                throw new OidcConfigurationException("You cannot disable the call to the UserInfo endpoint " +
-                    "without providing an authenticator");
             }
 
             // add attributes of the ID token if they don't already exist
