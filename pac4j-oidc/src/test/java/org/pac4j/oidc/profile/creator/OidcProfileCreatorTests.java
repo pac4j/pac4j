@@ -14,12 +14,15 @@ import org.junit.Test;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
+import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.credentials.OidcCredentials;
+import org.pac4j.oidc.credentials.authenticator.OidcAuthenticator;
+import org.pac4j.oidc.exceptions.OidcConfigurationException;
 import org.pac4j.oidc.metadata.OidcOpMetadataResolver;
 
 import java.net.URI;
@@ -75,7 +78,9 @@ public class OidcProfileCreatorTests implements TestsConstants {
     @Test
     public void testCreateOidcProfile() throws Exception {
         when(configuration.isIncludeAccessTokenClaimsInProfile()).thenReturn(true);
-        ProfileCreator creator = new OidcProfileCreator(configuration, new OidcClient(configuration));
+        OidcClient client = new OidcClient(configuration);
+        client.setAuthenticator(new OidcAuthenticator(configuration, client));
+        ProfileCreator creator = new OidcProfileCreator(configuration, client);
         var webContext = MockWebContext.create();
         var credentials = new OidcCredentials();
         credentials.setAccessToken(new BearerAccessToken(UUID.randomUUID().toString()).toJSONObject());
@@ -87,7 +92,9 @@ public class OidcProfileCreatorTests implements TestsConstants {
     @Test
     public void testCreateOidcProfileWithoutAccessToken() throws Exception {
         when(configuration.isIncludeAccessTokenClaimsInProfile()).thenReturn(true);
-        ProfileCreator creator = new OidcProfileCreator(configuration, new OidcClient(configuration));
+        OidcClient client = new OidcClient(configuration);
+        client.setAuthenticator(new OidcAuthenticator(configuration, client));
+        ProfileCreator creator = new OidcProfileCreator(configuration, client);
         var webContext = MockWebContext.create();
         var credentials = new OidcCredentials();
         credentials.setAccessToken(null);
@@ -99,7 +106,9 @@ public class OidcProfileCreatorTests implements TestsConstants {
     @Test
     public void testCreateOidcProfileJwtAccessToken() throws Exception {
         when(configuration.isIncludeAccessTokenClaimsInProfile()).thenReturn(false);
-        ProfileCreator creator = new OidcProfileCreator(configuration, new OidcClient(configuration));
+        OidcClient client = new OidcClient(configuration);
+        client.setAuthenticator(new OidcAuthenticator(configuration, client));
+        ProfileCreator creator = new OidcProfileCreator(configuration, client);
         var webContext = MockWebContext.create();
         var credentials = new OidcCredentials();
 
@@ -117,5 +126,21 @@ public class OidcProfileCreatorTests implements TestsConstants {
         profile = creator.create(new CallContext(webContext, new MockSessionStore()), credentials);
         assertTrue(profile.isPresent());
         assertEquals("pac4j", profile.get().getAttribute("client"));
+    }
+
+    @Test
+    public void testNoOidcProfileWithoutAuthenticator() throws Exception {
+        when(configuration.isIncludeAccessTokenClaimsInProfile()).thenReturn(false);
+        when(configuration.isCallUserInfoEndpoint()).thenReturn(false);
+        ProfileCreator creator = new OidcProfileCreator(configuration, new OidcClient(configuration));
+        var webContext = MockWebContext.create();
+        var credentials = new TokenCredentials();
+
+        var accessTokenClaims = new JWTClaimsSet.Builder(idTokenClaims.toJWTClaimsSet()).claim("client", "pac4j").build();
+        var accessTokenToken = new PlainJWT(accessTokenClaims);
+        credentials.setToken(accessTokenToken.serialize());
+
+        assertThrows(OidcConfigurationException.class,
+            () -> creator.create(new CallContext(webContext, new MockSessionStore()), credentials));
     }
 }
