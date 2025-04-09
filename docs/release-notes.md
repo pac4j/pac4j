@@ -7,6 +7,7 @@ title: Release notes&#58;
 
 **v6.1.3**:
 - SAML2 operations that use `FilesystemMetadataResolver` are replaced with a DOM parser instead.
+- OIDC: prevent creating a profile from an unvalidated access token
 
 **v6.1.2**:
 - Use the configured scope in OpenID Connect authenticator
