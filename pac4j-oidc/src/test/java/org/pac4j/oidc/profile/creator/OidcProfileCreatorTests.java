@@ -16,11 +16,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.credentials.OidcCredentials;
+import org.pac4j.oidc.credentials.authenticator.OidcAuthenticator;
 
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jwt.JWT;
@@ -74,7 +77,9 @@ public class OidcProfileCreatorTests implements TestsConstants {
     @Test
     public void testCreateOidcProfile() throws Exception {
         when(configuration.isIncludeAccessTokenClaimsInProfile()).thenReturn(true);
-        var creator = new OidcProfileCreator(configuration, new OidcClient(configuration));
+        OidcClient client = new OidcClient(configuration);
+        client.setAuthenticator(new OidcAuthenticator(configuration, client));
+        ProfileCreator creator = new OidcProfileCreator(configuration, client);
         var webContext = MockWebContext.create();
         var credentials = new OidcCredentials();
         credentials.setAccessToken(new BearerAccessToken(UUID.randomUUID().toString()));
@@ -86,7 +91,9 @@ public class OidcProfileCreatorTests implements TestsConstants {
     @Test
     public void testCreateOidcProfileWithoutAccessToken() throws Exception {
         when(configuration.isIncludeAccessTokenClaimsInProfile()).thenReturn(true);
-        var creator = new OidcProfileCreator(configuration, new OidcClient(configuration));
+        OidcClient client = new OidcClient(configuration);
+        client.setAuthenticator(new OidcAuthenticator(configuration, client));
+        ProfileCreator creator = new OidcProfileCreator(configuration, client);
         var webContext = MockWebContext.create();
         var credentials = new OidcCredentials();
         credentials.setAccessToken(null);
@@ -98,7 +105,9 @@ public class OidcProfileCreatorTests implements TestsConstants {
     @Test
     public void testCreateOidcProfileJwtAccessToken() throws Exception {
         when(configuration.isIncludeAccessTokenClaimsInProfile()).thenReturn(false);
-        var creator = new OidcProfileCreator(configuration, new OidcClient(configuration));
+        OidcClient client = new OidcClient(configuration);
+        client.setAuthenticator(new OidcAuthenticator(configuration, client));
+        ProfileCreator creator = new OidcProfileCreator(configuration, client);
         var webContext = MockWebContext.create();
         var credentials = new OidcCredentials();
 
@@ -116,5 +125,21 @@ public class OidcProfileCreatorTests implements TestsConstants {
         profile = creator.create(credentials, webContext, new MockSessionStore());
         assertTrue(profile.isPresent());
         assertEquals("pac4j", profile.get().getAttribute("client"));
+    }
+
+    @Test
+    public void testNoOidcProfileWithoutAuthenticator() throws Exception {
+        when(configuration.isIncludeAccessTokenClaimsInProfile()).thenReturn(false);
+        when(configuration.isCallUserInfoEndpoint()).thenReturn(false);
+        ProfileCreator creator = new OidcProfileCreator(configuration, new OidcClient(configuration));
+        var webContext = MockWebContext.create();
+        var credentials = new OidcCredentials();
+
+        var accessTokenClaims = new JWTClaimsSet.Builder(idTokenClaims.toJWTClaimsSet()).claim("client", "pac4j").build();
+        var accessTokenToken = new PlainJWT(accessTokenClaims);
+        credentials.setAccessToken(new BearerAccessToken(accessTokenToken.serialize()));
+
+        assertThrows(TechnicalException.class,
+            () -> creator.create(credentials, webContext, new MockSessionStore()));
     }
 }

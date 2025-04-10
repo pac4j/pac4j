@@ -6,6 +6,7 @@ title: Release notes&#58;
 **v5.7.8**:
 - Fix bug for HTML values in POST forms
 - Fix the `getFullRequestURL` method
+- OIDC: prevent creating a profile from an unvalidated access token
 
 **v5.7.7**:
 - Security fix: cannot accept empty OIDC credentials

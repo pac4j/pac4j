@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Optional;
 
+import static org.pac4j.core.credentials.authenticator.Authenticator.ALWAYS_VALIDATE;
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 import static org.pac4j.core.util.CommonHelper.*;
 
@@ -59,6 +60,13 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
         assertNotNull("configuration", configuration);
 
         defaultProfileDefinition(new OidcProfileDefinition());
+
+        if (!configuration.isCallUserInfoEndpoint()
+            && (client.getAuthenticator() == null || client.getAuthenticator() == ALWAYS_VALIDATE)) {
+            // prevent creating a profile from an unvalidated access token
+            throw new TechnicalException("You cannot disable the call to the UserInfo endpoint " +
+                "without providing an authenticator");
+        }
     }
 
     @Override
