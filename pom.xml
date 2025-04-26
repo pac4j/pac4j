@@ -38,6 +38,14 @@
 		</developer>
 	</developers>
 
+    <distributionManagement>
+        <snapshotRepository>
+            <name>Central Portal Snapshots</name>
+            <id>central-portal-snapshots</id>
+            <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
 	<modules>
         <module>pac4j-javaee</module>
         <module>pac4j-jakartaee</module>

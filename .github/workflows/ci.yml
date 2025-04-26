@@ -44,7 +44,7 @@ jobs:
               uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 # v4
               with:
                   java-version: ${{ env.JDK_CURRENT }}
-                  server-id: sonatype-nexus-snapshots
+                  server-id: central-portal-snapshots
                   server-username: MAVEN_USERNAME
                   server-password: MAVEN_PASSWORD
                   distribution: ${{ env.DISTRIBUTION }}
