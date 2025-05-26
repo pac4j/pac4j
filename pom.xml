@@ -6,7 +6,7 @@
 	<artifactId>pac4j-parent</artifactId>
 	<packaging>pom</packaging>
 	<name>pac4j parent</name>
-	<version>6.1.4-SNAPSHOT</version>
+	<version>6.1.3-SNAPSHOT</version>
 	<description>Profile &amp; Authentication Client for Java</description>
 	<url>https://github.com/pac4j/pac4j</url>
 
@@ -452,6 +452,11 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>3.1.3</version>
+            </plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
@@ -514,10 +519,9 @@
 				<executions>
 					<execution>
 						<id>attach-sources</id>
-                        <phase>verify</phase>
 						<goals>
-							<goal>jar</goal>
-                            <goal>test-jar</goal>
+							<goal>jar-no-fork</goal>
+                            <goal>test-jar-no-fork</goal>
 						</goals>
 					</execution>
 				</executions>
