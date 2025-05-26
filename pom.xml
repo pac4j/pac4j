@@ -6,7 +6,7 @@
 	<artifactId>pac4j-parent</artifactId>
 	<packaging>pom</packaging>
 	<name>pac4j parent</name>
-	<version>6.1.4-SNAPSHOT</version>
+	<version>6.1.3-SNAPSHOT</version>
 	<description>Profile &amp; Authentication Client for Java</description>
 	<url>https://github.com/pac4j/pac4j</url>
 
@@ -514,6 +514,7 @@
 				<executions>
 					<execution>
 						<id>attach-sources</id>
+                        <phase>verify</phase>
 						<goals>
 							<goal>jar</goal>
 						</goals>
@@ -537,6 +538,8 @@
 				<artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.11.2</version>
                 <configuration>
+                    <detectJavaApiLink>false</detectJavaApiLink>
+                    <doclint>none</doclint>
                     <sourcepath>src/main/java</sourcepath>
                     <source>${java.version}</source>
                     <release>${java.version}</release>
@@ -604,16 +607,6 @@
 								${project.build.outputDirectory}/META-INF/MANIFEST.MF
 							</manifestFile>
 						</archive>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-javadoc-plugin</artifactId>
-					<version>3.11.2</version>
-					<configuration>
-						<source>1.8</source>
-                        <detectJavaApiLink>false</detectJavaApiLink>
-						<doclint>none</doclint>
 					</configuration>
 				</plugin>
 				<plugin>
