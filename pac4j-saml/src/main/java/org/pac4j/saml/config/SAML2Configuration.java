@@ -30,6 +30,7 @@ import org.pac4j.saml.sso.impl.SAML2ScopingIdentityProvider;
 import org.pac4j.saml.store.EmptyStoreFactory;
 import org.pac4j.saml.store.SAMLMessageStoreFactory;
 import org.pac4j.saml.util.SAML2HttpClientBuilder;
+import org.pac4j.saml.util.SAML2UrlResource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -246,16 +247,6 @@ public class SAML2Configuration extends BaseClientConfiguration {
             DEFAULT_PROVIDER_NAME, null, null);
     }
 
-    /**
-     * <p>Constructor for SAML2Configuration.</p>
-     *
-     * @param keystoreResource                 a {@link Resource} object
-     * @param keyStoreAlias                    a {@link String} object
-     * @param keyStoreType                     a {@link String} object
-     * @param keystorePassword                 a {@link String} object
-     * @param privateKeyPassword               a {@link String} object
-     * @param identityProviderMetadataResource a {@link Resource} object
-     */
     public SAML2Configuration(final Resource keystoreResource, final String keyStoreAlias,
                               final String keyStoreType, final String keystorePassword, final String privateKeyPassword,
                               final Resource identityProviderMetadataResource) {
@@ -264,21 +255,6 @@ public class SAML2Configuration extends BaseClientConfiguration {
             null, DEFAULT_PROVIDER_NAME, null, null);
     }
 
-    /**
-     * <p>Constructor for SAML2Configuration.</p>
-     *
-     * @param keyStoreAlias                    a {@link String} object
-     * @param keyStoreType                     a {@link String} object
-     * @param keystoreResource                 a {@link Resource} object
-     * @param keystorePassword                 a {@link String} object
-     * @param privateKeyPassword               a {@link String} object
-     * @param identityProviderMetadataResource a {@link Resource} object
-     * @param identityProviderEntityId         a {@link String} object
-     * @param serviceProviderEntityId          a {@link String} object
-     * @param providerName                     a {@link String} object
-     * @param authnRequestExtensions           a {@link Supplier} object
-     * @param attributeAsId                    a {@link String} object
-     */
     protected SAML2Configuration(final String keyStoreAlias, final String keyStoreType,
                                  final Resource keystoreResource, final String keystorePassword,
                                  final String privateKeyPassword, final Resource identityProviderMetadataResource,
@@ -290,7 +266,11 @@ public class SAML2Configuration extends BaseClientConfiguration {
         this.keystoreResource = keystoreResource;
         this.keystorePassword = keystorePassword;
         this.privateKeyPassword = privateKeyPassword;
-        this.identityProviderMetadataResource = identityProviderMetadataResource;
+        if (identityProviderMetadataResource instanceof UrlResource urlResource) {
+            this.identityProviderMetadataResource = new SAML2UrlResource(urlResource.getURL(), this);
+        } else {
+            this.identityProviderMetadataResource = identityProviderMetadataResource;
+        }
         this.identityProviderEntityId = identityProviderEntityId;
         this.serviceProviderEntityId = serviceProviderEntityId;
         this.providerName = providerName;
