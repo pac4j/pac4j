@@ -1,5 +1,6 @@
 package org.pac4j.saml.util;
 
+import lombok.EqualsAndHashCode;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.springframework.core.io.UrlResource;
 
@@ -13,6 +14,7 @@ import java.net.URL;
  *
  * @author Misagh Moayyed
  */
+@EqualsAndHashCode(callSuper = true)
 public class SAML2UrlResource extends UrlResource {
     private final SAML2Configuration saml2Configuration;
 
