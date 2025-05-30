@@ -2,12 +2,20 @@ package org.pac4j.saml.config;
 
 import lombok.val;
 import org.junit.Test;
+import org.pac4j.core.exception.TechnicalException;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import java.io.File;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -56,6 +64,20 @@ public class SAML2ConfigurationTests {
     }
 
     @Test
+    public void verifyIdentityProviderMetadataUrlWithBadSslCert() throws Exception {
+        val metadataUrl = "https://expired.badssl.com/";
+        val configuration = new SAML2Configuration("target/keystore.jks", "pac4j", "pac4j", metadataUrl);
+        configuration.setForceKeystoreGeneration(true);
+        configuration.setServiceProviderMetadataResource(new FileSystemResource("target/out.xml"));
+        configuration.init();
+        var metadataResolver = configuration.getIdentityProviderMetadataResolver().resolve();
+        assertNull(metadataResolver);
+        configuration.setSslSocketFactory(disabledSslContext().getSocketFactory());
+        configuration.setHostnameVerifier((s, sslSession) -> true);
+        assertThrows(TechnicalException.class, () -> configuration.getIdentityProviderMetadataResolver().resolve());
+    }
+
+    @Test
     public void shouldBeAbleToUseAnIdpMetadataResourceWithTheDefaultMetadataResolver() {
         var configuration = new SAML2Configuration();
         configuration.setKeystorePath("target/keystore.jks");
@@ -70,5 +92,26 @@ public class SAML2ConfigurationTests {
 
         var result = idpMetadataResolver.getMetadata();
         assertNotNull(result);
+    }
+
+    private static SSLContext disabledSslContext() throws Exception {
+        var trustAllCerts = new TrustManager[]{new X509TrustManager() {
+            @Override
+            public void checkClientTrusted(X509Certificate[] x509Certificates, String s) {
+            }
+
+            @Override
+            public void checkServerTrusted(X509Certificate[] x509Certificates, String s) {
+            }
+
+            @Override
+            public X509Certificate[] getAcceptedIssuers() {
+                return null;
+            }
+        }};
+
+        var sc = SSLContext.getInstance("SSL");
+        sc.init(null, trustAllCerts, new SecureRandom());
+        return sc;
     }
 }
