@@ -13,6 +13,7 @@ import java.net.URL;
  * This is {@link SAML2UrlResource}.
  *
  * @author Misagh Moayyed
+ * @since 6.1.4
  */
 @EqualsAndHashCode(callSuper = true)
 public class SAML2UrlResource extends UrlResource {
