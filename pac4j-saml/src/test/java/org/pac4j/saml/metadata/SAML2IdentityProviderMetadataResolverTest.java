@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.opensaml.core.criterion.EntityIdCriterion;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.saml.config.SAML2Configuration;
+import org.pac4j.saml.util.SAML2UrlResource;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.UrlResource;
@@ -16,6 +17,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
+import java.net.URL;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 
@@ -120,7 +122,9 @@ public class SAML2IdentityProviderMetadataResolverTest {
     @Test
     public void resolveMetadataConcurrently() throws Exception {
         var configuration = new SAML2Configuration();
-        var resource = new UrlResource("https://md.incommon.org/InCommon/InCommon-metadata-idp-only.xml");
+        configuration.setSslSocketFactory(disabledSslContext().getSocketFactory());
+        configuration.setHostnameVerifier((s, sslSession) -> true);
+        var resource = new SAML2UrlResource(new URL("https://md.incommon.org/InCommon/InCommon-metadata-idp-only.xml"), configuration);
         configuration.setIdentityProviderMetadataResource(resource);
         metadataResolver = new SAML2IdentityProviderMetadataResolver(configuration);
         var resolver = metadataResolver.resolve();
@@ -135,4 +139,6 @@ public class SAML2IdentityProviderMetadataResolverTest {
         metadataResolver.init();
         assertNull(metadataResolver.getEntityDescriptorElement());
     }
+
+
 }
