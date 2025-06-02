@@ -5,6 +5,9 @@ title: Release notes&#58;
 
 ### JDK17:
 
+**v6.1.4**:
+- Downloading SAML2 metadata over a URL is able to support SSL context and hostname verification options when checking for metadata updates.
+
 **v6.1.3**:
 - SAML2 operations that use `FilesystemMetadataResolver` are replaced with a DOM parser instead.
 - OIDC: prevent creating a profile from an unvalidated access token
