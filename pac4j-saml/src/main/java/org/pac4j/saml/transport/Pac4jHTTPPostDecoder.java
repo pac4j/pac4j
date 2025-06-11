@@ -2,6 +2,7 @@ package org.pac4j.saml.transport;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import net.shibboleth.shared.component.ComponentInitializationException;
 import org.opensaml.messaging.decoder.MessageDecodingException;
 import org.opensaml.messaging.handler.MessageHandlerException;
 import org.opensaml.saml.common.SAMLObject;
@@ -51,8 +52,10 @@ public class Pac4jHTTPPostDecoder extends AbstractPac4jDecoder {
             if (xmlObject instanceof Envelope soapMessage) {
                 messageContext.getSOAP11Context().setEnvelope(soapMessage);
                 try {
-                    new SAMLSOAPDecoderBodyHandler().invoke(messageContext.getMessageContext());
-                } catch (final MessageHandlerException e) {
+                    val samlSoapDecoder = new SAMLSOAPDecoderBodyHandler();
+                    samlSoapDecoder.initialize();
+                    samlSoapDecoder.invoke(messageContext.getMessageContext());
+                } catch (final MessageHandlerException | ComponentInitializationException e) {
                     throw new MessageDecodingException("Cannot decode SOAP envelope", e);
                 }
             } else {
