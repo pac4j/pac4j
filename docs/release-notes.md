@@ -5,6 +5,9 @@ title: Release notes&#58;
 
 ### JDK17:
 
+**v6.2.0**:
+- Only return an `Authorization` header when there is no credentials or when credentials are invalid (for `DirectBasicAuthClient`, `DirectBearerAuthClient` and `DirectDigestAuthClient`)
+
 **v6.1.4**:
 - Downloading SAML2 metadata over a URL is able to support SSL context and hostname verification options when checking for metadata updates.
 - Fix the `SAMLSOAPDecoderBodyHandler` initialization (in the `Pac4jHTTPPostDecoder`)

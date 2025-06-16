@@ -7,7 +7,9 @@ title: <i class="fa fa-user" aria-hidden="true"></i> All <i>pac4j</i> engine/cor
 
 <b>JDK 17:</b>
 
-<h2><a id="v6.1" href="/docs/index.html">v6.1</a> <small>(MINOR)</small></h2>
+<h2><a id="v6.2" href="/docs/index.html">v6.2</a> <small>(MINOR)</small>
+
+<a id="v6.1" href="https://www.pac4j.org/6.1.x/docs/index.html">v6.1</a> <small>(MINOR)</small></h2>
 
 <h1><a id="v6.0" href="https://www.pac4j.org/6.0.x/docs/index.html">v6.0</a> <small>(MAJOR)</small></h1>
 
