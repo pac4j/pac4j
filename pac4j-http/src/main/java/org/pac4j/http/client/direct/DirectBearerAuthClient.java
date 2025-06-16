@@ -12,8 +12,6 @@ import org.pac4j.core.credentials.extractor.BearerAuthExtractor;
 import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.util.Pac4jConstants;
 
-import java.util.Optional;
-
 import static org.pac4j.core.util.CommonHelper.assertNotBlank;
 
 /**
@@ -76,11 +74,11 @@ public class DirectBearerAuthClient extends DirectClient {
 
     /** {@inheritDoc} */
     @Override
-    public Optional<Credentials> getCredentials(final CallContext ctx) {
-        // set the www-authenticate in case of error
-        ctx.webContext().setResponseHeader(HttpConstants.AUTHENTICATE_HEADER,
-            HttpConstants.BEARER_HEADER_PREFIX + "realm=\"" + realmName + "\"");
-
-        return super.getCredentials(ctx);
+    protected void checkCredentials(final CallContext ctx, final Credentials credentials) {
+        if (credentials == null) {
+            // set the www-authenticate in case of error
+            ctx.webContext().setResponseHeader(HttpConstants.AUTHENTICATE_HEADER,
+                HttpConstants.BEARER_HEADER_PREFIX + "realm=\"" + realmName + "\"");
+        }
     }
 }

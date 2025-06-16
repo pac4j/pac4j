@@ -16,7 +16,6 @@ import org.pac4j.http.credentials.extractor.DigestAuthExtractor;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Optional;
 
 /**
  * <p>This class is the client to authenticate users directly through HTTP digest auth.</p>
@@ -65,22 +64,15 @@ public class DirectDigestAuthClient extends DirectClient {
         setCredentialsExtractorIfUndefined(new DigestAuthExtractor());
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * Per RFC 2617
-     * If a server receives a request for an access-protected object, and an
-     * acceptable Authorization header is not sent, the server responds with
-     * a "401 Unauthorized" status code, and a WWW-Authenticate header
-     */
+    /** {@inheritDoc} */
     @Override
-    public Optional<Credentials> getCredentials(final CallContext ctx) {
-        // set the www-authenticate in case of error
-        val nonce = calculateNonce();
-        ctx.webContext().setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Digest realm=\"" + realm + "\", qop=\"auth\", nonce=\""
-            + nonce + "\"");
-
-        return super.getCredentials(ctx);
+    protected void checkCredentials(final CallContext ctx, final Credentials credentials) {
+        if (credentials == null) {
+            // set the www-authenticate in case of error
+            val nonce = calculateNonce();
+            ctx.webContext().setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Digest realm=\"" + realm + "\", qop=\"auth\", nonce=\""
+                + nonce + "\"");
+        }
     }
 
     /**

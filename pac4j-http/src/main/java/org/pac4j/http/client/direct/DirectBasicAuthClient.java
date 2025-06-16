@@ -13,8 +13,6 @@ import org.pac4j.core.credentials.extractor.BasicAuthExtractor;
 import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.util.Pac4jConstants;
 
-import java.util.Optional;
-
 import static org.pac4j.core.util.CommonHelper.assertNotBlank;
 
 /**
@@ -67,10 +65,10 @@ public class DirectBasicAuthClient extends DirectClient {
 
     /** {@inheritDoc} */
     @Override
-    public Optional<Credentials> getCredentials(final CallContext ctx) {
-        addAuthenticateHeader(ctx.webContext());
-
-        return super.getCredentials(ctx);
+    protected void checkCredentials(final CallContext ctx, final Credentials credentials) {
+        if (credentials == null) {
+            addAuthenticateHeader(ctx.webContext());
+        }
     }
 
     /**

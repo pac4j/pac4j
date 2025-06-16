@@ -75,13 +75,15 @@ public abstract class BaseClient extends InitializableObject implements Client {
     @Override
     public Optional<Credentials> getCredentials(final CallContext ctx) {
         init();
+        Credentials credentials = null;
         try {
-            val credentials = this.credentialsExtractor.extract(ctx).orElse(null);
-            checkCredentials(ctx, credentials);
+            credentials = this.credentialsExtractor.extract(ctx).orElse(null);
             return Optional.ofNullable(credentials);
         } catch (CredentialsException e) {
             logger.info("Failed to retrieve credentials: {}", e.getMessage());
             logger.debug("Failed to retrieve redentials", e);
+        } finally {
+            checkCredentials(ctx, credentials);
         }
         return Optional.empty();
     }
@@ -110,14 +112,16 @@ public abstract class BaseClient extends InitializableObject implements Client {
      * @return a {@link Optional} object
      */
     protected Optional<Credentials> internalValidateCredentials(final CallContext ctx, final Credentials credentials) {
+        Credentials newCredentials = null;
         try {
-            val newCredentials = this.authenticator.validate(ctx, credentials).orElse(null);
-            checkCredentials(ctx, credentials);
+            newCredentials = this.authenticator.validate(ctx, credentials).orElse(null);
             return Optional.ofNullable(newCredentials);
         } catch (CredentialsException e) {
             logger.info("Failed to validate credentials: {}", e.getMessage());
             logger.debug("Failed to validate credentials", e);
             return Optional.empty();
+        } finally {
+            checkCredentials(ctx, newCredentials);
         }
     }
 
