@@ -3,6 +3,7 @@ package org.pac4j.http.client.direct;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import org.pac4j.core.client.DirectClient;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
@@ -24,6 +25,7 @@ import static org.pac4j.core.util.CommonHelper.assertNotBlank;
 @Getter
 @Setter
 @ToString(callSuper = true)
+@Slf4j
 public class DirectBasicAuthClient extends DirectClient {
 
     private String realmName = Pac4jConstants.DEFAULT_REALM_NAME;
@@ -77,6 +79,7 @@ public class DirectBasicAuthClient extends DirectClient {
      * @param context a {@link WebContext} object
      */
     protected void addAuthenticateHeader(final WebContext context) {
+        LOGGER.debug("Adding authenticate basic header");
         // set the www-authenticate in case of error
         context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Basic realm=\"" + realmName + "\"");
     }

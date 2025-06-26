@@ -1,5 +1,6 @@
 package org.pac4j.kerberos.client.direct;
 
+import lombok.extern.slf4j.Slf4j;
 import org.pac4j.core.client.DirectClient;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
@@ -17,6 +18,7 @@ import java.util.Optional;
  * @author Garry Boyce
  * @since 2.1.0
  */
+@Slf4j
 public class DirectKerberosClient extends DirectClient {
 
     /**
@@ -56,6 +58,7 @@ public class DirectKerberosClient extends DirectClient {
     public Optional<Credentials> getCredentials(final CallContext ctx) {
         // Set the WWW-Authenticate: Negotiate header in case no credentials are found
         // to trigger the SPNEGO process by replying with 401 Unauthorized
+        LOGGER.debug("Adding authenticate negotiate header");
         ctx.webContext().setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Negotiate");
         return super.getCredentials(ctx);
     }

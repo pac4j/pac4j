@@ -3,6 +3,7 @@ package org.pac4j.http.client.direct;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import org.pac4j.core.client.DirectClient;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
@@ -23,6 +24,7 @@ import static org.pac4j.core.util.CommonHelper.assertNotBlank;
 @Getter
 @Setter
 @ToString(callSuper = true)
+@Slf4j
 public class DirectBearerAuthClient extends DirectClient {
 
     private String realmName = Pac4jConstants.DEFAULT_REALM_NAME;
@@ -76,6 +78,7 @@ public class DirectBearerAuthClient extends DirectClient {
     @Override
     protected void checkCredentials(final CallContext ctx, final Credentials credentials) {
         if (credentials == null) {
+            LOGGER.debug("Adding authenticate bearer header");
             // set the www-authenticate in case of error
             ctx.webContext().setResponseHeader(HttpConstants.AUTHENTICATE_HEADER,
                 HttpConstants.BEARER_HEADER_PREFIX + "realm=\"" + realmName + "\"");
