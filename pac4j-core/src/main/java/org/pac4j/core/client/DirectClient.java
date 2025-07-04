@@ -1,6 +1,8 @@
 package org.pac4j.core.client;
 
+import lombok.extern.slf4j.Slf4j;
 import org.pac4j.core.context.CallContext;
+import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.RedirectionAction;
@@ -16,6 +18,7 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
  * @author Jerome Leleu
  * @since 1.9.0
  */
+@Slf4j
 public abstract class DirectClient extends BaseClient {
 
     /** {@inheritDoc} */
@@ -52,5 +55,14 @@ public abstract class DirectClient extends BaseClient {
     public final Optional<RedirectionAction> getLogoutAction(final CallContext ctx, final UserProfile currentProfile,
                                                              final String targetUrl) {
         throw new UnsupportedOperationException("Direct clients cannot redirect for logout");
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    protected void checkCredentials(final CallContext ctx, final Credentials credentials) {
+        if (credentials != null) {
+            LOGGER.debug("Remove authenticate header");
+            ctx.webContext().setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, null);
+        }
     }
 }

@@ -72,6 +72,8 @@ public class DirectDigestAuthClient extends DirectClient {
             val nonce = calculateNonce();
             ctx.webContext().setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Digest realm=\"" + realm + "\", qop=\"auth\", nonce=\""
                 + nonce + "\"");
+        } else {
+            ctx.webContext().setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, null);
         }
     }
 

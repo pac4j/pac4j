@@ -1,7 +1,9 @@
 package org.pac4j.jee.context;
 
+import lombok.Getter;
 import lombok.val;
 import org.pac4j.core.context.Cookie;
+import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.WebContextHelper;
 import org.pac4j.core.exception.TechnicalException;
@@ -32,6 +34,9 @@ public class JEEContext implements WebContext {
     private final HttpServletResponse response;
 
     private String body;
+
+    @Getter
+    private String savedAuthenticateHeader = null;
 
     /**
      * Build a JEE context from the current HTTP request and response.
@@ -118,7 +123,11 @@ public class JEEContext implements WebContext {
     /** {@inheritDoc} */
     @Override
     public void setResponseHeader(final String name, final String value) {
-        this.response.setHeader(name, value);
+        if (HttpConstants.AUTHENTICATE_HEADER.equals(name)) {
+            savedAuthenticateHeader = value;
+        } else {
+            this.response.setHeader(name, value);
+        }
     }
 
     /** {@inheritDoc} */

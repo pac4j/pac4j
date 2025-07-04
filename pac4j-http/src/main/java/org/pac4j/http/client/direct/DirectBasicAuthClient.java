@@ -4,10 +4,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.pac4j.core.client.DirectClient;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.extractor.BasicAuthExtractor;
@@ -68,19 +68,14 @@ public class DirectBasicAuthClient extends DirectClient {
     /** {@inheritDoc} */
     @Override
     protected void checkCredentials(final CallContext ctx, final Credentials credentials) {
+        val webContext = ctx.webContext();
         if (credentials == null) {
-            addAuthenticateHeader(ctx.webContext());
+            LOGGER.debug("Adding authenticate basic header");
+            // set the www-authenticate in case of error
+            webContext.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Basic realm=\"" + realmName + "\"");
+        } else {
+            LOGGER.debug("Remove authenticate header");
+            webContext.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, null);
         }
-    }
-
-    /**
-     * <p>addAuthenticateHeader.</p>
-     *
-     * @param context a {@link WebContext} object
-     */
-    protected void addAuthenticateHeader(final WebContext context) {
-        LOGGER.debug("Adding authenticate basic header");
-        // set the www-authenticate in case of error
-        context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Basic realm=\"" + realmName + "\"");
     }
 }

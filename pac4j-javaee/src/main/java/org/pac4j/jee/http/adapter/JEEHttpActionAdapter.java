@@ -36,11 +36,16 @@ public class JEEHttpActionAdapter implements HttpActionAdapter {
     public Object adapt(final HttpAction action, final WebContext context) {
         if (action != null) {
             var code = action.getCode();
-            val response = ((JEEContext) context).getNativeResponse();
+            val jeeContext = (JEEContext) context;
+            val response = jeeContext.getNativeResponse();
 
             if (code < 400) {
                 response.setStatus(code);
             } else {
+                val savedAuthHeader = jeeContext.getSavedAuthenticateHeader();
+                if (savedAuthHeader != null) {
+                    response.setHeader(HttpConstants.AUTHENTICATE_HEADER, savedAuthHeader);
+                }
                 try {
                     response.sendError(code);
                 } catch (final IOException e) {

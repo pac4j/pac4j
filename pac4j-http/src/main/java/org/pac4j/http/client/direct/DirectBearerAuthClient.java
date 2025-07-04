@@ -82,6 +82,9 @@ public class DirectBearerAuthClient extends DirectClient {
             // set the www-authenticate in case of error
             ctx.webContext().setResponseHeader(HttpConstants.AUTHENTICATE_HEADER,
                 HttpConstants.BEARER_HEADER_PREFIX + "realm=\"" + realmName + "\"");
+        } else {
+            LOGGER.debug("Remove authenticate header");
+            ctx.webContext().setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, null);
         }
     }
 }
