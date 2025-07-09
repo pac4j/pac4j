@@ -85,7 +85,7 @@
 		<logback.version>1.5.18</logback.version>
 		<commons-codec.version>1.18.0</commons-codec.version>
 		<commons-io.version>2.19.0</commons-io.version>
-		<commons-lang3.version>3.17.0</commons-lang3.version>
+		<commons-lang3.version>3.18.0</commons-lang3.version>
         <commons-text.version>1.13.1</commons-text.version>
 		<guava.version>33.4.8-jre</guava.version>
 		<nimbus-jose-jwt.version>10.3.1</nimbus-jose-jwt.version>
