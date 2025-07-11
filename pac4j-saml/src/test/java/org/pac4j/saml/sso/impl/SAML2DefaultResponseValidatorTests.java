@@ -1,8 +1,23 @@
 package org.pac4j.saml.sso.impl;
 
-import lombok.val;
-import net.shibboleth.shared.resolver.CriteriaSet;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import org.junit.Test;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import org.opensaml.core.xml.util.XMLObjectSupport;
 import org.opensaml.saml.common.messaging.context.SAMLPeerEntityContext;
 import org.opensaml.saml.saml2.core.AuthnContext;
@@ -23,6 +38,7 @@ import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.credentials.SAML2AuthenticationCredentials;
 import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
 import org.pac4j.saml.exceptions.SAMLAuthnContextClassRefException;
+import org.pac4j.saml.exceptions.SAMLAuthnInstantException;
 import org.pac4j.saml.exceptions.SAMLEndpointMismatchException;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.exceptions.SAMLSignatureValidationException;
@@ -32,15 +48,8 @@ import org.pac4j.saml.util.ExcludingParametersURIComparator;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import lombok.val;
+import net.shibboleth.shared.resolver.CriteriaSet;
 
 public class SAML2DefaultResponseValidatorTests {
 
@@ -396,5 +405,39 @@ public class SAML2DefaultResponseValidatorTests {
         var credentials = validator.validate(context);
 
         assertNotNull(credentials);
+    }
+
+    @Test(expected = SAMLAuthnInstantException.class)
+    public void testAuthnInstantValidation() throws Exception {
+        val saml2Configuration = getSaml2Configuration(false, false);
+        saml2Configuration.setAllSignatureValidationDisabled(true);
+        saml2Configuration.setResponseDestinationAttributeMandatory(false);
+
+        // set max auth to 1 hour
+        saml2Configuration.setMaximumAuthenticationLifetime(3600);
+
+        val response = getResponse();
+        // Move the authn-instant back many years to simulate an "expired" assertion.
+        response.getAssertions().forEach(assertion ->
+            assertion.getAuthnStatements().forEach(authnStatement -> authnStatement.setAuthnInstant(
+                Instant.now().minus(10 * 365, ChronoUnit.DAYS))));
+        response.setSignature(null);
+        response.getAssertions().get(0).setSignature(null);
+
+        val context = new SAML2MessageContext(new CallContext(MockWebContext.create(), new MockSessionStore()));
+        context.setSaml2Configuration(saml2Configuration);
+        context.getMessageContext().setMessage(response);
+
+        val samlSelfEntityContext = context.getSAMLSelfEntityContext();
+        samlSelfEntityContext.setEntityId("https://auth.izslt.it");
+
+        val endpoint = mock(Endpoint.class);
+        when(endpoint.getLocation()).thenReturn("https://auth.izslt.it/cas/login?client_name=idptest");
+
+        val samlEndpointContext = context.getSAMLEndpointContext();
+        samlEndpointContext.setEndpoint(endpoint);
+
+        val validator = createResponseValidatorWithSigningValidationOf(saml2Configuration);
+        validator.validate(context);
     }
 }
