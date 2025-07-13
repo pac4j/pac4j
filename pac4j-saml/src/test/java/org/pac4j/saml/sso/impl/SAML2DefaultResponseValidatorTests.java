@@ -408,7 +408,7 @@ public class SAML2DefaultResponseValidatorTests {
     }
 
     @Test(expected = SAMLAuthnInstantException.class)
-    public void testAuthnInstantValidation() throws Exception {
+    public void testInvalidAuthnInstant() throws Exception {
         val saml2Configuration = getSaml2Configuration(false, false);
         saml2Configuration.setAllSignatureValidationDisabled(true);
         saml2Configuration.setResponseDestinationAttributeMandatory(false);
@@ -421,6 +421,41 @@ public class SAML2DefaultResponseValidatorTests {
         response.getAssertions().forEach(assertion ->
             assertion.getAuthnStatements().forEach(authnStatement -> authnStatement.setAuthnInstant(
                 Instant.now().minus(10 * 365, ChronoUnit.DAYS))));
+        response.setSignature(null);
+        response.getAssertions().get(0).setSignature(null);
+
+        val context = new SAML2MessageContext(new CallContext(MockWebContext.create(), new MockSessionStore()));
+        context.setSaml2Configuration(saml2Configuration);
+        context.getMessageContext().setMessage(response);
+
+        val samlSelfEntityContext = context.getSAMLSelfEntityContext();
+        samlSelfEntityContext.setEntityId("https://auth.izslt.it");
+
+        val endpoint = mock(Endpoint.class);
+        when(endpoint.getLocation()).thenReturn("https://auth.izslt.it/cas/login?client_name=idptest");
+
+        val samlEndpointContext = context.getSAMLEndpointContext();
+        samlEndpointContext.setEndpoint(endpoint);
+
+        val validator = createResponseValidatorWithSigningValidationOf(saml2Configuration);
+        validator.validate(context);
+    }
+
+    @Test
+    public void testValidAuthnInstant() throws Exception {
+        val saml2Configuration = getSaml2Configuration(false, false);
+        saml2Configuration.setAllSignatureValidationDisabled(true);
+        saml2Configuration.setResponseDestinationAttributeMandatory(false);
+
+        // set max auth to 1 hour
+        saml2Configuration.setMaximumAuthenticationLifetime(3600);
+
+        val response = getResponse();
+
+        // authn instant is valid by just a single minute
+        response.getAssertions().forEach(assertion ->
+            assertion.getAuthnStatements().forEach(authnStatement -> authnStatement.setAuthnInstant(
+                Instant.now().minus(59, ChronoUnit.MINUTES))));
         response.setSignature(null);
         response.getAssertions().get(0).setSignature(null);
 
