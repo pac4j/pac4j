@@ -89,7 +89,7 @@
         <commons-text.version>1.13.1</commons-text.version>
 		<guava.version>33.4.8-jre</guava.version>
 		<nimbus-jose-jwt.version>10.3.1</nimbus-jose-jwt.version>
-		<spring.version>6.2.8</spring.version>
+		<spring.version>6.2.9</spring.version>
 		<spring.security.version>6.5.1</spring.security.version>
 		<shiro.version>1.13.0</shiro.version>
         <jbcrypt.version>0.4.3</jbcrypt.version>
