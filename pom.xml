@@ -90,7 +90,7 @@
 		<guava.version>33.4.8-jre</guava.version>
 		<nimbus-jose-jwt.version>10.4</nimbus-jose-jwt.version>
 		<spring.version>6.2.9</spring.version>
-		<spring.security.version>6.5.1</spring.security.version>
+		<spring.security.version>6.5.2</spring.security.version>
 		<shiro.version>1.13.0</shiro.version>
         <jbcrypt.version>0.4.3</jbcrypt.version>
         <snakeyaml.version>2.4</snakeyaml.version>
