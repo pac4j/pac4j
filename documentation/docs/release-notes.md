@@ -5,6 +5,9 @@ title: Release notes&#58;
 
 ### JDK17:
 
+**v6.2.1**:
+- Fix the SAML `IssueInstant` check
+
 **v6.2.0**:
 - Only return an `Authorization` header when there is no credentials or when credentials are invalid (for `DirectBasicAuthClient`, `DirectBearerAuthClient` and `DirectDigestAuthClient`)
 

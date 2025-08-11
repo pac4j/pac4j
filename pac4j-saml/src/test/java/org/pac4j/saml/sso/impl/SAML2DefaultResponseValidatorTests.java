@@ -1,23 +1,8 @@
 package org.pac4j.saml.sso.impl;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import lombok.val;
+import net.shibboleth.shared.resolver.CriteriaSet;
 import org.junit.Test;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import org.opensaml.core.xml.util.XMLObjectSupport;
 import org.opensaml.saml.common.messaging.context.SAMLPeerEntityContext;
 import org.opensaml.saml.saml2.core.AuthnContext;
@@ -37,19 +22,24 @@ import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.credentials.SAML2AuthenticationCredentials;
 import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
-import org.pac4j.saml.exceptions.SAMLAuthnContextClassRefException;
-import org.pac4j.saml.exceptions.SAMLAuthnInstantException;
-import org.pac4j.saml.exceptions.SAMLEndpointMismatchException;
-import org.pac4j.saml.exceptions.SAMLException;
-import org.pac4j.saml.exceptions.SAMLSignatureValidationException;
+import org.pac4j.saml.exceptions.*;
 import org.pac4j.saml.replay.InMemoryReplayCacheProvider;
 import org.pac4j.saml.util.Configuration;
 import org.pac4j.saml.util.ExcludingParametersURIComparator;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 
-import lombok.val;
-import net.shibboleth.shared.resolver.CriteriaSet;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+
+import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class SAML2DefaultResponseValidatorTests {
 
