@@ -218,11 +218,9 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
         val before = now.plusSeconds(acceptedSkew);
         val after = now.minusSeconds(acceptedSkew + interval);
 
-        val issueInstanceUtc = Instant.now();
-
-        val isDateValid = issueInstanceUtc.isBefore(before) && issueInstanceUtc.isAfter(after);
+        val isDateValid = issueInstant.isBefore(before) && issueInstant.isAfter(after);
         if (!isDateValid) {
-            logger.warn("interval={},before={},after={},issueInstant={}", interval, before, after, issueInstanceUtc);
+            logger.warn("interval={},before={},after={},issueInstant={}", interval, before, after, issueInstant);
         }
         return isDateValid;
     }
