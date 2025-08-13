@@ -133,6 +133,9 @@ public class JEEContext implements WebContext {
     /** {@inheritDoc} */
     @Override
     public Optional<String> getResponseHeader(final String name) {
+        if (HttpConstants.AUTHENTICATE_HEADER.equals(name)) {
+            return Optional.ofNullable(savedAuthenticateHeader);
+        }
         return Optional.ofNullable(this.response.getHeader(name));
     }
 
