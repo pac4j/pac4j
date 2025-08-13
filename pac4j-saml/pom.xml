@@ -13,7 +13,7 @@
     <name>pac4j: Java web security for SAML</name>
 
     <properties>
-        <opensaml.version>5.1.4</opensaml.version>
+        <opensaml.version>5.1.5</opensaml.version>
         <velocity.version>2.4.1</velocity.version>
         <xmlsec.version>4.0.4</xmlsec.version>
         <cryptacular.version>1.2.7</cryptacular.version>
