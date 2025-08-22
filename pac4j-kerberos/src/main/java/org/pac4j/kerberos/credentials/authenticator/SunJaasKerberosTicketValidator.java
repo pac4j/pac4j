@@ -15,6 +15,7 @@ import javax.security.auth.login.Configuration;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.security.Principal;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
@@ -67,6 +68,14 @@ public class SunJaasKerberosTicketValidator extends InitializableObject implemen
             if (keyTabLocationAsString.startsWith("file:")) {
                 keyTabLocationAsString = keyTabLocationAsString.substring(5);
             }
+
+            // Add URL decoding, so we don't allow encoded white spaces
+            try {
+                keyTabLocationAsString = URLDecoder.decode(keyTabLocationAsString, "UTF-8");
+            } catch (Exception e) {
+                // Handle appropriately
+            }
+
             var loginConfig = new LoginConfig(keyTabLocationAsString, this.servicePrincipal,
                 this.debug);
             Set<Principal> princ = new HashSet<>(1);
