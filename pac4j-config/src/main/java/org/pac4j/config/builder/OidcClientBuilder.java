@@ -67,6 +67,10 @@ public class OidcClientBuilder extends AbstractBuilder {
                 if (StringUtils.isNotBlank(useNonce)) {
                     configuration.setUseNonce(Boolean.parseBoolean(useNonce));
                 }
+                val useNonceOnRefresh = getProperty(OIDC_USE_NONCE_ON_REFRESH, i);
+                if (StringUtils.isNotBlank(useNonceOnRefresh)) {
+                    configuration.setUseNonceOnRefresh(Boolean.parseBoolean(useNonceOnRefresh));
+                }
                 val withState = getProperty(OIDC_WITH_STATE, i);
                 if (StringUtils.isNotBlank(withState)) {
                     configuration.setWithState(Boolean.parseBoolean(withState));
