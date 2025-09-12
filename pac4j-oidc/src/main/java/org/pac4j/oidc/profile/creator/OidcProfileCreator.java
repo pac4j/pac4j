@@ -85,11 +85,13 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
 
         OidcCredentials oidcCredentials = null;
         AccessToken accessToken = null;
-
+		// credentials were obtained from a refresh token
+        boolean refreshedCredentials = false;
         val regularOidcFlow = credentials instanceof OidcCredentials;
         if (regularOidcFlow) {
             oidcCredentials = (OidcCredentials) credentials;
             accessToken = oidcCredentials.toAccessToken();
+            refreshedCredentials = oidcCredentials.isRefreshedCredentials();
         } else {
             // we assume the access token only has been passed: it can be a bearer call (HTTP client)
             val token = ((TokenCredentials) credentials).getToken();
@@ -115,7 +117,10 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
         try {
 
             final Nonce nonce;
-            if (configuration.isUseNonce()) {
+            // skipRefreshedNonce is true when the token was created with the refresh token and we don't want to check nonce
+            // in idToken in this case
+            val skipRefreshedNonce = refreshedCredentials && !configuration.isUseNonceOnRefresh();
+            if (configuration.isUseNonce() && !skipRefreshedNonce) {
                 nonce = new Nonce((String) ctx.sessionStore().get(ctx.webContext(), client.getNonceSessionAttributeName()).orElse(null));
             } else {
                 nonce = null;
