@@ -15,7 +15,10 @@ import javax.security.auth.login.Configuration;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 import java.io.IOException;
-import java.net.URLDecoder;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.Principal;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
@@ -62,22 +65,9 @@ public class SunJaasKerberosTicketValidator extends InitializableObject implemen
             CommonHelper.assertNotNull("servicePrincipal must be specified", this.servicePrincipal);
             CommonHelper.assertNotNull("keyTab must be specified", this.keyTabLocation);
 
-            var keyTabLocationAsString = this.keyTabLocation.getURL().toExternalForm();
-            // We need to remove the file prefix (if there is one), as it is not supported in Java 7 anymore.
-            // As Java 6 accepts it with and without the prefix, we don't need to check for Java 7
-            if (keyTabLocationAsString.startsWith("file:")) {
-                keyTabLocationAsString = keyTabLocationAsString.substring(5);
-            }
+            var keyTabLocationAsString = normalizeKeyTabPath(this.keyTabLocation.getURL().toExternalForm());
 
-            // Add URL decoding, so we don't allow encoded white spaces
-            try {
-                keyTabLocationAsString = URLDecoder.decode(keyTabLocationAsString, "UTF-8");
-            } catch (Exception e) {
-                // Handle appropriately
-            }
-
-            var loginConfig = new LoginConfig(keyTabLocationAsString, this.servicePrincipal,
-                this.debug);
+            var loginConfig = new LoginConfig(keyTabLocationAsString, this.servicePrincipal, this.debug);
             Set<Principal> princ = new HashSet<>(1);
             princ.add(new KerberosPrincipal(this.servicePrincipal));
             var sub = new Subject(false, princ, new HashSet<>(), new HashSet<>());
@@ -87,6 +77,36 @@ public class SunJaasKerberosTicketValidator extends InitializableObject implemen
         } catch (final LoginException | IOException e) {
             throw new TechnicalException(e);
         }
+    }
+
+    /**
+     * Normalizes the keytab location string by handling "file:" URIs safely.
+     * <p>
+     * If the input starts with "file:", attempts to parse it as a URI and convert to a filesystem Path.
+     * This handles spaces and special characters correctly (e.g., %20 remains encoded until Path decodes it properly).
+     * <p>
+     * If URI parsing fails (e.g., due to malformed URI), falls back to stripping "file:" prefix and manually
+     * replacing "%20" with space — this is a legacy workaround for environments where URI parsing is unreliable.
+     * Non-"file:" URIs (e.g., "classpath:", "http:") are returned unchanged.
+     *
+     * @param keyTabLocationAsString the raw location string (e.g., from Resource.getURL().toExternalForm())
+     * @return normalized path string suitable for JAAS configuration, or original if not a file: URI
+     */
+    static String normalizeKeyTabPath(String keyTabLocationAsString) {
+        if (keyTabLocationAsString == null) {
+            return null;
+        }
+        if (keyTabLocationAsString.startsWith("file:")) {
+            try {
+                // Convert to URI to handle spaces safely without breaking %
+                Path p = Paths.get(new URI(keyTabLocationAsString));
+                return p.toString();
+            } catch (URISyntaxException e) {
+                // Fallback: strip "file:" and replace only %20
+                return keyTabLocationAsString.substring(5).replace("%20", " ");
+            }
+        }
+        return keyTabLocationAsString;
     }
 
     /**
