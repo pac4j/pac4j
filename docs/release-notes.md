@@ -5,6 +5,9 @@ title: Release notes&#58;
 
 ### JDK17:
 
+**v6.2.2**:
+- Fix the X509 `SubjectDN` parsing
+
 **v6.2.1**:
 - Fix the SAML `IssueInstant` check
 - Fix the conditional `Authorization` header
@@ -109,6 +112,7 @@ title: Release notes&#58;
 ### JDK11:
 
 **v5.7.8**:
+- Fix the X509 `SubjectDN` parsing
 - Fix bug for HTML values in POST forms
 - Fix the `getFullRequestURL` method
 - OIDC: prevent creating a profile from an unvalidated access token
