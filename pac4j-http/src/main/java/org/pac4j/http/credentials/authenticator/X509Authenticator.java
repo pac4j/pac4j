@@ -9,6 +9,9 @@ import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.http.credentials.X509Credentials;
 import org.pac4j.http.profile.X509Profile;
 
+import javax.security.auth.x500.X500Principal;
+import java.util.ArrayList;
+
 /**
  * Authenticates {@link X509Credentials}. Like the SubjectDnX509PrincipalExtractor in Spring Security.
  *
@@ -39,12 +42,12 @@ public class X509Authenticator extends AbstractRegexpAuthenticator implements Au
             throw new CredentialsException("No X509 certificate");
         }
 
-        final var principal = certificate.getSubjectDN();
+        final var principal = certificate.getSubjectX500Principal();
         if (principal == null) {
             throw new CredentialsException("No X509 principal");
         }
 
-        final var subjectDN = principal.getName();
+        final var subjectDN = principal.getName(X500Principal.RFC2253);
         logger.debug("subjectDN: {}", subjectDN);
 
         if (subjectDN == null) {
@@ -53,15 +56,20 @@ public class X509Authenticator extends AbstractRegexpAuthenticator implements Au
 
         final var matcher = this.pattern.matcher(subjectDN);
 
-        if (!matcher.find()) {
+        final var matches = new ArrayList<String>();
+        while (matcher.find()) {
+            matches.add(matcher.group(1));
+        }
+
+        if (matches.isEmpty()) {
             throw new CredentialsException("No matching for pattern: " +  regexpPattern + " in subjectDN: " + subjectDN);
         }
 
-        if (matcher.groupCount() != 1) {
-            throw new CredentialsException("Too many matchings for pattern: " +  regexpPattern + " in subjectDN: " + subjectDN);
+        if (matches.size() != 1) {
+            throw new CredentialsException("Too many matches for pattern: " +  regexpPattern + " in subjectDN: " + subjectDN);
         }
 
-        final var id = matcher.group(1);
+        final var id = matches.get(0);
         final var profile = (X509Profile) getProfileDefinition().newProfile();
         profile.setId(id);
         logger.debug("profile: {}", profile);

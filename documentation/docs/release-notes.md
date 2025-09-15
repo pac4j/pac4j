@@ -4,6 +4,7 @@ title: Release notes&#58;
 ---
 
 **v5.7.8**:
+- Fix the X509 `SubjectDN` parsing
 - Fix bug for HTML values in POST forms
 - Fix the `getFullRequestURL` method
 - OIDC: prevent creating a profile from an unvalidated access token
