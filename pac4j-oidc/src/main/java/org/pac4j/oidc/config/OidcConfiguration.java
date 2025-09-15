@@ -164,6 +164,9 @@ public class OidcConfiguration extends BaseClientConfiguration {
     /* use nonce? */
     private boolean useNonce;
 
+    /* use nonce on token obtained by refresh ? true by default to not change the initial behavior */
+    private boolean useNonceOnRefresh = true;
+
     /* disable PKCE, even when supported by the IdP */
     private boolean disablePkce = false;
 

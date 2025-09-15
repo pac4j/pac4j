@@ -43,6 +43,9 @@ public class OidcCredentials extends Credentials {
 
     private String idToken;
 
+    /** Flag set to true if the OidcCredentials are obtained by refreshing the token */
+    private boolean refreshedCredentials;
+
     @JsonIgnore
     public AuthorizationCode toAuthorizationCode() {
         return code != null ? new AuthorizationCode(this.code) : null;
