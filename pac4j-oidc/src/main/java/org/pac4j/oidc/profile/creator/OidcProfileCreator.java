@@ -85,7 +85,7 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
 
         OidcCredentials oidcCredentials = null;
         AccessToken accessToken = null;
-		// credentials were obtained from a refresh token
+        // credentials were obtained from a refresh token
         boolean refreshedCredentials = false;
         val regularOidcFlow = credentials instanceof OidcCredentials;
         if (regularOidcFlow) {
