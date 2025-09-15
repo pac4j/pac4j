@@ -175,3 +175,9 @@ Since version 6.0.5 and to reinforce security, the logout requests are validated
 ```java
 config.setLogoutValidation(false);
 ```
+
+Since version 6.2.2, the nonce for idToken can be ignored on refresh. This can be ignored using:
+
+```java
+config.setUseNonceOnRefresh(false);
+```
