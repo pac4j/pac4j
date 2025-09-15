@@ -170,6 +170,12 @@ Since version 5.2 and to reinforce security, the `none` alogithm for ID tokens (
 config.setAllowUnsignedIdTokens(true);
 ```
 
+Since version 6.0.5 and to reinforce security, the logout requests are validated. This can be disabled using:
+
+```java
+config.setLogoutValidation(false);
+```
+
 Since version 6.2.2, the nonce for idToken can be ignored on refresh. This can be ignored using:
 
 ```java
