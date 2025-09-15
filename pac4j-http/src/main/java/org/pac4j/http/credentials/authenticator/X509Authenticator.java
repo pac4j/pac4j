@@ -10,7 +10,9 @@ import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.http.credentials.X509Credentials;
 import org.pac4j.http.profile.X509Profile;
 
+import javax.security.auth.x500.X500Principal;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Optional;
 
@@ -44,12 +46,12 @@ public class X509Authenticator extends AbstractRegexpAuthenticator implements Au
             throw new CredentialsException("No X509 certificate");
         }
 
-        val principal = certificate.getSubjectDN();
+        val principal = certificate.getSubjectX500Principal();
         if (principal == null) {
             throw new CredentialsException("No X509 principal");
         }
 
-        val subjectDN = principal.getName();
+        val subjectDN = principal.getName(X500Principal.RFC2253);
         logger.debug("subjectDN: {}", subjectDN);
 
         if (subjectDN == null) {
@@ -58,15 +60,20 @@ public class X509Authenticator extends AbstractRegexpAuthenticator implements Au
 
         val matcher = this.pattern.matcher(subjectDN);
 
-        if (!matcher.find()) {
+        val matches = new ArrayList<String>();
+        while (matcher.find()) {
+            matches.add(matcher.group(1));
+        }
+
+        if (matches.isEmpty()) {
             throw new CredentialsException("No matching for pattern: " +  regexpPattern + " in subjectDN: " + subjectDN);
         }
 
-        if (matcher.groupCount() != 1) {
+        if (matches.size() != 1) {
             throw new CredentialsException("Too many matches for pattern: " +  regexpPattern + " in subjectDN: " + subjectDN);
         }
 
-        val id = matcher.group(1);
+        val id = matches.get(0);
         val profile = getProfileDefinition().newProfile();
         profile.setId(id);
         try {

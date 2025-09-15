@@ -73,7 +73,7 @@ public final class X509ClientTests implements TestsConstants {
         val authnCredentials = client.validateCredentials(ctx, credentials).get();
         val profile = (X509Profile) client.getUserProfile(ctx, authnCredentials).get();
         assertEquals("jerome", profile.getId());
-        assertEquals("CN=jerome, OU=Unknown, O=Unknown, L=Unknown, ST=Unknown, C=Unknown", profile.getAttribute("x509-subjectDN"));
+        assertEquals("CN=jerome,OU=Unknown,O=Unknown,L=Unknown,ST=Unknown,C=Unknown", profile.getAttribute("x509-subjectDN"));
         assertTrue(profile.containsAttribute("x509-certificate"));
     }
 }
