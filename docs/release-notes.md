@@ -8,7 +8,8 @@ title: Release notes&#58;
 **v6.2.2**:
 - Fix the X509 `SubjectDN` parsing
 - OIDC: Allow to ignore nonce for idToken on refresh
- 
+- Properly handle spaces in keytab path
+
 **v6.2.1**:
 - Fix the SAML `IssueInstant` check
 - Fix the conditional `Authorization` header
