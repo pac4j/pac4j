@@ -90,6 +90,7 @@ public final class PropertiesConfigFactoryTests implements PropertiesConstants, 
             properties.put(OIDC_CLIENT_AUTHENTICATION_METHOD, "CLIENT_SECRET_POST");
             properties.put(OIDC_CUSTOM_PARAM_KEY + "1", KEY);
             properties.put(OIDC_CUSTOM_PARAM_VALUE + "1", VALUE);
+            properties.put(OIDC_USE_NONCE_ON_REFRESH, "false");
 
             properties.put(CAS_LOGIN_URL.concat(".1"), LOGIN_URL);
             properties.put(CAS_PROTOCOL.concat(".1"), CasProtocol.CAS30.toString());
@@ -164,6 +165,7 @@ public final class PropertiesConfigFactoryTests implements PropertiesConstants, 
             assertEquals(ClientAuthenticationMethod.CLIENT_SECRET_POST.toString(),
                 oidcClient.getConfiguration().getClientAuthenticationMethod().toString().toLowerCase());
             assertFalse(oidcClient.getConfiguration().isWithState());
+            assertFalse(oidcClient.getConfiguration().isUseNonceOnRefresh());
 
             val casClient1 = (CasClient) clients.findClient("CasClient.1").get();
             assertEquals(CasProtocol.CAS30, casClient1.getConfiguration().getProtocol());
