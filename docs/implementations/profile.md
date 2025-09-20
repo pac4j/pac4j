@@ -30,6 +30,13 @@ title: Implementations comparison for the profile management&#58;
         <td><img src="/img/red_cross.png" /></td>
     </tr>
     <tr>
+        <td>spring-webflux-pac4j</td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">ProfileManager</code></td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/red_cross.png" /></td>
+    </tr>
+    <tr>
         <td>jee-pac4j</td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">ProfileManager</code></td>
         <td><img src="/img/green_check.png" /><br />by injection thanks to the <code class="highlighter-rouge">Pac4jProducer</code></td>
@@ -87,10 +94,10 @@ title: Implementations comparison for the profile management&#58;
     </tr>
     <tr>
         <td>pippo-pac4j</td>
-        <td bgcolor="#eeeeee"></td>
-        <td bgcolor="#eeeeee"></td>
-        <td bgcolor="#eeeeee"></td>
-        <td bgcolor="#eeeeee"></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">ProfileManager</code></td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/red_cross.png" /></td>
     </tr>
     <tr>
         <td>undertow-pac4j</td>
@@ -108,37 +115,44 @@ title: Implementations comparison for the profile management&#58;
     </tr>
     <tr>
         <td>jax-rs-pac4j</td>
-        <td bgcolor="#eeeeee"></td>
-        <td bgcolor="#eeeeee"></td>
-        <td bgcolor="#eeeeee"></td>
-        <td bgcolor="#eeeeee"></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JaxRsProfileManager</code></td>
+        <td><img src="/img/green_check.png" /><br />via <code class="highlighter-rouge">@Pac4JProfileManager</code> injection</td>
+        <td><img src="/img/green_check.png" /><br />via <code class="highlighter-rouge">SecurityContext.getUserPrincipal()</code></td>
+        <td><img src="/img/green_check.png" /><br />via <code class="highlighter-rouge">Pac4JSecurityContext.getProfiles()</code></td>
     </tr>
     <tr>
         <td>dropwizard-pac4j</td>
-        <td bgcolor="#eeeeee"></td>
-        <td bgcolor="#eeeeee"></td>
-        <td bgcolor="#eeeeee"></td>
-        <td bgcolor="#eeeeee"></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JaxRsProfileManager</code></td>
+        <td><img src="/img/green_check.png" /><br />via <code class="highlighter-rouge">@Pac4JProfileManager</code> injection</td>
+        <td><img src="/img/green_check.png" /><br />via <code class="highlighter-rouge">SecurityContext.getUserPrincipal()</code></td>
+        <td><img src="/img/green_check.png" /><br />via <code class="highlighter-rouge">Pac4JSecurityContext.getProfiles()</code></td>
     </tr>
     <tr>
         <td>lagom-pac4j</td>
-        <td bgcolor="#eeeeee"></td>
-        <td bgcolor="#eeeeee"></td>
-        <td bgcolor="#eeeeee"></td>
-        <td bgcolor="#eeeeee"></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">CommonProfile</code> passed via service composition</td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/green_check.png" /><br />via service call parameters</td>
+        <td><img src="/img/red_cross.png" /></td>
+    </tr>
+    <tr>
+        <td>http4s-pac4j</td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">ProfileManager</code></td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/red_cross.png" /></td>
     </tr>
     <tr>
         <td>Knox</td>
-        <td bgcolor="#eeeeee"></td>
-        <td bgcolor="#eeeeee"></td>
-        <td bgcolor="#eeeeee"></td>
-        <td bgcolor="#eeeeee"></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">ProfileManager</code> (via j2e-pac4j)</td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/green_check.png" /><br />via <code class="highlighter-rouge">getUserPrincipal()</code> method (via j2e-pac4j)</td>
+        <td><img src="/img/red_cross.png" /></td>
     </tr>
     <tr>
         <td>jooby-pac4j2</td>
-        <td bgcolor="#eeeeee"></td>
-        <td bgcolor="#eeeeee"></td>
-        <td bgcolor="#eeeeee"></td>
-        <td bgcolor="#eeeeee"></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">Pac4jProfileManager</code></td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/red_cross.png" /></td>
     </tr>
 </table>

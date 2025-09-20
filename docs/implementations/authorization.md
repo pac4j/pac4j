@@ -24,6 +24,10 @@ title: Implementations comparison for the authorization checks&#58;
         <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">@RequireAnyRole</code> and <code class="highlighter-rouge">@RequireAllRoles</code> annotations</td>
     </tr>
     <tr>
+        <td>spring-webflux-pac4j</td>
+        <td><img src="/img/red_cross.png" /></td>
+    </tr>
+    <tr>
         <td>jee-pac4j</td>
         <td><img src="/img/red_cross.png" /></td>
     </tr>
@@ -57,7 +61,7 @@ title: Implementations comparison for the authorization checks&#58;
     </tr>
     <tr>
         <td>pippo-pac4j</td>
-        <td bgcolor="#eeeeee"></td>
+        <td><img src="/img/red_cross.png" /></td>
     </tr>
     <tr>
         <td>undertow-pac4j</td>
@@ -69,22 +73,26 @@ title: Implementations comparison for the authorization checks&#58;
     </tr>
     <tr>
         <td>jax-rs-pac4j</td>
-        <td bgcolor="#eeeeee"></td>
+        <td><img src="/img/green_check.png" /><br />using <code class="highlighter-rouge">SecurityContext.isUserInRole()</code> method</td>
     </tr>
     <tr>
         <td>dropwizard-pac4j</td>
-        <td bgcolor="#eeeeee"></td>
+        <td><img src="/img/green_check.png" /><br />using <code class="highlighter-rouge">SecurityContext.isUserInRole()</code> method</td>
     </tr>
     <tr>
         <td>lagom-pac4j</td>
-        <td bgcolor="#eeeeee"></td>
+        <td><img src="/img/green_check.png" /><br />using <code class="highlighter-rouge">authorize()</code> service composition methods</td>
+    </tr>
+    <tr>
+        <td>http4s-pac4j</td>
+        <td><img src="/img/red_cross.png" /></td>
     </tr>
     <tr>
         <td>Knox</td>
-        <td bgcolor="#eeeeee"></td>
+        <td><img src="/img/red_cross.png" /><br />No method-level authorization (via j2e-pac4j)</td>
     </tr>
     <tr>
         <td>jooby-pac4j2</td>
-        <td bgcolor="#eeeeee"></td>
+        <td><img src="/img/green_check.png" /><br />using <code class="highlighter-rouge">Pac4jAuthorizer</code> filter</td>
     </tr>
 </table>

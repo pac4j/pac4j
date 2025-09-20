@@ -25,7 +25,7 @@ User profiles are managed via the [profile manager](profile-manager.html).
 
 Each user profile must have a unique identifier. Thus, when building the user profile, the *pac4j* clients use for the profile identifier a value enforcing uniqueness from the identity provider.
 
-This works well accross the profiles provided from the same identity provider, though this can become a problem when using multiple identity providers.
+This works well across the profiles provided from the same identity provider, though this can become a problem when using multiple identity providers.
 We could have a collision between the identifiers chosen from the identity provider. To avoid that issue, there is a "typed identifier" adding the profile class name before the profile identifier.
 
 **Example:**
@@ -49,7 +49,7 @@ In particular it can be useful for identity providers that return roles in diffe
 
 Some identity providers will include attributes related to the authentication itself, such as authentication method,
 time period for which the authentication is valid, or metadata about the identity provider.  These attributes are stored
-seperately from the user's attributes.
+separately from the user's attributes.
 
 
 ## 4) Roles
@@ -95,7 +95,7 @@ The profile class and attributes are defined via [`ProfileDefinition`](https://g
 
 The `setProfileFactory` method allows you to define the instance class to return for the user profile while the `primary` and `secondary` methods allow you to define attributes with their specific converters.
 
-Many attribute converters already exists: [`BooleanConverter`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/converter/BooleanConverter.java), [`ColorConverter`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/converter/ColorConverter.java)... Check the [org.pac4j.core.profile.converter](https://github.com/pac4j/pac4j/tree/master/pac4j-core/src/main/java/org/pac4j/core/profile/converter) package.
+Many attribute converters already exist: [`BooleanConverter`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/converter/BooleanConverter.java), [`ColorConverter`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/converter/ColorConverter.java)... Check the [org.pac4j.core.profile.converter](https://github.com/pac4j/pac4j/tree/master/pac4j-core/src/main/java/org/pac4j/core/profile/converter) package.
 
 As a result, the `newProfile` method returns a new class instance while the `convertAndAdd` methods convert the attributes if there is an associated converter and adds them to the profile.
 
