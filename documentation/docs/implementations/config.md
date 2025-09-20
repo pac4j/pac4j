@@ -26,6 +26,11 @@ title: Implementations comparison for configuration&#58;
         <td><img src="/img/green_check.png" />via dependency injection</td>
     </tr>
     <tr>
+        <td>spring-webflux-pac4j</td>
+        <td><img src="/img/green_check.png" />using the <code class="highlighter-rouge">pac4j-springboot</code> module for a Spring Boot webapp</td>
+        <td><img src="/img/green_check.png" />via dependency injection</td>
+    </tr>
+    <tr>
         <td>jee-pac4j</td>
         <td><img src="/img/red_cross.png" /></td>
         <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">ConfigFactory</code> servlet parameter or via dependency injection (using Spring/Guice)</td>
@@ -92,6 +97,11 @@ title: Implementations comparison for configuration&#58;
     </tr>
     <tr>
         <td>lagom-pac4j</td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/green_check.png" /></td>
+    </tr>
+    <tr>
+        <td>http4s-pac4j</td>
         <td><img src="/img/red_cross.png" /></td>
         <td><img src="/img/green_check.png" /></td>
     </tr>

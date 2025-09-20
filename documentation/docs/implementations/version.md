@@ -22,63 +22,63 @@ title: Implementations comparison regarding the version of pac4j&#58;
     </tr>
     <tr>
         <td>spring-webmvc-pac4j</td>
-        <td>5</td>
+        <td>6</td>
+    </tr>
+    <tr>
+        <td>spring-webflux-pac4j</td>
+        <td>6</td>
     </tr>
     <tr>
         <td>jee-pac4j</td>
-        <td>5</td>
+        <td>6</td>
     </tr>
     <tr>
         <td>buji-pac4j</td>
-        <td>5</td>
+        <td>6</td>
     </tr>
     <tr>
         <td>spring-security-pac4j</td>
-        <td>5</td>
+        <td>6</td>
     </tr>
     <tr>
         <td>play-pac4j</td>
-        <td>5</td>
+        <td>6</td>
     </tr>
     <tr>
         <td>vertx-pac4j</td>
-        <td>4</td>
+        <td>6</td>
     </tr>
     <tr>
         <td>spark-pac4j</td>
-        <td>4</td>
+        <td>5</td>
     </tr>
     <tr>
         <td>javalin-pac4j</td>
-        <td>4</td>
+        <td>6</td>
     </tr>
     <tr>
         <td>ratpack-pac4j</td>
-        <td>3</td>
-    </tr>
-    <tr>
-        <td>pippo-pac4j</td>
-        <td>3</td>
+        <td>6</td>
     </tr>
     <tr>
         <td>undertow-pac4j</td>
-        <td>4</td>
-    </tr>
-    <tr>
-        <td>CAS</td>
-        <td>4</td>
+        <td>6</td>
     </tr>
     <tr>
         <td>jax-rs-pac4j</td>
-        <td>4</td>
+        <td>6</td>
     </tr>
     <tr>
         <td>dropwizard-pac4j</td>
-        <td>4</td>
+        <td>5</td>
     </tr>
     <tr>
         <td>lagom-pac4j</td>
         <td>3</td>
+    </tr>
+    <tr>
+        <td>http4s-pac4j</td>
+        <td>5</td>
     </tr>
     <tr>
         <td>Knox</td>
