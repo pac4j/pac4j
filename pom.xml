@@ -94,7 +94,7 @@
 		<shiro.version>1.13.0</shiro.version>
         <jbcrypt.version>0.4.3</jbcrypt.version>
         <snakeyaml.version>2.5</snakeyaml.version>
-		<mockito.version>5.19.0</mockito.version>
+		<mockito.version>5.20.0</mockito.version>
 		<slf4j.version>2.0.17</slf4j.version>
         <httpclient.version>5.3.1</httpclient.version>
         <unboundid.version>7.0.3</unboundid.version>
