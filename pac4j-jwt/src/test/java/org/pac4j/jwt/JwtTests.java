@@ -3,7 +3,7 @@ package org.pac4j.jwt;
 import com.nimbusds.jose.EncryptionMethod;
 import com.nimbusds.jose.JWSAlgorithm;
 import lombok.val;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
@@ -32,7 +32,7 @@ import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * This class tests the {@link JwtGenerator} and {@link JwtAuthenticator}.
@@ -91,12 +91,14 @@ public final class JwtTests implements TestsConstants {
         assertToken(profile, token);
     }
 
-    @Test(expected = CredentialsException.class)
+    @Test
     public void testPlainJwtWithSignatureConfigurations() {
-        val generator = new JwtGenerator();
-        val profile = createProfile();
-        val token = generator.generate(profile);
-        assertToken(profile, token);
+        assertThrows(CredentialsException.class, () -> {
+            val generator = new JwtGenerator();
+            val profile = createProfile();
+            val token = generator.generate(profile);
+            assertToken(profile, token);
+        });
     }
 
     @Test
@@ -370,12 +372,14 @@ public final class JwtTests implements TestsConstants {
         return profile;
     }
 
-    @Test(expected = CredentialsException.class)
+    @Test
     public void testAuthenticateFailed() {
-        Authenticator authenticator =
-            new JwtAuthenticator(new SecretSignatureConfiguration(MAC_SECRET), new SecretEncryptionConfiguration(MAC_SECRET));
-        val credentials = new TokenCredentials("fakeToken");
-        authenticator.validate(null, credentials);
+        assertThrows(CredentialsException.class, () -> {
+            Authenticator authenticator =
+                new JwtAuthenticator(new SecretSignatureConfiguration(MAC_SECRET), new SecretEncryptionConfiguration(MAC_SECRET));
+            val credentials = new TokenCredentials("fakeToken");
+            authenticator.validate(null, credentials);
+        });
     }
 
     @Test

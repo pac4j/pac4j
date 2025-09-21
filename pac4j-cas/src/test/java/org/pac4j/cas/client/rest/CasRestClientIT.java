@@ -2,7 +2,7 @@ package org.pac4j.cas.client.rest;
 
 import lombok.val;
 import org.apereo.cas.client.validation.Cas20ServiceTicketValidator;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.credentials.authenticator.CasRestAuthenticator;
 import org.pac4j.cas.profile.CasRestProfile;
@@ -20,7 +20,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the {@link CasRestBasicAuthClient} and {@link CasRestFormClient}.

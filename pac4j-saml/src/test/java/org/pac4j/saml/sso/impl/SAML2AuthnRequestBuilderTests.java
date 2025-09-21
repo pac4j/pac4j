@@ -1,8 +1,8 @@
 package org.pac4j.saml.sso.impl;
 
 import lombok.val;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
@@ -22,8 +22,8 @@ import org.pac4j.saml.profile.api.SAML2ObjectBuilder;
 
 import java.util.Collections;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -37,7 +37,7 @@ import static org.mockito.Mockito.when;
 public class SAML2AuthnRequestBuilderTests extends AbstractSAML2ClientTests {
     private SAML2Configuration configuration;
 
-    @Before
+    @BeforeEach
     public void setup() {
         configuration = getSaml2Configuration();
         configuration.setAssertionConsumerServiceIndex(1);

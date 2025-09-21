@@ -1,7 +1,7 @@
 package org.pac4j.core.authorization.authorizer;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.profile.CommonProfile;
@@ -10,8 +10,7 @@ import org.pac4j.core.profile.UserProfile;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.pac4j.core.authorization.authorizer.OrAuthorizer.or;
 import static org.pac4j.core.authorization.authorizer.RequireAnyRoleAuthorizer.requireAnyRole;
 
@@ -26,7 +25,7 @@ public class OrAuthorizerTests {
 
     private List<UserProfile> profiles = new ArrayList<>();
 
-    @Before
+    @BeforeEach
     public void setUp() {
         UserProfile profile = new CommonProfile();
         profile.addRole("profile_role");

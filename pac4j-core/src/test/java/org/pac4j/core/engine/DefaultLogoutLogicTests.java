@@ -1,8 +1,8 @@
 package org.pac4j.core.engine;
 
 import lombok.val;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.adapter.FrameworkAdapter;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.client.MockIndirectClient;
@@ -22,7 +22,7 @@ import org.pac4j.core.util.TestsHelper;
 import java.util.LinkedHashMap;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 /**
@@ -53,7 +53,7 @@ public final class DefaultLogoutLogicTests implements TestsConstants {
 
     private HttpAction action;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         logic = new DefaultLogoutLogic();
         config = new Config();

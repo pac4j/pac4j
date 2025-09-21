@@ -4,7 +4,7 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import lombok.val;
 import org.apache.commons.io.IOUtils;
 import org.apache.hc.core5.http.ContentType;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.crypto.CredentialProvider;
 import org.pac4j.saml.crypto.KeyStoreCredentialProvider;
@@ -16,7 +16,7 @@ import org.springframework.core.io.FileSystemResource;
 import java.nio.charset.StandardCharsets;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * This is {@link SAML2HttpUrlKeystoreGeneratorTests}.

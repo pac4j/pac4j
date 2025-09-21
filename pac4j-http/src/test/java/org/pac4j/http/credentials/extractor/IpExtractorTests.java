@@ -1,7 +1,7 @@
 package org.pac4j.http.credentials.extractor;
 
 import lombok.val;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
@@ -10,8 +10,7 @@ import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * This class tests the {@link IpExtractor}.
@@ -62,10 +61,10 @@ public final class IpExtractorTests implements TestsConstants {
         assertEquals(GOOD_IP, credentials2.getToken());
     }
 
-    @Test(expected = TechnicalException.class)
+    @Test
     public void testSetNullIpHeaderChain() {
         val ipExtractor = new IpExtractor();
-        ipExtractor.setAlternateIpHeaders((String[]) null);
+        assertThrows(TechnicalException.class, () -> ipExtractor.setAlternateIpHeaders((String[]) null));
     }
 
     @Test

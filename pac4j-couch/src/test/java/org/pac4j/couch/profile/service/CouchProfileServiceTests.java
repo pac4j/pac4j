@@ -3,9 +3,9 @@ package org.pac4j.couch.profile.service;
 import lombok.val;
 import org.apache.shiro.authc.credential.DefaultPasswordService;
 import org.ektorp.CouchDbConnector;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.password.PasswordEncoder;
 import org.pac4j.core.credentials.password.ShiroPasswordEncoder;
@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the {@link CouchProfileService}.
@@ -48,7 +48,7 @@ public final class CouchProfileServiceTests implements TestsConstants {
     private static final CouchDbConnector couchDbConnector = couchServer.start();
 
 
-    @BeforeClass
+    @BeforeAll
     public static void setUp() {
         val password = PASSWORD_ENCODER.encode(PASSWORD);
         val couchProfileService = new CouchProfileService(couchDbConnector);
@@ -74,7 +74,7 @@ public final class CouchProfileServiceTests implements TestsConstants {
         couchProfileService.create(couchProfile, PASSWORD);
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDown() {
         //couchServer.stop();
     }
@@ -86,12 +86,12 @@ public final class CouchProfileServiceTests implements TestsConstants {
         TestsHelper.expectException(couchProfileService::init, TechnicalException.class, "couchDbConnector cannot be null");
     }
 
-    @Test(expected = AccountNotFoundException.class)
+    @Test
     public void authentFailed() {
         val couchProfileService = new CouchProfileService(couchDbConnector);
         couchProfileService.setPasswordEncoder(PASSWORD_ENCODER);
         val credentials = new UsernamePasswordCredentials(BAD_USERNAME, PASSWORD);
-        couchProfileService.validate(null, credentials);
+        assertThrows(AccountNotFoundException.class, () -> couchProfileService.validate(null, credentials));
     }
 
     @Test

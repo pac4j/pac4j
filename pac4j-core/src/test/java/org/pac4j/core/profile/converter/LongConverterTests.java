@@ -1,10 +1,9 @@
 package org.pac4j.core.profile.converter;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.util.Pac4jConstants;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * This class tests the {@link LongConverter} class.

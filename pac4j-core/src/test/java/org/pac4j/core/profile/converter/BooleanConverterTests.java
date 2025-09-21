@@ -1,10 +1,10 @@
 package org.pac4j.core.profile.converter;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Date;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * This class tests the {@link BooleanConverter} class.

@@ -3,7 +3,7 @@ package org.pac4j.oauth.client;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.val;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.oauth.profile.casoauthwrapper.CasOAuthWrapperProfileDefinition;
 
@@ -12,7 +12,7 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Tests the profile parsing from the {@link CasOAuthWrapperClient}.

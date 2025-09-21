@@ -1,14 +1,14 @@
 package org.pac4j.core.util;
 
 import lombok.val;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.http.*;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests {@link HttpActionHelper}.
@@ -18,7 +18,7 @@ import static org.junit.Assert.*;
  */
 public final class HttpActionHelperTest implements TestsConstants {
 
-    @After
+    @AfterEach
     public void after() {
         HttpActionHelper.setAlwaysUse401ForUnauthenticated(true);
         HttpActionHelper.setUseModernHttpCodes(true);

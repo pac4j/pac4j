@@ -2,8 +2,8 @@ package org.pac4j.saml.metadata;
 
 import net.shibboleth.shared.resolver.CriteriaSet;
 import net.shibboleth.shared.xml.XMLParserException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.opensaml.core.criterion.EntityIdCriterion;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.saml.config.SAML2Configuration;
@@ -21,7 +21,7 @@ import java.net.URL;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("PMD.TooManyStaticImports")
 public class SAML2IdentityProviderMetadataResolverTest {
@@ -49,7 +49,7 @@ public class SAML2IdentityProviderMetadataResolverTest {
         return sc;
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         var configuration = new SAML2Configuration();
         configuration.setIdentityProviderMetadataResource(new ClassPathResource("idp-metadata.xml"));

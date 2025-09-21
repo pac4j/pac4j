@@ -1,8 +1,8 @@
 package org.pac4j.core.engine.savedrequest;
 
 import lombok.val;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
@@ -14,7 +14,7 @@ import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.util.TestsConstants;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests {@link DefaultSavedRequestHandler}.
@@ -36,7 +36,7 @@ public class DefaultSavedRequestHandlerTest implements TestsConstants {
 
     private SavedRequestHandler handler = new DefaultSavedRequestHandler();
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         HttpActionHelper.setUseModernHttpCodes(true);
     }

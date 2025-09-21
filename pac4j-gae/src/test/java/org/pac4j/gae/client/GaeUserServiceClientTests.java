@@ -4,9 +4,9 @@ import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
@@ -22,8 +22,9 @@ import org.pac4j.core.util.TestsConstants;
 import org.pac4j.gae.credentials.GaeUserCredentials;
 import org.pac4j.gae.profile.GaeUserServiceProfile;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests the {@link GaeUserServiceClient}.
@@ -42,7 +43,7 @@ public final class GaeUserServiceClientTests implements TestsConstants {
 
     private MockWebContext context;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         client = new GaeUserServiceClient();
         client.setCallbackUrl(CALLBACK_URL);
@@ -50,15 +51,15 @@ public final class GaeUserServiceClientTests implements TestsConstants {
         helper.setUp();
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         helper.tearDown();
     }
 
-    @Test(expected = TechnicalException.class)
+    @Test
     public void testCallbackMandatory() {
         Client localClient = new GaeUserServiceClient();
-        localClient.getRedirectionAction(new CallContext(context, new MockSessionStore()));
+        assertThrows(TechnicalException.class, () -> localClient.getRedirectionAction(new CallContext(context, new MockSessionStore())));
     }
 
     @Test

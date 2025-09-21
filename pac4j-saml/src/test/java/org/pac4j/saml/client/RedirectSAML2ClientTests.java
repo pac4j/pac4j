@@ -2,7 +2,7 @@ package org.pac4j.saml.client;
 
 import lombok.val;
 import org.apache.hc.core5.net.URLEncodedUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.AuthnContextComparisonTypeEnumeration;
 import org.pac4j.core.context.CallContext;
@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Redirection tests on the {@link SAML2Client}.

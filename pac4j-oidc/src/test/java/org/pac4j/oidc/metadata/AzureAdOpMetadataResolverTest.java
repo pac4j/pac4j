@@ -8,8 +8,8 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 import org.pac4j.oidc.config.AzureAd2OidcConfiguration;
 
 /**
@@ -31,9 +31,9 @@ public class AzureAdOpMetadataResolverTest extends OidcOpMetadataResolverTestBas
 
         Issuer issuer = azureAdOpMetadataResolver.load().getIssuer();
         
-        Assert.assertNotNull(issuer);
-        Assert.assertFalse("Issuer contains '}'", containsCharacter(issuer.toString(), '}'));
-        Assert.assertFalse("Issuer contains '{'", containsCharacter(issuer.toString(), '{'));
+        assertNotNull(issuer);
+        assertFalse(containsCharacter(issuer.toString(), '}'), "Issuer contains '}'");
+        assertFalse(containsCharacter(issuer.toString(), '{'), "Issuer contains '{'");
     }
     
     public boolean containsCharacter(String string, char character) {

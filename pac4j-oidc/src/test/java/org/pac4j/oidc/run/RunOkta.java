@@ -13,7 +13,7 @@ import org.pac4j.oidc.profile.OidcProfile;
 
 import java.util.Locale;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Run a manual test for the Okta cloud provider (using the OpenID Connect protocol).

@@ -10,9 +10,9 @@ import de.flapdoodle.embed.mongo.distribution.Version;
 import de.flapdoodle.embed.process.runtime.Network;
 import lombok.val;
 import net.shibboleth.shared.resolver.CriteriaSet;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.opensaml.core.criterion.EntityIdCriterion;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.saml.config.SAML2Configuration;
@@ -23,8 +23,8 @@ import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * This is {@link SAML2MongoMetadataGeneratorIT}.
@@ -40,13 +40,13 @@ public class SAML2MongoMetadataGeneratorIT implements TestsConstants {
 
     private SAML2MetadataGenerator mongoMetadataGenerator;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         mongoServer.start(PORT);
         mongoMetadataGenerator = new SAML2MongoMetadataGenerator(getClient(), ENTITY_ID);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         mongoServer.stop();
     }

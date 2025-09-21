@@ -16,7 +16,7 @@ import org.springframework.core.io.FileSystemResource;
 
 import java.io.File;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Tests the testshib.org provider.

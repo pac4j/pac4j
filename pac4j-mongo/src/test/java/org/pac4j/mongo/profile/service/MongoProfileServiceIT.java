@@ -4,9 +4,9 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import lombok.val;
 import org.bson.types.ObjectId;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.exception.AccountNotFoundException;
 import org.pac4j.core.exception.BadCredentialsException;
@@ -23,7 +23,7 @@ import org.pac4j.mongo.test.tools.MongoServer;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the {@link MongoProfileService}.
@@ -44,12 +44,12 @@ public final class MongoProfileServiceIT implements TestsConstants {
 
     private final MongoServer mongoServer = new MongoServer();
 
-    @Before
+    @BeforeEach
     public void setUp() {
         mongoServer.start(PORT);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         mongoServer.stop();
     }

@@ -1,7 +1,7 @@
 package org.pac4j.core.credentials.authenticator;
 
 import lombok.val;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
@@ -12,8 +12,7 @@ import org.pac4j.core.profile.UserProfile;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test cases for {@link LocalCachingAuthenticator}.
@@ -97,16 +96,18 @@ public class LocalCachingAuthenticatorTests {
         assertTrue(authenticator.isCached(this.credentials));
     }
 
-    @Test(expected=CredentialsException.class)
+    @Test
     public void testValidateAndNoCacheSwitchDelegate() {
-        val authenticator = new
-                LocalCachingAuthenticator(this.delegate, 10, 2, TimeUnit.MINUTES);
-        authenticator.init();
-        authenticator.validate(null, this.credentials);
-        assertTrue(authenticator.isCached(this.credentials));
-        authenticator.setDelegate(new ThrowingAuthenticator());
-        authenticator.removeFromCache(this.credentials);
-        authenticator.validate(null, this.credentials);
+        assertThrows(CredentialsException.class, () -> {
+            val authenticator = new
+                    LocalCachingAuthenticator(this.delegate, 10, 2, TimeUnit.MINUTES);
+            authenticator.init();
+            authenticator.validate(null, this.credentials);
+            assertTrue(authenticator.isCached(this.credentials));
+            authenticator.setDelegate(new ThrowingAuthenticator());
+            authenticator.removeFromCache(this.credentials);
+            authenticator.validate(null, this.credentials);
+        });
     }
 
     @Test

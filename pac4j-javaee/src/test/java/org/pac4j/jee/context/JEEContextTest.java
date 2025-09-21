@@ -1,7 +1,7 @@
 package org.pac4j.jee.context;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.context.Cookie;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.Pac4jConstants;
@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -34,7 +34,7 @@ public final class JEEContextTest implements TestsConstants {
 
     private HttpServletResponse response;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         request = mock(HttpServletRequest.class);
         response = mock(HttpServletResponse.class);

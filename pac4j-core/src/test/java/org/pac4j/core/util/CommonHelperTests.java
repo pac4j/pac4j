@@ -1,14 +1,14 @@
 package org.pac4j.core.util;
 
 import lombok.val;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * This class tests the {@link CommonHelper} class.
@@ -130,16 +130,20 @@ public final class CommonHelperTests {
         assertFalse(CommonHelper.areEqualsIgnoreCaseAndTrim(NAME, VALUE));
     }
 
-    @Test(expected = TechnicalException.class)
+    @Test
     public void testAssertNotBlank_null() {
-        String var = null;
-        CommonHelper.assertNotBlank("var", var);
+        assertThrows(TechnicalException.class, () -> {
+            String var = null;
+            CommonHelper.assertNotBlank("var", var);
+        });
     }
 
-    @Test(expected = TechnicalException.class)
+    @Test
     public void testAssertNotBlank_empty() {
-        var var = " ";
-        CommonHelper.assertNotBlank("var", var);
+        assertThrows(TechnicalException.class, () -> {
+            var var = " ";
+            CommonHelper.assertNotBlank("var", var);
+        });
     }
 
     @Test
@@ -148,10 +152,12 @@ public final class CommonHelperTests {
         CommonHelper.assertNotBlank("var", var);
     }
 
-    @Test(expected = TechnicalException.class)
+    @Test
     public void testAssertNotNull_null() {
-        String var = null;
-        CommonHelper.assertNotNull("var", var);
+        assertThrows(TechnicalException.class, () -> {
+            String var = null;
+            CommonHelper.assertNotNull("var", var);
+        });
     }
 
     @Test
@@ -165,9 +171,11 @@ public final class CommonHelperTests {
         CommonHelper.assertNull("var", null);
     }
 
-    @Test(expected = TechnicalException.class)
+    @Test
     public void testAssertNull_notNull() {
-        CommonHelper.assertNull("var", "notnull");
+        assertThrows(TechnicalException.class, () -> {
+            CommonHelper.assertNull("var", "notnull");
+        });
     }
 
     @Test
@@ -218,8 +226,10 @@ public final class CommonHelperTests {
         assertNotNull(profile);
     }
 
-    @Test(expected = ClassNotFoundException.class)
+    @Test
     public void testGetConstructorMissingClass() throws Exception {
-        CommonHelper.getConstructor("this.class.does.not.Exist");
+        assertThrows(ClassNotFoundException.class, () -> {
+            CommonHelper.getConstructor("this.class.does.not.Exist");
+        });
     }
 }

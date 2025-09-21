@@ -11,8 +11,8 @@ import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oauth.client.QQClient;
 import org.pac4j.oauth.profile.qq.QQProfile;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Run manually a test for the {@link QQClient}.

@@ -1,7 +1,7 @@
 package org.pac4j.core.authorization.authorizer;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.exception.http.HttpAction;
@@ -14,8 +14,7 @@ import org.pac4j.core.util.TestsHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests {@link IsAuthenticatedAuthorizer}.
@@ -31,7 +30,7 @@ public class IsAuthenticatedAuthorizerTests implements TestsConstants {
 
     protected CommonProfile profile;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         authorizer = newAuthorizer();
         profiles = new ArrayList<>();

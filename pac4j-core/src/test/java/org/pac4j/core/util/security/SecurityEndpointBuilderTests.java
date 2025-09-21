@@ -1,7 +1,7 @@
 package org.pac4j.core.util.security;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.authorization.authorizer.Authorizer;
 import org.pac4j.core.authorization.authorizer.CheckHttpMethodAuthorizer;
 import org.pac4j.core.authorization.authorizer.IsAnonymousAuthorizer;
@@ -20,7 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests {@link SecurityEndpointBuilder}.
@@ -38,7 +38,7 @@ public final class SecurityEndpointBuilderTests implements TestsConstants {
 
     private Config config;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         endpoint = new MockSecurityEndpoint();
         config = new Config();

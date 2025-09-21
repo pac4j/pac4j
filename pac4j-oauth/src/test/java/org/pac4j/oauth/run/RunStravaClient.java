@@ -8,7 +8,7 @@ import org.pac4j.core.run.RunClient;
 import org.pac4j.oauth.client.StravaClient;
 import org.pac4j.oauth.profile.strava.StravaProfile;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Run manually a test for the {@link StravaClient}.

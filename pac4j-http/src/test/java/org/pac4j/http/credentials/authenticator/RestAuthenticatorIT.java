@@ -2,8 +2,8 @@ package org.pac4j.http.credentials.authenticator;
 
 import fi.iki.elonen.NanoHTTPD;
 import lombok.val;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
@@ -17,7 +17,7 @@ import org.pac4j.http.profile.RestProfile;
 import org.pac4j.http.test.tools.ServerResponse;
 import org.pac4j.http.test.tools.WebServer;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests {@link RestAuthenticator}.
@@ -29,7 +29,7 @@ public final class RestAuthenticatorIT implements TestsConstants {
 
     private static final int PORT = 8088;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUp() {
         val webServer = new WebServer(PORT)
             .defineResponse("ok", new ServerResponse(NanoHTTPD.Response.Status.OK, "application/json",

@@ -2,7 +2,7 @@ package org.pac4j.cas.client.direct;
 
 import lombok.val;
 import org.apereo.cas.client.validation.AssertionImpl;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.config.CasProtocol;
 import org.pac4j.cas.profile.CasProfile;
@@ -15,7 +15,7 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the {@link DirectCasProxyClient}.

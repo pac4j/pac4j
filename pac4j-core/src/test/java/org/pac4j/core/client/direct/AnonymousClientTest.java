@@ -1,6 +1,6 @@
 package org.pac4j.core.client.direct;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Jerome LELEU

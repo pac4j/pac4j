@@ -1,13 +1,12 @@
 package org.pac4j.http.authorization.authorizer;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.authorization.authorizer.Authorizer;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.exception.TechnicalException;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * This class tests the {@link IpRegexpAuthorizer}.
@@ -22,10 +21,12 @@ public final class IpRegexpAuthorizerTests {
 
     private final static Authorizer authorizer = new IpRegexpAuthorizer(GOOD_IP);
 
-    @Test(expected = TechnicalException.class)
+    @Test
     public void testNoPattern() {
-        Authorizer authorizer = new IpRegexpAuthorizer();
-        authorizer.isAuthorized(MockWebContext.create(), new MockSessionStore(), null);
+        assertThrows(TechnicalException.class, () -> {
+            Authorizer authorizer = new IpRegexpAuthorizer();
+            authorizer.isAuthorized(MockWebContext.create(), new MockSessionStore(), null);
+        });
     }
 
     @Test

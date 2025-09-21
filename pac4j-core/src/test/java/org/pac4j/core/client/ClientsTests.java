@@ -1,8 +1,8 @@
 package org.pac4j.core.client;
 
 import lombok.val;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.authorization.generator.AuthorizationGenerator;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.FoundAction;
@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * This class tests the {@link Clients} class.
@@ -194,7 +194,7 @@ public final class ClientsTests implements TestsConstants {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void testPerfFind() {
         val list = new ArrayList<Client>();
         final int max = 10000;

@@ -1,9 +1,9 @@
 package org.pac4j.core.authorization.authorizer;
 
 import lombok.val;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.WebContext;
@@ -27,7 +27,7 @@ public final class CsrfAuthorizerTests implements TestsConstants {
 
     private long expirationDate;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         authorizer = new CsrfAuthorizer();
         authorizer.setCheckAllRequests(true);
@@ -40,7 +40,7 @@ public final class CsrfAuthorizerTests implements TestsConstants {
         final SessionStore sessionStore = new MockSessionStore();
         sessionStore.set(context, Pac4jConstants.CSRF_TOKEN, VALUE);
         sessionStore.set(context, Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE, expirationDate);
-        Assert.assertTrue(authorizer.isAuthorized(context, sessionStore, null));
+        assertTrue(authorizer.isAuthorized(context, sessionStore, null));
     }
 
     @Test
@@ -50,8 +50,8 @@ public final class CsrfAuthorizerTests implements TestsConstants {
         sessionStore.set(context, Pac4jConstants.PREVIOUS_CSRF_TOKEN, VALUE);
         sessionStore.set(context, Pac4jConstants.CSRF_TOKEN, KEY);
         sessionStore.set(context, Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE, expirationDate);
-        Assert.assertTrue(authorizer.isAuthorized(context, sessionStore, null));
-        Assert.assertFalse(sessionStore.get(context, Pac4jConstants.PREVIOUS_CSRF_TOKEN).isPresent());
+        assertTrue(authorizer.isAuthorized(context, sessionStore, null));
+        assertFalse(sessionStore.get(context, Pac4jConstants.PREVIOUS_CSRF_TOKEN).isPresent());
     }
 
     @Test
@@ -59,7 +59,7 @@ public final class CsrfAuthorizerTests implements TestsConstants {
         final WebContext context = MockWebContext.create().addRequestParameter(Pac4jConstants.CSRF_TOKEN, VALUE);
         final SessionStore sessionStore = new MockSessionStore();
         sessionStore.set(context, Pac4jConstants.CSRF_TOKEN, VALUE);
-        Assert.assertFalse(authorizer.isAuthorized(context, sessionStore, null));
+        assertFalse(authorizer.isAuthorized(context, sessionStore, null));
     }
 
     @Test
@@ -69,7 +69,7 @@ public final class CsrfAuthorizerTests implements TestsConstants {
         final SessionStore sessionStore = new MockSessionStore();
         sessionStore.set(context, Pac4jConstants.CSRF_TOKEN, VALUE);
         sessionStore.set(context, Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE, expiredDate);
-        Assert.assertFalse(authorizer.isAuthorized(context, sessionStore, null));
+        assertFalse(authorizer.isAuthorized(context, sessionStore, null));
     }
 
     @Test
@@ -79,7 +79,7 @@ public final class CsrfAuthorizerTests implements TestsConstants {
         sessionStore.set(context, Pac4jConstants.CSRF_TOKEN, VALUE);
         sessionStore.set(context, Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE, expirationDate);
         authorizer.setParameterName(NAME);
-        Assert.assertTrue(authorizer.isAuthorized(context, sessionStore, null));
+        assertTrue(authorizer.isAuthorized(context, sessionStore, null));
     }
 
     @Test
@@ -88,7 +88,7 @@ public final class CsrfAuthorizerTests implements TestsConstants {
         final SessionStore sessionStore = new MockSessionStore();
         sessionStore.set(context, Pac4jConstants.CSRF_TOKEN, VALUE);
         sessionStore.set(context,Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE, expirationDate);
-        Assert.assertTrue(authorizer.isAuthorized(context, sessionStore, null));
+        assertTrue(authorizer.isAuthorized(context, sessionStore, null));
     }
 
     @Test
@@ -98,7 +98,7 @@ public final class CsrfAuthorizerTests implements TestsConstants {
         sessionStore.set(context, Pac4jConstants.CSRF_TOKEN, VALUE);
         sessionStore.set(context, Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE, expirationDate);
         authorizer.setHeaderName(NAME);
-        Assert.assertTrue(authorizer.isAuthorized(context, sessionStore, null));
+        assertTrue(authorizer.isAuthorized(context, sessionStore, null));
     }
 
     @Test
@@ -107,7 +107,7 @@ public final class CsrfAuthorizerTests implements TestsConstants {
         final SessionStore sessionStore = new MockSessionStore();
         sessionStore.set(context, Pac4jConstants.CSRF_TOKEN, VALUE);
         sessionStore.set(context, Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE, expirationDate);
-        Assert.assertFalse(authorizer.isAuthorized(context, sessionStore, null));
+        assertFalse(authorizer.isAuthorized(context, sessionStore, null));
     }
 
     @Test
@@ -117,7 +117,7 @@ public final class CsrfAuthorizerTests implements TestsConstants {
         sessionStore.set(context, Pac4jConstants.CSRF_TOKEN, VALUE);
         sessionStore.set(context, Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE, expirationDate);
         authorizer.setCheckAllRequests(false);
-        Assert.assertTrue(authorizer.isAuthorized(context, sessionStore, null));
+        assertTrue(authorizer.isAuthorized(context, sessionStore, null));
     }
 
     @Test
@@ -134,7 +134,7 @@ public final class CsrfAuthorizerTests implements TestsConstants {
         sessionStore.set(context, Pac4jConstants.CSRF_TOKEN, VALUE);
         sessionStore.set(context, Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE, expirationDate);
         context.setRequestMethod(method.name());
-        Assert.assertFalse(authorizer.isAuthorized(context, sessionStore, null));
+        assertFalse(authorizer.isAuthorized(context, sessionStore, null));
     }
 
     @Test
@@ -142,6 +142,6 @@ public final class CsrfAuthorizerTests implements TestsConstants {
         final WebContext context = MockWebContext.create().addRequestHeader(Pac4jConstants.CSRF_TOKEN, VALUE);
         final SessionStore sessionStore = new MockSessionStore();
         sessionStore.set(context, Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE, expirationDate);
-        Assert.assertFalse(authorizer.isAuthorized(context, sessionStore, null));
+        assertFalse(authorizer.isAuthorized(context, sessionStore, null));
     }
 }

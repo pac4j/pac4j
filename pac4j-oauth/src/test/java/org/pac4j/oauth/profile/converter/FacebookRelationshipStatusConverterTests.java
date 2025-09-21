@@ -1,11 +1,11 @@
 package org.pac4j.oauth.profile.converter;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.profile.converter.AttributeConverter;
 import org.pac4j.oauth.profile.facebook.FacebookRelationshipStatus;
 import org.pac4j.oauth.profile.facebook.converter.FacebookRelationshipStatusConverter;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * This class test the {@link FacebookRelationshipStatusConverter} class.

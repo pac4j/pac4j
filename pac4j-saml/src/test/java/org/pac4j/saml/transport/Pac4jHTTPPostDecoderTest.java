@@ -2,7 +2,7 @@ package org.pac4j.saml.transport;
 
 import lombok.val;
 import net.shibboleth.shared.component.ComponentInitializationException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.opensaml.messaging.decoder.MessageDecodingException;
 import org.opensaml.saml.saml2.core.impl.ResponseImpl;
 import org.pac4j.core.context.CallContext;
@@ -13,7 +13,7 @@ import org.pac4j.saml.util.Configuration;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests {@link Pac4jHTTPPostDecoder}.

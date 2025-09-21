@@ -1,9 +1,9 @@
 package org.pac4j.ldap.profile.service;
 
 import lombok.val;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.ldaptive.ConnectionFactory;
 import org.ldaptive.auth.Authenticator;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
@@ -23,7 +23,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the {@link LdapProfileService}.
@@ -46,7 +46,7 @@ public final class LdapProfileServiceTests implements TestsConstants {
 
     private ConnectionFactory connectionFactory;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         ldapServer = new LdapServer();
         ldapServer.start();
@@ -55,7 +55,7 @@ public final class LdapProfileServiceTests implements TestsConstants {
         connectionFactory = client.getConnectionFactory();
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         ldapServer.stop();
     }
@@ -79,11 +79,11 @@ public final class LdapProfileServiceTests implements TestsConstants {
     }
 
 
-    @Test(expected = BadCredentialsException.class)
+    @Test
     public void authentFailed() {
         val ldapProfileService = new LdapProfileService(connectionFactory, authenticator, LdapServer.BASE_PEOPLE_DN);
         val credentials = new UsernamePasswordCredentials(BAD_USERNAME, PASSWORD);
-        ldapProfileService.validate(null, credentials);
+        assertThrows(BadCredentialsException.class, () -> ldapProfileService.validate(null, credentials));
     }
 
     @Test

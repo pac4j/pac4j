@@ -9,8 +9,8 @@ import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
 import com.nimbusds.openid.connect.sdk.claims.IDTokenClaimsSet;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import lombok.val;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
@@ -28,7 +28,7 @@ import org.pac4j.oidc.metadata.OidcOpMetadataResolver;
 import java.net.URI;
 import java.util.*;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -46,7 +46,7 @@ public class OidcProfileCreatorTests implements TestsConstants {
 
     private List<JWSAlgorithm> algorithms;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         this.idTokenClaims = new IDTokenClaimsSet(new JWTClaimsSet.Builder()
             .issuer("pac4j")

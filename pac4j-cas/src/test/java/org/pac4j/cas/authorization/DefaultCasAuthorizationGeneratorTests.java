@@ -1,7 +1,7 @@
 package org.pac4j.cas.authorization;
 
 import lombok.val;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.core.authorization.generator.AuthorizationGenerator;
 import org.pac4j.core.context.CallContext;
@@ -11,7 +11,7 @@ import org.pac4j.core.util.TestsConstants;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * This class tests the {@link DefaultCasAuthorizationGenerator}.

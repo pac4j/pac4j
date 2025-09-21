@@ -1,13 +1,14 @@
 package org.pac4j.oidc.metadata;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Set;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.fail;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.oidc.config.OidcConfiguration;
 
@@ -43,7 +44,7 @@ public class OidcOpMetadataResolverTest extends OidcOpMetadataResolverTestBase {
 
         try {
             getStaticMetadataResolver(oidcConfiguration, List.of(ClientAuthenticationMethod.CLIENT_SECRET_POST));
-            Assert.fail("TechnicalException expected");
+            fail("TechnicalException expected");
         } catch (TechnicalException e) {
             assertEquals("None of the Token endpoint provider metadata authentication methods are supported: [client_secret_post]",
                 e.getMessage());

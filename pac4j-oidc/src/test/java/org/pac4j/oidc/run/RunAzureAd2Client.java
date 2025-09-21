@@ -11,7 +11,7 @@ import org.pac4j.oidc.client.AzureAd2Client;
 import org.pac4j.oidc.config.AzureAd2OidcConfiguration;
 import org.pac4j.oidc.profile.azuread.AzureAdProfile;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Run a manual test for the {@link AzureAd2Client}.

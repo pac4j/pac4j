@@ -1,7 +1,7 @@
 package org.pac4j.jee.http.adapter;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.jee.context.JEEContext;
 import org.pac4j.core.exception.TechnicalException;
@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 /**
@@ -31,7 +32,7 @@ public final class JEEHttpActionAdapterTest implements TestsConstants {
 
     private PrintWriter writer;
 
-    @Before
+    @BeforeEach
     public void setUp() throws IOException {
         response = mock(HttpServletResponse.class);
         writer = mock(PrintWriter.class);
@@ -40,9 +41,11 @@ public final class JEEHttpActionAdapterTest implements TestsConstants {
         when(context.getNativeResponse()).thenReturn(response);
     }
 
-    @Test(expected = TechnicalException.class)
+    @Test
     public void testNullAction() {
-        JEEHttpActionAdapter.INSTANCE.adapt(null, context);
+        assertThrows(TechnicalException.class, () -> {
+            JEEHttpActionAdapter.INSTANCE.adapt(null, context);
+        });
     }
 
     @Test

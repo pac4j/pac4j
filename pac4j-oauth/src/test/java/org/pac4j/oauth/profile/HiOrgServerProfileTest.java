@@ -1,8 +1,8 @@
 package org.pac4j.oauth.profile;
 
 import lombok.val;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 import org.pac4j.oauth.profile.hiorgserver.HiOrgServerProfile;
 import org.pac4j.oauth.profile.hiorgserver.HiOrgServerProfileDefinition;
 
@@ -22,12 +22,12 @@ public class HiOrgServerProfileTest {
         val profileDefinition = new HiOrgServerProfileDefinition();
         val profile = profileDefinition.extractUserProfile(body);
         val roles = profile.getRoles();
-        Assert.assertEquals(rolesAsInt, profile.getRolesAsInteger());
+        assertEquals(rolesAsInt, profile.getRolesAsInteger());
         for (var i = 0; i <= 10; i++) {
             var groupId = (int) Math.pow(2, i);
             var groupIdAsString = String.valueOf(groupId);
-            Assert.assertTrue(roles.contains(groupIdAsString));
-            Assert.assertTrue(profile.hasRole(groupId));
+            assertTrue(roles.contains(groupIdAsString));
+            assertTrue(profile.hasRole(groupId));
         }
     }
 

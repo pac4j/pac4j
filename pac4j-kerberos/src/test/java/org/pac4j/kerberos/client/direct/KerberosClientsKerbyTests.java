@@ -4,9 +4,9 @@ import lombok.val;
 import org.apache.kerby.kerberos.kdc.impl.NettyKdcServerImpl;
 import org.apache.kerby.kerberos.kerb.KrbException;
 import org.apache.kerby.kerberos.kerb.server.SimpleKdcServer;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterAll;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
@@ -22,7 +22,7 @@ import org.springframework.core.io.FileSystemResource;
 import java.io.File;
 import java.io.IOException;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * This tests both Direct and Indirect Kerberos clients.
@@ -53,12 +53,12 @@ public class KerberosClientsKerbyTests implements TestsConstants {
     static String serviceKeyTabFileName = "/tmp/testServiceKeyTabFile";
     static File serviceKeytabFile = new File(serviceKeyTabFileName);
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeAll() throws KrbException, IOException {
         setupKerbyServer();
     }
 
-    @AfterClass
+    @AfterAll
     public static void afterAll() throws KrbException {
         kerbyServer.stop();
     }

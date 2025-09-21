@@ -16,7 +16,7 @@ import org.pac4j.oauth.profile.facebook.FacebookRelationshipStatus;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Run manually a test for the {@link FacebookClient}.

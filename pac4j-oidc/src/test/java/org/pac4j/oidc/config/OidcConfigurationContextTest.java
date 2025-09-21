@@ -1,9 +1,9 @@
 package org.pac4j.oidc.config;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.context.MockWebContext;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class OidcConfigurationContextTest {
     @Test

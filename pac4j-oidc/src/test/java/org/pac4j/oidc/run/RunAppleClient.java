@@ -25,7 +25,7 @@ import java.security.spec.KeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Objects;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.pac4j.core.util.Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER;
 
 /**

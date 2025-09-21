@@ -1,7 +1,7 @@
 package org.pac4j.core.store;
 
 import lombok.val;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsHelper;
 

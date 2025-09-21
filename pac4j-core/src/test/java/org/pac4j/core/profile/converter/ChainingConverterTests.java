@@ -1,11 +1,11 @@
 package org.pac4j.core.profile.converter;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Locale;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * This class tests the {@link ChainingConverterTests} class.

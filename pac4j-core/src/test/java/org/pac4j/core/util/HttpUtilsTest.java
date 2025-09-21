@@ -1,7 +1,7 @@
 package org.pac4j.core.util;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.io.ByteArrayInputStream;
@@ -39,7 +39,7 @@ public class HttpUtilsTest {
             //evaluating test
             var actual = HttpUtils.buildHttpErrorMessage(connectionMock);
             var expected = String.format("(%d) %s[%s]", testConnectionResponseCode, testConnResponseMessage, testResponseBody);
-            Assert.assertTrue(expected.equals(actual));
+            assertTrue(expected.equals(actual));
         }
 
     }

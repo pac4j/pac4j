@@ -10,7 +10,7 @@ import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oauth.client.CasOAuthWrapperClient;
 import org.pac4j.oauth.profile.casoauthwrapper.CasOAuthWrapperProfile;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Run a manual test for the {@link CasOAuthWrapperClient}.

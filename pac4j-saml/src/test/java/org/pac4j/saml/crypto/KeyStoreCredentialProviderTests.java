@@ -1,7 +1,7 @@
 package org.pac4j.saml.crypto;
 
 import lombok.val;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.util.TestsConstants;
 
 import java.security.KeyStore;
@@ -9,7 +9,7 @@ import java.security.KeyStoreSpi;
 import java.util.Arrays;
 import java.util.Collections;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 

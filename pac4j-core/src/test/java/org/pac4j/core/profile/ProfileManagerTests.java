@@ -1,8 +1,8 @@
 package org.pac4j.core.profile;
 
 import lombok.val;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.CallContext;
@@ -17,7 +17,7 @@ import java.util.Optional;
 import java.util.TreeMap;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -47,7 +47,7 @@ public final class ProfileManagerTests {
 
     private Map<String, CommonProfile> profiles;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         profile1 = new CommonProfile();
         profile1.setId(ID1);

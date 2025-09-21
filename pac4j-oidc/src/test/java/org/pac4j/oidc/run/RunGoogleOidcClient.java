@@ -13,7 +13,7 @@ import org.pac4j.oidc.profile.google.GoogleOidcProfile;
 
 import java.util.Locale;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Run a manual test the {@link GoogleOidcClient}.

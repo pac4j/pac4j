@@ -1,15 +1,14 @@
 package org.pac4j.core.authorization.generator;
 
 import lombok.val;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.profile.CommonProfile;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * This class tests {@link FromAttributesAuthorizationGenerator}.
@@ -37,7 +36,7 @@ public final class FromAttributesAuthorizationGeneratorTests {
 
     private CommonProfile profile;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         this.profile = new CommonProfile();
         this.profile.addAttribute(ATTRIB1, VALUE1);

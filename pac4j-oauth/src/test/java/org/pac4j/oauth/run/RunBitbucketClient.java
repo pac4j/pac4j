@@ -10,7 +10,7 @@ import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oauth.client.BitbucketClient;
 import org.pac4j.oauth.profile.bitbucket.BitbucketProfile;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Run a manual test for the {@link BitbucketClient}.

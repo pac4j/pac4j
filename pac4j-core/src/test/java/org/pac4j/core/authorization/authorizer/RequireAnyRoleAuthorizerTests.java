@@ -1,8 +1,8 @@
 package org.pac4j.core.authorization.authorizer;
 
 import lombok.val;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.profile.CommonProfile;
@@ -12,8 +12,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests {@link RequireAnyRoleAuthorizer}.
@@ -33,7 +32,7 @@ public final class RequireAnyRoleAuthorizerTests {
 
     private CommonProfile profile;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         profile = new CommonProfile();
         profiles = new ArrayList<>();

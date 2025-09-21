@@ -2,14 +2,14 @@ package org.pac4j.core.util.serializer;
 
 import lombok.val;
 import org.apache.shiro.subject.SimplePrincipalCollection;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.exception.http.WithLocationAction;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests {@link JavaSerializer}.
@@ -67,10 +67,12 @@ public final class JavaSerializerTests implements TestsConstants {
         assertEquals(spc, h.deserializeFromBytes(serialized));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testTrustedPackagesModification() {
-        var h = new JavaSerializer();
-        h.getTrustedPackages().add("org.apache");
+        assertThrows(UnsupportedOperationException.class, () -> {
+            var h = new JavaSerializer();
+            h.getTrustedPackages().add("org.apache");
+        });
     }
 
     @Test

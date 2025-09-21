@@ -10,8 +10,8 @@ import java.security.Principal;
 import java.security.PrivilegedExceptionAction;
 import java.util.Base64;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * based on code from  https://github.com/coheigea/testcases/apache/cxf/cxf-kerberos-kerby

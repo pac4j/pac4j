@@ -1,7 +1,7 @@
 package org.pac4j.core.matching.checker;
 
 import lombok.val;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.MockIndirectClient;
 import org.pac4j.core.context.CallContext;
@@ -20,7 +20,7 @@ import org.pac4j.core.util.TestsHelper;
 
 import java.util.*;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.pac4j.core.context.HttpConstants.*;
 
 /**

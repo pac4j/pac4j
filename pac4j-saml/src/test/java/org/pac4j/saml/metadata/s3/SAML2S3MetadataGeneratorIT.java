@@ -1,8 +1,8 @@
 package org.pac4j.saml.metadata.s3;
 
 import lombok.val;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.exceptions.SAMLException;
@@ -27,7 +27,7 @@ import software.amazon.awssdk.services.s3.model.S3Object;
 import java.io.InputStream;
 import java.util.UUID;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 /**
@@ -41,7 +41,7 @@ public class SAML2S3MetadataGeneratorIT implements TestsConstants {
 
     private final SAML2Configuration configuration = new SAML2Configuration();
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         var metadataGenerator = new SAML2S3MetadataGenerator(getClient(), ENTITY_ID);
         var mgr = new DefaultConfigurationManager();

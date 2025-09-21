@@ -1,7 +1,7 @@
 package org.pac4j.core.config;
 
 import lombok.val;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.authorization.authorizer.Authorizer;
 import org.pac4j.core.authorization.authorizer.RequireAnyRoleAuthorizer;
 import org.pac4j.core.client.Client;
@@ -16,7 +16,7 @@ import org.pac4j.core.util.TestsConstants;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the {@link Config}.
@@ -26,15 +26,19 @@ import static org.junit.Assert.assertEquals;
  */
 public final class ConfigTests implements TestsConstants {
 
-    @Test(expected = TechnicalException.class)
+    @Test
     public void testNullAuthorizersSetter() {
-        val config = new Config();
-        config.setAuthorizers(null);
+        assertThrows(TechnicalException.class, () -> {
+            val config = new Config();
+            config.setAuthorizers(null);
+        });
     }
 
-    @Test(expected = TechnicalException.class)
+    @Test
     public void testNullAuthorizersConstructor() {
-        new Config((Map<String, Authorizer >) null);
+        assertThrows(TechnicalException.class, () -> {
+            new Config((Map<String, Authorizer >) null);
+        });
     }
 
     @Test

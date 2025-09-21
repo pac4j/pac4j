@@ -2,7 +2,7 @@ package org.pac4j.oauth.profile.converter;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.val;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.facebook.FacebookObject;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the {@link JsonConverter}.

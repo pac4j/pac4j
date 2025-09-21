@@ -1,8 +1,8 @@
 package org.pac4j.kerberos.credentials.authenticator;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Unit tests for {@link SunJaasKerberosTicketValidator#normalizeKeyTabPath(String)}.
@@ -37,7 +37,7 @@ public class SunJaasKerberosTicketValidatorTest {
         String expectedUnix = "/path with spaces/keytab.keytab";
 
         String resultUnix = SunJaasKerberosTicketValidator.normalizeKeyTabPath(inputUnix);
-        assertEquals("Unix path with literal spaces should be handled correctly by URI parsing", expectedUnix, resultUnix);
+        assertEquals(expectedUnix, resultUnix, "Unix path with literal spaces should be handled correctly by URI parsing");
 
         // Example for Windows-style URI (forward slashes in URI, backslashes expected in final Path string on Windows)
         // Note: Testing the *exact* string output for Windows paths can be OS-dependent in the test environment.
@@ -48,8 +48,9 @@ public class SunJaasKerberosTicketValidatorTest {
         // A robust check might involve OS-specific assertions.
         // For this test, we mainly ensure it doesn't fall into the fallback for a valid URI with spaces.
         String fallbackResultWindows = "C:/Program Files/My App/krb5.keytab"; // What fallback would incorrectly produce
-        assertEquals("Windows path URI with spaces should be processed, not fall back", false,
-            resultWindows.equals(inputWindows) || resultWindows.equals(fallbackResultWindows));
+        assertEquals(false,
+            resultWindows.equals(inputWindows) || resultWindows.equals(fallbackResultWindows), 
+            "Windows path URI with spaces should be processed, not fall back");
         // On Windows, you might also assert: assertTrue(resultWindows.contains("\\") && resultWindows.contains(" "));
     }
 
@@ -67,7 +68,7 @@ public class SunJaasKerberosTicketValidatorTest {
         String expected = "/path with encoded spaces/keytab.keytab";
 
         String result = SunJaasKerberosTicketValidator.normalizeKeyTabPath(input);
-        assertEquals("Percent-encoded spaces in path should be decoded by URI parsing", expected, result);
+        assertEquals(expected, result, "Percent-encoded spaces in path should be decoded by URI parsing");
     }
 
     /**
@@ -88,7 +89,7 @@ public class SunJaasKerberosTicketValidatorTest {
         String expected = "/directory with spaces/file name encoded.keytab";
 
         String result = SunJaasKerberosTicketValidator.normalizeKeyTabPath(input);
-        assertEquals("Mixed literal and percent-encoded spaces should be handled correctly", expected, result);
+        assertEquals(expected, result, "Mixed literal and percent-encoded spaces should be handled correctly");
     }
 }
 

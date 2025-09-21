@@ -11,7 +11,7 @@ import org.springframework.core.io.FileSystemResource;
 
 import java.io.File;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Abstract class to test the {@link SAML2Client}.

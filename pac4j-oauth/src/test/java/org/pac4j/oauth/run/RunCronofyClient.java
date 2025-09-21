@@ -7,8 +7,8 @@ import org.pac4j.core.run.RunClient;
 import org.pac4j.oauth.client.CronofyClient;
 import org.pac4j.oauth.profile.cronofy.CronofyProfile;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Manually run a test for the {@link CronofyClient}.

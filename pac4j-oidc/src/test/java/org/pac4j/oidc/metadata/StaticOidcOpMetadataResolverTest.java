@@ -1,13 +1,13 @@
 package org.pac4j.oidc.metadata;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Set;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.pac4j.oidc.config.OidcConfiguration;
 
 

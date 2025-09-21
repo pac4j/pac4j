@@ -2,11 +2,11 @@ package org.pac4j.oauth.credentials;
 
 import com.github.scribejava.core.model.OAuth1RequestToken;
 import lombok.val;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.serializer.JavaSerializer;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * This class tests the {@link OAuth10Credentials} class.

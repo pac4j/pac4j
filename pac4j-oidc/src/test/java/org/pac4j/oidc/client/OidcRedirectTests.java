@@ -3,7 +3,7 @@ package org.pac4j.oidc.client;
 import com.nimbusds.oauth2.sdk.id.State;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import lombok.val;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
@@ -23,8 +23,8 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -92,7 +92,7 @@ public final class OidcRedirectTests implements TestsConstants {
             fail("Ajax request should throw exception");
         } catch (Exception e) {
             var stateAfterAjax = (State) sessionStore.get(webContext, client.getStateSessionAttributeName()).orElse(null);
-            assertEquals("subsequent ajax request should not override the state in the session store", state, stateAfterAjax.toString());
+            assertEquals(state, stateAfterAjax.toString(), "subsequent ajax request should not override the state in the session store");
         }
 
     }

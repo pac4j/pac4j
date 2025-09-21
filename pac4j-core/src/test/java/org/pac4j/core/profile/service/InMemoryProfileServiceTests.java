@@ -2,8 +2,8 @@ package org.pac4j.core.profile.service;
 
 import lombok.val;
 import org.apache.shiro.authc.credential.DefaultPasswordService;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.password.PasswordEncoder;
@@ -17,8 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the {@link InMemoryProfileService}.
@@ -42,7 +41,7 @@ public final class InMemoryProfileServiceTests implements TestsConstants {
     public InMemoryProfileService<CommonProfile> inMemoryProfileService;
 
 
-    @Before
+    @BeforeEach
     public void setUp() {
         inMemoryProfileService = new InMemoryProfileService<>(x -> new CommonProfile());
         inMemoryProfileService.setPasswordEncoder(PASSWORD_ENCODER);
@@ -68,10 +67,12 @@ public final class InMemoryProfileServiceTests implements TestsConstants {
         inMemoryProfileService.create(profile, PASSWORD);
     }
 
-    @Test(expected = AccountNotFoundException.class)
+    @Test
     public void authentFailed() {
-        val credentials = new UsernamePasswordCredentials(BAD_USERNAME, PASSWORD);
-        inMemoryProfileService.validate(new CallContext(null, null), credentials);
+        assertThrows(AccountNotFoundException.class, () -> {
+            val credentials = new UsernamePasswordCredentials(BAD_USERNAME, PASSWORD);
+            inMemoryProfileService.validate(new CallContext(null, null), credentials);
+        });
     }
 
     @Test

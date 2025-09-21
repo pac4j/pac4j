@@ -1,7 +1,7 @@
 package org.pac4j.core.util;
 
 import lombok.val;
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.*;
 import org.pac4j.core.exception.TechnicalException;
 
 import java.net.URL;
@@ -31,8 +31,8 @@ public final class TestsHelper {
 
     public static void expectException(final Executable executable, final Class<? extends Exception> clazz, final String message) {
         val e = expectException(executable);
-        Assert.assertTrue(clazz.isAssignableFrom(e.getClass()));
-        Assert.assertEquals(message, e.getMessage());
+        assertTrue(clazz.isAssignableFrom(e.getClass()));
+        assertEquals(message, e.getMessage());
     }
 
     public static Map<String, String> splitQuery(URL url) {

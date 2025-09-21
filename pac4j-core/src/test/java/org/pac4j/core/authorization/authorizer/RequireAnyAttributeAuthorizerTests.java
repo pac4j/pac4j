@@ -2,8 +2,8 @@ package org.pac4j.core.authorization.authorizer;
 
 import com.google.common.collect.Lists;
 import lombok.val;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.profile.CommonProfile;
@@ -13,8 +13,7 @@ import org.pac4j.core.util.Pac4jConstants;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests {@link RequireAnyAttributeAuthorizer}.
@@ -30,7 +29,7 @@ public final class RequireAnyAttributeAuthorizerTests {
 
     private CommonProfile profile;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         profile = new CommonProfile();
         profiles = new ArrayList<>();

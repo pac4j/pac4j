@@ -1,7 +1,7 @@
 package org.pac4j.core.matching.matcher;
 
 import lombok.val;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
@@ -12,8 +12,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.regex.PatternSyntaxException;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests {@link PathMatcher}.
@@ -57,9 +56,11 @@ public class PathMatcherTests {
             "Your regular expression: '^/img/.*' must start with a ^ and end with a $ to define a full path matching");
     }
 
-    @Test(expected = PatternSyntaxException.class)
+    @Test
     public void testBadRegexp() {
-        new PathMatcher().excludeRegex("^/img/**$");
+        assertThrows(PatternSyntaxException.class, () -> {
+            new PathMatcher().excludeRegex("^/img/**$");
+        });
     }
 
     @Test

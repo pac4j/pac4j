@@ -1,7 +1,7 @@
 package org.pac4j.core.authorization.generator;
 
 import lombok.val;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.Pac4jConstants;
@@ -10,8 +10,7 @@ import org.pac4j.core.util.TestsConstants;
 import java.util.Properties;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * This class tests {@link SpringSecurityPropertiesAuthorizationGenerator}.

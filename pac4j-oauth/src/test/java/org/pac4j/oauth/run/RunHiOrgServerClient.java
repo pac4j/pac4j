@@ -7,7 +7,7 @@ import org.pac4j.core.run.RunClient;
 import org.pac4j.oauth.client.HiOrgServerClient;
 import org.pac4j.oauth.profile.hiorgserver.HiOrgServerProfile;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Run manually a test for the {@link HiOrgServerClient}.

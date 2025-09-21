@@ -1,8 +1,8 @@
 package org.pac4j.core.engine;
 
 import lombok.val;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.adapter.FrameworkAdapter;
 import org.pac4j.core.client.*;
 import org.pac4j.core.config.Config;
@@ -24,7 +24,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 /**
@@ -55,7 +55,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
 
     private HttpAction action;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         logic = new DefaultSecurityLogic();
         config = new Config();

@@ -14,7 +14,7 @@ import org.pac4j.oauth.profile.github.GitHubProfile;
 
 import java.text.SimpleDateFormat;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Run manually a test for the {@link GitHubClient}.

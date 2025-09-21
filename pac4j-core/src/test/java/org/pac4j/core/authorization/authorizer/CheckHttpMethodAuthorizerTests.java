@@ -1,7 +1,7 @@
 package org.pac4j.core.authorization.authorizer;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
@@ -11,8 +11,7 @@ import org.pac4j.core.profile.UserProfile;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests {@link CheckHttpMethodAuthorizer}.
@@ -24,7 +23,7 @@ public final class CheckHttpMethodAuthorizerTests {
 
     private List<UserProfile> profiles;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         profiles = new ArrayList<>();
         profiles.add(new CommonProfile());

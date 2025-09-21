@@ -6,7 +6,7 @@ import com.nimbusds.jose.JWEAlgorithm;
 import com.nimbusds.jose.util.Base64;
 import com.nimbusds.jwt.*;
 import lombok.val;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
@@ -15,7 +15,7 @@ import org.pac4j.jwt.config.signature.SignatureConfiguration;
 
 import java.text.ParseException;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Tests {@link SecretEncryptionConfiguration}.

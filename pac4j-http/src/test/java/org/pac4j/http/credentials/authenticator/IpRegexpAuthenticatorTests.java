@@ -1,7 +1,7 @@
 package org.pac4j.http.credentials.authenticator;
 
 import lombok.val;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.credentials.TokenCredentials;
@@ -13,7 +13,7 @@ import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.http.profile.IpProfile;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * This class tests the {@link IpRegexpAuthenticator}.
@@ -28,11 +28,13 @@ public final class IpRegexpAuthenticatorTests implements TestsConstants {
 
     private final static IpRegexpAuthenticator authenticator = new IpRegexpAuthenticator(GOOD_IP);
 
-    @Test(expected = TechnicalException.class)
+    @Test
     public void testNoPattern() {
-        val credentials = new TokenCredentials(GOOD_IP);
-        Authenticator authenticator = new IpRegexpAuthenticator();
-        authenticator.validate(new CallContext(null, new MockSessionStore()), credentials);
+        assertThrows(TechnicalException.class, () -> {
+            val credentials = new TokenCredentials(GOOD_IP);
+            Authenticator authenticator = new IpRegexpAuthenticator();
+            authenticator.validate(new CallContext(null, new MockSessionStore()), credentials);
+        });
     }
 
     @Test

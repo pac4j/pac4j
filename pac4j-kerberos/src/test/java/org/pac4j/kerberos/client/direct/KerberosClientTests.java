@@ -1,8 +1,8 @@
 package org.pac4j.kerberos.client.direct;
 
 import lombok.val;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
@@ -20,8 +20,8 @@ import org.pac4j.kerberos.credentials.authenticator.KerberosTicketValidator;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.Mockito.*;
 
 /**
@@ -39,7 +39,7 @@ public class KerberosClientTests implements TestsConstants {
 
     private final static byte[] KERBEROS_TICKET = Base64.getEncoder().encode("Test Kerberos".getBytes(StandardCharsets.UTF_8));
 
-    @Before
+    @BeforeEach
     public void before() {
         // mocking
         this.kerberosAuthenticator = mock(KerberosAuthenticator.class);

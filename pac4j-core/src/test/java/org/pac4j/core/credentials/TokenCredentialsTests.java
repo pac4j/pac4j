@@ -1,12 +1,12 @@
 package org.pac4j.core.credentials;
 
 import lombok.val;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.profile.AnonymousProfile;
 import org.pac4j.core.util.serializer.JsonSerializer;
 import org.pac4j.core.util.TestsConstants;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests {@link TokenCredentials}.

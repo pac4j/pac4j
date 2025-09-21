@@ -1,7 +1,7 @@
 package org.pac4j.core.util.serializer;
 
 import lombok.val;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
@@ -9,7 +9,7 @@ import org.pac4j.core.util.TestsConstants;
 import java.time.Instant;
 import java.util.LinkedHashMap;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests {@link Serializer}.

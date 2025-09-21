@@ -7,8 +7,8 @@ import com.nimbusds.oauth2.sdk.token.AccessToken;
 import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
 import com.nimbusds.oauth2.sdk.token.RefreshToken;
 import lombok.val;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.serializer.JavaSerializer;
 import org.pac4j.jwt.config.signature.SecretSignatureConfiguration;
@@ -20,7 +20,7 @@ import org.pac4j.oidc.profile.google.GoogleOidcProfile;
 import java.time.Instant;
 import java.util.Date;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * General test cases for {@link OidcProfile}.
@@ -43,7 +43,7 @@ public final class OidcProfileTests implements TestsConstants {
 
     private BearerAccessToken populatedAccessToken;
 
-    @Before
+    @BeforeEach
     public void before() {
         populatedAccessToken = new BearerAccessToken(32, 128, Scope.parse("oidc email"));
     }
@@ -69,8 +69,8 @@ public final class OidcProfileTests implements TestsConstants {
         var result = JAVA_SERIALIZER.serializeToBytes(profile);
         profile = (OidcProfile) JAVA_SERIALIZER.deserializeFromBytes(result);
 
-        assertNotNull("accessToken", profile.getAccessToken());
-        assertNotNull("value", profile.getAccessToken().getValue());
+        assertNotNull(profile.getAccessToken(), "accessToken");
+        assertNotNull(profile.getAccessToken().getValue(), "value");
         assertEquals(profile.getAccessToken().getLifetime(), populatedAccessToken.getLifetime());
         assertEquals(profile.getAccessToken().getScope(), populatedAccessToken.getScope());
         assertEquals(profile.getIdTokenString(), ID_TOKEN);
@@ -102,8 +102,8 @@ public final class OidcProfileTests implements TestsConstants {
         profile.setRefreshToken(new RefreshToken(REFRESH_TOKEN));
         var result = JAVA_SERIALIZER.serializeToBytes(profile);
         profile = (OidcProfile) JAVA_SERIALIZER.deserializeFromBytes(result);
-        assertNotNull("accessToken", profile.getAccessToken());
-        assertNotNull("value", profile.getAccessToken().getValue());
+        assertNotNull(profile.getAccessToken(), "accessToken");
+        assertNotNull(profile.getAccessToken().getValue(), "value");
         assertEquals(profile.getAccessToken().getLifetime(), populatedAccessToken.getLifetime());
         assertEquals(profile.getAccessToken().getScope(), populatedAccessToken.getScope());
         assertEquals(profile.getRefreshToken().getValue(), REFRESH_TOKEN);
@@ -120,8 +120,8 @@ public final class OidcProfileTests implements TestsConstants {
         profile.setIdTokenString(ID_TOKEN);
         var result = JAVA_SERIALIZER.serializeToBytes(profile);
         profile = (OidcProfile) JAVA_SERIALIZER.deserializeFromBytes(result);
-        assertNotNull("accessToken", profile.getAccessToken());
-        assertNotNull("value", profile.getAccessToken().getValue());
+        assertNotNull(profile.getAccessToken(), "accessToken");
+        assertNotNull(profile.getAccessToken().getValue(), "value");
         assertEquals(profile.getAccessToken().getLifetime(), populatedAccessToken.getLifetime());
         assertEquals(profile.getAccessToken().getScope(), populatedAccessToken.getScope());
         assertEquals(profile.getIdTokenString(), ID_TOKEN);

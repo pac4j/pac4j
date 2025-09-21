@@ -1,7 +1,7 @@
 package org.pac4j.saml.store;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 import com.hazelcast.core.HazelcastInstance;
@@ -10,11 +10,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
 import org.opensaml.saml.common.SAMLObjectBuilder;
 import org.opensaml.saml.saml2.core.NameID;
@@ -27,7 +26,6 @@ import org.pac4j.saml.util.Configuration;
  * @author Francesco Chicchiriccò
  * @since 5.0.1
  */
-@RunWith(MockitoJUnitRunner.class)
 public class HazelcastSAMLMessageStoreTests implements TestsConstants {
 
     private final XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
@@ -39,8 +37,9 @@ public class HazelcastSAMLMessageStoreTests implements TestsConstants {
 
     private HazelcastSAMLMessageStore store;
 
-    @Before
+    @BeforeEach
     public void setUp() {
+        MockitoAnnotations.openMocks(this);
         when(storeMapInstance.put(anyString(), anyString())).thenAnswer(ic -> {
             backendMap.put(ic.getArgument(0), ic.getArgument(1));
             return ic.getArgument(0);

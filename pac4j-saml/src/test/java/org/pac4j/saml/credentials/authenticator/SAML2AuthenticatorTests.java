@@ -1,7 +1,7 @@
 package org.pac4j.saml.credentials.authenticator;
 
 import lombok.val;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
 import org.opensaml.saml.common.SAMLObjectBuilder;
@@ -21,7 +21,7 @@ import java.net.URISyntaxException;
 import java.time.Instant;
 import java.util.*;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;

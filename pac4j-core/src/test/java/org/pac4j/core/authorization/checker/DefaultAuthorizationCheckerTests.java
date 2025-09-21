@@ -1,8 +1,8 @@
 package org.pac4j.core.authorization.checker;
 
 import lombok.val;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.authorization.authorizer.Authorizer;
 import org.pac4j.core.authorization.authorizer.DefaultAuthorizers;
 import org.pac4j.core.authorization.authorizer.RequireAnyRoleAuthorizer;
@@ -27,7 +27,7 @@ import org.pac4j.core.util.TestsHelper;
 
 import java.util.*;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the {@link DefaultAuthorizationChecker}.
@@ -43,7 +43,7 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
 
     private BasicUserProfile profile;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         profile = new BasicUserProfile();
         profiles = new ArrayList<>();
@@ -156,18 +156,22 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
             authorizers, new ArrayList<>()));
     }
 
-    @Test(expected = TechnicalException.class)
+    @Test
     public void testTwoAuthorizerOneDoesNotExist() {
-        final Map<String, Authorizer> authorizers = new HashMap<>();
-        authorizers.put(NAME, new IdAuthorizer());
-        checker.isAuthorized(null, new MockSessionStore(), profiles, NAME + Pac4jConstants.ELEMENT_SEPARATOR + VALUE,
-            authorizers, new ArrayList<>());
+        assertThrows(TechnicalException.class, () -> {
+            final Map<String, Authorizer> authorizers = new HashMap<>();
+            authorizers.put(NAME, new IdAuthorizer());
+            checker.isAuthorized(null, new MockSessionStore(), profiles, NAME + Pac4jConstants.ELEMENT_SEPARATOR + VALUE,
+                authorizers, new ArrayList<>());
+        });
     }
 
-    @Test(expected = TechnicalException.class)
+    @Test
     public void testNullAuthorizers() {
-        assertTrue(checker.isAuthorized(null, new MockSessionStore(), profiles, null));
-        checker.isAuthorized(null, new MockSessionStore(), profiles, "auth1", null, new ArrayList<>());
+        assertThrows(TechnicalException.class, () -> {
+            assertTrue(checker.isAuthorized(null, new MockSessionStore(), profiles, null));
+            checker.isAuthorized(null, new MockSessionStore(), profiles, "auth1", null, new ArrayList<>());
+        });
     }
 
     @Test
@@ -211,9 +215,11 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
         assertFalse(checker.isAuthorized(null, new MockSessionStore(), profiles, authorizers));
     }
 
-    @Test(expected = TechnicalException.class)
+    @Test
     public void testNullProfile() {
-        checker.isAuthorized(null, new MockSessionStore(), null, new ArrayList<>());
+        assertThrows(TechnicalException.class, () -> {
+            checker.isAuthorized(null, new MockSessionStore(), null, new ArrayList<>());
+        });
     }
 
 

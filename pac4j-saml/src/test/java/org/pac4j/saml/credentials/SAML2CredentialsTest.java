@@ -1,7 +1,7 @@
 package org.pac4j.saml.credentials;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.opensaml.core.xml.util.XMLObjectSupport;
 import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.saml.common.SAMLVersion;
@@ -31,8 +31,8 @@ import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -48,7 +48,7 @@ public class SAML2CredentialsTest {
     private SAML2MessageContext mockSaml2MessageContext;
     private SAML2Configuration saml2Configuration;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         var mockStatus = mock(Status.class);
         var mockStatusCode = mock(StatusCode.class);

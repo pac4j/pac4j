@@ -1,15 +1,13 @@
 package org.pac4j.springboot.config;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.pac4j.config.client.PropertiesConstants;
 import org.pac4j.core.config.Config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(classes = ConfigAutoConfiguration.class,
     properties = {
@@ -44,7 +42,6 @@ import static org.junit.Assert.assertNotNull;
         "pac4j.callbackUrl=https://pac4j.example.org"
     })
 @EnableConfigurationProperties(Pac4jConfigurationProperties.class)
-@RunWith(SpringRunner.class)
 public class ConfigAutoConfigurationTests {
 
     @Autowired

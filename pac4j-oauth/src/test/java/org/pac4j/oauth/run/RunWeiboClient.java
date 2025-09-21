@@ -13,8 +13,8 @@ import org.pac4j.oauth.profile.weibo.WeiboProfile;
 
 import java.util.Locale;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Run manually a test for the {@link WeiboClient}.

@@ -1,7 +1,7 @@
 package org.pac4j.http.client.direct;
 
 import lombok.val;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.Cookie;
@@ -18,7 +18,7 @@ import org.pac4j.http.credentials.authenticator.test.SimpleTestTokenAuthenticato
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * This class tests the {@link CookieClient} class.
@@ -49,10 +49,12 @@ public final class CookieClientTests implements TestsConstants {
         cookieClient.init();
     }
 
-    @Test(expected=Exception.class)
+    @Test
     public void testMissingCookieName() {
-        val cookieClient = new CookieClient(null, new SimpleTestTokenAuthenticator());
-        cookieClient.init();
+        assertThrows(Exception.class, () -> {
+            val cookieClient = new CookieClient(null, new SimpleTestTokenAuthenticator());
+            cookieClient.init();
+        });
     }
 
     @Test
