@@ -5,6 +5,9 @@ title: Release notes&#58;
 
 ### JDK17:
 
+**v6.2.3**:
+- Use an empty string instead of `null` if need be for the conditional `Authorization` header (issue with Play)
+
 **v6.2.2**:
 - Fix the X509 `SubjectDN` parsing
 - OIDC: Allow to ignore nonce for idToken on refresh
