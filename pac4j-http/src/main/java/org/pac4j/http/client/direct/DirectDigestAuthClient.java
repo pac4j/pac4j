@@ -11,6 +11,7 @@ import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.http.credentials.CredentialUtil;
 import org.pac4j.http.credentials.extractor.DigestAuthExtractor;
 
@@ -73,7 +74,7 @@ public class DirectDigestAuthClient extends DirectClient {
             ctx.webContext().setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Digest realm=\"" + realm + "\", qop=\"auth\", nonce=\""
                 + nonce + "\"");
         } else {
-            ctx.webContext().setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, null);
+            ctx.webContext().setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, Pac4jConstants.EMPTY_STRING);
         }
     }
 

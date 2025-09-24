@@ -7,6 +7,7 @@ import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.util.Pac4jConstants;
 
 import java.util.Optional;
 
@@ -62,7 +63,7 @@ public abstract class DirectClient extends BaseClient {
     protected void checkCredentials(final CallContext ctx, final Credentials credentials) {
         if (credentials != null) {
             LOGGER.debug("Remove authenticate header");
-            ctx.webContext().setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, null);
+            ctx.webContext().setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, Pac4jConstants.EMPTY_STRING);
         }
     }
 }

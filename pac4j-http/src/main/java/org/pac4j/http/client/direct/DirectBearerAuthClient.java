@@ -84,7 +84,7 @@ public class DirectBearerAuthClient extends DirectClient {
                 HttpConstants.BEARER_HEADER_PREFIX + "realm=\"" + realmName + "\"");
         } else {
             LOGGER.debug("Remove authenticate header");
-            ctx.webContext().setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, null);
+            ctx.webContext().setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, Pac4jConstants.EMPTY_STRING);
         }
     }
 }

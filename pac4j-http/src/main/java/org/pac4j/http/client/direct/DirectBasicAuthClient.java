@@ -75,7 +75,7 @@ public class DirectBasicAuthClient extends DirectClient {
             webContext.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Basic realm=\"" + realmName + "\"");
         } else {
             LOGGER.debug("Remove authenticate header");
-            webContext.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, null);
+            webContext.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, Pac4jConstants.EMPTY_STRING);
         }
     }
 }
