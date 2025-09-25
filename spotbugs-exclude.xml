@@ -80,4 +80,24 @@
         <Class name="~.*DbServer"/>
         <Bug pattern="MS_EXPOSE_REP" />
     </Match>
+    <Match>
+        <Class name="~.*Color"/>
+        <Bug pattern="CT_CONSTRUCTOR_THROW" />
+    </Match>
+    <Match>
+        <Class name="~.*KeyStoreCredentialProvider"/>
+        <Bug pattern="CT_CONSTRUCTOR_THROW" />
+    </Match>
+    <Match>
+        <Class name="~.*SAML2ServiceProviderMetadataResolver"/>
+        <Bug pattern="CT_CONSTRUCTOR_THROW" />
+    </Match>
+    <Match>
+        <Class name="~.*InMemoryReplayCacheProvider"/>
+        <Bug pattern="CT_CONSTRUCTOR_THROW" />
+    </Match>
+    <Match>
+        <Class name="~.*TokenValidator"/>
+        <Bug pattern="CT_CONSTRUCTOR_THROW" />
+    </Match>
 </FindBugsFilter>

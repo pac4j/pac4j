@@ -1,7 +1,7 @@
 package org.pac4j.core.resource;
 
 import java.util.concurrent.atomic.AtomicBoolean;
-import lombok.Getter;
+import java.util.concurrent.atomic.AtomicLong;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -25,8 +25,7 @@ public abstract class SpringResourceLoader<M> extends InitializableObject {
 
     private final Lock lock = new ReentrantLock();
     private final AtomicBoolean byteArrayHasChanged = new AtomicBoolean(true);
-    @Getter
-    private long lastModified = NO_LAST_MODIFIED;
+    private final AtomicLong lastModified = new AtomicLong(NO_LAST_MODIFIED);
 
     protected final Resource resource;
 
@@ -73,9 +72,9 @@ public abstract class SpringResourceLoader<M> extends InitializableObject {
             } catch (final Exception e) {
                 newLastModified = NO_LAST_MODIFIED;
             }
-            val hasChanged = lastModified != newLastModified;
-            LOGGER.debug("lastModified: {} / newLastModified: {} -> hasChanged: {}", lastModified, newLastModified, hasChanged);
-            lastModified = newLastModified;
+            val hasChanged = lastModified.get() != newLastModified;
+            LOGGER.debug("lastModified: {} / newLastModified: {} -> hasChanged: {}", lastModified.get(), newLastModified, hasChanged);
+            lastModified.set(newLastModified);
             return hasChanged;
         }
         return false;
@@ -85,4 +84,13 @@ public abstract class SpringResourceLoader<M> extends InitializableObject {
      * <p>internalLoad.</p>
      */
     protected abstract void internalLoad();
+
+    /**
+     * <p>Getter for the field <code>lastModified</code>.</p>
+     *
+     * @return a long
+     */
+    public long getLastModified() {
+        return lastModified.get();
+    }
 }
