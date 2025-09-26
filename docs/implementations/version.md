@@ -66,9 +66,9 @@ title: Implementations comparison regarding the version of pac4j&#58;
     </tr>
     <tr>
         <td>spark-pac4j</td>
-        <td>5.x</td>
+        <td>6.x</td>
         <td>Spark Java 2.9+</td>
-        <td>JDK 11+</td>
+        <td>JDK 17+</td>
     </tr>
     <tr>
         <td>javalin-pac4j</td>
