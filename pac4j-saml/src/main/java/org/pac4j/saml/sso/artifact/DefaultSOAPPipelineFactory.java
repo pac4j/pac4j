@@ -331,11 +331,13 @@ public class DefaultSOAPPipelineFactory implements HttpClientMessagePipelineFact
      * <p>buildCheckMandatoryAuthentication.</p>
      *
      * @return a {@link MessageHandler} object
+     * @throws ComponentInitializationException if handler initialization fails.
      */
-    protected MessageHandler buildCheckMandatoryAuthentication() {
+    protected MessageHandler buildCheckMandatoryAuthentication() throws ComponentInitializationException {
         val mandatoryAuthentication = new CheckMandatoryAuthentication();
         mandatoryAuthentication.setAuthenticationLookupStrategy(
             context -> context.getSubcontext(SAMLPeerEntityContext.class).isAuthenticated());
+        mandatoryAuthentication.initialize();
         return mandatoryAuthentication;
     }
 
@@ -369,10 +371,12 @@ public class DefaultSOAPPipelineFactory implements HttpClientMessagePipelineFact
      *
      * @param handlers a {@link List} object
      * @return a {@link BasicMessageHandlerChain} object
+     * @throws ComponentInitializationException if chain initialization fails.
      */
-    protected BasicMessageHandlerChain toHandlerChain(final List<MessageHandler> handlers) {
+    protected BasicMessageHandlerChain toHandlerChain(final List<MessageHandler> handlers) throws ComponentInitializationException {
         val ret = new BasicMessageHandlerChain();
         ret.setHandlers(handlers);
+        ret.initialize();
         return ret;
     }
 
