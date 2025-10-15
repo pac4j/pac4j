@@ -17,7 +17,7 @@
         <velocity.version>2.4.1</velocity.version>
         <xmlsec.version>4.0.4</xmlsec.version>
         <cryptacular.version>1.2.7</cryptacular.version>
-        <hazelcast.version>5.4.0</hazelcast.version>
+        <hazelcast.version>5.6.0</hazelcast.version>
     </properties>
 
     <dependencyManagement>
