@@ -51,6 +51,8 @@ public final class MockWebContext implements WebContext {
 
     protected String queryString = null;
 
+    protected String encoding = null;
+
     protected MockWebContext() {
     }
 
@@ -264,6 +266,16 @@ public final class MockWebContext implements WebContext {
 
     public MockWebContext setQueryString(final String queryString) {
         this.queryString = queryString;
+        return this;
+    }
+
+    @Override
+    public Optional<String> getCharacterEncoding() {
+        return Optional.ofNullable(this.encoding);
+    }
+
+    public MockWebContext setCharacterEncoding(final String encoding) {
+        this.encoding = encoding;
         return this;
     }
 }
