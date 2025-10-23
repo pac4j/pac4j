@@ -204,4 +204,13 @@ public interface WebContext {
     default Optional<String> getQueryString() {
         return Optional.ofNullable(StringUtils.substringAfter(getFullRequestURL(), "?"));
     }
+
+    /**
+     * Get the request character encoding
+     *
+     * @return the request character encoding
+     */
+    default Optional<String> getCharacterEncoding() {
+        return Optional.empty();
+    }
 }

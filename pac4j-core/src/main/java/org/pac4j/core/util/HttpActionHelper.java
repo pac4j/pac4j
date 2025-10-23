@@ -106,7 +106,11 @@ public final class HttpActionHelper {
         val requestedUrl = context.getFullRequestURL();
         val parameters = context.getRequestParameters();
         val buffer = new StringBuilder();
+        val encoding = context.getCharacterEncoding();
         buffer.append("<html>\n");
+        if (encoding.isPresent() && !Pac4jConstants.EMPTY_STRING.equals(encoding.get())) {
+            buffer.append("<head><meta charset=\"").append(encoding.get()).append("\"></head>\n");
+        }
         buffer.append("<body>\n");
         buffer.append("<form action=\"" + escapeHtml4(requestedUrl) + "\" name=\"f\" method=\"post\">\n");
         if (parameters != null) {

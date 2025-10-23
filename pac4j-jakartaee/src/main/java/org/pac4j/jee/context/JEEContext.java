@@ -270,4 +270,10 @@ public class JEEContext implements WebContext {
     public Optional<String> getQueryString() {
         return Optional.ofNullable(request.getQueryString());
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public Optional<String> getCharacterEncoding() {
+        return Optional.ofNullable(request.getCharacterEncoding());
+    }
 }
