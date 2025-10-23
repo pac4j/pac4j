@@ -108,7 +108,7 @@ public final class HttpActionHelper {
         val buffer = new StringBuilder();
         val encoding = context.getCharacterEncoding();
         buffer.append("<html>\n");
-        if (encoding.isPresent()) {
+        if (encoding.isPresent() && !Pac4jConstants.EMPTY_STRING.equals(encoding.get())) {
             buffer.append("<head><meta charset=\"").append(encoding.get()).append("\"></head>\n");
         }
         buffer.append("<body>\n");

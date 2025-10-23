@@ -210,5 +210,7 @@ public interface WebContext {
      *
      * @return the request character encoding
      */
-    Optional<String> getCharacterEncoding();
+    default Optional<String> getCharacterEncoding() {
+        return Optional.empty();
+    }
 }
