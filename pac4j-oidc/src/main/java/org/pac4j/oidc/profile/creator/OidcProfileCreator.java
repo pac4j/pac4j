@@ -127,7 +127,8 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
             }
             // Check ID Token
             if (oidcCredentials != null && oidcCredentials.getIdToken() != null) {
-                val claimsSet = configuration.getOpMetadataResolver().getTokenValidator().validate(oidcCredentials.toIdToken(), nonce);
+                val claimsSet = configuration.getOpMetadataResolver().getTokenValidator()
+                    .validateIdToken(oidcCredentials.toIdToken(), nonce);
                 assertNotNull("claimsSet", claimsSet);
                 profile.setId(ProfileHelper.sanitizeIdentifier(claimsSet.getSubject()));
 
@@ -220,7 +221,7 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
             var accessToken = credentials.toAccessToken();
             if (accessToken != null) {
                 var accessTokenJwt = JWTParser.parse(accessToken.getValue());
-                var accessTokenClaims = configuration.getOpMetadataResolver().getTokenValidator().validate(accessTokenJwt, nonce);
+                var accessTokenClaims = configuration.getOpMetadataResolver().getTokenValidator().validateIdToken(accessTokenJwt, nonce);
 
                 // add attributes of the access token if they don't already exist
                 for (val entry : accessTokenClaims.toJWTClaimsSet().getClaims().entrySet()) {

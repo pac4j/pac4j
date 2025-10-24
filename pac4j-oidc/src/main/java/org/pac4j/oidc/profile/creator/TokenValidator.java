@@ -9,8 +9,10 @@ import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.openid.connect.sdk.Nonce;
 import com.nimbusds.openid.connect.sdk.OIDCResponseTypeValue;
 import com.nimbusds.openid.connect.sdk.claims.IDTokenClaimsSet;
+import com.nimbusds.openid.connect.sdk.claims.LogoutTokenClaimsSet;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import com.nimbusds.openid.connect.sdk.validators.IDTokenValidator;
+import com.nimbusds.openid.connect.sdk.validators.LogoutTokenValidator;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
@@ -33,6 +35,8 @@ import java.util.List;
 public class TokenValidator {
 
     private final List<IDTokenValidator> idTokenValidators;
+
+    private final List<LogoutTokenValidator> logoutTokenValidators;
 
     private final OidcConfiguration configuration;
 
@@ -67,11 +71,13 @@ public class TokenValidator {
         }
 
         idTokenValidators = new ArrayList<>();
+        logoutTokenValidators = new ArrayList<>();
         val _clientID = new ClientID(configuration.getClientId());
 
         for (var jwsAlgorithm : jwsAlgorithms) {
             // build validator
             final IDTokenValidator idTokenValidator;
+            final LogoutTokenValidator logoutTokenValidator;
             if ("none".equals(jwsAlgorithm.getName())) {
                 final String responseType = configuration.getResponseType();
                 final boolean responseTypeContainsIdToken = responseType != null
@@ -87,11 +93,20 @@ public class TokenValidator {
                 JWSAlgorithm.HS384.equals(jwsAlgorithm) || JWSAlgorithm.HS512.equals(jwsAlgorithm))) {
                 val _secret = new Secret(configuration.getSecret());
                 idTokenValidator = createHMACTokenValidator(jwsAlgorithm, _clientID, _secret);
+                if (metadata.supportsBackChannelLogout()) {
+                    logoutTokenValidator = new LogoutTokenValidator(metadata.getIssuer(), _clientID, jwsAlgorithm, _secret);
+                    logoutTokenValidator.setMaxClockSkew(configuration.getMaxClockSkew());
+                    logoutTokenValidators.add(logoutTokenValidator);
+                }
             } else {
-                idTokenValidator = createRSATokenValidator(jwsAlgorithm, _clientID);
+                idTokenValidator = createRSAIdTokenValidator(jwsAlgorithm, _clientID);
+                if (metadata.supportsBackChannelLogout()) {
+                    logoutTokenValidator = createRSALogoutTokenValidator(jwsAlgorithm, _clientID);
+                    logoutTokenValidator.setMaxClockSkew(configuration.getMaxClockSkew());
+                    logoutTokenValidators.add(logoutTokenValidator);
+                }
             }
             idTokenValidator.setMaxClockSkew(configuration.getMaxClockSkew());
-
             idTokenValidators.add(idTokenValidator);
         }
     }
@@ -103,9 +118,25 @@ public class TokenValidator {
      * @param clientID a {@link ClientID} object
      * @return a {@link IDTokenValidator} object
      */
-    protected IDTokenValidator createRSATokenValidator(final JWSAlgorithm jwsAlgorithm, final ClientID clientID) {
+    protected IDTokenValidator createRSAIdTokenValidator(final JWSAlgorithm jwsAlgorithm, final ClientID clientID) {
         try {
             return new IDTokenValidator(metadata.getIssuer(), clientID, jwsAlgorithm, metadata.getJWKSetURI().toURL(),
+                configuration.findResourceRetriever());
+        } catch (final MalformedURLException e) {
+            throw new OidcException(e);
+        }
+    }
+
+    /**
+     * <p>createRSATokenValidator.</p>
+     *
+     * @param jwsAlgorithm a {@link JWSAlgorithm} object
+     * @param clientID a {@link ClientID} object
+     * @return a {@link LogoutTokenValidator} object
+     */
+    protected LogoutTokenValidator createRSALogoutTokenValidator(final JWSAlgorithm jwsAlgorithm, final ClientID clientID) {
+        try {
+            return new LogoutTokenValidator(metadata.getIssuer(), clientID, jwsAlgorithm, metadata.getJWKSetURI().toURL(),
                 configuration.findResourceRetriever());
         } catch (final MalformedURLException e) {
             throw new OidcException(e);
@@ -125,7 +156,7 @@ public class TokenValidator {
     }
 
     /**
-     * <p>validate.</p>
+     * <p>validate the ID token.</p>
      *
      * @param idToken a {@link JWT} object
      * @param expectedNonce a {@link Nonce} object
@@ -133,7 +164,7 @@ public class TokenValidator {
      * @throws BadJOSEException if any.
      * @throws JOSEException if any.
      */
-    public IDTokenClaimsSet validate(final JWT idToken, final Nonce expectedNonce)
+    public IDTokenClaimsSet validateIdToken(final JWT idToken, final Nonce expectedNonce)
         throws BadJOSEException, JOSEException {
 
         BadJOSEException badJOSEException = null;
@@ -160,8 +191,48 @@ public class TokenValidator {
         }
     }
 
+    /**
+     * <p>validate the logout token.</p>
+     *
+     * @param logoutToken a {@link JWT} object
+     * @return a {@link IDTokenClaimsSet} object
+     * @throws BadJOSEException if any.
+     * @throws JOSEException if any.
+     */
+    public LogoutTokenClaimsSet validateLogoutToken(final JWT logoutToken)
+        throws BadJOSEException, JOSEException {
+
+        BadJOSEException badJOSEException = null;
+        JOSEException joseException = null;
+        for (val logoutTokenValidator : logoutTokenValidators) {
+            LOGGER.debug("Trying LogoutToken validator: {}", logoutToken);
+            try {
+                return logoutTokenValidator.validate(logoutToken);
+            } catch (final BadJOSEException e1) {
+                LOGGER.debug(e1.getMessage(), e1);
+                badJOSEException = e1;
+            } catch (final JOSEException e2) {
+                LOGGER.debug(e2.getMessage(), e2);
+                joseException = e2;
+            }
+        }
+
+        if (badJOSEException != null) {
+            throw badJOSEException;
+        } else if (joseException != null) {
+            throw joseException;
+        } else {
+            throw new OidcTokenException("Unable to validate the logout token");
+        }
+    }
+
     // for tests
     List<IDTokenValidator> getIdTokenValidators() {
         return idTokenValidators;
+    }
+
+    // for tests
+    List<LogoutTokenValidator> getLogoutTokenValidators() {
+        return logoutTokenValidators;
     }
 }
