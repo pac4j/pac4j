@@ -4,7 +4,9 @@ import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import com.nimbusds.openid.connect.sdk.validators.IDTokenValidator;
+import com.nimbusds.openid.connect.sdk.validators.LogoutTokenValidator;
 import org.pac4j.oidc.client.azuread.AzureAdIdTokenValidator;
+import org.pac4j.oidc.client.azuread.AzureAdLogoutTokenValidator;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.profile.creator.TokenValidator;
 
@@ -28,7 +30,12 @@ public class AzureAdTokenValidator extends TokenValidator {
 
     /** {@inheritDoc} */
     @Override
-    protected IDTokenValidator createRSATokenValidator(final JWSAlgorithm jwsAlgorithm, final ClientID clientID) {
-        return new AzureAdIdTokenValidator(super.createRSATokenValidator(jwsAlgorithm, clientID));
+    protected IDTokenValidator createRSAIdTokenValidator(final JWSAlgorithm jwsAlgorithm, final ClientID clientID) {
+        return new AzureAdIdTokenValidator(super.createRSAIdTokenValidator(jwsAlgorithm, clientID));
+    }
+
+    @Override
+    protected LogoutTokenValidator createRSALogoutTokenValidator(JWSAlgorithm jwsAlgorithm, ClientID clientID) {
+        return new AzureAdLogoutTokenValidator(super.createRSALogoutTokenValidator(jwsAlgorithm, clientID));
     }
 }

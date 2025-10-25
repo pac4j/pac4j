@@ -65,7 +65,7 @@ public class OidcProfileCreatorTests implements TestsConstants {
         when(configuration.getOpMetadataResolver()).thenReturn(metadataResolver);
 
         var tokenValidator = mock(TokenValidator.class);
-        when(tokenValidator.validate(any(), any())).thenAnswer(
+        when(tokenValidator.validateIdToken(any(), any())).thenAnswer(
                 a -> IDTokenClaimsSet.parse(((JWT) a.getArgument(0)).getJWTClaimsSet().toString()));
 
         when(metadataResolver.getTokenValidator()).thenReturn(tokenValidator);

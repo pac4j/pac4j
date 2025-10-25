@@ -9,6 +9,7 @@ title: Release notes&#58;
 - Use an empty string instead of `null` if need be for the conditional `Authorization` header (issue with Play)
 - Fix uninitialized components required for handling http artifact (SAML protocol)
 - Add `<meta charset>` tag to request saved during authentication
+- Fix rejected logout token (backchannel logout, OIDC)
 
 **v6.2.2**:
 - Fix the X509 `SubjectDN` parsing
