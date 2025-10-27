@@ -75,7 +75,7 @@ public class OidcCredentialsExtractor implements CredentialsExtractor {
                 }
                 String sessionId;
                 if (configuration.isLogoutValidation()) {
-                    val claims = configuration.getOpMetadataResolver().getTokenValidator().validate(jwt, null);
+                    val claims = configuration.getOpMetadataResolver().getTokenValidator().validateLogoutToken(jwt);
                     if (claims.getClaim(OidcConfiguration.NONCE) != null) {
                         LOGGER.error("The nonce claim should not exist for logout requests");
                         throw new BadRequestAction();

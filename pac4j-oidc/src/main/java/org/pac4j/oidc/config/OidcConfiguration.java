@@ -232,6 +232,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
 
     protected OidcOpMetadataResolver opMetadataResolver;
 
+    @Deprecated(forRemoval = true)
     private boolean logoutValidation = true;
 
     /**
