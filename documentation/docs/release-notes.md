@@ -7,6 +7,7 @@ title: Release notes&#58;
 
 **v6.3.0**:
 - OIDC: Fix rejected logout token (back-channel logout, OIDC)
+- OIDC: Deprecate OidcConfiguration#logoutValidation
 - Use an empty string instead of `null` if need be for the conditional `Authorization` header (issue with Play)
 - Fix uninitialized components required for handling http artifact (SAML protocol)
 - Add `<meta charset>` tag to request saved during authentication
