@@ -22,7 +22,7 @@
 		<url>https://github.com/pac4j/pac4j.git</url>
 		<connection>scm:git:git@github.com:pac4j/pac4j.git</connection>
 		<developerConnection>scm:git:git@github.com:pac4j/pac4j.git</developerConnection>
-	  <tag>pac4j-parent-6.1.3</tag>
+	  <tag>HEAD</tag>
   </scm>
 
 	<developers>
