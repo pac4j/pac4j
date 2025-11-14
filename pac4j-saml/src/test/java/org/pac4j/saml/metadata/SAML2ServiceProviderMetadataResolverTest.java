@@ -2,9 +2,14 @@ package org.pac4j.saml.metadata;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import lombok.val;
+import net.shibboleth.shared.resolver.CriteriaSet;
+import net.shibboleth.shared.resolver.ResolverException;
 import org.apache.commons.io.IOUtils;
 import org.apache.hc.core5.http.ContentType;
 import org.junit.jupiter.api.Test;
+import org.opensaml.core.criterion.EntityIdCriterion;
+import org.opensaml.saml.common.xml.SAMLConstants;
+import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.util.SAML2HttpClientBuilder;
 import org.springframework.core.io.ClassPathResource;
@@ -17,12 +22,14 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class SAML2ServiceProviderMetadataResolverTest {
 
     private static SAML2Configuration initializeConfiguration(final Resource serviceProviderMetadataResource,
-                                                              final String keystorePath) {
+                                                              final String keystorePath,
+                                                              final boolean forceServiceProviderMetadataGeneration) {
         var httpClient = new SAML2HttpClientBuilder();
         httpClient.setConnectionTimeout(Duration.ofSeconds(1));
         httpClient.setSocketTimeout(Duration.ofSeconds(1));
@@ -34,7 +41,8 @@ public class SAML2ServiceProviderMetadataResolverTest {
         config.setPrivateKeyPassword("pac4j");
         config.setSignMetadata(true);
         config.setForceKeystoreGeneration(true);
-        config.setForceServiceProviderMetadataGeneration(true);
+        config.setForceServiceProviderMetadataGeneration(forceServiceProviderMetadataGeneration);
+        config.setServiceProviderEntityId("urn:mace:saml:pac4j.org");
         config.setServiceProviderMetadataResource(serviceProviderMetadataResource);
         config.setIdentityProviderMetadataResource(new ClassPathResource("idp-metadata.xml"));
         var attribute =
@@ -49,7 +57,7 @@ public class SAML2ServiceProviderMetadataResolverTest {
     @Test
     public void resolveServiceProviderMetadataViaFile() {
         val configuration =
-            initializeConfiguration(new FileSystemResource("target/out.xml"), "target/keystore.jks");
+            initializeConfiguration(new FileSystemResource("target/out.xml"), "target/keystore.jks", true);
         final SAML2MetadataResolver metadataResolver = new SAML2ServiceProviderMetadataResolver(configuration);
         assertNotNull(metadataResolver.resolve());
     }
@@ -57,10 +65,31 @@ public class SAML2ServiceProviderMetadataResolverTest {
     @Test
     public void resolveServiceProviderMetadataViaExistingClasspath() {
         val configuration =
-            initializeConfiguration(new ClassPathResource("sample-sp-metadata.xml"), "target/keystore.jks");
+            initializeConfiguration(new ClassPathResource("sample-sp-metadata.xml"), "target/keystore.jks", true);
         final SAML2MetadataResolver metadataResolver = new SAML2ServiceProviderMetadataResolver(configuration);
         assertNotNull(metadataResolver.resolve());
     }
+
+    @Test
+    public void resolveServiceProviderMetadataViaExistingClasspathWithMerge() {
+        val configuration =
+            initializeConfiguration(new FileSystemResource("target/sample-sp-metadata.xml"), "target/keystore.jks", false);
+        final SAML2MetadataResolver initialMetadataResolver = new SAML2ServiceProviderMetadataResolver(configuration);
+        assertNotNull(initialMetadataResolver.resolve());
+        final SAML2MetadataResolver otherMetadataResolver = new SAML2ServiceProviderMetadataResolver(configuration);
+        assertNotNull(otherMetadataResolver.resolve());
+        try {
+            EntityDescriptor descriptor = otherMetadataResolver.resolve().resolveSingle(
+                new CriteriaSet(new EntityIdCriterion("urn:mace:saml:pac4j.org"))
+            );
+            var sp = descriptor.getSPSSODescriptor(SAMLConstants.SAML20P_NS);
+            assertEquals(4, sp.getSingleLogoutServices().size());
+            assertEquals(1, sp.getAssertionConsumerServices().size());
+        } catch (ResolverException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     @Test
     public void resolveServiceProviderMetadataViaUrl() throws Exception {
@@ -90,7 +119,7 @@ public class SAML2ServiceProviderMetadataResolverTest {
             wireMockServer.start();
             val configuration =
                 initializeConfiguration(new FileUrlResource(new URL("http://localhost:8181/saml")),
-                    "http://localhost:8181/keystore");
+                    "http://localhost:8181/keystore", true);
             final SAML2MetadataResolver metadataResolver = new SAML2ServiceProviderMetadataResolver(configuration);
             assertNotNull(metadataResolver.resolve());
         } finally {

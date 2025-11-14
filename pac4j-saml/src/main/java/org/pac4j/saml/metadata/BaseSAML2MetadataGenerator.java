@@ -189,7 +189,11 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
                 }
 
                 currentSP.getSingleLogoutServices().forEach(service -> {
-                    if (!existingSP.getSingleLogoutServices().contains(service)) {
+                    var alreadyPresent = existingSP.getSingleLogoutServices().stream()
+                        .anyMatch(s ->
+                            Objects.equals(s.getLocation(), service.getLocation()) && Objects.equals(s.getBinding(), service.getBinding())
+                        );
+                    if (!alreadyPresent) {
                         service.detach();
                         existingSP.getSingleLogoutServices().add(service);
                         logger.debug("Adding single logout service {} to existing entity", service.getLocation());
@@ -197,7 +201,11 @@ public abstract class BaseSAML2MetadataGenerator implements SAML2MetadataGenerat
                     }
                 });
                 currentSP.getAssertionConsumerServices().forEach(service -> {
-                    if (!existingSP.getAssertionConsumerServices().contains(service)) {
+                    var alreadyPresent = existingSP.getAssertionConsumerServices().stream()
+                        .anyMatch(s ->
+                            Objects.equals(s.getLocation(), service.getLocation()) && Objects.equals(s.getBinding(), service.getBinding())
+                        );
+                    if (!alreadyPresent) {
                         service.detach();
                         service.setIndex(existingSP.getAssertionConsumerServices().size());
                         existingSP.getAssertionConsumerServices().add(service);
