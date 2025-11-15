@@ -3,15 +3,11 @@ package org.pac4j.saml.redirect;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.opensaml.saml.common.xml.SAMLConstants;
-import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.saml.client.SAML2Client;
-import org.pac4j.saml.profile.api.SAML2ObjectBuilder;
-import org.pac4j.saml.sso.impl.SAML2AuthnRequestBuilder;
 
 import java.util.Optional;
 
