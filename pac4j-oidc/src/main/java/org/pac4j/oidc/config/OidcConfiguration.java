@@ -57,7 +57,10 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OidcConfiguration extends BaseClientConfiguration {
-
+    /**
+     * Constant <code>login_hint="user@example.org"</code>
+     */
+    public static final String LOGIN_HINT = "login_hint";
     /**
      * Constant <code>SCOPE="scope"</code>
      */
@@ -189,6 +192,8 @@ public class OidcConfiguration extends BaseClientConfiguration {
     private String responseMode;
 
     private String logoutUrl;
+
+    private String loginHint;
 
     private int connectTimeout = HttpConstants.DEFAULT_CONNECT_TIMEOUT;
 
@@ -419,36 +424,6 @@ public class OidcConfiguration extends BaseClientConfiguration {
      */
     public int getTokenExpirationAdvance() {
         return isExpireSessionWithToken() ? tokenExpirationAdvance : -1;
-    }
-
-    /**
-     * <p>Setter for the field <code>stateGenerator</code>.</p>
-     *
-     * @param stateGenerator a {@link ValueGenerator} object
-     */
-    public void setStateGenerator(final ValueGenerator stateGenerator) {
-        assertNotNull("stateGenerator", stateGenerator);
-        this.stateGenerator = stateGenerator;
-    }
-
-    /**
-     * <p>Setter for the field <code>codeVerifierGenerator</code>.</p>
-     *
-     * @param codeVerifierGenerator a {@link ValueGenerator} object
-     */
-    public void setCodeVerifierGenerator(ValueGenerator codeVerifierGenerator) {
-        assertNotNull("codeVerifierGenerator", codeVerifierGenerator);
-        this.codeVerifierGenerator = codeVerifierGenerator;
-    }
-
-    /**
-     * <p>Setter for the field <code>valueRetriever</code>.</p>
-     *
-     * @param valueRetriever a {@link ValueRetriever} object
-     */
-    public void setValueRetriever(ValueRetriever valueRetriever) {
-        assertNotNull("valueRetriever", valueRetriever);
-        this.valueRetriever = valueRetriever;
     }
 
     /**

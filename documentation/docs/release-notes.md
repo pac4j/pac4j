@@ -5,6 +5,9 @@ title: Release notes&#58;
 
 ### JDK17:
 
+**v6.3.1**:
+- OIDC: Support `login_hint` parameter for authentication requests
+
 **v6.3.0**:
 - OIDC: Fix rejected logout token (back-channel logout, OIDC)
 - OIDC: Deprecate OidcConfiguration#logoutValidation

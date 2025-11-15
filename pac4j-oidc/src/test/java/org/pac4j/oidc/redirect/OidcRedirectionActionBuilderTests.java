@@ -2,10 +2,12 @@ package org.pac4j.oidc.redirect;
 
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import lombok.val;
+import org.apache.hc.core5.net.URIBuilder;
 import org.junit.jupiter.api.Test;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.session.MockSessionStore;
+import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.oidc.client.OidcClient;
@@ -22,6 +24,7 @@ public class OidcRedirectionActionBuilderTests implements TestsConstants {
         var providerMetadata = mock(OIDCProviderMetadata.class);
         when(providerMetadata.getAuthorizationEndpointURI()).thenReturn(new java.net.URI("http://localhost:8080/auth"));
         val configuration = new OidcConfiguration();
+        configuration.setLoginHint("user@example.org");
         configuration.setClientId("testClient");
         configuration.setSecret("secret");
         configuration.setScope("openid,profile,email");
@@ -41,7 +44,9 @@ public class OidcRedirectionActionBuilderTests implements TestsConstants {
         val webContext = MockWebContext.create();
         val sessionStore = new MockSessionStore();
         val ctx = new CallContext(webContext, sessionStore, ProfileManagerFactory.DEFAULT);
-        var action = builder.getRedirectionAction(ctx).orElseThrow();
+        var action = (FoundAction) builder.getRedirectionAction(ctx).orElseThrow();
         assertEquals(302, action.getCode());
+        val url = new URIBuilder(action.getLocation());
+        assertEquals("user@example.org", url.getFirstQueryParam(OidcConfiguration.LOGIN_HINT).getValue());
     }
 }
