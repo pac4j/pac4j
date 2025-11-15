@@ -1,5 +1,6 @@
 package org.pac4j.saml.redirect;
 
+import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.AuthnRequest;
@@ -20,23 +21,18 @@ import java.util.Optional;
  * @author Jerome Leleu
  * @since 2.0.0
  */
+@RequiredArgsConstructor
 public class SAML2RedirectionActionBuilder implements RedirectionActionBuilder {
 
     private final SAML2Client client;
-    protected SAML2ObjectBuilder<AuthnRequest> saml2ObjectBuilder;
-
-    public SAML2RedirectionActionBuilder(final SAML2Client client) {
-        CommonHelper.assertNotNull("client", client);
-        this.client = client;
-        this.saml2ObjectBuilder = new SAML2AuthnRequestBuilder();
-    }
 
     @Override
     public Optional<RedirectionAction> getRedirectionAction(final CallContext ctx) {
         val context = this.client.getContextProvider().buildContext(ctx, this.client);
         val relayState = this.client.getStateGenerator().generateValue(ctx);
 
-        val authnRequest = this.saml2ObjectBuilder.build(context);
+        val saml2ObjectBuilder = client.getConfiguration().getSamlAuthnRequestBuilder();
+        val authnRequest = saml2ObjectBuilder.build(context);
         this.client.getWebSsoMessageSender().sendMessage(context, authnRequest, relayState);
 
         val adapter = context.getProfileRequestContextOutboundMessageTransportResponse();
