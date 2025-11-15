@@ -90,7 +90,10 @@ public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
         authParams.put(OidcConfiguration.RESPONSE_MODE, configContext.getResponseMode());
         authParams.putAll(configContext.getCustomParams());
         authParams.put(OidcConfiguration.CLIENT_ID, configContext.getConfiguration().getClientId());
-
+        val loginHint = configContext.getConfiguration().getLoginHint();
+        if (loginHint != null && !loginHint.isEmpty()) {
+            authParams.put(OidcConfiguration.LOGIN_HINT, loginHint);
+        }
         return new HashMap<>(authParams);
     }
 
