@@ -1,5 +1,7 @@
 package org.pac4j.saml.sso.impl;
 
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
@@ -11,6 +13,7 @@ import org.opensaml.saml.saml2.core.impl.NameIDPolicyBuilder;
 import org.opensaml.saml.saml2.core.impl.RequestedAuthnContextBuilder;
 import org.opensaml.saml.saml2.metadata.Endpoint;
 import org.opensaml.saml.saml2.metadata.RequestedAttribute;
+import org.pac4j.saml.context.SAML2ConfigurationContext;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.profile.api.SAML2ObjectBuilder;
 import org.pac4j.saml.util.Configuration;
@@ -19,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
+import java.util.Objects;
 
 /**
  * Build a SAML2 Authn Request from the given {@link org.opensaml.messaging.context.MessageContext}.
@@ -27,14 +31,16 @@ import java.time.Instant;
  * @author Misagh Moayyed
  * @since 1.5.0
  */
+@SuppressWarnings("unchecked")
+@Slf4j
 public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest> {
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
+    @Setter
     private int issueInstantSkewSeconds = 0;
 
     private final XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
 
-    /** {@inheritDoc} */
     @Override
     public AuthnRequest build(final SAML2MessageContext context) {
         val configContext = context.getConfigurationContext();
@@ -49,15 +55,6 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
         return authnRequest;
     }
 
-    /**
-     * <p>buildAuthnRequest.</p>
-     *
-     * @param context a {@link SAML2MessageContext} object
-     * @param assertionConsumerService a {@link org.opensaml.saml.saml2.metadata.AssertionConsumerService} object
-     * @param ssoService a {@link org.opensaml.saml.saml2.metadata.SingleSignOnService} object
-     * @return a {@link AuthnRequest} object
-     */
-    @SuppressWarnings("unchecked")
     protected final AuthnRequest buildAuthnRequest(final SAML2MessageContext context,
                                                    final Endpoint assertionConsumerService,
                                                    final Endpoint ssoService) {
@@ -161,29 +158,34 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
                 request.setScoping(scoping);
             }
         }
+        return buildAuthnRequestSubject(context, request);
+    }
+
+    protected AuthnRequest buildAuthnRequestSubject(final SAML2MessageContext context,
+                                                    final AuthnRequest request) {
+        val configContext = context.getConfigurationContext();
+        val nameIdValue = configContext.getSAML2Configuration().getAuthnRequestSubjectNameId();
+        val nameIdFormat = configContext.getSAML2Configuration().getAuthnRequestSubjectNameIdFormat();
+        if (StringUtils.isNotBlank(nameIdValue) && StringUtils.isNotBlank(nameIdFormat)) {
+            val subject = ((SAMLObjectBuilder<Subject>) Objects.requireNonNull(this.builderFactory
+                .getBuilder(Subject.DEFAULT_ELEMENT_NAME))).buildObject();
+            val nameId = ((SAMLObjectBuilder<NameID>) Objects.requireNonNull(this.builderFactory
+                .getBuilder(NameID.DEFAULT_ELEMENT_NAME))).buildObject();
+            LOGGER.debug("Setting AuthnRequest Subject NameID with value [{}] and format [{}]", nameIdValue, nameIdFormat);
+            nameId.setValue(nameIdValue);
+            nameId.setFormat(nameIdFormat);
+            subject.setNameID(nameId);
+            request.setSubject(subject);
+        }
         return request;
     }
 
-    /**
-     * <p>buildAuthnContextClassRef.</p>
-     *
-     * @param authnContextClassRef a {@link String} object
-     * @return a {@link AuthnContextClassRef} object
-     */
     protected AuthnContextClassRef buildAuthnContextClassRef(final String authnContextClassRef) {
         val classRef = new AuthnContextClassRefBuilder().buildObject();
         classRef.setURI(authnContextClassRef);
         return classRef;
     }
 
-    /**
-     * <p>getIssuer.</p>
-     *
-     * @param context a {@link SAML2MessageContext} object
-     * @param spEntityId a {@link String} object
-     * @return a {@link Issuer} object
-     */
-    @SuppressWarnings("unchecked")
     protected final Issuer getIssuer(final SAML2MessageContext context, final String spEntityId) {
         val configContext = context.getConfigurationContext();
 
@@ -201,12 +203,6 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
         return issuer;
     }
 
-    /**
-     * <p>getComparisonTypeEnumFromString.</p>
-     *
-     * @param comparisonType a {@link String} object
-     * @return a {@link AuthnContextComparisonTypeEnumeration} object
-     */
     protected AuthnContextComparisonTypeEnumeration getComparisonTypeEnumFromString(final String comparisonType) {
         if ("exact".equalsIgnoreCase(comparisonType)) {
             return AuthnContextComparisonTypeEnumeration.EXACT;
@@ -221,14 +217,5 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
             return AuthnContextComparisonTypeEnumeration.BETTER;
         }
         return null;
-    }
-
-    /**
-     * <p>Setter for the field <code>issueInstantSkewSeconds</code>.</p>
-     *
-     * @param issueInstantSkewSeconds a int
-     */
-    public void setIssueInstantSkewSeconds(final int issueInstantSkewSeconds) {
-        this.issueInstantSkewSeconds = issueInstantSkewSeconds;
     }
 }

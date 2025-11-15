@@ -1,6 +1,7 @@
 package org.pac4j.saml.client;
 
 import lombok.val;
+import org.opensaml.saml.saml2.core.NameID;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.metadata.SAML2ServiceProviderRequestedAttribute;
@@ -45,6 +46,8 @@ public abstract class AbstractSAML2ClientTests implements TestsConstants {
         cfg.setForceKeystoreGeneration(true);
         cfg.setServiceProviderMetadataResource(new FileSystemResource(new File("target", "sp-metadata.xml").getAbsolutePath()));
         cfg.setSamlMessageStoreFactory(new HttpSessionStoreFactory());
+        cfg.setAuthnRequestSubjectNameId("user@example.org");
+        cfg.setAuthnRequestSubjectNameIdFormat(NameID.EMAIL);
 
         val attribute =
             new SAML2ServiceProviderRequestedAttribute("urn:oid:1.3.6.1.4.1.5923.1.1.1.6", "eduPersonPrincipalName");
