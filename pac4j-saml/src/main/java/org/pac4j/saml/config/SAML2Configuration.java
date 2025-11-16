@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.client5.http.classic.HttpClient;
 import org.opensaml.core.xml.schema.XSAny;
 import org.opensaml.saml.common.xml.SAMLConstants;
+import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.opensaml.saml.saml2.core.Issuer;
 import org.opensaml.xmlsec.config.impl.DefaultSecurityConfigurationBootstrap;
 import org.opensaml.xmlsec.signature.support.SignatureConstants;
@@ -25,7 +26,9 @@ import org.pac4j.saml.metadata.*;
 import org.pac4j.saml.metadata.keystore.SAML2FileSystemKeystoreGenerator;
 import org.pac4j.saml.metadata.keystore.SAML2HttpUrlKeystoreGenerator;
 import org.pac4j.saml.metadata.keystore.SAML2KeystoreGenerator;
+import org.pac4j.saml.profile.api.SAML2ObjectBuilder;
 import org.pac4j.saml.profile.converter.SimpleSAML2AttributeConverter;
+import org.pac4j.saml.sso.impl.SAML2AuthnRequestBuilder;
 import org.pac4j.saml.sso.impl.SAML2ScopingIdentityProvider;
 import org.pac4j.saml.store.EmptyStoreFactory;
 import org.pac4j.saml.store.SAMLMessageStoreFactory;
@@ -116,6 +119,10 @@ public class SAML2Configuration extends BaseClientConfiguration {
 
     private String authnRequestBindingType = SAMLConstants.SAML2_POST_BINDING_URI;
 
+    private String authnRequestSubjectNameId;
+
+    private String authnRequestSubjectNameIdFormat;
+
     private String responseBindingType = SAMLConstants.SAML2_POST_BINDING_URI;
 
     private String spLogoutRequestBindingType = SAMLConstants.SAML2_POST_BINDING_URI;
@@ -143,6 +150,8 @@ public class SAML2Configuration extends BaseClientConfiguration {
     private SAML2MetadataGenerator metadataGenerator;
 
     private CredentialProvider credentialProvider;
+
+    private SAML2ObjectBuilder<AuthnRequest> samlAuthnRequestBuilder = new SAML2AuthnRequestBuilder();
 
     private boolean authnRequestSigned;
 

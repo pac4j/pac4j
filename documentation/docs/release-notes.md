@@ -7,6 +7,7 @@ title: Release notes&#58;
 
 **v6.3.1**:
 - OIDC: Support `login_hint` parameter for authentication requests
+- SAML2: Support `Subject` element when building SAML2 `AuthnRequest` objects
 
 **v6.3.0**:
 - OIDC: Fix rejected logout token (back-channel logout, OIDC)
