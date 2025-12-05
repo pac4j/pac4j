@@ -5,9 +5,13 @@ title: Release notes&#58;
 
 ### JDK17:
 
+**v6.3.2**:
+- Reinforce security in `PathMatcher`
+
 **v6.3.1**:
 - OIDC: Support `login_hint` parameter for authentication requests
 - SAML2: Support `Subject` element when building SAML2 `AuthnRequest` objects
+- Fix duplication on SAML metadata merge for SP
 
 **v6.3.0**:
 - OIDC: Fix rejected logout token (back-channel logout, OIDC)
