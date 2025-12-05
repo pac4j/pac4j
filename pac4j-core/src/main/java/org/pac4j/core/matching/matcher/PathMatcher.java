@@ -99,7 +99,7 @@ public class PathMatcher implements Matcher {
     public PathMatcher excludeBranch(final String path) {
         warnRegexp();
         validatePath(path);
-        excludedPatterns.add(Pattern.compile("^" + path + "(/.*)?$"));
+        excludedPatterns.add(Pattern.compile("^" + path + "(/.*)?$", Pattern.DOTALL));
         return this;
     }
 
@@ -118,7 +118,7 @@ public class PathMatcher implements Matcher {
                 "to define a full path matching");
         }
 
-        excludedPatterns.add(Pattern.compile(regex));
+        excludedPatterns.add(Pattern.compile(regex, Pattern.DOTALL));
         return this;
     }
 
