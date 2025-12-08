@@ -77,7 +77,7 @@
 
 	<properties>
         <awssdk.version>2.40.3</awssdk.version>
-        <mongo-driver.version>5.6.1</mongo-driver.version>
+        <mongo-driver.version>5.6.2</mongo-driver.version>
         <flapdoodle.version>3.5.4</flapdoodle.version>
 		<junit.version>6.0.1</junit.version>
 		<servlet-api.version>4.0.1</servlet-api.version>
