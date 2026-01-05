@@ -76,7 +76,7 @@
 	</modules>
 
 	<properties>
-        <awssdk.version>2.40.8</awssdk.version>
+        <awssdk.version>2.41.1</awssdk.version>
         <mongo-driver.version>5.6.2</mongo-driver.version>
         <flapdoodle.version>3.5.4</flapdoodle.version>
 		<junit.version>6.0.1</junit.version>
@@ -90,7 +90,7 @@
 		<guava.version>33.5.0-jre</guava.version>
 		<nimbus-jose-jwt.version>10.6</nimbus-jose-jwt.version>
 		<spring.version>6.2.15</spring.version>
-		<spring.security.version>7.0.0</spring.security.version>
+		<spring.security.version>7.0.2</spring.security.version>
 		<shiro.version>1.13.0</shiro.version>
         <jbcrypt.version>0.4.3</jbcrypt.version>
         <snakeyaml.version>2.5</snakeyaml.version>
@@ -433,7 +433,7 @@
 					<dependency>
 						<groupId>com.puppycrawl.tools</groupId>
 						<artifactId>checkstyle</artifactId>
-						<version>12.3.0</version>
+						<version>12.3.1</version>
 					</dependency>
 				</dependencies>
                 <configuration>
