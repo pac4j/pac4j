@@ -96,7 +96,7 @@
         <snakeyaml.version>2.5</snakeyaml.version>
 		<mockito.version>5.21.0</mockito.version>
 		<slf4j.version>2.0.17</slf4j.version>
-        <httpclient.version>5.3.1</httpclient.version>
+        <httpclient.version>5.6</httpclient.version>
         <unboundid.version>7.0.4</unboundid.version>
         <h2.version>2.4.240</h2.version>
 		<java.version>17</java.version>
