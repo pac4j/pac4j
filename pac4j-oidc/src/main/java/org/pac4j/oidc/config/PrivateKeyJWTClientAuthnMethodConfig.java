@@ -1,11 +1,12 @@
 package org.pac4j.oidc.config;
 
+import java.security.PrivateKey;
+
 import com.nimbusds.jose.JWSAlgorithm;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-
-import java.security.PrivateKey;
 
 /**
  * The configuration for the client authentication method: private_key_jwt.
@@ -23,6 +24,12 @@ public class PrivateKeyJWTClientAuthnMethodConfig {
     private PrivateKey privateKey;
 
     private String keyID;
+    /** Default JWT token expiration time in seconds */
+    private long validity = 60;
+    /** Clock skew used to not reuse a token to close to expire */
+    private int keyClockSkew = 10;
+    /** Manage expiration of private key JWT when true */
+    private boolean useExpiration = true;
 
     /**
      * <p>Constructor for PrivateKeyJWTClientAuthnMethodConfig.</p>
