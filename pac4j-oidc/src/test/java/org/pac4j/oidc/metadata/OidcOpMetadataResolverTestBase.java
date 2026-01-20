@@ -36,6 +36,14 @@ public class OidcOpMetadataResolverTestBase {
     protected static StaticOidcOpMetadataResolver getStaticMetadataResolver(OidcConfiguration configuration,
         List<ClientAuthenticationMethod> supportedAuthMethods) throws URISyntaxException {
         OIDCProviderMetadata providerMetadata = OidcOpMetadataResolverTestBase.getOidcProviderMetadata(supportedAuthMethods);
+        StaticOidcOpMetadataResolver oidcOpMetadataResolver = new StaticOidcOpMetadataResolver(configuration, providerMetadata);
+        oidcOpMetadataResolver.init();
+        return oidcOpMetadataResolver;
+    }
+
+    protected static StaticOidcOpMetadataResolver getStaticMetadataResolverWithTokenEndPoint(OidcConfiguration configuration,
+        List<ClientAuthenticationMethod> supportedAuthMethods) throws URISyntaxException {
+        OIDCProviderMetadata providerMetadata = OidcOpMetadataResolverTestBase.getOidcProviderMetadata(supportedAuthMethods);
         // Sets a fake token endpoint URI to permits private JWT key generation
         providerMetadata.setTokenEndpointURI(new URI("test"));
         StaticOidcOpMetadataResolver oidcOpMetadataResolver = new StaticOidcOpMetadataResolver(configuration, providerMetadata);

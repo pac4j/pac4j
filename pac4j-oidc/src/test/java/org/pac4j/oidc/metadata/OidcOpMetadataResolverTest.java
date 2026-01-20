@@ -83,7 +83,7 @@ public class OidcOpMetadataResolverTest extends OidcOpMetadataResolverTestBase {
         privateKeyJWTClientAuthnMethodConfig.setKeyClockSkew(0);
         configuration.setPrivateKeyJWTClientAuthnMethodConfig(privateKeyJWTClientAuthnMethodConfig);
 
-        OidcOpMetadataResolver metadataResolver = getStaticMetadataResolver(configuration,
+        OidcOpMetadataResolver metadataResolver = getStaticMetadataResolverWithTokenEndPoint(configuration,
             List.of(ClientAuthenticationMethod.PRIVATE_KEY_JWT));
 
         ClientAuthentication authentication = metadataResolver.getClientAuthentication();

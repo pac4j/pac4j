@@ -1,28 +1,5 @@
 package org.pac4j.oidc.metadata;
 
-import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.util.IOUtils;
-import com.nimbusds.oauth2.sdk.ParseException;
-import com.nimbusds.oauth2.sdk.auth.*;
-import com.nimbusds.oauth2.sdk.id.ClientID;
-import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
-
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-import lombok.val;
-
-import org.pac4j.core.resource.SpringResourceHelper;
-import org.pac4j.core.resource.SpringResourceLoader;
-import org.pac4j.oidc.config.OidcConfiguration;
-import org.pac4j.oidc.exceptions.OidcException;
-import org.pac4j.oidc.exceptions.OidcUnsupportedClientAuthMethodException;
-import org.pac4j.oidc.profile.creator.TokenValidator;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
-
-import javax.net.ssl.HttpsURLConnection;
-
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
@@ -33,14 +10,42 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicReference;
 
+import javax.net.ssl.HttpsURLConnection;
+
+import org.pac4j.core.resource.SpringResourceHelper;
+import org.pac4j.core.resource.SpringResourceLoader;
 import static org.pac4j.core.util.CommonHelper.assertNotNull;
 import static org.pac4j.core.util.CommonHelper.isNotEmpty;
+import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.config.PrivateKeyJWTClientAuthnMethodConfig;
+import org.pac4j.oidc.exceptions.OidcException;
+import org.pac4j.oidc.exceptions.OidcUnsupportedClientAuthMethodException;
+import org.pac4j.oidc.profile.creator.TokenValidator;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 
+import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.util.IOUtils;
+import com.nimbusds.oauth2.sdk.ParseException;
+import com.nimbusds.oauth2.sdk.auth.ClientAuthentication;
+import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
+import com.nimbusds.oauth2.sdk.auth.ClientSecretBasic;
+import com.nimbusds.oauth2.sdk.auth.ClientSecretPost;
+import com.nimbusds.oauth2.sdk.auth.JWTAuthenticationClaimsSet;
+import com.nimbusds.oauth2.sdk.auth.PrivateKeyJWT;
+import com.nimbusds.oauth2.sdk.auth.Secret;
 import com.nimbusds.oauth2.sdk.id.Audience;
+import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.oauth2.sdk.id.JWTID;
+import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
+
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 
 /**
  * The metadata resolver for the OIDC OP.
@@ -60,8 +65,8 @@ public class OidcOpMetadataResolver extends SpringResourceLoader<OIDCProviderMet
 
     protected final OidcConfiguration configuration;
 
-    @Getter
-    protected ClientAuthentication clientAuthentication;
+    /** Reference on Client Authentication */
+    protected AtomicReference<ClientAuthentication> clientAuthenticationRef = new AtomicReference<>();
 
     @Getter
     protected TokenValidator tokenValidator;
@@ -92,7 +97,7 @@ public class OidcOpMetadataResolver extends SpringResourceLoader<OIDCProviderMet
     protected void internalLoad() {
         this.loaded = retrieveMetadata();
 
-        this.clientAuthentication = computeClientAuthentication();
+        this.clientAuthenticationRef.set(computeClientAuthentication());
 
         this.tokenValidator = createTokenValidator();
     }
@@ -247,7 +252,7 @@ public class OidcOpMetadataResolver extends SpringResourceLoader<OIDCProviderMet
      */
     public ClientAuthentication getClientAuthentication() {
         // Gets result of super method
-        ClientAuthentication auth = clientAuthentication;
+        ClientAuthentication auth = clientAuthenticationRef.get();
   
         var privateKeyJwtConfig = configuration.getPrivateKeyJWTClientAuthnMethodConfig();
         if (privateKeyJwtConfig != null 
@@ -263,7 +268,7 @@ public class OidcOpMetadataResolver extends SpringResourceLoader<OIDCProviderMet
             try {
                 var newPvk = createPrivateKeyJWT(pvk.getClientID(), this.loaded.getTokenEndpointURI(), 
                     jwsAlgo, privateKey, keyID, validity, null);
-                clientAuthentication = newPvk;
+                clientAuthenticationRef.set(newPvk);
                 return newPvk;
             } catch (final JOSEException e) {
                 throw new OidcException("Cannot renew private key JWT client authentication method", e);
