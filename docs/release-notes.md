@@ -7,6 +7,7 @@ title: Release notes&#58;
 
 **v6.3.2**:
 - Reinforce security in `PathMatcher`
+- OIDC : Manage PrivateJWTKey expiration
 
 **v6.3.1**:
 - OIDC: Support `login_hint` parameter for authentication requests
