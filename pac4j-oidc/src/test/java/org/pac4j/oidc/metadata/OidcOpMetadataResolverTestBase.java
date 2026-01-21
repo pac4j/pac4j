@@ -1,10 +1,5 @@
 package org.pac4j.oidc.metadata;
 
-import com.nimbusds.jose.JWSAlgorithm;
-import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
-import com.nimbusds.oauth2.sdk.id.Issuer;
-import com.nimbusds.openid.connect.sdk.SubjectType;
-import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -12,6 +7,12 @@ import java.util.Set;
 
 import org.pac4j.oidc.config.AzureAd2OidcConfiguration;
 import org.pac4j.oidc.config.OidcConfiguration;
+
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
+import com.nimbusds.oauth2.sdk.id.Issuer;
+import com.nimbusds.openid.connect.sdk.SubjectType;
+import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 
 /**
  * @author Mathias Loesch
@@ -36,7 +37,16 @@ public class OidcOpMetadataResolverTestBase {
         List<ClientAuthenticationMethod> supportedAuthMethods) throws URISyntaxException {
         OIDCProviderMetadata providerMetadata = OidcOpMetadataResolverTestBase.getOidcProviderMetadata(supportedAuthMethods);
         StaticOidcOpMetadataResolver oidcOpMetadataResolver = new StaticOidcOpMetadataResolver(configuration, providerMetadata);
+        oidcOpMetadataResolver.init();
+        return oidcOpMetadataResolver;
+    }
 
+    protected static StaticOidcOpMetadataResolver getStaticMetadataResolverWithTokenEndPoint(OidcConfiguration configuration,
+        List<ClientAuthenticationMethod> supportedAuthMethods) throws URISyntaxException {
+        OIDCProviderMetadata providerMetadata = OidcOpMetadataResolverTestBase.getOidcProviderMetadata(supportedAuthMethods);
+        // Sets a fake token endpoint URI to permits private JWT key generation
+        providerMetadata.setTokenEndpointURI(new URI("test"));
+        StaticOidcOpMetadataResolver oidcOpMetadataResolver = new StaticOidcOpMetadataResolver(configuration, providerMetadata);
         oidcOpMetadataResolver.init();
         return oidcOpMetadataResolver;
     }

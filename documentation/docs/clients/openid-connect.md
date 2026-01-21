@@ -117,6 +117,19 @@ var privateKeyJwtConfig = new PrivateKeyJWTClientAuthnMethodConfig(JWSAlgorithm.
 oidcConfiguration.setPrivateKeyJWTClientAuthnMethodConfig(privateKeyJwtConfig);
 ```
 
+Since version 6.3.2, the privateKeyJWT can is recreated when expired, and expiration can be tuned :
+```java
+    /** Default JWT token expiration time in seconds */
+    privateKeyJwtConfig.setValidity(60);
+    /** Clock skew used to not reuse a token to close to expire */
+    privateKeyJwtConfig.setKeyClockSkew(10);
+```
+PrivateKeyJWT expiration mechanism can be disabled by setting :
+```java
+    privateKeyJwtConfig.setUseExpiration(false);
+```
+
+
 When validating the IDToken in the login process, you can set a clock skew:
 
 ```java
