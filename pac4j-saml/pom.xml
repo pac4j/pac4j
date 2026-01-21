@@ -18,6 +18,7 @@
         <xmlsec.version>4.0.4</xmlsec.version>
         <cryptacular.version>1.3.0</cryptacular.version>
         <hazelcast.version>5.6.0</hazelcast.version>
+        <bouncycastle.version>1.78</bouncycastle.version>
     </properties>
 
     <dependencyManagement>
@@ -141,6 +142,21 @@
                     <groupId>org.bouncycastle</groupId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk18on</artifactId>
+            <version>${bouncycastle.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcpkix-jdk18on</artifactId>
+            <version>${bouncycastle.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcutil-jdk18on</artifactId>
+            <version>${bouncycastle.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
