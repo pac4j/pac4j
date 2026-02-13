@@ -32,10 +32,10 @@ The configuration is defined via the [`OidcConfiguration`](https://github.com/pa
 **Example**:
 
 ```java
-OidcConfiguration config = new OidcConfiguration();
-config.setClientId(clientId);
-config.setSecret(secret);
-config.setDiscoveryURI(discoveryUri);
+OidcConfiguration configuration = new OidcConfiguration();
+configuration.setClientId("788339d7-1c44-4732-97c9-134cb201f01f");
+configuration.setSecret("we/31zi+JYa7zOugO4TbSw0hzn+hv2wmENO9AS3T84s=");
+configuration.setDiscoveryURI("https://login.microsoftonline.com/38c46e5a-21f0-46e5-940d-3ca06fd1a330/.well-known/openid-configuration"
 OidcClient oidcClient = new OidcClient(config);
 ```
 
@@ -46,10 +46,10 @@ or [Apple](https://github.com/pac4j/pac4j/blob/master/pac4j-oidc/src/main/java/o
 **Example**:
 
 ```java
-OidcConfiguration configuration = new OidcConfiguration();
+String tenant = "38c46e5a-21f0-46e5-940d-3ca06fd1a330";
+AzureAd2OidcConfiguration configuration = new AzureAd2OidcConfiguration(tenant);
 configuration.setClientId("788339d7-1c44-4732-97c9-134cb201f01f");
 configuration.setSecret("we/31zi+JYa7zOugO4TbSw0hzn+hv2wmENO9AS3T84s=");
-configuration.setDiscoveryURI("https://login.microsoftonline.com/38c46e5a-21f0-46e5-940d-3ca06fd1a330/.well-known/openid-configuration");
 AzureAd2Client client = new AzureAd2Client(configuration);
 ```
 
