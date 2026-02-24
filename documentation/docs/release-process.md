@@ -13,4 +13,4 @@ title: Release process&#58;
 
 5) Release: `mvn release:clean release:prepare` and `mvn release:perform`
 
-6) Publish on the Maven central repository via [https://oss.sonatype.org](https://oss.sonatype.org)
+6) Publish on the Maven central repository via [https://central.sonatype.com/](https://central.sonatype.com/)

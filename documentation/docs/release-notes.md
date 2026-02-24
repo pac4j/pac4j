@@ -5,6 +5,9 @@ title: Release notes&#58;
 
 ### JDK17:
 
+**v6.4.0**:
+
+
 **v6.3.2**:
 - Reinforce security in `PathMatcher`
 - OIDC : Manage PrivateJWTKey expiration
