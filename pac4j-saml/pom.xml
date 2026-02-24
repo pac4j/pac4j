@@ -18,7 +18,7 @@
         <xmlsec.version>4.0.4</xmlsec.version>
         <cryptacular.version>1.3.0</cryptacular.version>
         <hazelcast.version>5.6.0</hazelcast.version>
-        <bouncycastle.version>1.78</bouncycastle.version>
+        <bouncycastle.version>1.79</bouncycastle.version>
     </properties>
 
     <dependencyManagement>
