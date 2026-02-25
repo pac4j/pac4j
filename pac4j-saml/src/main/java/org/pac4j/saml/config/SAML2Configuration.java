@@ -14,7 +14,7 @@ import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.opensaml.saml.saml2.core.Issuer;
 import org.opensaml.xmlsec.config.impl.DefaultSecurityConfigurationBootstrap;
 import org.opensaml.xmlsec.signature.support.SignatureConstants;
-import org.pac4j.core.client.config.BaseClientConfiguration;
+import org.pac4j.core.client.config.KeystoreClientConfiguration;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.converter.AttributeConverter;
 import org.pac4j.core.resource.SpringResourceHelper;
@@ -42,7 +42,6 @@ import org.springframework.core.io.UrlResource;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
 import java.net.URL;
-import java.time.Period;
 import java.util.*;
 import java.util.function.Supplier;
 
@@ -61,7 +60,7 @@ import java.util.function.Supplier;
 @With
 @AllArgsConstructor
 @NoArgsConstructor
-public class SAML2Configuration extends BaseClientConfiguration {
+public class SAML2Configuration extends KeystoreClientConfiguration {
 
     /**
      * Constant <code>DEFAULT_PROVIDER_NAME="pac4j-saml"</code>
@@ -87,17 +86,6 @@ public class SAML2Configuration extends BaseClientConfiguration {
     private String requestInitiatorUrl;
 
     private String assertionConsumerServiceUrl;
-
-    private Resource keystoreResource;
-
-    private String keystorePassword;
-
-    @Getter
-    private String privateKeyPassword;
-
-    @Getter
-    @Setter
-    private String certificateNameToAppend;
 
     private Resource identityProviderMetadataResource;
 
@@ -141,8 +129,6 @@ public class SAML2Configuration extends BaseClientConfiguration {
 
     private boolean forceServiceProviderMetadataGeneration;
 
-    private boolean forceKeystoreGeneration;
-
     private SAMLMessageStoreFactory samlMessageStoreFactory = new EmptyStoreFactory();
 
     private SAML2KeystoreGenerator keystoreGenerator;
@@ -173,10 +159,6 @@ public class SAML2Configuration extends BaseClientConfiguration {
 
     private boolean responseDestinationAttributeMandatory = true;
 
-    private String keyStoreAlias;
-
-    private String keyStoreType;
-
     private int assertionConsumerServiceIndex = -1;
 
     private int attributeConsumingServiceIndex = -1;
@@ -193,13 +175,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
 
     private String postLogoutURL;
 
-    private Period certificateExpirationPeriod = Period.ofYears(20);
-
-    private String certificateSignatureAlg = "SHA1WithRSA";
-
     private SAML2MetadataResolver defaultIdentityProviderMetadataResolverSupplier;
-
-    private int privateKeySize = 2048;
 
     private List<SAML2MetadataContactPerson> contactPersons = new ArrayList<>();
 
@@ -270,11 +246,11 @@ public class SAML2Configuration extends BaseClientConfiguration {
                                  final String identityProviderEntityId, final String serviceProviderEntityId,
                                  final String providerName, final Supplier<List<XSAny>> authnRequestExtensions,
                                  final String attributeAsId) {
-        this.keyStoreAlias = keyStoreAlias;
-        this.keyStoreType = keyStoreType;
-        this.keystoreResource = keystoreResource;
-        this.keystorePassword = keystorePassword;
-        this.privateKeyPassword = privateKeyPassword;
+        setKeyStoreAlias(keyStoreAlias);
+        setKeyStoreType(keyStoreType);
+        setKeystoreResource(keystoreResource);
+        setKeystorePassword(keystorePassword);
+        setPrivateKeyPassword(privateKeyPassword);
         if (identityProviderMetadataResource instanceof UrlResource urlResource) {
             this.identityProviderMetadataResource = new SAML2UrlResource(urlResource.getURL(), this);
         } else {
@@ -318,7 +294,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
 
         val keystoreGenerator = getKeystoreGenerator();
         if (keystoreGenerator.shouldGenerate()) {
-            LOGGER.info("Generating keystore one for/via: {}", this.keystoreResource);
+            LOGGER.info("Generating keystore one for/via: {}", getKeystoreResource());
             keystoreGenerator.generate();
         }
 
@@ -332,7 +308,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
      */
     public SAML2KeystoreGenerator getKeystoreGenerator() {
         if (keystoreGenerator == null) {
-            if (keystoreResource instanceof UrlResource) {
+            if (getKeystoreResource() instanceof UrlResource) {
                 return new SAML2HttpUrlKeystoreGenerator(this);
             }
             return new SAML2FileSystemKeystoreGenerator(this);
@@ -375,43 +351,6 @@ public class SAML2Configuration extends BaseClientConfiguration {
     public void setIdentityProviderMetadataPath(final String path) {
         this.identityProviderMetadataResource = SpringResourceHelper.buildResourceFromPath(path);
     }
-
-    /**
-     * <p>setKeystoreResourceFilepath.</p>
-     *
-     * @param path a {@link String} object
-     */
-    public void setKeystoreResourceFilepath(final String path) {
-        this.keystoreResource = new FileSystemResource(path);
-    }
-
-    /**
-     * <p>setKeystoreResourceClasspath.</p>
-     *
-     * @param path a {@link String} object
-     */
-    public void setKeystoreResourceClasspath(final String path) {
-        this.keystoreResource = new ClassPathResource(path);
-    }
-
-    /**
-     * <p>setKeystoreResourceUrl.</p>
-     *
-     * @param url a {@link String} object
-     */
-    public void setKeystoreResourceUrl(final String url) {
-        this.keystoreResource = SpringResourceHelper.buildResourceFromPath(url);
-    }
-
-    /**
-     * <p>setKeystorePath.</p>
-     *
-     * @param path a {@link String} object
-     */
-    public void setKeystorePath(final String path) {
-        this.keystoreResource = SpringResourceHelper.buildResourceFromPath(path);
-    }
-
 
     /**
      * <p>setServiceProviderMetadataResourceFilepath.</p>
