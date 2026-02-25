@@ -14,10 +14,10 @@ import org.opensaml.xmlsec.config.impl.DefaultSecurityConfigurationBootstrap;
 import org.opensaml.xmlsec.keyinfo.KeyInfoCredentialResolver;
 import org.opensaml.xmlsec.keyinfo.KeyInfoGenerator;
 import org.opensaml.xmlsec.signature.KeyInfo;
-import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.keystore.KeyStoreUtils;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.config.SAML2Configuration;
+import org.pac4j.saml.exceptions.SAMLException;
 
 import java.util.HashMap;
 import java.util.Objects;
@@ -57,7 +57,7 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
             passwords.put(this.privateKeyAlias, configuration.getPrivateKeyPassword());
             this.credentialResolver = new KeyStoreCredentialResolver(keyStore, passwords);
         } catch (final Exception e) {
-            throw new TechnicalException("Error loading keystore", e);
+            throw new SAMLException("Error loading keystore", e);
         }
     }
 
@@ -92,7 +92,7 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
             cs.add(criteria);
             return this.credentialResolver.resolveSingle(cs);
         } catch (final ResolverException e) {
-            throw new TechnicalException("Can't obtain SP private key", e);
+            throw new SAMLException("Can't obtain SP private key", e);
         }
     }
 
@@ -100,7 +100,7 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
         try {
             return getKeyInfoGenerator().generate(credential);
         } catch (final SecurityException e) {
-            throw new TechnicalException("Unable to generate keyInfo from given credential", e);
+            throw new SAMLException("Unable to generate keyInfo from given credential", e);
         }
     }
 }
