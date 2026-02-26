@@ -11,7 +11,7 @@ import org.springframework.core.io.Resource;
 import java.time.Period;
 
 /**
- * Base parent class for client configurations that rely on a keystore.
+ * Keystore properties shared by client configurations.
  *
  * @author Jerome Leleu
  * @since 6.4.0
@@ -19,7 +19,7 @@ import java.time.Period;
 @Getter
 @Setter
 @Accessors(chain = true)
-public abstract class KeystoreClientConfiguration extends BaseClientConfiguration {
+public class KeystoreProperties {
 
     private Resource keystoreResource;
 

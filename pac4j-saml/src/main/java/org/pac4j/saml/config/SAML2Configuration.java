@@ -14,7 +14,8 @@ import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.opensaml.saml.saml2.core.Issuer;
 import org.opensaml.xmlsec.config.impl.DefaultSecurityConfigurationBootstrap;
 import org.opensaml.xmlsec.signature.support.SignatureConstants;
-import org.pac4j.core.client.config.KeystoreClientConfiguration;
+import org.pac4j.core.client.config.BaseClientConfiguration;
+import org.pac4j.core.client.config.KeystoreProperties;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.converter.AttributeConverter;
 import org.pac4j.core.resource.SpringResourceHelper;
@@ -42,6 +43,7 @@ import org.springframework.core.io.UrlResource;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
 import java.net.URL;
+import java.time.Period;
 import java.util.*;
 import java.util.function.Supplier;
 
@@ -60,7 +62,7 @@ import java.util.function.Supplier;
 @With
 @AllArgsConstructor
 @NoArgsConstructor
-public class SAML2Configuration extends KeystoreClientConfiguration {
+public class SAML2Configuration extends BaseClientConfiguration {
 
     /**
      * Constant <code>DEFAULT_PROVIDER_NAME="pac4j-saml"</code>
@@ -86,6 +88,8 @@ public class SAML2Configuration extends KeystoreClientConfiguration {
     private String requestInitiatorUrl;
 
     private String assertionConsumerServiceUrl;
+
+    private KeystoreProperties keystore = new KeystoreProperties();
 
     private Resource identityProviderMetadataResource;
 
@@ -246,11 +250,11 @@ public class SAML2Configuration extends KeystoreClientConfiguration {
                                  final String identityProviderEntityId, final String serviceProviderEntityId,
                                  final String providerName, final Supplier<List<XSAny>> authnRequestExtensions,
                                  final String attributeAsId) {
-        setKeyStoreAlias(keyStoreAlias);
-        setKeyStoreType(keyStoreType);
-        setKeystoreResource(keystoreResource);
-        setKeystorePassword(keystorePassword);
-        setPrivateKeyPassword(privateKeyPassword);
+        this.keystore.setKeyStoreAlias(keyStoreAlias);
+        this.keystore.setKeyStoreType(keyStoreType);
+        this.keystore.setKeystoreResource(keystoreResource);
+        this.keystore.setKeystorePassword(keystorePassword);
+        this.keystore.setPrivateKeyPassword(privateKeyPassword);
         if (identityProviderMetadataResource instanceof UrlResource urlResource) {
             this.identityProviderMetadataResource = new SAML2UrlResource(urlResource.getURL(), this);
         } else {
@@ -294,7 +298,7 @@ public class SAML2Configuration extends KeystoreClientConfiguration {
 
         val keystoreGenerator = getKeystoreGenerator();
         if (keystoreGenerator.shouldGenerate()) {
-            LOGGER.info("Generating keystore one for/via: {}", getKeystoreResource());
+            LOGGER.info("Generating keystore one for/via: {}", keystore.getKeystoreResource());
             keystoreGenerator.generate();
         }
 
@@ -308,7 +312,7 @@ public class SAML2Configuration extends KeystoreClientConfiguration {
      */
     public SAML2KeystoreGenerator getKeystoreGenerator() {
         if (keystoreGenerator == null) {
-            if (getKeystoreResource() instanceof UrlResource) {
+            if (keystore.getKeystoreResource() instanceof UrlResource) {
                 return new SAML2HttpUrlKeystoreGenerator(this);
             }
             return new SAML2FileSystemKeystoreGenerator(this);
@@ -368,6 +372,126 @@ public class SAML2Configuration extends KeystoreClientConfiguration {
      */
     public void setServiceProviderMetadataPath(final String path) {
         this.serviceProviderMetadataResource = SpringResourceHelper.buildResourceFromPath(path);
+    }
+
+    @Deprecated
+    public Resource getKeystoreResource() {
+        return keystore.getKeystoreResource();
+    }
+
+    @Deprecated
+    public void setKeystoreResource(final Resource resource) {
+        keystore.setKeystoreResource(resource);
+    }
+
+    @Deprecated
+    public String getKeystorePassword() {
+        return keystore.getKeystorePassword();
+    }
+
+    @Deprecated
+    public void setKeystorePassword(final String password) {
+        keystore.setKeystorePassword(password);
+    }
+
+    @Deprecated
+    public String getPrivateKeyPassword() {
+        return keystore.getPrivateKeyPassword();
+    }
+
+    @Deprecated
+    public void setPrivateKeyPassword(final String password) {
+        keystore.setPrivateKeyPassword(password);
+    }
+
+    @Deprecated
+    public String getKeyStoreAlias() {
+        return keystore.getKeyStoreAlias();
+    }
+
+    @Deprecated
+    public void setKeyStoreAlias(final String alias) {
+        keystore.setKeyStoreAlias(alias);
+    }
+
+    @Deprecated
+    public String getKeyStoreType() {
+        return keystore.getKeyStoreType();
+    }
+
+    @Deprecated
+    public void setKeyStoreType(final String type) {
+        keystore.setKeyStoreType(type);
+    }
+
+    @Deprecated
+    public boolean isForceKeystoreGeneration() {
+        return keystore.isForceKeystoreGeneration();
+    }
+
+    @Deprecated
+    public void setForceKeystoreGeneration(final boolean force) {
+        keystore.setForceKeystoreGeneration(force);
+    }
+
+    @Deprecated
+    public String getCertificateNameToAppend() {
+        return keystore.getCertificateNameToAppend();
+    }
+
+    @Deprecated
+    public void setCertificateNameToAppend(final String name) {
+        keystore.setCertificateNameToAppend(name);
+    }
+
+    @Deprecated
+    public Period getCertificateExpirationPeriod() {
+        return keystore.getCertificateExpirationPeriod();
+    }
+
+    @Deprecated
+    public void setCertificateExpirationPeriod(final Period period) {
+        keystore.setCertificateExpirationPeriod(period);
+    }
+
+    @Deprecated
+    public String getCertificateSignatureAlg() {
+        return keystore.getCertificateSignatureAlg();
+    }
+
+    @Deprecated
+    public void setCertificateSignatureAlg(final String alg) {
+        keystore.setCertificateSignatureAlg(alg);
+    }
+
+    @Deprecated
+    public int getPrivateKeySize() {
+        return keystore.getPrivateKeySize();
+    }
+
+    @Deprecated
+    public void setPrivateKeySize(final int size) {
+        keystore.setPrivateKeySize(size);
+    }
+
+    @Deprecated
+    public void setKeystoreResourceFilepath(final String path) {
+        keystore.setKeystoreResourceFilepath(path);
+    }
+
+    @Deprecated
+    public void setKeystoreResourceClasspath(final String path) {
+        keystore.setKeystoreResourceClasspath(path);
+    }
+
+    @Deprecated
+    public void setKeystoreResourceUrl(final String url) {
+        keystore.setKeystoreResourceUrl(url);
+    }
+
+    @Deprecated
+    public void setKeystorePath(final String path) {
+        keystore.setKeystorePath(path);
     }
 
     private void initSignatureSigningConfiguration() {
