@@ -374,121 +374,193 @@ public class SAML2Configuration extends BaseClientConfiguration {
         this.serviceProviderMetadataResource = SpringResourceHelper.buildResourceFromPath(path);
     }
 
+    /**
+     * @deprecated use getKeystore().getKeystoreResource() instead of getKeystoreResource()
+     */
     @Deprecated
     public Resource getKeystoreResource() {
         return keystore.getKeystoreResource();
     }
 
+    /**
+     * @deprecated use getKeystore().setKeystoreResource(resource) instead of setKeystoreResource(resource)
+     */
     @Deprecated
     public void setKeystoreResource(final Resource resource) {
         keystore.setKeystoreResource(resource);
     }
 
+    /**
+     * @deprecated use getKeystore().getKeystorePassword() instead of getKeystorePassword()
+     */
     @Deprecated
     public String getKeystorePassword() {
         return keystore.getKeystorePassword();
     }
 
+    /**
+     * @deprecated use getKeystore().setKeystorePassword(password) instead of setKeystorePassword(password)
+     */
     @Deprecated
     public void setKeystorePassword(final String password) {
         keystore.setKeystorePassword(password);
     }
 
+    /**
+     * @deprecated use getKeystore().getPrivateKeyPassword() instead of getPrivateKeyPassword()
+     */
     @Deprecated
     public String getPrivateKeyPassword() {
         return keystore.getPrivateKeyPassword();
     }
 
+    /**
+     * @deprecated use getKeystore().setPrivateKeyPassword(password) instead of setPrivateKeyPassword(password)
+     */
     @Deprecated
     public void setPrivateKeyPassword(final String password) {
         keystore.setPrivateKeyPassword(password);
     }
 
+    /**
+     * @deprecated use getKeystore().getKeyStoreAlias() instead of getKeyStoreAlias()
+     */
     @Deprecated
     public String getKeyStoreAlias() {
         return keystore.getKeyStoreAlias();
     }
 
+    /**
+     * @deprecated use getKeystore().setKeyStoreAlias(alias) instead of setKeyStoreAlias(alias)
+     */
     @Deprecated
     public void setKeyStoreAlias(final String alias) {
         keystore.setKeyStoreAlias(alias);
     }
 
+    /**
+     * @deprecated use getKeystore().getKeyStoreType() instead of getKeyStoreType()
+     */
     @Deprecated
     public String getKeyStoreType() {
         return keystore.getKeyStoreType();
     }
 
+    /**
+     * @deprecated use getKeystore().setKeyStoreType(type) instead of setKeyStoreType(type)
+     */
     @Deprecated
     public void setKeyStoreType(final String type) {
         keystore.setKeyStoreType(type);
     }
 
+    /**
+     * @deprecated use getKeystore().isForceKeystoreGeneration() instead of isForceKeystoreGeneration()
+     */
     @Deprecated
     public boolean isForceKeystoreGeneration() {
         return keystore.isForceKeystoreGeneration();
     }
 
+    /**
+     * @deprecated use getKeystore().setForceKeystoreGeneration(force) instead of setForceKeystoreGeneration(force)
+     */
     @Deprecated
     public void setForceKeystoreGeneration(final boolean force) {
         keystore.setForceKeystoreGeneration(force);
     }
 
+    /**
+     * @deprecated use getKeystore().getCertificateNameToAppend() instead of getCertificateNameToAppend()
+     */
     @Deprecated
     public String getCertificateNameToAppend() {
         return keystore.getCertificateNameToAppend();
     }
 
+    /**
+     * @deprecated use getKeystore().setCertificateNameToAppend(name) instead of setCertificateNameToAppend(name)
+     */
     @Deprecated
     public void setCertificateNameToAppend(final String name) {
         keystore.setCertificateNameToAppend(name);
     }
 
+    /**
+     * @deprecated use getKeystore().getCertificateExpirationPeriod() instead of getCertificateExpirationPeriod()
+     */
     @Deprecated
     public Period getCertificateExpirationPeriod() {
         return keystore.getCertificateExpirationPeriod();
     }
 
+    /**
+     * @deprecated use getKeystore().setCertificateExpirationPeriod(period) instead of setCertificateExpirationPeriod(period)
+     */
     @Deprecated
     public void setCertificateExpirationPeriod(final Period period) {
         keystore.setCertificateExpirationPeriod(period);
     }
 
+    /**
+     * @deprecated use getKeystore().getCertificateSignatureAlg() instead of getCertificateSignatureAlg()
+     */
     @Deprecated
     public String getCertificateSignatureAlg() {
         return keystore.getCertificateSignatureAlg();
     }
 
+    /**
+     * @deprecated use getKeystore().setCertificateSignatureAlg(alg) instead of setCertificateSignatureAlg(alg)
+     */
     @Deprecated
     public void setCertificateSignatureAlg(final String alg) {
         keystore.setCertificateSignatureAlg(alg);
     }
 
+    /**
+     * @deprecated use getKeystore().getPrivateKeySize() instead of getPrivateKeySize()
+     */
     @Deprecated
     public int getPrivateKeySize() {
         return keystore.getPrivateKeySize();
     }
 
+    /**
+     * @deprecated use getKeystore().setPrivateKeySize(size) instead of setPrivateKeySize(size)
+     */
     @Deprecated
     public void setPrivateKeySize(final int size) {
         keystore.setPrivateKeySize(size);
     }
 
+    /**
+     * @deprecated use getKeystore().setKeystoreResourceFilepath(path) instead of setKeystoreResourceFilepath(path)
+     */
     @Deprecated
     public void setKeystoreResourceFilepath(final String path) {
         keystore.setKeystoreResourceFilepath(path);
     }
 
+    /**
+     * @deprecated use getKeystore().setKeystoreResourceClasspath(path) instead of setKeystoreResourceClasspath(path)
+     */
     @Deprecated
     public void setKeystoreResourceClasspath(final String path) {
         keystore.setKeystoreResourceClasspath(path);
     }
 
+    /**
+     * @deprecated use getKeystore().setKeystoreResourceUrl(url) instead of setKeystoreResourceUrl(url)
+     */
     @Deprecated
     public void setKeystoreResourceUrl(final String url) {
         keystore.setKeystoreResourceUrl(url);
     }
 
+    /**
+     * @deprecated use getKeystore().setKeystorePath(path) instead of setKeystorePath(path)
+     */
     @Deprecated
     public void setKeystorePath(final String path) {
         keystore.setKeystorePath(path);
