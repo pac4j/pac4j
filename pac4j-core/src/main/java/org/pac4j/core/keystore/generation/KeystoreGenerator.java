@@ -29,5 +29,4 @@ public interface KeystoreGenerator {
      * @throws Exception if any.
      */
     InputStream retrieve() throws Exception;
-
 }

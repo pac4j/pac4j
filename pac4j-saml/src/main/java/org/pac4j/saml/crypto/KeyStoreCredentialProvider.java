@@ -14,13 +14,13 @@ import org.opensaml.xmlsec.config.impl.DefaultSecurityConfigurationBootstrap;
 import org.opensaml.xmlsec.keyinfo.KeyInfoCredentialResolver;
 import org.opensaml.xmlsec.keyinfo.KeyInfoGenerator;
 import org.opensaml.xmlsec.signature.KeyInfo;
-import org.pac4j.core.keystore.loading.KeyStoreUtils;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.exceptions.SAMLException;
 
 import java.util.HashMap;
 import java.util.Objects;
+
+import static org.pac4j.core.keystore.loading.KeyStoreUtils.retrieveKeyStoreAndAlias;
 
 /**
  * Class responsible for loading a private key from a JKS keystore and returning
@@ -32,26 +32,16 @@ import java.util.Objects;
 @Slf4j
 public class KeyStoreCredentialProvider implements CredentialProvider {
 
-    private static final String DEFAULT_KEYSTORE_TYPE = "JKS";
-
     private final CredentialResolver credentialResolver;
 
     private final String privateKeyAlias;
 
     public KeyStoreCredentialProvider(final SAML2Configuration configuration) {
-        CommonHelper.assertNotBlank("keystorePassword", configuration.getKeystorePassword());
-        CommonHelper.assertNotBlank("privateKeyPassword", configuration.getPrivateKeyPassword());
+        try {
+            val keyStoreAndAlias = retrieveKeyStoreAndAlias(configuration.getKeystore());
 
-        try (var inputStream = configuration.getKeystoreGenerator().retrieve()) {
-            val keyStoreType = configuration.getKeyStoreType() == null
-                ? DEFAULT_KEYSTORE_TYPE
-                : configuration.getKeyStoreType();
-
-            LOGGER.debug("Loading keystore with type {}", keyStoreType);
-            val keyStore = KeyStoreUtils.loadKeyStore(inputStream, configuration.getKeystorePassword(), keyStoreType);
-            LOGGER.debug("Loaded keystore with type {} with size {}", keyStoreType, keyStore.size());
-
-            this.privateKeyAlias = KeyStoreUtils.findPrivateKeyAlias(keyStore, configuration.getKeyStoreAlias());
+            val keyStore = keyStoreAndAlias.getLeft();
+            this.privateKeyAlias = keyStoreAndAlias.getRight();
 
             val passwords = new HashMap<String, String>();
             passwords.put(this.privateKeyAlias, configuration.getPrivateKeyPassword());

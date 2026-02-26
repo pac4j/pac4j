@@ -17,6 +17,7 @@ import org.opensaml.xmlsec.signature.support.SignatureConstants;
 import org.pac4j.core.client.config.BaseClientConfiguration;
 import org.pac4j.core.client.config.KeystoreProperties;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.keystore.generation.KeystoreGenerator;
 import org.pac4j.core.profile.converter.AttributeConverter;
 import org.pac4j.core.resource.SpringResourceHelper;
 import org.pac4j.core.util.Pac4jConstants;
@@ -26,7 +27,6 @@ import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.metadata.*;
 import org.pac4j.saml.metadata.keystore.SAML2FileSystemKeystoreGenerator;
 import org.pac4j.saml.metadata.keystore.SAML2HttpUrlKeystoreGenerator;
-import org.pac4j.saml.metadata.keystore.SAML2KeystoreGenerator;
 import org.pac4j.saml.profile.api.SAML2ObjectBuilder;
 import org.pac4j.saml.profile.converter.SimpleSAML2AttributeConverter;
 import org.pac4j.saml.sso.impl.SAML2AuthnRequestBuilder;
@@ -89,7 +89,8 @@ public class SAML2Configuration extends BaseClientConfiguration {
 
     private String assertionConsumerServiceUrl;
 
-    private KeystoreProperties keystore = new KeystoreProperties().setCertificatePrefix("saml-signing-cert");
+    private KeystoreProperties keystore = new KeystoreProperties().setCertificatePrefix("saml-signing-cert")
+        .setCertificateExpirationPeriod(Period.ofYears(20));
 
     private Resource identityProviderMetadataResource;
 
@@ -134,8 +135,6 @@ public class SAML2Configuration extends BaseClientConfiguration {
     private boolean forceServiceProviderMetadataGeneration;
 
     private SAMLMessageStoreFactory samlMessageStoreFactory = new EmptyStoreFactory();
-
-    private SAML2KeystoreGenerator keystoreGenerator;
 
     private SAML2MetadataGenerator metadataGenerator;
 
@@ -297,7 +296,15 @@ public class SAML2Configuration extends BaseClientConfiguration {
     protected void internalInit(final boolean forceReinit) {
         this.defaultIdentityProviderMetadataResolverSupplier = new SAML2IdentityProviderMetadataResolver(this);
 
-        val keystoreGenerator = getKeystoreGenerator();
+        var keystoreGenerator = keystore.getKeystoreGenerator();
+        if (keystoreGenerator == null) {
+            if (this.keystore.getKeystoreResource() instanceof UrlResource) {
+                keystoreGenerator = new SAML2HttpUrlKeystoreGenerator(this);
+            } else {
+                keystoreGenerator = new SAML2FileSystemKeystoreGenerator(this);
+            }
+            this.keystore.setKeystoreGenerator(keystoreGenerator);
+        }
         if (keystoreGenerator.shouldGenerate()) {
             LOGGER.info("Generating keystore one for/via: {}", keystore.getKeystoreResource());
             keystoreGenerator.generate();
@@ -306,19 +313,14 @@ public class SAML2Configuration extends BaseClientConfiguration {
         initSignatureSigningConfiguration();
     }
 
-    /**
-     * <p>Getter for the field <code>keystoreGenerator</code>.</p>
-     *
-     * @return a {@link SAML2KeystoreGenerator} object
-     */
-    public SAML2KeystoreGenerator getKeystoreGenerator() {
-        if (keystoreGenerator == null) {
-            if (keystore.getKeystoreResource() instanceof UrlResource) {
-                return new SAML2HttpUrlKeystoreGenerator(this);
-            }
-            return new SAML2FileSystemKeystoreGenerator(this);
-        }
-        return this.keystoreGenerator;
+    @Deprecated
+    public KeystoreGenerator getKeystoreGenerator() {
+        return this.keystore.getKeystoreGenerator();
+    }
+
+    @Deprecated
+    public void setKeystoreGenerator(final KeystoreGenerator keystoreGenerator) {
+        this.keystore.setKeystoreGenerator(keystoreGenerator);
     }
 
     /**

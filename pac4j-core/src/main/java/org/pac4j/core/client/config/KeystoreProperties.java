@@ -3,6 +3,7 @@ package org.pac4j.core.client.config;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.pac4j.core.keystore.generation.KeystoreGenerator;
 import org.pac4j.core.resource.SpringResourceHelper;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
@@ -37,35 +38,25 @@ public class KeystoreProperties {
 
     private String certificatePrefix;
 
-    private Period certificateExpirationPeriod = Period.ofYears(20);
+    private Period certificateExpirationPeriod;
 
-    private String certificateSignatureAlg = "SHA1WithRSA";
+    private String certificateSignatureAlg = "SHA256WithRSA";
 
     private int privateKeySize = 2048;
 
-    /**
-     * <p>setKeystoreResourceFilepath.</p>
-     *
-     * @param path a {@link String} object
-     */
+    private KeystoreGenerator keystoreGenerator;
+
+    @Deprecated
     public void setKeystoreResourceFilepath(final String path) {
         this.keystoreResource = new FileSystemResource(path);
     }
 
-    /**
-     * <p>setKeystoreResourceClasspath.</p>
-     *
-     * @param path a {@link String} object
-     */
+    @Deprecated
     public void setKeystoreResourceClasspath(final String path) {
         this.keystoreResource = new ClassPathResource(path);
     }
 
-    /**
-     * <p>setKeystoreResourceUrl.</p>
-     *
-     * @param url a {@link String} object
-     */
+    @Deprecated
     public void setKeystoreResourceUrl(final String url) {
         this.keystoreResource = SpringResourceHelper.buildResourceFromPath(url);
     }
