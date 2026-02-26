@@ -35,6 +35,8 @@ public class KeystoreProperties {
 
     private String certificateNameToAppend;
 
+    private String certificatePrefix;
+
     private Period certificateExpirationPeriod = Period.ofYears(20);
 
     private String certificateSignatureAlg = "SHA1WithRSA";

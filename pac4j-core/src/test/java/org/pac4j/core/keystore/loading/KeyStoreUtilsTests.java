@@ -1,4 +1,4 @@
-package org.pac4j.core.keystore;
+package org.pac4j.core.keystore.loading;
 
 import lombok.val;
 import org.junit.jupiter.api.Test;

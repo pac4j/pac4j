@@ -89,7 +89,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
 
     private String assertionConsumerServiceUrl;
 
-    private KeystoreProperties keystore = new KeystoreProperties();
+    private KeystoreProperties keystore = new KeystoreProperties().setCertificatePrefix("saml-signing-cert");
 
     private Resource identityProviderMetadataResource;
 
@@ -250,6 +250,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
                                  final String identityProviderEntityId, final String serviceProviderEntityId,
                                  final String providerName, final Supplier<List<XSAny>> authnRequestExtensions,
                                  final String attributeAsId) {
+        this.keystore.setCertificatePrefix("saml-signing-cert");
         this.keystore.setKeyStoreAlias(keyStoreAlias);
         this.keystore.setKeyStoreType(keyStoreType);
         this.keystore.setKeystoreResource(keystoreResource);
