@@ -12,10 +12,6 @@
     <packaging>jar</packaging>
     <name>pac4j: Java web security for JWT</name>
 
-    <properties>
-        <bcprov.version>1.83</bcprov.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.pac4j</groupId>
@@ -28,7 +24,6 @@
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk18on</artifactId>
-            <version>${bcprov.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>

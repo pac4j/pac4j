@@ -1,32 +1,14 @@
 package org.pac4j.saml.metadata.keystore;
 
-import java.io.InputStream;
+import org.pac4j.core.keystore.generation.KeystoreGenerator;
 
 /**
  * This is {@link SAML2KeystoreGenerator}.
  *
  * @author Misagh Moayyed
  * @since 4.0.1
+ * @deprecated Use {@link KeystoreGenerator}.
  */
-public interface SAML2KeystoreGenerator {
-    /**
-     * <p>generate.</p>
-     */
-    void generate();
-
-    /**
-     * <p>shouldGenerate.</p>
-     *
-     * @return a boolean
-     */
-    boolean shouldGenerate();
-
-    /**
-     * <p>retrieve.</p>
-     *
-     * @return a {@link InputStream} object
-     * @throws Exception if any.
-     */
-    InputStream retrieve() throws Exception;
-
+@Deprecated
+public interface SAML2KeystoreGenerator extends KeystoreGenerator {
 }

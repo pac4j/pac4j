@@ -32,11 +32,11 @@ The configuration is defined via the [`OidcConfiguration`](https://github.com/pa
 **Example**:
 
 ```java
-OidcConfiguration configuration = new OidcConfiguration();
-configuration.setClientId("788339d7-1c44-4732-97c9-134cb201f01f");
-configuration.setSecret("we/31zi+JYa7zOugO4TbSw0hzn+hv2wmENO9AS3T84s=");
-configuration.setDiscoveryURI("https://login.microsoftonline.com/38c46e5a-21f0-46e5-940d-3ca06fd1a330/.well-known/openid-configuration"
-OidcClient oidcClient = new OidcClient(config);
+OidcConfiguration config = new OidcConfiguration();
+config.setClientId("788339d7-1c44-4732-97c9-134cb201f01f");
+config.setSecret("we/31zi+JYa7zOugO4TbSw0hzn+hv2wmENO9AS3T84s=");
+config.setDiscoveryURI("https://login.microsoftonline.com/38c4650d-3ca06fd1a330/.well-known/openid-configuration");
+OidcClient oidcClient = new OidcClient(c);
 ```
 
 In some cases (when the discovery url is already known for example), you can use a specific client like for [Google](https://github.com/pac4j/pac4j/blob/master/pac4j-oidc/src/main/java/org/pac4j/oidc/client/GoogleOidcClient.java),
@@ -99,7 +99,52 @@ HeaderClient client = new HeaderClient("Authorization", "Bearer ", oidcClient.ge
 
 The request to the server should have an `Authorization` header with the value as `Bearer {access token}`.
 
-## 3) Advanced configuration
+
+## 3) Federation
+
+Since v6.4.0, pac4j supports the [OpenID Connect Federation v1.0](https://openid.net/specs/openid-federation-1_0.html).
+
+### a) Federation endpoint
+
+To enable the federation endpoint at the RP (application) level, you need to configure a set of private/public keys:
+- either via a keystore (like for the SAML protocol):
+
+```java
+oidcConfig.getFederation().getKeystore().setKeystorePath("file:./metadata/oidcfede.keystore");
+oidcConfig.getFederation().getKeystore().setKeystorePassword("changeit");
+oidcConfig.getFederation().getKeystore().setPrivateKeyPassword("changeit");
+```
+
+You have several additional settings in the `KeystoreProperties`.
+
+- or via a JWKS:
+
+```java
+oidcConfig.getFederation().getJwks().setJwksPath("file:./metadata/oidcfede.jwks");
+oidcConfig.getFederation().getJwks().setKid("mykeyoidcfede26");
+```
+
+In both cases (keystore or JWKS), if it doesn't exist, it will be created (for a file setting).
+
+You can define the information displayed by the endpoint thanks to the properties available in the `OidcFederationProperties`: `validityInDays`, `entityId`, `applicationType`...
+
+You must use the `EntityConfigurationGenerator` component to retrieve the entity configuration (Spring Boot example):
+
+```java
+    @RequestMapping(value = "/.well-known/openid-federation", produces = DefaultEntityConfigurationGenerator.CONTENT_TYPE)
+    @ResponseBody
+    public String oidcFederation() throws HttpAction {
+        val oidcClient = (OidcClient) config.getClients().findClient("OidcClient").get();
+        return oidcClient.getConfiguration().getFederation().getEntityConfigurationGenerator().generate();
+    }
+```
+
+
+### b) Using trust anchors
+
+
+
+## 4) Advanced configuration
 
 You can define how the client credentials (`clientId` and `secret`)  are passed to the token endpoint with the `setClientAuthenticationMethod` method:
 

@@ -7,6 +7,8 @@ title: Release notes&#58;
 
 **v6.4.0**:
 - Upgrade to Shiro v2.1 for security reasons. Defaults remain the ones of Shiro v1.13 though and will change in a future major version.
+- `KeystoreGenerator` and its implem `FileSystemKeystoreGenerator` are now in the core
+- Support of the OpenID Connect Federation protocol v1.0
 
 **v6.3.2**:
 - Reinforce security in `PathMatcher`

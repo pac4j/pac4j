@@ -14,15 +14,13 @@ import org.opensaml.xmlsec.config.impl.DefaultSecurityConfigurationBootstrap;
 import org.opensaml.xmlsec.keyinfo.KeyInfoCredentialResolver;
 import org.opensaml.xmlsec.keyinfo.KeyInfoGenerator;
 import org.opensaml.xmlsec.signature.KeyInfo;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.exceptions.SAMLException;
 
-import java.io.InputStream;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
 import java.util.HashMap;
 import java.util.Objects;
+
+import static org.pac4j.core.keystore.loading.KeyStoreUtils.retrieveKeyStoreAndAlias;
 
 /**
  * Class responsible for loading a private key from a JKS keystore and returning
@@ -34,58 +32,22 @@ import java.util.Objects;
 @Slf4j
 public class KeyStoreCredentialProvider implements CredentialProvider {
 
-    private static final String DEFAULT_KEYSTORE_TYPE = "JKS";
-
     private final CredentialResolver credentialResolver;
 
     private final String privateKeyAlias;
 
     public KeyStoreCredentialProvider(final SAML2Configuration configuration) {
-        CommonHelper.assertNotBlank("keystorePassword", configuration.getKeystorePassword());
-        CommonHelper.assertNotBlank("privateKeyPassword", configuration.getPrivateKeyPassword());
+        try {
+            val keyStoreAndAlias = retrieveKeyStoreAndAlias(configuration.getKeystore());
 
-        try (var inputStream = configuration.getKeystoreGenerator().retrieve()) {
-            val keyStoreType = configuration.getKeyStoreType() == null
-                ? DEFAULT_KEYSTORE_TYPE
-                : configuration.getKeyStoreType();
-            val keyStore = loadKeyStore(inputStream, configuration.getKeystorePassword(), keyStoreType);
-            this.privateKeyAlias = getPrivateKeyAlias(keyStore, configuration.getKeyStoreAlias());
+            val keyStore = keyStoreAndAlias.getLeft();
+            this.privateKeyAlias = keyStoreAndAlias.getRight();
+
             val passwords = new HashMap<String, String>();
             passwords.put(this.privateKeyAlias, configuration.getPrivateKeyPassword());
             this.credentialResolver = new KeyStoreCredentialResolver(keyStore, passwords);
         } catch (final Exception e) {
             throw new SAMLException("Error loading keystore", e);
-        }
-    }
-
-    private static KeyStore loadKeyStore(final InputStream inputStream, final String storePasswd, final String keyStoreType) {
-        try {
-            LOGGER.debug("Loading keystore with type {}", keyStoreType);
-            val ks = KeyStore.getInstance(keyStoreType);
-            ks.load(inputStream, storePasswd == null ? null : storePasswd.toCharArray());
-            LOGGER.debug("Loaded keystore with type {} with size {}", keyStoreType, ks.size());
-            return ks;
-        } catch (final Exception e) {
-            throw new SAMLException("Error loading keystore", e);
-        }
-    }
-
-    protected static String getPrivateKeyAlias(final KeyStore keyStore, final String keyStoreAlias) {
-        try {
-            val aliases = keyStore.aliases();
-            while (aliases.hasMoreElements()) {
-                val currentAlias = aliases.nextElement();
-                if (keyStoreAlias != null) {
-                    if (currentAlias.equalsIgnoreCase(keyStoreAlias)) {
-                        return currentAlias;
-                    }
-                } else if (keyStore.entryInstanceOf(currentAlias, KeyStore.PrivateKeyEntry.class)) {
-                    return currentAlias;
-                }
-            }
-            throw new SAMLException("Keystore has no private keys to match the requested key alias " + keyStoreAlias);
-        } catch (final KeyStoreException e) {
-            throw new SAMLException("Unable to get aliases from keyStore", e);
         }
     }
 

@@ -1,4 +1,4 @@
-package org.pac4j.saml.metadata.keystore;
+package org.pac4j.core.keystore.generation;
 
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
@@ -9,9 +9,9 @@ import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.asn1.x509.Time;
 import org.bouncycastle.asn1.x509.V3TBSCertificateGenerator;
 import org.bouncycastle.operator.DefaultSignatureAlgorithmIdentifierFinder;
+import org.pac4j.core.config.properties.KeystoreProperties;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.saml.config.SAML2Configuration;
-import org.pac4j.saml.exceptions.SAMLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,74 +30,71 @@ import java.time.chrono.ChronoLocalDateTime;
 import java.util.Date;
 
 /**
- * This is {@link BaseSAML2KeystoreGenerator}.
+ * This is {@link BaseKeystoreGenerator}.
  *
- * @author Misagh Moayyed
- * @since 4.0.1
+ * @author Jérôme LELEU
+ * @since 6.4.0
  */
-@Deprecated
-public abstract class BaseSAML2KeystoreGenerator implements SAML2KeystoreGenerator {
-
-    protected static final String CERTIFICATES_PREFIX = "saml-signing-cert";
+public abstract class BaseKeystoreGenerator implements KeystoreGenerator {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected final SAML2Configuration saml2Configuration;
+    protected final KeystoreProperties keystore;
 
     /**
-     * <p>Constructor for BaseSAML2KeystoreGenerator.</p>
+     * <p>Constructor for BaseKeystoreGenerator.</p>
      *
-     * @param saml2Configuration a {@link SAML2Configuration} object
+     * @param keystore a {@link KeystoreProperties} object
      */
-    public BaseSAML2KeystoreGenerator(final SAML2Configuration saml2Configuration) {
-        this.saml2Configuration = saml2Configuration;
+    public BaseKeystoreGenerator(final KeystoreProperties keystore) {
+        this.keystore = keystore;
     }
 
     /** {@inheritDoc} */
     @Override
     public boolean shouldGenerate() {
-        return saml2Configuration.isForceKeystoreGeneration();
+        return keystore.isForceKeystoreGeneration();
     }
 
     /** {@inheritDoc} */
     @Override
     public void generate() {
         try {
-            if (StringUtils.isBlank(saml2Configuration.getKeyStoreAlias())) {
-                saml2Configuration.setKeyStoreAlias(getClass().getSimpleName());
-                logger.info("Defaulting keystore alias {}", saml2Configuration.getKeyStoreAlias());
+            if (StringUtils.isBlank(keystore.getKeyStoreAlias())) {
+                keystore.setKeyStoreAlias(getClass().getSimpleName());
+                logger.info("Defaulting keystore alias {}", keystore.getKeyStoreAlias());
             }
 
-            if (StringUtils.isBlank(saml2Configuration.getKeyStoreType())) {
-                saml2Configuration.setKeyStoreType(KeyStore.getDefaultType());
-                logger.info("Defaulting keystore type {}", saml2Configuration.getKeyStoreType());
+            if (StringUtils.isBlank(keystore.getKeyStoreType())) {
+                keystore.setKeyStoreType(KeyStore.getDefaultType());
+                logger.info("Defaulting keystore type {}", keystore.getKeyStoreType());
             }
 
             validate();
 
-            val ks = KeyStore.getInstance(saml2Configuration.getKeyStoreType());
-            val password = saml2Configuration.getKeystorePassword().toCharArray();
+            val ks = KeyStore.getInstance(keystore.getKeyStoreType());
+            val password = keystore.getKeystorePassword().toCharArray();
             ks.load(null, password);
 
             val kpg = KeyPairGenerator.getInstance("RSA");
-            kpg.initialize(saml2Configuration.getPrivateKeySize());
+            kpg.initialize(keystore.getPrivateKeySize());
             val kp = kpg.genKeyPair();
 
-            val sigAlg = saml2Configuration.getCertificateSignatureAlg();
+            val sigAlg = keystore.getCertificateSignatureAlg();
             val sigAlgID = new DefaultSignatureAlgorithmIdentifierFinder().find(sigAlg);
             val dn = InetAddress.getLocalHost().getHostName();
             val certificate = createSelfSignedCert(new X500Name("CN=" + dn), sigAlg, sigAlgID, kp);
 
-            val keyPassword = saml2Configuration.getPrivateKeyPassword().toCharArray();
+            val keyPassword = keystore.getPrivateKeyPassword().toCharArray();
             val signingKey = kp.getPrivate();
-            ks.setKeyEntry(saml2Configuration.getKeyStoreAlias(), signingKey, keyPassword, new Certificate[]{certificate});
+            ks.setKeyEntry(keystore.getKeyStoreAlias(), signingKey, keyPassword, new Certificate[]{certificate});
 
             store(ks, certificate, signingKey);
             logger.info("Created keystore {} with key alias {}",
-                saml2Configuration.getKeystoreResource(),
+                keystore.getKeystoreResource(),
                 ks.aliases().nextElement());
         } catch (final Exception e) {
-            throw new SAMLException("Could not create keystore", e);
+            throw new TechnicalException("Could not create keystore", e);
         }
     }
 
@@ -138,7 +135,7 @@ public abstract class BaseSAML2KeystoreGenerator implements SAML2KeystoreGenerat
         val startDate = LocalDateTime.now(Clock.systemUTC()).minusSeconds(1);
         certGen.setStartDate(time(startDate));
 
-        val endDate = startDate.plus(saml2Configuration.getCertificateExpirationPeriod());
+        val endDate = startDate.plus(keystore.getCertificateExpirationPeriod());
         certGen.setEndDate(time(endDate));
 
         certGen.setSignature(sigAlgID);
@@ -168,8 +165,8 @@ public abstract class BaseSAML2KeystoreGenerator implements SAML2KeystoreGenerat
     }
 
     private void validate() {
-        CommonHelper.assertNotBlank("keystoreAlias", saml2Configuration.getKeyStoreAlias());
-        CommonHelper.assertNotBlank("keystoreType", saml2Configuration.getKeyStoreType());
-        CommonHelper.assertNotBlank("privateKeyPassword", saml2Configuration.getPrivateKeyPassword());
+        CommonHelper.assertNotBlank("keystoreAlias", keystore.getKeyStoreAlias());
+        CommonHelper.assertNotBlank("keystoreType", keystore.getKeyStoreType());
+        CommonHelper.assertNotBlank("privateKeyPassword", keystore.getPrivateKeyPassword());
     }
 }
