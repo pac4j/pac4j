@@ -8,5 +8,7 @@ package org.pac4j.oidc.federation.entity;
  */
 public interface EntityConfigurationGenerator {
 
+    String getContentType();
+
     String generate();
 }

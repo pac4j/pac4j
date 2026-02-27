@@ -15,7 +15,7 @@ import org.opensaml.saml.saml2.core.Issuer;
 import org.opensaml.xmlsec.config.impl.DefaultSecurityConfigurationBootstrap;
 import org.opensaml.xmlsec.signature.support.SignatureConstants;
 import org.pac4j.core.client.config.BaseClientConfiguration;
-import org.pac4j.core.client.config.KeystoreProperties;
+import org.pac4j.core.config.properties.KeystoreProperties;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.keystore.generation.KeystoreGenerator;
 import org.pac4j.core.profile.converter.AttributeConverter;

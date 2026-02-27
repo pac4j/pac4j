@@ -1,4 +1,4 @@
-package org.pac4j.core.client.config;
+package org.pac4j.core.config.properties;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +12,7 @@ import org.springframework.core.io.Resource;
 import java.time.Period;
 
 /**
- * Keystore properties shared by client configurations.
+ * Keystore properties.
  *
  * @author Jerome Leleu
  * @since 6.4.0

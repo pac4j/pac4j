@@ -1,15 +1,15 @@
 package org.pac4j.oidc.federation.config;
 
+import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
 import lombok.Getter;
 import lombok.Setter;
-import org.pac4j.core.client.config.KeystoreProperties;
+import org.pac4j.core.config.properties.JwksProperties;
+import org.pac4j.core.config.properties.KeystoreProperties;
 import org.pac4j.core.keystore.generation.FileSystemKeystoreGenerator;
-import org.pac4j.core.resource.SpringResourceHelper;
-import org.pac4j.oidc.federation.entity.DefaultEntityConfigurationGenerator;
 import org.pac4j.oidc.federation.entity.EntityConfigurationGenerator;
-import org.springframework.core.io.Resource;
 
 import java.time.Period;
+import java.util.List;
 
 /**
  * Properties dedicated to the federation.
@@ -24,17 +24,27 @@ public class OidcFederationProperties {
 
     private KeystoreProperties keystore = new KeystoreProperties();
 
-    private Resource jwksResource;
+    private JwksProperties jwks = new JwksProperties();
 
-    private EntityConfigurationGenerator entityConfigurationGenerator = new DefaultEntityConfigurationGenerator(this);
+    private EntityConfigurationGenerator entityConfigurationGenerator;
+
+    private int validityInDays = 365;
+
+    private String entityId;
+
+    private String applicationType = "web"; // or native
+
+    private List<String> responseTypes = List.of("code");
+
+    private List<String> grantTypes = List.of("authorization_code");
+
+    private List<String> scopes = List.of("openid", "email", "profile");
+
+    private ClientAuthenticationMethod clientAuthenticationMethod = ClientAuthenticationMethod.PRIVATE_KEY_JWT;
 
     public OidcFederationProperties() {
         keystore.setCertificatePrefix("oidcfede-signing-cert");
         keystore.setCertificateExpirationPeriod(Period.ofYears(1));
         keystore.setKeystoreGenerator(new FileSystemKeystoreGenerator(keystore));
-    }
-
-    public void setJwksPath(final String path) {
-        this.jwksResource = SpringResourceHelper.buildResourceFromPath(path);
     }
 }

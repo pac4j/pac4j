@@ -3,7 +3,7 @@ package org.pac4j.core.keystore.loading;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.lang3.tuple.Pair;
-import org.pac4j.core.client.config.KeystoreProperties;
+import org.pac4j.core.config.properties.KeystoreProperties;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 

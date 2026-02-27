@@ -1,22 +1,25 @@
 package org.pac4j.oidc.federation.entity;
 
 import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.JOSEObjectType;
+import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
-import com.nimbusds.jose.jwk.KeyUse;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.SignedJWT;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import org.pac4j.core.client.config.KeystoreProperties;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.keystore.loading.KeyStoreUtils;
 import org.pac4j.core.util.InitializableObject;
-import org.pac4j.oidc.federation.config.OidcFederationProperties;
-import org.springframework.core.io.Resource;
+import org.pac4j.oidc.client.OidcClient;
 
-import java.io.IOException;
-import java.security.KeyStoreException;
-import java.text.ParseException;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.UUID;
+
+import static org.pac4j.oidc.util.JwkHelper.*;
 
 /**
  * The default entity configuration generator.
@@ -28,9 +31,17 @@ import java.text.ParseException;
 @RequiredArgsConstructor
 public class DefaultEntityConfigurationGenerator extends InitializableObject implements EntityConfigurationGenerator {
 
-    private final OidcFederationProperties properties;
+    private static final String ENTITY_STATEMENT_TYPE = "entity-statement+jwt";
+
+    public static final String CONTENT_TYPE = "application/" + ENTITY_STATEMENT_TYPE;
+    private final OidcClient client;
 
     private String data;
+
+    @Override
+    public String getContentType() {
+        return CONTENT_TYPE;
+    }
 
     @Override
     public String generate() {
@@ -41,58 +52,84 @@ public class DefaultEntityConfigurationGenerator extends InitializableObject imp
 
     @Override
     protected void internalInit(final boolean forceReinit) {
+        client.init(forceReinit);
+
+        val config = client.getConfiguration();
+        val federation = config.getFederation();
         JWK signingKey = null;
-        val jwks = properties.getJwksResource();
-        if (jwks != null) {
-            signingKey = loadFromJWKS(jwks);
-        } else {
-            signingKey = loadFromKeyStore(properties.getKeystore());
-        }
-        System.out.println(signingKey);
-    }
-
-    private JWK loadFromJWKS(final Resource jwks) {
-        if (!jwks.exists()) {
-            if (!jwks.isFile()) {
-                throw new TechnicalException("Cannot create JWKS resource which is not a file: " + jwks);
-            }
-            // TODO
-            System.out.println("Generate JWKS");
-        }
-        try (val is = jwks.getInputStream()) {
-            val jwkSet = JWKSet.load(is);
-
-            val signingJwk = jwkSet.getKeys().stream()
-                .filter(k -> KeyUse.SIGNATURE.equals(k.getKeyUse()))
-                .filter(JWK::isPrivate)
-                .findFirst()
-                .orElseThrow(() -> new TechnicalException("No private key for signature"));
-
-            return signingJwk;
-
-        } catch (final IOException | ParseException e) {
-            throw new TechnicalException(e);
-        }
-    }
-
-    private JWK loadFromKeyStore(final KeystoreProperties keystoreProperties) {
-        val keystoreResource = keystoreProperties.getKeystoreResource();
-        if (keystoreResource != null) {
-            val keystoreGenerator = keystoreProperties.getKeystoreGenerator();
-            if (keystoreGenerator.shouldGenerate()) {
-                LOGGER.info("Generating keystore for resource: {}", keystoreProperties.getKeystoreResource());
-                keystoreGenerator.generate();
-            }
-            val keyStoreAndAlias = KeyStoreUtils.retrieveKeyStoreAndAlias(keystoreProperties);
-            val keyStore = keyStoreAndAlias.getLeft();
-            val alias = keyStoreAndAlias.getRight();
-            try {
-                return JWK.load(keyStore, alias, keystoreProperties.getPrivateKeyPassword().toCharArray());
-            } catch (final KeyStoreException | JOSEException e) {
-                throw new TechnicalException(e);
-            }
+        val jwksProperties = federation.getJwks();
+        val keystoreProperties = federation.getKeystore();
+        if (jwksProperties != null && jwksProperties.getJwksResource() != null) {
+            signingKey = loadCreateJwkFromJwks(jwksProperties);
+        } else if (keystoreProperties != null && keystoreProperties.getKeystoreResource() != null) {
+            signingKey = loadCreateJwkFromKeyStore(federation.getKeystore());
         } else {
             throw new TechnicalException("OIDC JWKS or keystore mandatory to generate the entity configuration");
         }
+
+        data = buildConfig(signingKey);
+    }
+
+    protected String buildConfig(final JWK signingKey) {
+        if (!hasPrivatePart(signingKey)) {
+            throw new TechnicalException("Signing key must include private part");
+        }
+
+        val config = client.getConfiguration();
+        val federation = config.getFederation();
+        val callbackURL = client.getCallbackUrl();
+
+        var entityId = federation.getEntityId();
+        if (entityId == null) {
+            entityId = callbackURL;
+        }
+
+        val now = new Date();
+        long validityMs = (long) federation.getValidityInDays() * 24 * 60 * 60 * 1000L;
+        val exp = new Date(now.getTime() + validityMs);
+
+        val claimsBuilder = new JWTClaimsSet.Builder()
+            .issuer(entityId)
+            .subject(entityId)
+            .audience(entityId)
+            .jwtID(UUID.randomUUID().toString())
+            .issueTime(now)
+            .expirationTime(exp)
+            .notBeforeTime(now);
+
+        val rpMetadata = new LinkedHashMap<String, Object>();
+        rpMetadata.put("redirect_uris", List.of(callbackURL));
+        rpMetadata.put("application_type", federation.getApplicationType());
+        rpMetadata.put("response_types", federation.getResponseTypes());
+        rpMetadata.put("grant_types", federation.getGrantTypes());
+        rpMetadata.put("scope", String.join(" ", federation.getScopes()));
+        rpMetadata.put("token_endpoint_auth_method", federation.getClientAuthenticationMethod().getValue());
+
+        val metadata = new LinkedHashMap<String, Object>();
+        metadata.put("openid_relying_party", rpMetadata);
+
+        claimsBuilder.claim("metadata", metadata);
+
+        val publicKey = signingKey.toPublicJWK();
+        val jwkSet = new JWKSet(publicKey);
+        claimsBuilder.claim("jwks", jwkSet.toJSONObject());
+
+        val claims = claimsBuilder.build();
+
+        val alg = determineAlgorithm(signingKey, false);
+        val header = new JWSHeader.Builder(alg)
+            .type(new JOSEObjectType(ENTITY_STATEMENT_TYPE))
+            .keyID(signingKey.getKeyID())
+            .build();
+
+        val signedJWT = new SignedJWT(header, claims);
+        val signer = determineSigner(signingKey, false);
+        try {
+            signedJWT.sign(signer);
+        } catch (final JOSEException e) {
+            throw new TechnicalException(e);
+        }
+
+        return signedJWT.serialize();
     }
 }
