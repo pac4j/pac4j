@@ -17,6 +17,7 @@ import org.pac4j.core.util.generator.RandomValueGenerator;
 import org.pac4j.core.util.generator.ValueGenerator;
 import org.pac4j.oidc.exceptions.OidcConfigurationException;
 import org.pac4j.oidc.federation.config.OidcFederationProperties;
+import org.pac4j.oidc.metadata.IOidcOpMetadataResolver;
 import org.pac4j.oidc.metadata.OidcOpMetadataResolver;
 import org.pac4j.oidc.util.SessionStoreValueRetriever;
 import org.pac4j.oidc.util.ValueRetriever;
@@ -226,7 +227,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
 
     private HostnameVerifier hostnameVerifier;
 
-    protected OidcOpMetadataResolver opMetadataResolver;
+    protected IOidcOpMetadataResolver opMetadataResolver;
 
     @Deprecated(forRemoval = true)
     private boolean logoutValidation = true;
@@ -262,15 +263,16 @@ public class OidcConfiguration extends BaseClientConfiguration {
         if (forceReinit || this.getOpMetadataResolver() == null) {
             assertNotBlank("discoveryURI", getDiscoveryURI());
             this.opMetadataResolver = createNewOpMetadataResolver();
-            this.opMetadataResolver.init();
         }
     }
 
     /**
      * <p>Creates proper implementation of OidcOpMetadataResolver.</p>
      */
-    protected OidcOpMetadataResolver createNewOpMetadataResolver() {
-        return new OidcOpMetadataResolver(this);
+    protected IOidcOpMetadataResolver createNewOpMetadataResolver() {
+        val resolver = new OidcOpMetadataResolver(this);
+        resolver.init();
+        return resolver;
     }
 
     /**

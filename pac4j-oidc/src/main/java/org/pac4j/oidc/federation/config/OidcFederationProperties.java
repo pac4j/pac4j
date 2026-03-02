@@ -45,6 +45,8 @@ public class OidcFederationProperties {
 
     private List<OidcTrustAnchorProperties> trustAnchors = new ArrayList<>();
 
+    private String targetEntity;
+
     public OidcFederationProperties() {
         keystore.setCertificatePrefix("oidcfede-signing-cert");
         keystore.setCertificateExpirationPeriod(Period.ofYears(1));

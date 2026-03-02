@@ -107,10 +107,6 @@ public final class JwtTests implements TestsConstants {
 
     @Test
     public void testEncryptedJwtWithoutInnerSignatureMustBeRejectedWhenSignatureConfigurationsDefined() throws NoSuchAlgorithmException {
-        // Regression test for the reported auth bypass:
-        // When encryption + signature configurations are defined, a JWE must decrypt to a SignedJWT (nested JWT).
-        // A JWE decrypting to a plain (unsigned) JWT must be rejected.
-
         val keyGen = KeyPairGenerator.getInstance("RSA");
         keyGen.initialize(2048);
         val keyPair = keyGen.generateKeyPair();
@@ -125,7 +121,6 @@ public final class JwtTests implements TestsConstants {
 
         val authenticator = new JwtAuthenticator();
         authenticator.addEncryptionConfiguration(encryptionConfiguration);
-        // Signature configuration is defined (so an unsigned JWT should NOT be accepted)
         authenticator.addSignatureConfiguration(new SecretSignatureConfiguration("this-should-not-matter"));
 
         val credentials = new TokenCredentials(token);
