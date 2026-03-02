@@ -336,7 +336,10 @@ public final class JwtTests implements TestsConstants {
         generator.setEncryptionConfiguration(new SecretEncryptionConfiguration(MAC_SECRET));
         final var profile = createProfile();
         final var token = generator.generate(profile);
-        assertToken(profile, token);
+
+        final var authenticator = new JwtAuthenticator();
+        authenticator.addEncryptionConfiguration(new SecretEncryptionConfiguration(MAC_SECRET));
+        assertToken(profile, token, authenticator);
     }
 
     @Test

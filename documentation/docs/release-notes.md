@@ -3,6 +3,9 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v5.7.9**:
+- Security fix on the `pac4j-jwt` module
+
 **v5.7.8**:
 - Fix the X509 `SubjectDN` parsing
 - Fix bug for HTML values in POST forms
@@ -188,6 +191,9 @@ title: Release notes&#58;
 - Authentication requests for protocols that support forced/passive authentication can now be modified on a per-request basis using pre-defined HTTP attributes to control the type of authentication request sent to the provider.
 
 ---
+
+**v4.5.9**:
+- Security fix on the `pac4j-jwt` module
 
 **v4.5.8**:
 - Only 'SAML version 2' in metadata
