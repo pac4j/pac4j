@@ -1,25 +1,23 @@
-package org.pac4j.core.config.properties;
+package org.pac4j.oidc.federation.config;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.experimental.Accessors;
 import org.pac4j.core.resource.SpringResourceHelper;
 import org.springframework.core.io.Resource;
 
 /**
- * JWKS properties.
+ * A trust anchor.
  *
  * @author Jerome LELEU
  * @since 6.4.0
  */
 @Getter
 @Setter
-@Accessors(chain = true)
-public class JwksProperties {
+public class OidcTrustAnchorProperties {
+
+    private String entityId;
 
     private Resource jwksResource;
-
-    private String kid;
 
     /**
      * <p>setJwksPath.</p>

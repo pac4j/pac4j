@@ -9,6 +9,10 @@ title: Release notes&#58;
 - Upgrade to Shiro v2.1 for security reasons. Defaults remain the ones of Shiro v1.13 though and will change in a future major version.
 - `KeystoreGenerator` and its implem `FileSystemKeystoreGenerator` are now in the core
 - Support of the OpenID Connect Federation protocol v1.0
+- Add the `encryptionRequired` flag (by default `false`) for the `JWtAuthenticator`
+
+**v6.3.3**:
+- Security fix on the `pac4j-jwt` module
 
 **v6.3.2**:
 - Reinforce security in `PathMatcher`
@@ -133,6 +137,9 @@ title: Release notes&#58;
 ---
 
 ### JDK11:
+
+**v5.7.9**:
+- Security fix on the `pac4j-jwt` module
 
 **v5.7.8**:
 - Fix the X509 `SubjectDN` parsing
@@ -321,6 +328,9 @@ title: Release notes&#58;
 ---
 
 ### JDK8:
+
+**v4.5.9**:
+- Security fix on the `pac4j-jwt` module
 
 **v4.5.8**:
 - Only 'SAML version 2' in metadata

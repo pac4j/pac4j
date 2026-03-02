@@ -9,6 +9,7 @@ import org.pac4j.core.keystore.generation.FileSystemKeystoreGenerator;
 import org.pac4j.oidc.federation.entity.EntityConfigurationGenerator;
 
 import java.time.Period;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -41,6 +42,8 @@ public class OidcFederationProperties {
     private List<String> scopes = List.of("openid", "email", "profile");
 
     private ClientAuthenticationMethod clientAuthenticationMethod = ClientAuthenticationMethod.PRIVATE_KEY_JWT;
+
+    private List<OidcTrustAnchorProperties> trustAnchors = new ArrayList<>();
 
     public OidcFederationProperties() {
         keystore.setCertificatePrefix("oidcfede-signing-cert");
