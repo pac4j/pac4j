@@ -24,7 +24,7 @@ jobs:
               with:
                   java-version: ${{ env.JDK_CURRENT }}
             - name: Cache Maven dependencies
-              uses: actions/cache@v2
+              uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809 # v4
               with:
                   path: ~/.m2/repository
                   key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
