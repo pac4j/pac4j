@@ -57,7 +57,7 @@ It is licensed under the Apache 2 license.
 ## Versions
 
 
-The latest released version is the [![Maven Central](https://img.shields.io/maven-central/v/org.pac4j/pac4j-core.svg)](https://search.maven.org/artifact/org.pac4j/pac4j-core), available in the Maven central repository.
+The latest released version is the [![Maven Central](https://img.shields.io/maven-central/v/org.pac4j/pac4j-core.svg)](https://repo1.maven.org/maven2/org/pac4j/pac4j-core/).
 The [next version](https://www.pac4j.org/docs/next-version.html) is under development.
 
 Read the [documentation](https://www.pac4j.org/docs/index.html) for more information.
