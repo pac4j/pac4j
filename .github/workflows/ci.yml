@@ -2,6 +2,7 @@ name: Java CI
 
 env:
     JDK_CURRENT: 11.0.10
+    DISTRIBUTION: zulu
 
 on:
     push:
