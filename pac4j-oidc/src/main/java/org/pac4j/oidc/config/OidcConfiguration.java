@@ -11,6 +11,7 @@ import com.nimbusds.oauth2.sdk.pkce.CodeChallengeMethod;
 import com.nimbusds.openid.connect.sdk.OIDCResponseTypeValue;
 import lombok.*;
 import lombok.experimental.Accessors;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.config.BaseClientConfiguration;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.util.generator.RandomValueGenerator;
@@ -18,6 +19,7 @@ import org.pac4j.core.util.generator.ValueGenerator;
 import org.pac4j.oidc.exceptions.OidcConfigurationException;
 import org.pac4j.oidc.federation.config.OidcFederationProperties;
 import org.pac4j.oidc.metadata.IOidcOpMetadataResolver;
+import org.pac4j.oidc.metadata.OidcFederationOpMetadataResolver;
 import org.pac4j.oidc.metadata.OidcOpMetadataResolver;
 import org.pac4j.oidc.util.SessionStoreValueRetriever;
 import org.pac4j.oidc.util.ValueRetriever;
@@ -237,21 +239,23 @@ public class OidcConfiguration extends BaseClientConfiguration {
      */
     @Override
     protected void internalInit(final boolean forceReinit) {
-        // checks
-        assertNotBlank("clientId", getClientId());
+        if (!isFederation()) {
+            assertNotBlank("clientId", getClientId());
+        }
+
         if (!AUTHORIZATION_CODE_FLOWS.contains(responseType) && !IMPLICIT_FLOWS.contains(responseType)
             && !HYBRID_CODE_FLOWS.contains(responseType)) {
             throw new OidcConfigurationException("Unsupported responseType: " + responseType);
         }
-        // except for the implicit flow and when PKCE is disabled, the secret is mandatory
-        if (!IMPLICIT_FLOWS.contains(responseType) && isDisablePkce()) {
+        // secret is mandatory if it's not the implicit flow and PKCE is disabled and it's not a federation
+        if (!IMPLICIT_FLOWS.contains(responseType) && isDisablePkce() && !isFederation()) {
             assertNotBlank("secret", getSecret());
         }
-        if (this.getDiscoveryURI() == null && this.getOpMetadataResolver() == null) {
-            throw new OidcConfigurationException("You must define either the discovery URL or directly the provider metadata resolver");
+        if (this.getDiscoveryURI() == null && this.getOpMetadataResolver() == null && !isFederation()) {
+            throw new OidcConfigurationException("You must define either the discovery URL or directly the provider metadata resolver "
+                + "or the federation target entity (and the appropriate trust anchors)");
         }
 
-        // default value
         if (forceReinit || getResourceRetriever() == null) {
             try {
                 setResourceRetriever(new OidcResourceRetriever());
@@ -261,18 +265,28 @@ public class OidcConfiguration extends BaseClientConfiguration {
         }
 
         if (forceReinit || this.getOpMetadataResolver() == null) {
-            assertNotBlank("discoveryURI", getDiscoveryURI());
             this.opMetadataResolver = createNewOpMetadataResolver();
         }
     }
 
+    protected boolean isFederation() {
+        return StringUtils.isNotBlank(getFederation().getTargetEntity());
+    }
+
     /**
-     * <p>Creates proper implementation of OidcOpMetadataResolver.</p>
+     * <p>Creates proper implementation of IOidcOpMetadataResolver.</p>
      */
     protected IOidcOpMetadataResolver createNewOpMetadataResolver() {
-        val resolver = new OidcOpMetadataResolver(this);
-        resolver.init();
-        return resolver;
+        if (StringUtils.isNotBlank(getDiscoveryURI())) {
+            val resolver = new OidcOpMetadataResolver(this);
+            resolver.init();
+            return resolver;
+        } else if (isFederation()) {
+            val resolver = new OidcFederationOpMetadataResolver(this);
+            resolver.init();
+            return resolver;
+        }
+        throw new OidcConfigurationException("Unable to create IOidcOpMetadataResolver from configuration");
     }
 
     /**
