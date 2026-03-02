@@ -3,6 +3,9 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v4.5.9**:
+- Security fix on the `pac4j-jwt` module
+
 **v4.5.8**:
 - Only 'SAML version 2' in metadata
 - Fix `ConcurrentModificationException` in `ProfileManager.removeOrRenewExpiredProfiles`

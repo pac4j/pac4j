@@ -341,7 +341,10 @@ public final class JwtTests implements TestsConstants {
         generator.setEncryptionConfiguration(new SecretEncryptionConfiguration(MAC_SECRET));
         final FacebookProfile profile = createProfile();
         final String token = generator.generate(profile);
-        assertToken(profile, token);
+
+        final JwtAuthenticator authenticator = new JwtAuthenticator();
+        authenticator.addEncryptionConfiguration(new SecretEncryptionConfiguration(MAC_SECRET));
+        assertToken(profile, token, authenticator);
     }
 
     @Test

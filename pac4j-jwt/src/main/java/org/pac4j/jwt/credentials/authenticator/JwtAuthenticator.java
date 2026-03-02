@@ -192,7 +192,12 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
                 }
 
                 // signed?
-                if (signedJWT != null) {
+                // If signature configurations are defined, a SignedJWT is required and signature verification must be performed.
+                if (!signatureConfigurations.isEmpty()) {
+                    if (signedJWT == null) {
+                        throw new CredentialsException("A non-signed JWT cannot be accepted as signature configurations have been defined");
+                    }
+
                     logger.debug("JWT is signed");
 
                     boolean verified = false;
