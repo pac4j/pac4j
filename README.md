@@ -42,7 +42,7 @@ It is licensed under the Apache 2 license.
 
 ## Authentication mechanisms:
 
-[OAuth (Facebook, Twitter, Google...)](https://www.pac4j.org/docs/clients/oauth.html) - [SAML](https://www.pac4j.org/docs/clients/saml.html) - [CAS](https://www.pac4j.org/docs/clients/cas.html) - [OpenID Connect](https://www.pac4j.org/docs/clients/openid-connect.html) - [HTTP](https://www.pac4j.org/docs/clients/http.html) - [Google App Engine](https://www.pac4j.org/docs/clients/google-app-engine.html) - [Kerberos (SPNEGO/Negotiate)](https://www.pac4j.org/docs/clients/kerberos.html)
+[OpenID Connect](https://www.pac4j.org/docs/clients/openid-connect.html) - [OAuth (Facebook, Twitter, Google...)](https://www.pac4j.org/docs/clients/oauth.html) - [SAML](https://www.pac4j.org/docs/clients/saml.html) - [CAS](https://www.pac4j.org/docs/clients/cas.html) - [HTTP](https://www.pac4j.org/docs/clients/http.html) - [Google App Engine](https://www.pac4j.org/docs/clients/google-app-engine.html) - [Kerberos (SPNEGO/Negotiate)](https://www.pac4j.org/docs/clients/kerberos.html)
 
 [LDAP](https://www.pac4j.org/docs/authenticators/ldap.html) - [SQL](https://www.pac4j.org/docs/authenticators/sql.html) - [JWT](https://www.pac4j.org/docs/authenticators/jwt.html) - [MongoDB](https://www.pac4j.org/docs/authenticators/mongodb.html) - [CouchDB](https://www.pac4j.org/docs/authenticators/couchdb.html) - [IP address](https://www.pac4j.org/docs/authenticators/ip.html) - [REST API](https://www.pac4j.org/docs/authenticators/rest.html)
 
@@ -57,7 +57,7 @@ It is licensed under the Apache 2 license.
 ## Versions
 
 
-The latest released version is the [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.pac4j/pac4j-core/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/org.pac4j/pac4j-core), available in the Maven central repository.
+The latest released version is the [![Maven Central](https://img.shields.io/maven-central/v/org.pac4j/pac4j-core.svg)](https://search.maven.org/artifact/org.pac4j/pac4j-core), available in the Maven central repository.
 The [next version](https://www.pac4j.org/docs/next-version.html) is under development.
 
 Read the [documentation](https://www.pac4j.org/docs/index.html) for more information.
