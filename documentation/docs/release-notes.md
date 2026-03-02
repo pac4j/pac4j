@@ -5,6 +5,9 @@ title: Release notes&#58;
 
 ### JDK17:
 
+**v6.3.3**:
+- Security fix on the `pac4j-jwt` module
+
 **v6.3.2**:
 - Reinforce security in `PathMatcher`
 - OIDC : Manage PrivateJWTKey expiration
@@ -128,6 +131,9 @@ title: Release notes&#58;
 ---
 
 ### JDK11:
+
+**v5.7.9**:
+- Security fix on the `pac4j-jwt` module
 
 **v5.7.8**:
 - Fix the X509 `SubjectDN` parsing
@@ -316,6 +322,9 @@ title: Release notes&#58;
 ---
 
 ### JDK8:
+
+**v4.5.9**:
+- Security fix on the `pac4j-jwt` module
 
 **v4.5.8**:
 - Only 'SAML version 2' in metadata
