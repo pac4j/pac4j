@@ -499,10 +499,18 @@
 				<configuration>
                     <source>${java.version}</source>
                     <release>${java.version}</release>
+
 					<encoding>UTF-8</encoding>
+
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
 				</configuration>
 			</plugin>
-			<!-- Build helper maven plugin sets the parsedVersion.osgiVersion property -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
