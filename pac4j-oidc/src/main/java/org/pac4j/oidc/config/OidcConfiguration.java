@@ -239,16 +239,13 @@ public class OidcConfiguration extends BaseClientConfiguration {
      */
     @Override
     protected void internalInit(final boolean forceReinit) {
-        if (!isFederation()) {
-            assertNotBlank("clientId", getClientId());
-        }
-
+        assertNotBlank("clientId", getClientId());
         if (!AUTHORIZATION_CODE_FLOWS.contains(responseType) && !IMPLICIT_FLOWS.contains(responseType)
             && !HYBRID_CODE_FLOWS.contains(responseType)) {
             throw new OidcConfigurationException("Unsupported responseType: " + responseType);
         }
-        // secret is mandatory if it's not the implicit flow and PKCE is disabled and it's not a federation
-        if (!IMPLICIT_FLOWS.contains(responseType) && isDisablePkce() && !isFederation()) {
+        // secret is mandatory if it's not the implicit flow and PKCE is disabled
+        if (!IMPLICIT_FLOWS.contains(responseType) && isDisablePkce()) {
             assertNotBlank("secret", getSecret());
         }
         if (this.getDiscoveryURI() == null && this.getOpMetadataResolver() == null && !isFederation()) {
@@ -270,7 +267,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
     }
 
     protected boolean isFederation() {
-        return StringUtils.isNotBlank(getFederation().getTargetEntity());
+        return StringUtils.isNotBlank(getFederation().getTargetIssuer());
     }
 
     /**

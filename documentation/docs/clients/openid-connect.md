@@ -86,6 +86,8 @@ For direct clients (web services), you can get the `access token` from any OpenI
 
 For that, the [HeaderClient](https://github.com/pac4j/pac4j/blob/master/pac4j-http/src/main/java/org/pac4j/http/client/direct/HeaderClient.java) would be appropriate, along with the `oidcClient.getProfileCreator()`.
 
+**Example**:
+
 ```java
 OidcConfiguration config = new OidcConfiguration();
 config.setClientId(clientId);
@@ -128,7 +130,9 @@ In both cases (keystore or JWKS), if it doesn't exist, it will be created (for a
 
 You can define the information displayed by the endpoint thanks to the properties available in the `OidcFederationProperties`: `validityInDays`, `entityId`, `applicationType`...
 
-You must use the `EntityConfigurationGenerator` component to retrieve the entity configuration (Spring Boot example):
+You must use the `EntityConfigurationGenerator` component to retrieve the entity configuration:
+
+**Spring Boot example**:
 
 ```java
     @RequestMapping(value = "/.well-known/openid-federation", produces = DefaultEntityConfigurationGenerator.CONTENT_TYPE)
@@ -142,11 +146,23 @@ You must use the `EntityConfigurationGenerator` component to retrieve the entity
 
 ### b) Using trust anchors
 
+When using federation, you must not define the `discoveryURI`. You must only define the trust anchors and the target entity (the OP) in the federation space.
+
+```java
+val federation = oidcConfig.getFederation();
+
+federation.setTargetIssuer("http://localhost:8080/op");
+
+val trust = new OidcTrustAnchorProperties();
+trust.setTaIssuer("http://localhost:8081/ta");
+trust.setTaJwksUrl("http://localhost:8081/ta/jwks.json");
+federation.getTrustAnchors().add(trust);
+```
 
 
 ## 4) Advanced configuration
 
-You can define how the client credentials (`clientId` and `secret`)  are passed to the token endpoint with the `setClientAuthenticationMethod` method:
+You can define how the client credentials (`clientId` and `secret`) are passed to the token endpoint with the `setClientAuthenticationMethod` method:
 
 ```java
 config.setClientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC);

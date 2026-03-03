@@ -1,14 +1,14 @@
 package org.pac4j.oidc.util;
 
-import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.JWSAlgorithm;
-import com.nimbusds.jose.JWSSigner;
+import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.ECDSASigner;
 import com.nimbusds.jose.crypto.Ed25519Signer;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jose.jwk.*;
-import com.nimbusds.jose.jwk.gen.OctetKeyPairGenerator;
+import com.nimbusds.jose.jwk.gen.RSAKeyGenerator;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.SignedJWT;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.pac4j.core.config.properties.JwksProperties;
@@ -42,9 +42,14 @@ public class JwkHelper {
             }
             LOGGER.debug("No signingKey found in JWKS: generating one");
             try {
-                val generatedKey = new OctetKeyPairGenerator(Curve.Ed25519)
+                // not supported for federation yet (SDK 11.31.1)
+                /*val generatedKey = new OctetKeyPairGenerator(Curve.Ed25519)
                     .keyID(buildKid(kid))
                     .keyUse(KeyUse.SIGNATURE)
+                    .generate();*/
+                val generatedKey = new RSAKeyGenerator(2048)
+                    .keyUse(KeyUse.SIGNATURE)
+                    .keyID(kid)
                     .generate();
 
                 val jwkSet = new JWKSet(generatedKey);
@@ -231,5 +236,23 @@ public class JwkHelper {
             hasPrivate = rsa.getPrivateExponent() != null;
         }
         return hasPrivate;
+    }
+
+    public static String buildSignedJwt(final JWTClaimsSet claims, final JWK key, final String type) {
+        val alg = determineAlgorithm(key, false);
+        val header = new JWSHeader.Builder(alg)
+            .type(new JOSEObjectType(type))
+            .keyID(key.getKeyID())
+            .build();
+
+        val signedJWT = new SignedJWT(header, claims);
+        val signer = determineSigner(key, false);
+        try {
+            signedJWT.sign(signer);
+        } catch (final JOSEException e) {
+            throw new TechnicalException(e);
+        }
+
+        return signedJWT.serialize();
     }
 }

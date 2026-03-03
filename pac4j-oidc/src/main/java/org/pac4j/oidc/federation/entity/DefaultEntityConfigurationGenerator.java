@@ -1,12 +1,9 @@
 package org.pac4j.oidc.federation.entity;
 
-import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.JOSEObjectType;
-import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.jwt.SignedJWT;
+import com.nimbusds.openid.connect.sdk.federation.registration.ClientRegistrationType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -31,9 +28,10 @@ import static org.pac4j.oidc.util.JwkHelper.*;
 @RequiredArgsConstructor
 public class DefaultEntityConfigurationGenerator extends InitializableObject implements EntityConfigurationGenerator {
 
-    private static final String ENTITY_STATEMENT_TYPE = "entity-statement+jwt";
+    public static final String ENTITY_STATEMENT_TYPE = "entity-statement+jwt";
 
     public static final String CONTENT_TYPE = "application/" + ENTITY_STATEMENT_TYPE;
+
     private final OidcClient client;
 
     private String data;
@@ -104,6 +102,7 @@ public class DefaultEntityConfigurationGenerator extends InitializableObject imp
         rpMetadata.put("grant_types", federation.getGrantTypes());
         rpMetadata.put("scope", String.join(" ", federation.getScopes()));
         rpMetadata.put("token_endpoint_auth_method", federation.getClientAuthenticationMethod().getValue());
+        rpMetadata.put("client_registration_types_supported", List.of(ClientRegistrationType.EXPLICIT.getValue()));
 
         val metadata = new LinkedHashMap<String, Object>();
         metadata.put("openid_relying_party", rpMetadata);
@@ -116,20 +115,6 @@ public class DefaultEntityConfigurationGenerator extends InitializableObject imp
 
         val claims = claimsBuilder.build();
 
-        val alg = determineAlgorithm(signingKey, false);
-        val header = new JWSHeader.Builder(alg)
-            .type(new JOSEObjectType(ENTITY_STATEMENT_TYPE))
-            .keyID(signingKey.getKeyID())
-            .build();
-
-        val signedJWT = new SignedJWT(header, claims);
-        val signer = determineSigner(signingKey, false);
-        try {
-            signedJWT.sign(signer);
-        } catch (final JOSEException e) {
-            throw new TechnicalException(e);
-        }
-
-        return signedJWT.serialize();
+        return buildSignedJwt(claims, signingKey, ENTITY_STATEMENT_TYPE);
     }
 }

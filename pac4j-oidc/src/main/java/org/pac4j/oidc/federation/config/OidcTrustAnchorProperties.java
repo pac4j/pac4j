@@ -2,8 +2,6 @@ package org.pac4j.oidc.federation.config;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.pac4j.core.resource.SpringResourceHelper;
-import org.springframework.core.io.Resource;
 
 /**
  * A trust anchor.
@@ -15,16 +13,7 @@ import org.springframework.core.io.Resource;
 @Setter
 public class OidcTrustAnchorProperties {
 
-    private String entityId;
+    private String taIssuer;
 
-    private Resource jwksResource;
-
-    /**
-     * <p>setJwksPath.</p>
-     *
-     * @param path a {@link String} object
-     */
-    public void setJwksPath(final String path) {
-        this.jwksResource = SpringResourceHelper.buildResourceFromPath(path);
-    }
+    private String taJwksUrl;
 }

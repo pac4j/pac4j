@@ -23,6 +23,7 @@ import org.pac4j.oidc.exceptions.OidcException;
 import org.pac4j.oidc.profile.creator.TokenValidator;
 
 import java.io.IOException;
+import java.net.URL;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
@@ -61,12 +62,12 @@ public class OidcFederationOpMetadataResolver extends InitializableObject implem
 
         val resolver = new TrustChainResolver(anchors, configuration.getConnectTimeout(), configuration.getReadTimeout());
 
-        val targetEntity = new EntityID(configuration.getFederation().getTargetEntity());
-        LOGGER.debug("Target entity: {}", targetEntity);
+        val targetIssuer = new EntityID(configuration.getFederation().getTargetIssuer());
+        LOGGER.debug("Target issuer: {}", targetIssuer);
 
         TrustChainSet resolvedChains;
         try {
-            resolvedChains = resolver.resolveTrustChains(targetEntity);
+            resolvedChains = resolver.resolveTrustChains(targetIssuer);
         } catch (final ResolveException e) {
             throw new OidcException(e);
         }
@@ -107,10 +108,11 @@ public class OidcFederationOpMetadataResolver extends InitializableObject implem
         }
 
         for (val trustAnchor : trustAnchors) {
-            val entity = new EntityID(trustAnchor.getEntityId());
+            val entity = new EntityID(trustAnchor.getTaIssuer());
             JWKSet jwks = null;
             try {
-                jwks = JWKSet.load(trustAnchor.getJwksResource().getInputStream());
+                jwks = JWKSet.load(new URL(trustAnchor.getTaJwksUrl()), configuration.getConnectTimeout(),
+                    configuration.getReadTimeout(), 0);
             } catch (final IOException | ParseException e) {
                 throw new TechnicalException(e);
             }
