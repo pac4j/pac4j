@@ -14,3 +14,5 @@ To stay safe, you MUST upgrade:
 - If you use the 6.x line: upgrade to **6.3.3** (or newer)
 
 No additional details will be shared in this post.
+
+This vulnerability was discovered by **CodeAnt AI Security Research Team, part of https://www.codeant.ai/, securityresearch@codeant.ai**.
