@@ -17,7 +17,9 @@ title: <i class="fa fa-user" aria-hidden="true"></i> The <i>pac4j</i> engine/cor
 
 ### &#9656; [On the web context](authorizers/web-authorizers.html): CSRF, IP address, HTTP method, etc.
 
-## 4) [Matchers](matchers.html)
+## 4) HTTP request matching mechanisms: [Matchers](matchers.html)
+
+### &#9656; [CORS, securityHeaders, etc.](matchers.html)
 
 ## 5) [Security configuration](config.html) - [Security module](config-module.html)
 
