@@ -48,9 +48,9 @@ It is licensed under the Apache 2 license.
 
 ## Authorization mechanisms:
 
-[Roles](https://www.pac4j.org/docs/authorizers/profile-authorizers.html#roles) - [Anonymous/remember-me/(fully) authenticated](https://www.pac4j.org/docs/authorizers/profile-authorizers.html#authentication-levels) - [Profile type, attribute](https://www.pac4j.org/docs/authorizers/profile-authorizers.html#others)
+[Roles](https://www.pac4j.org/docs/authorizers/profile-authorizers.html#1-roles) - [Anonymous/remember-me/(fully) authenticated](https://www.pac4j.org/docs/authorizers/profile-authorizers.html#2-authentication-levels) - [Profile type, attribute](https://www.pac4j.org/docs/authorizers/profile-authorizers.html#3-others)
 
-[CORS](https://www.pac4j.org/docs/matchers.html) - [CSRF](https://www.pac4j.org/docs/authorizers/web-authorizers.html) - [Security headers](https://www.pac4j.org/docs/matchers.html) - [IP address, HTTP method](https://www.pac4j.org/docs/authorizers/web-authorizers.html)
+[CORS](https://www.pac4j.org/docs/matchers.html#3-cors) - [CSRF](https://www.pac4j.org/docs/authorizers/web-authorizers.html#1-csrf) - [Security headers](https://www.pac4j.org/docs/matchers.html#4-securityheaders) - [IP address, HTTP method](https://www.pac4j.org/docs/authorizers/web-authorizers.html#2-others)
 
 ---
 
