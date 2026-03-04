@@ -51,6 +51,18 @@ Like for signature configurations, three encryption configurations are available
 
 To decrypt an encrypted JWT, the defined encryption configurations will be tried successfully (if the algorithm of the JWT matches the one supported by the encryption configuration).
 
+**Behavior notes (signature vs encryption)**
+
+- **Signature (JWS)**
+  - If at least one `SignatureConfiguration` is defined on the `JwtAuthenticator`, a non-signed JWT (`PlainJWT`) is rejected.
+  - If no `SignatureConfiguration` is defined, non-signed JWTs may be accepted (with a warning at startup).
+
+- **Encryption (JWE)**
+  - Encryption is controlled by the `encryptionRequired` flag (default: `false`).
+  - If `encryptionRequired` is `false`, encryption remains optional: even if `EncryptionConfiguration`s are configured, a JWT may be only signed (JWS) and not encrypted, and it will be accepted if the signature is valid.
+  - If `encryptionRequired` is `true` and at least one `EncryptionConfiguration` is configured, a non-encrypted JWT (JWS or plain) is rejected.
+  - If a token is encrypted (JWE) and `SignatureConfiguration`s are defined, the decrypted payload must be a signed JWT (nested JWT); a JWE decrypting to a plain (unsigned) JWT is rejected.
+
 **Example**:
 
 ```java

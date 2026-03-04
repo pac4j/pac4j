@@ -1,7 +1,10 @@
 package org.pac4j.jwt;
 
 import com.nimbusds.jose.EncryptionMethod;
+import com.nimbusds.jose.JWEAlgorithm;
 import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.PlainJWT;
 import lombok.val;
 import org.junit.jupiter.api.Test;
 import org.pac4j.core.credentials.TokenCredentials;
@@ -16,6 +19,7 @@ import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.core.util.generator.StaticValueGenerator;
 import org.pac4j.jwt.config.encryption.EncryptionConfiguration;
+import org.pac4j.jwt.config.encryption.RSAEncryptionConfiguration;
 import org.pac4j.jwt.config.encryption.SecretEncryptionConfiguration;
 import org.pac4j.jwt.config.signature.ECSignatureConfiguration;
 import org.pac4j.jwt.config.signature.SecretSignatureConfiguration;
@@ -88,7 +92,7 @@ public final class JwtTests implements TestsConstants {
         profile.addAttribute(JwtClaims.SUBJECT, VALUE);
         val token = generator.generate(profile);
         profile.removeAttribute("sub");
-        assertToken(profile, token);
+        assertToken(profile, token, new JwtAuthenticator(new SecretSignatureConfiguration(MAC_SECRET)));
     }
 
     @Test
@@ -97,8 +101,30 @@ public final class JwtTests implements TestsConstants {
             val generator = new JwtGenerator();
             val profile = createProfile();
             val token = generator.generate(profile);
-            assertToken(profile, token);
+            assertToken(profile, token, new JwtAuthenticator(new SecretSignatureConfiguration(MAC_SECRET)));
         });
+    }
+
+    @Test
+    public void testEncryptedJwtWithoutInnerSignatureMustBeRejectedWhenSignatureConfigurationsDefined() throws NoSuchAlgorithmException {
+        val keyGen = KeyPairGenerator.getInstance("RSA");
+        keyGen.initialize(2048);
+        val keyPair = keyGen.generateKeyPair();
+
+        val encryptionConfiguration = new RSAEncryptionConfiguration(keyPair, JWEAlgorithm.RSA_OAEP, EncryptionMethod.A128GCM);
+
+        val claimsSet = new JWTClaimsSet.Builder()
+            .subject("admin")
+            .claim(JwtGenerator.INTERNAL_ROLES, List.of("ADMIN"))
+            .build();
+        val token = encryptionConfiguration.encrypt(new PlainJWT(claimsSet));
+
+        val authenticator = new JwtAuthenticator();
+        authenticator.addEncryptionConfiguration(encryptionConfiguration);
+        authenticator.addSignatureConfiguration(new SecretSignatureConfiguration("this-should-not-matter"));
+
+        val credentials = new TokenCredentials(token);
+        assertThrows(CredentialsException.class, () -> authenticator.validate(null, credentials));
     }
 
     @Test
@@ -201,7 +227,8 @@ public final class JwtTests implements TestsConstants {
             new SecretEncryptionConfiguration(MAC_SECRET));
         val profile = createProfile();
         val token = generator.generate(profile);
-        assertToken(profile, token);
+        assertToken(profile, token, new JwtAuthenticator(new SecretSignatureConfiguration(MAC_SECRET),
+            new SecretEncryptionConfiguration(MAC_SECRET)));
     }
 
     @Test
@@ -210,7 +237,7 @@ public final class JwtTests implements TestsConstants {
         val profile = createProfile();
         profile.setLinkedId(VALUE);
         val token = generator.generate(profile);
-        assertToken(profile, token);
+        assertToken(profile, token, new JwtAuthenticator(new SecretSignatureConfiguration(MAC_SECRET)));
         assertEquals(VALUE, profile.getLinkedId());
     }
 
@@ -319,20 +346,43 @@ public final class JwtTests implements TestsConstants {
     }
 
     @Test
-    public void testGenerateAuthenticateNotEncrypted() {
+    public void testGenerateAuthenticateNotEncryptedEncryptionMandatory() {
         val generator = new JwtGenerator(new SecretSignatureConfiguration(MAC_SECRET));
         val profile = createProfile();
         val token = generator.generate(profile);
-        assertToken(profile, token);
+
+        val authenticator = new JwtAuthenticator(new SecretSignatureConfiguration(MAC_SECRET),
+            new SecretEncryptionConfiguration(MAC_SECRET));
+        authenticator.setEncryptionRequired(true);
+
+        assertThrows(CredentialsException.class, () -> assertToken(profile, token, authenticator));
+    }
+
+    @Test
+    public void testGenerateAuthenticateNotEncryptedEncryptionOptional() {
+        val generator = new JwtGenerator(new SecretSignatureConfiguration(MAC_SECRET));
+        val profile = createProfile();
+        val token = generator.generate(profile);
+
+        val authenticator = new JwtAuthenticator(new SecretSignatureConfiguration(MAC_SECRET),
+            new SecretEncryptionConfiguration(MAC_SECRET));
+        authenticator.setEncryptionRequired(false);
+
+        assertToken(profile, token, authenticator);
     }
 
     @Test
     public void testGenerateAuthenticateNotSigned() {
         val generator = new JwtGenerator();
         generator.setEncryptionConfiguration(new SecretEncryptionConfiguration(MAC_SECRET));
+
         val profile = createProfile();
         val token = generator.generate(profile);
-        assertToken(profile, token);
+
+        val authenticator = new JwtAuthenticator();
+        authenticator.addEncryptionConfiguration(new SecretEncryptionConfiguration(MAC_SECRET));
+
+        assertToken(profile, token, authenticator);
     }
 
     @Test
@@ -341,16 +391,11 @@ public final class JwtTests implements TestsConstants {
         val profile = createProfile();
         profile.addRoles(ROLES);
         val token = generator.generate(profile);
-        val profile2 = assertToken(profile, token);
+        val profile2 = assertToken(profile, token, new JwtAuthenticator(new SecretSignatureConfiguration(MAC_SECRET)));
         assertEquals(ROLES, profile2.getRoles());
     }
 
-    private UserProfile assertToken(FacebookProfile profile, String token) {
-        return assertToken(profile, token, new JwtAuthenticator(new SecretSignatureConfiguration(MAC_SECRET),
-            new SecretEncryptionConfiguration(MAC_SECRET)));
-    }
-
-    private UserProfile assertToken(FacebookProfile profile, String token, Authenticator authenticator) {
+    private UserProfile assertToken(final FacebookProfile profile, final String token, final Authenticator authenticator) {
         val credentials = new TokenCredentials(token);
         authenticator.validate(null, credentials);
         val profile2 = credentials.getUserProfile();

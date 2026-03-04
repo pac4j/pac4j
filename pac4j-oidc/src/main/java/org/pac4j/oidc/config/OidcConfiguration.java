@@ -9,19 +9,17 @@ import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
 import com.nimbusds.oauth2.sdk.http.HTTPRequest;
 import com.nimbusds.oauth2.sdk.pkce.CodeChallengeMethod;
 import com.nimbusds.openid.connect.sdk.OIDCResponseTypeValue;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-import lombok.With;
+import lombok.*;
 import lombok.experimental.Accessors;
-import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.config.BaseClientConfiguration;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.util.generator.RandomValueGenerator;
 import org.pac4j.core.util.generator.ValueGenerator;
 import org.pac4j.oidc.exceptions.OidcConfigurationException;
+import org.pac4j.oidc.federation.config.OidcFederationProperties;
+import org.pac4j.oidc.metadata.IOidcOpMetadataResolver;
+import org.pac4j.oidc.metadata.OidcFederationOpMetadataResolver;
 import org.pac4j.oidc.metadata.OidcOpMetadataResolver;
 import org.pac4j.oidc.util.SessionStoreValueRetriever;
 import org.pac4j.oidc.util.ValueRetriever;
@@ -32,13 +30,7 @@ import javax.net.ssl.SSLSocketFactory;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static org.pac4j.core.util.CommonHelper.assertNotBlank;
 import static org.pac4j.core.util.CommonHelper.assertNotNull;
@@ -140,6 +132,8 @@ public class OidcConfiguration extends BaseClientConfiguration {
      */
     public static final int DEFAULT_TOKEN_EXPIRATION_ADVANCE = 0;
 
+    private OidcFederationProperties federation = new OidcFederationProperties();
+
     /* OpenID client identifier */
     private String clientId;
 
@@ -235,7 +229,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
 
     private HostnameVerifier hostnameVerifier;
 
-    protected OidcOpMetadataResolver opMetadataResolver;
+    protected IOidcOpMetadataResolver opMetadataResolver;
 
     @Deprecated(forRemoval = true)
     private boolean logoutValidation = true;
@@ -245,21 +239,20 @@ public class OidcConfiguration extends BaseClientConfiguration {
      */
     @Override
     protected void internalInit(final boolean forceReinit) {
-        // checks
         assertNotBlank("clientId", getClientId());
         if (!AUTHORIZATION_CODE_FLOWS.contains(responseType) && !IMPLICIT_FLOWS.contains(responseType)
             && !HYBRID_CODE_FLOWS.contains(responseType)) {
             throw new OidcConfigurationException("Unsupported responseType: " + responseType);
         }
-        // except for the implicit flow and when PKCE is disabled, the secret is mandatory
+        // secret is mandatory if it's not the implicit flow and PKCE is disabled
         if (!IMPLICIT_FLOWS.contains(responseType) && isDisablePkce()) {
             assertNotBlank("secret", getSecret());
         }
-        if (this.getDiscoveryURI() == null && this.getOpMetadataResolver() == null) {
-            throw new OidcConfigurationException("You must define either the discovery URL or directly the provider metadata resolver");
+        if (this.getDiscoveryURI() == null && this.getOpMetadataResolver() == null && !isFederation()) {
+            throw new OidcConfigurationException("You must define either the discovery URL or directly the provider metadata resolver "
+                + "or the federation target entity (and the appropriate trust anchors)");
         }
 
-        // default value
         if (forceReinit || getResourceRetriever() == null) {
             try {
                 setResourceRetriever(new OidcResourceRetriever());
@@ -269,17 +262,28 @@ public class OidcConfiguration extends BaseClientConfiguration {
         }
 
         if (forceReinit || this.getOpMetadataResolver() == null) {
-            assertNotBlank("discoveryURI", getDiscoveryURI());
             this.opMetadataResolver = createNewOpMetadataResolver();
-            this.opMetadataResolver.init();
         }
     }
 
+    protected boolean isFederation() {
+        return StringUtils.isNotBlank(getFederation().getTargetIssuer());
+    }
+
     /**
-     * <p>Creates proper implementation of OidcOpMetadataResolver.</p>
+     * <p>Creates proper implementation of IOidcOpMetadataResolver.</p>
      */
-    protected OidcOpMetadataResolver createNewOpMetadataResolver() {
-        return new OidcOpMetadataResolver(this);
+    protected IOidcOpMetadataResolver createNewOpMetadataResolver() {
+        if (StringUtils.isNotBlank(getDiscoveryURI())) {
+            val resolver = new OidcOpMetadataResolver(this);
+            resolver.init();
+            return resolver;
+        } else if (isFederation()) {
+            val resolver = new OidcFederationOpMetadataResolver(this);
+            resolver.init();
+            return resolver;
+        }
+        throw new OidcConfigurationException("Unable to create IOidcOpMetadataResolver from configuration");
     }
 
     /**

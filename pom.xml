@@ -91,6 +91,7 @@
 		<nimbus-jose-jwt.version>10.7</nimbus-jose-jwt.version>
 		<spring.version>6.2.15</spring.version>
 		<spring.security.version>7.0.2</spring.security.version>
+        <bouncycastle.version>1.79</bouncycastle.version>
 		<shiro.version>2.1.0</shiro.version>
         <jbcrypt.version>0.4.3</jbcrypt.version>
         <snakeyaml.version>2.5</snakeyaml.version>
@@ -276,6 +277,21 @@
                 <groupId>org.yaml</groupId>
                 <artifactId>snakeyaml</artifactId>
                 <version>${snakeyaml.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk18on</artifactId>
+                <version>${bouncycastle.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcpkix-jdk18on</artifactId>
+                <version>${bouncycastle.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcutil-jdk18on</artifactId>
+                <version>${bouncycastle.version}</version>
             </dependency>
             <!-- for testing -->
 			<dependency>
@@ -483,10 +499,18 @@
 				<configuration>
                     <source>${java.version}</source>
                     <release>${java.version}</release>
+
 					<encoding>UTF-8</encoding>
+
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
 				</configuration>
 			</plugin>
-			<!-- Build helper maven plugin sets the parsedVersion.osgiVersion property -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>

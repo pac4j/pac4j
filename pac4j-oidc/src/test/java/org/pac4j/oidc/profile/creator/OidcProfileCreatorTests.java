@@ -23,6 +23,7 @@ import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.credentials.OidcCredentials;
 import org.pac4j.oidc.credentials.authenticator.OidcAuthenticator;
 import org.pac4j.oidc.exceptions.OidcConfigurationException;
+import org.pac4j.oidc.federation.config.OidcFederationProperties;
 import org.pac4j.oidc.metadata.OidcOpMetadataResolver;
 
 import java.net.URI;
@@ -58,6 +59,7 @@ public class OidcProfileCreatorTests implements TestsConstants {
 
         configuration = mock(OidcConfiguration.class);
         var metadata = mock(OIDCProviderMetadata.class);
+        when(configuration.getFederation()).thenReturn(new OidcFederationProperties());
         when(metadata.getIssuer()).thenReturn(new Issuer(PAC4J_URL));
         when(metadata.getJWKSetURI()).thenReturn(new URI(PAC4J_BASE_URL));
         val metadataResolver = mock(OidcOpMetadataResolver.class);

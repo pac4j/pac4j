@@ -45,11 +45,22 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
 @Setter
 public class JwtAuthenticator extends ProfileDefinitionAware implements Authenticator {
 
+    private static final String NONSIGNED_JWT_ERROR_MSG
+        = "A non-signed JWT cannot be accepted as signature configurations have been defined";
+
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     private List<EncryptionConfiguration> encryptionConfigurations = new ArrayList<>();
 
     private List<SignatureConfiguration> signatureConfigurations = new ArrayList<>();
+
+    /**
+     * Whether encryption is mandatory when encryption configurations are present.
+     * Deprecated: to set to true in v7 or even remove?
+     * <p>
+     * Default is {@code false} for backward compatibility.
+     */
+    private boolean encryptionRequired = false;
 
     private String realmName = Pac4jConstants.DEFAULT_REALM_NAME;
 
@@ -169,11 +180,16 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
             // Parse the token
             var jwt = JWTParser.parse(token);
 
+            if (encryptionRequired && !encryptionConfigurations.isEmpty() && !(jwt instanceof EncryptedJWT)) {
+                throw new CredentialsException(
+                    "A non-encrypted JWT cannot be accepted as encryption configurations have been defined and are required");
+            }
+
             if (jwt instanceof PlainJWT) {
                 if (signatureConfigurations.isEmpty()) {
                     logger.debug("JWT is not signed and no signature configurations -> verified");
                 } else {
-                    throw new CredentialsException("A non-signed JWT cannot be accepted as signature configurations have been defined");
+                    throw new CredentialsException(NONSIGNED_JWT_ERROR_MSG);
                 }
             } else {
 
@@ -212,7 +228,11 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
                 }
 
                 // signed?
-                if (signedJWT != null) {
+                if (!signatureConfigurations.isEmpty()) {
+                    if (signedJWT == null) {
+                        throw new CredentialsException(NONSIGNED_JWT_ERROR_MSG);
+                    }
+
                     logger.debug("JWT is signed");
 
                     var verified = false;

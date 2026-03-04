@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.exceptions.OidcException;
 import org.pac4j.oidc.exceptions.OidcTokenException;
@@ -167,12 +168,27 @@ public class TokenValidator {
     public IDTokenClaimsSet validateIdToken(final JWT idToken, final Nonce expectedNonce)
         throws BadJOSEException, JOSEException {
 
+        String jws;
+        String jwe;
         BadJOSEException badJOSEException = null;
         JOSEException joseException = null;
         for (val idTokenValidator : idTokenValidators) {
-            LOGGER.debug("Trying IDToken validator: {}", idTokenValidator);
+            jws = Pac4jConstants.EMPTY_STRING;
+            val jwsSelector = idTokenValidator.getJWSKeySelector();
+            if (jwsSelector != null) {
+                jws = jwsSelector.getClass().getSimpleName();
+            }
+            jwe = Pac4jConstants.EMPTY_STRING;
+            val jweSelector = idTokenValidator.getJWEKeySelector();
+            if (jweSelector != null) {
+                jwe = jweSelector.getClass().getSimpleName();
+            }
+            LOGGER.debug("Trying IDToken validator, issuer: {}, type: {}, JWS: {}, JWE: {}", idTokenValidator.getExpectedIssuer(),
+                idTokenValidator.getExpectedJWTType(), jws, jwe);
             try {
-                return idTokenValidator.validate(idToken, expectedNonce);
+                val validated = idTokenValidator.validate(idToken, expectedNonce);
+                LOGGER.debug("Validated: {}", validated);
+                return validated;
             } catch (final BadJOSEException e1) {
                 LOGGER.debug(e1.getMessage(), e1);
                 badJOSEException = e1;

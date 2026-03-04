@@ -1,7 +1,6 @@
 package org.pac4j.oidc.client;
 
 import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 import lombok.val;
 import org.pac4j.core.client.IndirectClient;
@@ -11,6 +10,7 @@ import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.credentials.OidcCredentials;
 import org.pac4j.oidc.credentials.authenticator.OidcAuthenticator;
 import org.pac4j.oidc.credentials.extractor.OidcCredentialsExtractor;
+import org.pac4j.oidc.federation.entity.DefaultEntityConfigurationGenerator;
 import org.pac4j.oidc.logout.OidcLogoutActionBuilder;
 import org.pac4j.oidc.logout.processor.OidcLogoutProcessor;
 import org.pac4j.oidc.profile.OidcProfile;
@@ -34,7 +34,6 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
 public class OidcClient extends IndirectClient {
 
     @Getter
-    @Setter
     private OidcConfiguration configuration;
 
     /**
@@ -49,6 +48,15 @@ public class OidcClient extends IndirectClient {
      */
     public OidcClient(final OidcConfiguration configuration) {
         setConfiguration(configuration);
+    }
+
+    public void setConfiguration(OidcConfiguration configuration) {
+        this.configuration = configuration;
+        val federation = configuration.getFederation();
+        val entityConfigGenerator = federation.getEntityConfigurationGenerator();
+        if (entityConfigGenerator == null) {
+            federation.setEntityConfigurationGenerator(new DefaultEntityConfigurationGenerator(this));
+        }
     }
 
     /** {@inheritDoc} */
