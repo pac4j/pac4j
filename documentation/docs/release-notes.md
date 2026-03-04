@@ -7,9 +7,9 @@ title: Release notes&#58;
 
 **v6.4.0**:
 - Upgrade to Shiro v2.1 for security reasons. Defaults remain the ones of Shiro v1.13 though and will change in a future major version.
+- Add the `encryptionRequired` flag (by default `false`) for the `JWtAuthenticator`
 - `KeystoreGenerator` and its implem `FileSystemKeystoreGenerator` are now in the core
 - Support of the OpenID Connect Federation protocol v1.0
-- Add the `encryptionRequired` flag (by default `false`) for the `JWtAuthenticator`
 
 **v6.3.3**:
 - Security fix on the `pac4j-jwt` module

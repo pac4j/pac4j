@@ -29,7 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Metadata resolver for federation.
+ * Metadata resolver for federation (https://openid.net/specs/openid-federation-1_0.html).
  *
  * @author Jerome LELEU
  * @since 6.4.0

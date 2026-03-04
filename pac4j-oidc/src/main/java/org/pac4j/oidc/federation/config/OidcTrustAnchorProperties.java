@@ -1,6 +1,8 @@
 package org.pac4j.oidc.federation.config;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -11,6 +13,8 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class OidcTrustAnchorProperties {
 
     private String taIssuer;
