@@ -53,6 +53,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
 
     /**
      * Whether encryption is mandatory when encryption configurations are present.
+     * Deprecated: to set to true in v7 or even remove.
      * <p>
      * Default is {@code false} for backward compatibility.
      */
