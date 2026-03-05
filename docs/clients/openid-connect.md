@@ -176,6 +176,8 @@ trust.setTaJwksUrl("http://localhost:8081/ta/jwks.json");
 federation.getTrustAnchors().add(trust);
 ```
 
+The federation metadata resolver performs a blocking load on first use, then refreshes metadata in the background when the trust chain expires.
+
 
 ## 4) Advanced configuration
 
