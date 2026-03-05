@@ -3,6 +3,8 @@ package org.pac4j.oidc.metadata;
 import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
 import com.nimbusds.oauth2.sdk.auth.ClientSecretBasic;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
+import java.util.Date;
+import java.util.concurrent.atomic.AtomicInteger;
 import lombok.val;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -31,6 +33,7 @@ public final class OidcFederationOpMetadataResolverTests {
           "token_endpoint_auth_methods_supported": ["client_secret_basic"]
         }
         """;
+
 
     @Test
     public void testInitWiresTokenValidatorAndClientAuthentication() throws Exception {
@@ -62,5 +65,36 @@ public final class OidcFederationOpMetadataResolverTests {
         val auth = resolver.getClientAuthentication();
         assertNotNull(auth);
         assertTrue(auth instanceof ClientSecretBasic);
+    }
+
+    @Test
+    public void testReloadsMetadataWhenTrustChainExpired() throws Exception {
+        val configuration = new OidcConfiguration();
+        configuration.setClientId("myClient");
+        configuration.setSecret("mySecret");
+        configuration.setClientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC);
+        val initialMetadata = OIDCProviderMetadata.parse(METADATA_CLIENT_SECRET_BASIC);
+        val refreshedMetadata = OIDCProviderMetadata.parse(METADATA_CLIENT_SECRET_BASIC);
+        val metadataRetrievalCount = new AtomicInteger(0);
+
+        val resolver = new OidcFederationOpMetadataResolver(configuration) {
+            @Override
+            protected OIDCProviderMetadata retrieveMetadata() {
+                return metadataRetrievalCount.getAndIncrement() == 0 ? initialMetadata : refreshedMetadata;
+            }
+
+            @Override
+            protected TokenValidator createTokenValidator() {
+                return Mockito.mock(TokenValidator.class);
+            }
+        };
+        assertSame(initialMetadata, resolver.load());
+        assertEquals(1, metadataRetrievalCount.get());
+        resolver.setChainExpirationTime(new Date(System.currentTimeMillis() + 60_000));
+        assertSame(initialMetadata, resolver.load());
+        assertEquals(1, metadataRetrievalCount.get());
+        resolver.setChainExpirationTime(new Date(System.currentTimeMillis() - 1_000));
+        assertSame(refreshedMetadata, resolver.load());
+        assertEquals(2, metadataRetrievalCount.get());
     }
 }

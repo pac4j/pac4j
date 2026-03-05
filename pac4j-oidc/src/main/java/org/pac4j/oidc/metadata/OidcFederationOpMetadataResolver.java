@@ -10,7 +10,9 @@ import com.nimbusds.openid.connect.sdk.federation.trust.TrustChain;
 import com.nimbusds.openid.connect.sdk.federation.trust.TrustChainResolver;
 import com.nimbusds.openid.connect.sdk.federation.trust.TrustChainSet;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.pac4j.core.exception.TechnicalException;
@@ -25,6 +27,7 @@ import org.pac4j.oidc.profile.creator.TokenValidator;
 import java.io.IOException;
 import java.net.URL;
 import java.text.ParseException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,6 +49,9 @@ public class OidcFederationOpMetadataResolver extends InitializableObject implem
 
     private final OidcConfiguration configuration;
 
+    @Setter(AccessLevel.PROTECTED)
+    private volatile Date chainExpirationTime;
+
     @Override
     protected void internalInit(boolean forceReinit) {
         this.metadata = retrieveMetadata();
@@ -54,6 +60,14 @@ public class OidcFederationOpMetadataResolver extends InitializableObject implem
         this.clientAuthenticationBuilder.buildClientAuthentication();
 
         this.tokenValidator = createTokenValidator();
+    }
+
+    @Override
+    protected boolean shouldInitialize(final boolean forceReinit) {
+        if (chainExpirationTime == null || new Date().after(chainExpirationTime)) {
+            return true;
+        }
+        return super.shouldInitialize(forceReinit);
     }
 
     protected OIDCProviderMetadata retrieveMetadata() {
@@ -85,7 +99,7 @@ public class OidcFederationOpMetadataResolver extends InitializableObject implem
 
         val rawMetadataJson = leafStatement.getClaimsSet().getMetadata(EntityType.OPENID_PROVIDER);
         if (rawMetadataJson == null) {
-            throw new IllegalStateException("Aucun claim 'metadata' dans l'Entity Statement du leaf");
+            throw new OidcException("No 'metadata' claim in the leaf Entity Statement");
         }
 
         try {
@@ -93,7 +107,9 @@ public class OidcFederationOpMetadataResolver extends InitializableObject implem
 
             val resolvedJson = combinedPolicy.apply(rawMetadataJson);
 
-            return OIDCProviderMetadata.parse(resolvedJson);
+            val newMetadata = OIDCProviderMetadata.parse(resolvedJson);
+            chainExpirationTime = new Date(chain.resolveExpirationTime().getTime() - 2 * 60 * 1000L);
+            return newMetadata;
         } catch (final com.nimbusds.oauth2.sdk.ParseException | PolicyViolationException e) {
             throw new OidcException("Cannot resolve provider metadata via federation", e);
         }
