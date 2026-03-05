@@ -3,7 +3,12 @@ package org.pac4j.oidc.metadata;
 import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
 import com.nimbusds.oauth2.sdk.auth.ClientSecretBasic;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import lombok.val;
 import org.junit.jupiter.api.Test;
@@ -46,8 +51,8 @@ public final class OidcFederationOpMetadataResolverTests {
 
         val resolver = new OidcFederationOpMetadataResolver(configuration) {
             @Override
-            protected OIDCProviderMetadata retrieveMetadata() {
-                return expectedMetadata;
+            protected FederationChainResolver.ResolutionResult resolveMetadata() {
+                return new FederationChainResolver.ResolutionResult(expectedMetadata, new Date(System.currentTimeMillis() + 60_000));
             }
 
             @Override
@@ -68,7 +73,7 @@ public final class OidcFederationOpMetadataResolverTests {
     }
 
     @Test
-    public void testReloadsMetadataWhenTrustChainExpired() throws Exception {
+    public void testReloadsMetadataInBackgroundWhenTrustChainExpired() throws Exception {
         val configuration = new OidcConfiguration();
         configuration.setClientId("myClient");
         configuration.setSecret("mySecret");
@@ -76,11 +81,25 @@ public final class OidcFederationOpMetadataResolverTests {
         val initialMetadata = OIDCProviderMetadata.parse(METADATA_CLIENT_SECRET_BASIC);
         val refreshedMetadata = OIDCProviderMetadata.parse(METADATA_CLIENT_SECRET_BASIC);
         val metadataRetrievalCount = new AtomicInteger(0);
+        val backgroundReloadStarted = new CountDownLatch(1);
+        val allowBackgroundReloadCompletion = new CountDownLatch(1);
 
         val resolver = new OidcFederationOpMetadataResolver(configuration) {
             @Override
-            protected OIDCProviderMetadata retrieveMetadata() {
-                return metadataRetrievalCount.getAndIncrement() == 0 ? initialMetadata : refreshedMetadata;
+            protected FederationChainResolver.ResolutionResult resolveMetadata() {
+                if (metadataRetrievalCount.getAndIncrement() == 0) {
+                    return new FederationChainResolver.ResolutionResult(initialMetadata, new Date(System.currentTimeMillis() + 60_000));
+                }
+                backgroundReloadStarted.countDown();
+                try {
+                    if (!allowBackgroundReloadCompletion.await(2, TimeUnit.SECONDS)) {
+                        throw new IllegalStateException("Timeout waiting for background reload completion signal");
+                    }
+                } catch (final InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    throw new IllegalStateException(e);
+                }
+                return new FederationChainResolver.ResolutionResult(refreshedMetadata, new Date(System.currentTimeMillis() + 120_000));
             }
 
             @Override
@@ -90,11 +109,106 @@ public final class OidcFederationOpMetadataResolverTests {
         };
         assertSame(initialMetadata, resolver.load());
         assertEquals(1, metadataRetrievalCount.get());
-        resolver.setChainExpirationTime(new Date(System.currentTimeMillis() + 60_000));
+        resolver.setChainExpirationTime(new Date(System.currentTimeMillis() - 1_000));
+
+        val start = System.nanoTime();
+        assertSame(initialMetadata, resolver.load());
+        val elapsedMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start);
+        assertTrue(elapsedMs < 500, "Expected non-blocking load while background reload is running");
+        assertTrue(backgroundReloadStarted.await(1, TimeUnit.SECONDS));
+        assertEquals(2, metadataRetrievalCount.get());
+
+        resolver.load();
+        resolver.load();
+        assertEquals(2, metadataRetrievalCount.get());
+
+        allowBackgroundReloadCompletion.countDown();
+
+        val timeoutAt = System.currentTimeMillis() + 2_000;
+        var loaded = resolver.load();
+        while (loaded != refreshedMetadata && System.currentTimeMillis() < timeoutAt) {
+            Thread.sleep(20);
+            loaded = resolver.load();
+        }
+        assertSame(refreshedMetadata, loaded);
+    }
+
+    @Test
+    public void testConcurrentCallsDoNotStartMultipleBackgroundReloads() throws Exception {
+        val configuration = new OidcConfiguration();
+        configuration.setClientId("myClient");
+        configuration.setSecret("mySecret");
+        configuration.setClientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC);
+
+        val initialMetadata = OIDCProviderMetadata.parse(METADATA_CLIENT_SECRET_BASIC);
+        val refreshedMetadata = OIDCProviderMetadata.parse(METADATA_CLIENT_SECRET_BASIC);
+        val metadataRetrievalCount = new AtomicInteger(0);
+        val backgroundReloadStarted = new CountDownLatch(1);
+        val allowBackgroundReloadCompletion = new CountDownLatch(1);
+
+        val resolver = new OidcFederationOpMetadataResolver(configuration) {
+            @Override
+            protected FederationChainResolver.ResolutionResult resolveMetadata() {
+                if (metadataRetrievalCount.getAndIncrement() == 0) {
+                    return new FederationChainResolver.ResolutionResult(initialMetadata, new Date(System.currentTimeMillis() + 60_000));
+                }
+                backgroundReloadStarted.countDown();
+                try {
+                    if (!allowBackgroundReloadCompletion.await(2, TimeUnit.SECONDS)) {
+                        throw new IllegalStateException("Timeout waiting for background reload completion signal");
+                    }
+                } catch (final InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    throw new IllegalStateException(e);
+                }
+                return new FederationChainResolver.ResolutionResult(refreshedMetadata, new Date(System.currentTimeMillis() + 120_000));
+            }
+
+            @Override
+            protected TokenValidator createTokenValidator() {
+                return Mockito.mock(TokenValidator.class);
+            }
+        };
+
         assertSame(initialMetadata, resolver.load());
         assertEquals(1, metadataRetrievalCount.get());
+
         resolver.setChainExpirationTime(new Date(System.currentTimeMillis() - 1_000));
-        assertSame(refreshedMetadata, resolver.load());
-        assertEquals(2, metadataRetrievalCount.get());
+
+        val pool = Executors.newFixedThreadPool(6);
+        try {
+            val ready = new CountDownLatch(6);
+            val fire = new CountDownLatch(1);
+            val futures = new ArrayList<Future<OIDCProviderMetadata>>();
+            for (int i = 0; i < 6; i++) {
+                futures.add(pool.submit(() -> {
+                    ready.countDown();
+                    fire.await(1, TimeUnit.SECONDS);
+                    return resolver.load();
+                }));
+            }
+
+            assertTrue(ready.await(1, TimeUnit.SECONDS));
+            fire.countDown();
+            assertTrue(backgroundReloadStarted.await(1, TimeUnit.SECONDS));
+
+            for (val future : futures) {
+                assertSame(initialMetadata, future.get(1, TimeUnit.SECONDS));
+            }
+
+            assertEquals(2, metadataRetrievalCount.get());
+
+            allowBackgroundReloadCompletion.countDown();
+
+            val timeoutAt = System.currentTimeMillis() + 2_000;
+            var loaded = resolver.load();
+            while (loaded != refreshedMetadata && System.currentTimeMillis() < timeoutAt) {
+                Thread.sleep(20);
+                loaded = resolver.load();
+            }
+            assertSame(refreshedMetadata, loaded);
+        } finally {
+            pool.shutdownNow();
+        }
     }
 }
