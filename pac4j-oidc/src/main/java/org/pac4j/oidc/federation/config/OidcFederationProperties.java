@@ -1,6 +1,5 @@
 package org.pac4j.oidc.federation.config;
 
-import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
 import lombok.Getter;
 import lombok.Setter;
 import org.pac4j.core.config.properties.JwksProperties;
@@ -29,11 +28,11 @@ public class OidcFederationProperties {
 
     private EntityConfigurationGenerator entityConfigurationGenerator;
 
-    private int validityInDays = 365;
+    private int validityInDays = 90;
 
     private String entityId;
 
-    private String applicationType = "web"; // or native
+    private String applicationType = "web";
 
     private List<String> responseTypes = List.of("code");
 
@@ -41,11 +40,13 @@ public class OidcFederationProperties {
 
     private List<String> scopes = List.of("openid", "email", "profile");
 
-    private ClientAuthenticationMethod clientAuthenticationMethod = ClientAuthenticationMethod.PRIVATE_KEY_JWT;
-
     private List<OidcTrustAnchorProperties> trustAnchors = new ArrayList<>();
 
     private String targetIssuer;
+
+    private String clientName;
+
+    private List<String> contacts = new ArrayList<>();
 
     public OidcFederationProperties() {
         keystore.setCertificatePrefix("oidcfede-signing-cert");

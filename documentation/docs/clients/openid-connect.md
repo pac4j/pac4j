@@ -135,13 +135,14 @@ Available properties are:
 - `keystore` (`KeystoreProperties`): keystore-based signing material for the entity statement. By default, pac4j sets the certificate prefix to `oidcfede-signing-cert`, the certificate validity to 1 year, and uses a filesystem keystore generator.
 - `jwks` (`JwksProperties`): JWKS-based signing material for the entity statement. If both JWKS and keystore are configured, JWKS is used first.
 - `entityConfigurationGenerator` (`EntityConfigurationGenerator`): component used by the endpoint to generate the entity configuration. If not set, `OidcClient` assigns `DefaultEntityConfigurationGenerator`.
-- `validityInDays` (`int`, default: `365`): validity duration of the generated entity statement (`exp - iat`).
+- `validityInDays` (`int`, default: `90`): validity duration of the generated entity statement (`exp - iat`).
 - `entityId` (`String`, optional): entity identifier used as `iss`, `sub`, and `aud` in the generated statement. If not set, the callback URL is used.
 - `applicationType` (`String`, default: `web`): value of the `application_type` RP metadata claim (`web` or `native`).
 - `responseTypes` (`List<String>`, default: `["code"]`): value of the `response_types` RP metadata claim.
 - `grantTypes` (`List<String>`, default: `["authorization_code"]`): value of the `grant_types` RP metadata claim.
 - `scopes` (`List<String>`, default: `["openid", "email", "profile"]`): value of the `scope` RP metadata claim (serialized as a space-separated string).
-- `clientAuthenticationMethod` (`ClientAuthenticationMethod`, default: `PRIVATE_KEY_JWT`): value of the `token_endpoint_auth_method` RP metadata claim.
+- `clientName` (`String`, optional): value of the `client_name` RP metadata claim.
+- `contacts` (`List<String>`, default: empty list): value of the `contacts` RP metadata claim when at least one contact is provided.
 - `trustAnchors` (`List<OidcTrustAnchorProperties>`, default: empty list): trust anchors used to resolve trust chains (`taIssuer` and `taJwksUrl` for each anchor).
 - `targetIssuer` (`String`): OP entity identifier to resolve via federation. When set, federation mode is used instead of discovery URI resolution.
 
@@ -189,11 +190,25 @@ config.setClientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BA
 
 You can also use the `PRIVATE_KEY_JWT` authentication method by providing the `PrivateKeyJWTClientAuthnMethodConfig` component:
 
+**Example 1:**
 ```java
 oidcConfiguration.setClientAuthenticationMethod(ClientAuthenticationMethod.PRIVATE_KEY_JWT);
 
-var privateKey = org.jasig.cas.client.util.PrivateKeyUtils.createKey("private-key.pem", "RSA");
-var privateKeyJwtConfig = new PrivateKeyJWTClientAuthnMethodConfig(JWSAlgorithm.RS256, privateKey, "12345");
+val privateKey = org.jasig.cas.client.util.PrivateKeyUtils.createKey("private-key.pem", "RSA");
+val privateKeyJwtConfig = new PrivateKeyJWTClientAuthnMethodConfig(JWSAlgorithm.RS256, privateKey, "12345");
+oidcConfiguration.setPrivateKeyJWTClientAuthnMethodConfig(privateKeyJwtConfig);
+```
+
+**Example 2:**
+```java
+oidcConfiguration.setClientAuthenticationMethod(ClientAuthenticationMethod.PRIVATE_KEY_JWT);
+
+val jwksProperties = new JwksProperties();
+jwksProperties.setJwksPath("classpath:/static/op/keystore.jwks");
+jwksProperties.setKid("cas-qGcosGMN");
+val signingKey = JwkHelper.loadCreateJwkFromJwks(jwksProperties);
+
+val privateKeyJwtConfig = new PrivateKeyJWTClientAuthnMethodConfig(JWSAlgorithm.RS256, ((RSAKey) signingKey).toKeyPair().getPrivate(), "12345");
 oidcConfiguration.setPrivateKeyJWTClientAuthnMethodConfig(privateKeyJwtConfig);
 ```
 

@@ -3,6 +3,7 @@ package org.pac4j.oidc.federation.entity;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.oauth2.sdk.auth.PrivateKeyJWT;
 import com.nimbusds.openid.connect.sdk.federation.registration.ClientRegistrationType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static org.pac4j.oidc.util.JwkHelper.*;
 
@@ -89,7 +91,6 @@ public class DefaultEntityConfigurationGenerator extends InitializableObject imp
         val claimsBuilder = new JWTClaimsSet.Builder()
             .issuer(entityId)
             .subject(entityId)
-            .audience(entityId)
             .jwtID(UUID.randomUUID().toString())
             .issueTime(now)
             .expirationTime(exp)
@@ -101,8 +102,20 @@ public class DefaultEntityConfigurationGenerator extends InitializableObject imp
         rpMetadata.put("response_types", federation.getResponseTypes());
         rpMetadata.put("grant_types", federation.getGrantTypes());
         rpMetadata.put("scope", String.join(" ", federation.getScopes()));
-        rpMetadata.put("token_endpoint_auth_method", federation.getClientAuthenticationMethod().getValue());
-        rpMetadata.put("client_registration_types_supported", List.of(ClientRegistrationType.EXPLICIT.getValue()));
+        val clientAuth = config.getOpMetadataResolver().getClientAuthentication();
+        rpMetadata.put("token_endpoint_auth_method", clientAuth.getMethod().getValue());
+        if (clientAuth instanceof PrivateKeyJWT pkj) {
+            val clientAssertion = pkj.getClientAssertion();
+            if (clientAssertion != null && clientAssertion.getHeader() != null) {
+                rpMetadata.put("token_endpoint_auth_signing_alg", List.of(clientAssertion.getHeader().getAlgorithm().getName()));
+            }
+        }
+        rpMetadata.put("client_registration_types", List.of(ClientRegistrationType.EXPLICIT.getValue()));
+        rpMetadata.put("client_name", federation.getClientName());
+        val contacts = federation.getContacts();
+        if (contacts != null && contacts.size() > 0) {
+            rpMetadata.put("contacts", contacts);
+        }
 
         val metadata = new LinkedHashMap<String, Object>();
         metadata.put("openid_relying_party", rpMetadata);
@@ -112,6 +125,11 @@ public class DefaultEntityConfigurationGenerator extends InitializableObject imp
         val publicKey = signingKey.toPublicJWK();
         val jwkSet = new JWKSet(publicKey);
         claimsBuilder.claim("jwks", jwkSet.toJSONObject());
+
+        val trustAnchors = federation.getTrustAnchors();
+        if (trustAnchors != null && trustAnchors.size() > 0) {
+            claimsBuilder.claim("authority_hints", trustAnchors.stream().map(ta -> ta.getTaIssuer()).collect(Collectors.toList()));
+        }
 
         val claims = claimsBuilder.build();
 
