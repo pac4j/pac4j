@@ -182,10 +182,21 @@ The federation metadata resolver performs a blocking load on first use, then ref
 
 ## 4) Advanced configuration
 
+### a) Client authentication method
+
 You can define how the client credentials (`clientId` and `secret`) are passed to the token endpoint with the `setClientAuthenticationMethod` method:
 
 ```java
-config.setClientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC);
+config.setClientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC); // or CLIENT_SECRET_POST
+```
+
+You can use the `CLIENT_SECRET_JWT` authentication method by providing the `ClientSecretJwtClientAuthnMethodConfig` component:
+
+```java
+oidcConfiguration.setClientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_JWT);
+
+val clientSecretJwtConfig = new ClientSecretJwtClientAuthnMethodConfig(new URI("http://audience"), JWSAlgorithm.HS256);
+oidcConfiguration.setClientSecretJwtClientAuthnMethodConfig(clientSecretJwtConfig);
 ```
 
 You can also use the `PRIVATE_KEY_JWT` authentication method by providing the `PrivateKeyJWTClientAuthnMethodConfig` component:
@@ -206,7 +217,7 @@ oidcConfiguration.setClientAuthenticationMethod(ClientAuthenticationMethod.PRIVA
 val jwksProperties = new JwksProperties();
 jwksProperties.setJwksPath("classpath:/static/op/keystore.jwks");
 jwksProperties.setKid("cas-qGcosGMN");
-val signingKey = JwkHelper.loadCreateJwkFromJwks(jwksProperties);
+val signingKey = JwkHelper.loadJwkFromOrCreateJwks(jwksProperties);
 
 val privateKeyJwtConfig = new PrivateKeyJWTClientAuthnMethodConfig(JWSAlgorithm.RS256, ((RSAKey) signingKey).toKeyPair().getPrivate(), "12345");
 oidcConfiguration.setPrivateKeyJWTClientAuthnMethodConfig(privateKeyJwtConfig);
@@ -224,6 +235,10 @@ PrivateKeyJWT expiration mechanism can be disabled by setting :
     privateKeyJwtConfig.setUseExpiration(false);
 ```
 
+Notice that you can define a set of client authentication methods instead of just one via the `setSupportedClientAuthenticationMethods` method.
+
+
+### b) Other settings
 
 When validating the IDToken in the login process, you can set a clock skew:
 
