@@ -1,18 +1,32 @@
 package org.pac4j.oidc.metadata;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jwt.SignedJWT;
 import com.nimbusds.oauth2.sdk.auth.ClientAuthentication;
+import com.nimbusds.openid.connect.sdk.federation.registration.ClientRegistrationType;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import lombok.AccessLevel;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
+import org.pac4j.core.context.HttpConstants;
+import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.util.HttpUtils;
 import org.pac4j.core.util.InitializableObject;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.credentials.clientauth.ClientAuthenticationBuilder;
 import org.pac4j.oidc.credentials.clientauth.DefaultClientAuthenticationBuilder;
+import org.pac4j.oidc.exceptions.OidcException;
 import org.pac4j.oidc.profile.creator.TokenValidator;
+import org.pac4j.oidc.util.JwkHelper;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.text.ParseException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -23,6 +37,8 @@ import java.util.concurrent.CompletableFuture;
  */
 @Slf4j
 public class OidcFederationOpMetadataResolver extends InitializableObject implements IOidcOpMetadataResolver {
+
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private volatile OIDCProviderMetadata metadata;
 
@@ -85,6 +101,9 @@ public class OidcFederationOpMetadataResolver extends InitializableObject implem
         val result = resolveMetadata();
         val resolvedMetadata = result.metadata();
         val resolvedChainExpirationTime = result.chainExpirationTime();
+
+        registerClient(resolvedMetadata);
+
         val resolvedClientAuthenticationBuilder = new DefaultClientAuthenticationBuilder(this.configuration, resolvedMetadata);
         resolvedClientAuthenticationBuilder.buildClientAuthentication();
 
@@ -93,8 +112,96 @@ public class OidcFederationOpMetadataResolver extends InitializableObject implem
         this.clientAuthenticationBuilder = resolvedClientAuthenticationBuilder;
         this.tokenValidator = createTokenValidator();
     }
+
     protected FederationChainResolver.ResolutionResult resolveMetadata() {
         return federationChainResolver.resolve(configuration);
+    }
+
+    protected void registerClient(final OIDCProviderMetadata resolvedMetadata) {
+        val definedClientId = configuration.getClientId();
+        if (StringUtils.isBlank(definedClientId)) {
+            LOGGER.debug("ClientID is not defined");
+            val registrationTypes = resolvedMetadata.getClientRegistrationTypes();
+            if (registrationTypes == null || registrationTypes.isEmpty()) {
+                throw new OidcException("OP does not support any client registration types and RP clientID is not defined"
+                    + " -> failing");
+            }
+            if (registrationTypes.contains(ClientRegistrationType.AUTOMATIC)) {
+                LOGGER.debug("Automatic registration by OP -> setting clientId as entityId for further operation");
+                configuration.setClientId(configuration.getFederation().getEntityId());
+
+            } else if (registrationTypes.contains(ClientRegistrationType.EXPLICIT)
+                && !registrationTypes.contains(ClientRegistrationType.AUTOMATIC)) {
+
+                val registrationEndpoint = resolvedMetadata.getFederationRegistrationEndpointURI();
+                if (registrationEndpoint == null) {
+                    throw new OidcException("Client registration endpoint is not defined and "
+                        + "only explicit registration is accepted by the OP");
+                }
+                LOGGER.debug("Registration endpoint exists and only explicit registration by OP -> performing explicit registration");
+
+                val generator = configuration.getFederation().getEntityConfigurationGenerator();
+                val entityConfig = generator.generate();
+
+                String clientId = null;
+                String clientSecret = null;
+                HttpURLConnection connection = null;
+                try {
+                    val headers = new HashMap<String, String>();
+                    headers.put(HttpConstants.CONTENT_TYPE_HEADER, generator.getContentType());
+                    connection = HttpUtils.openPostConnection(registrationEndpoint.toURL(), headers);
+                    HttpUtils.postBody(connection, entityConfig);
+                    val code = connection.getResponseCode();
+                    if (code == 200 || code == 201) {
+                        val signedJwt = SignedJWT.parse(HttpUtils.readBody(connection));
+                        val keys = resolvedMetadata.getJWKSet().getKeys();
+                        var verified = false;
+                        for (val key : keys) {
+                            val signer = JwkHelper.determineVerifier(key, false);
+                            if (signer.verify(signedJwt.getHeader(), signedJwt.getSigningInput(), signedJwt.getSignature())) {
+                                verified = true;
+                                break;
+                            }
+                        }
+                        if (!verified) {
+                            throw new OidcException("Cannot verify explicit registration response");
+                        }
+                        val payload = signedJwt.getPayload().toString();
+                        val data = OBJECT_MAPPER.readTree(payload);
+                        val orp = data.path("metadata").path("openid_relying_party");
+                        clientId = orp.path("client_id").asText();
+                        clientSecret = orp.path("client_secret").asText();
+                        if (clientId != null) {
+                            configuration.setClientId(clientId);
+                            logSeparator();
+                            logData("id: [" + clientId + "]");
+                            if (StringUtils.isBlank(configuration.getSecret()) && clientSecret != null) {
+                                configuration.setSecret(clientSecret);
+                                logData("secret: [" + clientSecret + "]");
+                            }
+                            logSeparator();
+                        }
+                    }
+                    if (clientId == null) {
+                        throw new OidcException("Cannot explicitely register the client");
+                    }
+                } catch (final IOException | JOSEException | ParseException e) {
+                    LOGGER.error("Explicit registration fails, no automatic option -> failing definitely");
+                    throw new TechnicalException(e);
+                } finally {
+                    HttpUtils.closeConnection(connection);
+                }
+            }
+        }
+    }
+
+    protected void logSeparator() {
+        LOGGER.warn("/!\\ ================================================");
+    }
+
+    protected void logData(final String t) {
+        LOGGER.warn("/!\\ Explicit registration of the client '{}' returns {}. This information won't be repeated.\n"
+            + "You MUST add this value to your configuration before the next application startup!", t);
     }
 
     protected TokenValidator createTokenValidator() {

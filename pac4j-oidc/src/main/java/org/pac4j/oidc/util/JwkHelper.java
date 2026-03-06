@@ -1,10 +1,7 @@
 package org.pac4j.oidc.util;
 
 import com.nimbusds.jose.*;
-import com.nimbusds.jose.crypto.ECDSASigner;
-import com.nimbusds.jose.crypto.Ed25519Signer;
-import com.nimbusds.jose.crypto.MACSigner;
-import com.nimbusds.jose.crypto.RSASSASigner;
+import com.nimbusds.jose.crypto.*;
 import com.nimbusds.jose.jwk.*;
 import com.nimbusds.jose.jwk.gen.RSAKeyGenerator;
 import com.nimbusds.jwt.JWTClaimsSet;
@@ -224,6 +221,46 @@ public class JwkHelper {
         }
 
         throw new TechnicalException("No signer found for key type " + key.getClass().getSimpleName() + " and alg " + alg);
+    }
+
+    public static JWSVerifier determineVerifier(final JWK key, final boolean allowSymmetricSigning) {
+        return determineVerifier(key, null, allowSymmetricSigning);
+    }
+
+    public static JWSVerifier determineVerifier(final JWK key, final JWSAlgorithm a, final boolean allowSymmetricSigning) {
+        var alg = a;
+        if (alg == null) {
+            alg = determineAlgorithm(key, allowSymmetricSigning);
+        }
+
+        try {
+            if (alg.getName().startsWith("HS")) {
+                if (!allowSymmetricSigning) {
+                    throw new TechnicalException("Can't get verifier for symmetric keys");
+                }
+                if (key instanceof OctetSequenceKey octet) {
+                    return new MACVerifier(octet);
+                }
+                if (key instanceof SecretKey secret) {
+                    return new MACVerifier(secret);
+                }
+                throw new TechnicalException("HMAC algorithm requires OctetSequenceKey or SecretKey");
+            } else if (key instanceof OctetKeyPair okp) {
+                val curve = okp.getCurve();
+                if (Curve.Ed25519.equals(curve)) {
+                    return new Ed25519Verifier(okp);
+                }
+                throw new TechnicalException("Unsupported EdDSA curve: " + curve);
+            } else if (key instanceof ECKey ec) {
+                return new ECDSAVerifier(ec);
+            } else if (key instanceof RSAKey rsa) {
+                return new RSASSAVerifier(rsa);
+            }
+        } catch (final JOSEException e) {
+            throw new TechnicalException(e);
+        }
+
+        throw new TechnicalException("No verifier found for key type " + key.getClass().getSimpleName() + " and alg " + alg);
     }
 
     public static boolean hasPrivatePart(final JWK key) {

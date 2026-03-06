@@ -243,13 +243,17 @@ public class OidcConfiguration extends BaseClientConfiguration {
      */
     @Override
     protected void internalInit(final boolean forceReinit) {
-        assertNotBlank("clientId", getClientId());
+        // for federation, the clientId is not mandatory as it can be registered later on
+        if (!isFederation()) {
+            assertNotBlank("clientId", getClientId());
+        }
         if (!AUTHORIZATION_CODE_FLOWS.contains(responseType) && !IMPLICIT_FLOWS.contains(responseType)
             && !HYBRID_CODE_FLOWS.contains(responseType)) {
             throw new OidcConfigurationException("Unsupported responseType: " + responseType);
         }
         // secret is mandatory if it's not the implicit flow and PKCE is disabled and not private_key_jwt
-        if (!IMPLICIT_FLOWS.contains(responseType) && isDisablePkce()
+        // and not federation
+        if (!IMPLICIT_FLOWS.contains(responseType) && isDisablePkce() && !isFederation()
             && clientAuthenticationMethod != ClientAuthenticationMethod.PRIVATE_KEY_JWT) {
             assertNotBlank("secret", getSecret());
         }

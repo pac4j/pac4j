@@ -75,11 +75,12 @@ public final class DefaultEntityConfigurationGeneratorTests {
         val jwksFile = tmp.resolve("entity.jwks");
         assertFalse(Files.exists(jwksFile));
 
+        val callbackUrl = "https://client.example.org/callback";
+
         val federation = new OidcFederationProperties();
         federation.getJwks().setJwksResource(new FileSystemResource(jwksFile.toFile()));
-        federation.setEntityId(null);
+        federation.setEntityId(callbackUrl);
 
-        val callbackUrl = "https://client.example.org/callback";
         val generator = newGenerator(federation, callbackUrl);
 
         val serializedJwt = generator.generate();
@@ -307,7 +308,7 @@ public final class DefaultEntityConfigurationGeneratorTests {
         assertEquals("openid email", openIdRelyingParty.get("scope"));
         assertEquals(ClientAuthenticationMethod.PRIVATE_KEY_JWT.getValue(),
             openIdRelyingParty.get("token_endpoint_auth_method"));
-        assertEquals(List.of("explicit"), openIdRelyingParty.get("client_registration_types"));
+        assertEquals(List.of("explicit", "automatic"), openIdRelyingParty.get("client_registration_types"));
         assertEquals("pac4j buildConfig client", openIdRelyingParty.get("client_name"));
         assertEquals(List.of("build@example.org"), openIdRelyingParty.get("contacts"));
 

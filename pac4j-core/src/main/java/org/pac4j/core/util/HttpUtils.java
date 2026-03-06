@@ -88,6 +88,12 @@ public final class HttpUtils {
         return openConnection(url, HttpConstants.HTTP_METHOD.DELETE.name(), null);
     }
 
+    public static void postBody(final HttpURLConnection connection, final String body) throws IOException {
+        try (val os = connection.getOutputStream()) {
+            os.write(body.getBytes(StandardCharsets.UTF_8));
+        }
+    }
+
     /**
      * <p>openConnection.</p>
      *

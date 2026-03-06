@@ -1,6 +1,7 @@
 package org.pac4j.oidc.client;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import lombok.val;
 import org.pac4j.core.client.IndirectClient;
@@ -34,6 +35,7 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
 public class OidcClient extends IndirectClient {
 
     @Getter
+    @Setter
     private OidcConfiguration configuration;
 
     /**
@@ -48,15 +50,6 @@ public class OidcClient extends IndirectClient {
      */
     public OidcClient(final OidcConfiguration configuration) {
         setConfiguration(configuration);
-    }
-
-    public void setConfiguration(OidcConfiguration configuration) {
-        this.configuration = configuration;
-        val federation = configuration.getFederation();
-        val entityConfigGenerator = federation.getEntityConfigurationGenerator();
-        if (entityConfigGenerator == null) {
-            federation.setEntityConfigurationGenerator(new DefaultEntityConfigurationGenerator(this));
-        }
     }
 
     /** {@inheritDoc} */
@@ -77,6 +70,15 @@ public class OidcClient extends IndirectClient {
         setProfileCreatorIfUndefined(new OidcProfileCreator(configuration, this));
         setLogoutProcessorIfUndefined(new OidcLogoutProcessor(configuration, findSessionLogoutHandler()));
         setLogoutActionBuilderIfUndefined(new OidcLogoutActionBuilder(configuration));
+
+        val federation = configuration.getFederation();
+        val entityConfigGenerator = federation.getEntityConfigurationGenerator();
+        if (entityConfigGenerator == null) {
+            federation.setEntityConfigurationGenerator(new DefaultEntityConfigurationGenerator(this));
+        }
+        if (federation.getEntityId() == null) {
+            federation.setEntityId(callbackUrl);
+        }
     }
 
     /** {@inheritDoc} */

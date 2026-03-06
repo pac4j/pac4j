@@ -78,11 +78,7 @@ public class DefaultEntityConfigurationGenerator extends InitializableObject imp
         val config = client.getConfiguration();
         val federation = config.getFederation();
         val callbackURL = client.getCallbackUrl();
-
-        var entityId = federation.getEntityId();
-        if (entityId == null) {
-            entityId = callbackURL;
-        }
+        val entityId = federation.getEntityId();
 
         val now = new Date();
         long validityMs = (long) federation.getValidityInDays() * 24 * 60 * 60 * 1000L;
@@ -110,7 +106,8 @@ public class DefaultEntityConfigurationGenerator extends InitializableObject imp
                 rpMetadata.put("token_endpoint_auth_signing_alg", List.of(clientAssertion.getHeader().getAlgorithm().getName()));
             }
         }
-        rpMetadata.put("client_registration_types", List.of(ClientRegistrationType.EXPLICIT.getValue()));
+        rpMetadata.put("client_registration_types", List.of(ClientRegistrationType.EXPLICIT.getValue(),
+            ClientRegistrationType.AUTOMATIC.getValue()));
         rpMetadata.put("client_name", federation.getClientName());
         val contacts = federation.getContacts();
         if (contacts != null && contacts.size() > 0) {
