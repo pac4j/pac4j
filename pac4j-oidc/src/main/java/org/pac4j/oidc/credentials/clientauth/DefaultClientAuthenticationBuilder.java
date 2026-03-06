@@ -42,6 +42,7 @@ public class DefaultClientAuthenticationBuilder implements ClientAuthenticationB
             ClientAuthenticationMethod.CLIENT_SECRET_POST,
             ClientAuthenticationMethod.CLIENT_SECRET_BASIC,
             ClientAuthenticationMethod.PRIVATE_KEY_JWT,
+            ClientAuthenticationMethod.CLIENT_SECRET_JWT,
             ClientAuthenticationMethod.NONE);
 
     private final OidcConfiguration configuration;
@@ -128,6 +129,19 @@ public class DefaultClientAuthenticationBuilder implements ClientAuthenticationB
             } else if (ClientAuthenticationMethod.CLIENT_SECRET_BASIC.equals(chosenMethod)) {
                 val _secret = new Secret(configuration.getSecret());
                 return new ClientSecretBasic(_clientID, _secret);
+            } else if (ClientAuthenticationMethod.CLIENT_SECRET_JWT.equals(chosenMethod)) {
+                val clientSecretJwtConfig = configuration.getClientSecretJwtClientAuthnMethodConfig();
+                assertNotNull("clientSecretJwtConfig", clientSecretJwtConfig);
+                val audience = clientSecretJwtConfig.getAudience();
+                assertNotNull("clientSecretJwtConfig.getAudience()", audience);
+                val jwsAlgo = clientSecretJwtConfig.getJwsAlgorithm();
+                assertNotNull("clientSecretJwtConfig.getJwsAlgorithm()", jwsAlgo);
+                val _secret = new Secret(configuration.getSecret());
+                try {
+                    return new ClientSecretJWT(_clientID, audience, jwsAlgo, _secret);
+                } catch (final JOSEException e) {
+                    throw new OidcException("Cannot instantiate client secret JWT client authentication method", e);
+                }
             } else if (ClientAuthenticationMethod.PRIVATE_KEY_JWT.equals(chosenMethod)) {
                 val privateKeyJwtConfig = configuration.getPrivateKeyJWTClientAuthnMethodConfig();
                 assertNotNull("privateKeyJwtConfig", privateKeyJwtConfig);
@@ -165,11 +179,9 @@ public class DefaultClientAuthenticationBuilder implements ClientAuthenticationB
 
     private ClientAuthenticationMethod firstSupportedMethod(
         final Collection<ClientAuthenticationMethod> serverSupportedAuthMethods,
-        Collection<ClientAuthenticationMethod> clientSupportedAuthMethods) {
-        Collection<ClientAuthenticationMethod> supportedMethods =
-            clientSupportedAuthMethods != null ? clientSupportedAuthMethods : SUPPORTED_METHODS;
-        var firstSupported =
-            serverSupportedAuthMethods.stream().filter(supportedMethods::contains).findFirst();
+        final Collection<ClientAuthenticationMethod> clientSupportedAuthMethods) {
+        val supportedMethods = clientSupportedAuthMethods != null ? clientSupportedAuthMethods : SUPPORTED_METHODS;
+        var firstSupported = serverSupportedAuthMethods.stream().filter(supportedMethods::contains).findFirst();
         if (firstSupported.isPresent()) {
             return firstSupported.get();
         } else {

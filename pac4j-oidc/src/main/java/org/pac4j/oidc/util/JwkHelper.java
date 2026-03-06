@@ -32,7 +32,7 @@ import java.util.UUID;
 @Slf4j
 public class JwkHelper {
 
-    public static JWK loadCreateJwkFromJwks(final JwksProperties jwksProperties) {
+    public static JWK loadJwkFromOrCreateJwks(final JwksProperties jwksProperties) {
         LOGGER.debug("Loading signingKey from JWKS");
         val jwksResource = jwksProperties.getJwksResource();
         val kid = jwksProperties.getKid();
@@ -91,7 +91,7 @@ public class JwkHelper {
         }
     }
 
-    public static JWK loadCreateJwkFromKeyStore(final KeystoreProperties keystoreProperties) {
+    public static JWK loadJwkFromOrCreateKeyStore(final KeystoreProperties keystoreProperties) {
         LOGGER.debug("Loading signingKey from keystore");
         val keystoreGenerator = keystoreProperties.getKeystoreGenerator();
         if (keystoreGenerator.shouldGenerate()) {

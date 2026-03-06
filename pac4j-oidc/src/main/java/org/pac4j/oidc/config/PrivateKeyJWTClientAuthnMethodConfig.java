@@ -1,15 +1,15 @@
 package org.pac4j.oidc.config;
 
-import java.security.PrivateKey;
-
 import com.nimbusds.jose.JWSAlgorithm;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.security.PrivateKey;
+
 /**
  * The configuration for the client authentication method: private_key_jwt.
+ * deprecated: move to the method package.
  *
  * @author Jerome LELEU
  * @since 5.7.0

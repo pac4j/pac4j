@@ -57,4 +57,6 @@ public interface TestsConstants {
     String LOGIN_URL = "http://myserver/login";
     String PAC4J_BASE_URL = "http://www.pac4j.org/";
     String PAC4J_URL = PAC4J_BASE_URL + "test.html";
+    String CASSERVERPAC4J_BASE_URL = "https://casserverpac4j.herokuapp.com";
+    String CASSERVERPAC4J_OIDC_URL = CASSERVERPAC4J_BASE_URL + "/oidc/.well-known/openid-configuration";
 }

@@ -42,7 +42,7 @@ public final class JwkHelperTests {
     }
 
     @Test
-    public void testLoadCreateJwkFromJwksGeneratesAndPersistsKeyWhenMissing() throws Exception {
+    public void testLoadJwkFromOrCreateJwksGeneratesAndPersistsKeyWhenMissing() throws Exception {
         val jwksPath = Files.createTempDirectory("jwks-helper-tests").resolve("generated.jwks");
         Files.deleteIfExists(jwksPath);
 
@@ -50,7 +50,7 @@ public final class JwkHelperTests {
         jwksProperties.setJwksPath(jwksPath.toString());
         jwksProperties.setKid("generated-kid");
 
-        val signingJwk = JwkHelper.loadCreateJwkFromJwks(jwksProperties);
+        val signingJwk = JwkHelper.loadJwkFromOrCreateJwks(jwksProperties);
 
         assertNotNull(signingJwk);
         assertTrue(signingJwk.isPrivate());
@@ -63,7 +63,7 @@ public final class JwkHelperTests {
     }
 
     @Test
-    public void testLoadCreateJwkFromJwksSelectsRequestedKid() throws Exception {
+    public void testLoadJwkFromOrCreateJwksSelectsRequestedKid() throws Exception {
         val jwksPath = Files.createTempDirectory("jwks-helper-tests").resolve("existing.jwks");
         Files.deleteIfExists(jwksPath);
 
@@ -76,7 +76,7 @@ public final class JwkHelperTests {
         jwksProperties.setJwksPath(jwksPath.toString());
         jwksProperties.setKid("kid-2");
 
-        val signingJwk = JwkHelper.loadCreateJwkFromJwks(jwksProperties);
+        val signingJwk = JwkHelper.loadJwkFromOrCreateJwks(jwksProperties);
         assertEquals("kid-2", signingJwk.getKeyID());
         assertTrue(signingJwk.isPrivate());
     }

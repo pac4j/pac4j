@@ -16,6 +16,7 @@ import org.pac4j.core.client.config.BaseClientConfiguration;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.util.generator.RandomValueGenerator;
 import org.pac4j.core.util.generator.ValueGenerator;
+import org.pac4j.oidc.config.method.ClientSecretJwtClientAuthnMethodConfig;
 import org.pac4j.oidc.exceptions.OidcConfigurationException;
 import org.pac4j.oidc.federation.config.OidcFederationProperties;
 import org.pac4j.oidc.metadata.IOidcOpMetadataResolver;
@@ -158,6 +159,9 @@ public class OidcConfiguration extends BaseClientConfiguration {
     /* The private key JWT client authentication method configuration */
     private PrivateKeyJWTClientAuthnMethodConfig privateKeyJWTClientAuthnMethodConfig;
 
+    /* The client secret JWT client authentication method configuration */
+    private ClientSecretJwtClientAuthnMethodConfig clientSecretJwtClientAuthnMethodConfig;
+
     /* use nonce? */
     private boolean useNonce;
 
@@ -244,8 +248,9 @@ public class OidcConfiguration extends BaseClientConfiguration {
             && !HYBRID_CODE_FLOWS.contains(responseType)) {
             throw new OidcConfigurationException("Unsupported responseType: " + responseType);
         }
-        // secret is mandatory if it's not the implicit flow and PKCE is disabled
-        if (!IMPLICIT_FLOWS.contains(responseType) && isDisablePkce()) {
+        // secret is mandatory if it's not the implicit flow and PKCE is disabled and not private_key_jwt
+        if (!IMPLICIT_FLOWS.contains(responseType) && isDisablePkce()
+            && clientAuthenticationMethod != ClientAuthenticationMethod.PRIVATE_KEY_JWT) {
             assertNotBlank("secret", getSecret());
         }
         if (this.getDiscoveryURI() == null && this.getOpMetadataResolver() == null && !isFederation()) {
