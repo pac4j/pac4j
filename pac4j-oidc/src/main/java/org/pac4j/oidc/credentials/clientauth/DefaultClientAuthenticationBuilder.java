@@ -24,8 +24,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static org.pac4j.core.util.CommonHelper.assertNotNull;
-import static org.pac4j.core.util.CommonHelper.isNotEmpty;
+import static org.pac4j.core.util.CommonHelper.*;
 
 /**
  * The default client authentication builder.
@@ -96,7 +95,16 @@ public class DefaultClientAuthenticationBuilder implements ClientAuthenticationB
      * @return a {@link ClientAuthentication} object
      */
     protected ClientAuthentication computeClientAuthentication() {
-        val _clientID = new ClientID(configuration.getClientId());
+        ClientID _clientID;
+        val definedClientId = configuration.getClientId();
+        if (definedClientId == null) {
+            val entityId = configuration.getFederation().getEntityId();
+            assertNotBlank("federation.entityId", entityId);
+            LOGGER.warn("No clientId defined yet, using federation entityId");
+            _clientID = new ClientID(entityId);
+        } else {
+            _clientID = new ClientID(configuration.getClientId());
+        }
 
         if (configuration.getSecret() != null || configuration.getPrivateKeyJWTClientAuthnMethodConfig() != null) {
             // check authentication methods

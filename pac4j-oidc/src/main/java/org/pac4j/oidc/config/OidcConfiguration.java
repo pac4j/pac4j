@@ -50,6 +50,7 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OidcConfiguration extends BaseClientConfiguration {
+    // deprecate: move to OidcConstants
     /**
      * Constant <code>login_hint="user@example.org"</code>
      */
@@ -275,7 +276,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
         }
     }
 
-    protected boolean isFederation() {
+    public boolean isFederation() {
         return StringUtils.isNotBlank(getFederation().getTargetIssuer());
     }
 

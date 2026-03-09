@@ -1,10 +1,20 @@
 package org.pac4j.oidc.metadata;
 
+import com.nimbusds.jose.jwk.JWK;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.gen.RSAKeyGenerator;
+import com.nimbusds.jwt.JWTClaimsSet;
+
 import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
 import com.nimbusds.oauth2.sdk.auth.ClientSecretBasic;
+import com.nimbusds.openid.connect.sdk.federation.registration.ClientRegistrationType;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
+import fi.iki.elonen.NanoHTTPD;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -13,8 +23,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import lombok.val;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.pac4j.http.test.tools.ServerResponse;
+import org.pac4j.http.test.tools.WebServer;
 import org.pac4j.oidc.config.OidcConfiguration;
+import org.pac4j.oidc.federation.entity.EntityConfigurationGenerator;
 import org.pac4j.oidc.profile.creator.TokenValidator;
+import org.pac4j.oidc.util.JwkHelper;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -70,6 +84,54 @@ public final class OidcFederationOpMetadataResolverTests {
         val auth = resolver.getClientAuthentication();
         assertNotNull(auth);
         assertTrue(auth instanceof ClientSecretBasic);
+    }
+    @Test
+    public void testExplicitRegistrationSetsClientIdAndSecret() throws Exception {
+        val configuration = new OidcConfiguration();
+        configuration.setClientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC);
+        configuration.getFederation().setEntityId("https://rp.example.org");
+
+        val entityConfigurationGenerator = Mockito.mock(EntityConfigurationGenerator.class);
+        Mockito.when(entityConfigurationGenerator.getContentType()).thenReturn("application/entity-statement+jwt");
+        Mockito.when(entityConfigurationGenerator.generate()).thenReturn("entity-configuration");
+        configuration.getFederation().setEntityConfigurationGenerator(entityConfigurationGenerator);
+
+        val signingKey = new RSAKeyGenerator(2048).keyID("registration-key").generate();
+        val registrationResponse = buildRegistrationResponseJwt(signingKey, "registeredClient", "registeredSecret");
+
+        val webServer = new WebServer(0)
+            .defineResponse("ok", new ServerResponse(NanoHTTPD.Response.Status.CREATED,
+                "application/entity-statement+jwt", registrationResponse));
+        webServer.start();
+        try {
+            val metadata = OIDCProviderMetadata.parse(METADATA_CLIENT_SECRET_BASIC);
+            metadata.setClientRegistrationTypes(List.of(ClientRegistrationType.EXPLICIT));
+            metadata.setFederationRegistrationEndpointURI(
+                new URI("http://localhost:" + webServer.getListeningPort() + "/register?r=ok"));
+            metadata.setJWKSet(new JWKSet(signingKey.toPublicJWK()));
+
+            val resolver = new OidcFederationOpMetadataResolver(configuration) {
+                @Override
+                protected FederationChainResolver.ResolutionResult resolveMetadata() {
+                    return new FederationChainResolver.ResolutionResult(metadata, new Date(System.currentTimeMillis() + 60_000));
+                }
+
+                @Override
+                protected TokenValidator createTokenValidator() {
+                    return Mockito.mock(TokenValidator.class);
+                }
+            };
+
+            assertSame(metadata, resolver.load());
+            assertEquals("registeredClient", configuration.getClientId());
+            assertEquals("registeredSecret", configuration.getSecret());
+            assertTrue(resolver.getClientAuthentication() instanceof ClientSecretBasic);
+
+            Mockito.verify(entityConfigurationGenerator).getContentType();
+            Mockito.verify(entityConfigurationGenerator).generate();
+        } finally {
+            webServer.stop();
+        }
     }
 
     @Test
@@ -210,5 +272,18 @@ public final class OidcFederationOpMetadataResolverTests {
         } finally {
             pool.shutdownNow();
         }
+    }
+
+    private static String buildRegistrationResponseJwt(final JWK signingKey,
+                                                       final String clientId,
+                                                       final String clientSecret) {
+        val claims = new JWTClaimsSet.Builder()
+            .issuer("https://op.example.org")
+            .subject("https://op.example.org")
+            .claim("metadata", Map.of("openid_relying_party", Map.of(
+                "client_id", clientId,
+                "client_secret", clientSecret)))
+            .build();
+        return JwkHelper.buildSignedJwt(claims, signingKey, "entity-statement+jwt");
     }
 }

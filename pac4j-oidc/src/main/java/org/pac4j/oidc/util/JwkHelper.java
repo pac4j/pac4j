@@ -6,12 +6,14 @@ import com.nimbusds.jose.jwk.*;
 import com.nimbusds.jose.jwk.gen.RSAKeyGenerator;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.pac4j.core.config.properties.JwksProperties;
 import org.pac4j.core.config.properties.KeystoreProperties;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.keystore.loading.KeyStoreUtils;
+import org.pac4j.core.resource.SpringResourceHelper;
 
 import javax.crypto.SecretKey;
 import java.io.IOException;
@@ -62,27 +64,58 @@ public class JwkHelper {
             }
         }
         LOGGER.debug("Reading signingKey from: {}", jwksResource);
+        JWKSet jwkSet = null;
         try (val is = jwksResource.getInputStream()) {
-            val jwkSet = JWKSet.load(is);
+            jwkSet = JWKSet.load(is);
+        } catch (final IOException | ParseException e) {
+            throw new TechnicalException(e);
+        }
 
-            JWK signingJwk;
-            if (kid != null) {
-                signingJwk = jwkSet.getKeys().stream()
-                    .filter(k -> k.getKeyID().equals(kid))
-                    .filter(k -> KeyUse.SIGNATURE.equals(k.getKeyUse()))
-                    .filter(JWK::isPrivate)
-                    .findFirst()
-                    .orElseThrow(() -> new TechnicalException("No private key (" + kid + ") for signature"));
-            } else {
-                signingJwk = jwkSet.getKeys().stream()
-                    .filter(k -> KeyUse.SIGNATURE.equals(k.getKeyUse()))
-                    .filter(JWK::isPrivate)
-                    .findFirst()
-                    .orElseThrow(() -> new TechnicalException("No private key for signature"));
+        JWK signingJwk;
+        if (kid != null) {
+            signingJwk = jwkSet.getKeys().stream()
+                .filter(k -> k.getKeyID().equals(kid))
+                .filter(k -> KeyUse.SIGNATURE.equals(k.getKeyUse()))
+                .filter(JWK::isPrivate)
+                .findFirst()
+                .orElseThrow(() -> new TechnicalException("No private key (" + kid + ") for signature"));
+        } else {
+            signingJwk = jwkSet.getKeys().stream()
+                .filter(k -> KeyUse.SIGNATURE.equals(k.getKeyUse()))
+                .filter(JWK::isPrivate)
+                .findFirst()
+                .orElseThrow(() -> new TechnicalException("No private key for signature"));
+        }
+
+        return signingJwk;
+    }
+
+    public static JWKSet retrieveJwkSetFrom(final OIDCProviderMetadata metadata, final String fallbackUrl) {
+        if (metadata != null) {
+            var jwkSet = metadata.getJWKSet();
+            if (jwkSet != null) {
+                return jwkSet;
             }
+            val keysUri = metadata.getJWKSetURI();
+            if (keysUri != null) {
+                jwkSet = retrieveJWKSetFromURI(keysUri.toString());
+                if (jwkSet != null) {
+                    return jwkSet;
+                }
+            }
+        }
+        if (fallbackUrl != null) {
+            val jwkSet = retrieveJWKSetFromURI(fallbackUrl);
+            if (jwkSet != null) {
+                return jwkSet;
+            }
+        }
+        throw new TechnicalException("Unable to retrieve keys from JWK");
+    }
 
-            return signingJwk;
-
+    private static JWKSet retrieveJWKSetFromURI(final String path) {
+        try (val is = SpringResourceHelper.buildResourceFromPath(path).getInputStream()) {
+            return JWKSet.load(is);
         } catch (final IOException | ParseException e) {
             throw new TechnicalException(e);
         }
@@ -116,7 +149,7 @@ public class JwkHelper {
     /**
      * Determine the key algorithm.
      *
-     * @param key the key
+     * @param key                   the key
      * @param allowSymmetricSigning whether symmetric signing (HMac) is allowed
      * @return the algorithm
      */

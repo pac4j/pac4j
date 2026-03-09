@@ -5,6 +5,7 @@ import com.nimbusds.oauth2.sdk.pkce.CodeChallenge;
 import com.nimbusds.oauth2.sdk.pkce.CodeVerifier;
 import com.nimbusds.openid.connect.sdk.AuthenticationRequest;
 import com.nimbusds.openid.connect.sdk.Nonce;
+import com.nimbusds.openid.connect.sdk.federation.registration.ClientRegistrationType;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.pac4j.core.context.CallContext;
@@ -16,13 +17,14 @@ import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.config.OidcConfigurationContext;
+import org.pac4j.oidc.exceptions.OidcException;
+import org.pac4j.oidc.util.OidcConstants;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.pac4j.oidc.exceptions.OidcException;
 
 /**
  * Redirect to the OpenID Connect provider.
@@ -94,6 +96,22 @@ public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
         if (loginHint != null && !loginHint.isEmpty()) {
             authParams.put(OidcConfiguration.LOGIN_HINT, loginHint);
         }
+
+        // federation
+        val config = client.getConfiguration();
+        if (config.isFederation()) {
+            val registrationTypes = config.getOpMetadataResolver().load().getClientRegistrationTypes();
+            if (registrationTypes != null && registrationTypes.contains(ClientRegistrationType.AUTOMATIC)) {
+                LOGGER.debug("RP in federation, OP requires automatic registration: adding client_assertion*");
+
+                authParams.put(OidcConstants.CLIENT_ASSERTION_TYPE, OidcConstants.CLIENT_ASSERTION_TYPE_JWT_BEARER);
+
+                val generator = config.getFederation().getEntityConfigurationGenerator();
+                val entityConfig = generator.generate();
+                authParams.put(OidcConstants.CLIENT_ASSERTION, entityConfig);
+            }
+        }
+
         return new HashMap<>(authParams);
     }
 

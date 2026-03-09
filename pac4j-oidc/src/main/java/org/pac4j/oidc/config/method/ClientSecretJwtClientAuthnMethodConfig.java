@@ -20,5 +20,5 @@ public class ClientSecretJwtClientAuthnMethodConfig {
 
     private URI audience;
 
-    private JWSAlgorithm jwsAlgorithm;
+    private JWSAlgorithm jwsAlgorithm = JWSAlgorithm.HS256;
 }
