@@ -3,7 +3,7 @@ package org.pac4j.oidc.federation.entity;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.oauth2.sdk.auth.PrivateKeyJWT;
+import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
 import com.nimbusds.openid.connect.sdk.federation.registration.ClientRegistrationType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -52,8 +52,6 @@ public class DefaultEntityConfigurationGenerator extends InitializableObject imp
 
     @Override
     protected void internalInit(final boolean forceReinit) {
-        client.init(forceReinit);
-
         val config = client.getConfiguration();
         val federation = config.getFederation();
         JWK signingKey = null;
@@ -79,6 +77,7 @@ public class DefaultEntityConfigurationGenerator extends InitializableObject imp
         val federation = config.getFederation();
         val callbackURL = client.getCallbackUrl();
         val entityId = federation.getEntityId();
+        LOGGER.info("Generating entity configuration for: {}", entityId);
 
         val now = new Date();
         long validityMs = (long) federation.getValidityInDays() * 24 * 60 * 60 * 1000L;
@@ -98,12 +97,14 @@ public class DefaultEntityConfigurationGenerator extends InitializableObject imp
         rpMetadata.put("response_types", federation.getResponseTypes());
         rpMetadata.put("grant_types", federation.getGrantTypes());
         rpMetadata.put("scope", String.join(" ", federation.getScopes()));
-        val clientAuth = config.getOpMetadataResolver().getClientAuthentication();
-        rpMetadata.put("token_endpoint_auth_method", clientAuth.getMethod().getValue());
-        if (clientAuth instanceof PrivateKeyJWT pkj) {
-            val clientAssertion = pkj.getClientAssertion();
-            if (clientAssertion != null && clientAssertion.getHeader() != null) {
-                rpMetadata.put("token_endpoint_auth_signing_alg", List.of(clientAssertion.getHeader().getAlgorithm().getName()));
+        val clientAuth = config.getClientAuthenticationMethod();
+        if (clientAuth != null) {
+            rpMetadata.put("token_endpoint_auth_method", clientAuth.getValue());
+            if (clientAuth == ClientAuthenticationMethod.PRIVATE_KEY_JWT) {
+                val clientAuthConfig = config.getPrivateKeyJWTClientAuthnMethodConfig();
+                if (clientAuthConfig != null && clientAuthConfig.getJwsAlgorithm() != null) {
+                    rpMetadata.put("token_endpoint_auth_signing_alg", List.of(clientAuthConfig.getJwsAlgorithm().getName()));
+                }
             }
         }
         rpMetadata.put("client_registration_types", List.of(ClientRegistrationType.EXPLICIT.getValue(),

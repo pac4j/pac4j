@@ -19,6 +19,7 @@ import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.credentials.clientauth.ClientAuthenticationBuilder;
 import org.pac4j.oidc.credentials.clientauth.DefaultClientAuthenticationBuilder;
 import org.pac4j.oidc.exceptions.OidcException;
+import org.pac4j.oidc.metadata.chain.FederationChainResolver;
 import org.pac4j.oidc.profile.creator.TokenValidator;
 import org.pac4j.oidc.util.JwkHelper;
 
@@ -102,10 +103,10 @@ public class OidcFederationOpMetadataResolver extends InitializableObject implem
         this.metadata = result.metadata();
         this.chainExpirationTime = result.chainExpirationTime();
 
+        registerClient();
+
         this.clientAuthenticationBuilder = new DefaultClientAuthenticationBuilder(this.configuration, this.metadata);
         this.clientAuthenticationBuilder.buildClientAuthentication();
-
-        registerClient();
 
         this.tokenValidator = createTokenValidator();
     }
@@ -139,7 +140,6 @@ public class OidcFederationOpMetadataResolver extends InitializableObject implem
                 LOGGER.debug("Registration endpoint exists and only explicit registration by OP -> performing explicit registration");
 
                 val generator = configuration.getFederation().getEntityConfigurationGenerator();
-                configuration.setOpMetadataResolver(this);
                 val entityConfig = generator.generate();
 
                 String clientId = null;
@@ -178,9 +178,6 @@ public class OidcFederationOpMetadataResolver extends InitializableObject implem
                                 logData(entityId, "secret: [" + clientSecret + "]");
                             }
                             logSeparator();
-                            // renew client authentication
-                            this.clientAuthenticationBuilder = new DefaultClientAuthenticationBuilder(this.configuration, this.metadata);
-                            this.clientAuthenticationBuilder.buildClientAuthentication();
                         }
                     }
                     if (StringUtils.isBlank(clientId)) {

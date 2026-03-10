@@ -4,12 +4,22 @@ import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.gen.RSAKeyGenerator;
 import com.nimbusds.jwt.JWTClaimsSet;
-
 import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
 import com.nimbusds.oauth2.sdk.auth.ClientSecretBasic;
 import com.nimbusds.openid.connect.sdk.federation.registration.ClientRegistrationType;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import fi.iki.elonen.NanoHTTPD;
+import lombok.val;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.pac4j.http.test.tools.ServerResponse;
+import org.pac4j.http.test.tools.WebServer;
+import org.pac4j.oidc.config.OidcConfiguration;
+import org.pac4j.oidc.federation.entity.EntityConfigurationGenerator;
+import org.pac4j.oidc.metadata.chain.FederationChainResolver;
+import org.pac4j.oidc.profile.creator.TokenValidator;
+import org.pac4j.oidc.util.JwkHelper;
+
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,15 +30,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import lombok.val;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.pac4j.http.test.tools.ServerResponse;
-import org.pac4j.http.test.tools.WebServer;
-import org.pac4j.oidc.config.OidcConfiguration;
-import org.pac4j.oidc.federation.entity.EntityConfigurationGenerator;
-import org.pac4j.oidc.profile.creator.TokenValidator;
-import org.pac4j.oidc.util.JwkHelper;
 
 import static org.junit.jupiter.api.Assertions.*;
 

@@ -1,4 +1,4 @@
-package org.pac4j.oidc.metadata;
+package org.pac4j.oidc.metadata.chain;
 
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.openid.connect.sdk.federation.entities.EntityID;
@@ -33,6 +33,9 @@ import java.util.Map;
 public class FederationChainResolver {
 
     public ResolutionResult resolve(final OidcConfiguration configuration) {
+        val entityId = configuration.getFederation().getEntityId();
+        LOGGER.info("Resolving federation chain for: {}", entityId);
+
         val anchors = loadTrustAnchors(configuration);
         LOGGER.debug("Loaded {} trust anchor(s)", anchors.size());
 
