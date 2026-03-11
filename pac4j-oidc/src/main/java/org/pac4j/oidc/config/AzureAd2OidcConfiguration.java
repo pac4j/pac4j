@@ -43,7 +43,7 @@ public class AzureAd2OidcConfiguration extends OidcConfiguration {
         this.setCustomParams(oidcConfiguration.getCustomParams());
         this.setClientAuthenticationMethod(oidcConfiguration.getClientAuthenticationMethod());
         this.setUseNonce(oidcConfiguration.isUseNonce());
-        this.setPreferredJwsAlgorithm(oidcConfiguration.getPreferredJwsAlgorithm());
+        this.setIdTokenJwsAlgorithm(oidcConfiguration.getIdTokenJwsAlgorithm());
         this.setMaxClockSkew(oidcConfiguration.getMaxClockSkew());
         this.setConnectTimeout(oidcConfiguration.getConnectTimeout());
         this.setReadTimeout(oidcConfiguration.getReadTimeout());

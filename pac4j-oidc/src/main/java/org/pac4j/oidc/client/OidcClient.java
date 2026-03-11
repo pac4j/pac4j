@@ -50,6 +50,10 @@ public class OidcClient extends IndirectClient {
      */
     public OidcClient(final OidcConfiguration configuration) {
         setConfiguration(configuration);
+        val federation = configuration.getFederation();
+        if (federation.getEntityConfigurationGenerator() == null) {
+            federation.setEntityConfigurationGenerator(new DefaultEntityConfigurationGenerator(this));
+        }
     }
 
     /** {@inheritDoc} */
@@ -62,23 +66,19 @@ public class OidcClient extends IndirectClient {
     /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
-        configuration.init(forceReinit);
-
-        val federation = configuration.getFederation();
-        val entityConfigGenerator = federation.getEntityConfigurationGenerator();
-        if (entityConfigGenerator == null) {
-            federation.setEntityConfigurationGenerator(new DefaultEntityConfigurationGenerator(this));
-        }
-        if (federation.getEntityId() == null) {
-            federation.setEntityId(callbackUrl);
-        }
-
         setRedirectionActionBuilderIfUndefined(new OidcRedirectionActionBuilder(this));
         setCredentialsExtractorIfUndefined(new OidcCredentialsExtractor(configuration, this));
         setAuthenticatorIfUndefined(new OidcAuthenticator(configuration, this));
         setProfileCreatorIfUndefined(new OidcProfileCreator(configuration, this));
         setLogoutProcessorIfUndefined(new OidcLogoutProcessor(configuration, findSessionLogoutHandler()));
         setLogoutActionBuilderIfUndefined(new OidcLogoutActionBuilder(configuration));
+
+        configuration.init(forceReinit);
+
+        val federation = configuration.getFederation();
+        if (federation.getEntityId() == null) {
+            federation.setEntityId(callbackUrl);
+        }
     }
 
     /** {@inheritDoc} */

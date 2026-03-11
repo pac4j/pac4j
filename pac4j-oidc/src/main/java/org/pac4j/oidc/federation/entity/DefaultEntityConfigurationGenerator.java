@@ -8,6 +8,7 @@ import com.nimbusds.openid.connect.sdk.federation.registration.ClientRegistratio
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.InitializableObject;
 import org.pac4j.oidc.client.OidcClient;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static org.pac4j.core.util.CommonHelper.assertNotBlank;
 import static org.pac4j.oidc.util.JwkHelper.*;
 
 /**
@@ -76,7 +78,12 @@ public class DefaultEntityConfigurationGenerator extends InitializableObject imp
         val config = client.getConfiguration();
         val federation = config.getFederation();
         val callbackURL = client.getCallbackUrl();
-        val entityId = federation.getEntityId();
+        var entityId = federation.getEntityId();
+        if (StringUtils.isBlank(entityId)) {
+            entityId = callbackURL;
+            federation.setEntityId(callbackURL);
+        }
+        assertNotBlank("entityId", entityId);
         LOGGER.info("Generating entity configuration for: {}", entityId);
 
         val now = new Date();
@@ -101,9 +108,12 @@ public class DefaultEntityConfigurationGenerator extends InitializableObject imp
         if (clientAuth != null) {
             rpMetadata.put("token_endpoint_auth_method", clientAuth.getValue());
             if (clientAuth == ClientAuthenticationMethod.PRIVATE_KEY_JWT) {
-                val clientAuthConfig = config.getPrivateKeyJWTClientAuthnMethodConfig();
+                val clientAuthConfig = config.getPrivateKeyJwtClientAuthnMethodConfig();
                 if (clientAuthConfig != null && clientAuthConfig.getJwsAlgorithm() != null) {
                     rpMetadata.put("token_endpoint_auth_signing_alg", List.of(clientAuthConfig.getJwsAlgorithm().getName()));
+                    val publicKey = clientAuthConfig.getJwk().toPublicJWK();
+                    val jwkSet = new JWKSet(publicKey);
+                    rpMetadata.put("jwks", jwkSet.toJSONObject());
                 }
             }
         }

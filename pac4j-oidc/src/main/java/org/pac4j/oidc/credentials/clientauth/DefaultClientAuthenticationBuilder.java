@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.pac4j.oidc.config.OidcConfiguration;
-import org.pac4j.oidc.config.PrivateKeyJWTClientAuthnMethodConfig;
+import org.pac4j.oidc.config.method.IPrivateKeyJwtClientAuthnMethodConfig;
 import org.pac4j.oidc.exceptions.OidcException;
 import org.pac4j.oidc.exceptions.OidcUnsupportedClientAuthMethodException;
 
@@ -194,7 +194,7 @@ public class DefaultClientAuthenticationBuilder implements ClientAuthenticationB
      * @param privateKey the key to test
      * @return true if expired
      */
-    private boolean isJWTExpired(PrivateKeyJWT privateKey, PrivateKeyJWTClientAuthnMethodConfig privateKeyJwtConfig) {
+    private boolean isJWTExpired(PrivateKeyJWT privateKey, IPrivateKeyJwtClientAuthnMethodConfig privateKeyJwtConfig) {
         try {
             // Gets expiration time in claims
             // (claims can't be null they are built in constructor or it generates an IllegalArgumentException)

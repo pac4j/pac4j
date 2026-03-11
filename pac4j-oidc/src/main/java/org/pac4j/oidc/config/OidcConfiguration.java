@@ -13,10 +13,12 @@ import lombok.*;
 import lombok.experimental.Accessors;
 import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.config.BaseClientConfiguration;
+import org.pac4j.core.config.properties.JwksProperties;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.util.generator.RandomValueGenerator;
 import org.pac4j.core.util.generator.ValueGenerator;
 import org.pac4j.oidc.config.method.ClientSecretJwtClientAuthnMethodConfig;
+import org.pac4j.oidc.config.method.IPrivateKeyJwtClientAuthnMethodConfig;
 import org.pac4j.oidc.exceptions.OidcConfigurationException;
 import org.pac4j.oidc.federation.config.OidcFederationProperties;
 import org.pac4j.oidc.metadata.IOidcOpMetadataResolver;
@@ -136,6 +138,8 @@ public class OidcConfiguration extends BaseClientConfiguration {
 
     private OidcFederationProperties federation = new OidcFederationProperties();
 
+    private JwksProperties rpJwks = new JwksProperties();
+
     /* OpenID client identifier */
     private String clientId;
 
@@ -158,7 +162,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
     private Set<ClientAuthenticationMethod> supportedClientAuthenticationMethods;
 
     /* The private key JWT client authentication method configuration */
-    private PrivateKeyJWTClientAuthnMethodConfig privateKeyJWTClientAuthnMethodConfig;
+    private IPrivateKeyJwtClientAuthnMethodConfig privateKeyJwtClientAuthnMethodConfig;
 
     /* The client secret JWT client authentication method configuration */
     private ClientSecretJwtClientAuthnMethodConfig clientSecretJwtClientAuthnMethodConfig;
@@ -175,8 +179,8 @@ public class OidcConfiguration extends BaseClientConfiguration {
     /* use PKCE, when null, lookup support from metadata */
     private CodeChallengeMethod pkceMethod;
 
-    /* Preferred JWS algorithm */
-    private JWSAlgorithm preferredJwsAlgorithm;
+    /* ID Token JWS algorithm */
+    private JWSAlgorithm idTokenJwsAlgorithm;
 
     /* max_age seconds since the last time the End-User was actively authenticated by the OP */
     private Integer maxAge;
@@ -371,13 +375,13 @@ public class OidcConfiguration extends BaseClientConfiguration {
         return getPkceMethod();
     }
 
-    /**
-     * <p>setPreferredJwsAlgorithmAsString.</p>
-     *
-     * @param preferredJwsAlgorithm a {@link String} object
-     */
+    @Deprecated
     public void setPreferredJwsAlgorithmAsString(final String preferredJwsAlgorithm) {
-        this.preferredJwsAlgorithm = JWSAlgorithm.parse(preferredJwsAlgorithm);
+        this.idTokenJwsAlgorithm = JWSAlgorithm.parse(preferredJwsAlgorithm);
+    }
+
+    public void setIdTokenJwsAlgorithmAsString(final String preferredJwsAlgorithm) {
+        this.idTokenJwsAlgorithm = JWSAlgorithm.parse(preferredJwsAlgorithm);
     }
 
     /**
@@ -472,5 +476,53 @@ public class OidcConfiguration extends BaseClientConfiguration {
             }
             return connection;
         }
+    }
+
+    /**
+     * Use {@link #setPrivateKeyJwtClientAuthnMethodConfig(IPrivateKeyJwtClientAuthnMethodConfig)} instead.
+     */
+    @Deprecated
+    public void setPrivateKeyJWTClientAuthnMethodConfig(final IPrivateKeyJwtClientAuthnMethodConfig clientAuthConfig) {
+        this.privateKeyJwtClientAuthnMethodConfig = clientAuthConfig;
+    }
+
+    /**
+     * Use {@link #getPrivateKeyJwtClientAuthnMethodConfig()} instead.
+     */
+    @Deprecated
+    public IPrivateKeyJwtClientAuthnMethodConfig getPrivateKeyJWTClientAuthnMethodConfig() {
+        return this.privateKeyJwtClientAuthnMethodConfig;
+    }
+
+    public IPrivateKeyJwtClientAuthnMethodConfig getPrivateKeyJwtClientAuthnMethodConfig() {
+        return privateKeyJwtClientAuthnMethodConfig;
+    }
+
+    public void setPrivateKeyJwtClientAuthnMethodConfig(final IPrivateKeyJwtClientAuthnMethodConfig privateKeyJwtClientAuthnMethodConfig) {
+        this.privateKeyJwtClientAuthnMethodConfig = privateKeyJwtClientAuthnMethodConfig;
+    }
+
+    /**
+     * Use {@link #getIdTokenJwsAlgorithm()} instead.
+     */
+    @Deprecated
+    public JWSAlgorithm getPreferredJwsAlgorithm() {
+        return idTokenJwsAlgorithm;
+    }
+
+    /**
+     * Use {@link #setIdTokenJwsAlgorithm(JWSAlgorithm)} instead.
+     */
+    @Deprecated
+    public void setPreferredJwsAlgorithm(final JWSAlgorithm preferredJwsAlgorithm) {
+        this.idTokenJwsAlgorithm = preferredJwsAlgorithm;
+    }
+
+    public JWSAlgorithm getIdTokenJwsAlgorithm() {
+        return idTokenJwsAlgorithm;
+    }
+
+    public void setIdTokenJwsAlgorithm(final JWSAlgorithm idTokenJwsAlgorithm) {
+        this.idTokenJwsAlgorithm = idTokenJwsAlgorithm;
     }
 }

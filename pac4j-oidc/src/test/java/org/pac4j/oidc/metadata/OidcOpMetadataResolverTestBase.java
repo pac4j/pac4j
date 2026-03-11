@@ -1,18 +1,17 @@
 package org.pac4j.oidc.metadata;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Set;
-
-import org.pac4j.oidc.config.AzureAd2OidcConfiguration;
-import org.pac4j.oidc.config.OidcConfiguration;
-
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
 import com.nimbusds.oauth2.sdk.id.Issuer;
 import com.nimbusds.openid.connect.sdk.SubjectType;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
+import org.pac4j.oidc.config.AzureAd2OidcConfiguration;
+import org.pac4j.oidc.config.OidcConfiguration;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Mathias Loesch
@@ -28,7 +27,7 @@ public class OidcOpMetadataResolverTestBase {
         configuration.setClientId("clientId");
         configuration.setSecret("secret");
         configuration.setDiscoveryURI(discoveryURI);
-        configuration.setPreferredJwsAlgorithm(OidcOpMetadataResolverTestBase.JWS_ALGORITHM);
+        configuration.setIdTokenJwsAlgorithm(OidcOpMetadataResolverTestBase.JWS_ALGORITHM);
         configuration.setSupportedClientAuthenticationMethods(supportedClientAuthenticationMethods);
         return configuration;
     }
@@ -50,17 +49,17 @@ public class OidcOpMetadataResolverTestBase {
         oidcOpMetadataResolver.init();
         return oidcOpMetadataResolver;
     }
-    
+
     protected static AzureAd2OidcConfiguration getAzureAd2OidcConfiguration(
         final Set<ClientAuthenticationMethod> supportedClientAuthenticationMethods) {
         AzureAd2OidcConfiguration configuration = new AzureAd2OidcConfiguration();
         configuration.setClientId("clientId");
         configuration.setSecret("secret");
-        configuration.setPreferredJwsAlgorithm(OidcOpMetadataResolverTestBase.JWS_ALGORITHM);
+        configuration.setIdTokenJwsAlgorithm(OidcOpMetadataResolverTestBase.JWS_ALGORITHM);
         configuration.setSupportedClientAuthenticationMethods(supportedClientAuthenticationMethods);
         return configuration;
     }
-    
+
     protected static AzureAdOpMetadataResolver getAzureAdOpMetadataResolver(OidcConfiguration configuration,
             List<ClientAuthenticationMethod> supportedAuthMethods) throws URISyntaxException {
         AzureAdOpMetadataResolver oidcOpMetadataResolver = new AzureAdOpMetadataResolver(configuration);

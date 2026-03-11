@@ -100,6 +100,9 @@ public class OidcRedirectionActionBuilder implements RedirectionActionBuilder {
         // federation
         val config = client.getConfiguration();
         if (config.isFederation()) {
+            if (config.getOpMetadataResolver() == null) {
+                config.reinit();
+            }
             val registrationTypes = config.getOpMetadataResolver().load().getClientRegistrationTypes();
             if (registrationTypes != null && registrationTypes.contains(ClientRegistrationType.AUTOMATIC)) {
                 LOGGER.debug("RP in federation, OP requires automatic registration: adding client_assertion*");

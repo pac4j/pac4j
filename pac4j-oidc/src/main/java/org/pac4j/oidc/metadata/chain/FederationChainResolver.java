@@ -11,6 +11,7 @@ import com.nimbusds.openid.connect.sdk.federation.trust.TrustChainSet;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import net.minidev.json.JSONArray;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.exceptions.OidcConfigurationException;
@@ -22,6 +23,8 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.pac4j.core.util.CommonHelper.assertNotNull;
 
 /**
  * Resolves OpenID federation trust chains and OP metadata.
@@ -66,11 +69,30 @@ public class FederationChainResolver {
         if (rawMetadataJson == null) {
             throw new OidcException("No 'metadata' claim in the leaf Entity Statement");
         }
+        LOGGER.debug("rawMetadataJson: {}", rawMetadataJson.toJSONString());
+        // RP tests from https://www.certification.openid.net/
+        val registrationTypes = rawMetadataJson.get("client_registration_types_supported");
+        if (registrationTypes == null) {
+            throw new OidcException("No 'client_registration_types_supported' claim in the leaf Entity Statement");
+        }
+        if (registrationTypes instanceof JSONArray arr && arr.size() == 0) {
+            throw new OidcException("Empty 'client_registration_types_supported' claim in the leaf Entity Statement");
+        }
 
         try {
             val combinedPolicy = chain.resolveCombinedMetadataPolicy(EntityType.OPENID_PROVIDER);
+            LOGGER.debug("combinedPolicy: {}", combinedPolicy.toJSONString());
 
             val resolvedJson = combinedPolicy.apply(rawMetadataJson);
+            LOGGER.debug("resolvedJson: {}", resolvedJson.toJSONString());
+
+            // inject missing issuer if not empty (RP tests from https://www.certification.openid.net/)
+            if (!resolvedJson.isEmpty() && !resolvedJson.containsKey("issuer")) {
+                val iss = chain.getLeafConfiguration().getClaimsSet().getIssuer();
+                assertNotNull("issuer", iss);
+                resolvedJson.put("issuer", iss.getValue());
+            }
+
             val metadata = OIDCProviderMetadata.parse(resolvedJson);
             val chainExpirationTime = new Date(chain.resolveExpirationTime().getTime() - 2 * 60 * 1000L);
             return new ResolutionResult(metadata, chainExpirationTime);

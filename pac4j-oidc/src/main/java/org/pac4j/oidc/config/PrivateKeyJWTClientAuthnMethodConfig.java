@@ -1,15 +1,18 @@
 package org.pac4j.oidc.config;
 
 import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.jwk.JWK;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.pac4j.oidc.config.method.IPrivateKeyJwtClientAuthnMethodConfig;
+import org.pac4j.oidc.exceptions.OidcConfigurationException;
 
 import java.security.PrivateKey;
 
 /**
  * The configuration for the client authentication method: private_key_jwt.
- * deprecated: move to the method package.
+ * Use {@link org.pac4j.oidc.config.method.PrivateKeyJwtClientAuthnMethodConfig} instead.
  *
  * @author Jerome LELEU
  * @since 5.7.0
@@ -17,7 +20,8 @@ import java.security.PrivateKey;
 @Getter
 @Setter
 @ToString(exclude = "privateKey")
-public class PrivateKeyJWTClientAuthnMethodConfig {
+@Deprecated
+public class PrivateKeyJWTClientAuthnMethodConfig implements IPrivateKeyJwtClientAuthnMethodConfig {
 
     private JWSAlgorithm jwsAlgorithm;
 
@@ -57,5 +61,11 @@ public class PrivateKeyJWTClientAuthnMethodConfig {
     public PrivateKeyJWTClientAuthnMethodConfig(final JWSAlgorithm jwsAlgorithm, final PrivateKey privateKey, final String keyID) {
         this(jwsAlgorithm, privateKey);
         this.keyID = keyID;
+    }
+
+    @Override
+    public JWK getJwk() {
+        throw new OidcConfigurationException("JWK is not supported by PrivateKeyJWTClientAuthnMethodConfig."
+            + " Use PrivateKeyJwtClientAuthnMethodConfig instead");
     }
 }

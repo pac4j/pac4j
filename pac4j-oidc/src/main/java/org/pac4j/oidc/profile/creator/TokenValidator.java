@@ -60,7 +60,7 @@ public class TokenValidator {
         CommonHelper.assertTrue(CommonHelper.isNotEmpty(metadataAlgorithms),
             "There must at least one JWS algorithm supported on the OpenID Connect provider side");
         List<JWSAlgorithm> jwsAlgorithms = new ArrayList<>();
-        val preferredAlgorithm = configuration.getPreferredJwsAlgorithm();
+        val preferredAlgorithm = configuration.getIdTokenJwsAlgorithm();
         if (metadataAlgorithms.contains(preferredAlgorithm)) {
             jwsAlgorithms.add(preferredAlgorithm);
         } else {

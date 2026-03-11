@@ -111,7 +111,7 @@ public final class TokenValidatorTests implements TestsConstants {
         algorithms.add(JWSAlgorithm.RS256);
         when(metadata.supportsBackChannelLogout()).thenReturn(true);
 
-        when(configuration.getPreferredJwsAlgorithm()).thenReturn(JWSAlgorithm.HS256);
+        when(configuration.getIdTokenJwsAlgorithm()).thenReturn(JWSAlgorithm.HS256);
         final TokenValidator validator = new TokenValidator(configuration, metadata);
         final List<IDTokenValidator> idTokenValidators = validator.getIdTokenValidators();
         assertEquals(1, idTokenValidators.size());
