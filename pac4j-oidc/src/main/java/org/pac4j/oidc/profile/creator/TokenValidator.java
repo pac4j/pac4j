@@ -21,6 +21,7 @@ import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.exceptions.OidcException;
 import org.pac4j.oidc.exceptions.OidcTokenException;
+import org.pac4j.oidc.util.OidcHelper;
 
 import java.net.MalformedURLException;
 import java.util.ArrayList;
@@ -46,68 +47,55 @@ public class TokenValidator {
     /**
      * <p>Constructor for TokenValidator.</p>
      *
-     * @param configuration a {@link OidcConfiguration} object
+     * @param config a {@link OidcConfiguration} object
      * @param metadata a {@link OIDCProviderMetadata} object
      */
-    public TokenValidator(final OidcConfiguration configuration, final OIDCProviderMetadata metadata) {
-        CommonHelper.assertNotNull("configuration", configuration);
+    public TokenValidator(final OidcConfiguration config, final OIDCProviderMetadata metadata) {
+        CommonHelper.assertNotNull("config", config);
         CommonHelper.assertNotNull("metadata", metadata);
-        this.configuration = configuration;
+        this.configuration = config;
         this.metadata = metadata;
 
-        // check algorithms
-        val metadataAlgorithms = metadata.getIDTokenJWSAlgs();
-        CommonHelper.assertTrue(CommonHelper.isNotEmpty(metadataAlgorithms),
-            "There must at least one JWS algorithm supported on the OpenID Connect provider side");
-        List<JWSAlgorithm> jwsAlgorithms = new ArrayList<>();
-        val preferredAlgorithm = configuration.getIdTokenJwsAlgorithm();
-        if (metadataAlgorithms.contains(preferredAlgorithm)) {
-            jwsAlgorithms.add(preferredAlgorithm);
-        } else {
-            jwsAlgorithms = metadataAlgorithms;
-            if (preferredAlgorithm != null) {
-                LOGGER.info("Preferred JWS algorithm: {} not available. Using all metadata algorithms: {}",
-                    preferredAlgorithm, metadataAlgorithms);
-            }
-        }
+        val idTokenJwsAlgs = OidcHelper.matchRPAlgAgainstOPAlgs("ID Token",
+            config.getIdTokenSigningAlgorithm(), metadata.getIDTokenJWSAlgs());
 
         idTokenValidators = new ArrayList<>();
         logoutTokenValidators = new ArrayList<>();
-        val _clientID = new ClientID(configuration.getClientId());
+        val _clientID = new ClientID(config.getClientId());
 
-        for (var jwsAlgorithm : jwsAlgorithms) {
+        for (var alg : idTokenJwsAlgs) {
             // build validator
             final IDTokenValidator idTokenValidator;
             final LogoutTokenValidator logoutTokenValidator;
-            if ("none".equals(jwsAlgorithm.getName())) {
-                final String responseType = configuration.getResponseType();
+            if ("none".equals(alg.getName())) {
+                final String responseType = config.getResponseType();
                 final boolean responseTypeContainsIdToken = responseType != null
                     && responseType.contains(OIDCResponseTypeValue.ID_TOKEN.toString());
-                if (!configuration.isAllowUnsignedIdTokens() || responseTypeContainsIdToken) {
+                if (!config.isAllowUnsignedIdTokens() || responseTypeContainsIdToken) {
                     throw new OidcTokenException("Unsigned ID tokens are not allowed: " +
                         "they must be explicitly enabled on client side and " +
                         "the response_type used must return no ID Token from the authorization endpoint");
                 }
                 LOGGER.warn("Allowing unsigned ID tokens");
                 idTokenValidator = new IDTokenValidator(metadata.getIssuer(), _clientID);
-            } else if (StringUtils.isNotBlank(configuration.getSecret()) && (JWSAlgorithm.HS256.equals(jwsAlgorithm) ||
-                JWSAlgorithm.HS384.equals(jwsAlgorithm) || JWSAlgorithm.HS512.equals(jwsAlgorithm))) {
-                val _secret = new Secret(configuration.getSecret());
-                idTokenValidator = createHMACTokenValidator(jwsAlgorithm, _clientID, _secret);
+            } else if (StringUtils.isNotBlank(config.getSecret()) && (JWSAlgorithm.HS256.equals(alg) ||
+                JWSAlgorithm.HS384.equals(alg) || JWSAlgorithm.HS512.equals(alg))) {
+                val _secret = new Secret(config.getSecret());
+                idTokenValidator = createHMACTokenValidator(alg, _clientID, _secret);
                 if (metadata.supportsBackChannelLogout()) {
-                    logoutTokenValidator = new LogoutTokenValidator(metadata.getIssuer(), _clientID, jwsAlgorithm, _secret);
-                    logoutTokenValidator.setMaxClockSkew(configuration.getMaxClockSkew());
+                    logoutTokenValidator = new LogoutTokenValidator(metadata.getIssuer(), _clientID, alg, _secret);
+                    logoutTokenValidator.setMaxClockSkew(config.getMaxClockSkew());
                     logoutTokenValidators.add(logoutTokenValidator);
                 }
             } else {
-                idTokenValidator = createRSAIdTokenValidator(jwsAlgorithm, _clientID);
+                idTokenValidator = createRSAIdTokenValidator(alg, _clientID);
                 if (metadata.supportsBackChannelLogout()) {
-                    logoutTokenValidator = createRSALogoutTokenValidator(jwsAlgorithm, _clientID);
-                    logoutTokenValidator.setMaxClockSkew(configuration.getMaxClockSkew());
+                    logoutTokenValidator = createRSALogoutTokenValidator(alg, _clientID);
+                    logoutTokenValidator.setMaxClockSkew(config.getMaxClockSkew());
                     logoutTokenValidators.add(logoutTokenValidator);
                 }
             }
-            idTokenValidator.setMaxClockSkew(configuration.getMaxClockSkew());
+            idTokenValidator.setMaxClockSkew(config.getMaxClockSkew());
             idTokenValidators.add(idTokenValidator);
         }
     }

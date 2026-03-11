@@ -10,6 +10,7 @@ import lombok.Setter;
 import org.pac4j.core.config.properties.JwksProperties;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.InitializableObject;
+import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.util.JwkHelper;
 
 import java.security.PrivateKey;
@@ -40,6 +41,10 @@ public class PrivateKeyJwtClientAuthnMethodConfig extends InitializableObject im
     private boolean useExpiration = true;
 
     private JWK jwk;
+
+    public PrivateKeyJwtClientAuthnMethodConfig(final OidcConfiguration configuration) {
+        this.jwks = configuration.getRpJwks();
+    }
 
     @Override
     public JWSAlgorithm getJwsAlgorithm() {

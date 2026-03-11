@@ -238,7 +238,7 @@ public class DefaultClientAuthenticationBuilder implements ClientAuthenticationB
 
         var aud = new Audience(audienceURI);
         var expirationDate = new Date(new Date().getTime() + keyValidity * 1000L);
-        var claimSet = new JWTAuthenticationClaimsSet(clientID, aud.toSingleAudienceList(), expirationDate, null, null, new JWTID());
+        var claimSet = new JWTAuthenticationClaimsSet(clientID, aud.toSingleAudienceList(), expirationDate, null, new Date(), new JWTID());
 
         return new PrivateKeyJWT(claimSet, jwsAlgorithm, privateKey, keyID, null, null, jcaProvider);
     }

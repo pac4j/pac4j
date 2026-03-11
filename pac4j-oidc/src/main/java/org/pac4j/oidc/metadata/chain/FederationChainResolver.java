@@ -4,10 +4,7 @@ import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.openid.connect.sdk.federation.entities.EntityID;
 import com.nimbusds.openid.connect.sdk.federation.entities.EntityType;
 import com.nimbusds.openid.connect.sdk.federation.policy.language.PolicyViolationException;
-import com.nimbusds.openid.connect.sdk.federation.trust.ResolveException;
-import com.nimbusds.openid.connect.sdk.federation.trust.TrustChain;
-import com.nimbusds.openid.connect.sdk.federation.trust.TrustChainResolver;
-import com.nimbusds.openid.connect.sdk.federation.trust.TrustChainSet;
+import com.nimbusds.openid.connect.sdk.federation.trust.*;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -43,14 +40,15 @@ public class FederationChainResolver {
         LOGGER.debug("Loaded {} trust anchor(s)", anchors.size());
 
         val resolver = new TrustChainResolver(anchors, configuration.getConnectTimeout(), configuration.getReadTimeout());
+        val validator = new FederationEntityMetadataValidator(resolver.getEntityStatementRetriever());
 
         val targetIssuer = new EntityID(configuration.getFederation().getTargetIssuer());
         LOGGER.debug("Target issuer: {}", targetIssuer);
 
         TrustChainSet resolvedChains;
         try {
-            resolvedChains = resolver.resolveTrustChains(targetIssuer);
-        } catch (final ResolveException e) {
+            resolvedChains = resolver.resolveTrustChains(targetIssuer, validator);
+        } catch (final ResolveException | InvalidEntityMetadataException e) {
             throw new OidcException(e);
         }
         LOGGER.debug("resolvedChains: {}", resolvedChains);

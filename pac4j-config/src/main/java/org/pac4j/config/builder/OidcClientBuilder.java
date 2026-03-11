@@ -77,7 +77,7 @@ public class OidcClientBuilder extends AbstractBuilder {
                 }
                 val jwsAlgo = getProperty(OIDC_PREFERRED_JWS_ALGORITHM, i);
                 if (StringUtils.isNotBlank(jwsAlgo)) {
-                    configuration.setIdTokenJwsAlgorithm(JWSAlgorithm.parse(jwsAlgo));
+                    configuration.setIdTokenSigningAlgorithm(JWSAlgorithm.parse(jwsAlgo));
                 }
                 val maxClockSkew = getProperty(OIDC_MAX_CLOCK_SKEW, i);
                 if (StringUtils.isNotBlank(maxClockSkew)) {

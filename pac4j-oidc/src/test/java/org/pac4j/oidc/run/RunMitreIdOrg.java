@@ -42,7 +42,7 @@ public class RunMitreIdOrg extends RunClient {
         configuration.setClientId("acdf79d7-0129-4ba3-bc61-a52486cf82ff");
         configuration.setSecret("ALhlPK5ONNGojjZvEiIgyNEUfX1MbAlDXT1dM0-pVQSa-IID5QMq-lEhlawRqejPZ8c70LBqfKyFL79tefmPb7k");
         configuration.setDiscoveryURI("https://mitreid.org/.well-known/openid-configuration");
-        configuration.setIdTokenJwsAlgorithm(JWSAlgorithm.parse("none"));
+        configuration.setIdTokenSigningAlgorithm(JWSAlgorithm.parse("none"));
         val client = new OidcClient(configuration);
         client.setCallbackUrl(PAC4J_URL);
         return client;

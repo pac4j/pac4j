@@ -94,37 +94,48 @@ PrivateKeyJWT expiration mechanism can be disabled by setting :
 Notice that you can define a set of client authentication methods instead of just one via the `setSupportedClientAuthenticationMethods` method.
 
 
-## 2) Other settings
+## 2) State/Nonce
+
+Custom `state` values may be defined in the configuration using the below methods:
+
+```java
+config.setWithState(true);
+config.setStateData("custom-state-value");
+```
+
+The `nonce` for ID tokens can be ignored on refresh. This can be done using:
+
+```java
+config.setUseNonceOnRefresh(false);
+```
+
+
+## 3) Algorithms
+
+You can choose the algorithm (matched against the OP metadata) to verify the ID token signatures:
+
+```java
+config.setIdTokenSigningAlgorithm(JWSAlgorithm.RS256);
+```
+
+This replaces the deprecated `setPreferredJwsAlgorithm` method.
+
+You can also choose the algorithm (matched against the OP metadata) to sign the request objects:
+
+```java
+config.setRequestObjectSigningAlgorithm(JWSAlgorithm.RS256);
+```
+
+The key used is the one stored in the RP JWKS (`config.getRpJwks`) so it must be defined.
+
+
+## 4) Tokens
 
 When validating the IDToken in the login process, you can set a clock skew:
 
 ```java
 // 1 minute
 config.setMaxClockSkew(60);
-```
-
-You can also choose the algorithm (matched against the OP metadata) to verify the ID token signatures:
-
-```java
-config.setIdTokenJwsAlgorithm(JWSAlgorithm.RS256);
-```
-
-This replaces the deprecated `setPreferredJwsAlgorithm` method.
-
-You can finally set additional parameters by using the `addCustomParam(String key, String value)` method:
-
-```java
-// select display mode: page, popup, touch, and wap
-config.addCustomParam("display", "popup");
-// select prompt mode: none, consent, select_account
-config.addCustomParam("prompt", "none");
-```
-
-Custom `state` values may be defined in the configuration using the below method:
-
-```java
-config.setWithState(true);
-config.setStateData("custom-state-value");
 ```
 
 By default, the local session expires when the access token does, but this can be disabled using:
@@ -139,26 +150,32 @@ The additional param `TokenExpirationAdvance` allows to set the time in seconds,
 config.setTokenExpirationAdvance(10);
 ```
 
-You can disable the call to the user info endpoint using:
-
-```java
-config.setCallUserInfoEndpoint(false);
-```
-
 To reinforce security, the `none` alogithm for ID tokens (meaning no signature validation) must be explicitly accepted by using:
 
 ```java
 config.setAllowUnsignedIdTokens(true);
 ```
 
-For security as well, the logout requests are validated. This can be disabled using:
+
+## 5) Other settings
+
+You can finally set additional parameters by using the `addCustomParam(String key, String value)` method:
+
+```java
+// select display mode: page, popup, touch, and wap
+config.addCustomParam("display", "popup");
+// select prompt mode: none, consent, select_account
+config.addCustomParam("prompt", "none");
+```
+
+You can disable the call to the user info endpoint using:
+
+```java
+config.setCallUserInfoEndpoint(false);
+```
+
+For security, the logout requests are validated. This can be disabled using:
 
 ```java
 config.setLogoutValidation(false);
-```
-
-The `nonce` for ID tokens can be ignored on refresh. This can be done using:
-
-```java
-config.setUseNonceOnRefresh(false);
 ```

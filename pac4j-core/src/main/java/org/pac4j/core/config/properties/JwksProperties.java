@@ -29,4 +29,8 @@ public class JwksProperties {
     public void setJwksPath(final String path) {
         this.jwksResource = SpringResourceHelper.buildResourceFromPath(path);
     }
+
+    public boolean isDefined() {
+        return jwksResource != null;
+    }
 }

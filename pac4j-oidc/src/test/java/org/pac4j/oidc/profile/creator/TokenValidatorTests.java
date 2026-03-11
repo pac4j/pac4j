@@ -58,7 +58,7 @@ public final class TokenValidatorTests implements TestsConstants {
     @Test
     public void testNoAlgoDefinedAtProvider() {
         TestsHelper.expectException(() -> new TokenValidator(configuration, metadata), TechnicalException.class,
-            "There must at least one JWS algorithm supported on the OpenID Connect provider side");
+            "There must at least one ID Token JWS algorithm supported on the OP side");
     }
 
     @Test
@@ -111,7 +111,7 @@ public final class TokenValidatorTests implements TestsConstants {
         algorithms.add(JWSAlgorithm.RS256);
         when(metadata.supportsBackChannelLogout()).thenReturn(true);
 
-        when(configuration.getIdTokenJwsAlgorithm()).thenReturn(JWSAlgorithm.HS256);
+        when(configuration.getIdTokenSigningAlgorithm()).thenReturn(JWSAlgorithm.HS256);
         final TokenValidator validator = new TokenValidator(configuration, metadata);
         final List<IDTokenValidator> idTokenValidators = validator.getIdTokenValidators();
         assertEquals(1, idTokenValidators.size());

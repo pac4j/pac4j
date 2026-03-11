@@ -27,7 +27,7 @@ public class OidcOpMetadataResolverTestBase {
         configuration.setClientId("clientId");
         configuration.setSecret("secret");
         configuration.setDiscoveryURI(discoveryURI);
-        configuration.setIdTokenJwsAlgorithm(OidcOpMetadataResolverTestBase.JWS_ALGORITHM);
+        configuration.setIdTokenSigningAlgorithm(OidcOpMetadataResolverTestBase.JWS_ALGORITHM);
         configuration.setSupportedClientAuthenticationMethods(supportedClientAuthenticationMethods);
         return configuration;
     }
@@ -55,7 +55,7 @@ public class OidcOpMetadataResolverTestBase {
         AzureAd2OidcConfiguration configuration = new AzureAd2OidcConfiguration();
         configuration.setClientId("clientId");
         configuration.setSecret("secret");
-        configuration.setIdTokenJwsAlgorithm(OidcOpMetadataResolverTestBase.JWS_ALGORITHM);
+        configuration.setIdTokenSigningAlgorithm(OidcOpMetadataResolverTestBase.JWS_ALGORITHM);
         configuration.setSupportedClientAuthenticationMethods(supportedClientAuthenticationMethods);
         return configuration;
     }

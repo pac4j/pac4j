@@ -173,14 +173,17 @@ public class OidcConfiguration extends BaseClientConfiguration {
     /* use nonce on token obtained by refresh ? true by default to not change the initial behavior */
     private boolean useNonceOnRefresh = true;
 
-    /* disable PKCE, even when supported by the IdP */
+    /* disable PKCE, even when supported by the OP */
     private boolean disablePkce = false;
 
     /* use PKCE, when null, lookup support from metadata */
     private CodeChallengeMethod pkceMethod;
 
-    /* ID Token JWS algorithm */
-    private JWSAlgorithm idTokenJwsAlgorithm;
+    /* ID Token signing algorithm */
+    private JWSAlgorithm idTokenSigningAlgorithm;
+
+    /** Request Object signing algorithm */
+    private JWSAlgorithm requestObjectSigningAlgorithm;
 
     /* max_age seconds since the last time the End-User was actively authenticated by the OP */
     private Integer maxAge;
@@ -377,11 +380,11 @@ public class OidcConfiguration extends BaseClientConfiguration {
 
     @Deprecated
     public void setPreferredJwsAlgorithmAsString(final String preferredJwsAlgorithm) {
-        this.idTokenJwsAlgorithm = JWSAlgorithm.parse(preferredJwsAlgorithm);
+        this.idTokenSigningAlgorithm = JWSAlgorithm.parse(preferredJwsAlgorithm);
     }
 
-    public void setIdTokenJwsAlgorithmAsString(final String preferredJwsAlgorithm) {
-        this.idTokenJwsAlgorithm = JWSAlgorithm.parse(preferredJwsAlgorithm);
+    public void setIdTokenSigningAlgorithmAsString(final String preferredJwsAlgorithm) {
+        this.idTokenSigningAlgorithm = JWSAlgorithm.parse(preferredJwsAlgorithm);
     }
 
     /**
@@ -503,26 +506,26 @@ public class OidcConfiguration extends BaseClientConfiguration {
     }
 
     /**
-     * Use {@link #getIdTokenJwsAlgorithm()} instead.
+     * Use {@link #getIdTokenSigningAlgorithm()} instead.
      */
     @Deprecated
     public JWSAlgorithm getPreferredJwsAlgorithm() {
-        return idTokenJwsAlgorithm;
+        return idTokenSigningAlgorithm;
     }
 
     /**
-     * Use {@link #setIdTokenJwsAlgorithm(JWSAlgorithm)} instead.
+     * Use {@link #setIdTokenSigningAlgorithm(JWSAlgorithm)} instead.
      */
     @Deprecated
     public void setPreferredJwsAlgorithm(final JWSAlgorithm preferredJwsAlgorithm) {
-        this.idTokenJwsAlgorithm = preferredJwsAlgorithm;
+        this.idTokenSigningAlgorithm = preferredJwsAlgorithm;
     }
 
-    public JWSAlgorithm getIdTokenJwsAlgorithm() {
-        return idTokenJwsAlgorithm;
+    public JWSAlgorithm getIdTokenSigningAlgorithm() {
+        return idTokenSigningAlgorithm;
     }
 
-    public void setIdTokenJwsAlgorithm(final JWSAlgorithm idTokenJwsAlgorithm) {
-        this.idTokenJwsAlgorithm = idTokenJwsAlgorithm;
+    public void setIdTokenSigningAlgorithm(final JWSAlgorithm idTokenJwsAlgorithm) {
+        this.idTokenSigningAlgorithm = idTokenJwsAlgorithm;
     }
 }

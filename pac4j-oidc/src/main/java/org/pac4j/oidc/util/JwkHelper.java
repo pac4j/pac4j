@@ -308,9 +308,8 @@ public class JwkHelper {
         return hasPrivate;
     }
 
-    public static String buildSignedJwt(final JWTClaimsSet claims, final JWK key, final String type) {
-        val alg = determineAlgorithm(key, false);
-        val header = new JWSHeader.Builder(alg)
+    public static String buildSignedJwt(final JWTClaimsSet claims, final JWK key, final JWSAlgorithm algorithm, final String type) {
+        val header = new JWSHeader.Builder(algorithm)
             .type(new JOSEObjectType(type))
             .keyID(key.getKeyID())
             .build();
@@ -324,5 +323,10 @@ public class JwkHelper {
         }
 
         return signedJWT.serialize();
+    }
+
+    public static String buildSignedJwt(final JWTClaimsSet claims, final JWK key, final String type) {
+        val alg = determineAlgorithm(key, false);
+        return buildSignedJwt(claims, key, alg, type);
     }
 }
