@@ -8,8 +8,9 @@ title: Release notes&#58;
 **v6.4.0**:
 - Upgrade to Shiro v2.1 for security reasons. Defaults remain the ones of Shiro v1.13 though and will change in a future major version.
 - Add the `encryptionRequired` flag (by default `false`) for the `JWtAuthenticator`
-- `KeystoreGenerator` and its implem `FileSystemKeystoreGenerator` are now in the core
+- `KeystoreGenerator` and its implementation `FileSystemKeystoreGenerator` are now in the core (copy/pasted from the SAML components)
 - OIDC protocol supports the `client_secret_jwt` authentication method
+- `PrivateKeyJWTClientAuthnMethodConfig` is deprecated in favor of `PrivateKeyJwtClientAuthnMethodConfig`
 - Support of the OpenID Connect Federation protocol v1.0
 
 **v6.3.3**:
