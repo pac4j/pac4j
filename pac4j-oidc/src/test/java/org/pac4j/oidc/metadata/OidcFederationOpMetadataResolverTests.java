@@ -12,13 +12,13 @@ import fi.iki.elonen.NanoHTTPD;
 import lombok.val;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.pac4j.core.util.JwkHelper;
 import org.pac4j.http.test.tools.ServerResponse;
 import org.pac4j.http.test.tools.WebServer;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.federation.entity.EntityConfigurationGenerator;
 import org.pac4j.oidc.metadata.chain.FederationChainResolver;
 import org.pac4j.oidc.profile.creator.TokenValidator;
-import org.pac4j.oidc.util.JwkHelper;
 
 import java.net.URI;
 import java.util.ArrayList;

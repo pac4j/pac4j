@@ -1,13 +1,20 @@
 package org.pac4j.oidc.util;
 
 import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.KeyUse;
+import com.nimbusds.jose.jwk.gen.RSAKeyGenerator;
+import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import lombok.val;
 import org.junit.jupiter.api.Test;
 import org.pac4j.core.exception.TechnicalException;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 /**
  * Tests {@link OidcHelper}.
@@ -58,5 +65,58 @@ public final class OidcHelperTests {
             () -> OidcHelper.matchRPAlgAgainstOPAlgs("signing", JWSAlgorithm.RS256, null));
 
         assertEquals("opAlgs cannot be null", exception.getMessage());
+    }
+
+    @Test
+    public void testRetrieveJwkSetFromUsesEmbeddedMetadataJwkSetWhenPresent() throws Exception {
+        val embeddedKey = new RSAKeyGenerator(2048).keyUse(KeyUse.SIGNATURE).keyID("embedded-kid").generate();
+        val embeddedJwkSet = new JWKSet(embeddedKey.toPublicJWK());
+        val metadata = mock(OIDCProviderMetadata.class);
+        when(metadata.getJWKSet()).thenReturn(embeddedJwkSet);
+
+        val jwkSet = OidcHelper.retrieveJwkSetFrom(metadata, "unused-default-url");
+
+        assertSame(embeddedJwkSet, jwkSet);
+        verify(metadata, never()).getJWKSetURI();
+    }
+
+    @Test
+    public void testRetrieveJwkSetFromLoadsFromMetadataJwkSetUriWhenNeeded() throws Exception {
+        val jwksPath = writePublicJwkSetToTempFile("uri-kid");
+        val metadata = mock(OIDCProviderMetadata.class);
+        when(metadata.getJWKSet()).thenReturn(null);
+        when(metadata.getJWKSetURI()).thenReturn(jwksPath.toUri());
+
+        val jwkSet = OidcHelper.retrieveJwkSetFrom(metadata, null);
+
+        assertEquals(1, jwkSet.getKeys().size());
+        assertEquals("uri-kid", jwkSet.getKeys().get(0).getKeyID());
+    }
+
+    @Test
+    public void testRetrieveJwkSetFromFallsBackToDefaultUrlWhenMetadataHasNoKeys() throws Exception {
+        val jwksPath = writePublicJwkSetToTempFile("default-kid");
+        val metadata = mock(OIDCProviderMetadata.class);
+        when(metadata.getJWKSet()).thenReturn(null);
+        when(metadata.getJWKSetURI()).thenReturn(null);
+
+        val jwkSet = OidcHelper.retrieveJwkSetFrom(metadata, jwksPath.toString());
+
+        assertEquals(1, jwkSet.getKeys().size());
+        assertEquals("default-kid", jwkSet.getKeys().get(0).getKeyID());
+    }
+
+    @Test
+    public void testRetrieveJwkSetFromThrowsWhenNoSourceIsAvailable() {
+        val exception = assertThrows(TechnicalException.class, () -> OidcHelper.retrieveJwkSetFrom(null, null));
+        assertEquals("Unable to retrieve keys from JWK", exception.getMessage());
+    }
+
+    private static Path writePublicJwkSetToTempFile(String kid) throws Exception {
+        val jwksPath = Files.createTempDirectory("jwks-helper-tests").resolve(kid + ".jwks");
+        val key = new RSAKeyGenerator(2048).keyUse(KeyUse.SIGNATURE).keyID(kid).generate();
+        val jwkSet = new JWKSet(key.toPublicJWK());
+        Files.writeString(jwksPath, jwkSet.toString(false));
+        return jwksPath;
     }
 }

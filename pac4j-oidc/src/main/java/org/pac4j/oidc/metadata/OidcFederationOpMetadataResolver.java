@@ -15,13 +15,14 @@ import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.HttpUtils;
 import org.pac4j.core.util.InitializableObject;
+import org.pac4j.core.util.JwkHelper;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.credentials.clientauth.ClientAuthenticationBuilder;
 import org.pac4j.oidc.credentials.clientauth.DefaultClientAuthenticationBuilder;
 import org.pac4j.oidc.exceptions.OidcException;
 import org.pac4j.oidc.metadata.chain.FederationChainResolver;
 import org.pac4j.oidc.profile.creator.TokenValidator;
-import org.pac4j.oidc.util.JwkHelper;
+import org.pac4j.oidc.util.OidcHelper;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -152,7 +153,7 @@ public class OidcFederationOpMetadataResolver extends InitializableObject implem
                     val code = connection.getResponseCode();
                     if (code == 200 || code == 201) {
                         val signedJwt = SignedJWT.parse(HttpUtils.readBody(connection));
-                        val keys = JwkHelper.retrieveJwkSetFrom(metadata, null).getKeys();
+                        val keys = OidcHelper.retrieveJwkSetFrom(metadata, null).getKeys();
                         var verified = false;
                         for (val key : keys) {
                             val signer = JwkHelper.determineVerifier(key, false);

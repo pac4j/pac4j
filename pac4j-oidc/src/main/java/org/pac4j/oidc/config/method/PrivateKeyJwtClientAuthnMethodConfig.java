@@ -10,8 +10,8 @@ import lombok.Setter;
 import org.pac4j.core.config.properties.JwksProperties;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.InitializableObject;
+import org.pac4j.core.util.JwkHelper;
 import org.pac4j.oidc.config.OidcConfiguration;
-import org.pac4j.oidc.util.JwkHelper;
 
 import java.security.PrivateKey;
 

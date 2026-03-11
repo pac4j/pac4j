@@ -1,4 +1,4 @@
-package org.pac4j.oidc.util;
+package org.pac4j.core.util;
 
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.*;
@@ -6,14 +6,12 @@ import com.nimbusds.jose.jwk.*;
 import com.nimbusds.jose.jwk.gen.RSAKeyGenerator;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
-import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.pac4j.core.config.properties.JwksProperties;
 import org.pac4j.core.config.properties.KeystoreProperties;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.keystore.loading.KeyStoreUtils;
-import org.pac4j.core.resource.SpringResourceHelper;
 
 import javax.crypto.SecretKey;
 import java.io.IOException;
@@ -88,37 +86,6 @@ public class JwkHelper {
         }
 
         return signingJwk;
-    }
-
-    public static JWKSet retrieveJwkSetFrom(final OIDCProviderMetadata metadata, final String fallbackUrl) {
-        if (metadata != null) {
-            var jwkSet = metadata.getJWKSet();
-            if (jwkSet != null) {
-                return jwkSet;
-            }
-            val keysUri = metadata.getJWKSetURI();
-            if (keysUri != null) {
-                jwkSet = retrieveJWKSetFromURI(keysUri.toString());
-                if (jwkSet != null) {
-                    return jwkSet;
-                }
-            }
-        }
-        if (fallbackUrl != null) {
-            val jwkSet = retrieveJWKSetFromURI(fallbackUrl);
-            if (jwkSet != null) {
-                return jwkSet;
-            }
-        }
-        throw new TechnicalException("Unable to retrieve keys from JWK");
-    }
-
-    private static JWKSet retrieveJWKSetFromURI(final String path) {
-        try (val is = SpringResourceHelper.buildResourceFromPath(path).getInputStream()) {
-            return JWKSet.load(is);
-        } catch (final IOException | ParseException e) {
-            throw new TechnicalException(e);
-        }
     }
 
     public static JWK loadJwkFromOrCreateKeyStore(final KeystoreProperties keystoreProperties) {

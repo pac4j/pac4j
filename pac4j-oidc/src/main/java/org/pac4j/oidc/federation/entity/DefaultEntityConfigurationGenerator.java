@@ -20,7 +20,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static org.pac4j.core.util.CommonHelper.assertNotBlank;
-import static org.pac4j.oidc.util.JwkHelper.*;
+import static org.pac4j.core.util.JwkHelper.*;
 
 /**
  * The default entity configuration generator.

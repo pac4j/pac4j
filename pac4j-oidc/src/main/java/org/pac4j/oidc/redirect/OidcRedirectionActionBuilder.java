@@ -17,11 +17,11 @@ import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.util.InitializableObject;
+import org.pac4j.core.util.JwkHelper;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.config.OidcConfigurationContext;
 import org.pac4j.oidc.exceptions.OidcException;
-import org.pac4j.oidc.util.JwkHelper;
 import org.pac4j.oidc.util.OidcHelper;
 
 import java.util.*;
@@ -61,6 +61,10 @@ public class OidcRedirectionActionBuilder extends InitializableObject implements
         if (requestedAlg != null || config.isFederation()) {
             assertTrue(config.getRpJwks().isDefined(), "config.rpJwks must be defined to sign request objects");
 
+            // fallback
+            if (config.getOpMetadataResolver() == null) {
+                config.reinit();
+            }
             val opAlgs = config.getOpMetadataResolver().load().getRequestObjectJWSAlgs();
             val matchedAlgs = OidcHelper.matchRPAlgAgainstOPAlgs("Request Object", requestedAlg, opAlgs);
             assertTrue(matchedAlgs != null && matchedAlgs.size() >= 1, "At least one algorithm is expected");

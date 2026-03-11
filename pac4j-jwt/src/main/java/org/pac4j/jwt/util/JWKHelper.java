@@ -13,11 +13,12 @@ import java.security.KeyPair;
 import java.text.ParseException;
 
 /**
- * JWK helper.
+ * Use JwkHelper instead.
  *
  * @author Jerome Leleu
  * @since 1.9.2
  */
+@Deprecated
 public final class JWKHelper {
 
     /**
