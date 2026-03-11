@@ -365,6 +365,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
             return null;
         }
         if (getPkceMethod() == null) {
+            ensuresMetadataResolverInitialized();
             val opMetadataResolver = getOpMetadataResolver().load();
             val methods = opMetadataResolver.getCodeChallengeMethods();
             if (methods == null || methods.isEmpty()) {
@@ -527,5 +528,11 @@ public class OidcConfiguration extends BaseClientConfiguration {
 
     public void setIdTokenSigningAlgorithm(final JWSAlgorithm idTokenJwsAlgorithm) {
         this.idTokenSigningAlgorithm = idTokenJwsAlgorithm;
+    }
+
+    public void ensuresMetadataResolverInitialized() {
+        if (getOpMetadataResolver() == null) {
+            reinit();
+        }
     }
 }

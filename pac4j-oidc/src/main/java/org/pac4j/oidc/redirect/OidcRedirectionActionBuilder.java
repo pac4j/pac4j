@@ -61,10 +61,7 @@ public class OidcRedirectionActionBuilder extends InitializableObject implements
         if (requestedAlg != null || config.isFederation()) {
             assertTrue(config.getRpJwks().isDefined(), "config.rpJwks must be defined to sign request objects");
 
-            // fallback
-            if (config.getOpMetadataResolver() == null) {
-                config.reinit();
-            }
+            config.ensuresMetadataResolverInitialized();
             val opAlgs = config.getOpMetadataResolver().load().getRequestObjectJWSAlgs();
             val matchedAlgs = OidcHelper.matchRPAlgAgainstOPAlgs("Request Object", requestedAlg, opAlgs);
             assertTrue(matchedAlgs != null && matchedAlgs.size() >= 1, "At least one algorithm is expected");
