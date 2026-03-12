@@ -359,7 +359,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
      * @return a {@link CodeChallengeMethod} object
      */
     public CodeChallengeMethod findPkceMethod() {
-        init();
+        init("this.findPkceMethod");
 
         if (isDisablePkce()) {
             return null;
@@ -406,7 +406,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
      * @return a {@link ResourceRetriever} object
      */
     public ResourceRetriever findResourceRetriever() {
-        init();
+        init("this.findResourceRetriever");
 
         return resourceRetriever;
     }
@@ -430,7 +430,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
      * @return a {@link String} object
      */
     public String findLogoutUrl() {
-        init();
+        init("this.findLogoutUrl");
 
         val opMetadataResolver = getOpMetadataResolver().load();
         if (logoutUrl == null && opMetadataResolver.getEndSessionEndpointURI() != null) {

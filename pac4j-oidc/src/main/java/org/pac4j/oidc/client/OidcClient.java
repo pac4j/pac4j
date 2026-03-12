@@ -73,7 +73,7 @@ public class OidcClient extends IndirectClient {
         setLogoutProcessorIfUndefined(new OidcLogoutProcessor(configuration, findSessionLogoutHandler()));
         setLogoutActionBuilderIfUndefined(new OidcLogoutActionBuilder(configuration));
 
-        configuration.init(forceReinit);
+        configuration.init(this.getClass().getSimpleName(), forceReinit);
 
         val federation = configuration.getFederation();
         if (federation.getEntityId() == null) {

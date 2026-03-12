@@ -12,6 +12,7 @@ title: Release notes&#58;
 - OIDC protocol supports the `client_secret_jwt` authentication method via the `PrivateKeyJwtClientAuthnMethodConfig` (`PrivateKeyJWTClientAuthnMethodConfig` is deprecated)
 - OIDC protocol supports the request object signing (on the authorization URL) via the `config.setRequestObjectSigningAlgorithm`
 - Support of the OpenID Connect Federation protocol v1.0
+- Improve object initialization by avoiding re-entrant call
 
 **v6.3.3**:
 - Security fix on the `pac4j-jwt` module

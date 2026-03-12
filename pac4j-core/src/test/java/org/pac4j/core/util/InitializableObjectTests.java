@@ -93,6 +93,21 @@ public final class InitializableObjectTests {
         assertNull(io.getLastAttempt());
     }
 
+    @Test
+    public void testReentrantInitCallIsIgnored() {
+        var io = new ReentrantInitializableObject();
+        io.setMinTimeIntervalBetweenAttemptsInMilliseconds(-1);
+        assertEquals(0, io.getCounter());
+        assertEquals(0, io.getNbAttempts());
+        assertNull(io.getLastAttempt());
+
+        io.init();
+        assertEquals(1, io.getCounter());
+        assertEquals(1, io.getNbAttempts());
+        assertNotNull(io.getLastAttempt());
+        assertTrue(io.isInitialized());
+    }
+
     private static final class CustomInitializableObject extends InitializableObject {
 
         private int counter;
@@ -109,6 +124,21 @@ public final class InitializableObjectTests {
             if (fails) {
                 throw new TechnicalException("Initialization fails");
             }
+        }
+
+        public int getCounter() {
+            return this.counter;
+        }
+    }
+
+    private static final class ReentrantInitializableObject extends InitializableObject {
+
+        private int counter;
+
+        @Override
+        protected void internalInit(final boolean forceReinit) {
+            this.counter++;
+            init();
         }
 
         public int getCounter() {

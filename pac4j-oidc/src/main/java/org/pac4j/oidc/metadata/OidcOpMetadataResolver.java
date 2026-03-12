@@ -77,6 +77,7 @@ public class OidcOpMetadataResolver extends SpringResourceLoader<OIDCProviderMet
      * @return a {@link OIDCProviderMetadata} object
      */
     protected OIDCProviderMetadata retrieveMetadata() {
+        LOGGER.info("Retrieving OP metadata: {}", resource);
         try (val in = SpringResourceHelper.getResourceInputStream(
             resource,
             null,

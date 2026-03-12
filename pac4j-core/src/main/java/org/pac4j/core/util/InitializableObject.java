@@ -19,7 +19,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Getter
 public abstract class InitializableObject {
 
+    private static final String UNKNOWN = "unknown";
+
     private final AtomicBoolean initialized = new AtomicBoolean(false);
+    private volatile boolean initializing;
 
     @Setter
     private volatile int maxAttempts = 3;
@@ -30,6 +33,15 @@ public abstract class InitializableObject {
 
     @Setter
     private volatile long minTimeIntervalBetweenAttemptsInMilliseconds = 5000;
+
+    /**
+     * Initialize the object.
+     *
+     * @param caller the caller
+     */
+    public void init(final String caller) {
+        init(caller, false);
+    }
 
     /**
      * Initialize the object.
@@ -51,16 +63,41 @@ public abstract class InitializableObject {
      * @param forceReinit whether the object should be re-initialized
      */
     public void init(final boolean forceReinit) {
+        init(UNKNOWN, forceReinit);
+    }
+
+    /**
+     * (Re)-initialize the object.
+     *
+     * @param caller the caller
+     * @param forceReinit whether the object should be re-initialized
+     */
+    public void init(final String caller, final boolean forceReinit) {
+        if (initializing) {
+            LOGGER.info("Initializing: {}, ignoring caller: {}",
+                this.getClass().getSimpleName(), caller);
+            return;
+        }
         if (shouldInitialize(forceReinit)) {
             synchronized (this) {
+                if (initializing) {
+                    LOGGER.info("Initializing: {}, ignoring caller: {}",
+                        this.getClass().getSimpleName(), caller);
+                    return;
+                }
                 if (shouldInitialize(forceReinit)) {
                     LOGGER.debug("Initializing: {} (nb: {}, last: {})", this.getClass().getSimpleName(), nbAttempts, lastAttempt);
+                    initializing = true;
                     nbAttempts.incrementAndGet();
                     lastAttempt = System.currentTimeMillis();
-                    beforeInternalInit(forceReinit);
-                    internalInit(forceReinit);
-                    afterInternalInit(forceReinit);
-                    initialized.set(true);
+                    try {
+                        beforeInternalInit(forceReinit);
+                        internalInit(forceReinit);
+                        afterInternalInit(forceReinit);
+                        initialized.set(true);
+                    } finally {
+                        initializing = false;
+                    }
                 }
             }
         }
