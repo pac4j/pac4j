@@ -33,6 +33,25 @@ public class SpringResourceLoaderTests implements TestsConstants {
         assertEquals(1, loader.getSeq());
     }
 
+    @Test
+    public void testChecksChangesOnlyOnceDuringInterval() {
+        val loader = new CountingSpringResourceLoader();
+        loader.load();
+        loader.load();
+        loader.load();
+        assertEquals(1, loader.getHasChangedCallCount());
+    }
+
+    @Test
+    public void testCanDisableDelayBetweenChecks() {
+        val loader = new CountingSpringResourceLoader();
+        loader.setMinimumDelayBetweenChangeDetectionInMilliseconds(0);
+        loader.load();
+        loader.load();
+        loader.load();
+        assertEquals(3, loader.getHasChangedCallCount());
+    }
+
     private static class MockSpringResourceLoader extends SpringResourceLoader<String> {
 
         private int seq = 0;
@@ -52,6 +71,21 @@ public class SpringResourceLoaderTests implements TestsConstants {
 
         public int getSeq() {
             return this.seq;
+        }
+    }
+
+    private static class CountingSpringResourceLoader extends MockSpringResourceLoader {
+
+        private int hasChangedCallCount = 0;
+
+        @Override
+        public boolean hasChanged() {
+            hasChangedCallCount++;
+            return super.hasChanged();
+        }
+
+        public int getHasChangedCallCount() {
+            return hasChangedCallCount;
         }
     }
 }
