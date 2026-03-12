@@ -34,6 +34,7 @@ public abstract class SpringResourceLoader<M> extends InitializableObject {
     /** {@inheritDoc} */
     protected final void internalInit(final boolean forceReinit) {
         internalLoad();
+        hasChanged();
     }
 
     /**

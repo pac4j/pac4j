@@ -20,15 +20,17 @@ public class SpringResourceLoaderTests implements TestsConstants {
     @Test
     public void test() {
         val loader = new MockSpringResourceLoader();
-        loader.init();
-        assertEquals("0", loader.getLoaded());
         assertEquals(-1, loader.getLastModified());
         loader.load();
-        assertEquals("1", loader.getLoaded());
+        assertEquals("0", loader.getLoaded());
         assertTrue(loader.getLastModified() > 0);
         loader.load();
-        assertEquals("1", loader.getLoaded());
+        assertEquals("0", loader.getLoaded());
         assertTrue(loader.getLastModified() > 0);
+        loader.load();
+        assertEquals("0", loader.getLoaded());
+        assertTrue(loader.getLastModified() > 0);
+        assertEquals(1, loader.getSeq());
     }
 
     private static class MockSpringResourceLoader extends SpringResourceLoader<String> {
@@ -46,6 +48,10 @@ public class SpringResourceLoaderTests implements TestsConstants {
 
         public String getLoaded() {
             return this.loaded;
+        }
+
+        public int getSeq() {
+            return this.seq;
         }
     }
 }
