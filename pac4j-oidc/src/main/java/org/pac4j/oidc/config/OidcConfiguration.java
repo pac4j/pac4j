@@ -401,10 +401,9 @@ public class OidcConfiguration extends BaseClientConfiguration {
     }
 
     /**
-     * <p>findResourceRetriever.</p>
-     *
-     * @return a {@link ResourceRetriever} object
+     * Use {@link #getResourceRetriever()}
      */
+    @Deprecated
     public ResourceRetriever findResourceRetriever() {
         init("this.findResourceRetriever");
 

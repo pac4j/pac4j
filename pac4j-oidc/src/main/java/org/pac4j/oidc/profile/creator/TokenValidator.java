@@ -110,7 +110,7 @@ public class TokenValidator {
     protected IDTokenValidator createRSAIdTokenValidator(final JWSAlgorithm jwsAlgorithm, final ClientID clientID) {
         try {
             return new IDTokenValidator(metadata.getIssuer(), clientID, jwsAlgorithm, metadata.getJWKSetURI().toURL(),
-                configuration.findResourceRetriever());
+                configuration.getResourceRetriever());
         } catch (final MalformedURLException e) {
             throw new OidcException(e);
         }
@@ -126,7 +126,7 @@ public class TokenValidator {
     protected LogoutTokenValidator createRSALogoutTokenValidator(final JWSAlgorithm jwsAlgorithm, final ClientID clientID) {
         try {
             return new LogoutTokenValidator(metadata.getIssuer(), clientID, jwsAlgorithm, metadata.getJWKSetURI().toURL(),
-                configuration.findResourceRetriever());
+                configuration.getResourceRetriever());
         } catch (final MalformedURLException e) {
             throw new OidcException(e);
         }
