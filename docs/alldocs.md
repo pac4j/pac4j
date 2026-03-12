@@ -3,7 +3,9 @@ layout: alldoc
 title: <i class="fa fa-user" aria-hidden="true"></i> All <i>pac4j</i> engine/core documentations&#58;
 ---
 
-<div class="text-center">
+<h3><i>MAJOR: with breaking changes, deprecated classes are removed - MINOR: without breaking changes, classes are deprecated</i></h3>
+
+<div class="text-center" style="padding-top: 20px">
 
 <b>JDK 17:</b>
 
