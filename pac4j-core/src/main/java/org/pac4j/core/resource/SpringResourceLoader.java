@@ -1,7 +1,5 @@
 package org.pac4j.core.resource;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -9,6 +7,8 @@ import org.pac4j.core.util.InitializableObject;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -34,7 +34,6 @@ public abstract class SpringResourceLoader<M> extends InitializableObject {
     /** {@inheritDoc} */
     protected final void internalInit(final boolean forceReinit) {
         internalLoad();
-        hasChanged();
     }
 
     /**
