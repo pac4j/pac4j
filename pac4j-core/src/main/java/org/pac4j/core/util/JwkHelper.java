@@ -1,5 +1,6 @@
 package org.pac4j.core.util;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.*;
 import com.nimbusds.jose.jwk.*;
@@ -16,6 +17,7 @@ import org.pac4j.core.keystore.loading.KeyStoreUtils;
 import javax.crypto.SecretKey;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.KeyStoreException;
 import java.text.ParseException;
 import java.util.UUID;
@@ -29,6 +31,8 @@ import java.util.UUID;
 @Slf4j
 public class JwkHelper {
 
+    private static final ObjectMapper MAPPER = new ObjectMapper();
+
     public static JWK loadJwkFromOrCreateJwks(final JwksProperties jwksProperties) {
         LOGGER.debug("Loading signingKey from JWKS");
         val jwksResource = jwksProperties.getJwksResource();
@@ -39,22 +43,15 @@ public class JwkHelper {
             }
             LOGGER.debug("No signingKey found in JWKS: generating one");
             try {
-                // not supported for federation yet (SDK 11.31.1)
-                /*val generatedKey = new OctetKeyPairGenerator(Curve.Ed25519)
-                    .keyID(buildKid(kid))
-                    .keyUse(KeyUse.SIGNATURE)
-                    .generate();*/
+                // not supported for federation yet (SDK 11.31.1):
+                // new OctetKeyPairGenerator(Curve.Ed25519).keyID(buildKid(kid)).keyUse(KeyUse.SIGNATURE).generate();
                 val generatedKey = new RSAKeyGenerator(2048)
                     .keyUse(KeyUse.SIGNATURE)
                     .keyID(kid)
                     .generate();
 
-                val jwkSet = new JWKSet(generatedKey);
-                val jwkSetJson = jwkSet.toString(false);
-                val path = jwksResource.getFile().toPath();
-                LOGGER.debug("And saving it to: {}", path);
-
-                Files.writeString(path, jwkSetJson);
+                val path = jwksResource.getFile().toPath().toString();
+                saveJwkPrivate(generatedKey, path);
 
                 return generatedKey;
             } catch (final JOSEException | IOException e) {
@@ -86,6 +83,26 @@ public class JwkHelper {
         }
 
         return signingJwk;
+    }
+
+    public static void saveJwkPrivate(final JWK key, final String path) {
+        saveJwk(key, path, false);
+    }
+
+    public static void saveJwkPublic(final JWK key, final String path) {
+        saveJwk(key, path, true);
+    }
+
+    private static void saveJwk(final JWK key, final String path, final boolean publicKeysOnly) {
+        try {
+            val jwkSet = new JWKSet(key);
+            val jwkSetJson = MAPPER.writerWithDefaultPrettyPrinter()
+                .writeValueAsString(jwkSet.toJSONObject(publicKeysOnly));
+            LOGGER.debug("Saving key to path: {} (public only: {})", path, publicKeysOnly);
+            Files.writeString(Path.of(path), jwkSetJson);
+        } catch (final IOException e) {
+            throw new TechnicalException(e);
+        }
     }
 
     public static JWK loadJwkFromOrCreateKeyStore(final KeystoreProperties keystoreProperties) {

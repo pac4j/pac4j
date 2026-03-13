@@ -6,6 +6,7 @@ import com.nimbusds.jose.crypto.RSASSAVerifier;
 import com.nimbusds.jose.jwk.Curve;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.KeyUse;
+import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.gen.ECKeyGenerator;
 import com.nimbusds.jose.jwk.gen.OctetSequenceKeyGenerator;
 import com.nimbusds.jose.jwk.gen.RSAKeyGenerator;
@@ -79,6 +80,42 @@ public final class JwkHelperTests {
         val signingJwk = JwkHelper.loadJwkFromOrCreateJwks(jwksProperties);
         assertEquals("kid-2", signingJwk.getKeyID());
         assertTrue(signingJwk.isPrivate());
+    }
+
+    @Test
+    public void testSaveJwkPrivatePersistsPrivateMaterial() throws Exception {
+        val jwksPath = Files.createTempDirectory("jwks-helper-tests").resolve("saved-private.jwks");
+        Files.deleteIfExists(jwksPath);
+
+        val key = new RSAKeyGenerator(2048).keyUse(KeyUse.SIGNATURE).keyID("private-kid").generate();
+        JwkHelper.saveJwkPrivate(key, jwksPath.toString());
+        val content = Files.readString(jwksPath);
+        assertTrue(content.contains("\n"));
+
+        val jwkSet = JWKSet.load(jwksPath.toFile());
+        assertEquals(1, jwkSet.getKeys().size());
+        val savedKey = (RSAKey) jwkSet.getKeys().get(0);
+        assertEquals("private-kid", savedKey.getKeyID());
+        assertNotNull(savedKey.getPrivateExponent());
+        assertTrue(savedKey.isPrivate());
+    }
+
+    @Test
+    public void testSaveJwkPublicPersistsOnlyPublicMaterial() throws Exception {
+        val jwksPath = Files.createTempDirectory("jwks-helper-tests").resolve("saved-public.jwks");
+        Files.deleteIfExists(jwksPath);
+
+        val key = new RSAKeyGenerator(2048).keyUse(KeyUse.SIGNATURE).keyID("public-kid").generate();
+        JwkHelper.saveJwkPublic(key, jwksPath.toString());
+        val content = Files.readString(jwksPath);
+        assertTrue(content.contains("\n"));
+
+        val jwkSet = JWKSet.load(jwksPath.toFile());
+        assertEquals(1, jwkSet.getKeys().size());
+        val savedKey = (RSAKey) jwkSet.getKeys().get(0);
+        assertEquals("public-kid", savedKey.getKeyID());
+        assertNull(savedKey.getPrivateExponent());
+        assertFalse(savedKey.isPrivate());
     }
 
     @Test
