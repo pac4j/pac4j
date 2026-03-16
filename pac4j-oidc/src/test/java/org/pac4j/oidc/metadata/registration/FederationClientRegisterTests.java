@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * Tests {@link FederationClientRegister}.
@@ -59,7 +60,57 @@ public final class FederationClientRegisterTests {
     }
 
     @Test
-    public void testExplicitRegistrationSetsClientIdAndSecret() throws Exception {
+    public void testAutomaticRegistrationDoesNotSetClientIdWhenRpDoesNotSupportAutomatic() throws Exception {
+        val configuration = new OidcConfiguration();
+        configuration.getFederation().setEntityId("https://rp.example.org");
+        configuration.getFederation().setClientRegistrationTypes(List.of(ClientRegistrationType.EXPLICIT.getValue()));
+        val metadata = OIDCProviderMetadata.parse(METADATA_CLIENT_SECRET_BASIC);
+        metadata.setClientRegistrationTypes(List.of(ClientRegistrationType.AUTOMATIC));
+
+        val register = new FederationClientRegister();
+        register.register(configuration, metadata);
+
+        assertNull(configuration.getClientId());
+    }
+
+    @Test
+    public void testExplicitRegistrationIsNotTriggeredWhenRpDoesNotSupportExplicit() throws Exception {
+        val configuration = new OidcConfiguration();
+        configuration.getFederation().setEntityId("https://rp.example.org");
+        configuration.getFederation().setClientRegistrationTypes(List.of(ClientRegistrationType.AUTOMATIC.getValue()));
+        val entityConfigurationGenerator = Mockito.mock(EntityConfigurationGenerator.class);
+        configuration.getFederation().setEntityConfigurationGenerator(entityConfigurationGenerator);
+        val metadata = OIDCProviderMetadata.parse(METADATA_CLIENT_SECRET_BASIC);
+        metadata.setClientRegistrationTypes(List.of(ClientRegistrationType.EXPLICIT));
+
+        val register = new FederationClientRegister();
+        register.register(configuration, metadata);
+
+        assertNull(configuration.getClientId());
+        Mockito.verifyNoInteractions(entityConfigurationGenerator);
+    }
+
+    @Test
+    public void testAutomaticRegistrationIsPreferredWhenBothRegistrationTypesAreSupported() throws Exception {
+        val configuration = new OidcConfiguration();
+        configuration.getFederation().setEntityId("https://rp.example.org");
+        configuration.getFederation().setClientRegistrationTypes(List.of(
+            ClientRegistrationType.EXPLICIT.getValue(),
+            ClientRegistrationType.AUTOMATIC.getValue()));
+        val entityConfigurationGenerator = Mockito.mock(EntityConfigurationGenerator.class);
+        configuration.getFederation().setEntityConfigurationGenerator(entityConfigurationGenerator);
+        val metadata = OIDCProviderMetadata.parse(METADATA_CLIENT_SECRET_BASIC);
+        metadata.setClientRegistrationTypes(List.of(ClientRegistrationType.EXPLICIT, ClientRegistrationType.AUTOMATIC));
+
+        val register = new FederationClientRegister();
+        register.register(configuration, metadata);
+
+        assertEquals("https://rp.example.org", configuration.getClientId());
+        Mockito.verifyNoInteractions(entityConfigurationGenerator);
+    }
+
+    @Test
+    public void testPerformExplicitRegistrationSetsClientId() throws Exception {
         val configuration = new OidcConfiguration();
         configuration.setClientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC);
         configuration.getFederation().setEntityId("https://rp.example.org");
@@ -87,7 +138,6 @@ public final class FederationClientRegisterTests {
             register.register(configuration, metadata);
 
             assertEquals("registeredClient", configuration.getClientId());
-            assertEquals("registeredSecret", configuration.getSecret());
         } finally {
             webServer.stop();
         }

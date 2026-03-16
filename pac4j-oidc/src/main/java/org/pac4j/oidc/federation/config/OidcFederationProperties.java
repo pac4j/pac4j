@@ -40,13 +40,15 @@ public class OidcFederationProperties {
 
     private List<String> scopes = List.of("openid", "email", "profile");
 
+    private List<String> clientRegistrationTypes = List.of("explicit","automatic");
+
     private List<OidcTrustAnchorProperties> trustAnchors = new ArrayList<>();
 
     private String targetOp;
 
-    private String clientName;
+    private String contactName;
 
-    private List<String> contacts = new ArrayList<>();
+    private List<String> contactEmails = new ArrayList<>();
 
     public OidcFederationProperties() {
         keystore.setCertificatePrefix("oidcfede-signing-cert");

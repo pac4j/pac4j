@@ -125,7 +125,7 @@ public final class OidcFederationOpMetadataResolverTests {
 
             assertSame(metadata, resolver.load());
             assertEquals("registeredClient", configuration.getClientId());
-            assertTrue(resolver.getClientAuthentication() instanceof ClientSecretBasic);
+            assertNull(resolver.getClientAuthentication());
 
             Mockito.verify(entityConfigurationGenerator).getContentType();
             Mockito.verify(entityConfigurationGenerator).generate();

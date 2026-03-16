@@ -149,8 +149,8 @@ public final class DefaultEntityConfigurationGeneratorTests {
         federation.setResponseTypes(List.of("code", "id_token"));
         federation.setGrantTypes(List.of("authorization_code", "refresh_token"));
         federation.setScopes(List.of("openid", "email"));
-        federation.setClientName("pac4j test client");
-        federation.setContacts(List.of("ops@example.org", "security@example.org"));
+        federation.setContactName("pac4j test client");
+        federation.setContactEmails(List.of("ops@example.org", "security@example.org"));
 
         val callbackUrl = "https://client.example.org/callback";
         val generator = newGenerator(federation, callbackUrl);
@@ -268,8 +268,8 @@ public final class DefaultEntityConfigurationGeneratorTests {
         federation.setResponseTypes(List.of("code", "id_token"));
         federation.setGrantTypes(List.of("authorization_code", "refresh_token"));
         federation.setScopes(List.of("openid", "email"));
-        federation.setClientName("pac4j buildConfig client");
-        federation.setContacts(List.of("build@example.org"));
+        federation.setContactName("pac4j buildConfig client");
+        federation.setContactEmails(List.of("build@example.org"));
 
         val callbackUrl = "https://client.example.org/callback";
         val generator = newGenerator(federation, callbackUrl);

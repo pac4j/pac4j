@@ -4,7 +4,6 @@ import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
-import com.nimbusds.openid.connect.sdk.federation.registration.ClientRegistrationType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -117,10 +116,9 @@ public class DefaultEntityConfigurationGenerator extends InitializableObject imp
                 }
             }
         }
-        rpMetadata.put("client_registration_types", List.of(ClientRegistrationType.EXPLICIT.getValue(),
-            ClientRegistrationType.AUTOMATIC.getValue()));
-        rpMetadata.put("client_name", federation.getClientName());
-        val contacts = federation.getContacts();
+        rpMetadata.put("client_registration_types", federation.getClientRegistrationTypes());
+        rpMetadata.put("client_name", federation.getContactName());
+        val contacts = federation.getContactEmails();
         if (contacts != null && contacts.size() > 0) {
             rpMetadata.put("contacts", contacts);
         }

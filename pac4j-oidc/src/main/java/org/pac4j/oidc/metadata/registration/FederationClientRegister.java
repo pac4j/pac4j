@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JOSEObjectType;
 import com.nimbusds.jose.proc.BadJOSEException;
-import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
 import com.nimbusds.oauth2.sdk.http.HTTPRequest;
 import com.nimbusds.openid.connect.sdk.federation.entities.EntityStatement;
 import com.nimbusds.openid.connect.sdk.federation.entities.EntityStatementClaimsVerifier;
@@ -22,7 +21,7 @@ import java.io.IOException;
 import java.text.ParseException;
 
 /**
- * Handles OpenID Federation client recording / registration logic for OP metadata resolution.
+ * Handles OpenID Federation client registration logic for OP in federation.
  *
  * @author Jerome LELEU
  * @since 6.4.0
@@ -40,28 +39,32 @@ public class FederationClientRegister {
         }
 
         LOGGER.debug("ClientID is not defined");
-        val registrationTypes = metadata.getClientRegistrationTypes();
-        if (registrationTypes == null || registrationTypes.isEmpty()) {
+        val opRegistrationTypes = metadata.getClientRegistrationTypes();
+        if (opRegistrationTypes == null || opRegistrationTypes.isEmpty()) {
             throw new OidcException("OP does not support any client registration types and RP clientID is not defined -> failing");
         }
-        if (registrationTypes.contains(ClientRegistrationType.AUTOMATIC)) {
-            LOGGER.debug("Automatic registration by OP -> setting clientId as entityId for further operation");
+
+        val rpRegistrationTypes = configuration.getFederation().getClientRegistrationTypes();
+        if (opRegistrationTypes.contains(ClientRegistrationType.AUTOMATIC)
+            && rpRegistrationTypes.contains(ClientRegistrationType.AUTOMATIC.getValue())) {
+            LOGGER.debug("Automatic registration by OP (supported by RP) -> setting clientId as entityId for further operation");
             configuration.setClientId(entityId);
-            return;
-        }
-        if (registrationTypes.contains(ClientRegistrationType.EXPLICIT)) {
-            explicitRegistration(configuration, metadata, entityId);
+        } else if (opRegistrationTypes.contains(ClientRegistrationType.EXPLICIT)
+            && rpRegistrationTypes.contains(ClientRegistrationType.EXPLICIT.getValue())) {
+            performExplicitRegistration(configuration, metadata, entityId);
+        } else {
+            LOGGER.warn("Registration via federation is skipped due to OP/RP configuration");
         }
     }
 
-    protected void explicitRegistration(final OidcConfiguration configuration,
-                                        final OIDCProviderMetadata metadata,
-                                        final String entityId) {
+    protected void performExplicitRegistration(final OidcConfiguration configuration,
+                                               final OIDCProviderMetadata metadata,
+                                               final String entityId) {
         val registrationEndpoint = metadata.getFederationRegistrationEndpointURI();
         if (registrationEndpoint == null) {
             throw new OidcException("Client registration endpoint is not defined and only explicit registration is accepted by the OP");
         }
-        LOGGER.debug("Registration endpoint exists and only explicit registration by OP -> performing explicit registration");
+        LOGGER.debug("Registration endpoint exists and only explicit registration by OP (and RP) -> performing explicit registration");
 
         val generator = configuration.getFederation().getEntityConfigurationGenerator();
         val entityConfig = generator.generate();
@@ -96,13 +99,6 @@ public class FederationClientRegister {
                     configuration.setClientId(clientId);
                     logSeparator();
                     logData(entityId, "id: [" + clientId + "]");
-                    val clientSecret = orp.path("client_secret").asText();
-                    if (StringUtils.isBlank(configuration.getSecret()) && StringUtils.isNotBlank(clientSecret)
-                        && !ClientAuthenticationMethod.PRIVATE_KEY_JWT.equals(configuration.getClientAuthenticationMethod())) {
-                        configuration.setSecret(clientSecret);
-                        LOGGER.warn("/!\\ Explicit registration returned a client secret for client '{}'. "
-                            + "The secret has been set in-memory for this run and MUST be persisted in your configuration.", entityId);
-                    }
                     logSeparator();
                 }
             }
