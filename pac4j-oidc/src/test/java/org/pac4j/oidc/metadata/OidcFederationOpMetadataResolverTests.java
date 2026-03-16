@@ -125,7 +125,6 @@ public final class OidcFederationOpMetadataResolverTests {
 
             assertSame(metadata, resolver.load());
             assertEquals("registeredClient", configuration.getClientId());
-            assertEquals("registeredSecret", configuration.getSecret());
             assertTrue(resolver.getClientAuthentication() instanceof ClientSecretBasic);
 
             Mockito.verify(entityConfigurationGenerator).getContentType();
@@ -278,9 +277,13 @@ public final class OidcFederationOpMetadataResolverTests {
     private static String buildRegistrationResponseJwt(final JWK signingKey,
                                                        final String clientId,
                                                        final String clientSecret) {
+        val now = new Date();
         val claims = new JWTClaimsSet.Builder()
             .issuer("https://op.example.org")
             .subject("https://op.example.org")
+            .issueTime(now)
+            .expirationTime(new Date(now.getTime() + 60_000))
+            .claim("jwks", new JWKSet(signingKey.toPublicJWK()).toJSONObject())
             .claim("metadata", Map.of("openid_relying_party", Map.of(
                 "client_id", clientId,
                 "client_secret", clientSecret)))

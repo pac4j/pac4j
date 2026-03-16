@@ -18,8 +18,10 @@ import org.pac4j.core.config.properties.JwksProperties;
 import org.pac4j.core.exception.TechnicalException;
 
 import java.nio.file.Files;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -98,6 +100,8 @@ public final class JwkHelperTests {
         assertEquals("private-kid", savedKey.getKeyID());
         assertNotNull(savedKey.getPrivateExponent());
         assertTrue(savedKey.isPrivate());
+        assumeTrue(Files.getFileStore(jwksPath).supportsFileAttributeView("posix"));
+        assertEquals(PosixFilePermissions.fromString("rw-------"), Files.getPosixFilePermissions(jwksPath));
     }
 
     @Test

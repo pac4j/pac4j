@@ -18,6 +18,8 @@ import javax.crypto.SecretKey;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.security.KeyStoreException;
 import java.text.ParseException;
 import java.util.UUID;
@@ -99,9 +101,33 @@ public class JwkHelper {
             val jwkSetJson = MAPPER.writerWithDefaultPrettyPrinter()
                 .writeValueAsString(jwkSet.toJSONObject(publicKeysOnly));
             LOGGER.debug("Saving key to path: {} (public only: {})", path, publicKeysOnly);
-            Files.writeString(Path.of(path), jwkSetJson);
+            val target = Path.of(path);
+            val parent = target.getParent();
+            if (parent != null) {
+                Files.createDirectories(parent);
+            }
+            if (publicKeysOnly) {
+                Files.writeString(target, jwkSetJson, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+            } else {
+                savePrivateJwk(target, jwkSetJson);
+            }
         } catch (final IOException e) {
             throw new TechnicalException(e);
+        }
+    }
+
+    private static void savePrivateJwk(final Path target, final String content) throws IOException {
+        try {
+            val permissions = PosixFilePermissions.fromString("rw-------");
+            val attributes = PosixFilePermissions.asFileAttribute(permissions);
+            if (!Files.exists(target)) {
+                Files.createFile(target, attributes);
+            }
+            Files.writeString(target, content, StandardOpenOption.TRUNCATE_EXISTING);
+            Files.setPosixFilePermissions(target, permissions);
+        } catch (final UnsupportedOperationException e) {
+            LOGGER.warn("POSIX file permissions are not supported for path: {}", target);
+            Files.writeString(target, content, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
         }
     }
 

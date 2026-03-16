@@ -95,6 +95,6 @@ If the RP is not yet registered and its `clientId` is left blank, pac4j supports
 
 Priority is given to **automatic mode** if supported by the OP. In this case, the **entity statement** is sent via the `client_assertion` parameter in the authorization request URL.
 
-Otherwise, if only **explicit mode** is supported and the `federation_registration_endpoint` exists, pac4j calls it to retrieve a `client_id` (and `client_secret`).
+Otherwise, if only **explicit mode** is supported and the `federation_registration_endpoint` exists, pac4j calls it to retrieve a `client_id`.
 
-This information is displayed in the logs as follows: `/!\ Explicit registration of the client 'http://rp' returned XXX. This information will not be repeated. You MUST add this value to your configuration before the next application startup!`. These values must be manually updated in the configuration.
+The `client_id` is displayed in the logs as follows: `/!\ Explicit registration of the client 'http://rp' returned id: [XXX]. This information will not be repeated. You MUST manually add this value to your configuration before the next application startup!`.
