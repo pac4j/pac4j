@@ -59,7 +59,7 @@ public class OidcRedirectionActionBuilderTests implements TestsConstants {
             configuration.setRpJwks(rpJwks);
         }
         if (federation) {
-            configuration.getFederation().setTargetIssuer("https://federation.example.org");
+            configuration.getFederation().setTargetOp("https://federation.example.org");
         }
 
         val metadataResolver = mock(OidcOpMetadataResolver.class);

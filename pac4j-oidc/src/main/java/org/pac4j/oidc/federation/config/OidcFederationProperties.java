@@ -42,7 +42,7 @@ public class OidcFederationProperties {
 
     private List<OidcTrustAnchorProperties> trustAnchors = new ArrayList<>();
 
-    private String targetIssuer;
+    private String targetOp;
 
     private String clientName;
 

@@ -42,7 +42,7 @@ public class FederationChainResolver {
         val resolver = new TrustChainResolver(anchors, configuration.getConnectTimeout(), configuration.getReadTimeout());
         val validator = new FederationEntityMetadataValidator(resolver.getEntityStatementRetriever());
 
-        val targetIssuer = new EntityID(configuration.getFederation().getTargetIssuer());
+        val targetIssuer = new EntityID(configuration.getFederation().getTargetOp());
         LOGGER.debug("Target issuer: {}", targetIssuer);
 
         TrustChainSet resolvedChains;

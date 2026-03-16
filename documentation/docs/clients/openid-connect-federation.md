@@ -53,7 +53,7 @@ Available properties are:
 - `clientName` (`String`, optional): value of the `client_name` RP metadata claim.
 - `contacts` (`List<String>`, default: empty list): value of the `contacts` RP metadata claim when at least one contact is provided.
 - `trustAnchors` (`List<OidcTrustAnchorProperties>`, default: empty list): trust anchors used to resolve trust chains (`taIssuer` and `taJwksUrl` for each anchor).
-- `targetIssuer` (`String`): OP entity identifier to resolve via federation. When set, federation mode is used instead of discovery URI resolution.
+- `targetOp` (`String`): OP entity identifier to resolve via federation. When set, federation mode is used instead of discovery URI resolution.
 
 At least one signing source must be configured with a resource/path (`jwks` or `keystore`) to generate the entity configuration.
 
@@ -78,7 +78,7 @@ When using federation, you must not define the `discoveryURI`. You must only def
 ```java
 val federation = oidcConfig.getFederation();
 
-federation.setTargetIssuer("http://localhost:8080/op");
+federation.setTargetOp("http://localhost:8080/op");
 
 val trust = new OidcTrustAnchorProperties();
 trust.setTaIssuer("http://localhost:8081/ta");

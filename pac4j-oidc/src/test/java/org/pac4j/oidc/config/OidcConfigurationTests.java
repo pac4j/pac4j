@@ -69,7 +69,7 @@ public class OidcConfigurationTests implements TestsConstants {
     @Test
     public void testMissingTrustAnchorsInFederation() {
         config.setDiscoveryURI(null);
-        config.getFederation().setTargetIssuer(VALUE);
+        config.getFederation().setTargetOp(VALUE);
 
         val e = assertThrows(OidcConfigurationException.class, () -> {
             config.init();

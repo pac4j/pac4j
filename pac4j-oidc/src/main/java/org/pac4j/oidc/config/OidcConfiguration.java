@@ -284,7 +284,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
     }
 
     public boolean isFederation() {
-        return StringUtils.isNotBlank(getFederation().getTargetIssuer());
+        return StringUtils.isNotBlank(getFederation().getTargetOp());
     }
 
     /**
