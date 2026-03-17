@@ -14,9 +14,6 @@ import java.text.ParseException;
 
 /**
  * Use JwkHelper instead.
- *
- * @author Jerome Leleu
- * @since 1.9.2
  */
 @Deprecated
 public final class JWKHelper {

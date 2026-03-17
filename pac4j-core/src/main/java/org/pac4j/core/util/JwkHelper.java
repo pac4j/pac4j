@@ -16,10 +16,12 @@ import org.pac4j.core.keystore.loading.KeyStoreUtils;
 
 import javax.crypto.SecretKey;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.PosixFilePermissions;
+import java.security.KeyPair;
 import java.security.KeyStoreException;
 import java.text.ParseException;
 import java.util.UUID;
@@ -338,5 +340,56 @@ public class JwkHelper {
     public static String buildSignedJwt(final JWTClaimsSet claims, final JWK key, final String type) {
         val alg = determineAlgorithm(key, false);
         return buildSignedJwt(claims, key, alg, type);
+    }
+
+    /**
+     * Build the secret from the JWK JSON.
+     *
+     * @param json the json
+     * @return the secret
+     */
+    public static String buildSecretFromJwk(final String json) {
+        CommonHelper.assertNotBlank("json", json);
+
+        try {
+            val octetSequenceKey = OctetSequenceKey.parse(json);
+            return new String(octetSequenceKey.toByteArray(), "UTF-8");
+        } catch (final UnsupportedEncodingException | ParseException e) {
+            throw new TechnicalException(e);
+        }
+    }
+
+    /**
+     * Build the RSA key pair from the JWK JSON.
+     *
+     * @param json the json
+     * @return the key pair
+     */
+    public static KeyPair buildRSAKeyPairFromJwk(final String json) {
+        CommonHelper.assertNotBlank("json", json);
+
+        try {
+            val rsaKey = RSAKey.parse(json);
+            return rsaKey.toKeyPair();
+        } catch (final JOSEException | ParseException e) {
+            throw new TechnicalException(e);
+        }
+    }
+
+    /**
+     * Build the EC key pair from the JWK JSON.
+     *
+     * @param json the json
+     * @return the key pair
+     */
+    public static KeyPair buildECKeyPairFromJwk(final String json) {
+        CommonHelper.assertNotBlank("json", json);
+
+        try {
+            val ecKey = ECKey.parse(json);
+            return ecKey.toKeyPair();
+        } catch (final JOSEException | ParseException e) {
+            throw new TechnicalException(e);
+        }
     }
 }
