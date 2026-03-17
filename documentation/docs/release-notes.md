@@ -9,10 +9,13 @@ title: Release notes&#58;
 - Upgrade to Shiro v2.1 for security reasons. Defaults remain the ones of Shiro v1.13 though and will change in a future major version.
 - Add the `encryptionRequired` flag (by default `false`) for the `JWtAuthenticator`
 - `KeystoreGenerator` and its implementation `FileSystemKeystoreGenerator` are now in the core (copy/pasted from the SAML components)
-- OIDC protocol supports the `client_secret_jwt` authentication method via the `PrivateKeyJwtClientAuthnMethodConfig` (`PrivateKeyJWTClientAuthnMethodConfig` is deprecated)
-- OIDC protocol supports the request object signing (on the authorization URL) via the `config.setRequestObjectSigningAlgorithm`
+- OIDC support:
+  - `get/setPreferredJwsAlgorithm` is deprecated in favor of `get/setIdTokenSigningAlgorithm`
+  - it supports the `client_secret_jwt` authentication method via the `PrivateKeyJwtClientAuthnMethodConfig` (`PrivateKeyJWTClientAuthnMethodConfig` is deprecated)
+  - it supports the request object signing (on the authorization URL) via the `config.setRequestObjectSigningAlgorithm`
 - Support of the OpenID Connect Federation protocol v1.0
-- Improve object initialization by avoiding re-entrant call | Limit detection change in `SpringResourceLoader` (interval: 60s)
+- Improve object initialization by avoiding re-entrant call
+- Limit detection change in `SpringResourceLoader` (interval: 60s)
 
 **v6.3.3**:
 - Security fix on the `pac4j-jwt` module
