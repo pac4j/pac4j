@@ -7,7 +7,6 @@ title: Release notes&#58;
 
 **v6.4.0**:
 - Upgrade to Shiro v2.1 for security reasons. Defaults remain the ones of Shiro v1.13 though and will change in a future major version.
-- Upgrade Jackson to v2.21.1 (annotations to v2.21)
 - Add the `encryptionRequired` flag (by default `false`) for the `JWtAuthenticator`
 - `KeystoreGenerator` and its implementation `FileSystemKeystoreGenerator` are now in the core (copy/pasted from the SAML components)
 - OIDC support:
@@ -17,6 +16,9 @@ title: Release notes&#58;
 - Support of the OpenID Connect Federation protocol v1.0
 - Improve object initialization by avoiding re-entrant call
 - Limit detection change in `SpringResourceLoader` (interval: 60s)
+
+**v6.3.4**:
+- Upgrade Jackson to v2.21.1 (annotations to v2.21)
 
 **v6.3.3**:
 - Security fix on the `pac4j-jwt` module
