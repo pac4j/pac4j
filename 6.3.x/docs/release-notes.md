@@ -5,6 +5,9 @@ title: Release notes&#58;
 
 ### JDK17:
 
+**v6.3.4**:
+- Upgrade Jackson to v2.21.1 (annotations to v2.21)
+
 **v6.3.3**:
 - Security fix on the `pac4j-jwt` module
 
