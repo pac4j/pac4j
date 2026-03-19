@@ -16,6 +16,7 @@ title: Release notes&#58;
 - Support of the OpenID Connect Federation protocol v1.0
 - Improve object initialization by avoiding re-entrant call
 - Limit detection change in `SpringResourceLoader` (interval: 60s)
+- the `JWKHelper` (`pac4j-jwt`) is deprecated and replaced by `JwkHelper` (in `pac4j-core`) for `pac4j-jwt` and `pac4j-oidc`
 
 **v6.3.4**:
 - Upgrade Jackson to v2.21.1 (annotations to v2.21)
