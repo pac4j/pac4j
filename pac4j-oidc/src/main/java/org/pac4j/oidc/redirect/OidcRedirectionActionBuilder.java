@@ -67,6 +67,7 @@ public class OidcRedirectionActionBuilder extends InitializableObject implements
             assertTrue(matchedAlgs != null && matchedAlgs.size() >= 1, "At least one algorithm is expected");
 
             signingAlg = matchedAlgs.get(0);
+            LOGGER.debug("Algorithm used for request object signing: {}", signingAlg);
             signingKey = JwkHelper.loadJwkFromOrCreateJwks(config.getRpJwks());
         }
     }
@@ -111,7 +112,7 @@ public class OidcRedirectionActionBuilder extends InitializableObject implements
             for (val param : params.main().keySet()) {
                 claims.claim(param, params.main().get(param));
             }
-            val request = JwkHelper.buildSignedJwt(claims.build(), signingKey, signingAlg, "oauth.authz.req+jwt");
+            val request = JwkHelper.buildSignedJwt(claims.build(), signingKey, signingAlg, "oauth-authz-req+jwt");
             newParams.put("request", request);
         } else {
             newParams.putAll(params.main());

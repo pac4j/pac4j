@@ -1,5 +1,6 @@
 package org.pac4j.oidc.federation.entity;
 
+import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.jwk.Curve;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.KeyUse;
@@ -15,6 +16,7 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.keystore.generation.FileSystemKeystoreGenerator;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
+import org.pac4j.oidc.config.method.IPrivateKeyJwtClientAuthnMethodConfig;
 import org.pac4j.oidc.federation.config.OidcFederationProperties;
 import org.pac4j.oidc.metadata.IOidcOpMetadataResolver;
 import org.springframework.core.io.FileSystemResource;
@@ -23,6 +25,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -34,22 +37,30 @@ import static org.mockito.Mockito.*;
  * @since 6.4.0
  */
 public final class DefaultEntityConfigurationGeneratorTests {
+
     @TempDir
     public Path tmp;
 
-    private static DefaultEntityConfigurationGenerator newGenerator(OidcFederationProperties federation, String callbackUrl) {
+    private static DefaultEntityConfigurationGenerator newGenerator(final OidcFederationProperties federation, final String callbackUrl) {
+        return newGenerator(federation, callbackUrl, config -> {});
+    }
+
+    private static DefaultEntityConfigurationGenerator newGenerator(final OidcFederationProperties federation,
+                                                                    final String callbackUrl,
+                                                                    final Consumer<OidcConfiguration> configCustomizer) {
         val config = new OidcConfiguration();
         config.setClientAuthenticationMethod(ClientAuthenticationMethod.PRIVATE_KEY_JWT);
         config.setFederation(federation);
+        configCustomizer.accept(config);
         val opResolver = mock(IOidcOpMetadataResolver.class);
         config.setOpMetadataResolver(opResolver);
         val clientAuth = mock(PrivateKeyJWT.class);
         when(clientAuth.getMethod()).thenReturn(ClientAuthenticationMethod.PRIVATE_KEY_JWT);
         when(opResolver.getClientAuthentication()).thenReturn(clientAuth);
 
-        val client = mock(OidcClient.class);
-        when(client.getConfiguration()).thenReturn(config);
-        when(client.getCallbackUrl()).thenReturn(callbackUrl);
+        val client = new OidcClient();
+        client.setConfiguration(config);
+        client.setCallbackUrl(callbackUrl);
 
         return new DefaultEntityConfigurationGenerator(client);
     }
@@ -60,6 +71,7 @@ public final class DefaultEntityConfigurationGeneratorTests {
         val generator = newGenerator(federation, "https://client.example.org/callback");
         assertEquals("application/entity-statement+jwt", generator.getContentType());
     }
+
     @Test
     public void testGenerateWithoutJwksAndWithoutKeystore() {
         val federation = new OidcFederationProperties();
@@ -98,7 +110,7 @@ public final class DefaultEntityConfigurationGeneratorTests {
 
         assertEquals("entity-statement+jwt", signed.getHeader().getType().toString());
         assertJwksClaimContainsSinglePublicKey(claims.getClaim("jwks"));
-        assertRedirectUrisClaim(claims.getClaim("metadata"), callbackUrl);
+        assertRedirectUrisClaim(claims.getClaim("metadata"), "https://client.example.org/callback?client_name=OidcClient");
     }
 
     @Test
@@ -133,7 +145,7 @@ public final class DefaultEntityConfigurationGeneratorTests {
 
         assertEquals("my-kid", signed.getHeader().getKeyID());
         assertJwksClaimContainsSinglePublicKey(claims.getClaim("jwks"));
-        assertRedirectUrisClaim(claims.getClaim("metadata"), callbackUrl);
+        assertRedirectUrisClaim(claims.getClaim("metadata"), "https://client.example.org/callback?client_name=OidcClient");
     }
 
     @Test
@@ -151,9 +163,22 @@ public final class DefaultEntityConfigurationGeneratorTests {
         federation.setScopes(List.of("openid", "email"));
         federation.setContactName("pac4j test client");
         federation.setContactEmails(List.of("ops@example.org", "security@example.org"));
+        val tokenEndpointAuthSigningAlg = JWSAlgorithm.PS256;
+        val requestObjectSigningAlg = JWSAlgorithm.ES256;
+        val privateKeyJwtConfig = mock(IPrivateKeyJwtClientAuthnMethodConfig.class);
+        val privateKeyJwtJwk = new RSAKeyGenerator(2048)
+            .keyUse(KeyUse.SIGNATURE)
+            .algorithm(tokenEndpointAuthSigningAlg)
+            .keyID("private-key-jwt-kid")
+            .generate();
+        when(privateKeyJwtConfig.getJwsAlgorithm()).thenReturn(tokenEndpointAuthSigningAlg);
+        when(privateKeyJwtConfig.getJwk()).thenReturn(privateKeyJwtJwk);
 
         val callbackUrl = "https://client.example.org/callback";
-        val generator = newGenerator(federation, callbackUrl);
+        val generator = newGenerator(federation, callbackUrl, config -> {
+            config.setPrivateKeyJwtClientAuthnMethodConfig(privateKeyJwtConfig);
+            config.setRequestObjectSigningAlgorithm(requestObjectSigningAlg);
+        });
 
         val serializedJwt = generator.generate();
         val signed = SignedJWT.parse(serializedJwt);
@@ -168,7 +193,7 @@ public final class DefaultEntityConfigurationGeneratorTests {
 
         assertRelyingPartyMetadata(
             claims.getClaim("metadata"),
-            callbackUrl,
+            "https://client.example.org/callback?client_name=OidcClient",
             "native",
             List.of("code", "id_token"),
             List.of("authorization_code", "refresh_token"),
@@ -181,6 +206,16 @@ public final class DefaultEntityConfigurationGeneratorTests {
         assertNotNull(openIdRelyingParty);
         assertEquals("pac4j test client", openIdRelyingParty.get("client_name"));
         assertEquals(List.of("ops@example.org", "security@example.org"), openIdRelyingParty.get("contacts"));
+        assertEquals(tokenEndpointAuthSigningAlg.getName(), openIdRelyingParty.get("token_endpoint_auth_signing_alg"));
+        assertEquals(requestObjectSigningAlg.getName(), openIdRelyingParty.get("request_object_signing_alg"));
+
+        val authnJwks = (Map<String, Object>) openIdRelyingParty.get("jwks");
+        assertNotNull(authnJwks);
+        val authnKeys = (List<Map<String, Object>>) authnJwks.get("keys");
+        assertNotNull(authnKeys);
+        assertEquals(1, authnKeys.size());
+        assertEquals("private-key-jwt-kid", authnKeys.get(0).get("kid"));
+        assertFalse(authnKeys.get(0).containsKey("d"));
     }
 
     @Test
@@ -301,7 +336,7 @@ public final class DefaultEntityConfigurationGeneratorTests {
         assertNotNull(metadataClaim);
         val openIdRelyingParty = (Map<String, Object>) metadataClaim.get("openid_relying_party");
         assertNotNull(openIdRelyingParty);
-        assertEquals(List.of(callbackUrl), openIdRelyingParty.get("redirect_uris"));
+        assertEquals(List.of("https://client.example.org/callback?client_name=OidcClient"), openIdRelyingParty.get("redirect_uris"));
         assertEquals("native", openIdRelyingParty.get("application_type"));
         assertEquals(List.of("code", "id_token"), openIdRelyingParty.get("response_types"));
         assertEquals(List.of("authorization_code", "refresh_token"), openIdRelyingParty.get("grant_types"));

@@ -76,11 +76,11 @@ public class DefaultEntityConfigurationGenerator extends InitializableObject imp
 
         val config = client.getConfiguration();
         val federation = config.getFederation();
-        val callbackURL = client.getCallbackUrl();
+        val callbackURL = client.computeFinalCallbackUrl(null);
         var entityId = federation.getEntityId();
         if (StringUtils.isBlank(entityId)) {
-            entityId = callbackURL;
-            federation.setEntityId(callbackURL);
+            entityId = client.getCallbackUrl();
+            federation.setEntityId(entityId);
         }
         assertNotBlank("entityId", entityId);
         LOGGER.info("Generating entity configuration for: {}", entityId);

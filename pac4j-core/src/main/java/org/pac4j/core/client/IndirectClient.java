@@ -69,12 +69,7 @@ public abstract class IndirectClient extends BaseClient {
     protected void beforeInternalInit(final boolean forceReinit) {
         // check configuration
         assertNotBlank("callbackUrl", this.callbackUrl, "set it up either on this IndirectClient or on the global Config");
-        if (this.urlResolver == null) {
-            this.urlResolver = new DefaultUrlResolver();
-        }
-        if (this.callbackUrlResolver == null) {
-            this.callbackUrlResolver = newDefaultCallbackUrlResolver();
-        }
+        initUrlResolvers();
         if (this.ajaxRequestResolver == null) {
             ajaxRequestResolver = new DefaultAjaxRequestResolver();
         }
@@ -95,6 +90,15 @@ public abstract class IndirectClient extends BaseClient {
         assertNotNull("authenticator", getAuthenticator());
         assertNotNull("profileCreator", getProfileCreator());
         assertNotNull("logoutActionBuilder", this.logoutActionBuilder);
+    }
+
+    public void initUrlResolvers() {
+        if (this.urlResolver == null) {
+            this.urlResolver = new DefaultUrlResolver();
+        }
+        if (this.callbackUrlResolver == null) {
+            this.callbackUrlResolver = newDefaultCallbackUrlResolver();
+        }
     }
 
     /**
@@ -175,7 +179,7 @@ public abstract class IndirectClient extends BaseClient {
      * @return a {@link String} object
      */
     public String computeFinalCallbackUrl(final WebContext context) {
-        init();
+        initUrlResolvers();
         return callbackUrlResolver.compute(this.urlResolver, this.callbackUrl, this.getName(), context);
     }
 
