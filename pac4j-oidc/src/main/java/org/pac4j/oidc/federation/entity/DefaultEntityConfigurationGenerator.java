@@ -116,6 +116,10 @@ public class DefaultEntityConfigurationGenerator extends InitializableObject imp
                 }
             }
         }
+        val requestObjectSigningAlg = config.getRequestObjectSigningAlgorithm();
+        if (requestObjectSigningAlg != null) {
+            rpMetadata.put("request_object_signing_alg", requestObjectSigningAlg.getName());
+        }
         rpMetadata.put("client_registration_types", federation.getClientRegistrationTypes());
         rpMetadata.put("client_name", federation.getContactName());
         val contacts = federation.getContactEmails();
