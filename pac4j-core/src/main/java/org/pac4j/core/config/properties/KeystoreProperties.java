@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.pac4j.core.keystore.generation.KeystoreGenerator;
 import org.pac4j.core.resource.SpringResourceHelper;
+import org.pac4j.core.util.CommonHelper;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -68,5 +69,11 @@ public class KeystoreProperties {
      */
     public void setKeystorePath(final String path) {
         this.keystoreResource = SpringResourceHelper.buildResourceFromPath(path);
+    }
+
+    public KeystoreProperties setKeystoreResource(final Resource keystoreResource) {
+        CommonHelper.assertNotNull("keystoreResource", keystoreResource);
+        this.keystoreResource = keystoreResource;
+        return this;
     }
 }

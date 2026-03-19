@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.pac4j.core.resource.SpringResourceHelper;
+import org.pac4j.core.util.CommonHelper;
 import org.springframework.core.io.Resource;
 
 /**
@@ -20,6 +21,12 @@ public class JwksProperties {
     private Resource jwksResource;
 
     private String kid;
+
+    public JwksProperties setJwksResource(final Resource jwksResource) {
+        CommonHelper.assertNotNull("jwksResource", jwksResource);
+        this.jwksResource = jwksResource;
+        return this;
+    }
 
     /**
      * <p>setJwksPath.</p>
