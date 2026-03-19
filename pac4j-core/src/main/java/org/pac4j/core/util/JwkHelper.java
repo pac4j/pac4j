@@ -24,7 +24,6 @@ import java.nio.file.attribute.PosixFilePermissions;
 import java.security.KeyPair;
 import java.security.KeyStoreException;
 import java.text.ParseException;
-import java.util.UUID;
 
 /**
  * Helper for JWK.
@@ -48,7 +47,7 @@ public class JwkHelper {
             LOGGER.debug("No signingKey found in JWKS: generating one");
             try {
                 // not supported for federation yet (SDK 11.31.1):
-                // new OctetKeyPairGenerator(Curve.Ed25519).keyID(buildKid(kid)).keyUse(KeyUse.SIGNATURE).generate();
+                // new OctetKeyPairGenerator(Curve.Ed25519).keyID(kid).keyUse(KeyUse.SIGNATURE).generate();
                 val generatedKey = new RSAKeyGenerator(2048)
                     .keyUse(KeyUse.SIGNATURE)
                     .keyID(kid)
@@ -147,14 +146,6 @@ public class JwkHelper {
             return JWK.load(keyStore, alias, keystoreProperties.getPrivateKeyPassword().toCharArray());
         } catch (final KeyStoreException | JOSEException e) {
             throw new TechnicalException(e);
-        }
-    }
-
-    public static String buildKid(final String originalKid) {
-        if (originalKid != null) {
-            return originalKid;
-        } else {
-            return UUID.randomUUID().toString();
         }
     }
 

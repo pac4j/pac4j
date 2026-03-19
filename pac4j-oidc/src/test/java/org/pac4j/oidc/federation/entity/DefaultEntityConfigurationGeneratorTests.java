@@ -266,7 +266,7 @@ public final class DefaultEntityConfigurationGeneratorTests {
         federation.setValidityInDays(7);
         federation.setApplicationType("native");
         federation.setResponseTypes(List.of("code", "id_token"));
-        federation.setGrantTypes(List.of("authorization_code", "refresh_token"));
+        federation.getGrantTypes().add("refresh_token");
         federation.setScopes(List.of("openid", "email"));
         federation.setContactName("pac4j buildConfig client");
         federation.setContactEmails(List.of("build@example.org"));

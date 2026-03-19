@@ -21,8 +21,8 @@ import java.nio.file.Files;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 /**
  * Tests {@link JwkHelper}.
@@ -31,18 +31,6 @@ import static org.junit.jupiter.api.Assertions.*;
  * @since 6.4.0
  */
 public final class JwkHelperTests {
-
-    @Test
-    public void testBuildKidReturnsOriginalKidWhenProvided() {
-        assertEquals("my-kid", JwkHelper.buildKid("my-kid"));
-    }
-
-    @Test
-    public void testBuildKidGeneratesValueWhenMissing() {
-        val generated = JwkHelper.buildKid(null);
-        assertNotNull(generated);
-        assertFalse(generated.isBlank());
-    }
 
     @Test
     public void testLoadJwkFromOrCreateJwksGeneratesAndPersistsKeyWhenMissing() throws Exception {

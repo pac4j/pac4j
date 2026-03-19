@@ -34,13 +34,13 @@ public class OidcFederationProperties {
 
     private String applicationType = "web";
 
-    private List<String> responseTypes = List.of("code");
+    private List<String> responseTypes = new ArrayList<>(List.of("code"));
 
-    private List<String> grantTypes = List.of("authorization_code");
+    private List<String> grantTypes = new ArrayList<>(List.of("authorization_code"));
 
-    private List<String> scopes = List.of("openid", "email", "profile");
+    private List<String> scopes = new ArrayList<>(List.of("openid", "email", "profile"));
 
-    private List<String> clientRegistrationTypes = List.of("explicit","automatic");
+    private List<String> clientRegistrationTypes = new ArrayList<>(List.of("explicit", "automatic"));
 
     private List<OidcTrustAnchorProperties> trustAnchors = new ArrayList<>();
 
