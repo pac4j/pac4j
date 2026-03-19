@@ -10,12 +10,12 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import net.minidev.json.JSONArray;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.resource.SpringResourceHelper;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.exceptions.OidcConfigurationException;
 import org.pac4j.oidc.exceptions.OidcException;
 
 import java.io.IOException;
-import java.net.URL;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
@@ -34,7 +34,7 @@ public class FederationChainResolver {
 
     public ResolutionResult resolve(final OidcConfiguration configuration) {
         val entityId = configuration.getFederation().getEntityId();
-        LOGGER.info("Resolving federation chain for: {}", entityId);
+        LOGGER.info("Resolving federation chain for RP: {}", entityId);
 
         val anchors = loadTrustAnchors(configuration);
         LOGGER.debug("Loaded {} trust anchor(s)", anchors.size());
@@ -43,7 +43,7 @@ public class FederationChainResolver {
         val validator = new FederationEntityMetadataValidator(resolver.getEntityStatementRetriever());
 
         val targetIssuer = new EntityID(configuration.getFederation().getTargetOp());
-        LOGGER.debug("Target issuer: {}", targetIssuer);
+        LOGGER.debug("OP target issuer: {}", targetIssuer);
 
         TrustChainSet resolvedChains;
         try {
@@ -108,11 +108,16 @@ public class FederationChainResolver {
         }
 
         for (val trustAnchor : trustAnchors) {
-            val entity = new EntityID(trustAnchor.getTaIssuer());
+            val entity = new EntityID(trustAnchor.getIssuer());
             JWKSet jwks;
-            try {
-                jwks = JWKSet.load(new URL(trustAnchor.getTaJwksUrl()), configuration.getConnectTimeout(),
-                    configuration.getReadTimeout(), 0);
+            try (val in = SpringResourceHelper.getResourceInputStream(
+                    trustAnchor.getJwksResource(),
+                    null,
+                    configuration.getSslSocketFactory(),
+                    configuration.getHostnameVerifier(),
+                    configuration.getConnectTimeout(),
+                    configuration.getReadTimeout())) {
+                jwks = JWKSet.load(in);
             } catch (final IOException | ParseException e) {
                 throw new TechnicalException(e);
             }

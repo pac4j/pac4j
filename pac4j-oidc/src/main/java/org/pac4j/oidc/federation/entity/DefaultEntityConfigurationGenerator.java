@@ -134,7 +134,7 @@ public class DefaultEntityConfigurationGenerator extends InitializableObject imp
 
         val trustAnchors = federation.getTrustAnchors();
         if (trustAnchors != null && trustAnchors.size() > 0) {
-            claimsBuilder.claim("authority_hints", trustAnchors.stream().map(ta -> ta.getTaIssuer()).collect(Collectors.toList()));
+            claimsBuilder.claim("authority_hints", trustAnchors.stream().map(ta -> ta.getIssuer()).collect(Collectors.toList()));
         }
 
         val claims = claimsBuilder.build();
