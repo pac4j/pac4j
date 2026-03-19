@@ -35,7 +35,7 @@ public class SpringResourceLoaderTests implements TestsConstants {
 
     @Test
     public void testChecksChangesOnlyOnceDuringInterval() {
-        val loader = new CountingSpringResourceLoader();
+        val loader = new MockSpringResourceLoader();
         loader.load();
         loader.load();
         loader.load();
@@ -44,7 +44,7 @@ public class SpringResourceLoaderTests implements TestsConstants {
 
     @Test
     public void testCanDisableDelayBetweenChecks() {
-        val loader = new CountingSpringResourceLoader();
+        val loader = new MockSpringResourceLoader();
         loader.setMinimumDelayBetweenChangeDetectionInMilliseconds(0);
         loader.load();
         loader.load();
@@ -55,6 +55,7 @@ public class SpringResourceLoaderTests implements TestsConstants {
     private static class MockSpringResourceLoader extends SpringResourceLoader<String> {
 
         private int seq = 0;
+        private int hasChangedCallCount = 0;
 
         public MockSpringResourceLoader() {
             super(new ClassPathResource("testFile.txt"));
@@ -65,23 +66,18 @@ public class SpringResourceLoaderTests implements TestsConstants {
             this.loaded = Pac4jConstants.EMPTY_STRING + seq++;
         }
 
+        @Override
+        public boolean hasChanged() {
+            hasChangedCallCount++;
+            return super.hasChanged();
+        }
+
         public String getLoaded() {
             return this.loaded;
         }
 
         public int getSeq() {
             return this.seq;
-        }
-    }
-
-    private static class CountingSpringResourceLoader extends MockSpringResourceLoader {
-
-        private int hasChangedCallCount = 0;
-
-        @Override
-        public boolean hasChanged() {
-            hasChangedCallCount++;
-            return super.hasChanged();
         }
 
         public int getHasChangedCallCount() {
