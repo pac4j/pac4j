@@ -109,7 +109,7 @@ public class DefaultEntityConfigurationGenerator extends InitializableObject imp
             if (clientAuth == ClientAuthenticationMethod.PRIVATE_KEY_JWT) {
                 val clientAuthConfig = config.getPrivateKeyJwtClientAuthnMethodConfig();
                 if (clientAuthConfig != null && clientAuthConfig.getJwsAlgorithm() != null) {
-                    rpMetadata.put("token_endpoint_auth_signing_alg", List.of(clientAuthConfig.getJwsAlgorithm().getName()));
+                    rpMetadata.put("token_endpoint_auth_signing_alg", clientAuthConfig.getJwsAlgorithm().getName());
                     val publicKey = clientAuthConfig.getJwk().toPublicJWK();
                     val jwkSet = new JWKSet(publicKey);
                     rpMetadata.put("jwks", jwkSet.toJSONObject());
