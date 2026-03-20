@@ -77,6 +77,11 @@ public class FederationChainResolver {
             throw new OidcException("Empty 'client_registration_types_supported' claim in the leaf Entity Statement");
         }
 
+        val federationJWKS = leafStatement.getClaimsSet().getJWKSet();
+        if (federationJWKS == null) {
+            throw new OidcException("No federationJWKS found");
+        }
+
         try {
             val combinedPolicy = chain.resolveCombinedMetadataPolicy(EntityType.OPENID_PROVIDER);
             LOGGER.debug("combinedPolicy: {}", combinedPolicy.toJSONString());
@@ -93,7 +98,7 @@ public class FederationChainResolver {
 
             val metadata = OIDCProviderMetadata.parse(resolvedJson);
             val chainExpirationTime = new Date(chain.resolveExpirationTime().getTime() - 2 * 60 * 1000L);
-            return new ResolutionResult(metadata, chainExpirationTime);
+            return new ResolutionResult(metadata, chainExpirationTime, federationJWKS);
         } catch (final com.nimbusds.oauth2.sdk.ParseException | PolicyViolationException e) {
             throw new OidcException("Cannot resolve provider metadata via federation", e);
         }
@@ -127,6 +132,6 @@ public class FederationChainResolver {
         return anchors;
     }
 
-    public record ResolutionResult(OIDCProviderMetadata metadata, Date chainExpirationTime) {
+    public record ResolutionResult(OIDCProviderMetadata metadata, Date chainExpirationTime, JWKSet federationJWKS) {
     }
 }

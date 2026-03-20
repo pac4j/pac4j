@@ -67,7 +67,8 @@ public final class OidcFederationOpMetadataResolverTests {
         val resolver = new OidcFederationOpMetadataResolver(configuration) {
             @Override
             protected FederationChainResolver.ResolutionResult resolveMetadata() {
-                return new FederationChainResolver.ResolutionResult(expectedMetadata, new Date(System.currentTimeMillis() + 60_000));
+                return new FederationChainResolver.ResolutionResult(expectedMetadata,
+                    new Date(System.currentTimeMillis() + 60_000), new JWKSet());
             }
 
             @Override
@@ -86,8 +87,9 @@ public final class OidcFederationOpMetadataResolverTests {
         assertNotNull(auth);
         assertTrue(auth instanceof ClientSecretBasic);
     }
+
     @Test
-    public void testExplicitRegistrationSetsClientIdAndSecret() throws Exception {
+    public void testExplicitRegistrationSetsClientId() throws Exception {
         val configuration = new OidcConfiguration();
         configuration.setClientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC);
         configuration.getFederation().setEntityId("https://rp.example.org");
@@ -109,12 +111,13 @@ public final class OidcFederationOpMetadataResolverTests {
             metadata.setClientRegistrationTypes(List.of(ClientRegistrationType.EXPLICIT));
             metadata.setFederationRegistrationEndpointURI(
                 new URI("http://localhost:" + webServer.getListeningPort() + "/register?r=ok"));
-            metadata.setJWKSet(new JWKSet(signingKey.toPublicJWK()));
+            val jwks = new JWKSet(signingKey.toPublicJWK());
 
             val resolver = new OidcFederationOpMetadataResolver(configuration) {
                 @Override
                 protected FederationChainResolver.ResolutionResult resolveMetadata() {
-                    return new FederationChainResolver.ResolutionResult(metadata, new Date(System.currentTimeMillis() + 60_000));
+                    return new FederationChainResolver.ResolutionResult(metadata,
+                        new Date(System.currentTimeMillis() + 60_000), jwks);
                 }
 
                 @Override
@@ -127,7 +130,6 @@ public final class OidcFederationOpMetadataResolverTests {
             assertEquals("registeredClient", configuration.getClientId());
             assertNull(resolver.getClientAuthentication());
 
-            Mockito.verify(entityConfigurationGenerator).getContentType();
             Mockito.verify(entityConfigurationGenerator).generate();
         } finally {
             webServer.stop();
@@ -150,7 +152,8 @@ public final class OidcFederationOpMetadataResolverTests {
             @Override
             protected FederationChainResolver.ResolutionResult resolveMetadata() {
                 if (metadataRetrievalCount.getAndIncrement() == 0) {
-                    return new FederationChainResolver.ResolutionResult(initialMetadata, new Date(System.currentTimeMillis() + 60_000));
+                    return new FederationChainResolver.ResolutionResult(initialMetadata,
+                        new Date(System.currentTimeMillis() + 60_000), new JWKSet());
                 }
                 backgroundReloadStarted.countDown();
                 try {
@@ -161,7 +164,8 @@ public final class OidcFederationOpMetadataResolverTests {
                     Thread.currentThread().interrupt();
                     throw new IllegalStateException(e);
                 }
-                return new FederationChainResolver.ResolutionResult(refreshedMetadata, new Date(System.currentTimeMillis() + 120_000));
+                return new FederationChainResolver.ResolutionResult(refreshedMetadata,
+                    new Date(System.currentTimeMillis() + 120_000), new JWKSet());
             }
 
             @Override
@@ -212,7 +216,8 @@ public final class OidcFederationOpMetadataResolverTests {
             @Override
             protected FederationChainResolver.ResolutionResult resolveMetadata() {
                 if (metadataRetrievalCount.getAndIncrement() == 0) {
-                    return new FederationChainResolver.ResolutionResult(initialMetadata, new Date(System.currentTimeMillis() + 60_000));
+                    return new FederationChainResolver.ResolutionResult(initialMetadata,
+                        new Date(System.currentTimeMillis() + 60_000), new JWKSet());
                 }
                 backgroundReloadStarted.countDown();
                 try {
@@ -223,7 +228,8 @@ public final class OidcFederationOpMetadataResolverTests {
                     Thread.currentThread().interrupt();
                     throw new IllegalStateException(e);
                 }
-                return new FederationChainResolver.ResolutionResult(refreshedMetadata, new Date(System.currentTimeMillis() + 120_000));
+                return new FederationChainResolver.ResolutionResult(refreshedMetadata,
+                    new Date(System.currentTimeMillis() + 120_000), new JWKSet());
             }
 
             @Override
@@ -281,6 +287,7 @@ public final class OidcFederationOpMetadataResolverTests {
         val claims = new JWTClaimsSet.Builder()
             .issuer("https://op.example.org")
             .subject("https://op.example.org")
+            .audience("https://rp.example.org")
             .issueTime(now)
             .expirationTime(new Date(now.getTime() + 60_000))
             .claim("jwks", new JWKSet(signingKey.toPublicJWK()).toJSONObject())

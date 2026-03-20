@@ -3,8 +3,10 @@ package org.pac4j.oidc.metadata.registration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JOSEObjectType;
+import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.proc.BadJOSEException;
 import com.nimbusds.oauth2.sdk.http.HTTPRequest;
+import com.nimbusds.oauth2.sdk.id.Audience;
 import com.nimbusds.openid.connect.sdk.federation.entities.EntityStatement;
 import com.nimbusds.openid.connect.sdk.federation.entities.EntityStatementClaimsVerifier;
 import com.nimbusds.openid.connect.sdk.federation.registration.ClientRegistrationType;
@@ -15,7 +17,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.exceptions.OidcException;
-import org.pac4j.oidc.util.OidcHelper;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -31,7 +32,7 @@ public class FederationClientRegister {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    public void register(final OidcConfiguration configuration, final OIDCProviderMetadata metadata) {
+    public void register(final OidcConfiguration configuration, final OIDCProviderMetadata metadata, final JWKSet federationJWKS) {
         val entityId = configuration.getFederation().getEntityId();
         val definedClientId = configuration.getClientId();
         if (StringUtils.isNotBlank(definedClientId)) {
@@ -51,7 +52,7 @@ public class FederationClientRegister {
             configuration.setClientId(entityId);
         } else if (opRegistrationTypes.contains(ClientRegistrationType.EXPLICIT)
             && rpRegistrationTypes.contains(ClientRegistrationType.EXPLICIT.getValue())) {
-            performExplicitRegistration(configuration, metadata, entityId);
+            performExplicitRegistration(configuration, metadata, entityId, federationJWKS);
         } else {
             LOGGER.warn("Registration via federation is skipped due to OP/RP configuration");
         }
@@ -59,7 +60,8 @@ public class FederationClientRegister {
 
     protected void performExplicitRegistration(final OidcConfiguration configuration,
                                                final OIDCProviderMetadata metadata,
-                                               final String entityId) {
+                                               final String entityId,
+                                               final JWKSet federationJWKS) {
         val registrationEndpoint = metadata.getFederationRegistrationEndpointURI();
         if (registrationEndpoint == null) {
             throw new OidcException("Client registration endpoint is not defined and only explicit registration is accepted by the OP");
@@ -72,19 +74,23 @@ public class FederationClientRegister {
         String clientId = null;
         try {
             val request = new HTTPRequest(HTTPRequest.Method.POST, registrationEndpoint);
-            request.setContentType(generator.getContentType());
+            request.setContentType("application/jose");
             request.setBody(entityConfig);
             configuration.configureHttpRequest(request);
             val response = request.send();
             val code = response.getStatusCode();
+            val error = response.getStatusMessage();
+            val content = response.getContent();
             if (code == 200 || code == 201) {
-                val statement = EntityStatement.parse(response.getContent());
+                LOGGER.debug("Received response registration: {}", content);
+                val statement = EntityStatement.parse(content);
                 val type = statement.getSignedStatement().getHeader().getType();
                 if (type != null && !JOSEObjectType.JWT.equals(type) && !EntityStatement.JOSE_OBJECT_TYPE.equals(type)) {
                     throw new OidcException("Unexpected explicit registration response typ: " + type);
                 }
-                statement.verifySignature(OidcHelper.retrieveJwkSetFrom(metadata, null));
-                val claimsVerifier = new EntityStatementClaimsVerifier();
+                statement.verifySignature(federationJWKS);
+                // jwks property is optional in the registration response
+                val claimsVerifier = new EntityStatementClaimsVerifier(new Audience(entityId));
                 claimsVerifier.verify(statement.getSignedStatement().getJWTClaimsSet(), null);
                 val expectedIssuer = metadata.getIssuer().getValue();
                 val issuer = statement.getClaimsSet().getIssuerEntityID();
@@ -103,7 +109,8 @@ public class FederationClientRegister {
                 }
             }
             if (StringUtils.isBlank(clientId)) {
-                throw new OidcException("Cannot explicitely register the client (code=" + code + ")");
+                throw new OidcException("Cannot explicitely register the client " + entityId
+                    + "(code=" + code + ",error=" + error + ",content=" + content + ")");
             }
         } catch (final IOException | JOSEException | BadJOSEException | ParseException
                        | com.nimbusds.oauth2.sdk.ParseException e) {

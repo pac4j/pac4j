@@ -1,5 +1,6 @@
 package org.pac4j.oidc.metadata;
 
+import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.oauth2.sdk.auth.ClientAuthentication;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import lombok.AccessLevel;
@@ -50,6 +51,8 @@ public class OidcFederationOpMetadataResolver extends InitializableObject implem
     @Setter(AccessLevel.PROTECTED)
     private volatile Date chainExpirationTime;
 
+    private volatile JWKSet federationJWKS;
+
     public OidcFederationOpMetadataResolver(final OidcConfiguration configuration) {
         this.configuration = configuration;
     }
@@ -96,6 +99,8 @@ public class OidcFederationOpMetadataResolver extends InitializableObject implem
         val result = resolveMetadata();
         this.metadata = result.metadata();
         this.chainExpirationTime = result.chainExpirationTime();
+        this.federationJWKS = result.federationJWKS();
+
         registerClient();
 
         this.clientAuthenticationBuilder = new DefaultClientAuthenticationBuilder(this.configuration, this.metadata);
@@ -109,7 +114,7 @@ public class OidcFederationOpMetadataResolver extends InitializableObject implem
     }
 
     protected void registerClient() {
-        federationClientRegister.register(configuration, metadata);
+        federationClientRegister.register(configuration, metadata, federationJWKS);
     }
 
     protected TokenValidator createTokenValidator() {

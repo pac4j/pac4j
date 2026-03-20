@@ -9,6 +9,7 @@ import com.nimbusds.openid.connect.sdk.federation.registration.ClientRegistratio
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import fi.iki.elonen.NanoHTTPD;
 import lombok.val;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.pac4j.core.util.JwkHelper;
@@ -46,6 +47,16 @@ public final class FederationClientRegisterTests {
         }
         """;
 
+    private JWKSet federationJWKS;
+
+    private FederationClientRegister register;
+
+    @BeforeEach
+    public void setUp() {
+        federationJWKS = new JWKSet();
+        register = new FederationClientRegister();
+    }
+
     @Test
     public void testAutomaticRegistrationSetsClientIdFromEntityId() throws Exception {
         val configuration = new OidcConfiguration();
@@ -53,8 +64,7 @@ public final class FederationClientRegisterTests {
         val metadata = OIDCProviderMetadata.parse(METADATA_CLIENT_SECRET_BASIC);
         metadata.setClientRegistrationTypes(List.of(ClientRegistrationType.AUTOMATIC));
 
-        val register = new FederationClientRegister();
-        register.register(configuration, metadata);
+        register.register(configuration, metadata, federationJWKS);
 
         assertEquals("https://rp.example.org", configuration.getClientId());
     }
@@ -67,8 +77,7 @@ public final class FederationClientRegisterTests {
         val metadata = OIDCProviderMetadata.parse(METADATA_CLIENT_SECRET_BASIC);
         metadata.setClientRegistrationTypes(List.of(ClientRegistrationType.AUTOMATIC));
 
-        val register = new FederationClientRegister();
-        register.register(configuration, metadata);
+        register.register(configuration, metadata, federationJWKS);
 
         assertNull(configuration.getClientId());
     }
@@ -83,8 +92,7 @@ public final class FederationClientRegisterTests {
         val metadata = OIDCProviderMetadata.parse(METADATA_CLIENT_SECRET_BASIC);
         metadata.setClientRegistrationTypes(List.of(ClientRegistrationType.EXPLICIT));
 
-        val register = new FederationClientRegister();
-        register.register(configuration, metadata);
+        register.register(configuration, metadata, federationJWKS);
 
         assertNull(configuration.getClientId());
         Mockito.verifyNoInteractions(entityConfigurationGenerator);
@@ -102,8 +110,7 @@ public final class FederationClientRegisterTests {
         val metadata = OIDCProviderMetadata.parse(METADATA_CLIENT_SECRET_BASIC);
         metadata.setClientRegistrationTypes(List.of(ClientRegistrationType.EXPLICIT, ClientRegistrationType.AUTOMATIC));
 
-        val register = new FederationClientRegister();
-        register.register(configuration, metadata);
+        register.register(configuration, metadata, federationJWKS);
 
         assertEquals("https://rp.example.org", configuration.getClientId());
         Mockito.verifyNoInteractions(entityConfigurationGenerator);
@@ -132,10 +139,8 @@ public final class FederationClientRegisterTests {
             metadata.setClientRegistrationTypes(List.of(ClientRegistrationType.EXPLICIT));
             metadata.setFederationRegistrationEndpointURI(
                 new URI("http://localhost:" + webServer.getListeningPort() + "/register?r=ok"));
-            metadata.setJWKSet(new JWKSet(signingKey.toPublicJWK()));
 
-            val register = new FederationClientRegister();
-            register.register(configuration, metadata);
+            register.register(configuration, metadata, new JWKSet(signingKey.toPublicJWK()));
 
             assertEquals("registeredClient", configuration.getClientId());
         } finally {
@@ -150,6 +155,7 @@ public final class FederationClientRegisterTests {
         val claims = new JWTClaimsSet.Builder()
             .issuer("https://op.example.org")
             .subject("https://op.example.org")
+            .audience("https://rp.example.org")
             .issueTime(now)
             .expirationTime(new Date(now.getTime() + 60_000))
             .claim("jwks", new JWKSet(signingKey.toPublicJWK()).toJSONObject())
