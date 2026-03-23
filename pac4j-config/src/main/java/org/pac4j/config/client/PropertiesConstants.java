@@ -1,11 +1,14 @@
 package org.pac4j.config.client;
 
 /**
+ * You should define your pac4j configuration programmatically.
+ *
  * Properties constants for the {@link PropertiesConfigFactory}.
  *
  * @author Jerome Leleu
  * @since 2.0.0
  */
+@Deprecated
 public interface PropertiesConstants {
     /** Constant <code>CLIENT_NAME="client.name"</code> */
     String CLIENT_NAME = "client.name";

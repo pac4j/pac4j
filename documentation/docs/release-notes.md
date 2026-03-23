@@ -16,7 +16,10 @@ title: Release notes&#58;
 - Support of the OpenID Connect Federation protocol v1.0
 - Improve object initialization by avoiding re-entrant call
 - Limit detection change in `SpringResourceLoader` (interval: 60s)
-- the `JWKHelper` (`pac4j-jwt`) is deprecated and replaced by `JwkHelper` (in `pac4j-core`) for `pac4j-jwt` and `pac4j-oidc`
+- The `JWKHelper` (`pac4j-jwt`) is deprecated and replaced by `JwkHelper` (in `pac4j-core`) for `pac4j-jwt` and `pac4j-oidc`
+- The `pac4j-gae`, `pac4j-couchdb` and `pac4j-springboot` modules are deprecated and will be removed in the next version 6.5.0
+- The `pac4j-javaee` module is deprecated and you should upgrade to the `pac4j-jakartaee` module
+- The `pac4j-config` module is deprecated: you should define your pac4j configuration programmatically
 
 **v6.3.4**:
 - Upgrade Jackson to v2.21.1 (annotations to v2.21)

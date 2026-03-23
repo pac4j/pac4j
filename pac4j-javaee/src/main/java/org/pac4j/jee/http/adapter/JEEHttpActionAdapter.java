@@ -13,9 +13,9 @@ import org.pac4j.jee.context.JEEContext;
 import java.io.IOException;
 
 /**
- * The HTTP action adapter for the {@link JEEContext}.
- *
  * You should upgrade to the new <code>pac4j-jakartaee</code> module.
+ *
+ * The HTTP action adapter for the {@link JEEContext}.
  *
  * @author Jerome Leleu
  * @since 1.9.0

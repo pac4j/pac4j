@@ -16,16 +16,16 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * Store data in the JEE web session.
- *
  * You should upgrade to the new <code>pac4j-jakartaee</code> module.
+ *
+ * Store data in the JEE web session.
  *
  * @author Jerome Leleu
  * @since 1.8.1
  */
-@Deprecated
 @Slf4j
 @ToString
+@Deprecated
 public class JEESessionStore extends PrefixedSessionStore {
 
     protected HttpSession httpSession;

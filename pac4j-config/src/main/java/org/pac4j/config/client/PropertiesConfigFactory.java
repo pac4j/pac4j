@@ -15,11 +15,14 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * You should define your pac4j configuration programmatically.
+ *
  * Build a configuration from properties.
  *
  * @author Jerome Leleu
  * @since 1.8.1
  */
+@Deprecated
 public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFactory {
 
     private final String callbackUrl;

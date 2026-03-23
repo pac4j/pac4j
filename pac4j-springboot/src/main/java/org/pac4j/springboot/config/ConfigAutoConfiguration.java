@@ -10,6 +10,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
+ * This class will be removed in the next version 6.5.0.
+ *
  * The configuration class for Spring.
  *
  * @author Misagh Moayyed
@@ -17,6 +19,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration(value = "ConfigAutoConfiguration", proxyBeanMethods = false)
 @EnableConfigurationProperties(Pac4jConfigurationProperties.class)
+@Deprecated
 public class ConfigAutoConfiguration {
 
     @Autowired

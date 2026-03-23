@@ -17,6 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
+ * You should upgrade to the new <code>pac4j-jakartaee</code> module.
+ *
  * This filter prints the SP metadata for SAML.
  *
  * Example shiro.ini configuration:
@@ -33,6 +35,7 @@ import java.io.IOException;
  */
 @Getter
 @Setter
+@Deprecated
 public class Saml2MetadataFilter extends AbstractConfigFilter {
 
     private String clientName;

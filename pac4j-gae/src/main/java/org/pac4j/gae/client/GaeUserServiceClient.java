@@ -17,11 +17,14 @@ import java.util.Optional;
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
 
 /**
+ * This class will be removed in the next version 6.5.0.
+ *
  * <p>This class is the OpenID client to authenticate users with UserService on App Engine</p>
  *
  * @author Patrice de Saint Steban
  * @since 1.6.0
  */
+@Deprecated
 public class GaeUserServiceClient extends IndirectClient {
 
     private static final ProfileDefinition PROFILE_DEFINITION

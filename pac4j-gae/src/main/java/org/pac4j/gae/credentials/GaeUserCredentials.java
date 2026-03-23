@@ -10,6 +10,8 @@ import org.pac4j.core.credentials.Credentials;
 import java.io.Serial;
 
 /**
+ * This class will be removed in the next version 6.5.0.
+ *
  * Credential for Google App Engine.
  *
  * @author Patrice de Saint Steban
@@ -19,6 +21,7 @@ import java.io.Serial;
 @Setter
 @ToString
 @EqualsAndHashCode
+@Deprecated
 public class GaeUserCredentials extends Credentials {
 
     @Serial

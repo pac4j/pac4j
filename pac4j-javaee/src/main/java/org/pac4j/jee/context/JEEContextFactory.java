@@ -5,11 +5,14 @@ import org.pac4j.core.context.WebContextFactory;
 import org.pac4j.core.exception.TechnicalException;
 
 /**
+ * You should upgrade to the new <code>pac4j-jakartaee</code> module.
+ *
  * Build a JEE context from parameters.
  *
  * @author Jerome LELEU
  * @since 4.0.1
  */
+@Deprecated
 public class JEEContextFactory implements WebContextFactory {
 
     /** Constant <code>INSTANCE</code> */

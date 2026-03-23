@@ -15,11 +15,14 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
+ * You should upgrade to the new <code>pac4j-jakartaee</code> module.
+ *
  * An abstract JEE filter which handles configuration.
  *
  * @author Jerome Leleu
  * @since 5.0.0
  */
+@Deprecated
 public abstract class AbstractConfigFilter implements Filter {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());

@@ -16,15 +16,13 @@ import org.pac4j.core.util.serializer.JsonSerializer;
 import org.pac4j.couch.profile.CouchProfile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.pac4j.core.util.CommonHelper.assertNotNull;
 
 /**
+ * This class will be removed in the next version 6.5.0.
+ *
  * The CouchDB profile service.
  *
  * @author Elie Roux
@@ -33,6 +31,7 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
 @Getter
 @Setter
 @ToString(callSuper = true)
+@Deprecated
 public class CouchProfileService extends AbstractProfileService<CouchProfile> {
 
     private CouchDbConnector couchDbConnector;

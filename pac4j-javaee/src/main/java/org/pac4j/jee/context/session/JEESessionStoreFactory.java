@@ -5,11 +5,14 @@ import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.context.session.SessionStoreFactory;
 
 /**
+ * You should upgrade to the new <code>pac4j-jakartaee</code> module.
+ *
  * Build a JEE session store from parameters.
  *
  * @author Jerome LELEU
  * @since 5.5.0
  */
+@Deprecated
 public class JEESessionStoreFactory implements SessionStoreFactory {
 
     /** Constant <code>INSTANCE</code> */

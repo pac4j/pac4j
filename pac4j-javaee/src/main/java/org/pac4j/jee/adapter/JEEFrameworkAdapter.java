@@ -10,11 +10,14 @@ import org.pac4j.jee.http.adapter.JEEHttpActionAdapter;
 import javax.annotation.Priority;
 
 /**
+ * You should upgrade to the new <code>pac4j-jakartaee</code> module.
+ *
  * The JavaEE framework adapter.
  *
  * @author Jerome LELEU
  * @since 5.6.0
  */
+@Deprecated
 public class JEEFrameworkAdapter extends DefaultFrameworkAdapter {
 
     /** {@inheritDoc} */

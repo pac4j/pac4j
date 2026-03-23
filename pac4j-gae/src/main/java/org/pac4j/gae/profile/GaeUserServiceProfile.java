@@ -6,6 +6,8 @@ import org.pac4j.core.profile.CommonProfile;
 import java.io.Serial;
 
 /**
+ * This class will be removed in the next version 6.5.0.
+ *
  * <p>This class is the user profile for Google using UserService with appropriate getters.</p>
  * <p>It is returned by the {@link org.pac4j.gae.client.GaeUserServiceClient}.</p>
  *
@@ -14,6 +16,7 @@ import java.io.Serial;
  * @since 1.6.0
  */
 @ToString(callSuper = true)
+@Deprecated
 public class GaeUserServiceProfile extends CommonProfile {
 
     @Serial
