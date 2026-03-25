@@ -57,6 +57,11 @@ public class CasClient extends IndirectClient {
         setConfiguration(configuration);
     }
 
+    public CasClient(final String loginUrl) {
+        val config = new CasConfiguration(loginUrl);
+        setConfiguration(config);
+    }
+
     /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
