@@ -13,13 +13,13 @@ import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.credentials.OidcCredentials;
+import org.pac4j.oidc.exceptions.OidcException;
+import org.pac4j.oidc.exceptions.OidcTokenException;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Optional;
-import org.pac4j.oidc.exceptions.OidcException;
-import org.pac4j.oidc.exceptions.OidcTokenException;
 
 import static org.pac4j.core.util.CommonHelper.assertNotNull;
 
@@ -97,7 +97,7 @@ public class OidcAuthenticator implements Authenticator {
     protected TokenRequest createTokenRequest(final AuthorizationGrant grant) {
         val metadataResolver = configuration.getOpMetadataResolver();
         val tokenEndpointUri = metadataResolver.load().getTokenEndpointURI();
-        val clientAuthentication = metadataResolver.getClientAuthentication();
+        val clientAuthentication = metadataResolver.getClientAuthenticationTokenEndpoint();
         if (clientAuthentication != null) {
             return new TokenRequest(
                     tokenEndpointUri, clientAuthentication, grant, Scope.parse(configuration.getScope()));

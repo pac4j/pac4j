@@ -45,6 +45,7 @@ public class OidcOpMetadataResolverTestBase {
         OIDCProviderMetadata providerMetadata = OidcOpMetadataResolverTestBase.getOidcProviderMetadata(supportedAuthMethods);
         // Sets a fake token endpoint URI to permits private JWT key generation
         providerMetadata.setTokenEndpointURI(new URI("test"));
+        providerMetadata.setPushedAuthorizationRequestEndpointURI(new URI("par"));
         StaticOidcOpMetadataResolver oidcOpMetadataResolver = new StaticOidcOpMetadataResolver(configuration, providerMetadata);
         oidcOpMetadataResolver.init();
         return oidcOpMetadataResolver;

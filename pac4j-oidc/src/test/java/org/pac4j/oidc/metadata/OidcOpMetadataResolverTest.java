@@ -1,22 +1,20 @@
 package org.pac4j.oidc.metadata;
 
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.oauth2.sdk.auth.ClientAuthentication;
+import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
+import org.junit.jupiter.api.Test;
+import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.oidc.config.OidcConfiguration;
+import org.pac4j.oidc.config.PrivateKeyJWTClientAuthnMethodConfig;
+
 import java.net.URISyntaxException;
 import java.security.KeyPairGenerator;
 import java.security.SecureRandom;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.fail;
-import org.junit.jupiter.api.Test;
-import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.oidc.config.OidcConfiguration;
-import org.pac4j.oidc.config.PrivateKeyJWTClientAuthnMethodConfig;
-
-import com.nimbusds.jose.JWSAlgorithm;
-import com.nimbusds.oauth2.sdk.auth.ClientAuthentication;
-import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Mathias Loesch
@@ -31,7 +29,7 @@ public class OidcOpMetadataResolverTest extends OidcOpMetadataResolverTestBase {
         OidcOpMetadataResolver metadataResolver = getStaticMetadataResolver(configuration,
             List.of(ClientAuthenticationMethod.CLIENT_SECRET_POST, ClientAuthenticationMethod.CLIENT_SECRET_BASIC));
 
-        assertEquals(ClientAuthenticationMethod.CLIENT_SECRET_POST, metadataResolver.getClientAuthentication().getMethod());
+        assertEquals(ClientAuthenticationMethod.CLIENT_SECRET_POST, metadataResolver.getClientAuthenticationTokenEndpoint().getMethod());
     }
 
     @Test
@@ -41,7 +39,7 @@ public class OidcOpMetadataResolverTest extends OidcOpMetadataResolverTestBase {
         OidcOpMetadataResolver metadataResolver = getStaticMetadataResolver(configuration,
             List.of(ClientAuthenticationMethod.PRIVATE_KEY_JWT, ClientAuthenticationMethod.CLIENT_SECRET_BASIC));
 
-        assertEquals(ClientAuthenticationMethod.CLIENT_SECRET_BASIC, metadataResolver.getClientAuthentication().getMethod());
+        assertEquals(ClientAuthenticationMethod.CLIENT_SECRET_BASIC, metadataResolver.getClientAuthenticationTokenEndpoint().getMethod());
     }
 
     @Test
@@ -73,7 +71,7 @@ public class OidcOpMetadataResolverTest extends OidcOpMetadataResolverTestBase {
         // Gets the private key
         var privateKey = keyPair.getPrivate();
 
-        PrivateKeyJWTClientAuthnMethodConfig privateKeyJWTClientAuthnMethodConfig = 
+        PrivateKeyJWTClientAuthnMethodConfig privateKeyJWTClientAuthnMethodConfig =
             new PrivateKeyJWTClientAuthnMethodConfig(JWSAlgorithm.RS256, privateKey);
 
         // Sets validity to 2 seconds
@@ -86,18 +84,18 @@ public class OidcOpMetadataResolverTest extends OidcOpMetadataResolverTestBase {
         OidcOpMetadataResolver metadataResolver = getStaticMetadataResolverWithTokenEndPoint(configuration,
             List.of(ClientAuthenticationMethod.PRIVATE_KEY_JWT));
 
-        ClientAuthentication authentication = metadataResolver.getClientAuthentication();
-        ClientAuthentication authenticationBeforeExp = metadataResolver.getClientAuthentication();
+        ClientAuthentication authentication = metadataResolver.getClientAuthenticationTokenEndpoint();
+        ClientAuthentication authenticationBeforeExp = metadataResolver.getClientAuthenticationTokenEndpoint();
         // Gets client auth 2 times, must be the same
         assertEquals(authentication, authenticationBeforeExp);
 
         Thread.sleep(2200);
-        ClientAuthentication authenticationAfterExp = metadataResolver.getClientAuthentication();
+        ClientAuthentication authenticationAfterExp = metadataResolver.getClientAuthenticationTokenEndpoint();
         // After Expiration the token must be recreated
         assertNotEquals(authentication, authenticationAfterExp);
         Thread.sleep(500);
         // After smaller timeout the token should be the same
-        ClientAuthentication authenticationAfterExp2 = metadataResolver.getClientAuthentication();
+        ClientAuthentication authenticationAfterExp2 = metadataResolver.getClientAuthenticationTokenEndpoint();
         assertEquals(authenticationAfterExp, authenticationAfterExp2);
     }
 }

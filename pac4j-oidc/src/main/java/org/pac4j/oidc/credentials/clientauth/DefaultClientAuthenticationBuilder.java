@@ -49,6 +49,8 @@ public class DefaultClientAuthenticationBuilder implements ClientAuthenticationB
 
     private final OIDCProviderMetadata metadata;
 
+    private final URI audience;
+
     private AtomicReference<ClientAuthentication> clientAuthenticationRef = new AtomicReference<>();
 
     @Override
@@ -151,7 +153,7 @@ public class DefaultClientAuthenticationBuilder implements ClientAuthenticationB
                 val keyID = privateKeyJwtConfig.getKeyID();
                 val validity = privateKeyJwtConfig.getValidity();
                 try {
-                    return createPrivateKeyJWT(_clientID, this.metadata.getTokenEndpointURI(), jwsAlgo, privateKey, keyID, validity, null);
+                    return createPrivateKeyJWT(_clientID, audience, jwsAlgo, privateKey, keyID, validity, null);
                 } catch (final JOSEException e) {
                     throw new OidcException("Cannot instantiate private key JWT client authentication method", e);
                 }

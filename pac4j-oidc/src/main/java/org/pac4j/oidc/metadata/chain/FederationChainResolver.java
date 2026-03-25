@@ -6,6 +6,8 @@ import com.nimbusds.openid.connect.sdk.federation.entities.EntityType;
 import com.nimbusds.openid.connect.sdk.federation.policy.language.PolicyViolationException;
 import com.nimbusds.openid.connect.sdk.federation.trust.*;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import net.minidev.json.JSONArray;
@@ -19,6 +21,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.pac4j.core.util.CommonHelper.assertNotNull;
@@ -30,7 +33,11 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
  * @since 6.4.0
  */
 @Slf4j
+@Setter
+@Getter
 public class FederationChainResolver {
+
+    private long expiryMargin = 2 * 60 * 1000L;
 
     public ResolutionResult resolve(final OidcConfiguration configuration) {
         val entityId = configuration.getFederation().getEntityId();
@@ -40,24 +47,45 @@ public class FederationChainResolver {
         LOGGER.debug("Loaded {} trust anchor(s)", anchors.size());
 
         val resolver = new TrustChainResolver(anchors, configuration.getConnectTimeout(), configuration.getReadTimeout());
-        val validator = new FederationEntityMetadataValidator(resolver.getEntityStatementRetriever());
 
         val targetIssuer = new EntityID(configuration.getFederation().getTargetOp());
         LOGGER.debug("OP target issuer: {}", targetIssuer);
 
+        val opValidator = new FederationEntityMetadataValidator(resolver.getEntityStatementRetriever());
+        val opChain = resolve(resolver, opValidator, targetIssuer);
+        LOGGER.debug("OP chain: {}", opChain);
+        val opResolution = getResolvedProviderMetadata(opChain);
+        val opExpTime = opResolution.expirationTime();
+
+        if (configuration.getFederation().isSendTrustChain()) {
+            val rpEntity = new EntityID(configuration.getFederation().getEntityId());
+            LOGGER.debug("RP entity: {}", rpEntity);
+
+            val rpChain = resolve(resolver, null, rpEntity);
+            LOGGER.debug("RP chain: {}", rpChain);
+            val trustChain = rpChain.toSerializedJWTs();
+            val rpExpTime = new Date(rpChain.resolveExpirationTime().getTime() - expiryMargin);
+            var finalExpTime = opExpTime;
+            if (rpExpTime.before(finalExpTime)) {
+                finalExpTime = rpExpTime;
+            }
+            return new ResolutionResult(opResolution.metadata(), finalExpTime, opResolution.federationJWKS(), trustChain);
+        }
+
+        return opResolution;
+    }
+
+    protected TrustChain resolve(final TrustChainResolver resolver, final EntityMetadataValidator validator, final EntityID entityID) {
         TrustChainSet resolvedChains;
         try {
-            resolvedChains = resolver.resolveTrustChains(targetIssuer, validator);
+            resolvedChains = resolver.resolveTrustChains(entityID, validator);
         } catch (final ResolveException | InvalidEntityMetadataException e) {
             throw new OidcException(e);
         }
-        LOGGER.debug("resolvedChains: {}", resolvedChains);
-
         if (resolvedChains.isEmpty()) {
             throw new OidcException("No valid trust chain found");
         }
-        val chain = resolvedChains.getShortest();
-        return getResolvedProviderMetadata(chain);
+        return resolvedChains.getShortest();
     }
 
     protected ResolutionResult getResolvedProviderMetadata(final TrustChain chain) {
@@ -97,8 +125,8 @@ public class FederationChainResolver {
             }
 
             val metadata = OIDCProviderMetadata.parse(resolvedJson);
-            val chainExpirationTime = new Date(chain.resolveExpirationTime().getTime() - 2 * 60 * 1000L);
-            return new ResolutionResult(metadata, chainExpirationTime, federationJWKS);
+            val chainExpirationTime = new Date(chain.resolveExpirationTime().getTime() - expiryMargin);
+            return new ResolutionResult(metadata, chainExpirationTime, federationJWKS, null);
         } catch (final com.nimbusds.oauth2.sdk.ParseException | PolicyViolationException e) {
             throw new OidcException("Cannot resolve provider metadata via federation", e);
         }
@@ -132,6 +160,6 @@ public class FederationChainResolver {
         return anchors;
     }
 
-    public record ResolutionResult(OIDCProviderMetadata metadata, Date chainExpirationTime, JWKSet federationJWKS) {
+    public record ResolutionResult(OIDCProviderMetadata metadata, Date expirationTime, JWKSet federationJWKS, List<String> trustChain) {
     }
 }

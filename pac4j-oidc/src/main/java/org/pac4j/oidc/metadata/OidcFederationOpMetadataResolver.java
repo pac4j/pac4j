@@ -4,6 +4,7 @@ import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.oauth2.sdk.auth.ClientAuthentication;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -16,6 +17,7 @@ import org.pac4j.oidc.metadata.registration.FederationClientRegister;
 import org.pac4j.oidc.profile.creator.TokenValidator;
 
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -37,9 +39,14 @@ public class OidcFederationOpMetadataResolver extends InitializableObject implem
 
     private volatile OIDCProviderMetadata metadata;
 
-    protected volatile ClientAuthenticationBuilder clientAuthenticationBuilder;
+    protected volatile ClientAuthenticationBuilder clientAuthToken;
+
+    protected volatile ClientAuthenticationBuilder clientAuthPar;
 
     protected volatile TokenValidator tokenValidator;
+
+    @Getter
+    protected volatile List<String> trustChain;
 
     private final OidcConfiguration configuration;
 
@@ -98,13 +105,18 @@ public class OidcFederationOpMetadataResolver extends InitializableObject implem
     protected void reloadSynchronously() {
         val result = resolveMetadata();
         this.metadata = result.metadata();
-        this.chainExpirationTime = result.chainExpirationTime();
+        this.chainExpirationTime = result.expirationTime();
         this.federationJWKS = result.federationJWKS();
+        this.trustChain = result.trustChain();
 
         registerClient();
 
-        this.clientAuthenticationBuilder = new DefaultClientAuthenticationBuilder(this.configuration, this.metadata);
-        this.clientAuthenticationBuilder.buildClientAuthentication();
+        this.clientAuthToken = new DefaultClientAuthenticationBuilder(configuration, metadata, metadata.getTokenEndpointURI());
+        this.clientAuthToken.buildClientAuthentication();
+
+        this.clientAuthPar = new DefaultClientAuthenticationBuilder(configuration, metadata,
+            metadata.getPushedAuthorizationRequestEndpointURI());
+        this.clientAuthPar.buildClientAuthentication();
 
         this.tokenValidator = createTokenValidator();
     }
@@ -134,8 +146,14 @@ public class OidcFederationOpMetadataResolver extends InitializableObject implem
     }
 
     @Override
-    public ClientAuthentication getClientAuthentication() {
+    public ClientAuthentication getClientAuthenticationTokenEndpoint() {
         init();
-        return clientAuthenticationBuilder.getClientAuthentication();
+        return clientAuthToken.getClientAuthentication();
+    }
+
+    @Override
+    public ClientAuthentication getClientAuthenticationPAREndpoint() {
+        init();
+        return clientAuthPar.getClientAuthentication();
     }
 }

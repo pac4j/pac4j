@@ -56,7 +56,7 @@ public final class DefaultEntityConfigurationGeneratorTests {
         config.setOpMetadataResolver(opResolver);
         val clientAuth = mock(PrivateKeyJWT.class);
         when(clientAuth.getMethod()).thenReturn(ClientAuthenticationMethod.PRIVATE_KEY_JWT);
-        when(opResolver.getClientAuthentication()).thenReturn(clientAuth);
+        when(opResolver.getClientAuthenticationTokenEndpoint()).thenReturn(clientAuth);
 
         val client = new OidcClient();
         client.setConfiguration(config);

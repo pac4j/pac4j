@@ -34,7 +34,9 @@ public class OidcOpMetadataResolver extends SpringResourceLoader<OIDCProviderMet
 
     protected final OidcConfiguration configuration;
 
-    protected ClientAuthenticationBuilder clientAuthenticationBuilder;
+    protected ClientAuthenticationBuilder clientAuthToken;
+
+    protected ClientAuthenticationBuilder clientAuthPar;
 
     @Getter
     protected TokenValidator tokenValidator;
@@ -65,8 +67,12 @@ public class OidcOpMetadataResolver extends SpringResourceLoader<OIDCProviderMet
     protected void internalLoad() {
         this.loaded = retrieveMetadata();
 
-        this.clientAuthenticationBuilder = new DefaultClientAuthenticationBuilder(this.configuration, this.loaded);
-        this.clientAuthenticationBuilder.buildClientAuthentication();
+        this.clientAuthToken = new DefaultClientAuthenticationBuilder(configuration, loaded, loaded.getTokenEndpointURI());
+        this.clientAuthToken.buildClientAuthentication();
+
+        this.clientAuthPar = new DefaultClientAuthenticationBuilder(configuration, loaded,
+            loaded.getPushedAuthorizationRequestEndpointURI());
+        this.clientAuthPar.buildClientAuthentication();
 
         this.tokenValidator = createTokenValidator();
     }
@@ -97,8 +103,12 @@ public class OidcOpMetadataResolver extends SpringResourceLoader<OIDCProviderMet
         return new TokenValidator(configuration, this.loaded);
     }
 
-    public ClientAuthentication getClientAuthentication() {
-        return clientAuthenticationBuilder.getClientAuthentication();
+    public ClientAuthentication getClientAuthenticationTokenEndpoint() {
+        return clientAuthToken.getClientAuthentication();
+    }
+
+    public ClientAuthentication getClientAuthenticationPAREndpoint() {
+        return clientAuthPar.getClientAuthentication();
     }
 
     @EqualsAndHashCode(callSuper = true)

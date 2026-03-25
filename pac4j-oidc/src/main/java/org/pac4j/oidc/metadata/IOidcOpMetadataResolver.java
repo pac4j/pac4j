@@ -16,5 +16,12 @@ public interface IOidcOpMetadataResolver {
 
     TokenValidator getTokenValidator();
 
-    ClientAuthentication getClientAuthentication();
+    ClientAuthentication getClientAuthenticationTokenEndpoint();
+
+    @Deprecated
+    default ClientAuthentication getClientAuthentication() {
+        return getClientAuthenticationTokenEndpoint();
+    }
+
+    ClientAuthentication getClientAuthenticationPAREndpoint();
 }

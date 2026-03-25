@@ -13,6 +13,7 @@ title: Release notes&#58;
   - `get/setPreferredJwsAlgorithm` is deprecated in favor of `get/setIdTokenSigningAlgorithm`
   - it supports the `client_secret_jwt` authentication method via the `PrivateKeyJwtClientAuthnMethodConfig` (`PrivateKeyJWTClientAuthnMethodConfig` is deprecated)
   - it supports the request object signing (on the authorization URL) via the `config.setRequestObjectSigningAlgorithm`
+  - it supports the PAR mechanism on the authorization URL
 - Support of the OpenID Connect Federation protocol v1.0
 - Improve object initialization by avoiding re-entrant call
 - Limit detection change in `SpringResourceLoader` (interval: 60s)

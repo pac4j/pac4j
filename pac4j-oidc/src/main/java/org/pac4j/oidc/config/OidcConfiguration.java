@@ -11,6 +11,7 @@ import com.nimbusds.oauth2.sdk.pkce.CodeChallengeMethod;
 import com.nimbusds.openid.connect.sdk.OIDCResponseTypeValue;
 import lombok.*;
 import lombok.experimental.Accessors;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.config.BaseClientConfiguration;
 import org.pac4j.core.config.properties.JwksProperties;
@@ -51,6 +52,7 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
 @With
 @AllArgsConstructor
 @NoArgsConstructor
+@Slf4j
 public class OidcConfiguration extends BaseClientConfiguration {
     // deprecate: move to OidcConstants
     /**
@@ -246,11 +248,18 @@ public class OidcConfiguration extends BaseClientConfiguration {
     @Deprecated(forRemoval = true)
     private boolean logoutValidation = true;
 
+    private boolean pushedAuthorizationRequest;
+
     /**
      * {@inheritDoc}
      */
     @Override
     protected void internalInit(final boolean forceReinit) {
+        if (disablePkce) {
+            LOGGER.info("PKCE is disabled");
+        } else {
+            LOGGER.info("PKCE is enabled");
+        }
         // for federation, the clientId is not mandatory as it can be registered later on
         if (!isFederation()) {
             assertNotBlank("clientId", getClientId());
@@ -269,6 +278,10 @@ public class OidcConfiguration extends BaseClientConfiguration {
             throw new OidcConfigurationException("You must define either the discovery URL or directly the provider metadata resolver "
                 + "or the federation target entity (and the appropriate trust anchors)");
         }
+        if (isFederation() && federation.isSendTrustChain() && !pushedAuthorizationRequest) {
+            LOGGER.warn("The federation configuration requires to send the trust chain upfront without enabling the PAR: "
+                + "this is a bad practice even if you have increased the header response size for the RP/OP");
+        }
 
         if (forceReinit || getResourceRetriever() == null) {
             try {
@@ -284,7 +297,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
     }
 
     public boolean isFederation() {
-        return StringUtils.isNotBlank(getFederation().getTargetOp());
+        return federation != null && StringUtils.isNotBlank(federation.getTargetOp());
     }
 
     /**
@@ -533,5 +546,13 @@ public class OidcConfiguration extends BaseClientConfiguration {
         if (getOpMetadataResolver() == null) {
             reinit();
         }
+    }
+
+    public void setEnablePkce(final boolean enabled) {
+        disablePkce = !enabled;
+    }
+
+    public boolean isEnablePkce() {
+        return !disablePkce;
     }
 }

@@ -8,5 +8,5 @@ import java.util.Map;
  * @author Jerome LELEU
  * @since 6.4.0
  */
-public record Params(Map<String, String> main, Map<String, String> extra) {
+public record Params(Map<String, String> requestObject, Map<String, String> url) {
 }

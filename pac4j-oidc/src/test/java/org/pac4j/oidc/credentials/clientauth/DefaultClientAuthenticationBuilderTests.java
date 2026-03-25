@@ -75,7 +75,7 @@ public final class DefaultClientAuthenticationBuilderTests {
 
         val metadata = OIDCProviderMetadata.parse(METADATA_CLIENT_SECRET_BASIC);
 
-        val builder = new DefaultClientAuthenticationBuilder(configuration, metadata);
+        val builder = new DefaultClientAuthenticationBuilder(configuration, metadata, metadata.getTokenEndpointURI());
         builder.buildClientAuthentication();
 
         val auth = builder.getClientAuthentication();
@@ -92,7 +92,7 @@ public final class DefaultClientAuthenticationBuilderTests {
 
         val metadata = OIDCProviderMetadata.parse(METADATA_CLIENT_SECRET_BASIC);
 
-        val builder = new DefaultClientAuthenticationBuilder(configuration, metadata);
+        val builder = new DefaultClientAuthenticationBuilder(configuration, metadata, metadata.getTokenEndpointURI());
         assertThrows(OidcUnsupportedClientAuthMethodException.class, builder::buildClientAuthentication);
     }
 
@@ -104,7 +104,7 @@ public final class DefaultClientAuthenticationBuilderTests {
 
         val metadata = OIDCProviderMetadata.parse(METADATA_CLIENT_SECRET_BASIC);
 
-        val builder = new DefaultClientAuthenticationBuilder(configuration, metadata);
+        val builder = new DefaultClientAuthenticationBuilder(configuration, metadata, metadata.getTokenEndpointURI());
         builder.buildClientAuthentication();
 
         assertEquals(ClientAuthenticationMethod.CLIENT_SECRET_BASIC, builder.getClientAuthentication().getMethod());
@@ -119,7 +119,7 @@ public final class DefaultClientAuthenticationBuilderTests {
 
         val metadata = OIDCProviderMetadata.parse(METADATA_CLIENT_SECRET_BASIC);
 
-        val builder = new DefaultClientAuthenticationBuilder(configuration, metadata);
+        val builder = new DefaultClientAuthenticationBuilder(configuration, metadata, metadata.getTokenEndpointURI());
         val e = assertThrows(OidcUnsupportedClientAuthMethodException.class, () -> {
             builder.buildClientAuthentication();
         });
@@ -136,7 +136,7 @@ public final class DefaultClientAuthenticationBuilderTests {
 
         val metadata = OIDCProviderMetadata.parse(METADATA_CLIENT_SECRET_JWT);
 
-        val builder = new DefaultClientAuthenticationBuilder(configuration, metadata);
+        val builder = new DefaultClientAuthenticationBuilder(configuration, metadata, metadata.getTokenEndpointURI());
         val e = assertThrows(TechnicalException.class, () -> {
             builder.buildClientAuthentication();
         });
@@ -153,7 +153,7 @@ public final class DefaultClientAuthenticationBuilderTests {
 
         val metadata = OIDCProviderMetadata.parse(METADATA_CLIENT_SECRET_JWT);
 
-        val builder = new DefaultClientAuthenticationBuilder(configuration, metadata);
+        val builder = new DefaultClientAuthenticationBuilder(configuration, metadata, metadata.getTokenEndpointURI());
         val e = assertThrows(TechnicalException.class, () -> {
             builder.buildClientAuthentication();
         });
@@ -171,7 +171,7 @@ public final class DefaultClientAuthenticationBuilderTests {
 
         val metadata = OIDCProviderMetadata.parse(METADATA_CLIENT_SECRET_JWT);
 
-        val builder = new DefaultClientAuthenticationBuilder(configuration, metadata);
+        val builder = new DefaultClientAuthenticationBuilder(configuration, metadata, metadata.getTokenEndpointURI());
         val e = assertThrows(TechnicalException.class, () -> {
             builder.buildClientAuthentication();
         });
@@ -189,7 +189,7 @@ public final class DefaultClientAuthenticationBuilderTests {
 
         val metadata = OIDCProviderMetadata.parse(METADATA_CLIENT_SECRET_JWT);
 
-        val builder = new DefaultClientAuthenticationBuilder(configuration, metadata);
+        val builder = new DefaultClientAuthenticationBuilder(configuration, metadata, metadata.getTokenEndpointURI());
         builder.buildClientAuthentication();
 
         assertEquals(ClientAuthenticationMethod.CLIENT_SECRET_JWT, builder.getClientAuthentication().getMethod());
@@ -215,7 +215,7 @@ public final class DefaultClientAuthenticationBuilderTests {
 
         val metadata = OIDCProviderMetadata.parse(METADATA_PRIVATE_KEY_JWT);
 
-        val builder = new DefaultClientAuthenticationBuilder(configuration, metadata);
+        val builder = new DefaultClientAuthenticationBuilder(configuration, metadata, metadata.getTokenEndpointURI());
         builder.buildClientAuthentication();
 
         val auth1 = builder.getClientAuthentication();

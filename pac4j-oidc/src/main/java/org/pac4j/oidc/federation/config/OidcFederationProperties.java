@@ -2,6 +2,7 @@ package org.pac4j.oidc.federation.config;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.pac4j.core.config.properties.JwksProperties;
 import org.pac4j.core.config.properties.KeystoreProperties;
 import org.pac4j.core.keystore.generation.FileSystemKeystoreGenerator;
@@ -20,6 +21,7 @@ import java.util.List;
  */
 @Getter
 @Setter
+@Accessors(chain = true)
 public class OidcFederationProperties {
 
     private KeystoreProperties keystore = new KeystoreProperties();
@@ -49,6 +51,8 @@ public class OidcFederationProperties {
     private String contactName;
 
     private List<String> contactEmails = new ArrayList<>();
+
+    private boolean sendTrustChain;
 
     public OidcFederationProperties() {
         keystore.setCertificatePrefix("oidcfede-signing-cert");

@@ -3,6 +3,11 @@ package org.pac4j.oidc.redirect;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.oauth2.sdk.AuthorizationRequest;
+import com.nimbusds.oauth2.sdk.ParseException;
+import com.nimbusds.oauth2.sdk.PushedAuthorizationRequest;
+import com.nimbusds.oauth2.sdk.PushedAuthorizationResponse;
+import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
 import com.nimbusds.oauth2.sdk.id.State;
 import com.nimbusds.oauth2.sdk.pkce.CodeChallenge;
 import com.nimbusds.oauth2.sdk.pkce.CodeVerifier;
@@ -22,12 +27,16 @@ import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.config.OidcConfigurationContext;
 import org.pac4j.oidc.exceptions.OidcException;
+import org.pac4j.oidc.metadata.OidcFederationOpMetadataResolver;
 import org.pac4j.oidc.util.OidcHelper;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.pac4j.core.util.CommonHelper.assertTrue;
+import static org.pac4j.oidc.config.OidcConfiguration.CLIENT_ID;
+import static org.pac4j.oidc.config.OidcConfiguration.REDIRECT_URI;
 
 /**
  * Redirect to the OpenID Connect provider.
@@ -58,7 +67,11 @@ public class OidcRedirectionActionBuilder extends InitializableObject implements
     protected void internalInit(boolean forceReinit) {
         val config = client.getConfiguration();
         val requestedAlg = config.getRequestObjectSigningAlgorithm();
-        if (requestedAlg != null || config.isFederation()) {
+
+        val reqObjSigningRequired = requestedAlg != null;
+        val reqObjSigningMandatoryForFederation = config.isFederation() && !config.isPushedAuthorizationRequest()
+            && !ClientAuthenticationMethod.PRIVATE_KEY_JWT.equals(config.getClientAuthenticationMethod());
+        if (reqObjSigningRequired || reqObjSigningMandatoryForFederation) {
             assertTrue(config.getRpJwks().isDefined(), "config.rpJwks must be defined to sign request objects");
 
             config.ensuresMetadataResolverInitialized();
@@ -83,24 +96,24 @@ public class OidcRedirectionActionBuilder extends InitializableObject implements
         val params = buildParams(webContext);
 
         val computedCallbackUrl = client.computeFinalCallbackUrl(webContext);
-        params.main().put(OidcConfiguration.REDIRECT_URI, computedCallbackUrl);
+        params.requestObject().put(REDIRECT_URI, computedCallbackUrl);
 
         addStateAndNonceParameters(ctx, params);
 
         var maxAge = configContext.getMaxAge();
         if (maxAge != null) {
-            params.main().put(OidcConfiguration.MAX_AGE, maxAge.toString());
+            params.requestObject().put(OidcConfiguration.MAX_AGE, maxAge.toString());
         }
         if (configContext.isForceAuthn()) {
-            params.main().put(OidcConfiguration.PROMPT, "login");
-            params.main().put(OidcConfiguration.MAX_AGE, "0");
+            params.requestObject().put(OidcConfiguration.PROMPT, "login");
+            params.requestObject().put(OidcConfiguration.MAX_AGE, "0");
         }
         if (configContext.isPassive()) {
-            params.main().put(OidcConfiguration.PROMPT, "none");
+            params.requestObject().put(OidcConfiguration.PROMPT, "none");
         }
 
         val newParams = new HashMap<String, String>();
-        newParams.putAll(params.extra());
+        newParams.putAll(params.url());
         if (signingAlg != null && signingKey != null) {
             val now = new Date();
             val claims = new JWTClaimsSet.Builder()
@@ -109,17 +122,41 @@ public class OidcRedirectionActionBuilder extends InitializableObject implements
                 .issueTime(now)
                 .expirationTime(new Date(now.getTime() + 60_000))
                 .jwtID(UUID.randomUUID().toString());
-            for (val param : params.main().keySet()) {
-                claims.claim(param, params.main().get(param));
+            for (val param : params.requestObject().keySet()) {
+                claims.claim(param, params.requestObject().get(param));
             }
-            val request = JwkHelper.buildSignedJwt(claims.build(), signingKey, signingAlg, "oauth-authz-req+jwt");
+            if (config.getFederation().isSendTrustChain()) {
+                val resolver = config.getOpMetadataResolver();
+                if (resolver instanceof OidcFederationOpMetadataResolver federationOpMetadataResolver) {
+                    val trustChain = federationOpMetadataResolver.getTrustChain();
+                    if (trustChain != null) {
+                        LOGGER.debug("Adding trust_chain with {} ES", trustChain.size());
+                        claims.claim("trust_chain", trustChain);
+                    }
+                }
+            }
+            val builtClaims = claims.build();
+            if (LOGGER.isDebugEnabled()) {
+                val map = builtClaims.getClaims();
+                if (LOGGER.isTraceEnabled()) {
+                    LOGGER.debug("Request Object claims: {}", map.entrySet());
+                } else {
+                    LOGGER.debug("Request Object claim names: {}", map.keySet());
+                }
+            }
+            val request = JwkHelper.buildSignedJwt(builtClaims, signingKey, signingAlg, "oauth-authz-req+jwt");
             newParams.put("request", request);
         } else {
-            newParams.putAll(params.main());
+            newParams.putAll(params.requestObject());
+        }
+        if (LOGGER.isTraceEnabled()) {
+            LOGGER.debug("Authz parameters: {}", newParams.entrySet());
+        } else {
+            LOGGER.debug("Authz parameter names: {}", newParams.keySet());
         }
 
         val location = buildAuthenticationRequestUrl(newParams);
-        LOGGER.debug("Authentication request url: {}", location);
+        LOGGER.debug("Authentication request URL: {}", location);
 
         return Optional.of(HttpActionHelper.buildRedirectUrlAction(webContext, location));
     }
@@ -135,19 +172,19 @@ public class OidcRedirectionActionBuilder extends InitializableObject implements
 
         val authParams = new Params(new HashMap<>(), new HashMap<>());
         val scope = configContext.getScope().replace(",", " ");
-        authParams.main().put(OidcConfiguration.SCOPE, scope);
-        authParams.extra().put(OidcConfiguration.SCOPE, scope);
+        authParams.requestObject().put(OidcConfiguration.SCOPE, scope);
+        authParams.url().put(OidcConfiguration.SCOPE, scope);
         val responseType = configContext.getResponseType();
-        authParams.main().put(OidcConfiguration.RESPONSE_TYPE, responseType);
-        authParams.extra().put(OidcConfiguration.RESPONSE_TYPE, responseType);
-        authParams.main().put(OidcConfiguration.RESPONSE_MODE, configContext.getResponseMode());
-        authParams.main().putAll(configContext.getCustomParams());
+        authParams.requestObject().put(OidcConfiguration.RESPONSE_TYPE, responseType);
+        authParams.url().put(OidcConfiguration.RESPONSE_TYPE, responseType);
+        authParams.requestObject().put(OidcConfiguration.RESPONSE_MODE, configContext.getResponseMode());
+        authParams.requestObject().putAll(configContext.getCustomParams());
         val clientId = configContext.getConfiguration().getClientId();
-        authParams.main().put(OidcConfiguration.CLIENT_ID, clientId);
-        authParams.extra().put(OidcConfiguration.CLIENT_ID, clientId);
+        authParams.requestObject().put(CLIENT_ID, clientId);
+        authParams.url().put(CLIENT_ID, clientId);
         val loginHint = configContext.getConfiguration().getLoginHint();
         if (loginHint != null && !loginHint.isEmpty()) {
-            authParams.main().put(OidcConfiguration.LOGIN_HINT, loginHint);
+            authParams.requestObject().put(OidcConfiguration.LOGIN_HINT, loginHint);
         }
 
         return authParams;
@@ -156,42 +193,98 @@ public class OidcRedirectionActionBuilder extends InitializableObject implements
     protected void addStateAndNonceParameters(final CallContext ctx, final Params params) {
         val webContext = ctx.webContext();
         val sessionStore = ctx.sessionStore();
+        val config = client.getConfiguration();
 
         // Init state for CSRF mitigation
-        if (client.getConfiguration().isWithState()) {
-            val state = new State(client.getConfiguration().getStateGenerator().generateValue(ctx));
-            params.main().put(OidcConfiguration.STATE, state.getValue());
+        if (config.isWithState()) {
+            val state = new State(config.getStateGenerator().generateValue(ctx));
+            params.requestObject().put(OidcConfiguration.STATE, state.getValue());
             sessionStore.set(webContext, client.getStateSessionAttributeName(), state);
         }
 
         // Init nonce for replay attack mitigation
-        if (client.getConfiguration().isUseNonce()) {
+        if (config.isUseNonce()) {
             val nonce = new Nonce();
-            params.main().put(OidcConfiguration.NONCE, nonce.getValue());
+            params.requestObject().put(OidcConfiguration.NONCE, nonce.getValue());
             sessionStore.set(webContext, client.getNonceSessionAttributeName(), nonce.getValue());
         }
 
-        var pkceMethod = client.getConfiguration().findPkceMethod();
+        var pkceMethod = config.findPkceMethod();
         if (pkceMethod != null) {
-            val verifier = new CodeVerifier(client.getConfiguration().getCodeVerifierGenerator().generateValue(ctx));
+            val verifier = new CodeVerifier(config.getCodeVerifierGenerator().generateValue(ctx));
             sessionStore.set(webContext, client.getCodeVerifierSessionAttributeName(), verifier);
-            params.main().put(OidcConfiguration.CODE_CHALLENGE, CodeChallenge.compute(pkceMethod, verifier).getValue());
-            params.main().put(OidcConfiguration.CODE_CHALLENGE_METHOD, pkceMethod.getValue());
+            params.requestObject().put(OidcConfiguration.CODE_CHALLENGE, CodeChallenge.compute(pkceMethod, verifier).getValue());
+            params.requestObject().put(OidcConfiguration.CODE_CHALLENGE_METHOD, pkceMethod.getValue());
         }
     }
 
     protected String buildAuthenticationRequestUrl(final Map<String, String> params) {
+        final Map<String, String> newParams;
+
+        val config = client.getConfiguration();
+        if (config.isPushedAuthorizationRequest()) {
+            val parUrl = config.getOpMetadataResolver().load().getPushedAuthorizationRequestEndpointURI();
+            if (parUrl == null) {
+                throw new OidcException("Pushed authorization request URL is undefined");
+            }
+            val multiParams = new HashMap<String, List<String>>();
+            for (val entry: params.entrySet()) {
+                val key = entry.getKey();
+                val value = entry.getValue();
+                if (value != null) {
+                    multiParams.put(key, List.of(value));
+                }
+            }
+            try {
+                LOGGER.debug("Sending PAR request to: {}", parUrl);
+                if (LOGGER.isTraceEnabled()) {
+                    LOGGER.debug("PAR parameters: {}", multiParams.entrySet());
+                } else {
+                    LOGGER.debug("PAR parameter names: {}", multiParams.keySet());
+                }
+                val authzRequest = AuthorizationRequest.parse(multiParams);
+                val clientAuth = config.getOpMetadataResolver().getClientAuthenticationPAREndpoint();
+                val parRequest = new PushedAuthorizationRequest(
+                    parUrl,
+                    clientAuth,
+                    authzRequest
+                );
+                val request = parRequest.toHTTPRequest();
+                config.configureHttpRequest(request);
+                val response = request.send();
+                val parResponse = PushedAuthorizationResponse.parse(response);
+
+                if (parResponse.indicatesSuccess()) {
+                    val successResponse = parResponse.toSuccessResponse();
+                    val requestUri = successResponse.getRequestURI();
+                    LOGGER.debug("Received PAR response: {}", requestUri);
+
+                    newParams = new HashMap<>();
+                    newParams.put(CLIENT_ID, params.get(CLIENT_ID));
+                    newParams.put("request_uri", requestUri.toString());
+
+                } else {
+                    val errorResponse = parResponse.toErrorResponse();
+                    throw new OidcException(errorResponse.getErrorObject().getDescription());
+                }
+            } catch (final IOException | ParseException e) {
+                throw new OidcException("Cannot send PAR request", e);
+            }
+        } else {
+            newParams = params;
+        }
+
         // Build authentication request query string
         String queryString;
         try {
-            val parameters = params.entrySet().stream().collect(
+            val urlParams = newParams.entrySet().stream().collect(
                 Collectors.toMap(Map.Entry::getKey, e -> Collections.singletonList(e.getValue())));
-            queryString = AuthenticationRequest.parse(parameters).toQueryString();
+            queryString = AuthenticationRequest.parse(urlParams).toQueryString();
             queryString = queryString.replaceAll("\\+", "%20");
         } catch (final Exception e) {
             throw new OidcException(e);
         }
-        return client.getConfiguration().getOpMetadataResolver().load().getAuthorizationEndpointURI().toString() + '?' + queryString;
+        return config.getOpMetadataResolver().load().getAuthorizationEndpointURI().toString() + '?' + queryString;
     }
 }
 

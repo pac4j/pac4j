@@ -68,7 +68,7 @@ public final class OidcFederationOpMetadataResolverTests {
             @Override
             protected FederationChainResolver.ResolutionResult resolveMetadata() {
                 return new FederationChainResolver.ResolutionResult(expectedMetadata,
-                    new Date(System.currentTimeMillis() + 60_000), new JWKSet());
+                    new Date(System.currentTimeMillis() + 60_000), new JWKSet(), null);
             }
 
             @Override
@@ -83,7 +83,7 @@ public final class OidcFederationOpMetadataResolverTests {
 
         assertNotNull(resolver.getTokenValidator());
 
-        val auth = resolver.getClientAuthentication();
+        val auth = resolver.getClientAuthenticationTokenEndpoint();
         assertNotNull(auth);
         assertTrue(auth instanceof ClientSecretBasic);
     }
@@ -117,7 +117,7 @@ public final class OidcFederationOpMetadataResolverTests {
                 @Override
                 protected FederationChainResolver.ResolutionResult resolveMetadata() {
                     return new FederationChainResolver.ResolutionResult(metadata,
-                        new Date(System.currentTimeMillis() + 60_000), jwks);
+                        new Date(System.currentTimeMillis() + 60_000), jwks, null);
                 }
 
                 @Override
@@ -128,7 +128,7 @@ public final class OidcFederationOpMetadataResolverTests {
 
             assertSame(metadata, resolver.load());
             assertEquals("registeredClient", configuration.getClientId());
-            assertNull(resolver.getClientAuthentication());
+            assertNull(resolver.getClientAuthenticationTokenEndpoint());
 
             Mockito.verify(entityConfigurationGenerator).generate();
         } finally {
@@ -153,7 +153,7 @@ public final class OidcFederationOpMetadataResolverTests {
             protected FederationChainResolver.ResolutionResult resolveMetadata() {
                 if (metadataRetrievalCount.getAndIncrement() == 0) {
                     return new FederationChainResolver.ResolutionResult(initialMetadata,
-                        new Date(System.currentTimeMillis() + 60_000), new JWKSet());
+                        new Date(System.currentTimeMillis() + 60_000), new JWKSet(), null);
                 }
                 backgroundReloadStarted.countDown();
                 try {
@@ -165,7 +165,7 @@ public final class OidcFederationOpMetadataResolverTests {
                     throw new IllegalStateException(e);
                 }
                 return new FederationChainResolver.ResolutionResult(refreshedMetadata,
-                    new Date(System.currentTimeMillis() + 120_000), new JWKSet());
+                    new Date(System.currentTimeMillis() + 120_000), new JWKSet(), null);
             }
 
             @Override
@@ -217,7 +217,7 @@ public final class OidcFederationOpMetadataResolverTests {
             protected FederationChainResolver.ResolutionResult resolveMetadata() {
                 if (metadataRetrievalCount.getAndIncrement() == 0) {
                     return new FederationChainResolver.ResolutionResult(initialMetadata,
-                        new Date(System.currentTimeMillis() + 60_000), new JWKSet());
+                        new Date(System.currentTimeMillis() + 60_000), new JWKSet(), null);
                 }
                 backgroundReloadStarted.countDown();
                 try {
@@ -229,7 +229,7 @@ public final class OidcFederationOpMetadataResolverTests {
                     throw new IllegalStateException(e);
                 }
                 return new FederationChainResolver.ResolutionResult(refreshedMetadata,
-                    new Date(System.currentTimeMillis() + 120_000), new JWKSet());
+                    new Date(System.currentTimeMillis() + 120_000), new JWKSet(), null);
             }
 
             @Override

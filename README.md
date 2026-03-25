@@ -26,7 +26,7 @@ It is licensed under the Apache 2 license.
 &bull; [Syncope](https://syncope.apache.org)
 &bull; [Apache Knox](http://knox.apache.org/books/knox-1-6-0/user-guide.html#Pac4j+Provider+-+CAS+/+OAuth+/+SAML+/+OpenID+Connect)
 
-[Play 2.x](https://github.com/pac4j/play-pac4j)
+[Play 2.x/3.x](https://github.com/pac4j/play-pac4j)
 &bull; [Vertx](https://github.com/pac4j/vertx-pac4j)
 &bull; [Spark Java](https://github.com/pac4j/spark-pac4j)
 &bull; [Ratpack](http://ratpack.io/manual/current/pac4j.html#pac4j)
@@ -42,9 +42,9 @@ It is licensed under the Apache 2 license.
 
 ## Authentication mechanisms:
 
-[OpenID Connect](https://www.pac4j.org/docs/clients/openid-connect.html) - [OAuth (Facebook, Twitter, Google...)](https://www.pac4j.org/docs/clients/oauth.html) - [SAML](https://www.pac4j.org/docs/clients/saml.html) - [CAS](https://www.pac4j.org/docs/clients/cas.html) - [HTTP](https://www.pac4j.org/docs/clients/http.html) - [Google App Engine](https://www.pac4j.org/docs/clients/google-app-engine.html) - [Kerberos (SPNEGO/Negotiate)](https://www.pac4j.org/docs/clients/kerberos.html)
+[OpenID Connect](https://www.pac4j.org/docs/clients/openid-connect.html) - [OAuth (Facebook, Twitter...)](https://www.pac4j.org/docs/clients/oauth.html) - [SAML](https://www.pac4j.org/docs/clients/saml.html) - [CAS](https://www.pac4j.org/docs/clients/cas.html) - [HTTP](https://www.pac4j.org/docs/clients/http.html) - [Kerberos (SPNEGO)](https://www.pac4j.org/docs/clients/kerberos.html)
 
-[LDAP](https://www.pac4j.org/docs/authenticators/ldap.html) - [SQL](https://www.pac4j.org/docs/authenticators/sql.html) - [JWT](https://www.pac4j.org/docs/authenticators/jwt.html) - [MongoDB](https://www.pac4j.org/docs/authenticators/mongodb.html) - [CouchDB](https://www.pac4j.org/docs/authenticators/couchdb.html) - [IP address](https://www.pac4j.org/docs/authenticators/ip.html) - [REST API](https://www.pac4j.org/docs/authenticators/rest.html)
+[LDAP](https://www.pac4j.org/docs/authenticators/ldap.html) - [SQL](https://www.pac4j.org/docs/authenticators/sql.html) - [JWT](https://www.pac4j.org/docs/authenticators/jwt.html) - [MongoDB](https://www.pac4j.org/docs/authenticators/mongodb.html) - [IP address](https://www.pac4j.org/docs/authenticators/ip.html) - [REST API](https://www.pac4j.org/docs/authenticators/rest.html)
 
 ## Authorization mechanisms:
 
