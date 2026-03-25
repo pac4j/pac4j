@@ -10,6 +10,7 @@ import com.nimbusds.openid.connect.sdk.federation.registration.ClientRegistratio
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import fi.iki.elonen.NanoHTTPD;
 import lombok.val;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.pac4j.core.util.JwkHelper;
@@ -53,16 +54,23 @@ public final class OidcFederationOpMetadataResolverTests {
           "token_endpoint_auth_methods_supported": ["client_secret_basic"]
         }
         """;
+    private OidcConfiguration configuration;
+    private TokenValidator mockedTokenValidator;
 
-
-    @Test
-    public void testInitWiresTokenValidatorAndClientAuthentication() throws Exception {
-        val configuration = new OidcConfiguration();
+    @BeforeEach
+    public void beforeEach() {
+        configuration = new OidcConfiguration();
         configuration.setClientId("myClient");
         configuration.setSecret("mySecret");
         configuration.setClientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC);
+        mockedTokenValidator = Mockito.mock(TokenValidator.class);
+    }
+
+    @Test
+    public void testInitWiresTokenValidatorAndClientAuthenticationForTokenAndParEndpoints() throws Exception {
 
         val expectedMetadata = OIDCProviderMetadata.parse(METADATA_CLIENT_SECRET_BASIC);
+        expectedMetadata.setPushedAuthorizationRequestEndpointURI(new URI("https://op.example.org/par"));
 
         val resolver = new OidcFederationOpMetadataResolver(configuration) {
             @Override
@@ -74,30 +82,33 @@ public final class OidcFederationOpMetadataResolverTests {
             @Override
             protected TokenValidator createTokenValidator() {
                 // Avoid triggering OidcConfiguration#init() through TokenValidator RSA validators.
-                return Mockito.mock(TokenValidator.class);
+                return mockedTokenValidator;
             }
         };
 
         val loaded = resolver.load();
         assertSame(expectedMetadata, loaded);
+        assertSame(mockedTokenValidator, resolver.getTokenValidator());
 
-        assertNotNull(resolver.getTokenValidator());
+        val tokenEndpointAuth = resolver.getClientAuthenticationTokenEndpoint();
+        assertNotNull(tokenEndpointAuth);
+        assertTrue(tokenEndpointAuth instanceof ClientSecretBasic);
 
-        val auth = resolver.getClientAuthenticationTokenEndpoint();
-        assertNotNull(auth);
-        assertTrue(auth instanceof ClientSecretBasic);
+        val parEndpointAuth = resolver.getClientAuthenticationPAREndpoint();
+        assertNotNull(parEndpointAuth);
+        assertTrue(parEndpointAuth instanceof ClientSecretBasic);
     }
 
     @Test
     public void testExplicitRegistrationSetsClientId() throws Exception {
-        val configuration = new OidcConfiguration();
-        configuration.setClientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC);
-        configuration.getFederation().setEntityId("https://rp.example.org");
+        val explicitConfiguration = new OidcConfiguration();
+        explicitConfiguration.setClientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC);
+        explicitConfiguration.getFederation().setEntityId("https://rp.example.org");
 
         val entityConfigurationGenerator = Mockito.mock(EntityConfigurationGenerator.class);
         Mockito.when(entityConfigurationGenerator.getContentType()).thenReturn("application/entity-statement+jwt");
         Mockito.when(entityConfigurationGenerator.generate()).thenReturn("entity-configuration");
-        configuration.getFederation().setEntityConfigurationGenerator(entityConfigurationGenerator);
+        explicitConfiguration.getFederation().setEntityConfigurationGenerator(entityConfigurationGenerator);
 
         val signingKey = new RSAKeyGenerator(2048).keyID("registration-key").generate();
         val registrationResponse = buildRegistrationResponseJwt(signingKey, "registeredClient", "registeredSecret");
@@ -113,7 +124,7 @@ public final class OidcFederationOpMetadataResolverTests {
                 new URI("http://localhost:" + webServer.getListeningPort() + "/register?r=ok"));
             val jwks = new JWKSet(signingKey.toPublicJWK());
 
-            val resolver = new OidcFederationOpMetadataResolver(configuration) {
+            val resolver = new OidcFederationOpMetadataResolver(explicitConfiguration) {
                 @Override
                 protected FederationChainResolver.ResolutionResult resolveMetadata() {
                     return new FederationChainResolver.ResolutionResult(metadata,
@@ -122,13 +133,14 @@ public final class OidcFederationOpMetadataResolverTests {
 
                 @Override
                 protected TokenValidator createTokenValidator() {
-                    return Mockito.mock(TokenValidator.class);
+                    return mockedTokenValidator;
                 }
             };
 
             assertSame(metadata, resolver.load());
-            assertEquals("registeredClient", configuration.getClientId());
+            assertEquals("registeredClient", explicitConfiguration.getClientId());
             assertNull(resolver.getClientAuthenticationTokenEndpoint());
+            assertNull(resolver.getClientAuthenticationPAREndpoint());
 
             Mockito.verify(entityConfigurationGenerator).generate();
         } finally {
@@ -138,10 +150,6 @@ public final class OidcFederationOpMetadataResolverTests {
 
     @Test
     public void testReloadsMetadataInBackgroundWhenTrustChainExpired() throws Exception {
-        val configuration = new OidcConfiguration();
-        configuration.setClientId("myClient");
-        configuration.setSecret("mySecret");
-        configuration.setClientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC);
         val initialMetadata = OIDCProviderMetadata.parse(METADATA_CLIENT_SECRET_BASIC);
         val refreshedMetadata = OIDCProviderMetadata.parse(METADATA_CLIENT_SECRET_BASIC);
         val metadataRetrievalCount = new AtomicInteger(0);
@@ -170,7 +178,7 @@ public final class OidcFederationOpMetadataResolverTests {
 
             @Override
             protected TokenValidator createTokenValidator() {
-                return Mockito.mock(TokenValidator.class);
+                return mockedTokenValidator;
             }
         };
         assertSame(initialMetadata, resolver.load());
@@ -201,10 +209,6 @@ public final class OidcFederationOpMetadataResolverTests {
 
     @Test
     public void testConcurrentCallsDoNotStartMultipleBackgroundReloads() throws Exception {
-        val configuration = new OidcConfiguration();
-        configuration.setClientId("myClient");
-        configuration.setSecret("mySecret");
-        configuration.setClientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC);
 
         val initialMetadata = OIDCProviderMetadata.parse(METADATA_CLIENT_SECRET_BASIC);
         val refreshedMetadata = OIDCProviderMetadata.parse(METADATA_CLIENT_SECRET_BASIC);
@@ -234,7 +238,7 @@ public final class OidcFederationOpMetadataResolverTests {
 
             @Override
             protected TokenValidator createTokenValidator() {
-                return Mockito.mock(TokenValidator.class);
+                return mockedTokenValidator;
             }
         };
 
@@ -251,7 +255,9 @@ public final class OidcFederationOpMetadataResolverTests {
             for (int i = 0; i < 6; i++) {
                 futures.add(pool.submit(() -> {
                     ready.countDown();
-                    fire.await(1, TimeUnit.SECONDS);
+                    if (!fire.await(1, TimeUnit.SECONDS)) {
+                        throw new IllegalStateException("Timeout waiting to start concurrent reload calls");
+                    }
                     return resolver.load();
                 }));
             }
