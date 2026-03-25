@@ -10,7 +10,7 @@ See also:
 
 <hr/>
 
-Since v6.4.0, pac4j supports the [OpenID Connect Federation v1.0](https://openid.net/specs/openid-federation-1_0.html).
+Since v6.4.0, pac4j supports the [OpenID Connect Federation v1.0](https://openid.net/specs/openid-federation-1_0.html). It has been tested with Connect2id v19.8.
 
 The OIDC client is considered to have the federation enabled if the property `federation.targetIssuer` is not blank.
 
