@@ -179,3 +179,9 @@ For security, the logout requests are validated. This can be disabled using:
 ```java
 config.setLogoutValidation(false);
 ```
+
+You can enable the PAR mechanism via:
+
+```java
+config.setPushedAuthorizationRequest(true);
+```

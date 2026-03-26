@@ -124,7 +124,7 @@ public final class FederationClientRegisterTests {
 
         val entityConfigurationGenerator = Mockito.mock(EntityConfigurationGenerator.class);
         Mockito.when(entityConfigurationGenerator.getContentType()).thenReturn("application/entity-statement+jwt");
-        Mockito.when(entityConfigurationGenerator.generate()).thenReturn("entity-configuration");
+        Mockito.when(entityConfigurationGenerator.generateEntityStatement()).thenReturn("entity-configuration");
         configuration.getFederation().setEntityConfigurationGenerator(entityConfigurationGenerator);
 
         val signingKey = new RSAKeyGenerator(2048).keyID("registration-key").generate();

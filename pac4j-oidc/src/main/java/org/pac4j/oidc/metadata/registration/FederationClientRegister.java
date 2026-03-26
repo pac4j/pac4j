@@ -69,7 +69,7 @@ public class FederationClientRegister {
         LOGGER.debug("Registration endpoint exists and only explicit registration by OP (and RP) -> performing explicit registration");
 
         val generator = configuration.getFederation().getEntityConfigurationGenerator();
-        val entityConfig = generator.generate();
+        val entityConfig = generator.generateEntityStatement();
 
         String clientId = null;
         try {

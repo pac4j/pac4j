@@ -10,5 +10,5 @@ public interface EntityConfigurationGenerator {
 
     String getContentType();
 
-    String generate();
+    String generateEntityStatement();
 }

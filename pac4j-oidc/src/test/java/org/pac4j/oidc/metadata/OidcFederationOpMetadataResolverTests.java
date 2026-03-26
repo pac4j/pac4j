@@ -107,7 +107,7 @@ public final class OidcFederationOpMetadataResolverTests {
 
         val entityConfigurationGenerator = Mockito.mock(EntityConfigurationGenerator.class);
         Mockito.when(entityConfigurationGenerator.getContentType()).thenReturn("application/entity-statement+jwt");
-        Mockito.when(entityConfigurationGenerator.generate()).thenReturn("entity-configuration");
+        Mockito.when(entityConfigurationGenerator.generateEntityStatement()).thenReturn("entity-configuration");
         explicitConfiguration.getFederation().setEntityConfigurationGenerator(entityConfigurationGenerator);
 
         val signingKey = new RSAKeyGenerator(2048).keyID("registration-key").generate();
@@ -142,7 +142,7 @@ public final class OidcFederationOpMetadataResolverTests {
             assertNull(resolver.getClientAuthenticationTokenEndpoint());
             assertNull(resolver.getClientAuthenticationPAREndpoint());
 
-            Mockito.verify(entityConfigurationGenerator).generate();
+            Mockito.verify(entityConfigurationGenerator).generateEntityStatement();
         } finally {
             webServer.stop();
         }

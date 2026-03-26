@@ -80,22 +80,22 @@ public final class DefaultEntityConfigurationGeneratorTests {
     }
 
     @Test
-    public void testGenerateWithoutJwksAndWithoutKeystore() {
+    public void testGenerateEntityStatementWithoutJwksAndWithoutKeystore() {
         federation.setJwks(null);
         federation.setKeystore(null);
         val generator = newGenerator();
-        assertThrows(TechnicalException.class, generator::generate);
+        assertThrows(TechnicalException.class, generator::generateEntityStatement);
     }
 
     @Test
-    public void testGenerateWithJwksNotExistingCreatesFileAndDefaultsEntityIdToCallbackUrl() throws Exception {
+    public void testGenerateEntityStatementWithJwksNotExistingCreatesFileAndDefaultsEntityIdToCallbackUrl() throws Exception {
         val jwksFile = tmp.resolve("entity.jwks");
         assertFalse(Files.exists(jwksFile));
         federation.getJwks().setJwksResource(new FileSystemResource(jwksFile.toFile()));
         federation.setEntityId(CALLBACK_URL);
         val generator = newGenerator();
 
-        val serializedJwt = generator.generate();
+        val serializedJwt = generator.generateEntityStatement();
         assertTrue(Files.exists(jwksFile));
 
         val jwkSetFromFile = JWKSet.parse(Files.readString(jwksFile));
@@ -114,7 +114,7 @@ public final class DefaultEntityConfigurationGeneratorTests {
     }
 
     @Test
-    public void testGenerateWithJwksExistingUsesKidAndUsesConfiguredEntityId() throws Exception {
+    public void testGenerateEntityStatementWithJwksExistingUsesKidAndUsesConfiguredEntityId() throws Exception {
         val jwksFile = tmp.resolve("existing.jwks");
         federation.getJwks().setJwksResource(new FileSystemResource(jwksFile.toFile()));
         federation.getJwks().setKid("my-kid");
@@ -129,7 +129,7 @@ public final class DefaultEntityConfigurationGeneratorTests {
         val jwksOriginal = Files.readString(jwksFile);
         val generator = newGenerator();
 
-        val serializedJwt = generator.generate();
+        val serializedJwt = generator.generateEntityStatement();
 
         assertEquals(jwksOriginal, Files.readString(jwksFile));
 
@@ -145,7 +145,7 @@ public final class DefaultEntityConfigurationGeneratorTests {
     }
 
     @Test
-    public void testGenerateIncludesFederationPropertiesInJwtClaims() throws Exception {
+    public void testGenerateEntityStatementIncludesFederationPropertiesInJwtClaims() throws Exception {
         val jwksFile = tmp.resolve("props.jwks");
         federation.getJwks().setJwksResource(new FileSystemResource(jwksFile.toFile()));
 
@@ -172,7 +172,7 @@ public final class DefaultEntityConfigurationGeneratorTests {
             config.setRequestObjectSigningAlgorithm(requestObjectSigningAlg);
         });
 
-        val serializedJwt = generator.generate();
+        val serializedJwt = generator.generateEntityStatement();
         val signed = SignedJWT.parse(serializedJwt);
         val claims = signed.getJWTClaimsSet();
 
@@ -211,7 +211,7 @@ public final class DefaultEntityConfigurationGeneratorTests {
     }
 
     @Test
-    public void testGenerateWithKeystoreNotExistingGeneratesKeystore() throws Exception {
+    public void testGenerateEntityStatementWithKeystoreNotExistingGeneratesKeystore() throws Exception {
         val keystoreFile = tmp.resolve("signing.jks");
         assertFalse(Files.exists(keystoreFile));
         federation.getKeystore().setKeystoreResource(new FileSystemResource(keystoreFile.toFile()));
@@ -222,7 +222,7 @@ public final class DefaultEntityConfigurationGeneratorTests {
         federation.getKeystore().setKeystoreGenerator(generatorSpy);
         val generator = newGenerator();
 
-        val serializedJwt = generator.generate();
+        val serializedJwt = generator.generateEntityStatement();
         assertNotNull(serializedJwt);
 
         verify(generatorSpy).generate();
@@ -238,7 +238,7 @@ public final class DefaultEntityConfigurationGeneratorTests {
     }
 
     @Test
-    public void testGenerateWithKeystoreExistingDoesNotRegenerateKeystore() throws Exception {
+    public void testGenerateEntityStatementWithKeystoreExistingDoesNotRegenerateKeystore() throws Exception {
         val keystoreFile = tmp.resolve("existing.jks");
         federation.getKeystore().setKeystoreResource(new FileSystemResource(keystoreFile.toFile()));
         federation.getKeystore().setKeystorePassword("storepass");
@@ -253,7 +253,7 @@ public final class DefaultEntityConfigurationGeneratorTests {
         assertTrue(Files.exists(keystoreFile));
         val generator = newGenerator();
 
-        val serializedJwt = generator.generate();
+        val serializedJwt = generator.generateEntityStatement();
         assertNotNull(serializedJwt);
 
         verify(generatorSpy, never()).generate();

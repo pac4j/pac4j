@@ -45,7 +45,7 @@ public class DefaultEntityConfigurationGenerator extends InitializableObject imp
     }
 
     @Override
-    public String generate() {
+    public String generateEntityStatement() {
         init();
 
         return data;
