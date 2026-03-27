@@ -39,7 +39,7 @@ We need 3 components:
 
 ### a) RP = pac4j
 
-In the pac4j ecosystem, Spring Boot is the most popular web stack so let's use the `spring-webmvc-pac4j` implementation in action in this simple demo: [https://github.com/pac4j/simple-spring-boot-pac4j-demos/tree/oidc_federation_with_c2id/src/main/java/org/pac4j/demos](https://github.com/pac4j/simple-spring-boot-pac4j-demos/tree/oidc_federation_with_c2id/src/main/java/org/pac4j/demos):
+In the pac4j ecosystem, Spring Boot is the most popular web stack so let's use the `spring-webmvc-pac4j` implementation in action in this simple demo: [https://github.com/pac4j/simple-spring-boot-pac4j-demos/tree/oidc/src/main/java/org/pac4j/demos](https://github.com/pac4j/simple-spring-boot-pac4j-demos/tree/oidc/src/main/java/org/pac4j/demos):
 - the `SpringBootDemo` class runs the Spring Boot demo
 - the `SecurityConfig` class defines the security configuration (OIDC + URL protection)
 - the `Application` class is a simple controller with two URLs: one public and the other one protected.
@@ -101,6 +101,7 @@ As the Connect2id server runs by default on port 8080, we'll move our pac4j appl
 
 ```properties
 server.port=8081
+app.base-url=http://localhost:8081
 ```
 
 We update the `SecurityConfig` class to change the configuration for the federation:
@@ -313,6 +314,8 @@ public String trustAnchorFetch(final HttpServletRequest request) throws Exceptio
 
 And add the `trustanchor.jwks` to the `src/main/resources` directory.
 
+<div class="warning"><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i>This simulated TA depends on your Connect2id server keys so you won't be able to reproduce it locally until we move to a real trust anchor. We will do this in a future article.</div>
+
 
 ## 3) Let's log in
 
@@ -327,16 +330,46 @@ Ta-da! It works: the Connect2id login page is displayed and we can log in with t
 The pac4j logs:
 
 ```
+DEBUG o.p.o.m.OidcFederationOpMetadataResolver : Blocking load of the provider metadata via federation
+ INFO o.p.o.m.chain.FederationChainResolver    : Resolving federation chain for RP: http://localhost:8081
+DEBUG o.p.o.m.chain.FederationChainResolver    : Loaded 1 trust anchor(s)
+DEBUG o.p.o.m.chain.FederationChainResolver    : OP target issuer: http://127.0.0.1:8080/c2id
+DEBUG o.p.o.m.chain.FederationChainResolver    : OP chain: com.nimbusds.openid.connect.sdk.federation.trust.TrustChain@14c16574
+DEBUG o.p.o.m.chain.FederationChainResolver    : rawMetadataJson: {"request_parameter_supported":true,"pushed_authorization_...
+DEBUG o.p.o.m.chain.FederationChainResolver    : combinedPolicy: {}
+DEBUG o.p.o.m.chain.FederationChainResolver    : resolvedJson: {"request_parameter_supported":true,"pushed_authorization_...
+DEBUG o.p.o.m.r.FederationClientRegister       : ClientID is not defined
+DEBUG o.p.o.m.r.FederationClientRegister       : Automatic registration by OP (supported by RP) ->
+setting clientId as entityId for further operation
+DEBUG o.p.o.r.OidcRedirectionActionBuilder     : Algorithm used for request object signing: RS256
+DEBUG o.p.o.r.OidcRedirectionActionBuilder     : Request Object claim names: [iss, aud, iat, exp, jti, scope,
+response_type, redirect_uri, state, code_challenge_method, client_id, code_challenge, response_mode]
+DEBUG o.p.o.r.OidcRedirectionActionBuilder     : Authz parameter names: [response_type, request, client_id, scope]
+DEBUG o.p.o.r.OidcRedirectionActionBuilder     : Authentication request URL: http://127.0.0.1:8080/c2id-login?response_type=code
+&request=eyJraW...KLjkrVw&client_id=http%3A%2F%2Flocalhost%3A8081&scope=openid%20profile%20email
+ INFO .f.e.DefaultEntityConfigurationGenerator : Generating entity configuration for: http://localhost:8081
 ```
 
 The Connect2id logs:
 
 ```
+INFO FED-REG - [OP8025] Resolved 1 trust chains (automatic client):
+INFO FED-REG - [OP8026] Trust chain [1] anchor (automatic client): http://localhost:8081/trustanchor
+INFO FED-REG - [OP8026] Trust chain [1][1] entity (automatic client): http://localhost:8081
+INFO FED-REG - [OP8026] Trust chain [1][1] statement (automatic client): {"sub":"http:\/\/localhost:8081","metadata":{"openid_relying_party":...
+INFO FED-REG - [OP8026] Trust chain [1][2] entity (automatic client): http://localhost:8081
+INFO FED-REG - [OP8026] Trust chain [1][2] statement (automatic client): {"sub":"http:\/\/localhost:8081","metadata":{"openid_relying_party":...
+INFO FED-REG - [OP8013] Selected trust chain for entity http://localhost:8081 (automatic client) with anchor
+http://localhost:8081/trustanchor and exp 2026-06-25T20:52:26.000+0200
+INFO FED-REG - [OP8018] Received automatic registration request from http://localhost:8081 with authorities [http://localhost:8081/trustanchor]
+INFO FED-REG - [OP8051] Effective metadata RP policy for entity http://localhost:8081: {}
+INFO FED-REG - [OP8014] Registered entity http://localhost:8081 as automatic client with client_id=http://localhost:8081 exp=1782413546
+INFO AUTHZ-SESSION - [OP2101] Created new auth session: sid=0r61vms5vYcodERRslQNMT0QqFRQsjw2Jr33YL4de5s client_id=http://localhost:8081 scope=...
 ```
 
 Without going too deep in the logs, we can see that both sides are checking federation endpoints and entity statements to establish the trust chain.
 
-And here is the big thing:
+So here is the big thing:
 
 **The pac4j RP and the Connect2id OP only know and rely on the trust anchor, they don't know each other.**
 
