@@ -97,7 +97,7 @@ And each component (entry) in the federation exposes its metadata on the new `.w
 
 ## a) pac4j
 
-As the Connect2id server runs by default on port 8080, we'll move our pac4j application to port 8081 via the configuration in the `application.properties` file:
+As the Connect2id server runs by default on port 8080, we'll move our pac4j application to port 8081 via this configuration in the `application.properties` file:
 
 ```properties
 server.port=8081
@@ -282,7 +282,9 @@ And we use the automatic registration mode (the simplest way): `op.federation.cl
 
 Stop and start again the Connect2id server. You should see this welcome page on `http://127.0.0.1:8080/c2id`:
 
-![Connect2id welcome page](../img/blog/connect2id_welcome.png)
+<div class="text-center">
+  <img alt="Connect2id welcome page" src="/img/blog/2026_04/c2id_welcome.png" />
+</div>
 
 Meaning the federation is properly enabled.
 
@@ -323,9 +325,17 @@ Now we run our pac4j Spring Boot RP and our Connect2id OP server.
 
 Let's add more logs on the pac4j side via: `logging.level.org.pac4j.oidc=DEBUG` (in the `application.properties` file).
 
-Open the `http://localhost:8081/` URL in your browser and click on the `Protected area` link.
+Open the `http://localhost:8081/` URL in your browser and click on the `Protected area` link:
 
-Ta-da! It works: the Connect2id login page is displayed and we can log in with the default `alice`/ `secret` user/password.
+<div class="text-center">
+  <img alt="pac4j welcome page" src="/img/blog/2026_04/pac4j_protected.png" />
+</div>
+
+Ta-da! It works: the Connect2id login page is displayed and we can log in with the default `alice`/ `secret` user/password:
+
+<div class="text-center">
+  <img alt="Connect2id login page" src="/img/blog/2026_04/c2id_login.png" />
+</div>
 
 The pac4j logs:
 
@@ -369,8 +379,16 @@ INFO AUTHZ-SESSION - [OP2101] Created new auth session: sid=0r61vms5vYcodERRslQN
 
 Without going too deep in the logs, we can see that both sides are checking federation endpoints and entity statements to establish the trust chain.
 
-So here is the big thing:
+So here is the **magic of federation**:
 
-**The pac4j RP and the Connect2id OP only know and rely on the trust anchor, they don't know each other.**
+<div class="text-center highlight-blog">
 
-**But nonetheless the RP can perform the authentication process on the OP!**
+The pac4j RP and the Connect2id OP only know and rely on the trust anchor, they don't know each other.
+
+<br/>
+
+But nonetheless the <b>RP can perform the authentication process on the OP!</b>
+
+</div>
+
+
