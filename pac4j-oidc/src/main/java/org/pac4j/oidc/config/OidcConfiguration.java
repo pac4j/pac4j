@@ -18,6 +18,7 @@ import org.pac4j.core.config.properties.JwksProperties;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.util.generator.RandomValueGenerator;
 import org.pac4j.core.util.generator.ValueGenerator;
+import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.method.ClientSecretJwtClientAuthnMethodConfig;
 import org.pac4j.oidc.config.method.IPrivateKeyJwtClientAuthnMethodConfig;
 import org.pac4j.oidc.exceptions.OidcConfigurationException;
@@ -250,15 +251,17 @@ public class OidcConfiguration extends BaseClientConfiguration {
 
     private boolean pushedAuthorizationRequest;
 
+    private OidcClient oidcClient;
+
     /**
      * {@inheritDoc}
      */
     @Override
     protected void internalInit(final boolean forceReinit) {
         if (disablePkce) {
-            LOGGER.info("PKCE is disabled");
+            LOGGER.info("PKCE is disabled for: " + oidcClient.getName());
         } else {
-            LOGGER.info("PKCE is enabled");
+            LOGGER.info("PKCE is enabled for: " + oidcClient.getName());
         }
         // for federation, the clientId is not mandatory as it can be registered later on
         if (!isFederation()) {

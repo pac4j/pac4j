@@ -56,6 +56,7 @@ public final class SAML2ClientTests {
                 "pac4j-test-passwd",
                 "pac4j-test-passwd",
                 "resource:testshib-providers.xml");
+        cfg.setServiceProviderMetadataResource(new FileSystemResource("target/out.xml"));
         cfg.init();
 
         CredentialProvider p = new KeyStoreCredentialProvider(cfg);
@@ -78,6 +79,7 @@ public final class SAML2ClientTests {
                 "pac4j-test-passwd",
                 "pac4j-test-passwd",
                 new ClassPathResource("testshib-providers.xml"));
+        cfg.setServiceProviderMetadataResource(new FileSystemResource("target/out.xml"));
         cfg.init();
 
         CredentialProvider p = new KeyStoreCredentialProvider(cfg);

@@ -4,6 +4,7 @@ import lombok.val;
 import org.junit.jupiter.api.Test;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.resource.SpringResourceLoader;
+import org.pac4j.saml.exceptions.SAMLException;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 
@@ -82,6 +83,7 @@ public class SAML2ConfigurationTests {
         configuration.setKeystorePath("target/keystore.jks");
         configuration.setKeystorePassword("pac4j");
         configuration.setPrivateKeyPassword("pac4j");
+        configuration.setServiceProviderMetadataResource(new FileSystemResource("target/out.xml"));
 
         configuration.setIdentityProviderMetadataResource(new ClassPathResource("idp-metadata.xml"));
         configuration.init();
@@ -91,6 +93,46 @@ public class SAML2ConfigurationTests {
 
         var result = idpMetadataResolver.getMetadata();
         assertNotNull(result);
+    }
+
+    @Test
+    public void verifyRequiredSettingsArePresent() {
+        var configurationWithoutKeystore = newValidConfiguration();
+        configurationWithoutKeystore.getKeystore().setKeystoreResource(null);
+        var keystoreException = assertThrows(SAMLException.class, configurationWithoutKeystore::init);
+        assertEquals("SAML2Configuration is missing required settings: keystore resource/path.", keystoreException.getMessage());
+
+        var configurationWithoutKeystorePassword = newValidConfiguration();
+        configurationWithoutKeystorePassword.getKeystore().setKeystorePassword(null);
+        var keystorePasswordException = assertThrows(SAMLException.class, configurationWithoutKeystorePassword::init);
+        assertEquals("SAML2Configuration is missing required settings: keystore password.", keystorePasswordException.getMessage());
+
+        var configurationWithoutPrivateKeyPassword = newValidConfiguration();
+        configurationWithoutPrivateKeyPassword.getKeystore().setPrivateKeyPassword(null);
+        var privateKeyPasswordException = assertThrows(SAMLException.class, configurationWithoutPrivateKeyPassword::init);
+        assertEquals("SAML2Configuration is missing required settings: private key password.", privateKeyPasswordException.getMessage());
+
+        var configurationWithoutIdentityProviderMetadata = newValidConfiguration();
+        configurationWithoutIdentityProviderMetadata.setIdentityProviderMetadataResource(null);
+        var identityProviderMetadataException = assertThrows(SAMLException.class, configurationWithoutIdentityProviderMetadata::init);
+        assertEquals("SAML2Configuration is missing required settings: identity provider metadata resource/path.",
+            identityProviderMetadataException.getMessage());
+
+        var configurationWithoutServiceProviderMetadata = newValidConfiguration();
+        configurationWithoutServiceProviderMetadata.setServiceProviderMetadataResource(null);
+        var serviceProviderMetadataException = assertThrows(SAMLException.class, configurationWithoutServiceProviderMetadata::init);
+        assertEquals("SAML2Configuration is missing required settings: service provider metadata resource/path.",
+            serviceProviderMetadataException.getMessage());
+    }
+
+    private static SAML2Configuration newValidConfiguration() {
+        var configuration = new SAML2Configuration();
+        configuration.setKeystorePath("target/keystore.jks");
+        configuration.setKeystorePassword("pac4j");
+        configuration.setPrivateKeyPassword("pac4j");
+        configuration.setServiceProviderMetadataResource(new FileSystemResource("target/out.xml"));
+        configuration.setIdentityProviderMetadataResource(new ClassPathResource("idp-metadata.xml"));
+        return configuration;
     }
 
     private static SSLContext disabledSslContext() throws Exception {

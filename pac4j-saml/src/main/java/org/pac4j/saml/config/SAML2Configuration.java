@@ -294,6 +294,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
      */
     @Override
     protected void internalInit(final boolean forceReinit) {
+        validateRequiredSettings();
         this.defaultIdentityProviderMetadataResolverSupplier = new SAML2IdentityProviderMetadataResolver(this);
 
         var keystoreGenerator = keystore.getKeystoreGenerator();
@@ -311,6 +312,29 @@ public class SAML2Configuration extends BaseClientConfiguration {
         }
 
         initSignatureSigningConfiguration();
+    }
+
+    private void validateRequiredSettings() {
+        val missingSettings = new ArrayList<String>();
+        if (keystore.getKeystoreResource() == null) {
+            missingSettings.add("keystore resource/path");
+        }
+        if (StringUtils.isBlank(keystore.getKeystorePassword())) {
+            missingSettings.add("keystore password");
+        }
+        if (StringUtils.isBlank(keystore.getPrivateKeyPassword())) {
+            missingSettings.add("private key password");
+        }
+        if (identityProviderMetadataResource == null) {
+            missingSettings.add("identity provider metadata resource/path");
+        }
+        if (serviceProviderMetadataResource == null) {
+            missingSettings.add("service provider metadata resource/path");
+        }
+        if (!missingSettings.isEmpty()) {
+            throw new SAMLException("SAML2Configuration is missing required settings: "
+                + String.join(", ", missingSettings) + '.');
+        }
     }
 
     @Deprecated

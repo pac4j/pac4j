@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
+import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.exceptions.OidcConfigurationException;
 import org.pac4j.oidc.metadata.IOidcOpMetadataResolver;
 import org.pac4j.oidc.metadata.OidcOpMetadataResolver;
@@ -29,6 +30,7 @@ public class OidcConfigurationTests implements TestsConstants {
         config.setClientId(KEY);
         config.setDiscoveryURI(CASSERVERPAC4J_OIDC_URL);
         config.setAllowUnsignedIdTokens(true);
+        config.setOidcClient(mock(OidcClient.class));
     }
 
     @Test

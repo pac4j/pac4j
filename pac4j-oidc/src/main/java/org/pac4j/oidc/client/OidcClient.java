@@ -1,7 +1,6 @@
 package org.pac4j.oidc.client;
 
 import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 import lombok.val;
 import org.pac4j.core.client.IndirectClient;
@@ -35,7 +34,6 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
 public class OidcClient extends IndirectClient {
 
     @Getter
-    @Setter
     private OidcConfiguration configuration;
 
     /**
@@ -54,6 +52,12 @@ public class OidcClient extends IndirectClient {
         if (federation.getEntityConfigurationGenerator() == null) {
             federation.setEntityConfigurationGenerator(new DefaultEntityConfigurationGenerator(this));
         }
+    }
+
+    public void setConfiguration(final OidcConfiguration configuration) {
+        assertNotNull("configuration", configuration);
+        this.configuration = configuration;
+        this.configuration.setOidcClient(this);
     }
 
     /** {@inheritDoc} */

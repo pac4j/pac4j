@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.util.DefaultConfigurationManager;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -26,6 +27,7 @@ public class SAML2InMemoryMetadataGeneratorTests {
         configuration.setPrivateKeyPassword("pac4j");
         configuration.setSignMetadata(true);
         configuration.setMetadataGenerator(new SAML2InMemoryMetadataGenerator());
+        configuration.setServiceProviderMetadataResource(new FileSystemResource("target/out.xml"));
         configuration.setIdentityProviderMetadataResource(new ClassPathResource("idp-metadata.xml"));
         configuration.init();
 
