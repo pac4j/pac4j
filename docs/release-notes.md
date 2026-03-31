@@ -5,6 +5,9 @@ title: Release notes&#58;
 
 ### JDK17:
 
+**v6.4.1**:
+- Ensures proper initialization of `SAML2Configuration`
+
 **v6.4.0**:
 - Upgrade to Shiro v2.1 for security reasons. Defaults remain the ones of Shiro v1.13 though and will change in a future major version.
 - Add the `encryptionRequired` flag (by default `false`) for the `JWtAuthenticator`
