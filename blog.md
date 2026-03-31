@@ -3,6 +3,8 @@ layout: homeblog
 title: <i class="fa fa-info-circle" aria-hidden="true"></i> Blog&#58;
 ---
 
+## &bull; April 2026: [OpenID Federation with pac4j and Connect2id](/blog/openid_federation_with_pac4j_and_connect2id.html)
+
 ## &bull; March 2026: [Security advisory for pac4j-jwt (JwtAuthenticator)](/blog/security-advisory-pac4j-jwt-jwtauthenticator.html)
 
 ## &bull; January 2024: [What's new in pac4j v6?](/blog/what_s_new_in_pac4j_v6.html)
