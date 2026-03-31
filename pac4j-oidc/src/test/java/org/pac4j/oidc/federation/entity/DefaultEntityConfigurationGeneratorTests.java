@@ -25,6 +25,7 @@ import org.springframework.core.io.FileSystemResource;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -77,6 +78,40 @@ public final class DefaultEntityConfigurationGeneratorTests {
     public void testGetContentType() {
         val generator = newGenerator();
         assertEquals("application/entity-statement+jwt", generator.getContentType());
+    }
+
+    @Test
+    public void testShouldNotInitializeAgainWhenAlreadyInitializedAndNotExpired() throws Exception {
+        val jwksFile = tmp.resolve("not-expired.jwks");
+        federation.getJwks().setJwksResource(new FileSystemResource(jwksFile.toFile()));
+        val generator = newGenerator();
+
+        val firstEntityStatement = generator.generateEntityStatement();
+        assertEquals(1, generator.getNbAttempts());
+
+        generator.setExpirationDate(new Date(System.currentTimeMillis() + 60_000L));
+        assertFalse(generator.shouldInitialize(false));
+
+        val secondEntityStatement = generator.generateEntityStatement();
+        assertEquals(firstEntityStatement, secondEntityStatement);
+        assertEquals(1, generator.getNbAttempts());
+    }
+
+    @Test
+    public void testShouldInitializeAgainWhenAlreadyInitializedAndExpired() throws Exception {
+        val jwksFile = tmp.resolve("expired.jwks");
+        federation.getJwks().setJwksResource(new FileSystemResource(jwksFile.toFile()));
+        val generator = newGenerator();
+
+        val firstEntityStatement = generator.generateEntityStatement();
+        assertEquals(1, generator.getNbAttempts());
+
+        generator.setExpirationDate(new Date(System.currentTimeMillis() - 1_000L));
+        assertTrue(generator.shouldInitialize(false));
+
+        val secondEntityStatement = generator.generateEntityStatement();
+        assertNotEquals(firstEntityStatement, secondEntityStatement);
+        assertEquals(2, generator.getNbAttempts());
     }
 
     @Test

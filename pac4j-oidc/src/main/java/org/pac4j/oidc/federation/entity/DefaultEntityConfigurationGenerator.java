@@ -4,7 +4,9 @@ import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
@@ -39,6 +41,9 @@ public class DefaultEntityConfigurationGenerator extends InitializableObject imp
 
     private String data;
 
+    @Setter(AccessLevel.PACKAGE)
+    private Date expirationDate;
+
     @Override
     public String getContentType() {
         return CONTENT_TYPE;
@@ -49,6 +54,16 @@ public class DefaultEntityConfigurationGenerator extends InitializableObject imp
         init();
 
         return data;
+    }
+
+    @Override
+    protected boolean shouldInitialize(final boolean forceReinit) {
+        val now = new Date();
+        if (expirationDate == null || expirationDate.before(now)) {
+            return true;
+        }
+
+        return super.shouldInitialize(forceReinit);
     }
 
     @Override
@@ -87,14 +102,14 @@ public class DefaultEntityConfigurationGenerator extends InitializableObject imp
 
         val now = new Date();
         long validityMs = (long) federation.getValidityInDays() * 24 * 60 * 60 * 1000L;
-        val exp = new Date(now.getTime() + validityMs);
+        expirationDate = new Date(now.getTime() + validityMs);
 
         val claimsBuilder = new JWTClaimsSet.Builder()
             .issuer(entityId)
             .subject(entityId)
             .jwtID(UUID.randomUUID().toString())
             .issueTime(now)
-            .expirationTime(exp)
+            .expirationTime(expirationDate)
             .notBeforeTime(now);
 
         val rpMetadata = new LinkedHashMap<String, Object>();
