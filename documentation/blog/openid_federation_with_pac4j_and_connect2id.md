@@ -88,7 +88,7 @@ We could use some specific existing software, but to make things easier, we will
 
 Now that we have our 3 components, let's configure them to work together via the OpenID Federation protocol.
 
-So far, when using the OpenID Connect protocol, you always need to define your client (`client_id` + `client_secret` + `redirect_uri`) at the server level to be able to perform the authentication process.
+So far, when using the OpenID Connect protocol, you always need to define your client (`client_id` + credentials + `redirect_uri`) at the server level to be able to perform the authentication process.
 
 The OpenID Federation introduces the idea of trust and chain of trust between components to allow authenticating without registering upfront/at all.
 
@@ -170,9 +170,9 @@ public class SecurityConfig extends Pac4jSecurityConfig {
 
 This new configuration needs explanations!
 
-Notice that we don't have any `dicsoveryURI`, nor any `clientId` or `clientSecret`!
+Notice that we don't have any `dicsoveryURI`, nor any `clientId` or any credentials!
 
-We need two JWKS for our setup here: one for the federation (to sign our entity statement) and one for the `private_key_jwt` client authentication (when calling the token endpoint).
+We need two distinct and separate JWKS for our setup here: one for the federation (to sign our entity statement) and one for the `private_key_jwt` client authentication (when calling the token endpoint). **You should never use the same JWKS for both!**
 
 The source code:
 
