@@ -57,6 +57,7 @@ public class DefaultSavedRequestHandler implements SavedRequestHandler {
         val sessionStore = ctx.sessionStore();
 
         val optRequestedUrl = sessionStore.get(webContext, Pac4jConstants.REQUESTED_URL);
+        LOGGER.debug("optRequestedUrl: {}", optRequestedUrl);
         HttpAction requestedAction = null;
         if (optRequestedUrl.isPresent()) {
             sessionStore.set(webContext, Pac4jConstants.REQUESTED_URL, null);
@@ -71,7 +72,7 @@ public class DefaultSavedRequestHandler implements SavedRequestHandler {
             requestedAction = new FoundAction(defaultUrl);
         }
 
-        LOGGER.debug("requestedAction: {}", requestedAction.getMessage());
+        LOGGER.debug("requestedAction: {}", requestedAction);
         if (requestedAction instanceof FoundAction) {
             return HttpActionHelper.buildRedirectUrlAction(webContext, ((FoundAction) requestedAction).getLocation());
         } else {
