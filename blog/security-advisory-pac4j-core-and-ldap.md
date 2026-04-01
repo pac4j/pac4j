@@ -21,3 +21,5 @@ To stay safe, you MUST upgrade:
 - If you use the 6.x line: upgrade to **6.4.1** (or newer)
 
 No additional details will be shared in this post.
+
+These vulnerabilities were discovered by **Bartlomiej Dmitruk, striga.ai**.
