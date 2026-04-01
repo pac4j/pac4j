@@ -10,6 +10,8 @@ import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.Pac4jConstants;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.util.Date;
 import java.util.List;
 
@@ -77,15 +79,15 @@ public class CsrfAuthorizer implements Authorizer {
             if (sessionStore.getSessionId(context, false).isPresent()) {
                 sessionStore.set(context, Pac4jConstants.PREVIOUS_CSRF_TOKEN, null);
             }
-            // all checks are always performed, conditional operations are turned into logical ones,
-            // string comparisons are replaced by hash equalities to be protected against time-based attacks
+            // all checks are always performed and conditional operations are turned into logical ones
+            // to reduce timing differences while keeping strict token equality checks
             val hasSessionData = sessionToken.isPresent() & sessionDate.isPresent();
             val previousToken = (String) sessionPreviousToken.orElse(Pac4jConstants.EMPTY_STRING);
             LOGGER.debug("previous token: {}", previousToken);
             val token = (String) sessionToken.orElse(Pac4jConstants.EMPTY_STRING);
             LOGGER.debug("token: {}", token);
-            val isGoodCurrentToken = hashEquals(token, parameterToken) | hashEquals(token, headerToken);
-            val isGoodPreviousToken = hashEquals(previousToken, parameterToken) | hashEquals(previousToken, headerToken);
+            val isGoodCurrentToken = strEquals(token, parameterToken) | strEquals(token, headerToken);
+            val isGoodPreviousToken = strEquals(previousToken, parameterToken) | strEquals(previousToken, headerToken);
             val isGoodToken = isGoodCurrentToken | isGoodPreviousToken;
             val expirationDate = (Long) sessionDate.orElse(0L);
             val now = new Date().getTime();
@@ -99,16 +101,19 @@ public class CsrfAuthorizer implements Authorizer {
     }
 
     /**
-     * <p>hashEquals.</p>
+     * <p>strEquals.</p>
      *
      * @param a a {@link String} object
      * @param b a {@link String} object
      * @return a boolean
      */
-    protected boolean hashEquals(final String a, final String b) {
+    protected boolean strEquals(final String a, final String b) {
         if (a == null || b == null) {
             return false;
         }
-        return a.hashCode() == b.hashCode();
+        return MessageDigest.isEqual(
+            a.getBytes(StandardCharsets.UTF_8),
+            b.getBytes(StandardCharsets.UTF_8)
+        );
     }
 }

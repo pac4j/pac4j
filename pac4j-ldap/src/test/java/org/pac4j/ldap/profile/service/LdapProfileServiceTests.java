@@ -141,6 +141,47 @@ public final class LdapProfileServiceTests implements TestsConstants {
     }
 
     @Test
+    public void testEntryIdEscapesDnSpecialCharacters() {
+        val ldapProfileService = new LdapProfileService(connectionFactory, authenticator, LdapServer.BASE_PEOPLE_DN);
+        ldapProfileService.setIdAttribute(LdapServer.CN);
+
+        val entryId = ldapProfileService.getEntryId(Map.of(LdapServer.CN, "admin,ou=system"));
+        assertEquals("cn=admin\\,ou\\=system," + LdapServer.BASE_PEOPLE_DN, entryId);
+        assertFalse(entryId.contains("cn=admin,ou=system,"));
+    }
+
+    @Test
+    public void testDeleteByIdEscapesDnSpecialCharacters() {
+        val ldapProfileService = new LdapProfileService(connectionFactory, authenticator, LdapServer.BASE_DN);
+        ldapProfileService.setIdAttribute(LdapServer.CN);
+        try {
+            ldapProfileService.removeById(GOOD_USERNAME + ",ou=people");
+            fail("A TechnicalException should have been thrown");
+        } catch (final TechnicalException e) {
+            assertNotNull(e.getMessage());
+            assertTrue(e.getMessage().contains("NO_SUCH_OBJECT") || e.getMessage().contains("No Such Object"));
+            assertNotNull(e.getCause());
+        }
+    }
+
+    @Test
+    public void testReadTreatsMalformedFilterPayloadAsLiteral() {
+        val ldapProfileService = new LdapProfileService(connectionFactory, authenticator, LdapServer.BASE_PEOPLE_DN);
+        ldapProfileService.setIdAttribute(LdapServer.CN);
+        val results = assertDoesNotThrow(() -> getData(ldapProfileService, "*)(cn=*))(|(cn=*"));
+        assertEquals(0, results.size());
+    }
+
+    @Test
+    public void testReadEscapesWildcardFilterPayload() {
+        val ldapProfileService = new LdapProfileService(connectionFactory, authenticator, LdapServer.BASE_PEOPLE_DN);
+        ldapProfileService.setIdAttribute(LdapServer.CN);
+
+        val results = getData(ldapProfileService, "*");
+        assertEquals(0, results.size());
+    }
+
+    @Test
     public void testCreateUpdateFindDelete() {
         val profile = new LdapProfile();
         profile.setId(LDAP_ID);

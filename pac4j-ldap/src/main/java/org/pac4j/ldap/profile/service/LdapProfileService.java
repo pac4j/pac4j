@@ -22,6 +22,8 @@ import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.util.serializer.JsonSerializer;
 import org.pac4j.ldap.profile.LdapProfile;
 
+import javax.naming.ldap.Rdn;
+
 import java.util.*;
 
 import static org.pac4j.core.util.CommonHelper.*;
@@ -138,7 +140,18 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
      * @return a {@link String} object
      */
     protected String getEntryId(final Map<String, Object> attributes) {
-        return getIdAttribute() + "=" + attributes.get(getIdAttribute()) + "," + usersDn;
+        val id = String.valueOf(attributes.get(getIdAttribute()));
+        return getEntryId(id);
+    }
+
+    /**
+     * <p>getEntryId.</p>
+     *
+     * @param id a {@link String} object
+     * @return a {@link String} object
+     */
+    protected String getEntryId(final String id) {
+        return getIdAttribute() + "=" + Rdn.escapeValue(id) + "," + usersDn;
     }
 
     /**
@@ -192,7 +205,7 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
         try {
             val delete = new DeleteOperation(connectionFactory);
             delete.setThrowCondition(ResultPredicate.NOT_SUCCESS);
-            delete.execute(new DeleteRequest(getIdAttribute() + "=" + id + "," + usersDn));
+            delete.execute(new DeleteRequest(getEntryId(id)));
         } catch (final LdapException e) {
             throw new TechnicalException(e);
         }
@@ -204,8 +217,12 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
         List<Map<String, Object>> listAttributes = new ArrayList<>();
         try {
             Operation<SearchRequest, SearchResponse> search = new SearchOperation(connectionFactory);
-            val result = search.execute(new SearchRequest(usersDn,key + "=" + value,
-                names.toArray(new String[names.size()])));
+            val filter = new FilterTemplate();
+            filter.setFilter(key + "={0}");
+            filter.setParameter(0, value);
+            val request = new SearchRequest(usersDn, filter);
+            request.setReturnAttributes(names.toArray(new String[names.size()]));
+            val result = search.execute(request);
             for (val entry : result.getEntries()) {
                 listAttributes.add(getAttributesFromEntry(entry));
             }

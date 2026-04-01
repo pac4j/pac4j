@@ -8,6 +8,7 @@ title: Release notes&#58;
 **v6.4.1**:
 - Ensures proper initialization of `SAML2Configuration`
 - Expires the entity statement after `validityInDays` in `DefaultEntityConfigurationGenerator`
+- Security fixes on the `pac4j-core` and `pac4j-ldap` modules
 
 **v6.4.0**:
 - Upgrade to Shiro v2.1 for security reasons. Defaults remain the ones of Shiro v1.13 though and will change in a future major version.
@@ -155,6 +156,9 @@ title: Release notes&#58;
 ---
 
 ### JDK11:
+
+**v5.7.10**:
+- Security fixes on the `pac4j-core` and `pac4j-ldap` modules
 
 **v5.7.9**:
 - Security fix on the `pac4j-jwt` module
@@ -346,6 +350,9 @@ title: Release notes&#58;
 ---
 
 ### JDK8:
+
+**v4.5.10**:
+- Security fix on the `pac4j-ldap` module
 
 **v4.5.9**:
 - Security fix on the `pac4j-jwt` module

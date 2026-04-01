@@ -111,6 +111,21 @@ public final class CsrfAuthorizerTests implements TestsConstants {
     }
 
     @Test
+    public void testParameterCollisionMustNotBeAccepted() {
+        val legitimateToken = "Aa0Bc5dEfGhIjKlMnOpQrStUvWxYz12";
+        val collidingToken = "BB0Bc5dEfGhIjKlMnOpQrStUvWxYz12";
+        assertNotEquals(legitimateToken, collidingToken);
+        assertEquals(legitimateToken.hashCode(), collidingToken.hashCode());
+
+        val context = MockWebContext.create().addRequestParameter(Pac4jConstants.CSRF_TOKEN, collidingToken);
+        val sessionStore = new MockSessionStore();
+        sessionStore.set(context, Pac4jConstants.CSRF_TOKEN, legitimateToken);
+        sessionStore.set(context, Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE, expirationDate);
+
+        assertFalse(authorizer.isAuthorized(context, sessionStore, null));
+    }
+
+    @Test
     public void testNoTokenCheckAll() {
         val context = MockWebContext.create();
         final SessionStore sessionStore = new MockSessionStore();
