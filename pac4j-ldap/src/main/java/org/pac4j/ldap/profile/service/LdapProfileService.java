@@ -92,7 +92,12 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
     }
 
     protected String getEntryId(final Map<String, Object> attributes) {
-        return getIdAttribute() + "=" + attributes.get(getIdAttribute()) + "," + usersDn;
+        final String id = String.valueOf(attributes.get(getIdAttribute()));
+        return getEntryId(id);
+    }
+
+    protected String getEntryId(final String id) {
+        return getIdAttribute() + "=" + javax.naming.ldap.Rdn.escapeValue(id) + "," + usersDn;
     }
 
     protected List<LdapAttribute> getLdapAttributes(final Map<String, Object> attributes) {
@@ -146,7 +151,7 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
             connection = connectionFactory.getConnection();
             connection.open();
             final DeleteOperation delete = new DeleteOperation(connection);
-            delete.execute(new DeleteRequest(getIdAttribute() + "=" + id + "," + usersDn));
+            delete.execute(new DeleteRequest(getEntryId(id)));
         } catch (final LdapException e) {
             throw new TechnicalException(e);
         } finally {
@@ -164,8 +169,12 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
             connection = connectionFactory.getConnection();
             connection.open();
             final SearchOperation search = new SearchOperation(connection);
-            final SearchResult result = search.execute(new SearchRequest(usersDn,key + "=" + value,
-                names.toArray(new String[names.size()]))).getResult();
+            final SearchFilter filter = new SearchFilter();
+            filter.setFilter(key + "={0}");
+            filter.setParameter(0, value);
+            final SearchRequest request = new SearchRequest(usersDn, filter);
+            request.setReturnAttributes(names.toArray(new String[names.size()]));
+            final SearchResult result = search.execute(request).getResult();
             for (final LdapEntry entry : result.getEntries()) {
                 listAttributes.add(getAttributesFromEntry(entry));
             }
