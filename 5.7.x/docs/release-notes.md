@@ -3,6 +3,9 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v5.7.10**:
+- Security fixes on the `pac4j-core` and `pac4j-ldap` modules
+
 **v5.7.9**:
 - Security fix on the `pac4j-jwt` module
 
@@ -191,6 +194,9 @@ title: Release notes&#58;
 - Authentication requests for protocols that support forced/passive authentication can now be modified on a per-request basis using pre-defined HTTP attributes to control the type of authentication request sent to the provider.
 
 ---
+
+**v4.5.10**:
+- Security fix on the `pac4j-ldap` module
 
 **v4.5.9**:
 - Security fix on the `pac4j-jwt` module
