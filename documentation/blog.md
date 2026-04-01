@@ -3,6 +3,8 @@ layout: homeblog
 title: <i class="fa fa-info-circle" aria-hidden="true"></i> Blog&#58;
 ---
 
+## &bull; April 2026: [Security advisory for pac4j-core and pac4j-ldap](/blog/security-advisory-pac4j-core-and-ldap.html)
+
 ## &bull; April 2026: [OpenID Federation with pac4j and Connect2id](/blog/openid_federation_with_pac4j_and_connect2id.html)
 
 ## &bull; March 2026: [Security advisory for pac4j-jwt (JwtAuthenticator)](/blog/security-advisory-pac4j-jwt-jwtauthenticator.html)
