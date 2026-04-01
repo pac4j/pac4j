@@ -90,7 +90,12 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
     }
 
     protected String getEntryId(final Map<String, Object> attributes) {
-        return getIdAttribute() + "=" + attributes.get(getIdAttribute()) + "," + usersDn;
+        final var id = String.valueOf(attributes.get(getIdAttribute()));
+        return getEntryId(id);
+    }
+
+    protected String getEntryId(final String id) {
+        return getIdAttribute() + "=" + javax.naming.ldap.Rdn.escapeValue(id) + "," + usersDn;
     }
 
     protected List<LdapAttribute> getLdapAttributes(final Map<String, Object> attributes) {
@@ -136,7 +141,7 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
         try {
             final var delete = new DeleteOperation(connectionFactory);
             delete.setThrowCondition(ResultPredicate.NOT_SUCCESS);
-            delete.execute(new DeleteRequest(getIdAttribute() + "=" + id + "," + usersDn));
+            delete.execute(new DeleteRequest(getEntryId(id)));
         } catch (final LdapException e) {
             throw new TechnicalException(e);
         }
@@ -147,8 +152,12 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
         final List<Map<String, Object>> listAttributes = new ArrayList<>();
         try {
             final var search = new SearchOperation(connectionFactory);
-            final var result = search.execute(new SearchRequest(usersDn,key + "=" + value,
-                names.toArray(new String[names.size()])));
+            final var filter = new FilterTemplate();
+            filter.setFilter(key + "={0}");
+            filter.setParameter(0, value);
+            final var request = new SearchRequest(usersDn, filter);
+            request.setReturnAttributes(names.toArray(new String[names.size()]));
+            final var result = search.execute(request);
             for (final var entry : result.getEntries()) {
                 listAttributes.add(getAttributesFromEntry(entry));
             }

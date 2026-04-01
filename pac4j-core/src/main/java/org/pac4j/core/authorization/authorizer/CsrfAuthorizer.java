@@ -8,6 +8,8 @@ import org.pac4j.core.util.Pac4jConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.util.Date;
 import java.util.List;
 
@@ -56,15 +58,15 @@ public class CsrfAuthorizer implements Authorizer {
             if (sessionStore.getSessionId(context, false).isPresent()) {
                 sessionStore.set(context, Pac4jConstants.PREVIOUS_CSRF_TOKEN, null);
             }
-            // all checks are always performed, conditional operations are turned into logical ones,
-            // string comparisons are replaced by hash equalities to be protected against time-based attacks
+            // all checks are always performed and conditional operations are turned into logical ones
+            // to reduce timing differences while keeping strict token equality checks
             final var hasSessionData = sessionToken.isPresent() & sessionDate.isPresent();
             final var previousToken = (String) sessionPreviousToken.orElse(Pac4jConstants.EMPTY_STRING);
             LOGGER.debug("previous token: {}", previousToken);
             final var token = (String) sessionToken.orElse(Pac4jConstants.EMPTY_STRING);
             LOGGER.debug("token: {}", token);
-            final var isGoodCurrentToken = hashEquals(token, parameterToken) | hashEquals(token, headerToken);
-            final var isGoodPreviousToken = hashEquals(previousToken, parameterToken) | hashEquals(previousToken, headerToken);
+            final var isGoodCurrentToken = strEquals(token, parameterToken) | strEquals(token, headerToken);
+            final var isGoodPreviousToken = strEquals(previousToken, parameterToken) | strEquals(previousToken, headerToken);
             final var isGoodToken = isGoodCurrentToken | isGoodPreviousToken;
             final var expirationDate = (Long) sessionDate.orElse(0L);
             final var now = new Date().getTime();
@@ -77,11 +79,14 @@ public class CsrfAuthorizer implements Authorizer {
         return true;
     }
 
-    protected boolean hashEquals(final String a, final String b) {
+    protected boolean strEquals(final String a, final String b) {
         if (a == null || b == null) {
             return false;
         }
-        return a.hashCode() == b.hashCode();
+        return MessageDigest.isEqual(
+            a.getBytes(StandardCharsets.UTF_8),
+            b.getBytes(StandardCharsets.UTF_8)
+        );
     }
 
     public String getParameterName() {
