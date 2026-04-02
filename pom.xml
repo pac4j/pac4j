@@ -72,6 +72,7 @@
 	</modules>
 
 	<properties>
+        <java.version>17</java.version>
         <awssdk.version>2.42.26</awssdk.version>
         <mongo-driver.version>5.6.4</mongo-driver.version>
         <flapdoodle.version>3.5.4</flapdoodle.version>
@@ -95,7 +96,6 @@
         <httpclient.version>5.3.1</httpclient.version>
         <unboundid.version>7.0.4</unboundid.version>
         <h2.version>2.4.240</h2.version>
-		<java.version>17</java.version>
         <jackson.version>2.21.2</jackson.version>
         <jackson.annotations.version>2.21</jackson.annotations.version>
         <reflections.version>0.10.2</reflections.version>
@@ -128,11 +128,6 @@
                 <artifactId>pac4j-saml</artifactId>
                 <version>${project.version}</version>
             </dependency>
-			<dependency>
-				<groupId>org.pac4j</groupId>
-				<artifactId>pac4j-http</artifactId>
-				<version>${project.version}</version>
-			</dependency>
             <dependency>
                 <groupId>org.pac4j</groupId>
                 <artifactId>pac4j-jwt</artifactId>

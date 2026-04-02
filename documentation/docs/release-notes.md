@@ -10,7 +10,7 @@ title: Release notes&#58;
 - Created the `org.pac4j.test` package for tests components in the `pac4j-core` module instead of `test-jar` modules
 - Removed the OSGi and shading Maven phases
 
-**v6.4.1**:
+**v6.4.2**:
 - Removes initialization check on the SP provider metadata resource/path (SAML support)
 
 **v6.4.1**:
