@@ -21,7 +21,7 @@ title: <i class="fa fa-user" aria-hidden="true"></i> The <i>pac4j</i> engine/cor
 
 ### &#9656; [CORS, securityHeaders, etc.](matchers.html)
 
-## 5) [Security configuration](config.html) - [Security module](config-module.html)
+## 5) [Security configuration](config.html)
 
 ## 6) [Web components](web-components.html):
 
