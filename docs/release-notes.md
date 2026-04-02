@@ -11,6 +11,9 @@ title: Release notes&#58;
 - Removed the OSGi and shading Maven phases
 
 **v6.4.1**:
+- Removes initialization check on the SP provider metadata resource/path (SAML support)
+
+**v6.4.1**:
 - Ensures proper initialization of `SAML2Configuration`
 - Expires the entity statement after `validityInDays` in `DefaultEntityConfigurationGenerator`
 - Security fixes on the `pac4j-core` and `pac4j-ldap` modules
