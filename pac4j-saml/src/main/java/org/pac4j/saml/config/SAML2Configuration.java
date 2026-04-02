@@ -272,7 +272,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
      *
      * @param callbackUrl a {@link String} object
      */
-    public void setCallbackUrl(final String callbackUrl) {
+    public SAML2Configuration setCallbackUrl(final String callbackUrl) {
         this.callbackUrl = callbackUrl;
         try {
             if (StringUtils.isBlank(getServiceProviderEntityId())) {
@@ -287,6 +287,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
         } catch (final Exception e) {
             throw new SAMLException(e);
         }
+        return this;
     }
 
     /**
@@ -349,8 +350,9 @@ public class SAML2Configuration extends BaseClientConfiguration {
      *
      * @param path a {@link String} object
      */
-    public void setIdentityProviderMetadataResourceFilepath(final String path) {
+    public SAML2Configuration setIdentityProviderMetadataResourceFilepath(final String path) {
         this.identityProviderMetadataResource = new FileSystemResource(path);
+        return this;
     }
 
     /**
@@ -358,8 +360,9 @@ public class SAML2Configuration extends BaseClientConfiguration {
      *
      * @param path a {@link String} object
      */
-    public void setIdentityProviderMetadataResourceClasspath(final String path) {
+    public SAML2Configuration setIdentityProviderMetadataResourceClasspath(final String path) {
         this.identityProviderMetadataResource = new ClassPathResource(path);
+        return this;
     }
 
     /**
@@ -367,8 +370,9 @@ public class SAML2Configuration extends BaseClientConfiguration {
      *
      * @param url a {@link String} object
      */
-    public void setIdentityProviderMetadataResourceUrl(final String url) {
+    public SAML2Configuration setIdentityProviderMetadataResourceUrl(final String url) {
         this.identityProviderMetadataResource = SpringResourceHelper.newUrlResource(url);
+        return this;
     }
 
     /**
@@ -376,8 +380,9 @@ public class SAML2Configuration extends BaseClientConfiguration {
      *
      * @param path a {@link String} object
      */
-    public void setIdentityProviderMetadataPath(final String path) {
+    public SAML2Configuration setIdentityProviderMetadataPath(final String path) {
         this.identityProviderMetadataResource = SpringResourceHelper.buildResourceFromPath(path);
+        return this;
     }
 
     /**
@@ -385,8 +390,9 @@ public class SAML2Configuration extends BaseClientConfiguration {
      *
      * @param path a {@link String} object
      */
-    public void setServiceProviderMetadataResourceFilepath(final String path) {
+    public SAML2Configuration setServiceProviderMetadataResourceFilepath(final String path) {
         this.serviceProviderMetadataResource = new FileSystemResource(path);
+        return this;
     }
 
     /**
@@ -394,8 +400,9 @@ public class SAML2Configuration extends BaseClientConfiguration {
      *
      * @param path a {@link String} object
      */
-    public void setServiceProviderMetadataPath(final String path) {
+    public SAML2Configuration setServiceProviderMetadataPath(final String path) {
         this.serviceProviderMetadataResource = SpringResourceHelper.buildResourceFromPath(path);
+        return this;
     }
 
     /**

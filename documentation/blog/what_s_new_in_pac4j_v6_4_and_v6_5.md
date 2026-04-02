@@ -18,6 +18,8 @@ To address any Java environment, pac4j configurations must be defined via Java c
 
 The `pac4j-config` and `pac4j-springboot` modules which allow a properties configuration (no discovery available, documentation must be read) have been deprecated in v6.4.0 and removed in v6.5.0.
 
+Client and configuration classes offer easy constructors and chainable setters for quick configuration.
+
 
 ### 3) Build
 

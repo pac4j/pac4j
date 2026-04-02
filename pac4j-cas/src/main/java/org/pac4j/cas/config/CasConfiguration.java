@@ -349,7 +349,7 @@ public class CasConfiguration extends BaseClientConfiguration {
      *
      * @param allowedProxies a {@link List} object
      */
-    public void setAllowedProxies(final Iterable<String> allowedProxies) {
+    public CasConfiguration setAllowedProxies(final Iterable<String> allowedProxies) {
         final List<String[]> proxyChains = new ArrayList<>();
         for (final String allowedProxyChain : allowedProxies) {
             final String[] proxyChain = new String[1];
@@ -357,6 +357,7 @@ public class CasConfiguration extends BaseClientConfiguration {
             proxyChains.add(proxyChain);
         }
         this.allowedProxyChains = new ProxyList(proxyChains);
+        return this;
     }
 
     /**

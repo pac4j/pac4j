@@ -324,10 +324,11 @@ public class OidcConfiguration extends BaseClientConfiguration {
      *
      * @param discoveryURI a {@link String} object
      */
-    public void setDiscoveryURIIfUndefined(final String discoveryURI) {
+    public OidcConfiguration setDiscoveryURIIfUndefined(final String discoveryURI) {
         if (this.discoveryURI == null) {
             this.discoveryURI = discoveryURI;
         }
+        return this;
     }
 
     /**
@@ -345,9 +346,10 @@ public class OidcConfiguration extends BaseClientConfiguration {
      *
      * @param customParams a {@link Map} object
      */
-    public void setCustomParams(final Map<String, String> customParams) {
+    public OidcConfiguration setCustomParams(final Map<String, String> customParams) {
         assertNotNull("customParams", customParams);
         this.customParams = customParams;
+        return this;
     }
 
     /**
@@ -356,8 +358,9 @@ public class OidcConfiguration extends BaseClientConfiguration {
      * @param key   a {@link String} object
      * @param value a {@link String} object
      */
-    public void addCustomParam(final String key, final String value) {
+    public OidcConfiguration addCustomParam(final String key, final String value) {
         this.customParams.put(key, value);
+        return this;
     }
 
     /**
@@ -365,8 +368,9 @@ public class OidcConfiguration extends BaseClientConfiguration {
      *
      * @param auth a {@link String} object
      */
-    public void setClientAuthenticationMethodAsString(final String auth) {
+    public OidcConfiguration setClientAuthenticationMethodAsString(final String auth) {
         this.clientAuthenticationMethod = ClientAuthenticationMethod.parse(auth);
+        return this;
     }
 
     /**
@@ -400,8 +404,9 @@ public class OidcConfiguration extends BaseClientConfiguration {
         this.idTokenSigningAlgorithm = JWSAlgorithm.parse(preferredJwsAlgorithm);
     }
 
-    public void setIdTokenSigningAlgorithmAsString(final String preferredJwsAlgorithm) {
+    public OidcConfiguration setIdTokenSigningAlgorithmAsString(final String preferredJwsAlgorithm) {
         this.idTokenSigningAlgorithm = JWSAlgorithm.parse(preferredJwsAlgorithm);
+        return this;
     }
 
     /**
@@ -431,12 +436,13 @@ public class OidcConfiguration extends BaseClientConfiguration {
      *
      * @param responseType a {@link String} object
      */
-    public void setResponseType(final String responseType) {
+    public OidcConfiguration setResponseType(final String responseType) {
         try {
             this.responseType = ResponseType.parse(responseType);
         } catch (ParseException e) {
             throw new OidcConfigurationException("Unrecognised responseType: " + responseType, e);
         }
+        return this;
     }
 
     /**
@@ -517,8 +523,9 @@ public class OidcConfiguration extends BaseClientConfiguration {
         return privateKeyJwtClientAuthnMethodConfig;
     }
 
-    public void setPrivateKeyJwtClientAuthnMethodConfig(final IPrivateKeyJwtClientAuthnMethodConfig privateKeyJwtClientAuthnMethodConfig) {
+    public OidcConfiguration setPrivateKeyJwtClientAuthnMethodConfig(final IPrivateKeyJwtClientAuthnMethodConfig privateKeyJwtClientAuthnMethodConfig) {
         this.privateKeyJwtClientAuthnMethodConfig = privateKeyJwtClientAuthnMethodConfig;
+        return this;
     }
 
     /**
@@ -541,8 +548,9 @@ public class OidcConfiguration extends BaseClientConfiguration {
         return idTokenSigningAlgorithm;
     }
 
-    public void setIdTokenSigningAlgorithm(final JWSAlgorithm idTokenJwsAlgorithm) {
+    public OidcConfiguration setIdTokenSigningAlgorithm(final JWSAlgorithm idTokenJwsAlgorithm) {
         this.idTokenSigningAlgorithm = idTokenJwsAlgorithm;
+        return this;
     }
 
     public void ensuresMetadataResolverInitialized() {
@@ -551,8 +559,9 @@ public class OidcConfiguration extends BaseClientConfiguration {
         }
     }
 
-    public void setEnablePkce(final boolean enabled) {
+    public OidcConfiguration setEnablePkce(final boolean enabled) {
         disablePkce = !enabled;
+        return this;
     }
 
     public boolean isEnablePkce() {
