@@ -21,9 +21,14 @@ The `pac4j-config` and `pac4j-springboot` modules which allow a properties confi
 
 ### 3) Build
 
-The build process has been improved:
+The build process has been simplified:
 - 4 modules have been removed
-- no more `test-jar` components: the few test classes are in the `org.pac4j.test` package of the `pac4j-core` module.
+- no more `test-jar` components: the few test classes are in the `org.pac4j.test` package of the `pac4j-core` module
+- OSGi and shading phases have been removed.
+
+OSGi support and shading have been removed due to lack of usage and to simplify the Maven configuration.
+
+If you rely on OSGi or need any shaded JARs, please report your use case as feedback is still welcome.
 
 
 ### 4) Improvement of the OpenID protocol
