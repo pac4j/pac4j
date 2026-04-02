@@ -8,6 +8,7 @@ title: Release notes&#58;
 **v6.5.0**:
 - Removed the GAE, CouchDB, Config and SpringBoot modules
 - Created the `org.pac4j.test` package for tests components in the `pac4j-core` module instead of `test-jar` modules
+- Removed the OSGi and shading Maven phases
 
 **v6.4.1**:
 - Ensures proper initialization of `SAML2Configuration`

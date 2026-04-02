@@ -229,23 +229,6 @@
         <!-- for testing -->
     </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <configuration>
-                    <instructions>
-                        <Automatic-Module-Name>pac4j.saml</Automatic-Module-Name>
-                        <Bundle-SymbolicName>org.pac4j.saml2</Bundle-SymbolicName>
-                        <Export-Package>org.pac4j.saml.*;version=${project.version}</Export-Package>
-                        <Import-Package>com.google.common.base;version=!,com.google.common.collect;version=!,*</Import-Package>
-                    </instructions>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
     <repositories>
         <repository>
             <id>shibboleth-releases</id>
@@ -257,18 +240,6 @@
             </releases>
             <snapshots>
                 <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>shibboleth-snapshots</id>
-            <name>Shibboleth Snapshots Repository</name>
-            <url>https://build.shibboleth.net/maven/snapshots/</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-                <checksumPolicy>fail</checksumPolicy>
             </snapshots>
         </repository>
     </repositories>
