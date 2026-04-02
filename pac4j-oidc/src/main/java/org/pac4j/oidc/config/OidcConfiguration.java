@@ -523,8 +523,8 @@ public class OidcConfiguration extends BaseClientConfiguration {
         return privateKeyJwtClientAuthnMethodConfig;
     }
 
-    public OidcConfiguration setPrivateKeyJwtClientAuthnMethodConfig(final IPrivateKeyJwtClientAuthnMethodConfig privateKeyJwtClientAuthnMethodConfig) {
-        this.privateKeyJwtClientAuthnMethodConfig = privateKeyJwtClientAuthnMethodConfig;
+    public OidcConfiguration setPrivateKeyJwtClientAuthnMethodConfig(final IPrivateKeyJwtClientAuthnMethodConfig methodConfig) {
+        this.privateKeyJwtClientAuthnMethodConfig = methodConfig;
         return this;
     }
 
