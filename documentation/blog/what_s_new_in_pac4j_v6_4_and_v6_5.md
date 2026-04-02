@@ -12,19 +12,23 @@ The `pac4j-gae` module dedicated to the old Google App Engine authentication mec
 The `pac4j-couch` module to support CouchDB as an identity storage has been deprecated in v6.4.0 and removed in v6.5.0.
 
 
-### ) Configuration via Java
+### 2) Configuration via Java
+
+To address any Java environment, pac4j configurations must be defined via Java code to benefit from discoverability via code completion.
+
+The `pac4j-config` and `pac4j-springboot` modules which allow a properties configuration (no discovery available, documentation must be read) have been deprecated in v6.4.0 and removed in v6.5.0.
 
 
-### ) Improvement of the OpenID protocol
+### 3) Improvement of the OpenID protocol
 
-#### ) Technically
+#### a) Technically
 
-#### ) Functionnaly
-
-
-### ) Support of OpenID Federation
+#### b) Functionnaly
 
 
-### ) Learn more
+### 4) Support of OpenID Federation
+
+
+### 5) Learn more
 
 Read the [release notes](../docs/release-notes.html) for a thorough presentation of the changes.

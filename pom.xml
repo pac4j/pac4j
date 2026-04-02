@@ -59,7 +59,6 @@
         <module>pac4j-javaee</module>
         <module>pac4j-jakartaee</module>
 		<module>pac4j-core</module>
-		<module>pac4j-config</module>
 		<module>pac4j-oauth</module>
 		<module>pac4j-cas</module>
 		<module>pac4j-http</module>
@@ -70,7 +69,6 @@
 		<module>pac4j-sql</module>
 		<module>pac4j-mongo</module>
 		<module>pac4j-kerberos</module>
-        <module>pac4j-springboot</module>
 	</modules>
 
 	<properties>
@@ -114,11 +112,6 @@
 			<dependency>
 				<groupId>org.pac4j</groupId>
 				<artifactId>pac4j-core</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.pac4j</groupId>
-				<artifactId>pac4j-config</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

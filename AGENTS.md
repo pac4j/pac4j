@@ -33,11 +33,9 @@ Static analysis configuration files are at the repo root:
 
 - `pac4j-core` is the foundation: shared interfaces and default runtime engine logic.
 - Feature modules build on `pac4j-core` and implement protocol/auth mechanisms:
-  - `pac4j-oauth`, `pac4j-oidc`, `pac4j-saml`, `pac4j-cas`, `pac4j-http`, `pac4j-ldap`, `pac4j-sql`, `pac4j-jwt`, `pac4j-mongo`, `pac4j-couch`, `pac4j-kerberos`, `pac4j-gae`.
-- `pac4j-config` builds `Config` from properties and conditionally wires clients/authenticators based on classpath + properties.
+  - `pac4j-oauth`, `pac4j-oidc`, `pac4j-saml`, `pac4j-cas`, `pac4j-http`, `pac4j-ldap`, `pac4j-sql`, `pac4j-jwt`, `pac4j-mongo`, `pac4j-kerberos`.
 - Environment/framework integration modules:
   - `pac4j-javaee` and `pac4j-jakartaee` adapt servlet APIs to pac4j context abstractions.
-  - `pac4j-springboot` autoconfigures a `Config` bean using `PropertiesConfigFactory`.
 
 ### Core runtime model (big picture)
 
@@ -83,9 +81,8 @@ The central object is `org.pac4j.core.config.Config`, which aggregates:
 
 ### Configuration assembly points
 
-- Properties-based assembly is in `pac4j-config` via `PropertiesConfigFactory`.
-  - It conditionally creates encoders, authenticators, and clients (OAuth/OIDC/SAML/CAS/HTTP, etc.) from properties.
-- Spring Boot integration (`pac4j-springboot`) autowires properties and exposes a default `Config` bean through `ConfigAutoConfiguration`.
+- Configuration is centered around `org.pac4j.core.config.Config`, typically assembled directly by consuming applications.
+- Java/Jakarta EE integration modules provide the servlet/context adapters used at runtime.
 
 ## Documentation subtree
 
