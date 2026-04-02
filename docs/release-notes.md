@@ -6,7 +6,7 @@ title: Release notes&#58;
 ### JDK17:
 
 **v6.5.0**:
-- Removed the GAE module
+- Removed the GAE, CouchDB modules
 
 **v6.4.1**:
 - Ensures proper initialization of `SAML2Configuration`
