@@ -90,7 +90,6 @@
         <bouncycastle.version>1.83</bouncycastle.version>
 		<shiro.version>2.1.0</shiro.version>
         <jbcrypt.version>0.4.3</jbcrypt.version>
-        <snakeyaml.version>2.6</snakeyaml.version>
 		<mockito.version>5.23.0</mockito.version>
 		<slf4j.version>2.0.17</slf4j.version>
         <httpclient.version>5.3.1</httpclient.version>
@@ -131,24 +130,9 @@
             </dependency>
 			<dependency>
 				<groupId>org.pac4j</groupId>
-				<artifactId>pac4j-oidc</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.pac4j</groupId>
-				<artifactId>pac4j-ldap</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.pac4j</groupId>
 				<artifactId>pac4j-http</artifactId>
 				<version>${project.version}</version>
 			</dependency>
-            <dependency>
-                <groupId>org.pac4j</groupId>
-                <artifactId>pac4j-sql</artifactId>
-                <version>${project.version}</version>
-            </dependency>
             <dependency>
                 <groupId>org.pac4j</groupId>
                 <artifactId>pac4j-jwt</artifactId>
@@ -266,11 +250,6 @@
                 <version>${reflections.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.yaml</groupId>
-                <artifactId>snakeyaml</artifactId>
-                <version>${snakeyaml.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.bouncycastle</groupId>
                 <artifactId>bcprov-jdk18on</artifactId>
                 <version>${bouncycastle.version}</version>
@@ -292,18 +271,6 @@
 				<version>${project.version}</version>
 				<type>test-jar</type>
 			</dependency>
-            <dependency>
-                <groupId>org.pac4j</groupId>
-                <artifactId>pac4j-ldap</artifactId>
-                <version>${project.version}</version>
-                <type>test-jar</type>
-            </dependency>
-            <dependency>
-                <groupId>org.pac4j</groupId>
-                <artifactId>pac4j-sql</artifactId>
-                <version>${project.version}</version>
-                <type>test-jar</type>
-            </dependency>
             <dependency>
                 <groupId>org.pac4j</groupId>
                 <artifactId>pac4j-http</artifactId>
