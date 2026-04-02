@@ -23,16 +23,16 @@ title: <i class="fa fa-user" aria-hidden="true"></i> All available <i>pac4j</i> 
 
 <table class="centered" style="margin-bottom: 60px">
 	<tr>
-        <td><a target="_blank" href="https://github.com/pac4j/j2e-pac4j"><img height="100" src="/img/logo-j2e.png" /></a></td>
 		<td><a target="_blank" href="https://github.com/pac4j/spring-webmvc-pac4j"><img height="100" src="/img/logo-spring-webmvc.png" /></a></td>
+        <td><a target="_blank" href="https://github.com/pac4j/j2e-pac4j"><img height="100" src="/img/logo-j2e.png" /></a></td>
         <td><a target="_blank" href="https://github.com/pac4j/spring-webflux-pac4j"><img height="100" src="/img/logo-spring-webflux.png" /></a></td>
         <td width="20%"></td>
         <td><a target="_blank" href="https://github.com/bujiio/buji-pac4j"><img height="100" src="/img/logo-shiro.png" /></a></td>
         <td><a target="_blank" href="https://github.com/pac4j/spring-security-pac4j"><img height="100" src="/img/logo-spring-security.png" /></a></td>
 	</tr>
 	<tr>
-        <td><a target="_blank" href="https://github.com/pac4j/j2e-pac4j"><h1>JEE</h1></a></td>
         <td><a target="_blank" href="https://github.com/pac4j/spring-webmvc-pac4j"><h1>Spring Web MVC<br /><small>(Spring Boot)</small></h1></a></td>
+        <td><a target="_blank" href="https://github.com/pac4j/j2e-pac4j"><h1>J2E</h1></a></td>
         <td><a target="_blank" href="https://github.com/pac4j/spring-webflux-pac4j"><h1>Spring Webflux<br /><small>(Spring Boot)</small></h1></a></td>
         <td></td>
         <td><a target="_blank" href="https://github.com/bujiio/buji-pac4j"><h1>Shiro</h1></a></td>
@@ -42,14 +42,14 @@ title: <i class="fa fa-user" aria-hidden="true"></i> All available <i>pac4j</i> 
 
 <table class="centered">
     <tr>
-        <td><a target="_blank" href="http://apereo.github.io/cas/6.6.x/integration/Delegate-Authentication.html"><img height="100" src="/img/logo-cas.png" /></a></td>
+        <td><a target="_blank" href="http://apereo.github.io/cas/7.3.x/integration/Delegate-Authentication.html"><img height="100" src="/img/logo-cas.png" /></a></td>
         <td><a target="_blank" href="https://syncope.apache.org"><img height="100" src="/img/logo-syncope.png" /></a></td>
-        <td><a target="_blank" href="http://knox.apache.org/books/knox-1-6-0/user-guide.html#Pac4j+Provider+-+CAS+/+OAuth+/+SAML+/+OpenID+Connect"><img height="100" src="/img/logo-knox.png" /></a></td>
+        <td><a target="_blank" href="http://knox.apache.org/books/knox-2-1-0/user-guide.html#Pac4j+Provider+-+CAS+/+OAuth+/+SAML+/+OpenID+Connect"><img height="100" src="/img/logo-knox.png" /></a></td>
     </tr>
     <tr>
-        <td><a target="_blank" href="http://apereo.github.io/cas/6.6.x/integration/Delegate-Authentication.html"><h1>CAS server</h1></a></td>
+        <td><a target="_blank" href="http://apereo.github.io/cas/7.3.x/integration/Delegate-Authentication.html"><h1>CAS server</h1></a></td>
         <td><a target="_blank" href="https://syncope.apache.org"><h1>Syncope</h1></a></td>
-        <td><a target="_blank" href="http://knox.apache.org/books/knox-1-6-0/user-guide.html#Pac4j+Provider+-+CAS+/+OAuth+/+SAML+/+OpenID+Connect"><h1>Knox</h1></a></td>
+        <td><a target="_blank" href="http://knox.apache.org/books/knox-2-1-0/user-guide.html#Pac4j+Provider+-+CAS+/+OAuth+/+SAML+/+OpenID+Connect"><h1>Knox</h1></a></td>
     </tr>
 </table>
 
