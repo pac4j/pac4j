@@ -10,7 +10,7 @@ import org.pac4j.core.credentials.password.PasswordEncoder;
 import org.pac4j.core.credentials.password.ShiroPasswordEncoder;
 import org.pac4j.core.exception.AccountNotFoundException;
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.util.TestsConstants;
+import org.pac4j.test.util.TestsConstants;
 
 import java.util.Arrays;
 import java.util.HashMap;

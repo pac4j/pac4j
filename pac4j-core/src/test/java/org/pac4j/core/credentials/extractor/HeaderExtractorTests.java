@@ -3,13 +3,14 @@ package org.pac4j.core.credentials.extractor;
 import lombok.val;
 import org.junit.jupiter.api.Test;
 import org.pac4j.core.context.CallContext;
-import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.util.TestsConstants;
-import org.pac4j.core.util.TestsHelper;
+import org.pac4j.test.context.MockWebContext;
+import org.pac4j.test.util.TestsConstants;
+import org.pac4j.test.util.TestsHelper;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 /**
  * This class tests the {@link HeaderExtractor}.

@@ -10,15 +10,15 @@ import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.SingleSignOnService;
 import org.pac4j.core.context.CallContext;
-import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.MockSessionStore;
+import org.pac4j.test.context.session.MockSessionStore;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.saml.client.AbstractSAML2ClientTests;
 import org.pac4j.saml.client.SAML2Client;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.profile.api.SAML2ObjectBuilder;
+import org.pac4j.test.context.MockWebContext;
 
 import java.util.Collections;
 

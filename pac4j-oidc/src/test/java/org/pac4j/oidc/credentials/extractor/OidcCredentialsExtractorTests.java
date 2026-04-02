@@ -11,8 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.pac4j.core.context.CallContext;
-import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.context.session.MockSessionStore;
+import org.pac4j.test.context.session.MockSessionStore;
 import org.pac4j.core.credentials.SessionKeyCredentials;
 import org.pac4j.core.exception.http.BadRequestAction;
 import org.pac4j.core.logout.LogoutType;
@@ -25,9 +24,11 @@ import org.pac4j.oidc.exceptions.OidcMissingStateParameterException;
 import org.pac4j.oidc.exceptions.OidcStateMismatchException;
 import org.pac4j.oidc.metadata.OidcOpMetadataResolver;
 import org.pac4j.oidc.profile.creator.TokenValidator;
+import org.pac4j.test.context.MockWebContext;
 
 import java.util.Date;
 import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**

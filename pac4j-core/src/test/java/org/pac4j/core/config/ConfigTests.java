@@ -11,12 +11,13 @@ import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.matching.matcher.CacheControlMatcher;
 import org.pac4j.core.matching.matcher.Matcher;
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.util.TestsConstants;
+import org.pac4j.test.util.TestsConstants;
 
 import java.util.Map;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Tests the {@link Config}.

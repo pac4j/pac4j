@@ -3,6 +3,7 @@ package org.pac4j.core.util;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.test.util.TestsHelper;
 
 import static org.junit.jupiter.api.Assertions.*;
 

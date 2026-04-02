@@ -3,24 +3,20 @@ package org.pac4j.core.profile;
 import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.CallContext;
-import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.util.Pac4jConstants;
+import org.pac4j.test.context.MockWebContext;
+import org.pac4j.test.context.session.MockSessionStore;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.TreeMap;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 
 /**
  * Tests {@link ProfileManager}.
@@ -85,10 +81,10 @@ public final class ProfileManagerTests {
 
     @Test
     public void testGetOneExpiredProfileFromSession() {
-        profile1 = mock(CommonProfile.class);
-        when(profile1.getId()).thenReturn(ID1);
-        when(profile1.getClientName()).thenReturn(CLIENT1);
-        when(profile1.isExpired()).thenReturn(true);
+        profile1 = Mockito.mock(CommonProfile.class);
+        Mockito.when(profile1.getId()).thenReturn(ID1);
+        Mockito.when(profile1.getClientName()).thenReturn(CLIENT1);
+        Mockito.when(profile1.isExpired()).thenReturn(true);
         profiles.put(CLIENT1, profile1);
         sessionStore.set(context, Pac4jConstants.USER_PROFILES, profiles);
         assertFalse(profileManager.getProfile().isPresent());
@@ -100,15 +96,15 @@ public final class ProfileManagerTests {
 
     @Test
     public void testGetOneRenewedProfileFromSession() {
-        profile1 = mock(CommonProfile.class);
-        when(profile1.getId()).thenReturn(ID1);
-        when(profile1.getClientName()).thenReturn(CLIENT1);
-        when(profile1.isExpired()).thenReturn(true);
+        profile1 = Mockito.mock(CommonProfile.class);
+        Mockito.when(profile1.getId()).thenReturn(ID1);
+        Mockito.when(profile1.getClientName()).thenReturn(CLIENT1);
+        Mockito.when(profile1.isExpired()).thenReturn(true);
         profiles.put(CLIENT1, profile1);
-        val client1 = mock(BaseClient.class);
-        when(client1.getName()).thenReturn(CLIENT1);
+        val client1 = Mockito.mock(BaseClient.class);
+        Mockito.when(client1.getName()).thenReturn(CLIENT1);
         profileManager.setConfig(new Config(client1));
-        when(client1.renewUserProfile(new CallContext(context, sessionStore), profile1)).thenReturn(Optional.of(profile2));
+        Mockito.when(client1.renewUserProfile(new CallContext(context, sessionStore), profile1)).thenReturn(Optional.of(profile2));
         sessionStore.set(context, Pac4jConstants.USER_PROFILES, profiles);
         assertEquals(profile2, profileManager.getProfile().get());
         assertTrue(profileManager.isAuthenticated());
@@ -119,14 +115,14 @@ public final class ProfileManagerTests {
 
     @Test
     public void testGetOneRenewedProfileFromSessionButNoConfig() {
-        profile1 = mock(CommonProfile.class);
-        when(profile1.getId()).thenReturn(ID1);
-        when(profile1.getClientName()).thenReturn(CLIENT1);
-        when(profile1.isExpired()).thenReturn(true);
+        profile1 = Mockito.mock(CommonProfile.class);
+        Mockito.when(profile1.getId()).thenReturn(ID1);
+        Mockito.when(profile1.getClientName()).thenReturn(CLIENT1);
+        Mockito.when(profile1.isExpired()).thenReturn(true);
         profiles.put(CLIENT1, profile1);
-        val client1 = mock(BaseClient.class);
-        when(client1.getName()).thenReturn(CLIENT1);
-        when(client1.renewUserProfile(new CallContext(context, sessionStore), profile1)).thenReturn(Optional.of(profile2));
+        val client1 = Mockito.mock(BaseClient.class);
+        Mockito.when(client1.getName()).thenReturn(CLIENT1);
+        Mockito.when(client1.renewUserProfile(new CallContext(context, sessionStore), profile1)).thenReturn(Optional.of(profile2));
         sessionStore.set(context, Pac4jConstants.USER_PROFILES, profiles);
         assertFalse(profileManager.getProfile().isPresent());
         assertFalse(profileManager.isAuthenticated());
@@ -137,15 +133,15 @@ public final class ProfileManagerTests {
 
     @Test
     public void testGetOneRenewedProfileFromSessionButNoRelatedClient() {
-        profile1 = mock(CommonProfile.class);
-        when(profile1.getId()).thenReturn(ID1);
-        when(profile1.getClientName()).thenReturn(CLIENT1);
-        when(profile1.isExpired()).thenReturn(true);
+        profile1 = Mockito.mock(CommonProfile.class);
+        Mockito.when(profile1.getId()).thenReturn(ID1);
+        Mockito.when(profile1.getClientName()).thenReturn(CLIENT1);
+        Mockito.when(profile1.isExpired()).thenReturn(true);
         profiles.put(CLIENT1, profile1);
-        val client1 = mock(BaseClient.class);
-        when(client1.getName()).thenReturn(CLIENT2);
+        val client1 = Mockito.mock(BaseClient.class);
+        Mockito.when(client1.getName()).thenReturn(CLIENT2);
         profileManager.setConfig(new Config(client1));
-        when(client1.renewUserProfile(new CallContext(context, sessionStore), profile1)).thenReturn(Optional.of(profile2));
+        Mockito.when(client1.renewUserProfile(new CallContext(context, sessionStore), profile1)).thenReturn(Optional.of(profile2));
         sessionStore.set(context, Pac4jConstants.USER_PROFILES, profiles);
         assertFalse(profileManager.getProfile().isPresent());
         assertFalse(profileManager.isAuthenticated());
@@ -213,9 +209,9 @@ public final class ProfileManagerTests {
 
     @Test
     public void testGetAllTwoProfilesOneExpiredRemoved() {
-        CommonProfile expiredProfile = mock(CommonProfile.class);
-        when(expiredProfile.getClientName()).thenReturn(CLIENT1);
-        when(expiredProfile.isExpired()).thenReturn(true);
+        CommonProfile expiredProfile = Mockito.mock(CommonProfile.class);
+        Mockito.when(expiredProfile.getClientName()).thenReturn(CLIENT1);
+        Mockito.when(expiredProfile.isExpired()).thenReturn(true);
 
         CommonProfile renewedProfile = new CommonProfile();
 
@@ -223,9 +219,9 @@ public final class ProfileManagerTests {
         profiles.put(CLIENT2, profile2);
         sessionStore.set(context, Pac4jConstants.USER_PROFILES, profiles);
 
-        val client1 = mock(BaseClient.class);
-        when(client1.getName()).thenReturn(CLIENT1);
-        when(client1.renewUserProfile(any(),eq(expiredProfile))).thenReturn(Optional.of(renewedProfile));
+        val client1 = Mockito.mock(BaseClient.class);
+        Mockito.when(client1.getName()).thenReturn(CLIENT1);
+        Mockito.when(client1.renewUserProfile(any(),eq(expiredProfile))).thenReturn(Optional.of(renewedProfile));
         profileManager.setConfig(new Config(client1));
 
         final List<UserProfile> retrievedProfiles = profileManager.getProfiles();
@@ -237,17 +233,17 @@ public final class ProfileManagerTests {
 
     @Test
     public void testGetAllTwoProfilesOneExpiredRenewed() {
-        CommonProfile expiredProfile = mock(CommonProfile.class);
-        when(expiredProfile.getClientName()).thenReturn(CLIENT1);
-        when(expiredProfile.isExpired()).thenReturn(true);
+        CommonProfile expiredProfile = Mockito.mock(CommonProfile.class);
+        Mockito.when(expiredProfile.getClientName()).thenReturn(CLIENT1);
+        Mockito.when(expiredProfile.isExpired()).thenReturn(true);
 
         profiles.put(CLIENT1, expiredProfile);
         profiles.put(CLIENT2, profile2);
         sessionStore.set(context, Pac4jConstants.USER_PROFILES, profiles);
 
-        val client1 = mock(BaseClient.class);
-        when(client1.getName()).thenReturn(CLIENT1);
-        when(client1.renewUserProfile(any(),eq(expiredProfile))).thenReturn(Optional.empty());
+        val client1 = Mockito.mock(BaseClient.class);
+        Mockito.when(client1.getName()).thenReturn(CLIENT1);
+        Mockito.when(client1.renewUserProfile(any(),eq(expiredProfile))).thenReturn(Optional.empty());
         profileManager.setConfig(new Config(client1));
 
         final List<UserProfile> retrievedProfiles = profileManager.getProfiles();

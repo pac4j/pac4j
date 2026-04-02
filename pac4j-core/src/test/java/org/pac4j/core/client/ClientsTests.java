@@ -14,8 +14,8 @@ import org.pac4j.core.http.callback.QueryParameterCallbackUrlResolver;
 import org.pac4j.core.http.url.DefaultUrlResolver;
 import org.pac4j.core.http.url.UrlResolver;
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.util.TestsConstants;
-import org.pac4j.core.util.TestsHelper;
+import org.pac4j.test.util.TestsConstants;
+import org.pac4j.test.util.TestsHelper;
 
 import java.util.ArrayList;
 import java.util.List;

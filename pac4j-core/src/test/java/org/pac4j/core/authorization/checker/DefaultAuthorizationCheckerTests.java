@@ -11,9 +11,7 @@ import org.pac4j.core.client.MockDirectClient;
 import org.pac4j.core.client.MockIndirectClient;
 import org.pac4j.core.client.direct.AnonymousClient;
 import org.pac4j.core.context.HttpConstants;
-import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.matching.matcher.csrf.CsrfTokenGenerator;
@@ -22,8 +20,10 @@ import org.pac4j.core.profile.AnonymousProfile;
 import org.pac4j.core.profile.BasicUserProfile;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.Pac4jConstants;
-import org.pac4j.core.util.TestsConstants;
-import org.pac4j.core.util.TestsHelper;
+import org.pac4j.test.context.MockWebContext;
+import org.pac4j.test.context.session.MockSessionStore;
+import org.pac4j.test.util.TestsConstants;
+import org.pac4j.test.util.TestsHelper;
 
 import java.util.*;
 

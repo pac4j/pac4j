@@ -15,8 +15,7 @@ import org.pac4j.core.profile.Color;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.jwt.JwtClaims;
-import org.pac4j.core.util.TestsConstants;
-import org.pac4j.core.util.TestsHelper;
+import org.pac4j.test.util.TestsHelper;
 import org.pac4j.core.util.generator.StaticValueGenerator;
 import org.pac4j.jwt.config.encryption.EncryptionConfiguration;
 import org.pac4j.jwt.config.encryption.RSAEncryptionConfiguration;
@@ -31,6 +30,7 @@ import org.pac4j.oauth.profile.facebook.FacebookProfile;
 import org.pac4j.oauth.profile.facebook.FacebookProfileDefinition;
 import org.pac4j.oauth.profile.twitter.TwitterProfile;
 import org.pac4j.oauth.profile.twitter.TwitterProfileDefinition;
+import org.pac4j.test.util.TestsConstants;
 
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;

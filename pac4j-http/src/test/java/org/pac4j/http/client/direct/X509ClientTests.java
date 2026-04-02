@@ -3,12 +3,12 @@ package org.pac4j.http.client.direct;
 import lombok.val;
 import org.junit.jupiter.api.Test;
 import org.pac4j.core.context.CallContext;
-import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.context.session.MockSessionStore;
-import org.pac4j.core.util.TestsConstants;
+import org.pac4j.test.context.session.MockSessionStore;
+import org.pac4j.test.util.TestsConstants;
 import org.pac4j.http.credentials.X509Credentials;
 import org.pac4j.http.credentials.extractor.X509CredentialsExtractor;
 import org.pac4j.http.profile.X509Profile;
+import org.pac4j.test.context.MockWebContext;
 
 import java.io.ByteArrayInputStream;
 import java.security.cert.CertificateException;

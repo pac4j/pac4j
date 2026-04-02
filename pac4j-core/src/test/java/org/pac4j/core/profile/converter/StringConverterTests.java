@@ -1,7 +1,7 @@
 package org.pac4j.core.profile.converter;
 
 import org.junit.jupiter.api.Test;
-import org.pac4j.core.util.TestsConstants;
+import org.pac4j.test.util.TestsConstants;
 
 import java.util.ArrayList;
 import java.util.List;

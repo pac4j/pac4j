@@ -9,8 +9,7 @@ import org.opensaml.saml.saml2.metadata.impl.EntityDescriptorBuilder;
 import org.opensaml.saml.saml2.metadata.impl.SPSSODescriptorBuilder;
 import org.opensaml.saml.saml2.metadata.impl.SingleLogoutServiceBuilder;
 import org.pac4j.core.context.CallContext;
-import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.context.session.MockSessionStore;
+import org.pac4j.test.context.session.MockSessionStore;
 import org.pac4j.core.logout.handler.SessionLogoutHandler;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.context.SAML2MessageContext;
@@ -22,6 +21,7 @@ import org.pac4j.saml.profile.api.SAML2ResponseValidator;
 import org.pac4j.saml.replay.ReplayCacheProvider;
 import org.pac4j.saml.util.Configuration;
 import org.pac4j.saml.util.ExcludingParametersURIComparator;
+import org.pac4j.test.context.MockWebContext;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 

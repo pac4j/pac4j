@@ -7,7 +7,7 @@ import lombok.val;
 import org.junit.jupiter.api.Test;
 import org.pac4j.cas.profile.CasRestProfile;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.util.TestsConstants;
+import org.pac4j.test.util.TestsConstants;
 import org.pac4j.jwt.config.encryption.SecretEncryptionConfiguration;
 import org.pac4j.jwt.config.signature.SecretSignatureConfiguration;
 import org.pac4j.jwt.credentials.authenticator.JwtAuthenticator;

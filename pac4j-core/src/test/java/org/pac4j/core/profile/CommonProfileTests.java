@@ -5,16 +5,12 @@ import org.junit.jupiter.api.Test;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.core.util.Pac4jConstants;
-import org.pac4j.core.util.TestsConstants;
-import org.pac4j.core.util.TestsHelper;
+import org.pac4j.test.util.TestsHelper;
 import org.pac4j.core.util.serializer.JavaSerializer;
+import org.pac4j.test.util.TestsConstants;
 
 import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 

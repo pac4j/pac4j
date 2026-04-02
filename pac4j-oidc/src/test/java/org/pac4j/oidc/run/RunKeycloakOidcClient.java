@@ -3,7 +3,7 @@ package org.pac4j.oidc.run;
 import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.run.RunClient;
+import org.pac4j.test.run.RunClient;
 import org.pac4j.oidc.client.KeycloakOidcClient;
 import org.pac4j.oidc.config.KeycloakOidcConfiguration;
 import org.pac4j.oidc.profile.OidcProfile;

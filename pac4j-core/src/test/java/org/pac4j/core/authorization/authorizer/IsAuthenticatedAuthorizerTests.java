@@ -2,19 +2,20 @@ package org.pac4j.core.authorization.authorizer;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.profile.AnonymousProfile;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.UserProfile;
-import org.pac4j.core.util.TestsConstants;
-import org.pac4j.core.util.TestsHelper;
+import org.pac4j.test.context.MockWebContext;
+import org.pac4j.test.context.session.MockSessionStore;
+import org.pac4j.test.util.TestsConstants;
+import org.pac4j.test.util.TestsHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests {@link IsAuthenticatedAuthorizer}.

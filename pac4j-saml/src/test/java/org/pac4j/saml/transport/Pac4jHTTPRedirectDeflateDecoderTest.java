@@ -7,9 +7,9 @@ import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.saml2.core.impl.AuthnRequestImpl;
 import org.pac4j.core.context.CallContext;
-import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.context.session.MockSessionStore;
+import org.pac4j.test.context.session.MockSessionStore;
 import org.pac4j.saml.util.Configuration;
+import org.pac4j.test.context.MockWebContext;
 
 import java.io.StringReader;
 

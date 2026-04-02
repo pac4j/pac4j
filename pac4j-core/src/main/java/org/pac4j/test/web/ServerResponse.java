@@ -1,4 +1,4 @@
-package org.pac4j.http.test.tools;
+package org.pac4j.test.web;
 
 import fi.iki.elonen.NanoHTTPD;
 

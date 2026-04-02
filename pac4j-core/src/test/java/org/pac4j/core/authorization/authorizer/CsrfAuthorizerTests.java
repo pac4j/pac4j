@@ -1,19 +1,20 @@
 package org.pac4j.core.authorization.authorizer;
 
 import lombok.val;
-import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.pac4j.core.context.HttpConstants;
-import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.matching.matcher.csrf.DefaultCsrfTokenGenerator;
 import org.pac4j.core.util.Pac4jConstants;
-import org.pac4j.core.util.TestsConstants;
+import org.pac4j.test.context.MockWebContext;
+import org.pac4j.test.context.session.MockSessionStore;
+import org.pac4j.test.util.TestsConstants;
 
 import java.util.Date;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests {@link CsrfAuthorizer}.

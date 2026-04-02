@@ -265,18 +265,6 @@
                 <version>${bouncycastle.version}</version>
             </dependency>
             <!-- for testing -->
-			<dependency>
-				<groupId>org.pac4j</groupId>
-				<artifactId>pac4j-core</artifactId>
-				<version>${project.version}</version>
-				<type>test-jar</type>
-			</dependency>
-            <dependency>
-                <groupId>org.pac4j</groupId>
-                <artifactId>pac4j-http</artifactId>
-                <version>${project.version}</version>
-                <type>test-jar</type>
-            </dependency>
             <dependency>
                 <groupId>de.flapdoodle.embed</groupId>
                 <artifactId>de.flapdoodle.embed.mongo</artifactId>
@@ -289,6 +277,11 @@
 				<version>${junit.version}</version>
 				<scope>test</scope>
 			</dependency>
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-api</artifactId>
+                <version>${junit.version}</version>
+            </dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-test</artifactId>
@@ -505,7 +498,6 @@
 						<id>attach-sources</id>
 						<goals>
 							<goal>jar-no-fork</goal>
-                            <goal>test-jar-no-fork</goal>
 						</goals>
 					</execution>
 				</executions>

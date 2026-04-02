@@ -1,4 +1,4 @@
-package org.pac4j.core.util;
+package org.pac4j.test.util;
 
 /**
  * This class has all the constants for tests.

@@ -1,4 +1,4 @@
-package org.pac4j.core.util;
+package org.pac4j.test.util;
 
 /**
  * Something executable (no input, no result, maybe an exception).

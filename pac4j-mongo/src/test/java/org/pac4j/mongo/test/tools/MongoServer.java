@@ -12,7 +12,7 @@ import org.apache.shiro.authc.credential.DefaultPasswordService;
 import org.bson.Document;
 import org.pac4j.core.credentials.password.PasswordEncoder;
 import org.pac4j.core.credentials.password.ShiroPasswordEncoder;
-import org.pac4j.core.util.TestsConstants;
+import org.pac4j.test.util.TestsConstants;
 
 import java.io.IOException;
 import java.util.HashMap;

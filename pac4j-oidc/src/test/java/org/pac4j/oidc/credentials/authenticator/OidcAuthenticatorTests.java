@@ -2,12 +2,7 @@ package org.pac4j.oidc.credentials.authenticator;
 
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.PlainJWT;
-import com.nimbusds.oauth2.sdk.AuthorizationCodeGrant;
-import com.nimbusds.oauth2.sdk.AuthorizationGrant;
-import com.nimbusds.oauth2.sdk.OAuth2Error;
-import com.nimbusds.oauth2.sdk.RefreshTokenGrant;
-import com.nimbusds.oauth2.sdk.TokenErrorResponse;
-import com.nimbusds.oauth2.sdk.TokenRequest;
+import com.nimbusds.oauth2.sdk.*;
 import com.nimbusds.oauth2.sdk.auth.ClientSecretBasic;
 import com.nimbusds.oauth2.sdk.auth.Secret;
 import com.nimbusds.oauth2.sdk.http.HTTPRequest;
@@ -26,8 +21,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.pac4j.core.context.CallContext;
-import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.context.session.MockSessionStore;
+import org.pac4j.test.context.session.MockSessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
@@ -35,9 +29,11 @@ import org.pac4j.oidc.credentials.OidcCredentials;
 import org.pac4j.oidc.exceptions.OidcException;
 import org.pac4j.oidc.exceptions.OidcTokenException;
 import org.pac4j.oidc.metadata.OidcOpMetadataResolver;
+import org.pac4j.test.context.MockWebContext;
 
 import java.net.URI;
 import java.util.Date;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**

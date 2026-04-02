@@ -1,7 +1,7 @@
 package org.pac4j.oauth.profile;
 
 import org.junit.jupiter.api.Test;
-import org.pac4j.core.util.TestsConstants;
+import org.pac4j.test.util.TestsConstants;
 import org.pac4j.oauth.profile.dropbox.DropBoxProfile;
 import org.pac4j.oauth.profile.github.GitHubProfile;
 

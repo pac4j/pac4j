@@ -3,7 +3,7 @@ package org.pac4j.core.profile;
 import lombok.val;
 import org.junit.jupiter.api.Test;
 import org.pac4j.core.util.Pac4jConstants;
-import org.pac4j.core.util.TestsConstants;
+import org.pac4j.test.util.TestsConstants;
 
 import java.util.Arrays;
 import java.util.List;

@@ -7,14 +7,14 @@ import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.credentials.authenticator.CasRestAuthenticator;
 import org.pac4j.cas.profile.CasRestProfile;
 import org.pac4j.core.context.CallContext;
-import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.authenticator.LocalCachingAuthenticator;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.util.TestsConstants;
-import org.pac4j.core.util.TestsHelper;
+import org.pac4j.test.util.TestsHelper;
+import org.pac4j.test.context.MockWebContext;
+import org.pac4j.test.context.session.MockSessionStore;
+import org.pac4j.test.util.TestsConstants;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;

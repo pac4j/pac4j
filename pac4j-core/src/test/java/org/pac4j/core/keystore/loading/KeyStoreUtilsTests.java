@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.pac4j.core.config.properties.KeystoreProperties;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.keystore.generation.KeystoreGenerator;
-import org.pac4j.core.util.TestsConstants;
+import org.pac4j.test.util.TestsConstants;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

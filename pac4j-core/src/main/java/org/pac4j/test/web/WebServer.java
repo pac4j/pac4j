@@ -1,4 +1,4 @@
-package org.pac4j.http.test.tools;
+package org.pac4j.test.web;
 
 import fi.iki.elonen.NanoHTTPD;
 import lombok.val;
@@ -45,9 +45,9 @@ public class WebServer extends NanoHTTPD {
         }
         val response = responses.get(r);
         if (response != null) {
-            return newFixedLengthResponse(response.getStatus(), response.getMimeType(), response.getBody());
+            return NanoHTTPD.newFixedLengthResponse(response.getStatus(), response.getMimeType(), response.getBody());
         } else {
-            return newFixedLengthResponse(NanoHTTPD.Response.Status.SERVICE_UNAVAILABLE, "plain/text", "no response available");
+            return NanoHTTPD.newFixedLengthResponse(NanoHTTPD.Response.Status.SERVICE_UNAVAILABLE, "plain/text", "no response available");
         }
     }
 }

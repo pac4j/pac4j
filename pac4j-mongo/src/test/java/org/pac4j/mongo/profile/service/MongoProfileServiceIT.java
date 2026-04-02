@@ -15,10 +15,10 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.service.AbstractProfileService;
 import org.pac4j.core.util.Pac4jConstants;
-import org.pac4j.core.util.TestsConstants;
-import org.pac4j.core.util.TestsHelper;
+import org.pac4j.test.util.TestsHelper;
 import org.pac4j.mongo.profile.MongoProfile;
 import org.pac4j.mongo.test.tools.MongoServer;
+import org.pac4j.test.util.TestsConstants;
 
 import java.util.List;
 import java.util.Map;

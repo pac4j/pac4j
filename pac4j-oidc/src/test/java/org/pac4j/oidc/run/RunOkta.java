@@ -5,7 +5,7 @@ import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
-import org.pac4j.core.run.RunClient;
+import org.pac4j.test.run.RunClient;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;

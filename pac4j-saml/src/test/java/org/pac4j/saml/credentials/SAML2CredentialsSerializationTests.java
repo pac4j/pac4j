@@ -9,12 +9,12 @@ import org.opensaml.saml.saml2.core.Attribute;
 import org.opensaml.saml.saml2.core.Conditions;
 import org.opensaml.saml.saml2.core.NameID;
 import org.pac4j.core.context.CallContext;
-import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.context.session.MockSessionStore;
+import org.pac4j.test.context.session.MockSessionStore;
 import org.pac4j.core.logout.LogoutType;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.profile.converter.SimpleSAML2AttributeConverter;
 import org.pac4j.saml.util.Configuration;
+import org.pac4j.test.context.MockWebContext;
 
 import java.io.Serializable;
 import java.time.Instant;

@@ -14,7 +14,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.opensaml.core.criterion.EntityIdCriterion;
-import org.pac4j.core.util.TestsConstants;
+import org.pac4j.test.util.TestsConstants;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.metadata.SAML2MetadataGenerator;
 import org.pac4j.saml.util.ConfigurationManager;

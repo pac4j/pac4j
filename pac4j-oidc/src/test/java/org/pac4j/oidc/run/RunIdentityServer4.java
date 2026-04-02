@@ -4,7 +4,7 @@ import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.run.RunClient;
+import org.pac4j.test.run.RunClient;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.profile.OidcProfile;

@@ -1,6 +1,8 @@
-package org.pac4j.core.context;
+package org.pac4j.test.context;
 
 import lombok.val;
+import org.pac4j.core.context.Cookie;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.Pac4jConstants;
 
 import java.util.*;

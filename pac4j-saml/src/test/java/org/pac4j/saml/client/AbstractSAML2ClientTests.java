@@ -2,7 +2,7 @@ package org.pac4j.saml.client;
 
 import lombok.val;
 import org.opensaml.saml.saml2.core.NameID;
-import org.pac4j.core.util.TestsConstants;
+import org.pac4j.test.util.TestsConstants;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.metadata.SAML2ServiceProviderRequestedAttribute;
 import org.pac4j.saml.store.HttpSessionStoreFactory;

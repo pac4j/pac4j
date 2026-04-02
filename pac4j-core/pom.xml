@@ -75,6 +75,16 @@
             <artifactId>nimbus-jose-jwt</artifactId>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.nanohttpd</groupId>
+            <artifactId>nanohttpd</artifactId>
+            <optional>true</optional>
+        </dependency>
 
         <!-- for testing -->
         <dependency>
@@ -122,18 +132,6 @@
                         <id>attach-javadocs</id>
                         <goals>
                             <goal>jar</goal>
-                            <goal>test-jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>test-jar</goal>
                         </goals>
                     </execution>
                 </executions>

@@ -6,9 +6,9 @@ import lombok.val;
 import org.junit.jupiter.api.Test;
 import org.pac4j.core.authorization.generator.AuthorizationGenerator;
 import org.pac4j.core.context.CallContext;
-import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.context.session.MockSessionStore;
+import org.pac4j.test.context.session.MockSessionStore;
 import org.pac4j.oidc.profile.keycloak.KeycloakOidcProfile;
+import org.pac4j.test.context.MockWebContext;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

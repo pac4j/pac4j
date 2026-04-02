@@ -4,9 +4,10 @@ import lombok.val;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.pac4j.core.context.HttpConstants;
-import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.http.*;
+import org.pac4j.test.context.MockWebContext;
+import org.pac4j.test.util.TestsConstants;
 
 import static org.junit.jupiter.api.Assertions.*;
 

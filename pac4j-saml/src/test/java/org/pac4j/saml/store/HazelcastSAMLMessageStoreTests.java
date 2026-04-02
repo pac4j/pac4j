@@ -17,7 +17,7 @@ import org.mockito.MockitoAnnotations;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
 import org.opensaml.saml.common.SAMLObjectBuilder;
 import org.opensaml.saml.saml2.core.NameID;
-import org.pac4j.core.util.TestsConstants;
+import org.pac4j.test.util.TestsConstants;
 import org.pac4j.saml.util.Configuration;
 
 /**

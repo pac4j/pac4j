@@ -1,6 +1,8 @@
-package org.pac4j.core.context.session;
+package org.pac4j.test.context.session;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.PrefixedSessionStore;
+import org.pac4j.core.context.session.SessionStore;
 
 import java.util.Date;
 import java.util.HashMap;

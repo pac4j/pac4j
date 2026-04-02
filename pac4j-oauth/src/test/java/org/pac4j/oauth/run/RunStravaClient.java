@@ -4,7 +4,7 @@ import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.Gender;
-import org.pac4j.core.run.RunClient;
+import org.pac4j.test.run.RunClient;
 import org.pac4j.oauth.client.StravaClient;
 import org.pac4j.oauth.profile.strava.StravaProfile;
 

@@ -6,7 +6,7 @@ import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
-import org.pac4j.core.run.RunClient;
+import org.pac4j.test.run.RunClient;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oauth.client.FoursquareClient;
 import org.pac4j.oauth.profile.foursquare.FoursquareProfile;

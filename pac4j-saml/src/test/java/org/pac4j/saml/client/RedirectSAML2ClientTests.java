@@ -6,13 +6,13 @@ import org.junit.jupiter.api.Test;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.AuthnContextComparisonTypeEnumeration;
 import org.pac4j.core.context.CallContext;
-import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.MockSessionStore;
+import org.pac4j.test.context.session.MockSessionStore;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.exception.http.WithLocationAction;
 import org.pac4j.saml.state.SAML2StateGenerator;
+import org.pac4j.test.context.MockWebContext;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;

@@ -2,11 +2,13 @@ package org.pac4j.core.context;
 
 import lombok.val;
 import org.junit.jupiter.api.Test;
+import org.pac4j.test.context.MockWebContext;
 
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class WebContextTests {
 

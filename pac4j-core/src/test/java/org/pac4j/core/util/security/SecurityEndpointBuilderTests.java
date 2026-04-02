@@ -12,8 +12,8 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.matching.matcher.HttpMethodMatcher;
 import org.pac4j.core.matching.matcher.Matcher;
 import org.pac4j.core.matching.matcher.PathMatcher;
-import org.pac4j.core.util.TestsConstants;
-import org.pac4j.core.util.TestsHelper;
+import org.pac4j.test.util.TestsHelper;
+import org.pac4j.test.util.TestsConstants;
 
 import java.util.Arrays;
 import java.util.HashSet;

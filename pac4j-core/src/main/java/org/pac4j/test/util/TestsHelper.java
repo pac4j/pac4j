@@ -1,12 +1,15 @@
-package org.pac4j.core.util;
+package org.pac4j.test.util;
 
 import lombok.val;
-import static org.junit.jupiter.api.Assertions.*;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.InitializableObject;
 
 import java.net.URL;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * This class is an helper for tests: get a basic web client, parameters from an url, a formatted date, etc.

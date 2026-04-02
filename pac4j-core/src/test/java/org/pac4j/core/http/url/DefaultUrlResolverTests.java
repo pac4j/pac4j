@@ -2,8 +2,8 @@ package org.pac4j.core.http.url;
 
 import lombok.val;
 import org.junit.jupiter.api.Test;
-import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.util.TestsConstants;
+import org.pac4j.test.context.MockWebContext;
+import org.pac4j.test.util.TestsConstants;
 
 import static org.junit.jupiter.api.Assertions.*;
 

@@ -3,7 +3,7 @@ package org.pac4j.saml.metadata.s3;
 import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.pac4j.core.util.TestsConstants;
+import org.pac4j.test.util.TestsConstants;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.util.DefaultConfigurationManager;

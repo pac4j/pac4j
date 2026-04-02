@@ -6,7 +6,7 @@ import org.pac4j.core.credentials.password.PasswordEncoder;
 import org.pac4j.core.credentials.password.SpringSecurityPasswordEncoder;
 import org.pac4j.core.profile.service.AbstractProfileService;
 import org.pac4j.core.util.Pac4jConstants;
-import org.pac4j.core.util.TestsConstants;
+import org.pac4j.test.util.TestsConstants;
 import org.skife.jdbi.v2.DBI;
 import org.skife.jdbi.v2.IDBI;
 import org.springframework.security.crypto.password.StandardPasswordEncoder;

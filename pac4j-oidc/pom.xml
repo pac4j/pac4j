@@ -66,20 +66,8 @@
         </dependency>
         <dependency>
             <groupId>org.pac4j</groupId>
-            <artifactId>pac4j-core</artifactId>
-            <type>test-jar</type>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.pac4j</groupId>
             <artifactId>pac4j-jwt</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.pac4j</groupId>
-            <artifactId>pac4j-http</artifactId>
-            <scope>test</scope>
-            <type>test-jar</type>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>

@@ -1,21 +1,15 @@
 package org.pac4j.oauth.client;
 
 import org.junit.jupiter.api.Test;
-import org.pac4j.core.profile.converter.BooleanConverter;
-import org.pac4j.core.profile.converter.ColorConverter;
-import org.pac4j.core.profile.converter.GenderConverter;
-import org.pac4j.core.profile.converter.IntegerConverter;
-import org.pac4j.core.profile.converter.LocaleConverter;
-import org.pac4j.core.profile.converter.LongConverter;
-import org.pac4j.core.profile.converter.UrlConverter;
+import org.pac4j.core.profile.converter.*;
 import org.pac4j.oauth.profile.generic.GenericOAuth20ProfileDefinition;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.pac4j.core.util.TestsConstants.CALLBACK_URL;
-import static org.pac4j.core.util.TestsConstants.ID;
+import static org.pac4j.test.util.TestsConstants.CALLBACK_URL;
+import static org.pac4j.test.util.TestsConstants.ID;
 
 public class GenericOAuth20ClientTest {
     final static String AGE = "age";

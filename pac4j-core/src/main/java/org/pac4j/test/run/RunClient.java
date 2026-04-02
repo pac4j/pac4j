@@ -1,16 +1,16 @@
-package org.pac4j.core.run;
+package org.pac4j.test.run;
 
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.CallContext;
-import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.context.session.MockSessionStore;
+import org.pac4j.test.context.MockWebContext;
+import org.pac4j.test.context.session.MockSessionStore;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.Gender;
-import org.pac4j.core.util.TestsConstants;
+import org.pac4j.test.util.TestsConstants;
 import org.pac4j.core.util.serializer.JavaSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

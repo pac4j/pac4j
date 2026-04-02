@@ -7,7 +7,7 @@ import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.exception.http.WithLocationAction;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.UserProfile;
-import org.pac4j.core.util.TestsConstants;
+import org.pac4j.test.util.TestsConstants;
 
 import static org.junit.jupiter.api.Assertions.*;
 

@@ -13,11 +13,11 @@ import net.minidev.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.util.TestsConstants;
-import org.pac4j.core.util.TestsHelper;
+import org.pac4j.test.util.TestsHelper;
 import org.pac4j.jwt.config.signature.SecretSignatureConfiguration;
 import org.pac4j.jwt.profile.JwtGenerator;
 import org.pac4j.oidc.config.OidcConfiguration;
+import org.pac4j.test.util.TestsConstants;
 
 import java.net.URI;
 import java.net.URISyntaxException;

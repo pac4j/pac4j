@@ -8,12 +8,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.client.MockIndirectClient;
-import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.Pac4jConstants;
-import org.pac4j.core.util.TestsConstants;
+import org.pac4j.test.context.MockWebContext;
+import org.pac4j.test.util.TestsConstants;
 
 import java.util.Objects;
 import java.util.Optional;

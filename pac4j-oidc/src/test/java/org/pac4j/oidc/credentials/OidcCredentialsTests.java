@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.val;
 import org.junit.jupiter.api.Test;
-import org.pac4j.core.util.TestsConstants;
+import org.pac4j.test.util.TestsConstants;
 import org.pac4j.core.util.serializer.JavaSerializer;
 import org.pac4j.core.util.serializer.JsonSerializer;
 import org.pac4j.oidc.profile.OidcProfile;

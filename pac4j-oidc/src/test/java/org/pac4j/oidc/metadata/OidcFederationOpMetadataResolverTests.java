@@ -14,12 +14,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.pac4j.core.util.JwkHelper;
-import org.pac4j.http.test.tools.ServerResponse;
-import org.pac4j.http.test.tools.WebServer;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.federation.entity.EntityConfigurationGenerator;
 import org.pac4j.oidc.metadata.chain.FederationChainResolver;
 import org.pac4j.oidc.profile.creator.TokenValidator;
+import org.pac4j.test.web.ServerResponse;
+import org.pac4j.test.web.WebServer;
 
 import java.net.URI;
 import java.util.ArrayList;

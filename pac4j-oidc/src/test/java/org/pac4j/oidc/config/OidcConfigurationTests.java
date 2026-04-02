@@ -5,7 +5,7 @@ import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.util.TestsConstants;
+import org.pac4j.test.util.TestsConstants;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.exceptions.OidcConfigurationException;
 import org.pac4j.oidc.metadata.IOidcOpMetadataResolver;

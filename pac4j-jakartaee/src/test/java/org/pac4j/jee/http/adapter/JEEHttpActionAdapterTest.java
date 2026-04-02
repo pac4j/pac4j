@@ -8,7 +8,7 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.exception.http.OkAction;
 import org.pac4j.core.exception.http.StatusAction;
-import org.pac4j.core.util.TestsConstants;
+import org.pac4j.test.util.TestsConstants;
 
 import jakarta.servlet.http.HttpServletResponse;
 

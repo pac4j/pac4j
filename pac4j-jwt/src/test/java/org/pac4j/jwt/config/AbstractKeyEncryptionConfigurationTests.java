@@ -3,7 +3,7 @@ package org.pac4j.jwt.config;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.util.TestsConstants;
+import org.pac4j.test.util.TestsConstants;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;

@@ -3,10 +3,10 @@ package org.pac4j.core.matching.matcher;
 import lombok.val;
 import org.junit.jupiter.api.Test;
 import org.pac4j.core.context.CallContext;
-import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.context.session.MockSessionStore;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.util.TestsHelper;
+import org.pac4j.test.util.TestsHelper;
+import org.pac4j.test.context.MockWebContext;
+import org.pac4j.test.context.session.MockSessionStore;
 
 import java.util.Collection;
 import java.util.HashSet;

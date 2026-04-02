@@ -8,9 +8,9 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import lombok.val;
 import org.junit.jupiter.api.Test;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.util.TestsConstants;
-import org.pac4j.core.util.TestsHelper;
+import org.pac4j.test.util.TestsHelper;
 import org.pac4j.jwt.util.JWKHelper;
+import org.pac4j.test.util.TestsConstants;
 
 import java.io.UnsupportedEncodingException;
 import java.security.SecureRandom;

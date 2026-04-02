@@ -2,11 +2,11 @@ package org.pac4j.core.matching.matcher.csrf;
 
 import lombok.val;
 import org.junit.jupiter.api.Test;
-import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.MockSessionStore;
+import org.pac4j.test.context.session.MockSessionStore;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.util.Pac4jConstants;
+import org.pac4j.test.context.MockWebContext;
 
 import java.util.Date;
 

@@ -3,7 +3,7 @@ package org.pac4j.oauth.profile.converter;
 import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.val;
 import org.junit.jupiter.api.Test;
-import org.pac4j.core.util.TestsConstants;
+import org.pac4j.test.util.TestsConstants;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.facebook.FacebookObject;
 

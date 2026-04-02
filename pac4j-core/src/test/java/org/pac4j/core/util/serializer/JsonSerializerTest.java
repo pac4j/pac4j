@@ -4,7 +4,7 @@ import lombok.val;
 import org.junit.jupiter.api.Test;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.UserProfile;
-import org.pac4j.core.util.TestsConstants;
+import org.pac4j.test.util.TestsConstants;
 
 import java.time.Instant;
 import java.util.LinkedHashMap;

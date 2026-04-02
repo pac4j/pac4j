@@ -7,7 +7,7 @@ import com.nimbusds.jwt.*;
 import lombok.val;
 import org.junit.jupiter.api.Test;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.util.TestsHelper;
+import org.pac4j.test.util.TestsHelper;
 import org.pac4j.jwt.config.AbstractKeyEncryptionConfigurationTests;
 import org.pac4j.jwt.config.signature.SecretSignatureConfiguration;
 import org.pac4j.jwt.config.signature.SignatureConfiguration;

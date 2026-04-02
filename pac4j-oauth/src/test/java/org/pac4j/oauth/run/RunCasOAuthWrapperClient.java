@@ -5,7 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
-import org.pac4j.core.run.RunClient;
+import org.pac4j.test.run.RunClient;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oauth.client.CasOAuthWrapperClient;
 import org.pac4j.oauth.profile.casoauthwrapper.CasOAuthWrapperProfile;
