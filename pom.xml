@@ -64,7 +64,6 @@
 		<module>pac4j-cas</module>
 		<module>pac4j-http</module>
 		<module>pac4j-saml</module>
-		<module>pac4j-gae</module>
 		<module>pac4j-oidc</module>
 		<module>pac4j-jwt</module>
 		<module>pac4j-ldap</module>
