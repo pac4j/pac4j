@@ -19,16 +19,23 @@ To address any Java environment, pac4j configurations must be defined via Java c
 The `pac4j-config` and `pac4j-springboot` modules which allow a properties configuration (no discovery available, documentation must be read) have been deprecated in v6.4.0 and removed in v6.5.0.
 
 
-### 3) Improvement of the OpenID protocol
+### 3) Build
+
+The build process has been improved:
+- 4 modules have been removed
+- no more `test-jar` components: the few test classes are in the `org.pac4j.test` package of the `pac4j-core` module.
+
+
+### 4) Improvement of the OpenID protocol
 
 #### a) Technically
 
 #### b) Functionnaly
 
 
-### 4) Support of OpenID Federation
+### 5) Support of OpenID Federation
 
 
-### 5) Learn more
+### 6) Learn more
 
 Read the [release notes](../docs/release-notes.html) for a thorough presentation of the changes.
