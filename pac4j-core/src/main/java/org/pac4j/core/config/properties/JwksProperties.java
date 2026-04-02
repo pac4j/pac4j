@@ -32,9 +32,11 @@ public class JwksProperties {
      * <p>setJwksPath.</p>
      *
      * @param path a {@link String} object
+     * @return the properties
      */
-    public void setJwksPath(final String path) {
+    public JwksProperties setJwksPath(final String path) {
         this.jwksResource = SpringResourceHelper.buildResourceFromPath(path);
+        return this;
     }
 
     public boolean isDefined() {

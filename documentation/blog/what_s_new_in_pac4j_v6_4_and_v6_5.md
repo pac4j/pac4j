@@ -33,7 +33,7 @@ OSGi support and shading have been removed due to lack of usage and to simplify 
 If you rely on OSGi or need any shaded JARs, please report your use case as feedback is still welcome.
 
 
-### 4) Improvement of the OpenID protocol
+### 4) Improvement of the OpenID support
 
 #### a) Technically
 

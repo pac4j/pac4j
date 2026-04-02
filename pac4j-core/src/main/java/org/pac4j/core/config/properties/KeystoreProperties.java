@@ -65,8 +65,10 @@ public class KeystoreProperties {
      * <p>setKeystorePath.</p>
      *
      * @param path a {@link String} object
+     * @return the properties
      */
-    public void setKeystorePath(final String path) {
+    public KeystoreProperties setKeystorePath(final String path) {
         this.keystoreResource = SpringResourceHelper.buildResourceFromPath(path);
+        return this;
     }
 }
