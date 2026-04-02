@@ -53,11 +53,11 @@ public class SecurityConfig extends Pac4jSecurityConfig {
     @Bean
     public Config config() {
         // configuration of the authentication via the OpenID Connect protocol
-        final var config = new OidcConfiguration();
-        config.setDiscoveryURI("https://casserverpac4j.herokuapp.com/oidc/.well-known/openid-configuration");
-        config.setClientId("myclient");
-        config.setSecret("mysecret");
-        config.setAllowUnsignedIdTokens(true);
+        final var config = new OidcConfiguration()
+            .setDiscoveryURI("https://casserverpac4j.herokuapp.com/oidc/.well-known/openid-configuration")
+            .setClientId("myclient")
+            .setSecret("mysecret")
+            .setAllowUnsignedIdTokens(true);
         return new Config(baseUri + "/callback", new OidcClient(config));
     }
 
