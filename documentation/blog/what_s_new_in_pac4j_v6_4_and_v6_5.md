@@ -21,7 +21,7 @@ The `pac4j-config` and `pac4j-springboot` modules which allow a properties confi
 
 ### 3) Build
 
-The build process has been simplified:
+The build process has been simplified (30% faster):
 - 4 modules have been removed
 - no more `test-jar` components: the few test classes are in the `org.pac4j.test` package of the `pac4j-core` module
 - OSGi and shading phases have been removed.
