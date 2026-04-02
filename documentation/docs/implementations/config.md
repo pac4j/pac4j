@@ -22,12 +22,12 @@ title: Implementations comparison for configuration&#58;
     </tr>
     <tr>
         <td>spring-webmvc-pac4j</td>
-        <td><img src="/img/green_check.png" />using the <code class="highlighter-rouge">pac4j-springboot</code> module for a Spring Boot webapp</td>
+        <td><img src="/img/red_cross.png" /></td>
         <td><img src="/img/green_check.png" />via dependency injection</td>
     </tr>
     <tr>
         <td>spring-webflux-pac4j</td>
-        <td><img src="/img/green_check.png" />using the <code class="highlighter-rouge">pac4j-springboot</code> module for a Spring Boot webapp</td>
+        <td><img src="/img/red_cross.png" /></td>
         <td><img src="/img/green_check.png" />via dependency injection</td>
     </tr>
     <tr>
@@ -42,7 +42,7 @@ title: Implementations comparison for configuration&#58;
     </tr>
     <tr>
         <td>spring-security-pac4j</td>
-        <td><img src="/img/green_check.png" />using the <code class="highlighter-rouge">pac4j-springboot</code> module for a Spring Boot webapp</td>
+        <td><img src="/img/red_cross.png" /></td>
         <td><img src="/img/green_check.png" />via dependency injection</td>
     </tr>
     <tr>
