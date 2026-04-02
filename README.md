@@ -16,8 +16,8 @@ It is licensed under the Apache 2 license.
 
 ## Available implementations (*Get started by clicking on your framework*):
 
-[JEE](https://github.com/pac4j/j2e-pac4j)
-&bull; [Spring Web MVC (Spring Boot)](https://github.com/pac4j/spring-webmvc-pac4j)
+[Spring Web MVC (Spring Boot)](https://github.com/pac4j/spring-webmvc-pac4j)
+&bull; [J2E](https://github.com/pac4j/j2e-pac4j)
 &bull; [Spring Webflux (Spring Boot)](https://github.com/pac4j/spring-webflux-pac4j)
 &bull; [Apache Shiro](https://github.com/bujiio/buji-pac4j)
 &bull; [Spring Security (Spring Boot)](https://github.com/pac4j/spring-security-pac4j)
@@ -42,7 +42,7 @@ It is licensed under the Apache 2 license.
 
 ## Authentication mechanisms:
 
-[OpenID Connect](https://www.pac4j.org/docs/clients/openid-connect.html) - [OAuth (Facebook, Twitter...)](https://www.pac4j.org/docs/clients/oauth.html) - [SAML](https://www.pac4j.org/docs/clients/saml.html) - [CAS](https://www.pac4j.org/docs/clients/cas.html) - [HTTP](https://www.pac4j.org/docs/clients/http.html) - [Kerberos (SPNEGO)](https://www.pac4j.org/docs/clients/kerberos.html)
+[OpenID Connect](https://www.pac4j.org/docs/clients/openid-connect.html) - [SAML](https://www.pac4j.org/docs/clients/saml.html) - [CAS](https://www.pac4j.org/docs/clients/cas.html) - [OAuth (Facebook, Twitter...)](https://www.pac4j.org/docs/clients/oauth.html) - [HTTP](https://www.pac4j.org/docs/clients/http.html) - [Kerberos (SPNEGO)](https://www.pac4j.org/docs/clients/kerberos.html)
 
 [LDAP](https://www.pac4j.org/docs/authenticators/ldap.html) - [SQL](https://www.pac4j.org/docs/authenticators/sql.html) - [JWT](https://www.pac4j.org/docs/authenticators/jwt.html) - [MongoDB](https://www.pac4j.org/docs/authenticators/mongodb.html) - [IP address](https://www.pac4j.org/docs/authenticators/ip.html) - [REST API](https://www.pac4j.org/docs/authenticators/rest.html)
 

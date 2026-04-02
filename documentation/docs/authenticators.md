@@ -20,7 +20,6 @@ You can use various `Authenticator` for many identity mechanisms:
 - [SQL](authenticators/sql.html)
 - [JWT](authenticators/jwt.html)
 - [MongoDB](authenticators/mongodb.html)
-- [CouchDB](authenticators/couchdb.html)
 - [IP address](authenticators/ip.html)
 - [REST API](authenticators/rest.html)
 
