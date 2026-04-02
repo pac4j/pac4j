@@ -117,12 +117,6 @@ public class SAML2ConfigurationTests {
         var identityProviderMetadataException = assertThrows(SAMLException.class, configurationWithoutIdentityProviderMetadata::init);
         assertEquals("SAML2Configuration is missing required settings: identity provider metadata resource/path.",
             identityProviderMetadataException.getMessage());
-
-        var configurationWithoutServiceProviderMetadata = newValidConfiguration();
-        configurationWithoutServiceProviderMetadata.setServiceProviderMetadataResource(null);
-        var serviceProviderMetadataException = assertThrows(SAMLException.class, configurationWithoutServiceProviderMetadata::init);
-        assertEquals("SAML2Configuration is missing required settings: service provider metadata resource/path.",
-            serviceProviderMetadataException.getMessage());
     }
 
     private static SAML2Configuration newValidConfiguration() {

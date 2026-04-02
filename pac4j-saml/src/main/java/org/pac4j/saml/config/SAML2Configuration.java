@@ -328,9 +328,6 @@ public class SAML2Configuration extends BaseClientConfiguration {
         if (identityProviderMetadataResource == null) {
             missingSettings.add("identity provider metadata resource/path");
         }
-        if (serviceProviderMetadataResource == null) {
-            missingSettings.add("service provider metadata resource/path");
-        }
         if (!missingSettings.isEmpty()) {
             throw new SAMLException("SAML2Configuration is missing required settings: "
                 + String.join(", ", missingSettings) + '.');
