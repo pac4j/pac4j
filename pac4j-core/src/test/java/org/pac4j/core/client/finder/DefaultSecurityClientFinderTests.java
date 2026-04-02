@@ -222,7 +222,7 @@ public final class DefaultSecurityClientFinderTests implements TestsConstants, P
         val client1 =
             new MockIndirectClient(NAME, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
         val clients = new Clients(client1);
-        val result = finder.find(clients, MockWebContext.create(), Pac4jConstants.EMPTY_STRING);
+        val result = finder.find(clients, MockWebContext.create(), EMPTY_STRING);
         assertTrue(result.isEmpty());
     }
 }

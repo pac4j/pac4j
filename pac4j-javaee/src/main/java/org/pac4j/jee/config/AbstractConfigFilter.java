@@ -40,7 +40,7 @@ public abstract class AbstractConfigFilter implements Filter {
             val builtConfig = ConfigBuilder.build(configFactoryParam);
             if (builtConfig != null) {
                 this.config = builtConfig;
-                AbstractConfigFilter.CONFIG = builtConfig;
+                CONFIG = builtConfig;
             }
         }
     }
@@ -114,7 +114,7 @@ public abstract class AbstractConfigFilter implements Filter {
      */
     public Config getSharedConfig() {
         if (this.config == null) {
-            return AbstractConfigFilter.CONFIG;
+            return CONFIG;
         }
         return this.config;
     }

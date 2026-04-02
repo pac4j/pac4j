@@ -49,9 +49,9 @@ public class CasRedirectionActionBuilder implements RedirectionActionBuilder {
         val computedCallbackUrl = client.computeFinalCallbackUrl(webContext);
 
         val renew = configuration.isRenew()
-            || webContext.getRequestAttribute(RedirectionActionBuilder.ATTRIBUTE_FORCE_AUTHN).isPresent();
+            || webContext.getRequestAttribute(ATTRIBUTE_FORCE_AUTHN).isPresent();
         val gateway = configuration.isGateway()
-            || webContext.getRequestAttribute(RedirectionActionBuilder.ATTRIBUTE_PASSIVE).isPresent();
+            || webContext.getRequestAttribute(ATTRIBUTE_PASSIVE).isPresent();
         val redirectionUrl = constructRedirectUrl(computeLoginUrl, getServiceParameter(),
                 computedCallbackUrl, renew, gateway, configuration.getMethod());
         LOGGER.debug("redirectionUrl: {}", redirectionUrl);

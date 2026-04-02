@@ -19,8 +19,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Generic tests on the {@link SAML2Client}.
@@ -130,10 +129,10 @@ public final class SAML2ClientTests {
 
         var entityDescriptor = (EntityDescriptor) saml2Client1.getServiceProviderMetadataResolver().getEntityDescriptorElement();
         var sp = entityDescriptor.getSPSSODescriptor(SAMLConstants.SAML20P_NS);
-        sp.getSingleLogoutServices().stream().anyMatch(service -> service.getLocation().contains("SAML2Client1"));
-        sp.getSingleLogoutServices().stream().anyMatch(service -> service.getLocation().contains("SAML2Client2"));
-        sp.getAssertionConsumerServices().stream().anyMatch(service -> service.getLocation().contains("SAML2Client1"));
-        sp.getAssertionConsumerServices().stream().anyMatch(service -> service.getLocation().contains("SAML2Client2"));
+        assertTrue(sp.getSingleLogoutServices().stream().anyMatch(service -> service.getLocation().contains("SAML2Client1")));
+        assertFalse(sp.getSingleLogoutServices().stream().anyMatch(service -> service.getLocation().contains("SAML2Client2")));
+        assertTrue(sp.getAssertionConsumerServices().stream().anyMatch(service -> service.getLocation().contains("SAML2Client1")));
+        assertFalse(sp.getAssertionConsumerServices().stream().anyMatch(service -> service.getLocation().contains("SAML2Client2")));
 
         var totalSloServices = sp.getSingleLogoutServices().size();
         var totalAssertionConsumerServices = sp.getAssertionConsumerServices().size();

@@ -27,14 +27,14 @@ public final class KeyStoreUtils {
 
         try (var inputStream = properties.getKeystoreGenerator().retrieve()) {
             val keyStoreType = properties.getKeyStoreType() == null
-                ? KeyStoreUtils.DEFAULT_KEYSTORE_TYPE
+                ? DEFAULT_KEYSTORE_TYPE
                 : properties.getKeyStoreType();
 
             LOGGER.debug("Loading keystore with type {}", keyStoreType);
-            val keyStore = KeyStoreUtils.loadKeyStore(inputStream, properties.getKeystorePassword(), keyStoreType);
+            val keyStore = loadKeyStore(inputStream, properties.getKeystorePassword(), keyStoreType);
             LOGGER.debug("Loaded keystore with type {} with size {}", keyStoreType, keyStore.size());
 
-            val privateKeyAlias = KeyStoreUtils.findPrivateKeyAlias(keyStore, properties.getKeyStoreAlias());
+            val privateKeyAlias = findPrivateKeyAlias(keyStore, properties.getKeyStoreAlias());
 
             return Pair.of(keyStore, privateKeyAlias);
         } catch (final Exception e) {

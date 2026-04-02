@@ -125,7 +125,6 @@ public class DefaultSessionLogoutHandler implements SessionLogoutHandler {
                 store.remove(sessionId);
 
                 destroy(webContext, newSessionStore, ctx.profileManagerFactory(), "back");
-                return;
             } else {
                 LOGGER.warn("Cannot build new session store from tracked session: cannot perform back channel logout");
             }

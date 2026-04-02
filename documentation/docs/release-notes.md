@@ -9,6 +9,7 @@ title: Release notes&#58;
 - Removed the GAE, CouchDB, Config and SpringBoot modules
 - Created the `org.pac4j.test` package for tests components in the `pac4j-core` module instead of `test-jar` modules
 - Removed the OSGi and shading Maven phases
+- Update PMD plugin (v3.28.0)
 
 **v6.4.2**:
 - Removes initialization check on the SP provider metadata resource/path (SAML support)

@@ -106,7 +106,7 @@ public class StravaProfileDefinition extends OAuthProfileDefinition {
         val profile = (StravaProfile) newProfile();
         val json = JsonHelper.getFirstNode(body);
         if (json != null) {
-            profile.setId(ProfileHelper.sanitizeIdentifier(JsonHelper.getElement(json, StravaProfileDefinition.ID)));
+            profile.setId(ProfileHelper.sanitizeIdentifier(JsonHelper.getElement(json, ID)));
             for (val attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
             }

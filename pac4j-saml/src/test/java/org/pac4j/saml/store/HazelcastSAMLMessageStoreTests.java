@@ -1,15 +1,7 @@
 package org.pac4j.saml.store;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.*;
-
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.map.IMap;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -17,8 +9,16 @@ import org.mockito.MockitoAnnotations;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
 import org.opensaml.saml.common.SAMLObjectBuilder;
 import org.opensaml.saml.saml2.core.NameID;
-import org.pac4j.test.util.TestsConstants;
 import org.pac4j.saml.util.Configuration;
+import org.pac4j.test.util.TestsConstants;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 /**
  * This is {@link HazelcastSAMLMessageStoreTests} for {@link HazelcastSAMLMessageStore}.
@@ -66,7 +66,7 @@ public class HazelcastSAMLMessageStoreTests implements TestsConstants {
                 Configuration.serializeSamlObject(message).toString().getBytes(StandardCharsets.UTF_8))));
 
         assertEquals(message.getValue(), ((NameID) store.get("id").get()).getValue());
-        verify(storeMapInstance, times(1)).get(eq("id"));
+        assertNull(verify(storeMapInstance, times(1)).get(eq("id")));
         verify(storeMapInstance, times(1)).remove(eq("id"));
 
         assertTrue(store.get("id").isEmpty());
@@ -75,7 +75,7 @@ public class HazelcastSAMLMessageStoreTests implements TestsConstants {
     @Test
     public void getEmpty() {
         assertTrue(store.get("notfound").isEmpty());
-        verify(storeMapInstance, times(1)).get(eq("notfound"));
+        assertNull(verify(storeMapInstance, times(1)).get(eq("notfound")));
         verify(storeMapInstance, times(0)).remove(anyString());
     }
 

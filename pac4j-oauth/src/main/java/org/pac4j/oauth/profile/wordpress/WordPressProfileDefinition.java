@@ -59,7 +59,7 @@ public class WordPressProfileDefinition extends OAuthProfileDefinition {
             }
             json = json.get("meta");
             if (json != null) {
-                val attribute = WordPressProfileDefinition.LINKS;
+                val attribute = LINKS;
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
             }
         } else {

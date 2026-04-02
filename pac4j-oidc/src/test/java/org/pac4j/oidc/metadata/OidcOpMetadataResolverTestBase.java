@@ -27,14 +27,14 @@ public class OidcOpMetadataResolverTestBase {
         configuration.setClientId("clientId");
         configuration.setSecret("secret");
         configuration.setDiscoveryURI(discoveryURI);
-        configuration.setIdTokenSigningAlgorithm(OidcOpMetadataResolverTestBase.JWS_ALGORITHM);
+        configuration.setIdTokenSigningAlgorithm(JWS_ALGORITHM);
         configuration.setSupportedClientAuthenticationMethods(supportedClientAuthenticationMethods);
         return configuration;
     }
 
     protected static StaticOidcOpMetadataResolver getStaticMetadataResolver(OidcConfiguration configuration,
         List<ClientAuthenticationMethod> supportedAuthMethods) throws URISyntaxException {
-        OIDCProviderMetadata providerMetadata = OidcOpMetadataResolverTestBase.getOidcProviderMetadata(supportedAuthMethods);
+        OIDCProviderMetadata providerMetadata = getOidcProviderMetadata(supportedAuthMethods);
         StaticOidcOpMetadataResolver oidcOpMetadataResolver = new StaticOidcOpMetadataResolver(configuration, providerMetadata);
         oidcOpMetadataResolver.init();
         return oidcOpMetadataResolver;
@@ -42,7 +42,7 @@ public class OidcOpMetadataResolverTestBase {
 
     protected static StaticOidcOpMetadataResolver getStaticMetadataResolverWithTokenEndPoint(OidcConfiguration configuration,
         List<ClientAuthenticationMethod> supportedAuthMethods) throws URISyntaxException {
-        OIDCProviderMetadata providerMetadata = OidcOpMetadataResolverTestBase.getOidcProviderMetadata(supportedAuthMethods);
+        OIDCProviderMetadata providerMetadata = getOidcProviderMetadata(supportedAuthMethods);
         // Sets a fake token endpoint URI to permits private JWT key generation
         providerMetadata.setTokenEndpointURI(new URI("test"));
         providerMetadata.setPushedAuthorizationRequestEndpointURI(new URI("par"));
@@ -56,7 +56,7 @@ public class OidcOpMetadataResolverTestBase {
         AzureAd2OidcConfiguration configuration = new AzureAd2OidcConfiguration();
         configuration.setClientId("clientId");
         configuration.setSecret("secret");
-        configuration.setIdTokenSigningAlgorithm(OidcOpMetadataResolverTestBase.JWS_ALGORITHM);
+        configuration.setIdTokenSigningAlgorithm(JWS_ALGORITHM);
         configuration.setSupportedClientAuthenticationMethods(supportedClientAuthenticationMethods);
         return configuration;
     }
@@ -71,7 +71,7 @@ public class OidcOpMetadataResolverTestBase {
     protected static OIDCProviderMetadata getOidcProviderMetadata(List<ClientAuthenticationMethod> supportedClientAuthenticationMethods)
         throws URISyntaxException {
         OIDCProviderMetadata providerMetadata = new OIDCProviderMetadata(new Issuer("issuer"), List.of(SubjectType.PUBLIC), new URI(""));
-        providerMetadata.setIDTokenJWSAlgs(List.of(OidcOpMetadataResolverTestBase.JWS_ALGORITHM));
+        providerMetadata.setIDTokenJWSAlgs(List.of(JWS_ALGORITHM));
         providerMetadata.setTokenEndpointAuthMethods(supportedClientAuthenticationMethods);
         return providerMetadata;
     }

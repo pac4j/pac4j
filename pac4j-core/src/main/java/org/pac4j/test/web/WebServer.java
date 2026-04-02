@@ -30,7 +30,7 @@ public class WebServer extends NanoHTTPD {
     @Override
     public void start() {
         try {
-            start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
+            start(SOCKET_READ_TIMEOUT, false);
         } catch (final IOException e) {
             throw new TechnicalException(e);
         }
@@ -45,9 +45,9 @@ public class WebServer extends NanoHTTPD {
         }
         val response = responses.get(r);
         if (response != null) {
-            return NanoHTTPD.newFixedLengthResponse(response.getStatus(), response.getMimeType(), response.getBody());
+            return newFixedLengthResponse(response.getStatus(), response.getMimeType(), response.getBody());
         } else {
-            return NanoHTTPD.newFixedLengthResponse(NanoHTTPD.Response.Status.SERVICE_UNAVAILABLE, "plain/text", "no response available");
+            return newFixedLengthResponse(NanoHTTPD.Response.Status.SERVICE_UNAVAILABLE, "plain/text", "no response available");
         }
     }
 }

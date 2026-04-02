@@ -117,7 +117,7 @@ public class OkProfileDefinition extends OAuthProfileDefinition {
         val profile = (OkProfile) newProfile();
         var userNode = JsonHelper.getFirstNode(body);
         if (userNode != null) {
-            profile.setId(ProfileHelper.sanitizeIdentifier(JsonHelper.getElement(userNode, OkProfileDefinition.UID)));
+            profile.setId(ProfileHelper.sanitizeIdentifier(JsonHelper.getElement(userNode, UID)));
             for (val attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(userNode, attribute));
             }

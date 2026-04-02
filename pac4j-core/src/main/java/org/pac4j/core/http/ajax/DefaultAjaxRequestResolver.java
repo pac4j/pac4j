@@ -53,7 +53,7 @@ public class DefaultAjaxRequestResolver implements AjaxRequestResolver, HttpCons
         val webContext = ctx.webContext();
         if (webContext.getRequestParameter(FACES_PARTIAL_AJAX_PARAMETER).isEmpty()) {
             if (StringUtils.isNotBlank(url)) {
-                webContext.setResponseHeader(HttpConstants.LOCATION_HEADER, url);
+                webContext.setResponseHeader(LOCATION_HEADER, url);
             }
             LOGGER.debug("Faces is not used: returning unauthenticated error for url: {}", url);
             return HttpActionHelper.buildUnauthenticatedAction(webContext);

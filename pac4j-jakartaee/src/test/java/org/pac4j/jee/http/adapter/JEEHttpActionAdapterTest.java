@@ -1,21 +1,20 @@
 package org.pac4j.jee.http.adapter;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.pac4j.core.context.HttpConstants;
-import org.pac4j.jee.context.JEEContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.exception.http.OkAction;
 import org.pac4j.core.exception.http.StatusAction;
+import org.pac4j.jee.context.JEEContext;
 import org.pac4j.test.util.TestsConstants;
-
-import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 /**
@@ -50,9 +49,9 @@ public final class JEEHttpActionAdapterTest implements TestsConstants {
 
     @Test
     public void testActionWithLocation() {
-        JEEHttpActionAdapter.INSTANCE.adapt(new FoundAction(TestsConstants.PAC4J_URL), context);
+        JEEHttpActionAdapter.INSTANCE.adapt(new FoundAction(PAC4J_URL), context);
         verify(response).setStatus(302);
-        verify(context).setResponseHeader(HttpConstants.LOCATION_HEADER, TestsConstants.PAC4J_URL);
+        verify(context).setResponseHeader(HttpConstants.LOCATION_HEADER, PAC4J_URL);
     }
 
     @Test
@@ -63,8 +62,8 @@ public final class JEEHttpActionAdapterTest implements TestsConstants {
 
     @Test
     public void testActionWithContent() {
-        JEEHttpActionAdapter.INSTANCE.adapt(new OkAction(TestsConstants.VALUE), context);
+        JEEHttpActionAdapter.INSTANCE.adapt(new OkAction(VALUE), context);
         verify(response).setStatus(200);
-        verify(writer).write(TestsConstants.VALUE);
+        verify(writer).write(VALUE);
     }
 }

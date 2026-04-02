@@ -201,16 +201,16 @@ public class FacebookProfileDefinition extends OAuthProfileDefinition {
             for (val attribute : getPrimaryAttributes()) {
                 convertAndAdd(profile, PROFILE_ATTRIBUTE, attribute, JsonHelper.getElement(json, attribute));
             }
-            extractData(profile, json, FacebookProfileDefinition.FRIENDS);
-            extractData(profile, json, FacebookProfileDefinition.MOVIES);
-            extractData(profile, json, FacebookProfileDefinition.MUSIC);
-            extractData(profile, json, FacebookProfileDefinition.BOOKS);
-            extractData(profile, json, FacebookProfileDefinition.LIKES);
-            extractData(profile, json, FacebookProfileDefinition.ALBUMS);
-            extractData(profile, json, FacebookProfileDefinition.EVENTS);
-            extractData(profile, json, FacebookProfileDefinition.GROUPS);
-            extractData(profile, json, FacebookProfileDefinition.MUSIC_LISTENS);
-            extractData(profile, json, FacebookProfileDefinition.PICTURE);
+            extractData(profile, json, FRIENDS);
+            extractData(profile, json, MOVIES);
+            extractData(profile, json, MUSIC);
+            extractData(profile, json, BOOKS);
+            extractData(profile, json, LIKES);
+            extractData(profile, json, ALBUMS);
+            extractData(profile, json, EVENTS);
+            extractData(profile, json, GROUPS);
+            extractData(profile, json, MUSIC_LISTENS);
+            extractData(profile, json, PICTURE);
         } else {
             raiseProfileExtractionJsonError(body);
         }
