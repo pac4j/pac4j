@@ -5,11 +5,11 @@ import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.test.util.TestsConstants;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.exceptions.OidcConfigurationException;
 import org.pac4j.oidc.metadata.IOidcOpMetadataResolver;
 import org.pac4j.oidc.metadata.OidcOpMetadataResolver;
+import org.pac4j.test.util.TestsConstants;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -31,6 +31,14 @@ public class OidcConfigurationTests implements TestsConstants {
         config.setDiscoveryURI(CASSERVERPAC4J_OIDC_URL);
         config.setAllowUnsignedIdTokens(true);
         config.setOidcClient(mock(OidcClient.class));
+    }
+
+    @Test
+    public void testToString() {
+        config = new OidcConfiguration();
+        val client = new OidcClient(config);
+        assertNotNull(client.toString());
+        assertNotNull(config.toString());
     }
 
     @Test
