@@ -131,12 +131,11 @@ The key used is the one stored in the RP JWKS (`config.getRpJwks`) so it must be
 
 ## 4) Tokens
 
-When validating the IDToken in the login process, you can set a clock skew:
+The `OidcProfile` expiration is driven by the access token. When the access token is received, its lifetime is extracted:
+either from the `expires_in` field returned by the token endpoint, or, if not present, from the `exp` claim of the access token JWT itself.
 
-```java
-// 1 minute
-config.setMaxClockSkew(60);
-```
+This value is used to set the profile's expiration date. As a consequence, `profile.isExpired()` returns `true` when the access token has expired,
+which in turn triggers the refresh token flow (if a refresh token is available) to silently obtain a new access token and keep the user's session alive.
 
 By default, the local session expires when the access token does, but this can be disabled using:
 
@@ -148,6 +147,13 @@ The additional param `TokenExpirationAdvance` allows to set the time in seconds,
 
 ```java
 config.setTokenExpirationAdvance(10);
+```
+
+When validating the IDToken in the login process, you can set a clock skew:
+
+```java
+// 1 minute
+config.setMaxClockSkew(60);
 ```
 
 To reinforce security, the `none` alogithm for ID tokens (meaning no signature validation) must be explicitly accepted by using:

@@ -13,6 +13,7 @@ title: Release notes&#58;
 
 **v6.4.2**:
 - Removes initialization check on the SP provider metadata resource/path (SAML support)
+- Fix bug in `OidcConfiguration.toString()`
 
 **v6.4.1**:
 - Ensures proper initialization of `SAML2Configuration`
