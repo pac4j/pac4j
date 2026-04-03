@@ -12,7 +12,7 @@ See also:
 
 Since v6.4.0, pac4j supports the [OpenID Connect Federation v1.0](https://openid.net/specs/openid-federation-1_0.html). It has been tested with Connect2id v19.8.
 
-The OIDC client is considered to have the federation enabled if the property `federation.targetIssuer` is not blank.
+The OIDC client is considered to have the federation enabled if the property `federation.targetOp` is not blank.
 
 
 ## 1) Federation endpoint
@@ -52,7 +52,7 @@ Available properties are:
 - `scopes` (`List<String>`, default: `["openid", "email", "profile"]`): value of the `scope` RP metadata claim (serialized as a space-separated string).
 - `clientName` (`String`, optional): value of the `client_name` RP metadata claim.
 - `contacts` (`List<String>`, default: empty list): value of the `contacts` RP metadata claim when at least one contact is provided.
-- `trustAnchors` (`List<OidcTrustAnchorProperties>`, default: empty list): trust anchors used to resolve trust chains (`taIssuer` and `taJwksUrl` for each anchor).
+- `trustAnchors` (`List<OidcTrustAnchorProperties>`, default: empty list): trust anchors used to resolve trust chains (`issuer` and `jwksResource` for each anchor).
 - `targetOp` (`String`): OP entity identifier to resolve via federation. When set, federation mode is used instead of discovery URI resolution.
 
 At least one signing source must be configured with a resource/path (`jwks` or `keystore`) to generate the entity configuration.
