@@ -130,7 +130,12 @@ Therefore, it would be wise to consider explicitly and permanently registering o
 
 ## 2) Let's log in with explicit registration
 
-And this is a feature supported by the OpenID Federation protocol: the explicit registration of the OIDC client.
+
+### a) the client identifier
+
+And this is a feature supported by the OpenID Federation protocol:
+
+> the explicit registration of the OIDC client.
 
 This must be of course supported by the OIDC server and this is the case of the Connect2id server.
 
@@ -143,3 +148,215 @@ op.federation.clientRegistrationTypes=explicit
 ```
 
 and restart the server (`tomcat/bin/startup.sh`).
+
+_On the pac4j side:_
+
+```
+DEBUG o.p.o.m.r.FederationClientRegister       : Registration endpoint exists and only explicit registration by OP (and RP)
+ -> performing explicit registration
+ INFO .f.e.DefaultEntityConfigurationGenerator : Generating entity configuration for: http://localhost:8081
+DEBUG o.p.o.m.r.FederationClientRegister       : Received response registration: eyJraW...mkaMxZQ
+ WARN o.p.o.m.r.FederationClientRegister       : /!\ ================================================
+ WARN o.p.o.m.r.FederationClientRegister       : /!\ Explicit registration of the client 'http://localhost:8081' returns
+  id: [t4j746kwjax6s]. This information won't be repeated. You MUST add this value to your configuration before the next
+   application startup!
+ WARN o.p.o.m.r.FederationClientRegister       : /!\ ================================================
+```
+
+_On the Connect2id side:_
+
+```
+INFO FED-REG - [OP8014] Registered entity http://localhost:8081 as explicit client with client_id=t4j746kwjax6s exp=1783005293
+INFO FED-REG - [OP8019] Explicit registration response statement for entity http://localhost:8081: {sub=http://localhost:8081,
+ aud=[http://localhost:8081], metadata={openid_relying_party={client_registration_types=[explicit, automatic],
+ token_endpoint_auth_signing_alg=RS256, grant_types=[authorization_code], jwks={keys=[{kty=RSA, e=AQAB, use=sig, kid=...
+```
+
+The explicit registration is duly taken into account by Connect2id which generates a specific `client_id` for the OIDC client, returns it to pac4j to be displayed in its logs.
+
+Let's follow the instruction given in the logs and add this `client_id` in the pac4j configuration:
+
+```java
+@Bean
+public Config config() {
+    final var config = new OidcConfiguration();
+
+    // the new clientId!
+    config.setClientId("t4j746kwjax6s");
+
+    final var rpJwks = config.getRpJwks();
+    rpJwks.setJwksPath("file:./metadata/rpjwks.jwks");
+    rpJwks.setKid("defaultjwks0426");
+    config.setClientAuthenticationMethod(ClientAuthenticationMethod.PRIVATE_KEY_JWT);
+    final var privateKeyJwtConfig = new PrivateKeyJwtClientAuthnMethodConfig(rpJwks);
+    config.setPrivateKeyJWTClientAuthnMethodConfig(privateKeyJwtConfig);
+
+    config.setRequestObjectSigningAlgorithm(JWSAlgorithm.RS256);
+
+    final var federation = config.getFederation();
+
+    federation.setTargetOp("http://127.0.0.1:8080/c2id");
+    final var trust = new OidcTrustAnchorProperties();
+    trust.setIssuer("http://localhost:8081/trustanchor");
+    trust.setJwksPath("classpath:trustanchor.jwks");
+    federation.getTrustAnchors().add(trust);
+
+    federation.getJwks().setJwksPath("file:./metadata/oidcfede.jwks");
+    federation.getJwks().setKid("mykeyoidcfede26");
+    federation.setContactName("C2ID Test RP (Localhost)");
+    federation.setContactEmails(List.of("jerome@casinthecloud.com"));
+
+    federation.setEntityId("http://localhost:8081");
+
+    return new Config(baseUri + "/callback", new OidcClient(config));
+}
+```
+
+Here is the complete configuration to refresh memories (and not only the added `client_id`).
+
+We restart the Spring Boot application and try a new login process.
+
+This time, no registration happens and Connect2id directly recognizes the provided `client_id`:
+
+```
+INFO AUTHZ-SESSION - [OP2101] Created new auth session: sid=1234 client_id=t4j746kwjax6s scope=[openid, profile, email]
+```
+
+### b) the client secret
+
+At this point in the article, you should wonder why we only have a `client_id` and no `client_secret`.
+
+In fact, we don't need a secret as we use the `private_key_jwt` client authentication method: the credential is the private key, not the secret here.
+
+As this pac4j configuration is revealed in its entity statement, the Connect2id server is aware of that setting and **smartly** decides to only return a `client_id` for this OIDC client.
+
+Let's go further and replace this configuration in pac4j:
+
+```java
+config.setClientAuthenticationMethod(ClientAuthenticationMethod.PRIVATE_KEY_JWT);
+final var privateKeyJwtConfig = new PrivateKeyJwtClientAuthnMethodConfig(rpJwks);
+config.setPrivateKeyJWTClientAuthnMethodConfig(privateKeyJwtConfig);
+```
+
+by:
+
+```java
+config.setClientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC);
+```
+
+and we also remove the previous `client_id`:
+
+```java
+config.setClientId("t4j746kwjax6s");
+```
+
+Restart the Spring Boot application and try to log in.
+
+This time, we call the Connect2id server with explicit registration and no configured client id/secret.
+
+It fails and we get the following error from Connect2id:
+
+```
+INFO FED-REG - [OP8015] Couldn't register entity http://localhost:8081 as explicit client: null
+```
+
+Let's check the entity statement exposed by the RP on the `http://localhost:8081/.well-known/openid-federation`.
+
+It looks good:
+
+```json
+{
+    "sub": "http://localhost:8081",
+    "metadata": {
+        "openid_relying_party": {
+            "redirect_uris": [
+                "http://localhost:8081/callback?client_name=OidcClient"
+            ],
+            "application_type": "web",
+            "response_types": [
+                "code"
+            ],
+            "grant_types": [
+                "authorization_code"
+            ],
+            "scope": "openid email profile",
+            "token_endpoint_auth_method": "client_secret_basic",
+            "request_object_signing_alg": "RS256",
+            "client_registration_types": [
+                "explicit",
+                "automatic"
+            ],
+            "client_name": "C2ID Test RP (Localhost)",
+            "contacts": [
+                "jerome@casinthecloud.com"
+            ]
+        }
+    },
+    "nbf": 1775231639,
+    "jwks": {
+        "keys": [
+            {
+                "kty": "RSA",
+                "e": "AQAB",
+                "use": "sig",
+                "kid": "mykeyoidcfede26",
+                "n": "nVoecYifExFogZumnD1XzP84KhV...GrkbSGGxM2RfFmtPMgKFyJk0mpmnawMRxZEqELzQ"
+            }
+        ]
+    },
+    "iss": "http://localhost:8081",
+    "authority_hints": [
+        "http://localhost:8081/trustanchor"
+    ],
+    "exp": 1783007639,
+    "iat": 1775231639,
+    "jti": "c82c6461-372e-467a-aedf-f5e0081ad2d1"
+}
+```
+
+The `"token_endpoint_auth_method"` is indeed `"client_secret_basic"`.
+
+Maybe there is an issue with the already registered client in Connect2id.
+
+In its configuration file `oidcProvider.properties`, I search the property: `op.reg.apiAccessTokenSHA256` and find:
+
+```properties
+# Evaluation note: Use token value ztucZS1ZyFKgh0tUEruUtiSTXhnexmd6
+op.reg.apiAccessTokenSHA256=cca68b8b82bcf0b96cb826199429e50cd95a042f8e8891d1ac56ab135d096633
+```
+
+Let's try to list the existing clients:
+
+```shell
+curl -X GET http://127.0.0.1:8080/c2id/clients -H "Authorization: Bearer ztucZS1ZyFKgh0tUEruUtiSTXhnexmd6"
+```
+
+It works and I find my existing client (`http://localhost:8081`):
+
+```json
+[{"token_endpoint_auth_signing_alg":"RS256","grant_types":["authorization_code"],"jwks":{"keys":[{"kty":"RSA","e":"AQAB",
+ "use":"sig","kid":"defaultjwks0426","n":"2moVQWw...aq7Q"}]},"subject_type":"public","application_type":"web",
+ "registration_client_uri":"http:\/\/127.0.0.1:8080\/c2id\/clients\/t4j746kwjax6s","redirect_uris":["http:\/\/localhost:8081\/callback?client_name=OidcClient"],
+ "registration_access_token":"JLMD1GRm2HuUT0uOEmzfbmEN18zVEZ9TQgK7va69ZDU.YSxpLHI","token_endpoint_auth_method":"private_key_jwt",
+ "client_id":"t4j746kwjax6s","request_object_signing_alg":"RS256","client_id_issued_at":1775229293,"client_name":"C2ID Test RP (Localhost)",
+ "contacts":["jerome@casinthecloud.com"],"response_types":["code"],"id_token_signed_response_alg":"RS256"}]
+```
+
+The `"token_endpoint_auth_method":"private_key_jwt"` property is no longer true as I have changed the client authentication method.
+
+Let's try to remove this registered client:
+
+```shell
+curl -X DELETE "http://localhost:8080/c2id/clients/t4j746kwjax6s" -H "Authorization: Bearer ztucZS1ZyFKgh0tUEruUtiSTXhnexmd6"
+```
+
+Notice we use the `client_id` in the URL.
+
+and check that there is none now:
+
+```json
+[]
+```
+
+We re-try the login process:
+
