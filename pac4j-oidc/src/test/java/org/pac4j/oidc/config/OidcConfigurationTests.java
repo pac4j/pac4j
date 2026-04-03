@@ -34,6 +34,14 @@ public class OidcConfigurationTests implements TestsConstants {
     }
 
     @Test
+    public void testToString() {
+        config = new OidcConfiguration();
+        val client = new OidcClient(config);
+        assertNotNull(client.toString());
+        assertNotNull(config.toString());
+    }
+
+    @Test
     public void testOk() {
         config.init();
 

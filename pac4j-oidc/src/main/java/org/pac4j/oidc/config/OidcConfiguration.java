@@ -48,7 +48,7 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
  */
 @Getter
 @Setter
-@ToString(exclude = "secret")
+@ToString(exclude = {"secret", "oidcClient"})
 @Accessors(chain = true)
 @With
 @AllArgsConstructor
