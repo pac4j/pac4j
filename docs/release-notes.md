@@ -6,7 +6,7 @@ title: Release notes&#58;
 ### JDK17:
 
 **v6.5.0**:
-- Removed the GAE, CouchDB, Config and SpringBoot modules
+- Removed the GAE, CouchDB and SpringBoot modules
 - Created the `org.pac4j.test` package for tests components in the `pac4j-core` module instead of `test-jar` modules
 - Removed the OSGi and shading Maven phases
 - Update PMD plugin (v3.28.0)
