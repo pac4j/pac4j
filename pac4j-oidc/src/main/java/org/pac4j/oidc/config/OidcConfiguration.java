@@ -422,7 +422,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
     }
 
     /**
-     * Use {@link #getResourceRetriever()}
+     * Use {@code getResourceRetriever()}
      */
     @Deprecated
     public ResourceRetriever findResourceRetriever() {

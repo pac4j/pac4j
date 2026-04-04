@@ -17,7 +17,7 @@ import java.io.Serial;
  * @since 1.9.0
  */
 @Getter
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = false)
 @ToString
 public class OAuth10Credentials extends Credentials {
 

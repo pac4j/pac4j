@@ -19,7 +19,7 @@ import java.io.Serial;
  * @since 1.9.0
  */
 @ToString(onlyExplicitlyIncluded = true)
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = false)
 public class DigestCredentials extends TokenCredentials {
 
     @Serial

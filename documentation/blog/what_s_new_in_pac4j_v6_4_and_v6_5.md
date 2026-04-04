@@ -16,7 +16,9 @@ The `pac4j-couch` module to support CouchDB as an identity storage has been depr
 
 To address any Java environment, pac4j configurations must be defined via Java code to benefit from discoverability via code completion.
 
-The `pac4j-config` and `pac4j-springboot` modules which allow a properties configuration (no discovery available, documentation must be read) have been deprecated in v6.4.0 and removed in v6.5.0.
+The `pac4j-config` and `pac4j-springboot` modules which allow a properties configuration (no discovery available, documentation must be read) have been deprecated in v6.4.0.
+
+The `pac4j-springboot` module is removed in version 6.5.0 and the `pac4j-config` module will be removed in version 7.
 
 Client and configuration classes offer:
 - easy constructors:
@@ -48,7 +50,7 @@ config.withSecurityLogic(new DefaultSecurityLogic().setLoadProfilesFromSession(f
 ## 3) Build
 
 The build process has been simplified (30% faster):
-- 4 modules have been removed
+- 3 modules have been removed
 - no more `test-jar` components: the few test classes are in the `org.pac4j.test` package of the `pac4j-core` module
 - OSGi and shading phases have been removed.
 

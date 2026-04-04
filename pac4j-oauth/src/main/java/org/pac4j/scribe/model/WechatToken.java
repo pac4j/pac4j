@@ -16,7 +16,7 @@ import java.io.Serial;
  */
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = false)
 @ToString
 public class WechatToken extends OAuth2AccessToken {
 

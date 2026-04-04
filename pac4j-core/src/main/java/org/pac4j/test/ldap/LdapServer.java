@@ -1,4 +1,4 @@
-package org.pac4j.ldap.test.tools;
+package org.pac4j.test.ldap;
 
 import com.unboundid.ldap.listener.InMemoryDirectoryServer;
 import com.unboundid.ldap.listener.InMemoryDirectoryServerConfig;
@@ -14,6 +14,7 @@ import org.pac4j.test.util.TestsConstants;
  *
  * @author Jerome Leleu
  * @since 1.8.0
+ * deprecated: move to pac4j-ldap when pac4j-config is removed
  */
 public final class LdapServer implements TestsConstants {
 

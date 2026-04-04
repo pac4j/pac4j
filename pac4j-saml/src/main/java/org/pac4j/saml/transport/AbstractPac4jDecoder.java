@@ -49,7 +49,7 @@ public abstract class AbstractPac4jDecoder extends AbstractMessageDecoder {
     /**
      * <p>getBase64DecodedMessage.</p>
      *
-     * @return an array of {@link byte} objects
+     * @return an array of {@code byte} objects
      * @throws MessageDecodingException if any.
      */
     protected byte[] getBase64DecodedMessage() throws MessageDecodingException {

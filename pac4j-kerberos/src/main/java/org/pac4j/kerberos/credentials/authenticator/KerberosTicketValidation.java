@@ -25,7 +25,7 @@ public class KerberosTicketValidation {
      *
      * @param username a {@link String} object
      * @param servicePrincipal a {@link String} object
-     * @param responseToken an array of {@link byte} objects
+     * @param responseToken an array of {@code byte} objects
      * @param gssContext a GSSContext object
      */
     public KerberosTicketValidation(String username, String servicePrincipal, byte[] responseToken, GSSContext gssContext) {
@@ -51,7 +51,7 @@ public class KerberosTicketValidation {
     /**
      * <p>responseToken.</p>
      *
-     * @return an array of {@link byte} objects
+     * @return an array of {@code byte} objects
      */
     public byte[] responseToken() {
         return responseToken.clone();

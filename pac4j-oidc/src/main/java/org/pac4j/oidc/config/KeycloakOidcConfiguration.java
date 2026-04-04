@@ -40,7 +40,6 @@ public class KeycloakOidcConfiguration extends OidcConfiguration {
         super.internalInit(forceReinit);
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getDiscoveryURI() {
         return baseUri+"/realms/"+realm+"/.well-known/openid-configuration";

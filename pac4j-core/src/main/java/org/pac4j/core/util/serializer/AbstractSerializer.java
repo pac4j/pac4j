@@ -47,7 +47,7 @@ public abstract class AbstractSerializer implements Serializer {
      * <p>internalSerializeToBytes.</p>
      *
      * @param obj a {@link Object} object
-     * @return an array of {@link byte} objects
+     * @return an array of {@code byte} objects
      */
     protected byte[] internalSerializeToBytes(final Object obj) {
         return internalSerializeToString(obj).getBytes(StandardCharsets.UTF_8);
@@ -87,7 +87,7 @@ public abstract class AbstractSerializer implements Serializer {
     /**
      * <p>internalDeserializeFromBytes.</p>
      *
-     * @param encoded an array of {@link byte} objects
+     * @param encoded an array of {@code byte} objects
      * @return a {@link Object} object
      */
     protected Object internalDeserializeFromBytes(final byte[] encoded) {

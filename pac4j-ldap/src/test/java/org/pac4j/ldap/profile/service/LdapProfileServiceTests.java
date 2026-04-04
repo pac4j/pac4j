@@ -12,11 +12,11 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.service.AbstractProfileService;
 import org.pac4j.core.util.Pac4jConstants;
-import org.pac4j.test.util.TestsHelper;
 import org.pac4j.ldap.profile.LdapProfile;
-import org.pac4j.ldap.test.tools.LdapClient;
-import org.pac4j.ldap.test.tools.LdapServer;
+import org.pac4j.test.ldap.LdapClient;
+import org.pac4j.test.ldap.LdapServer;
 import org.pac4j.test.util.TestsConstants;
+import org.pac4j.test.util.TestsHelper;
 
 import java.util.Arrays;
 import java.util.Collection;

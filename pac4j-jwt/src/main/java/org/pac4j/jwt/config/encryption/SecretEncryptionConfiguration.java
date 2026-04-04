@@ -35,7 +35,7 @@ public class SecretEncryptionConfiguration extends AbstractEncryptionConfigurati
     /**
      * <p>Constructor for SecretEncryptionConfiguration.</p>
      *
-     * @param secret an array of {@link byte} objects
+     * @param secret an array of {@code byte} objects
      */
     public SecretEncryptionConfiguration(final byte[] secret){
         this();
@@ -54,7 +54,7 @@ public class SecretEncryptionConfiguration extends AbstractEncryptionConfigurati
     /**
      * <p>Constructor for SecretEncryptionConfiguration.</p>
      *
-     * @param secret an array of {@link byte} objects
+     * @param secret an array of {@code byte} objects
      * @param algorithm a {@link JWEAlgorithm} object
      * @param method a {@link EncryptionMethod} object
      */
@@ -149,7 +149,7 @@ public class SecretEncryptionConfiguration extends AbstractEncryptionConfigurati
     /**
      * <p>getSecretBytes.</p>
      *
-     * @return an array of {@link byte} objects
+     * @return an array of {@code byte} objects
      */
     public byte[] getSecretBytes() {
         return  Arrays.copyOf(secret,secret.length);
@@ -158,7 +158,7 @@ public class SecretEncryptionConfiguration extends AbstractEncryptionConfigurati
     /**
      * <p>setSecretBytes.</p>
      *
-     * @param secretBytes an array of {@link byte} objects
+     * @param secretBytes an array of {@code byte} objects
      */
     public void setSecretBytes(final byte[] secretBytes) {
         this.secret = Arrays.copyOf(secretBytes,secretBytes.length);

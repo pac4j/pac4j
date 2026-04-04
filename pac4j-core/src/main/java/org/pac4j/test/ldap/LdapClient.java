@@ -1,4 +1,4 @@
-package org.pac4j.ldap.test.tools;
+package org.pac4j.test.ldap;
 
 import lombok.val;
 import org.ldaptive.*;
@@ -15,6 +15,7 @@ import java.time.Duration;
  *
  * @author Jerome Leleu
  * @since 2.0.0
+ * deprecated: move to pac4j-ldap when pac4j-config is removed
  */
 public final class LdapClient {
 

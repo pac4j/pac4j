@@ -112,7 +112,7 @@ public class SAML2JdbcMetadataGenerator extends BaseSAML2MetadataGenerator {
     /**
      * <p>fetchMetadata.</p>
      *
-     * @return an array of {@link byte} objects
+     * @return an array of {@code byte} objects
      */
     protected byte[] fetchMetadata() {
         var sql = String.format("SELECT metadata FROM %s WHERE entityId='%s'", this.tableName, this.entityId);
@@ -123,7 +123,7 @@ public class SAML2JdbcMetadataGenerator extends BaseSAML2MetadataGenerator {
      * <p>decodeMetadata.</p>
      *
      * @param metadata a {@link String} object
-     * @return an array of {@link byte} objects
+     * @return an array of {@code byte} objects
      */
     protected byte[] decodeMetadata(final String metadata) {
         return Base64.getDecoder().decode(metadata);

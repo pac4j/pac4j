@@ -34,7 +34,6 @@ public final class OkClient extends OAuth20Client {
         setPublicKey(publicKey);
     }
 
-    /** {@inheritDoc} */
     @Override
     public OkConfiguration getConfiguration() {
         return (OkConfiguration) configuration;

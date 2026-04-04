@@ -12,10 +12,6 @@
     <packaging>jar</packaging>
     <name>pac4j for relational DB</name>
 
-    <properties>
-        <jdbi.version>2.78</jdbi.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.pac4j</groupId>
@@ -24,7 +20,6 @@
         <dependency>
             <groupId>org.jdbi</groupId>
             <artifactId>jdbi</artifactId>
-            <version>${jdbi.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -42,9 +37,13 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>${h2.version}</version>
             <scope>test</scope>
         </dependency>
         <!-- for testing -->

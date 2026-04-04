@@ -45,7 +45,6 @@ public class VkClient extends OAuth20Client {
         super.internalInit(forceReinit);
     }
 
-    /** {@inheritDoc} */
     @Override
     public VkConfiguration getConfiguration() {
         return (VkConfiguration) configuration;

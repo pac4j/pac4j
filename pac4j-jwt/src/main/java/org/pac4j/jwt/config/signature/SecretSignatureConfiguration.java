@@ -47,7 +47,7 @@ public class SecretSignatureConfiguration extends AbstractSignatureConfiguration
     /**
      * <p>Constructor for SecretSignatureConfiguration.</p>
      *
-     * @param secret an array of {@link byte} objects
+     * @param secret an array of {@code byte} objects
      */
     public SecretSignatureConfiguration(final byte[] secret) {
         this();
@@ -67,7 +67,7 @@ public class SecretSignatureConfiguration extends AbstractSignatureConfiguration
     /**
      * <p>Constructor for SecretSignatureConfiguration.</p>
      *
-     * @param secret an array of {@link byte} objects
+     * @param secret an array of {@code byte} objects
      * @param algorithm a {@link JWSAlgorithm} object
      */
     public SecretSignatureConfiguration(final byte[] secret, final JWSAlgorithm algorithm) {
@@ -137,7 +137,7 @@ public class SecretSignatureConfiguration extends AbstractSignatureConfiguration
     /**
      * <p>getSecretBytes.</p>
      *
-     * @return an array of {@link byte} objects
+     * @return an array of {@code byte} objects
      */
     public byte[] getSecretBytes() {
         return  Arrays.copyOf(secret,secret.length);
@@ -146,7 +146,7 @@ public class SecretSignatureConfiguration extends AbstractSignatureConfiguration
     /**
      * <p>setSecretBytes.</p>
      *
-     * @param secretBytes an array of {@link byte} objects
+     * @param secretBytes an array of {@code byte} objects
      */
     public void setSecretBytes(final byte[] secretBytes) {
         this.secret = Arrays.copyOf(secretBytes,secretBytes.length);

@@ -1,4 +1,4 @@
-package org.pac4j.sql.test.tools;
+package org.pac4j.test.sql;
 
 import lombok.val;
 import org.h2.jdbcx.JdbcConnectionPool;
@@ -18,6 +18,7 @@ import javax.sql.DataSource;
  *
  * @author Jerome Leleu
  * @since 1.8.0
+ * deprecated: move to pac4j-sql when pac4j-config is removed
  */
 public final class DbServer implements TestsConstants {
 

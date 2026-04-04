@@ -67,7 +67,6 @@ public class LinkedIn2Client extends OAuth20Client {
         super.internalInit(forceReinit);
     }
 
-    /** {@inheritDoc} */
     @Override
     public LinkedIn2Configuration getConfiguration() {
         return (LinkedIn2Configuration) configuration;

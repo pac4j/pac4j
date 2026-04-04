@@ -64,7 +64,7 @@ public class Pac4jHTTPRedirectDeflateDecoder extends AbstractPac4jDecoder {
     /**
      * <p>inflate.</p>
      *
-     * @param input an array of {@link byte} objects
+     * @param input an array of {@code byte} objects
      * @return a {@link InputStream} object
      * @throws MessageDecodingException if any.
      */
@@ -86,7 +86,7 @@ public class Pac4jHTTPRedirectDeflateDecoder extends AbstractPac4jDecoder {
     /**
      * <p>internalInflate.</p>
      *
-     * @param input an array of {@link byte} objects
+     * @param input an array of {@code byte} objects
      * @param inflater a {@link Inflater} object
      * @return a {@link InputStream} object
      * @throws IOException if any.

@@ -58,17 +58,18 @@
 	<modules>
         <module>pac4j-javaee</module>
         <module>pac4j-jakartaee</module>
-		<module>pac4j-core</module>
-		<module>pac4j-oauth</module>
-		<module>pac4j-cas</module>
-		<module>pac4j-http</module>
-		<module>pac4j-saml</module>
-		<module>pac4j-oidc</module>
-		<module>pac4j-jwt</module>
-		<module>pac4j-ldap</module>
-		<module>pac4j-sql</module>
-		<module>pac4j-mongo</module>
-		<module>pac4j-kerberos</module>
+        <module>pac4j-core</module>
+        <module>pac4j-oauth</module>
+        <module>pac4j-cas</module>
+        <module>pac4j-http</module>
+        <module>pac4j-saml</module>
+        <module>pac4j-oidc</module>
+        <module>pac4j-jwt</module>
+        <module>pac4j-ldap</module>
+        <module>pac4j-sql</module>
+        <module>pac4j-mongo</module>
+        <module>pac4j-kerberos</module>
+        <module>pac4j-config</module>
 	</modules>
 
 	<properties>
@@ -94,7 +95,9 @@
 		<mockito.version>5.23.0</mockito.version>
 		<slf4j.version>2.0.17</slf4j.version>
         <httpclient.version>5.3.1</httpclient.version>
+        <jdbi.version>2.78</jdbi.version>
         <unboundid.version>7.0.4</unboundid.version>
+        <ldaptive.version>2.5.0</ldaptive.version>
         <h2.version>2.4.240</h2.version>
         <jackson.version>2.21.2</jackson.version>
         <jackson.annotations.version>2.21</jackson.annotations.version>
@@ -310,9 +313,19 @@
 				<version>${mockito.version}</version>
 			</dependency>
             <dependency>
+                <groupId>org.jdbi</groupId>
+                <artifactId>jdbi</artifactId>
+                <version>${jdbi.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.unboundid</groupId>
                 <artifactId>unboundid-ldapsdk</artifactId>
                 <version>${unboundid.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.ldaptive</groupId>
+                <artifactId>ldaptive</artifactId>
+                <version>${ldaptive.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.h2database</groupId>
@@ -369,6 +382,12 @@
 						<include>**/*Tests.java</include>
                         <include>**/*Test.java</include>
 					</includes>
+                    <argLine>
+                        -XX:+EnableDynamicAgentLoading
+                        -Dnet.bytebuddy.experimental=true
+                        -Xshare:off
+                        -Dio.netty.noUnsafe=true
+                    </argLine>
                 </configuration>
 			</plugin>
             <plugin>
@@ -502,6 +521,7 @@
 				<configuration>
 					<includeTests>true</includeTests>
 					<printFailingErrors>true</printFailingErrors>
+                    <linkXRef>false</linkXRef>
 				</configuration>
 				<executions>
 					<execution>

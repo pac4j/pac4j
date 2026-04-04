@@ -24,7 +24,7 @@ public class KerberosCredentials extends Credentials {
     /**
      * <p>Constructor for KerberosCredentials.</p>
      *
-     * @param kerberosTicket an array of {@link byte} objects
+     * @param kerberosTicket an array of {@code byte} objects
      */
     public KerberosCredentials(byte[] kerberosTicket) {
         this.kerberosTicket = kerberosTicket.clone();
@@ -66,7 +66,7 @@ public class KerberosCredentials extends Credentials {
     /**
      * <p>Getter for the field <code>kerberosTicket</code>.</p>
      *
-     * @return an array of {@link byte} objects
+     * @return an array of {@code byte} objects
      */
     public byte[] getKerberosTicket() {
         return kerberosTicket.clone();

@@ -1,12 +1,10 @@
 package org.pac4j.saml.transport;
 
-
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import net.shibboleth.shared.codec.Base64Support;
 import net.shibboleth.shared.codec.HTMLEncoder;
 import net.shibboleth.shared.component.ComponentInitializationException;
-import net.shibboleth.shared.component.ComponentSupport;
 import net.shibboleth.shared.xml.SerializeSupport;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
@@ -161,8 +159,8 @@ public class Pac4jHTTPPostEncoder extends AbstractMessageEncoder {
      * @param newVelocityTemplateId the new Velocity template id
      */
     public void setVelocityTemplateId(final String newVelocityTemplateId) {
-        ComponentSupport.ifInitializedThrowUnmodifiabledComponentException(this);
-        ComponentSupport.ifDestroyedThrowDestroyedComponentException(this);
+        ifInitializedThrowUnmodifiabledComponentException();
+        ifDestroyedThrowDestroyedComponentException();
         velocityTemplateId = newVelocityTemplateId;
     }
 
@@ -181,8 +179,8 @@ public class Pac4jHTTPPostEncoder extends AbstractMessageEncoder {
      * @param newVelocityEngine the new VelocityEngine instane
      */
     public void setVelocityEngine(final VelocityEngine newVelocityEngine) {
-        ComponentSupport.ifInitializedThrowUnmodifiabledComponentException(this);
-        ComponentSupport.ifDestroyedThrowDestroyedComponentException(this);
+        ifInitializedThrowUnmodifiabledComponentException();
+        ifDestroyedThrowDestroyedComponentException();
         velocityEngine = newVelocityEngine;
     }
 

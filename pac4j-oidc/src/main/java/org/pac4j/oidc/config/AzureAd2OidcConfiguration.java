@@ -76,7 +76,6 @@ public class AzureAd2OidcConfiguration extends OidcConfiguration {
         return new AzureAdOpMetadataResolver(this);
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getDiscoveryURI() {
         return "https://login.microsoftonline.com/" + getTenant() + "/v2.0/.well-known/openid-configuration";

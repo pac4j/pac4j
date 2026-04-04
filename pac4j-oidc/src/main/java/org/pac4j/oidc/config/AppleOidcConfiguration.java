@@ -108,8 +108,6 @@ public class AppleOidcConfiguration extends OidcConfiguration {
     }
 
     /**
-     * {@inheritDoc}
-     *
      * Generate client secret (JWT) and cache it until expiration timeout
      */
     @Override

@@ -77,7 +77,6 @@ public class FacebookClient extends OAuth20Client {
         super.internalInit(forceReinit);
     }
 
-    /** {@inheritDoc} */
     @Override
     public FacebookConfiguration getConfiguration() {
         return (FacebookConfiguration) configuration;
