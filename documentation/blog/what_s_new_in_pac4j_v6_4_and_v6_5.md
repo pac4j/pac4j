@@ -50,6 +50,7 @@ config.withSecurityLogic(new DefaultSecurityLogic().setLoadProfilesFromSession(f
 ## 3) Build
 
 The build process has been simplified (30% faster):
+- reworked/cleaned dependencies/plugins
 - 3 modules have been removed
 - no more `test-jar` components: the few test classes are in the `org.pac4j.test` package of the `pac4j-core` module
 - OSGi and shading phases have been removed.

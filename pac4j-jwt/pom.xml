@@ -31,16 +31,6 @@
         </dependency>
         <!-- for testing -->
         <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.pac4j</groupId>
             <artifactId>pac4j-oauth</artifactId>
             <scope>test</scope>
