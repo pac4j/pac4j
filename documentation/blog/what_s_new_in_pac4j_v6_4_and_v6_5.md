@@ -18,7 +18,7 @@ To address any Java environment, pac4j configurations must be defined via Java c
 
 The `pac4j-config` and `pac4j-springboot` modules which allow a properties configuration (no discovery available, documentation must be read) have been deprecated in v6.4.0.
 
-The `pac4j-springboot` module is removed in version 6.5.0 and the `pac4j-config` module will be removed in version 7.
+The `pac4j-springboot` module is removed in version 6.5.0 and the `pac4j-config` module will be removed in version 7.0.0.
 
 Client and configuration classes offer:
 - easy constructors:
@@ -155,7 +155,11 @@ oidConfig.setPushedAuthorizationRequest(true);
 
 ## 5) Support of OpenID Federation
 
-[OpenID Connect Federation support](https://openid.net/specs/openid-federation-1_0.html) is configured via the `OidcFederationProperties` which centralizes both RP entity statement generation and OP resolution through federation.
+[OpenID Connect Federation support](https://openid.net/specs/openid-federation-1_0.html) is configured via the `OidcFederationProperties` which centralizes:
+
+1. RP entity statement generation
+2. OP resolution through federation.
+
 The federation is enabled when the property `federation.targetOp` is set.
 
 At RP level, you must configure signing material for the federation endpoint using either a keystore or a JWKS (JWKS is preferred if both are present).
@@ -171,6 +175,12 @@ It prefers automatic registration (sending entity statement as `client_assertion
 
 See this [guide](/docs/clients/openid-connect-federation.html) for more details.
 
-## 6) Learn more
+
+## 6) Deprecation of JavaEE
+
+The `pac4j-javaee` module is deprecated and should be likely removed in version 7.0.0.
+
+
+## 7) Learn more
 
 Read the [release notes](../docs/release-notes.html) for a thorough presentation of the changes.
