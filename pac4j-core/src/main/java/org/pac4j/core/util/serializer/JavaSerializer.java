@@ -10,13 +10,14 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * Java serializer.
+ * Java serializer: use the {@link JsonSerializer} instead.
  *
  * @author Jerome Leleu
  * @since 1.8.1
  */
 @ToString
 @Slf4j
+@Deprecated
 public class JavaSerializer extends AbstractSerializer {
 
     private Set<String> trustedPackages;

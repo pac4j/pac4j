@@ -16,6 +16,7 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.definition.ProfileDefinitionAware;
+import org.pac4j.core.util.serializer.JsonSerializer;
 import org.pac4j.core.util.serializer.Serializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,12 +63,15 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
 
     @Setter
     @Getter
-    private Serializer serializer;
+    private Serializer serializer = new JsonSerializer();
 
+    // removed in v7
+    @Deprecated
     @Setter
     @Getter
     private String attributes;
 
+    @Deprecated
     protected String[] attributeNames;
 
     /** {@inheritDoc} */
@@ -348,6 +352,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
      *
      * @return a boolean
      */
+    @Deprecated
     protected boolean isLegacyMode() {
         return attributes != null;
     }
