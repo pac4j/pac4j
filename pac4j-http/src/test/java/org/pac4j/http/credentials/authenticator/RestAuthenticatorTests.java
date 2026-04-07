@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Jerome Leleu
  * @since 2.1.0
  */
-public final class RestAuthenticatorIT implements TestsConstants {
+public final class RestAuthenticatorTests implements TestsConstants {
 
     private static final int PORT = 8088;
 
@@ -66,8 +66,9 @@ public final class RestAuthenticatorIT implements TestsConstants {
         val credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD);
         TestsHelper.expectException(() -> authenticator.validate(
             new CallContext(MockWebContext.create(), new MockSessionStore()), credentials),
-            TechnicalException.class, "com.fasterxml.jackson.core.JsonParseException: Unrecognized token 'bad': was expecting " +
-                "('true', 'false' or 'null')\n at [Source: (String)\"bad\"; line: 1, column: 7]");
+            TechnicalException.class, "com.fasterxml.jackson.core.JsonParseException: Unrecognized token 'bad': was expecting "
+                + "(JSON String, Number, Array, Object or token 'null', 'true' or 'false')\n"
+                + " at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 1, column: 1]");
     }
 
     @Test

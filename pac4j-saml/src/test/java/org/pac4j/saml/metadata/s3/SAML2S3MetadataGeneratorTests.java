@@ -1,28 +1,18 @@
 package org.pac4j.saml.metadata.s3;
 
 import lombok.val;
+import net.shibboleth.shared.xml.XMLParserException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.pac4j.test.util.TestsConstants;
 import org.pac4j.saml.config.SAML2Configuration;
-import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.util.DefaultConfigurationManager;
+import org.pac4j.test.util.TestsConstants;
 import org.springframework.core.io.ClassPathResource;
 import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.http.SdkHttpResponse;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.CreateBucketRequest;
-import software.amazon.awssdk.services.s3.model.CreateBucketResponse;
-import software.amazon.awssdk.services.s3.model.GetObjectRequest;
-import software.amazon.awssdk.services.s3.model.GetObjectResponse;
-import software.amazon.awssdk.services.s3.model.ListBucketsRequest;
-import software.amazon.awssdk.services.s3.model.ListBucketsResponse;
-import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
-import software.amazon.awssdk.services.s3.model.ListObjectsV2Response;
-import software.amazon.awssdk.services.s3.model.PutObjectRequest;
-import software.amazon.awssdk.services.s3.model.PutObjectResponse;
-import software.amazon.awssdk.services.s3.model.S3Object;
+import software.amazon.awssdk.services.s3.model.*;
 
 import java.io.InputStream;
 import java.util.UUID;
@@ -31,12 +21,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 /**
- * This is {@link SAML2S3MetadataGeneratorIT}.
+ * This is {@link SAML2S3MetadataGeneratorTests}.
  *
  * @author Misagh Moayyed
  * @since 6.0.4
  */
-public class SAML2S3MetadataGeneratorIT implements TestsConstants {
+public class SAML2S3MetadataGeneratorTests implements TestsConstants {
     private static final String ENTITY_ID = "org:pac4j:example";
 
     private final SAML2Configuration configuration = new SAML2Configuration();
@@ -86,6 +76,6 @@ public class SAML2S3MetadataGeneratorIT implements TestsConstants {
         assertNotNull(metadata);
 
         assertTrue(metadataGenerator.storeMetadata(metadata, true));
-        assertThrows(SAMLException.class, metadataGenerator::buildMetadataResolver);
+        assertThrows(XMLParserException.class, metadataGenerator::buildMetadataResolver);
     }
 }

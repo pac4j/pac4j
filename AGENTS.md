@@ -18,8 +18,6 @@ This repository is a Maven multi-module project (`pom.xml` at the root) targetin
   - `mvn -pl pac4j-core -Dtest=ConfigTests test`
 - Run one test method:
   - `mvn -pl pac4j-core -Dtest=ConfigTests#testMethodName test`
-- Run integration tests (`*IT.java`), which are disabled by default:
-  - `mvn -PforceIT verify`
 - Build one module with required upstream modules:
   - `mvn -pl pac4j-saml -am clean install`
 

@@ -105,6 +105,11 @@
             <artifactId>h2</artifactId>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>de.flapdoodle.embed</groupId>
+            <artifactId>de.flapdoodle.embed.mongo</artifactId>
+            <optional>true</optional>
+        </dependency>
 
         <!-- for testing -->
         <dependency>

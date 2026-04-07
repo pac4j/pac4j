@@ -11,7 +11,6 @@ import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.authenticator.LocalCachingAuthenticator;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.test.util.TestsHelper;
 import org.pac4j.test.context.MockWebContext;
 import org.pac4j.test.context.session.MockSessionStore;
 import org.pac4j.test.util.TestsConstants;
@@ -28,9 +27,9 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Misagh Moayyed
  * @since 1.8.0
  */
-public final class CasRestClientIT implements TestsConstants {
+public final class CasRestClientTests implements TestsConstants {
 
-    private final static String CAS_PREFIX_URL = "http://casserverpac4j.herokuapp.com/";
+    private final static String CAS_PREFIX_URL = "https://casserverpac4j.herokuapp.com/";
     private final static String USER = "jleleu";
 
     private CasConfiguration getConfig() {
@@ -58,9 +57,10 @@ public final class CasRestClientIT implements TestsConstants {
         context.addRequestParameter(client.getUsernameParameter(), USER);
         context.addRequestParameter(client.getPasswordParameter(), USER);
 
-        val credentials =
-            (UsernamePasswordCredentials) client.getCredentials(new CallContext(context, new MockSessionStore())).get();
-        val profile = (CasRestProfile) client.getUserProfile(new CallContext(context, new MockSessionStore()), credentials).get();
+        val ctx = new CallContext(context, new MockSessionStore());
+        var credentials = (UsernamePasswordCredentials) client.getCredentials(ctx).get();
+        credentials = (UsernamePasswordCredentials) client.validateCredentials(ctx, credentials).get();
+        val profile = (CasRestProfile) client.getUserProfile(ctx, credentials).get();
         assertEquals(USER, profile.getId());
         assertNotNull(profile.getTicketGrantingTicketId());
 
@@ -73,14 +73,14 @@ public final class CasRestClientIT implements TestsConstants {
 
     @Test
     public void testRestBasic() {
-        internalTestRestBasic(new CasRestBasicAuthClient(getConfig(), VALUE, NAME), 3);
+        internalTestRestBasic(new CasRestBasicAuthClient(getConfig(), VALUE, NAME), 13);
     }
 
     @Test
     public void testRestBasicWithCas20TicketValidator() {
         val config = getConfig();
         config.setDefaultTicketValidator(new Cas20ServiceTicketValidator(CAS_PREFIX_URL));
-        internalTestRestBasic(new CasRestBasicAuthClient(config, VALUE, NAME), 0);
+        internalTestRestBasic(new CasRestBasicAuthClient(config, VALUE, NAME), 13);
     }
 
     private void internalTestRestBasic(final CasRestBasicAuthClient client, int nbAttributes) {
@@ -88,9 +88,10 @@ public final class CasRestClientIT implements TestsConstants {
         val token = USER + ":" + USER;
         context.addRequestHeader(VALUE, NAME + Base64.getEncoder().encodeToString(token.getBytes(StandardCharsets.UTF_8)));
 
-        val credentials =
-            (UsernamePasswordCredentials) client.getCredentials(new CallContext(context, new MockSessionStore())).get();
-        val profile = (CasRestProfile) client.getUserProfile(new CallContext(context, new MockSessionStore()), credentials).get();
+        val ctx = new CallContext(context, new MockSessionStore());
+        var credentials = (UsernamePasswordCredentials) client.getCredentials(ctx).get();
+        credentials = (UsernamePasswordCredentials) client.validateCredentials(ctx, credentials).get();
+        val profile = (CasRestProfile) client.getUserProfile(ctx, credentials).get();
         assertEquals(USER, profile.getId());
         assertNotNull(profile.getTicketGrantingTicketId());
 
@@ -101,8 +102,13 @@ public final class CasRestClientIT implements TestsConstants {
         assertEquals(nbAttributes, casProfile.getAttributes().size());
         client.destroyTicketGrantingTicket(profile, context);
 
-        TestsHelper.expectException(() -> client.requestServiceTicket(PAC4J_BASE_URL, profile, context), TechnicalException.class,
-                "Service ticket request for `#CasRestProfile# | id: " + USER + " | attributes: {} | roles: [] | "
-                    + "isRemembered: false | clientName: CasRestBasicAuthClient | linkedId: null |` failed: (404) Not Found");
+        try {
+            client.requestServiceTicket(PAC4J_BASE_URL, profile, context);
+        } catch (final TechnicalException e) {
+            val msg = e.getMessage();
+            assertTrue(msg.startsWith("Service ticket request for `CasRestProfile(super=CommonProfile(super=BasicUserProfile(logger=Logger["
+                + "org.pac4j.cas.profile.CasRestProfile], id=" + USER + ", attributes={$tgt_key="));
+            assertTrue(msg.endsWith(" could not be found or is considered invalid]"));
+        }
     }
 }

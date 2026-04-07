@@ -11,18 +11,20 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
+import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.HttpUtils;
 import org.pac4j.core.util.Pac4jConstants;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.Optional;
+
+import static org.pac4j.core.context.HttpConstants.APPLICATION_FORM_ENCODED_HEADER_VALUE;
+import static org.pac4j.core.context.HttpConstants.CONTENT_TYPE_HEADER;
 
 /**
  * This is a specific Authenticator to deal with the CAS REST API.
@@ -62,13 +64,14 @@ public class CasRestAuthenticator implements Authenticator {
     private String requestTicketGrantingTicket(final String username, final String password, final WebContext context) {
         HttpURLConnection connection = null;
         try {
-            connection = HttpUtils.openPostConnection(new URL(this.configuration.computeFinalRestUrl(context)));
+            val headers = new HashMap<String, String>();
+            headers.put(CONTENT_TYPE_HEADER, APPLICATION_FORM_ENCODED_HEADER_VALUE);
+
+            connection = HttpUtils.openPostConnection(new URL(this.configuration.computeFinalRestUrl(context)), headers);
             val payload = HttpUtils.encodeQueryParam(Pac4jConstants.USERNAME, username)
                     + "&" + HttpUtils.encodeQueryParam(Pac4jConstants.PASSWORD, password);
 
-            val out = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(), StandardCharsets.UTF_8));
-            out.write(payload);
-            out.close();
+            HttpUtils.postBody(connection, payload);
 
             val locationHeader = connection.getHeaderField("location");
             val responseCode = connection.getResponseCode();
@@ -76,10 +79,8 @@ public class CasRestAuthenticator implements Authenticator {
                 return locationHeader.substring(locationHeader.lastIndexOf("/") + 1);
             }
 
-            LOGGER.debug("Ticket granting ticket request failed: " + locationHeader + " " + responseCode +
+            throw new CredentialsException("Ticket granting ticket request failed: " + locationHeader + " " + responseCode +
                 HttpUtils.buildHttpErrorMessage(connection));
-
-            return null;
         } catch (final IOException e) {
             throw new TechnicalException(e);
         } finally {

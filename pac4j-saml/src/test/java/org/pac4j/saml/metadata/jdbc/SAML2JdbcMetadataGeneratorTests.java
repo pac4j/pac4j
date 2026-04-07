@@ -5,11 +5,11 @@ import net.shibboleth.shared.resolver.CriteriaSet;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.opensaml.core.criterion.EntityIdCriterion;
-import org.pac4j.test.util.TestsConstants;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.metadata.SAML2MetadataGenerator;
 import org.pac4j.saml.util.ConfigurationManager;
 import org.pac4j.saml.util.DefaultConfigurationManager;
+import org.pac4j.test.util.TestsConstants;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
@@ -19,12 +19,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * This is {@link SAML2JdbcMetadataGeneratorIT}.
+ * This is {@link SAML2JdbcMetadataGeneratorTests}.
  *
  * @author Misagh Moayyed
  * @since 5.7.0
  */
-public class SAML2JdbcMetadataGeneratorIT implements TestsConstants {
+public class SAML2JdbcMetadataGeneratorTests implements TestsConstants {
     private static final String ENTITY_ID = "org:pac4j:example";
 
     private SAML2MetadataGenerator jdbcMetadataGenerator;
