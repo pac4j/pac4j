@@ -72,3 +72,17 @@ In practice:
 - all the clients are configured by default with the [`AuthenticatorProfileCreator`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/creator/AuthenticatorProfileCreator.java) which retrieves the user profile from the current `Credentials` and returns it.
 
 So it works out of the box, even if providing a specific `ProfileCreator` is possible.
+
+
+## 4) Using or not the web session
+
+By default, clients will use the web session to retrieve the current authenticated user.
+
+This will also happen for direct clients, aka HTTP clients.
+
+In some cases, you can choose not to load the profiles from the session using the `setLoadProfilesFromSession` method from the `DefaultSecurityLogic` component:
+
+```java
+val newConfig = config().withSecurityLogic(new DefaultSecurityLogic().setLoadProfilesFromSession(false));
+addSecurityWithConfig(registry, newConfig, "DirectBearerAuthClient").addPathPatterns("/rest/**");
+```
