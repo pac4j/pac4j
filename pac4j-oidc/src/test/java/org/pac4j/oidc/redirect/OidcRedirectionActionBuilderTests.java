@@ -8,7 +8,6 @@ import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.oauth2.sdk.id.Issuer;
 import com.nimbusds.oauth2.sdk.pkce.CodeChallengeMethod;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
-import fi.iki.elonen.NanoHTTPD;
 import lombok.val;
 import org.apache.hc.core5.net.URIBuilder;
 import org.junit.jupiter.api.BeforeEach;
@@ -276,7 +275,7 @@ public class OidcRedirectionActionBuilderTests implements TestsConstants {
         val parSuccessResponse = "{\"request_uri\":\"" + requestUri + "\",\"expires_in\":90}";
 
         val webServer = new WebServer(0)
-            .defineResponse("ok", new ServerResponse(NanoHTTPD.Response.Status.CREATED,
+            .defineResponse("ok", new ServerResponse(WebServer.Response.Status.CREATED,
                 "application/json", parSuccessResponse));
         webServer.start();
         try {
@@ -313,7 +312,7 @@ public class OidcRedirectionActionBuilderTests implements TestsConstants {
             """;
 
         val webServer = new WebServer(0)
-            .defineResponse("ko", new ServerResponse(NanoHTTPD.Response.Status.BAD_REQUEST,
+            .defineResponse("ko", new ServerResponse(WebServer.Response.Status.BAD_REQUEST,
                 "application/json", parErrorResponse));
         webServer.start();
         try {

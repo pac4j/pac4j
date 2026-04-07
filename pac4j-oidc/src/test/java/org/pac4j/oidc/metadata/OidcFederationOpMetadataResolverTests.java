@@ -8,7 +8,6 @@ import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
 import com.nimbusds.oauth2.sdk.auth.ClientSecretBasic;
 import com.nimbusds.openid.connect.sdk.federation.registration.ClientRegistrationType;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
-import fi.iki.elonen.NanoHTTPD;
 import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -114,7 +113,7 @@ public final class OidcFederationOpMetadataResolverTests {
         val registrationResponse = buildRegistrationResponseJwt(signingKey, "registeredClient", "registeredSecret");
 
         val webServer = new WebServer(0)
-            .defineResponse("ok", new ServerResponse(NanoHTTPD.Response.Status.CREATED,
+            .defineResponse("ok", new ServerResponse(WebServer.Response.Status.CREATED,
                 "application/entity-statement+jwt", registrationResponse));
         webServer.start();
         try {

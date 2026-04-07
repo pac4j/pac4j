@@ -1,6 +1,5 @@
 package org.pac4j.http.credentials.authenticator;
 
-import fi.iki.elonen.NanoHTTPD;
 import lombok.val;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -32,10 +31,10 @@ public final class RestAuthenticatorTests implements TestsConstants {
     @BeforeAll
     public static void setUp() {
         val webServer = new WebServer(PORT)
-            .defineResponse("ok", new ServerResponse(NanoHTTPD.Response.Status.OK, "application/json",
+            .defineResponse("ok", new ServerResponse(WebServer.Response.Status.OK, "application/json",
                 "{ 'id': '" + ID + "', roles: [\"" + ROLE + "\"] }"))
-            .defineResponse("notfound", new ServerResponse(NanoHTTPD.Response.Status.NOT_FOUND, "plain/text", "Not found"))
-            .defineResponse("pe", new ServerResponse(NanoHTTPD.Response.Status.OK, "plain/text", "bad"));
+            .defineResponse("notfound", new ServerResponse(WebServer.Response.Status.NOT_FOUND, "plain/text", "Not found"))
+            .defineResponse("pe", new ServerResponse(WebServer.Response.Status.OK, "plain/text", "bad"));
         webServer.start();
     }
 
