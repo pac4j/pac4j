@@ -11,6 +11,7 @@ title: Release notes&#58;
 - Removed the OSGi and shading Maven phases
 - Update PMD plugin (v3.28.0)
 - Deprecated the "legacy mode" for the `(Ldap|Db|Mongo)ProfileService`
+- Default serializer for `(Ldap|Db|Mongo)ProfileService` is `JsonSerializer` (`JavaSerializer` is deprecated)
 
 **v6.4.2**:
 - Removes initialization check on the SP provider metadata resource/path (SAML support)

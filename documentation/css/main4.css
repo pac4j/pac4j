@@ -28,6 +28,9 @@ nav {
 nav a {
     background-color: #1565c0;
 }
+nav a:hover {
+    text-decoration: none;
+}
 
 h1 {
     font-size: 26px;
@@ -167,4 +170,13 @@ main ul li {
 }
 .clear {
     clear: both;
+}
+
+a {
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    border-bottom: 2px;
 }
