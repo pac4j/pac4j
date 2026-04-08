@@ -76,7 +76,7 @@
         <java.version>17</java.version>
         <awssdk.version>2.42.29</awssdk.version>
         <mongo-driver.version>5.6.4</mongo-driver.version>
-        <flapdoodle.version>4.13.1</flapdoodle.version>
+        <flapdoodle.version>4.24.0</flapdoodle.version>
 		<junit.version>6.0.3</junit.version>
 		<servlet-api.version>4.0.1</servlet-api.version>
         <jakarta-servlet-api.version>6.0.0</jakarta-servlet-api.version>
