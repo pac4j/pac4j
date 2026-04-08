@@ -176,18 +176,23 @@ It prefers automatic registration (sending entity statement as `client_assertion
 See this [guide](/docs/clients/openid-connect-federation.html) for more details.
 
 
-## 6) "Legacy mode" in `(Ldap|Db|Mongo)ProfileService`
+## 6) Ldap, SQL and MongoDB authentication support
 
 The "legacy mode" (= attributes are explicitily listed) is deprecated and will be removed in v7.0.0.
 
-The default serializer for `(Ldap|Db|Mongo)ProfileService` is the JSON one.
+The default serializer for `(Ldap|Db|Mongo)ProfileService` is the JSON one and the `JavaSerializer` is deprecated.
 
 
-## 7) Deprecation of JavaEE
+## 7) Announcements
+
+To help pac4j users anticipate the evolutions of the project, the "upcoming changes" are displayed at startup by versions.
+
+
+## 8) Deprecation of JavaEE
 
 The `pac4j-javaee` module is deprecated and should likely be removed in version 7.0.0.
 
 
-## 8) Learn more
+## 9) Learn more
 
 Read the [release notes](../docs/release-notes.html) for a thorough presentation of the changes.
