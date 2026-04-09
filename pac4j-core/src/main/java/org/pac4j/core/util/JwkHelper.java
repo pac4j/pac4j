@@ -20,7 +20,6 @@ import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.nio.file.attribute.PosixFilePermissions;
 import java.security.KeyPair;
 import java.security.KeyStoreException;
 import java.text.ParseException;
@@ -110,25 +109,10 @@ public class JwkHelper {
             if (publicKeysOnly) {
                 Files.writeString(target, jwkSetJson, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
             } else {
-                savePrivateJwk(target, jwkSetJson);
+                FileHelper.savePrivateFile(target, jwkSetJson);
             }
         } catch (final IOException e) {
             throw new TechnicalException(e);
-        }
-    }
-
-    private static void savePrivateJwk(final Path target, final String content) throws IOException {
-        try {
-            val permissions = PosixFilePermissions.fromString("rw-------");
-            val attributes = PosixFilePermissions.asFileAttribute(permissions);
-            if (!Files.exists(target)) {
-                Files.createFile(target, attributes);
-            }
-            Files.writeString(target, content, StandardOpenOption.TRUNCATE_EXISTING);
-            Files.setPosixFilePermissions(target, permissions);
-        } catch (final UnsupportedOperationException e) {
-            LOGGER.warn("POSIX file permissions are not supported for path: {}", target);
-            Files.writeString(target, content, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
         }
     }
 

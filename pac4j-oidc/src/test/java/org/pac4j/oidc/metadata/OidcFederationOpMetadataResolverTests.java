@@ -11,6 +11,7 @@ import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.mockito.Mockito;
 import org.pac4j.core.util.JwkHelper;
 import org.pac4j.oidc.config.OidcConfiguration;
@@ -21,6 +22,8 @@ import org.pac4j.test.web.ServerResponse;
 import org.pac4j.test.web.WebServer;
 
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -55,6 +58,9 @@ public final class OidcFederationOpMetadataResolverTests {
         """;
     private OidcConfiguration configuration;
     private TokenValidator mockedTokenValidator;
+
+    @TempDir
+    Path tmp;
 
     @BeforeEach
     public void beforeEach() {
@@ -100,9 +106,11 @@ public final class OidcFederationOpMetadataResolverTests {
 
     @Test
     public void testExplicitRegistrationSetsClientId() throws Exception {
+        val secretFile = tmp.resolve("federation-secret-resolver-test.txt");
         val explicitConfiguration = new OidcConfiguration();
         explicitConfiguration.setClientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC);
         explicitConfiguration.getFederation().setEntityId("https://rp.example.org");
+        explicitConfiguration.getFederation().setSecretExportFile(secretFile.toString());
 
         val entityConfigurationGenerator = Mockito.mock(EntityConfigurationGenerator.class);
         Mockito.when(entityConfigurationGenerator.getContentType()).thenReturn("application/entity-statement+jwt");
@@ -138,6 +146,8 @@ public final class OidcFederationOpMetadataResolverTests {
 
             assertSame(metadata, resolver.load());
             assertEquals("registeredClient", explicitConfiguration.getClientId());
+            assertTrue(Files.exists(secretFile));
+            assertEquals("registeredSecret", Files.readString(secretFile));
             assertNull(resolver.getClientAuthenticationTokenEndpoint());
             assertNull(resolver.getClientAuthenticationPAREndpoint());
 

@@ -130,7 +130,6 @@ Therefore, it would be wise to consider explicitly and permanently registering o
 
 ## 2) Let's log in with explicit registration
 
-
 ### a) the client identifier
 
 And this is a feature supported by the OpenID Federation protocol:
@@ -166,7 +165,7 @@ DEBUG o.p.o.m.r.FederationClientRegister       : Received response registration:
 _On the Connect2id side:_
 
 ```
-INFO FED-REG - [OP8014] Registered entity http://localhost:8081 as explicit client with client_id=t4j746kwjax6s exp=1783005293
+INFO FED-REG - [OP8014] Registered entity http://localhost:8081 as explicit client with client_id=xkqolxvshcjv6 exp=1783005293
 INFO FED-REG - [OP8019] Explicit registration response statement for entity http://localhost:8081: {sub=http://localhost:8081,
  aud=[http://localhost:8081], metadata={openid_relying_party={client_registration_types=[explicit, automatic],
  token_endpoint_auth_signing_alg=RS256, grant_types=[authorization_code], jwks={keys=[{kty=RSA, e=AQAB, use=sig, kid=...
@@ -182,7 +181,7 @@ public Config config() {
     final var config = new OidcConfiguration();
 
     // the new clientId!
-    config.setClientId("t4j746kwjax6s");
+    config.setClientId("xkqolxvshcjv6");
 
     final var rpJwks = config.getRpJwks();
     rpJwks.setJwksPath("file:./metadata/rpjwks.jwks");
@@ -203,7 +202,7 @@ public Config config() {
 
     federation.getJwks().setJwksPath("file:./metadata/oidcfede.jwks");
     federation.getJwks().setKid("mykeyoidcfede26");
-    federation.setContactName("C2ID Test RP (Localhost)");
+    federation.setContactName("New RP test");
     federation.setContactEmails(List.of("jerome@casinthecloud.com"));
 
     federation.setEntityId("http://localhost:8081");
@@ -219,7 +218,7 @@ We restart the Spring Boot application and try a new login process.
 This time, no registration happens and Connect2id directly recognizes the provided `client_id`:
 
 ```
-INFO AUTHZ-SESSION - [OP2101] Created new auth session: sid=1234 client_id=t4j746kwjax6s scope=[openid, profile, email]
+INFO AUTHZ-SESSION - [OP2101] Created new auth session: sid=reJ...58w client_id=xkqolxvshcjv6 scope=[openid, profile, email]
 ```
 
 ### b) the client secret
@@ -247,12 +246,24 @@ config.setClientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BA
 and we also remove the previous `client_id`:
 
 ```java
-config.setClientId("t4j746kwjax6s");
+config.setClientId("xkqolxvshcjv6");
+```
+
+and completely change the contact name:
+
+```java
+federation.setContactName("New RP test");
 ```
 
 Restart the Spring Boot application and try to log in.
 
-This time, we call the Connect2id server with explicit registration and no configured client id/secret.
+This time, we call the Connect2id server with explicit registration and no configured client id/secret and a `client_secret_basic` authentication method.
+
+
+
+
+
+XXXXXXXXXXXXXXXXXXX
 
 It fails and we get the following error from Connect2id:
 
@@ -347,7 +358,7 @@ The `"token_endpoint_auth_method":"private_key_jwt"` property is no longer true 
 Let's try to remove this registered client:
 
 ```shell
-curl -X DELETE "http://localhost:8080/c2id/clients/t4j746kwjax6s" -H "Authorization: Bearer ztucZS1ZyFKgh0tUEruUtiSTXhnexmd6"
+curl -X DELETE "http://localhost:8080/c2id/clients/wmaukdezekrj6" -H "Authorization: Bearer ztucZS1ZyFKgh0tUEruUtiSTXhnexmd6"
 ```
 
 Notice we use the `client_id` in the URL.

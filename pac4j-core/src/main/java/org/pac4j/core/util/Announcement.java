@@ -9,11 +9,11 @@ import lombok.extern.slf4j.Slf4j;
  * @since 6.5.0
  */
 @Slf4j
-public final class Announce {
+public final class Announcement {
 
     private static boolean displayed = false;
 
-    public Announce() {
+    public Announcement() {
         if (!displayed) {
             LOGGER.warn("\u26A0 UPCOMING VERSIONS:");
             LOGGER.warn("\u26A0 + v7.0.0:");

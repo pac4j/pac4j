@@ -54,6 +54,8 @@ public class OidcFederationProperties {
 
     private boolean sendTrustChain;
 
+    private String secretExportFile;
+
     public OidcFederationProperties() {
         keystore.setCertificatePrefix("oidcfede-signing-cert");
         keystore.setCertificateExpirationPeriod(Period.ofYears(1));

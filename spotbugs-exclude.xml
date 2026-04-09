@@ -16,7 +16,7 @@
         <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD" />
     </Match>
     <Match>
-        <Class name="~.*Announce"/>
+        <Class name="~.*Announcement"/>
         <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD" />
     </Match>
     <Match>

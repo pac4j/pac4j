@@ -10,20 +10,26 @@ import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.mockito.Mockito;
 import org.pac4j.core.util.JwkHelper;
 import org.pac4j.oidc.config.OidcConfiguration;
+import org.pac4j.oidc.exceptions.OidcException;
 import org.pac4j.oidc.federation.entity.EntityConfigurationGenerator;
 import org.pac4j.test.web.ServerResponse;
 import org.pac4j.test.web.WebServer;
 
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests {@link FederationClientRegister}.
@@ -49,6 +55,9 @@ public final class FederationClientRegisterTests {
     private JWKSet federationJWKS;
 
     private FederationClientRegister register;
+
+    @TempDir
+    Path tmp;
 
     @BeforeEach
     public void setUp() {
@@ -117,9 +126,11 @@ public final class FederationClientRegisterTests {
 
     @Test
     public void testPerformExplicitRegistrationSetsClientId() throws Exception {
+        val secretFile = tmp.resolve("federation-secret-for-client-id-test.txt");
         val configuration = new OidcConfiguration();
         configuration.setClientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC);
         configuration.getFederation().setEntityId("https://rp.example.org");
+        configuration.getFederation().setSecretExportFile(secretFile.toString());
 
         val entityConfigurationGenerator = Mockito.mock(EntityConfigurationGenerator.class);
         Mockito.when(entityConfigurationGenerator.getContentType()).thenReturn("application/entity-statement+jwt");
@@ -142,6 +153,74 @@ public final class FederationClientRegisterTests {
             register.register(configuration, metadata, new JWKSet(signingKey.toPublicJWK()));
 
             assertEquals("registeredClient", configuration.getClientId());
+        } finally {
+            webServer.stop();
+        }
+    }
+
+    @Test
+    public void testPerformExplicitRegistrationWithSecretWithoutSecretExportFileReturnsError() throws Exception {
+        val configuration = new OidcConfiguration();
+        configuration.setClientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC);
+        configuration.getFederation().setEntityId("https://rp.example.org");
+
+        val entityConfigurationGenerator = Mockito.mock(EntityConfigurationGenerator.class);
+        Mockito.when(entityConfigurationGenerator.getContentType()).thenReturn("application/entity-statement+jwt");
+        Mockito.when(entityConfigurationGenerator.generateEntityStatement()).thenReturn("entity-configuration");
+        configuration.getFederation().setEntityConfigurationGenerator(entityConfigurationGenerator);
+
+        val signingKey = new RSAKeyGenerator(2048).keyID("registration-key").generate();
+        val registrationResponse = buildRegistrationResponseJwt(signingKey, "registeredClient", "registeredSecret");
+
+        val webServer = new WebServer(0)
+            .defineResponse("ok", new ServerResponse(WebServer.Response.Status.CREATED,
+                "application/entity-statement+jwt", registrationResponse));
+        webServer.start();
+        try {
+            val metadata = OIDCProviderMetadata.parse(METADATA_CLIENT_SECRET_BASIC);
+            metadata.setClientRegistrationTypes(List.of(ClientRegistrationType.EXPLICIT));
+            metadata.setFederationRegistrationEndpointURI(
+                new URI("http://localhost:" + webServer.getListeningPort() + "/register?r=ok"));
+
+            val exception = assertThrows(OidcException.class,
+                () -> register.register(configuration, metadata, new JWKSet(signingKey.toPublicJWK())));
+            assertEquals("Client secret export file is required", exception.getMessage());
+        } finally {
+            webServer.stop();
+        }
+    }
+
+    @Test
+    public void testPerformExplicitRegistrationWithSecretAndSecretExportFileSavesSecret() throws Exception {
+        val secretFile = tmp.resolve("federation-secret.txt");
+        val configuration = new OidcConfiguration();
+        configuration.setClientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC);
+        configuration.getFederation().setEntityId("https://rp.example.org");
+        configuration.getFederation().setSecretExportFile(secretFile.toString());
+
+        val entityConfigurationGenerator = Mockito.mock(EntityConfigurationGenerator.class);
+        Mockito.when(entityConfigurationGenerator.getContentType()).thenReturn("application/entity-statement+jwt");
+        Mockito.when(entityConfigurationGenerator.generateEntityStatement()).thenReturn("entity-configuration");
+        configuration.getFederation().setEntityConfigurationGenerator(entityConfigurationGenerator);
+
+        val signingKey = new RSAKeyGenerator(2048).keyID("registration-key").generate();
+        val registrationResponse = buildRegistrationResponseJwt(signingKey, "registeredClient", "registeredSecret");
+
+        val webServer = new WebServer(0)
+            .defineResponse("ok", new ServerResponse(WebServer.Response.Status.CREATED,
+                "application/entity-statement+jwt", registrationResponse));
+        webServer.start();
+        try {
+            val metadata = OIDCProviderMetadata.parse(METADATA_CLIENT_SECRET_BASIC);
+            metadata.setClientRegistrationTypes(List.of(ClientRegistrationType.EXPLICIT));
+            metadata.setFederationRegistrationEndpointURI(
+                new URI("http://localhost:" + webServer.getListeningPort() + "/register?r=ok"));
+
+            register.register(configuration, metadata, new JWKSet(signingKey.toPublicJWK()));
+
+            assertEquals("registeredClient", configuration.getClientId());
+            assertTrue(Files.exists(secretFile));
+            assertEquals("registeredSecret", Files.readString(secretFile));
         } finally {
             webServer.stop();
         }

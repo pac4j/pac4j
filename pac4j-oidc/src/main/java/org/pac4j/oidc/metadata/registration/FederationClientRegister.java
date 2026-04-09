@@ -15,11 +15,15 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.util.FileHelper;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.exceptions.OidcException;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.text.ParseException;
+
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
  * Handles OpenID Federation client registration logic for OP in federation.
@@ -104,11 +108,22 @@ public class FederationClientRegister {
                 if (StringUtils.isNotBlank(clientId)) {
                     configuration.setClientId(clientId);
                     logSeparator();
-                    logData(entityId, "id: [" + clientId + "]");
+                    LOGGER.warn("/!\\ Explicit registration of the client '{}' returns id: [{}]. This information won't be repeated. "
+                        + "You MUST add this value to your configuration before the next application startup!", entityId, clientId);
+                    val clientSecret = orp.path("client_secret").asText();
+                    if (StringUtils.isNotBlank(clientSecret)) {
+                        val secretExportFile = configuration.getFederation().getSecretExportFile();
+                        if (isBlank(secretExportFile)) {
+                            throw new OidcException("Client secret export file is required");
+                        }
+                        LOGGER.warn("/!\\ The received secret has been saved into the file: {}", secretExportFile);
+                        val path = Path.of(secretExportFile);
+                        FileHelper.savePrivateFile(path, clientSecret);
+                    }
                     logSeparator();
                 }
             }
-            if (StringUtils.isBlank(clientId)) {
+            if (isBlank(clientId)) {
                 throw new OidcException("Cannot explicitely register the client " + entityId
                     + "(code=" + code + ",error=" + error + ",content=" + content + ")");
             }
@@ -121,10 +136,5 @@ public class FederationClientRegister {
 
     protected void logSeparator() {
         LOGGER.warn("/!\\ ================================================");
-    }
-
-    protected void logData(final String client, final String data) {
-        LOGGER.warn("/!\\ Explicit registration of the client '{}' returns {}. This information won't be repeated. "
-            + "You MUST add this value to your configuration before the next application startup!", client, data);
     }
 }
