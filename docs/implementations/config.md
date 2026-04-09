@@ -92,8 +92,8 @@ title: Implementations comparison for configuration&#58;
     </tr>
     <tr>
         <td>dropwizard-pac4j</td>
-        <td><img src="/img/green_check.png" /><br />using Dropwizard YAML configuration files</td>
-        <td><img src="/img/green_check.png" /></td>
+        <td><img src="/img/red_cross.png" /><br />pac4j components are defined in a custom <code class="highlighter-rouge">ConfigFactory</code></td>
+        <td><img src="/img/green_check.png" /><br />using a custom <code class="highlighter-rouge">ConfigFactory</code></td>
     </tr>
     <tr>
         <td>lagom-pac4j</td>

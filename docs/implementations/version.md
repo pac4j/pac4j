@@ -96,9 +96,9 @@ title: Implementations comparison regarding the version of pac4j&#58;
     </tr>
     <tr>
         <td>dropwizard-pac4j</td>
-        <td>5.x</td>
-        <td>Dropwizard 3.0+</td>
-        <td>JDK 11+</td>
+        <td>6.x</td>
+        <td>Dropwizard 5.0+</td>
+        <td>JDK 17+</td>
     </tr>
     <tr>
         <td>lagom-pac4j</td>

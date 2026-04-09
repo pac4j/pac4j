@@ -137,9 +137,9 @@ title: Implementations comparison for the web objects&#58;
     </tr>
     <tr>
         <td>dropwizard-pac4j</td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JaxRsContext</code>, <code class="highlighter-rouge">ServletJaxRsContext</code> and <code class="highlighter-rouge">GrizzlyJaxRsContext</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">ServletSessionStore</code> and <code class="highlighter-rouge">GrizzlySessionStore</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultJaxRsHttpActionAdapter.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JaxRsContext</code> and <code class="highlighter-rouge">JEEContext</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">ServletSessionStore</code> and <code class="highlighter-rouge">JEESessionStore</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultJaxRsHttpActionAdapter.INSTANCE</code> and <code class="highlighter-rouge">JEEHttpActionAdapter.INSTANCE</code></td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JaxRsUrlResolver</code></td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JaxRsAjaxRequestResolver</code></td>
     </tr>
