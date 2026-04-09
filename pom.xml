@@ -79,7 +79,7 @@
         <flapdoodle.version>4.24.0</flapdoodle.version>
 		<junit.version>6.0.3</junit.version>
 		<servlet-api.version>4.0.1</servlet-api.version>
-        <jakarta-servlet-api.version>6.0.0</jakarta-servlet-api.version>
+        <jakarta-servlet-api.version>6.1.0</jakarta-servlet-api.version>
 		<logback.version>1.5.32</logback.version>
 		<commons-codec.version>1.21.0</commons-codec.version>
 		<commons-io.version>2.21.0</commons-io.version>
