@@ -54,6 +54,7 @@ Available properties are:
 - `contacts` (`List<String>`, default: empty list): value of the `contacts` RP metadata claim when at least one contact is provided.
 - `trustAnchors` (`List<OidcTrustAnchorProperties>`, default: empty list): trust anchors used to resolve trust chains (`issuer` and `jwksResource` for each anchor).
 - `targetOp` (`String`): OP entity identifier to resolve via federation. When set, federation mode is used instead of discovery URI resolution.
+- `secretExportFile` (`String`): the file where to save a received secret during an explicit registration.
 
 At least one signing source must be configured with a resource/path (`jwks` or `keystore`) to generate the entity configuration.
 
@@ -95,6 +96,8 @@ If the RP is not yet registered and its `clientId` is left blank, pac4j supports
 
 Priority is given to **automatic mode** if supported by the OP. In this case, the **entity statement** is sent via the `client_assertion` parameter in the authorization request URL.
 
-Otherwise, if only **explicit mode** is supported and the `federation_registration_endpoint` exists, pac4j calls it to retrieve a `client_id`.
+Otherwise, if only **explicit mode** is supported and the `federation_registration_endpoint` exists, pac4j calls it to retrieve a `client_id` (and optionally a `client_secret`).
 
 The `client_id` is displayed in the logs as follows: `/!\ Explicit registration of the client 'http://rp' returned id: [XXX]. This information will not be repeated. You MUST manually add this value to your configuration before the next application startup!`.
+
+The `client_secret` is saved in the `secretExportFile` and must also be manually added to the configuration: `/!\ The received secret has been saved into the file: YYY`.

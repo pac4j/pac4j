@@ -171,7 +171,8 @@ In federation mode, you should not configure a `discoveryURI` property; instead,
 Metadata resolution is blocking on first access, then refreshed asynchronously when trust chains expire.
 
 For client registration, if `clientId` is blank, pac4j supports both federation registration styles and checks OP capabilities.
-It prefers automatic registration (sending entity statement as `client_assertion`); otherwise it falls back to explicit registration via `federation_registration_endpoint`, and the returned `client_id` must be persisted manually for next startup.
+It prefers automatic registration (sending entity statement as `client_assertion`); otherwise it falls back to explicit registration via `federation_registration_endpoint`,
+and the returned `client_id` (and optionally `client_secret`) must be persisted manually for next startup.
 
 See this [guide](/docs/clients/openid-connect-federation.html) for more details.
 
