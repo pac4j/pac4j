@@ -188,11 +188,21 @@ The default serializer for `(Ldap|Db|Mongo)ProfileService` is the JSON one and t
 To help pac4j users anticipate the evolutions of the project, the "upcoming changes" are displayed at startup by versions.
 
 
-## 8) Deprecation of JavaEE
+
+## 8) Initialization improvements
+
+To be available for all frameworks, pac4j provides a specific initialization mechanism.
+
+It has been improved to avoid reentrant calls (bugs and performance issues).
+
+In a similar idea, the `SpringResourceLoader` avoids checking too often if a resource has changed (`minimumDelayBetweenChangeDetectionInMilliseconds` property).
+
+
+## 9) Deprecation of JavaEE
 
 The `pac4j-javaee` module is deprecated and should likely be removed in version 7.0.0.
 
 
-## 9) Learn more
+## 10) Learn more
 
 Read the [release notes](../docs/release-notes.html) for a thorough presentation of the changes.
