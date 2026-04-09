@@ -25,6 +25,7 @@ public final class Announce {
             LOGGER.warn("\u26A0  - the `pac4j-javaee` module will likely be removed");
             LOGGER.warn("\u26A0  - all deprecated elements will be removed");
             LOGGER.warn("\u26A0  - the 'legcay mode' of the `(Ldap|Db|Mongo)ProfileService` will be removed");
+            LOGGER.warn("\u26A0 \u2709 Contact `pac4j-dev@googlegroups.com` for discussions");
             displayed = true;
         }
     }
