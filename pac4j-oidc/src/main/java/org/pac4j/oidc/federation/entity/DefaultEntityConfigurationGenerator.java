@@ -14,10 +14,7 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.InitializableObject;
 import org.pac4j.oidc.client.OidcClient;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.pac4j.core.util.CommonHelper.assertNotBlank;
@@ -119,6 +116,7 @@ public class DefaultEntityConfigurationGenerator extends InitializableObject imp
         rpMetadata.put("grant_types", federation.getGrantTypes());
         rpMetadata.put("scope", String.join(" ", federation.getScopes()));
         val clientAuth = config.getClientAuthenticationMethod();
+        val keys = new LinkedHashSet<JWK>();
         if (clientAuth != null) {
             rpMetadata.put("token_endpoint_auth_method", clientAuth.getValue());
             if (clientAuth == ClientAuthenticationMethod.PRIVATE_KEY_JWT) {
@@ -126,14 +124,22 @@ public class DefaultEntityConfigurationGenerator extends InitializableObject imp
                 if (clientAuthConfig != null && clientAuthConfig.getJwsAlgorithm() != null) {
                     rpMetadata.put("token_endpoint_auth_signing_alg", clientAuthConfig.getJwsAlgorithm().getName());
                     val publicKey = clientAuthConfig.getJwk().toPublicJWK();
-                    val jwkSet = new JWKSet(publicKey);
-                    rpMetadata.put("jwks", jwkSet.toJSONObject());
+                    keys.add(publicKey);
                 }
             }
         }
         val requestObjectSigningAlg = config.getRequestObjectSigningAlgorithm();
         if (requestObjectSigningAlg != null) {
             rpMetadata.put("request_object_signing_alg", requestObjectSigningAlg.getName());
+            val rpJwks = config.getRpJwks();
+            if (rpJwks != null && rpJwks.isDefined()) {
+                val key = loadJwkFromOrCreateJwks(config.getRpJwks());
+                keys.add(key.toPublicJWK());
+            }
+        }
+        if (!keys.isEmpty()) {
+            val jwkSet = new JWKSet(new ArrayList<>(keys));
+            rpMetadata.put("jwks", jwkSet.toJSONObject());
         }
         rpMetadata.put("client_registration_types", federation.getClientRegistrationTypes());
         rpMetadata.put("client_name", federation.getContactName());

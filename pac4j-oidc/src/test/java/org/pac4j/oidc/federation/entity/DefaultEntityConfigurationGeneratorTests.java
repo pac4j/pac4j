@@ -18,6 +18,7 @@ import org.pac4j.core.keystore.generation.FileSystemKeystoreGenerator;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.config.method.IPrivateKeyJwtClientAuthnMethodConfig;
+import org.pac4j.oidc.config.method.PrivateKeyJwtClientAuthnMethodConfig;
 import org.pac4j.oidc.federation.config.OidcFederationProperties;
 import org.pac4j.oidc.federation.config.OidcTrustAnchorProperties;
 import org.pac4j.oidc.metadata.IOidcOpMetadataResolver;
@@ -244,6 +245,81 @@ public final class DefaultEntityConfigurationGeneratorTests {
         assertEquals("private-key-jwt-kid", authnKeys.get(0).get("kid"));
         assertFalse(authnKeys.get(0).containsKey("d"));
     }
+    @Test
+    public void testBuildConfigWithNullRequestObjectSigningAlgAndPrivateKeyJwtPublishesSingleClientAuthKey() throws Exception {
+        val jwksFile = tmp.resolve("request-object-null.jwks");
+        federation.getJwks().setJwksResource(new FileSystemResource(jwksFile.toFile()));
+
+        val privateKeyJwtConfig = mock(IPrivateKeyJwtClientAuthnMethodConfig.class);
+        val clientAuthJwk = new RSAKeyGenerator(2048)
+            .keyUse(KeyUse.SIGNATURE)
+            .keyID("client-auth-kid")
+            .generate();
+        when(privateKeyJwtConfig.getJwsAlgorithm()).thenReturn(JWSAlgorithm.RS256);
+        when(privateKeyJwtConfig.getJwk()).thenReturn(clientAuthJwk);
+        val generator = newGenerator(config -> config.setPrivateKeyJwtClientAuthnMethodConfig(privateKeyJwtConfig));
+
+        val authnKeys = getOpenIdRelyingPartyJwksKeys(generator.generateEntityStatement());
+        assertEquals(1, authnKeys.size());
+        assertEquals("client-auth-kid", authnKeys.get(0).get("kid"));
+        assertFalse(authnKeys.get(0).containsKey("d"));
+    }
+
+    @Test
+    public void testBuildConfigWithRequestObjectSigningAlgAndPrivateKeyJwtUsingSameKeyPublishesSingleJwksKey() throws Exception {
+        val jwksFile = tmp.resolve("same-key.jwks");
+        federation.getJwks().setJwksResource(new FileSystemResource(jwksFile.toFile()));
+
+        val sharedJwk = new RSAKeyGenerator(2048)
+            .keyUse(KeyUse.SIGNATURE)
+            .keyID("shared-kid")
+            .generate();
+        Files.writeString(jwksFile, new JWKSet(sharedJwk).toString(false));
+
+        val generator = newGenerator(config -> {
+            config.getRpJwks().setJwksResource(new FileSystemResource(jwksFile.toFile()));
+            config.setPrivateKeyJwtClientAuthnMethodConfig(new PrivateKeyJwtClientAuthnMethodConfig(config.getRpJwks()));
+            config.setRequestObjectSigningAlgorithm(JWSAlgorithm.RS256);
+        });
+
+        val authnKeys = getOpenIdRelyingPartyJwksKeys(generator.generateEntityStatement());
+        assertEquals(1, authnKeys.size());
+        assertEquals("shared-kid", authnKeys.get(0).get("kid"));
+        assertFalse(authnKeys.get(0).containsKey("d"));
+    }
+
+    @Test
+    public void testBuildConfigWithRequestObjectSigningAlgAndPrivateKeyJwtUsingDifferentKeysPublishesBothKeys() throws Exception {
+        val signingJwksFile = tmp.resolve("different-keys-signing.jwks");
+        federation.getJwks().setJwksResource(new FileSystemResource(signingJwksFile.toFile()));
+
+        val rpJwksFile = tmp.resolve("different-keys-rp.jwks");
+        val requestObjectJwk = new RSAKeyGenerator(2048)
+            .keyUse(KeyUse.SIGNATURE)
+            .keyID("request-object-kid")
+            .generate();
+        Files.writeString(rpJwksFile, new JWKSet(requestObjectJwk).toString(false));
+
+        val privateKeyJwtConfig = mock(IPrivateKeyJwtClientAuthnMethodConfig.class);
+        val clientAuthJwk = new RSAKeyGenerator(2048)
+            .keyUse(KeyUse.SIGNATURE)
+            .keyID("client-auth-kid")
+            .generate();
+        when(privateKeyJwtConfig.getJwsAlgorithm()).thenReturn(JWSAlgorithm.RS256);
+        when(privateKeyJwtConfig.getJwk()).thenReturn(clientAuthJwk);
+
+        val generator = newGenerator(config -> {
+            config.setPrivateKeyJwtClientAuthnMethodConfig(privateKeyJwtConfig);
+            config.getRpJwks().setJwksResource(new FileSystemResource(rpJwksFile.toFile()));
+            config.setRequestObjectSigningAlgorithm(JWSAlgorithm.ES256);
+        });
+
+        val authnKeys = getOpenIdRelyingPartyJwksKeys(generator.generateEntityStatement());
+        assertEquals(2, authnKeys.size());
+        val keyIds = authnKeys.stream().map(k -> (String) k.get("kid")).toList();
+        assertTrue(keyIds.contains("client-auth-kid"));
+        assertTrue(keyIds.contains("request-object-kid"));
+    }
 
     @Test
     public void testGenerateEntityStatementWithKeystoreNotExistingGeneratesKeystore() throws Exception {
@@ -399,6 +475,22 @@ public final class DefaultEntityConfigurationGeneratorTests {
         assertNotNull(keys);
         assertEquals(1, keys.size());
         assertFalse(keys.get(0).containsKey("d"));
+    }
+    @SuppressWarnings("unchecked")
+    private static List<Map<String, Object>> getOpenIdRelyingPartyJwksKeys(final String serializedJwt) throws Exception {
+        val claims = SignedJWT.parse(serializedJwt).getJWTClaimsSet();
+        val metadataClaim = (Map<String, Object>) claims.getClaim("metadata");
+        assertNotNull(metadataClaim);
+
+        val openIdRelyingParty = (Map<String, Object>) metadataClaim.get("openid_relying_party");
+        assertNotNull(openIdRelyingParty);
+
+        val authnJwks = (Map<String, Object>) openIdRelyingParty.get("jwks");
+        assertNotNull(authnJwks);
+
+        val authnKeys = (List<Map<String, Object>>) authnJwks.get("keys");
+        assertNotNull(authnKeys);
+        return authnKeys;
     }
 
     @SuppressWarnings("unchecked")
