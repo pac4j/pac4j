@@ -148,8 +148,8 @@ public final class OidcFederationOpMetadataResolverTests {
             assertEquals("registeredClient", explicitConfiguration.getClientId());
             assertTrue(Files.exists(secretFile));
             assertEquals("registeredSecret", Files.readString(secretFile));
-            assertNull(resolver.getClientAuthenticationTokenEndpoint());
-            assertNull(resolver.getClientAuthenticationPAREndpoint());
+            assertEquals(ClientAuthenticationMethod.CLIENT_SECRET_BASIC, resolver.getClientAuthenticationTokenEndpoint().getMethod());
+            assertEquals(ClientAuthenticationMethod.CLIENT_SECRET_BASIC, resolver.getClientAuthenticationPAREndpoint().getMethod());
 
             Mockito.verify(entityConfigurationGenerator).generateEntityStatement();
         } finally {

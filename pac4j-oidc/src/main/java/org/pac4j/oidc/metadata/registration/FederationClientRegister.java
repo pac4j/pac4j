@@ -116,6 +116,7 @@ public class FederationClientRegister {
                         if (isBlank(secretExportFile)) {
                             throw new OidcException("Client secret export file is required");
                         }
+                        configuration.setSecret(clientSecret);
                         LOGGER.warn("/!\\ The received secret has been saved into the file: {}", secretExportFile);
                         val path = Path.of(secretExportFile);
                         FileHelper.savePrivateFile(path, clientSecret);
