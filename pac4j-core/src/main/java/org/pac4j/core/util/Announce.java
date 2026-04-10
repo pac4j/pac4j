@@ -18,7 +18,7 @@ public final class Announce {
             LOGGER.warn("\u26A0 UPCOMING VERSIONS:");
             LOGGER.warn("\u26A0 + v6.5.0:");
             LOGGER.warn("\u26A0  - the `pac4j-gae`, `pac4j-couch` and `pac4j-springboot` modules will be removed");
-            LOGGER.warn("\u26A0  - the OSGi and shading Maven phases will be removed");
+            LOGGER.warn("\u26A0  - the shading Maven phase will be removed");
             LOGGER.warn("\u26A0  - the JSON serializer is the default one for `(Ldap|Db|Mongo)ProfileService`");
             LOGGER.warn("\u26A0 + v7.0.0:");
             LOGGER.warn("\u26A0  - the `pac4j-config` module will be removed");
