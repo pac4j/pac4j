@@ -54,11 +54,11 @@ The build process has been simplified (30% faster):
 - reworked/cleaned dependencies/plugins
 - 3 modules have been removed
 - no more `test-jar` components: the few test classes are in the `org.pac4j.test` package of the `pac4j-core` module
-- OSGi and shading phases have been removed.
+- the shading phase has been removed.
 
-OSGi support and shading have been removed due to lack of usage and to simplify the Maven configuration.
+Shading has been removed due to lack of usage and to simplify the Maven configuration.
 
-<u>If you rely on OSGi or need any shaded JARs, please report your use case as feedback is still welcome.</u>
+<u>If you rely on any shaded JARs, please report your use case as feedback is still welcome.</u>
 
 
 ## 4) Improvement of the OpenID support
