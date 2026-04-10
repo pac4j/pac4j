@@ -8,7 +8,7 @@ title: Release notes&#58;
 **v6.5.0**:
 - Removed the GAE, CouchDB and SpringBoot modules
 - Created the `org.pac4j.test` package for tests components in the `pac4j-core` module instead of `test-jar` modules
-- Removed the OSGi and shading Maven phases
+- Removed the shading Maven phase
 - Update PMD plugin (v3.28.0)
 - Deprecated the "legacy mode" for the `(Ldap|Db|Mongo)ProfileService`
 - Default serializer for `(Ldap|Db|Mongo)ProfileService` is `JsonSerializer` (`JavaSerializer` is deprecated)
