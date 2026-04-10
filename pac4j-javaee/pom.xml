@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>pac4j-javaee</artifactId>
-    <packaging>jar</packaging>
+    <packaging>bundle</packaging>
     <name>pac4j JavaEE components</name>
     <dependencies>
         <dependency>
