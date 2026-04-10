@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>pac4j-oauth</artifactId>
-    <packaging>jar</packaging>
+    <packaging>bundle</packaging>
     <name>pac4j: Java web security for OAuth</name>
 
     <properties>

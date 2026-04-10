@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>pac4j-jwt</artifactId>
-    <packaging>jar</packaging>
+    <packaging>bundle</packaging>
     <name>pac4j: Java web security for JWT</name>
 
     <dependencies>

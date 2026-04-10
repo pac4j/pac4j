@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>pac4j-jakartaee</artifactId>
-    <packaging>jar</packaging>
+    <packaging>bundle</packaging>
     <name>pac4j JakartaEE components</name>
     <dependencies>
         <dependency>

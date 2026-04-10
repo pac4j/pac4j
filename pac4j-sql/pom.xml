@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>pac4j-sql</artifactId>
-    <packaging>jar</packaging>
+    <packaging>bundle</packaging>
     <name>pac4j for relational DB</name>
 
     <dependencies>

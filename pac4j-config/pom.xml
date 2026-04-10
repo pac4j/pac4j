@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>pac4j-config</artifactId>
-    <packaging>jar</packaging>
+    <packaging>bundle</packaging>
     <name>pac4j: security configuration by properties</name>
 
     <properties>
