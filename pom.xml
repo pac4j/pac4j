@@ -89,7 +89,7 @@
 		<nimbus-jose-jwt.version>10.9</nimbus-jose-jwt.version>
 		<spring.version>6.2.17</spring.version>
 		<spring.security.version>7.0.4</spring.security.version>
-        <bouncycastle.version>1.83</bouncycastle.version>
+        <bouncycastle.version>1.84</bouncycastle.version>
 		<shiro.version>2.1.0</shiro.version>
         <jbcrypt.version>0.4.3</jbcrypt.version>
 		<mockito.version>5.23.0</mockito.version>
