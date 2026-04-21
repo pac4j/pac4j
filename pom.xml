@@ -88,7 +88,7 @@
 		<guava.version>33.6.0-jre</guava.version>
 		<nimbus-jose-jwt.version>10.9</nimbus-jose-jwt.version>
 		<spring.version>6.2.18</spring.version>
-		<spring.security.version>7.0.4</spring.security.version>
+		<spring.security.version>7.0.5</spring.security.version>
         <bouncycastle.version>1.84</bouncycastle.version>
 		<shiro.version>2.1.0</shiro.version>
         <jbcrypt.version>0.4.3</jbcrypt.version>
