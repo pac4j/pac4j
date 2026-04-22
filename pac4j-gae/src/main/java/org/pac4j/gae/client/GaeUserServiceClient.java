@@ -7,6 +7,7 @@ import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.core.profile.definition.ProfileDefinition;
+import org.pac4j.core.util.Announcement;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.gae.credentials.GaeUserCredentials;
@@ -26,6 +27,8 @@ import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
  */
 @Deprecated
 public class GaeUserServiceClient extends IndirectClient {
+
+    private static final Announcement ANNOUNCEMENT = new Announcement("6.5.0", "the `pac4j-gae` module will be removed").announce();
 
     private static final ProfileDefinition PROFILE_DEFINITION
         = new CommonProfileDefinition(x -> new GaeUserServiceProfile());

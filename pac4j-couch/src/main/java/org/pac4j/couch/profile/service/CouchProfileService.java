@@ -12,6 +12,7 @@ import org.ektorp.ViewQuery;
 import org.pac4j.core.credentials.password.PasswordEncoder;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.core.profile.service.AbstractProfileService;
+import org.pac4j.core.util.Announcement;
 import org.pac4j.core.util.serializer.JsonSerializer;
 import org.pac4j.couch.profile.CouchProfile;
 
@@ -33,6 +34,8 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
 @ToString(callSuper = true)
 @Deprecated
 public class CouchProfileService extends AbstractProfileService<CouchProfile> {
+
+    private static final Announcement ANNOUNCEMENT = new Announcement("6.5.0", "the `pac4j-couch` module will be removed").announce();
 
     private CouchDbConnector couchDbConnector;
     private ObjectMapper objectMapper;

@@ -8,6 +8,7 @@ import org.pac4j.core.config.Config;
 import org.pac4j.core.config.ConfigFactory;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.password.PasswordEncoder;
+import org.pac4j.core.util.Announcement;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,6 +25,8 @@ import java.util.Map;
  */
 @Deprecated
 public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFactory {
+
+    private static final Announcement ANNOUNCEMENT = new Announcement("7.0.0", "the `pac4j-config` module will be removed").announce();
 
     private final String callbackUrl;
 
