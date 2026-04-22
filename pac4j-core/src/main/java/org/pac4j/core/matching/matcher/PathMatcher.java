@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.util.Announcement;
 import org.pac4j.core.util.CommonHelper;
 
 import java.util.HashSet;
@@ -21,6 +22,12 @@ import java.util.regex.Pattern;
 @Slf4j
 @ToString
 public class PathMatcher implements Matcher {
+
+    private static final Announcement ANNOUNCE_REGEXP = new Announcement("Be careful when using the 'excludeBranch' or 'excludeRegex' "
+        + "methods. They use regular expressions and their definitions may be error prone. You could exclude more URLs than expected.");
+    private static final Announcement ANNOUNCE_INCLUDE = new Announcement("Be careful when using the 'includePath' or 'includePaths' "
+        + "methods. The security will only apply on these paths. It could not be secure enough.");
+
     private final Set<String> includedPaths = new HashSet<>();
     @Getter
     private final Set<String> excludedPaths = new HashSet<>();
@@ -69,7 +76,7 @@ public class PathMatcher implements Matcher {
      * @return a {@link PathMatcher} object
      */
     public PathMatcher includePath(final String path) {
-        warnInclude();
+        ANNOUNCE_INCLUDE.announce();
         validatePath(path);
         includedPaths.add(path);
         return this;
@@ -97,7 +104,7 @@ public class PathMatcher implements Matcher {
      * @return this path matcher
      */
     public PathMatcher excludeBranch(final String path) {
-        warnRegexp();
+        ANNOUNCE_REGEXP.announce();
         validatePath(path);
         excludedPatterns.add(Pattern.compile("^" + path + "(/.*)?$", Pattern.DOTALL));
         return this;
@@ -110,7 +117,7 @@ public class PathMatcher implements Matcher {
      * @return this path matcher
      */
     public PathMatcher excludeRegex(final String regex) {
-        warnRegexp();
+        ANNOUNCE_REGEXP.announce();
         CommonHelper.assertNotBlank("regex", regex);
 
         if (!regex.startsWith("^") || !regex.endsWith("$")) {
@@ -120,28 +127,6 @@ public class PathMatcher implements Matcher {
 
         excludedPatterns.add(Pattern.compile(regex, Pattern.DOTALL));
         return this;
-    }
-
-    /**
-     * <p>warnRegexp.</p>
-     */
-    protected void warnRegexp() {
-        if (!warnedRegexp) {
-            LOGGER.warn("Be careful when using the 'excludeBranch' or 'excludeRegex' methods. "
-                + "They use regular expressions and their definitions may be error prone. You could exclude more URLs than expected.");
-            warnedRegexp = true;
-        }
-    }
-
-    /**
-     * <p>warnInclude.</p>
-     */
-    protected void warnInclude() {
-        if (!warnedInclude) {
-            LOGGER.warn("Be careful when using the 'includePath' or 'includePaths' methods. "
-                + "The security will only apply on these paths. It could not be secure enough.");
-            warnedInclude = true;
-        }
     }
 
     /** {@inheritDoc} */

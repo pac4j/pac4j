@@ -191,8 +191,10 @@ To help pac4j users anticipate the evolutions of the project, breaking changes a
 Example:
 
 ```
-WARN  o.p.c.u.Announcement - ⚠ In version 7.0.0, the `pac4j-config` module will be removed (✉ contact `pac4j-dev@googlegroups.com` for discussions)
+WARN  o.p.c.u.Announcement - ⚠ In version 7.0.0, the `pac4j-config` module will be removed
 ```
+
+In v6.5, this concept is generalized to replace existing warnings here and there.
 
 
 ## 8) Initialization improvements

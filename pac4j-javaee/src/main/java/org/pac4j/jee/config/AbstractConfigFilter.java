@@ -27,7 +27,7 @@ import java.io.IOException;
 public abstract class AbstractConfigFilter implements Filter {
 
     private static final Announcement ANNOUNCEMENT =
-        new Announcement("7.0.0", "the `pac4j-javaee` module will likely be removed").announce();
+        new Announcement("7.0.0", "the `pac4j-javaee` module will likely be removed", true).announce();
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 

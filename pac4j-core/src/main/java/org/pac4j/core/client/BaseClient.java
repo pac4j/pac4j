@@ -19,6 +19,7 @@ import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.profile.factory.ProfileFactory;
+import org.pac4j.core.util.Announcement;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
 import org.slf4j.Logger;
@@ -37,6 +38,10 @@ import java.util.*;
 @ToString(exclude = "logger")
 @Accessors(chain = true)
 public abstract class BaseClient extends InitializableObject implements Client {
+
+    private static final Announcement ANNOUNCEMENT = new Announcement("Be careful when using the 'setProfileFactoryWhenNotAuthenticated'"
+        + " method: a custom profile is returned when the authentication fails or is cancelled and it is stored for the whole session. "
+        + "You may need to define additional 'Authorizer's to secure your web resources.");
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -57,8 +62,6 @@ public abstract class BaseClient extends InitializableObject implements Client {
     private boolean multiProfile = false;
 
     protected Boolean saveProfileInSession;
-
-    private static boolean warned;
 
     private Config config;
 
@@ -273,12 +276,7 @@ public abstract class BaseClient extends InitializableObject implements Client {
      * @param profileFactoryWhenNotAuthenticated a {@link ProfileFactory} object
      */
     public void setProfileFactoryWhenNotAuthenticated(final ProfileFactory profileFactoryWhenNotAuthenticated) {
-        if (!warned) {
-            logger.warn("Be careful when using the 'setProfileFactoryWhenNotAuthenticated' method: a custom profile "
-                + "is returned when the authentication fails or is cancelled and it is stored for the whole session. "
-                + "You may need to define additional 'Authorizer's to secure your web resources.");
-            warned = true;
-        }
+        ANNOUNCEMENT.announce();
         this.profileFactoryWhenNotAuthenticated = profileFactoryWhenNotAuthenticated;
     }
 

@@ -3,6 +3,7 @@ package org.pac4j.core.client.direct;
 import org.pac4j.core.client.DirectClient;
 import org.pac4j.core.credentials.AnonymousCredentials;
 import org.pac4j.core.profile.AnonymousProfile;
+import org.pac4j.core.util.Announcement;
 
 import java.util.Optional;
 
@@ -12,23 +13,14 @@ import java.util.Optional;
  * @author Jerome Leleu
  * @since 1.8.1
  */
+@SuppressWarnings("PMD.UnusedPrivateField")
 public final class AnonymousClient extends DirectClient {
+
+    private static final Announcement ANNOUNCEMENT = new Announcement("Be careful when using the 'AnonymousClient': an 'AnonymousProfile'"
+        + " is returned and the access is granted for the request.").announce();
 
     /** Constant <code>INSTANCE</code> */
     public static final AnonymousClient INSTANCE = new AnonymousClient();
-
-    private static boolean warned;
-
-    /**
-     * <p>Constructor for AnonymousClient.</p>
-     */
-    public AnonymousClient() {
-        if (!warned) {
-            logger.warn("Be careful when using the 'AnonymousClient': an 'AnonymousProfile' is returned "
-                + "and the access is granted for the request.");
-            warned = true;
-        }
-    }
 
     /** {@inheritDoc} */
     @Override

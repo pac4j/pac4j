@@ -17,7 +17,7 @@ public class AnnouncementTests implements TestsConstants {
 
     @Test
     public void test() {
-        val announcement = new Announcement("X", "msg");
+        val announcement = new Announcement("X", "msg", true);
         assertFalse(announcement.isAnnounced());
         announcement.announce();
         assertTrue(announcement.isAnnounced());

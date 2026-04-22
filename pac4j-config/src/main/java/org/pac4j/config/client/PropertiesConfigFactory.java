@@ -26,7 +26,8 @@ import java.util.Map;
 @Deprecated
 public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFactory {
 
-    private static final Announcement ANNOUNCEMENT = new Announcement("7.0.0", "the `pac4j-config` module will be removed").announce();
+    private static final Announcement ANNOUNCEMENT =
+        new Announcement("7.0.0", "the `pac4j-config` module will be removed", false).announce();
 
     private final String callbackUrl;
 

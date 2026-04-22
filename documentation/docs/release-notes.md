@@ -15,6 +15,7 @@ title: Release notes&#58;
 - Fix missing JWKS for request object signing
 - OpenID Federation support:
   - saves the received secret into a file during an explicit registration
+- Generalized the `Announcement` concept to existing warnings here and there
 
 **v6.4.3**:
 - Update annoucements

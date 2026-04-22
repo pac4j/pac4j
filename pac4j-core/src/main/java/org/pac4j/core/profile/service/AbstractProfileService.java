@@ -41,7 +41,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
         implements ProfileService<U>, Authenticator {
 
     private static final Announcement ANNOUNCEMENT =
-        new Announcement("7.0.0", "the 'legcay mode' of the `(Ldap|Db|Mongo)ProfileService` will be removed");
+        new Announcement("7.0.0", "the 'legcay mode' of the `(Ldap|Db|Mongo)ProfileService` will be removed", false);
 
     /** Constant <code>ID="id"</code> */
     public static final String ID = "id";
