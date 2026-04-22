@@ -24,7 +24,7 @@ public final class Announcement {
 
     public Announcement announce() {
         if (!announced) {
-            LOGGER.warn("\u26A0 In version {}, {}", version, message);
+            LOGGER.warn("\u26A0 In version {}, {} (\u2709 contact `pac4j-dev@googlegroups.com` for discussions)", version, message);
             announced = true;
         }
         return this;
