@@ -64,4 +64,6 @@ The attributes of the user profile can be managed in the database in two ways:
 
 This `DbProfileService` supports the use of a specific [`PasswordEncoder`](../authenticators.html#passwordencoder) to encode the passwords in the database.
 
-<div class="warning"><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i> Starting with v3.9.0 in the 3.x stream, v4.2.0 in the 4.x stream and v5.0, the <code>serializedprofile</code> is written in JSON instead of using the Java serialization.</div>
+<div class="warning"><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i> Starting with v3.9.0 in the 3.x stream, v4.2.0 in the 4.x stream and v5.0,
+the <code>serializedprofile</code> the <code>serializedprofile</code> can be written in JSON instead of using the Java serialization (easier updates).
+Since v6.5.0, the <code>JsonSerializer</code> is even defined by default.</div>
