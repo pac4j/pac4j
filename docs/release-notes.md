@@ -16,10 +16,13 @@ title: Release notes&#58;
 - OpenID Federation support:
   - saves the received secret into a file during an explicit registration
 
+**v6.4.3**:
+- Update annoucements
+
 **v6.4.2**:
 - Removes initialization check on the SP provider metadata resource/path (SAML support)
 - Fix bug in `OidcConfiguration.toString()`
-- Announcement on upcoming versions
+- Announcement on breaking changes
 
 **v6.4.1**:
 - Ensures proper initialization of `SAML2Configuration`

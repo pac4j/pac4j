@@ -186,8 +186,13 @@ The default serializer for `(Ldap|Db|Mongo)ProfileService` is the JSON one and t
 
 ## 7) Announcements
 
-To help pac4j users anticipate the evolutions of the project, the "upcoming changes" are displayed at startup by versions.
+To help pac4j users anticipate the evolutions of the project, breaking changes are logged as warnings.
 
+Example:
+
+```
+WARN  o.p.c.u.Announcement - ⚠ In version 7.0.0, the `pac4j-config` module will be removed (✉ contact `pac4j-dev@googlegroups.com` for discussions)
+```
 
 
 ## 8) Initialization improvements
