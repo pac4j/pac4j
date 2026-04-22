@@ -16,7 +16,6 @@ import org.pac4j.core.logout.handler.DefaultSessionLogoutHandler;
 import org.pac4j.core.logout.handler.SessionLogoutHandler;
 import org.pac4j.core.matching.matcher.Matcher;
 import org.pac4j.core.profile.factory.ProfileManagerFactory;
-import org.pac4j.core.util.Announcement;
 import org.pac4j.core.util.CommonHelper;
 
 import java.util.HashMap;
@@ -35,8 +34,6 @@ import java.util.Map;
 @AllArgsConstructor
 @Accessors(chain = true)
 public class Config {
-
-    private static final Announcement announce = new Announcement();
 
     private static final SessionLogoutHandler DEFAULT_SESSION_LOGOUT_HANDLER = new DefaultSessionLogoutHandler();
 

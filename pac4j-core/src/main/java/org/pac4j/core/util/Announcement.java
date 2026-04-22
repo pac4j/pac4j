@@ -1,28 +1,32 @@
 package org.pac4j.core.util;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Announcing next versions.
  *
  * @author Jerome LELEU
- * @since 6.5.0
+ * @since 6.4.3
  */
 @Slf4j
+@RequiredArgsConstructor
 public final class Announcement {
 
-    private static boolean displayed = false;
+    @Getter(AccessLevel.PACKAGE)
+    private boolean announced;
 
-    public Announcement() {
-        if (!displayed) {
-            LOGGER.warn("\u26A0 UPCOMING VERSIONS:");
-            LOGGER.warn("\u26A0 + v7.0.0:");
-            LOGGER.warn("\u26A0  - the `pac4j-config` module will be removed");
-            LOGGER.warn("\u26A0  - the `pac4j-javaee` module will likely be removed");
-            LOGGER.warn("\u26A0  - all deprecated elements will be removed");
-            LOGGER.warn("\u26A0  - the 'legcay mode' of the `(Ldap|Db|Mongo)ProfileService` will be removed");
-            LOGGER.warn("\u26A0 \u2709 Contact `pac4j-dev@googlegroups.com` for discussions");
-            displayed = true;
+    private final String version;
+
+    private final String message;
+
+    public Announcement announce() {
+        if (!announced) {
+            LOGGER.warn("\u26A0 In version {}, {} (\u2709 contact `pac4j-dev@googlegroups.com` for discussions)", version, message);
+            announced = true;
         }
+        return this;
     }
 }

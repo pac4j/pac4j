@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.val;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.config.ConfigBuilder;
+import org.pac4j.core.util.Announcement;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.slf4j.Logger;
@@ -24,6 +25,9 @@ import java.io.IOException;
  */
 @Deprecated
 public abstract class AbstractConfigFilter implements Filter {
+
+    private static final Announcement ANNOUNCEMENT =
+        new Announcement("7.0.0", "the `pac4j-javaee` module will likely be removed").announce();
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 

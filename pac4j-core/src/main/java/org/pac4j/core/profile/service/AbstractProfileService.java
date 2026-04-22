@@ -16,6 +16,7 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.definition.ProfileDefinitionAware;
+import org.pac4j.core.util.Announcement;
 import org.pac4j.core.util.serializer.JsonSerializer;
 import org.pac4j.core.util.serializer.Serializer;
 import org.slf4j.Logger;
@@ -24,8 +25,10 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
-import static org.pac4j.core.util.CommonHelper.*;
-import static org.pac4j.core.util.Pac4jConstants.*;
+import static org.pac4j.core.util.CommonHelper.assertNotBlank;
+import static org.pac4j.core.util.CommonHelper.assertNotNull;
+import static org.pac4j.core.util.Pac4jConstants.PASSWORD;
+import static org.pac4j.core.util.Pac4jConstants.USERNAME;
 
 /**
  * Abstract implementation of the {@link ProfileService} for the storage: LDAP, SQL and MongoDB.
@@ -33,8 +36,12 @@ import static org.pac4j.core.util.Pac4jConstants.*;
  * @author Jerome Leleu
  * @since 2.0.0
  */
+@SuppressWarnings("PMD.TooManyStaticImports")
 public abstract class AbstractProfileService<U extends CommonProfile> extends ProfileDefinitionAware
         implements ProfileService<U>, Authenticator {
+
+    private static final Announcement ANNOUNCEMENT =
+        new Announcement("7.0.0", "the 'legcay mode' of the `(Ldap|Db|Mongo)ProfileService` will be removed");
 
     /** Constant <code>ID="id"</code> */
     public static final String ID = "id";
@@ -352,8 +359,11 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
      *
      * @return a boolean
      */
-    @Deprecated
     protected boolean isLegacyMode() {
-        return attributes != null;
+        if (attributes != null) {
+            ANNOUNCEMENT.announce();
+            return true;
+        }
+        return false;
     }
 }
