@@ -130,7 +130,7 @@ Therefore, it would be wise to consider explicitly and permanently registering o
 
 # 2) Let's log in with explicit registration
 
-## a) the client identifier
+## a) The client identifier
 
 And this is a feature supported by the OpenID Federation protocol:
 
@@ -221,7 +221,7 @@ This time, no registration happens and Connect2id directly recognizes the provid
 INFO AUTHZ-SESSION - [OP2101] Created new auth session: sid=reJ...58w client_id=xkqolxvshcjv6 scope=[openid, profile, email]
 ```
 
-## b) the client secret
+## b) The client secret
 
 At this point in the article, you should wonder why we only have a `client_id` and no `client_secret`.
 
@@ -261,7 +261,7 @@ Restart the Spring Boot application and try to log in.
 
 This time, we call the Connect2id server with explicit registration and no configured client id/secret and a `client_secret_basic` authentication method.
 
-And we get a new error:
+And we get a new error from pac4j:
 
 ```
 org.pac4j.oidc.exceptions.OidcException: Client secret export file is required
@@ -388,9 +388,9 @@ The first one has only the right `client_id`, no `client_secret` and is defined 
 
 The second one has the right `client_id` and `client_secret` and is defined with `client_secret_basic`.
 
-Notice the appropriate `client_name` as well.
+Notice the appropriate `client_name` property as well.
 
-The Connect2id configuration perfectly matches what was received by pac4j.
+The Connect2id configuration perfectly matches what was received by pac4j (I didn't doubt it myself ;-)
 
 The **magic of the federation** continues:
 
