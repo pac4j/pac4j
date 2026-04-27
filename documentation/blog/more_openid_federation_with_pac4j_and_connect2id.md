@@ -107,7 +107,7 @@ DEBUG org.pac4j.oidc.client.OidcClient         : profile: Optional[OidcProfile(s
  iss=http://127.0.0.1:8080/c2id, groups=[admin, audit], expiration=1775214522541, exp=Fri Apr 03 13:08:42 CEST 2026,
 ```
 
-The logs are straightforward on the pac4j side as well: we see the sucessful authentication, the token and the userprofile calls.
+The logs are straightforward on the pac4j side as well: we see the successful authentication, the token and the userprofile calls.
 
 ## c) After the login process
 
@@ -227,7 +227,7 @@ At this point in the article, you should wonder why we only have a `client_id` a
 
 In fact, we don't need a secret as we use the `private_key_jwt` client authentication method: the credential is the private key, not the secret.
 
-As this pac4j configuration is revealed in its entity statement, the Connect2id server is aware of that setting and **smartly** decides to only return a `client_id` for this OIDC client.
+As this pac4j configuration is revealed in its entity statement, the Connect2id server is aware of that setting and **accordingly** decides to only return a `client_id` for this OIDC client.
 
 Let's go further and replace this configuration in pac4j:
 
@@ -384,13 +384,13 @@ We get two clients:
 ]
 ```
 
-The first one has only the right `client_id`, no `client_secret` and is defined with `private_key_jwt`.
+The second one has only the right `client_id`, no `client_secret` and is defined with `private_key_jwt`.
 
-The second one has the right `client_id` and `client_secret` and is defined with `client_secret_basic`.
+The first one has the right `client_id` and `client_secret` and is defined with `client_secret_basic`.
 
 Notice the appropriate `client_name` property as well.
 
-The Connect2id configuration perfectly matches what was received by pac4j (I didn't doubt it myself ;-)
+The Connect2id configuration perfectly matches what was received by pac4j (not that I had any doubts ;-)
 
 The **magic of the federation** continues:
 
