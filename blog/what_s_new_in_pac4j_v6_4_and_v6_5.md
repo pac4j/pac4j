@@ -24,7 +24,7 @@ Client and configuration classes offer:
 - easy constructors:
 
 ```java
-val cfg = new SAML2Configuration(new ClassPathResource("samlKeystore.jks"),
+final var cfg = new SAML2Configuration(new ClassPathResource("samlKeystore.jks"),
     "pac4j-demo-passwd",
     "pac4j-demo-passwd",
     new ClassPathResource("metadata-okta.xml"));
@@ -33,7 +33,7 @@ val cfg = new SAML2Configuration(new ClassPathResource("samlKeystore.jks"),
 - chainable setters:
 
 ```java
-val config = new OidcConfiguration()
+final var config = new OidcConfiguration()
     .setDiscoveryURI("https://casserverpac4j.herokuapp.com/oidc/.well-known/openid-configuration")
     .setClientId("myclient")
     .setSecret("mysecret")
@@ -67,7 +67,7 @@ Shading has been removed due to lack of usage and to simplify the Maven configur
 
 For the OpenID Connect protocol, we generally don't need JWKS.
 
-For those who don't know, a JWKS is a file which stores a key (public or private) in the JSON format.
+For those who don't know, a JWKS is a file which stores one or more keys (public or private) in the JSON format.
 
 For example (private key):
 
@@ -106,7 +106,20 @@ public class JwksProperties {
 
     private String kid;
 
-    public JwksProperties setJwksPath(final String path) { ... }
+    public JwksProperties setJwksResource(final Resource jwksResource) {
+        CommonHelper.assertNotNull("jwksResource", jwksResource);
+        this.jwksResource = jwksResource;
+        return this;
+    }
+
+    public JwksProperties setJwksPath(final String path) {
+        this.jwksResource = SpringResourceHelper.buildResourceFromPath(path);
+        return this;
+    }
+
+    public boolean isDefined() {
+        return jwksResource != null;
+    }
 }
 ```
 
@@ -124,7 +137,7 @@ rpJwks.setJwksPath("file:./metadata/rpjwks.jwks");
 rpJwks.setKid("mykey");
 ```
 
-It can be re-used for the `private_key_jwt` client authentication method via the `PrivateKeyJwtClientAuthnMethodConfig` component:
+It can be re-used for the `private_key_jwt` client authentication method via the new `PrivateKeyJwtClientAuthnMethodConfig` component:
 
 ```java
 config.setClientAuthenticationMethod(ClientAuthenticationMethod.PRIVATE_KEY_JWT);
@@ -179,7 +192,7 @@ See this [guide](/docs/clients/openid-connect-federation.html) for more details.
 
 ## 6) Ldap, SQL and MongoDB authentication support
 
-The "legacy mode" (= attributes are explicitily listed) is deprecated and will be removed in v7.0.0.
+The "legacy mode" (= attributes are explicitly listed) is deprecated and will be removed in v7.0.0.
 
 The default serializer for `(Ldap|Db|Mongo)ProfileService` is the JSON one and the `JavaSerializer` is deprecated.
 
