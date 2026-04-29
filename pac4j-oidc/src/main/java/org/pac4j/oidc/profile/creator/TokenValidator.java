@@ -16,6 +16,7 @@ import com.nimbusds.openid.connect.sdk.validators.LogoutTokenValidator;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
+import org.pac4j.core.util.Announcement;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oidc.config.OidcConfiguration;
@@ -35,6 +36,9 @@ import java.util.List;
  */
 @Slf4j
 public class TokenValidator {
+    private static final Announcement ANNOUNCE_ALLOW_UNSIGNED_ID_TOKENS = new Announcement(
+        "Be careful when enabling 'allowUnsignedIdTokens': this weakens ID token signature guarantees and "
+            + "must only be used in strictly controlled scenarios.");
 
     private final List<IDTokenValidator> idTokenValidators;
 
@@ -76,7 +80,7 @@ public class TokenValidator {
                         "they must be explicitly enabled on client side and " +
                         "the response_type used must return no ID Token from the authorization endpoint");
                 }
-                LOGGER.warn("Allowing unsigned ID tokens");
+                ANNOUNCE_ALLOW_UNSIGNED_ID_TOKENS.announce();
                 idTokenValidator = new IDTokenValidator(metadata.getIssuer(), _clientID);
             } else if (StringUtils.isNotBlank(config.getSecret()) && (JWSAlgorithm.HS256.equals(alg) ||
                 JWSAlgorithm.HS384.equals(alg) || JWSAlgorithm.HS512.equals(alg))) {

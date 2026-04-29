@@ -16,7 +16,7 @@ import java.io.Serial;
  * @since 1.7.0
  */
 @EqualsAndHashCode(callSuper = true)
-@ToString
+@ToString(exclude = "token")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

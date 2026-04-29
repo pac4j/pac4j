@@ -17,7 +17,7 @@ You should download and use the latest versions of both software (at least versi
 ## a) Calling the login page
 
 <div class="text-center">
-  <img alt="Before login" src="/img/blog/s1_26/before_login.png" />
+  <img alt="Before login" src="/img/blog/2026_05/before_login.png" />
 </div>
 
 As we have previously seen, the first login generates several logs on both sides (client = RP = pac4j + server = OP = connect2id).
@@ -49,7 +49,7 @@ Hopefully, trust chains have been cached depending on the expiration time and th
 ## b) After typing in the login and password
 
 <div class="text-center">
-  <img alt="After login" src="/img/blog/s1_26/after_login.png" />
+  <img alt="After login" src="/img/blog/2026_05/after_login.png" />
 </div>
 
 After a successful login, we get the following logs:

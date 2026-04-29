@@ -21,12 +21,14 @@ import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.BadRequestAction;
 import org.pac4j.core.logout.LogoutType;
+import org.pac4j.core.util.Announcement;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.credentials.OidcCredentials;
 import org.pac4j.oidc.exceptions.*;
+import org.pac4j.oidc.redirect.OidcRedirectionActionBuilder;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -40,6 +42,8 @@ import java.util.*;
  */
 @Slf4j
 public class OidcCredentialsExtractor implements CredentialsExtractor {
+    private static final Announcement ANNOUNCE_LOGOUT_VALIDATION_DISABLED = new Announcement(
+        "Be careful when disabling 'logoutValidation': logout token/content checks are bypassed.");
 
     protected OidcConfiguration configuration;
 
@@ -93,6 +97,7 @@ public class OidcCredentialsExtractor implements CredentialsExtractor {
                         throw new BadRequestAction();
                     }
                 } else {
+                    ANNOUNCE_LOGOUT_VALIDATION_DISABLED.announce();
                     sessionId = (String) jwt.getJWTClaimsSet().getClaim(Pac4jConstants.OIDC_CLAIM_SESSIONID);
                 }
                 LOGGER.debug("Handling back-channel logout for sessionId: {}", sessionId);
@@ -131,8 +136,8 @@ public class OidcCredentialsExtractor implements CredentialsExtractor {
             var metadata = configuration.getOpMetadataResolver().load();
             if (metadata.supportsAuthorizationResponseIssuerParam() &&
                 !metadata.getIssuer().equals(successResponse.getIssuer())) {
-                throw new OidcIssuerMismatchException("Issuer mismatch, possible mix-up attack, received issuer: '" + 
-                                                      successResponse.getIssuer() + 
+                throw new OidcIssuerMismatchException("Issuer mismatch, possible mix-up attack, received issuer: '" +
+                                                      successResponse.getIssuer() +
                                                       "'");
             }
 
@@ -152,6 +157,8 @@ public class OidcCredentialsExtractor implements CredentialsExtractor {
                     throw new OidcStateMismatchException(
                         "State parameter is different from the one sent in authentication request.");
                 }
+            } else {
+                OidcRedirectionActionBuilder.ANNOUNCE_WITH_STATE_DISABLED.announce();
             }
 
             val credentials = new OidcCredentials();

@@ -19,10 +19,7 @@ import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
-import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.util.HttpActionHelper;
-import org.pac4j.core.util.InitializableObject;
-import org.pac4j.core.util.JwkHelper;
+import org.pac4j.core.util.*;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.config.OidcConfigurationContext;
@@ -46,6 +43,9 @@ import static org.pac4j.oidc.config.OidcConfiguration.REDIRECT_URI;
  */
 @Slf4j
 public class OidcRedirectionActionBuilder extends InitializableObject implements RedirectionActionBuilder {
+    public static final Announcement ANNOUNCE_WITH_STATE_DISABLED = new Announcement(
+        "Be careful when disabling 'withState': this disables state validation and can expose the client to CSRF or "
+            + "mix-up style attacks.");
 
     protected OidcClient client;
 
@@ -200,6 +200,8 @@ public class OidcRedirectionActionBuilder extends InitializableObject implements
             val state = new State(config.getStateGenerator().generateValue(ctx));
             params.requestObject().put(OidcConfiguration.STATE, state.getValue());
             sessionStore.set(webContext, client.getStateSessionAttributeName(), state);
+        } else {
+            ANNOUNCE_WITH_STATE_DISABLED.announce();
         }
 
         // Init nonce for replay attack mitigation

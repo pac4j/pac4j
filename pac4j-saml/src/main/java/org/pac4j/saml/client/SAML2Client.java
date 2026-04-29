@@ -7,6 +7,7 @@ import lombok.val;
 import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.CallContext;
+import org.pac4j.core.util.Announcement;
 import org.pac4j.core.util.generator.ValueGenerator;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.context.SAML2ContextProvider;
@@ -46,6 +47,9 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
 @Getter
 @Setter
 public class SAML2Client extends IndirectClient {
+    private static final Announcement ANNOUNCE_ALL_SIGNATURE_VALIDATION_DISABLED = new Announcement(
+        "Be careful when enabling 'allSignatureValidationDisabled': SAML signature validation errors are ignored. "
+            + "This must never be used in production.");
 
     protected SAMLContextProvider contextProvider;
 
@@ -209,6 +213,7 @@ public class SAML2Client extends IndirectClient {
             this.signatureTrustEngineProvider = new ExplicitSignatureTrustEngineProvider(
                 this.identityProviderMetadataResolver, this.serviceProviderMetadataResolver);
             if (this.configuration.isAllSignatureValidationDisabled()) {
+                ANNOUNCE_ALL_SIGNATURE_VALIDATION_DISABLED.announce();
                 this.signatureTrustEngineProvider = new LogOnlySignatureTrustEngineProvider(this.signatureTrustEngineProvider);
             }
         }
