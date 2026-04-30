@@ -12,7 +12,7 @@ import java.nio.charset.StandardCharsets;
  * @author Garry Boyce
  * @since 2.1.0
  */
-@ToString
+@ToString(exclude = "kerberosTicket")
 public class KerberosCredentials extends Credentials {
     private byte[] kerberosTicket;
     /**

@@ -4,7 +4,6 @@ import lombok.val;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
-import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.kerberos.credentials.KerberosCredentials;
 import org.pac4j.kerberos.profile.KerberosProfile;
@@ -41,14 +40,14 @@ public class KerberosAuthenticator implements Authenticator {
     @Override
     public Optional<Credentials> validate(final CallContext ctx, final Credentials cred) {
         val credentials = (KerberosCredentials) cred;
-        logger.trace("Try to validate Kerberos Token:" + credentials.getKerberosTicketAsString());
-        var ticketValidation = this.ticketValidator.validateTicket(credentials.getKerberosTicket());
+        logger.trace("Try to validate Kerberos Token: {}", credentials.getKerberosTicketAsString());
+        val ticketValidation = this.ticketValidator.validateTicket(credentials.getKerberosTicket());
         logger.debug("Kerberos Token validated");
 
-        var subject = ticketValidation.username();
-        logger.debug("Succesfully validated " + subject);
+        val subject = ticketValidation.username();
+        logger.debug("Succesfully validated: {}", subject);
 
-        UserProfile profile = new KerberosProfile(ticketValidation.getGssContext());
+        val profile = new KerberosProfile();
         profile.setId(subject);
         credentials.setUserProfile(profile);
         return Optional.of(credentials);

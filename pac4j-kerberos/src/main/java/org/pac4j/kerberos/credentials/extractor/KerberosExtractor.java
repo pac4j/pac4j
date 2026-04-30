@@ -34,8 +34,13 @@ public class KerberosExtractor implements CredentialsExtractor {
             return Optional.empty();
         }
 
-        var base64Token = header.substring(header.indexOf(" ") + 1).getBytes(StandardCharsets.UTF_8);
-        var kerberosTicket = Base64.getDecoder().decode(base64Token);
+        val base64Token = header.substring(header.indexOf(" ") + 1).getBytes(StandardCharsets.UTF_8);
+        final byte[] kerberosTicket;
+        try {
+            kerberosTicket = Base64.getDecoder().decode(base64Token);
+        } catch (final IllegalArgumentException e) {
+            return Optional.empty();
+        }
 
         return Optional.of(new KerberosCredentials(kerberosTicket));
     }

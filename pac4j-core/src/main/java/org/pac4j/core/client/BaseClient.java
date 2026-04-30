@@ -140,7 +140,7 @@ public abstract class BaseClient extends InitializableObject implements Client {
     @Override
     public final Optional<UserProfile> getUserProfile(CallContext ctx, final Credentials credentials) {
         init();
-        logger.debug("credentials : {}", credentials);
+        logger.debug("credentials: {}", credentials);
         if (credentials == null) {
             if (profileFactoryWhenNotAuthenticated != null) {
                 val customProfile = profileFactoryWhenNotAuthenticated.apply(new Object[] {ctx.webContext()});

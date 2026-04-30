@@ -73,6 +73,15 @@ public class KerberosClientTests implements TestsConstants {
     }
 
     @Test
+    public void testMalformedBase64TokenInKerberosHeader() {
+        val context = MockWebContext.create()
+            .addRequestHeader(HttpConstants.AUTHORIZATION_HEADER, "Negotiate not-base64*");
+        val client = new DirectKerberosClient(new KerberosAuthenticator(krbValidator));
+        val credentials = client.getCredentials(new CallContext(context, new MockSessionStore()));
+        assertFalse(credentials.isPresent());
+    }
+
+    @Test
     public void testWWWAuthenticateNegotiateHeaderIsSetToTriggerSPNEGOWhenNoCredentialsAreFound() {
         final WebContext context = MockWebContext.create();
         val client = new DirectKerberosClient(new KerberosAuthenticator(krbValidator));
