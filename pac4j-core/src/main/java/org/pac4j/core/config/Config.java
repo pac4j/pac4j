@@ -150,6 +150,7 @@ public class Config {
      *
      * @param authorizers a {@link Map} object
      */
+    @Deprecated
     public Config(final Map<String, Authorizer> authorizers) {
         setAuthorizers(authorizers);
     }
@@ -160,6 +161,7 @@ public class Config {
      * @param clients a {@link Clients} object
      * @param authorizers a {@link Map} object
      */
+    @Deprecated
     public Config(final Clients clients, final Map<String, Authorizer> authorizers) {
         this.clients = clients;
         setConfigForClients();
@@ -172,6 +174,7 @@ public class Config {
      * @param client a {@link Client} object
      * @param authorizers a {@link Map} object
      */
+    @Deprecated
     public Config(final Client client, final Map<String, Authorizer> authorizers) {
         this.clients = new Clients(client);
         setConfigForClients();
@@ -184,6 +187,7 @@ public class Config {
      * @param authorizers a {@link Map} object
      * @param clients a {@link Client} object
      */
+    @Deprecated
     public Config(final Map<String, Authorizer> authorizers, final Client... clients) {
         this.clients = new Clients(clients);
         setConfigForClients();
@@ -197,6 +201,7 @@ public class Config {
      * @param authorizers a {@link Map} object
      * @param clients a {@link Client} object
      */
+    @Deprecated
     public Config(final String callbackUrl, final Map<String, Authorizer> authorizers, final Client... clients) {
         this.clients = new Clients(callbackUrl, clients);
         setConfigForClients();
@@ -210,6 +215,7 @@ public class Config {
      * @param client a {@link Client} object
      * @param authorizers a {@link Map} object
      */
+    @Deprecated
     public Config(final String callbackUrl, final Client client, final Map<String, Authorizer> authorizers) {
         this.clients = new Clients(callbackUrl, client);
         setConfigForClients();

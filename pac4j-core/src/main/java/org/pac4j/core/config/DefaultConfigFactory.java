@@ -6,6 +6,7 @@ package org.pac4j.core.config;
  * @author Jerome Leleu
  * @since 1.8.0
  */
+@Deprecated
 public class DefaultConfigFactory implements ConfigFactory {
 
     protected Config config;

@@ -88,7 +88,7 @@ public class RestAuthenticator extends ProfileDefinitionAware implements Authent
         }
 
         val body = callRestApi(username, password);
-        LOGGER.debug("body: {}", body);
+        LOGGER.debug("REST authentication response received, bodyPresent={}", body != null);
         if (body != null) {
             buildProfile(credentials, body);
         }

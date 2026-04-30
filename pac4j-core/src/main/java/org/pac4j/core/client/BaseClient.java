@@ -199,10 +199,9 @@ public abstract class BaseClient extends InitializableObject implements Client {
     }
 
     /**
-     * Add an authorization generator.
-     *
-     * @param authorizationGenerator an authorizations generator
+     * Use {@link #addAuthorizationGenerator(AuthorizationGenerator)}.
      */
+    @Deprecated
     public void setAuthorizationGenerator(final AuthorizationGenerator authorizationGenerator) {
         addAuthorizationGenerator(authorizationGenerator);
     }
@@ -222,6 +221,7 @@ public abstract class BaseClient extends InitializableObject implements Client {
      *
      * @param authorizationGenerators a {@link List} object
      */
+    @Deprecated
     public void addAuthorizationGenerators(final Collection<AuthorizationGenerator> authorizationGenerators) {
         CommonHelper.assertNotNull("authorizationGenerators", authorizationGenerators);
         this.authorizationGenerators.addAll(authorizationGenerators);
