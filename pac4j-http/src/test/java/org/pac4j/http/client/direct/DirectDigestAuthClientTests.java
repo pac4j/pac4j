@@ -26,6 +26,9 @@ import static org.pac4j.core.context.HttpConstants.HTTP_METHOD;
  * @since 1.9.0
  */
 public class DirectDigestAuthClientTests implements TestsConstants {
+    private static final String VALID_DIGEST_AUTHORIZATION_HEADER_VALUE = "Digest username=\"" + USERNAME + "\",realm=\""
+        + REALM + "\",nonce=\"" + NONCE + "\",uri=\"" + URI + "\",response=\"" + DIGEST_RESPONSE + "\",qop=\""
+        + QOP + "\",nc=\"" + NC + "\",cnonce=\"" + CNONCE + "\"";
 
     @Test
     public void testMissingUsernamePasswordAuthenticator() {
@@ -54,7 +57,7 @@ public class DirectDigestAuthClientTests implements TestsConstants {
         client.setRealm(REALM);
         val context = MockWebContext.create();
         context.addRequestHeader(AUTHORIZATION_HEADER,
-                DIGEST_AUTHORIZATION_HEADER_VALUE);
+            VALID_DIGEST_AUTHORIZATION_HEADER_VALUE);
         context.setRequestMethod(HTTP_METHOD.GET.name());
 
         val ctx = new CallContext(context, new MockSessionStore());
