@@ -5,10 +5,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
-import org.pac4j.test.run.RunClient;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oauth.client.CasOAuthWrapperClient;
 import org.pac4j.oauth.profile.casoauthwrapper.CasOAuthWrapperProfile;
+import org.pac4j.test.run.RunClient;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -41,7 +41,7 @@ public final class RunCasOAuthWrapperClient extends RunClient {
         client.setSecret("secret");
         client.setCallbackUrl(PAC4J_BASE_URL);
         //client.setImplicitFlow(true);
-        //client.setCasOAuthUrl("http://casserverpac4j.herokuapp.com/oauth2.0");
+        //client.setCasOAuthUrl("https://www.casserverpac4j.dev/oauth2.0");
         client.setCasOAuthUrl("http://localhost:8888/cas/oauth2.0");
         return client;
     }

@@ -125,7 +125,7 @@ public class SAML2IdentityProviderMetadataResolverTest {
         configuration.setSslSocketFactory(disabledSslContext().getSocketFactory());
         configuration.setHostnameVerifier((s, sslSession) -> true);
         //var resource = new SAML2UrlResource(new URL("https://md.incommon.org/InCommon/InCommon-metadata-idp-only.xml"), configuration);
-        var resource = new SAML2UrlResource(new URL("https://casserverpac4j.herokuapp.com/idp/metadata"), configuration);
+        var resource = new SAML2UrlResource(new URL("https://www.casserverpac4j.dev/idp/metadata"), configuration);
         configuration.setIdentityProviderMetadataResource(resource);
         metadataResolver = new SAML2IdentityProviderMetadataResolver(configuration);
         var resolver = metadataResolver.resolve();

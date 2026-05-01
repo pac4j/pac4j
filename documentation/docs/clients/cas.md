@@ -55,7 +55,7 @@ The `CasConfiguration` can be built with the CAS login URL and/or with the CAS p
 
 ```java
 CasConfiguration config = new CasConfiguration();
-config.setLoginUrl("https://casserverpac4j.herokuapp.com/login");
+config.setLoginUrl("https://www.casserverpac4j.dev/login");
 config.setPrefixUrl("http://internal-cas-url");
 ```
 
@@ -126,7 +126,7 @@ The generated proxy tickets must be sent to the web services and the web service
 
 ```java
 CasConfiguration config = new CasConfiguration();
-config.setLoginUrl("https://casserverpac4j.herokuapp.com/login");
+config.setLoginUrl("https://www.casserverpac4j.dev/login");
 config.setProtocol(CasProtocol.CAS30_PROXY);
 DirectCasProxyClient directCasProxyClient = new DirectCasProxyClient(config, "http://localhost:8080/webservices");
 ```

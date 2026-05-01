@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public final class CasRestClientTests implements TestsConstants {
 
-    private final static String CAS_PREFIX_URL = "https://casserverpac4j.herokuapp.com/";
+    private final static String CAS_PREFIX_URL = "https://www.casserverpac4j.dev/";
     private final static String USER = "jleleu";
 
     private CasConfiguration getConfig() {

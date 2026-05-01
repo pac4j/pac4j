@@ -54,7 +54,7 @@ public class SecurityConfig extends Pac4jSecurityConfig {
     public Config config() {
         // configuration of the authentication via the OpenID Connect protocol
         final var config = new OidcConfiguration()
-            .setDiscoveryURI("https://casserverpac4j.herokuapp.com/oidc/.well-known/openid-configuration")
+            .setDiscoveryURI("https://www.casserverpac4j.dev/oidc/.well-known/openid-configuration")
             .setClientId("myclient")
             .setSecret("mysecret")
             .setAllowUnsignedIdTokens(true);
@@ -119,7 +119,7 @@ Nothing to change, except [one dependency](https://github.com/pac4j/simple-sprin
 (instead of `pac4j-oidc`) and the [security configuration](https://github.com/pac4j/simple-spring-boot-pac4j-demos/blob/cas/src/main/java/org/pac4j/demos/SecurityConfig.java#L20):
 
 ```java
-@Value("${cas.login-url:https://casserverpac4j.herokuapp.com/login}")
+@Value("${cas.login-url:https://www.casserverpac4j.dev/login}")
 private String casLoginUrl;
 
 @Bean
@@ -163,7 +163,7 @@ public Config config() {
     cfg.getKeystore().setKeystorePath("classpath:samlKeystore.jks");
     cfg.getKeystore().setKeystorePassword("pac4j-demo-passwd");
     cfg.getKeystore().setPrivateKeyPassword("pac4j-demo-passwd");
-    cfg.setIdentityProviderMetadataPath("https://casserverpac4j.herokuapp.com/idp/metadata");
+    cfg.setIdentityProviderMetadataPath("https://www.casserverpac4j.dev/idp/metadata");
     cfg.setServiceProviderEntityId(baseUri + "/callback?client_name=SAML2Client");
     cfg.setServiceProviderMetadataPath("file:metadata/sp-metadata-8080.xml");
     return new Config(baseUri + "/callback", new SAML2Client(cfg));

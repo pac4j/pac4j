@@ -66,7 +66,7 @@ All `pac4j` implementations share a similar way of configuring security: you nee
 
 ```java
     // CAS login process
-    var casClient = new CasClient(new CasConfiguration("https://casserverpac4j.herokuapp.com/login"));
+    var casClient = new CasClient(new CasConfiguration("https://www.casserverpac4j.dev/login"));
 
     var clients = new Clients("http://localhost:8080/callback", casClient);
 
@@ -86,7 +86,7 @@ In the latest versions of `spring-webmvc-pac4j` (>= 6.1) and `spring-webflux-pac
 
 ```java
     // CAS login process
-    var casClient = new CasClient(new CasConfiguration("https://casserverpac4j.herokuapp.com/login"));
+    var casClient = new CasClient(new CasConfiguration("https://www.casserverpac4j.dev/login"));
 
     var clients = new Clients("http://localhost:8080/callback", casClient);
 

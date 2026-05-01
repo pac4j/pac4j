@@ -3,10 +3,10 @@ package org.pac4j.oidc.run;
 import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.test.run.RunClient;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.profile.OidcProfile;
+import org.pac4j.test.run.RunClient;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -40,7 +40,7 @@ public class RunCasOidcWrapper extends RunClient {
         val configuration = new OidcConfiguration();
         configuration.setClientId(CLIENT_ID);
         configuration.setSecret("secret");
-        //configuration.setDiscoveryURI("https://casserverpac4j.herokuapp.com/oidc/.well-known/openid-configuration");
+        //configuration.setDiscoveryURI("https://www.casserverpac4j.dev/oidc/.well-known/openid-configuration");
         configuration.setDiscoveryURI("http://localhost:8888/cas/oidc/.well-known/openid-configuration");
         val client = new OidcClient(configuration);
         client.setCallbackUrl(PAC4J_BASE_URL);

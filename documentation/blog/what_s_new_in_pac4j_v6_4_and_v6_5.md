@@ -34,7 +34,7 @@ final var cfg = new SAML2Configuration(new ClassPathResource("samlKeystore.jks")
 
 ```java
 final var config = new OidcConfiguration()
-    .setDiscoveryURI("https://casserverpac4j.herokuapp.com/oidc/.well-known/openid-configuration")
+    .setDiscoveryURI("https://www.casserverpac4j.dev/oidc/.well-known/openid-configuration")
     .setClientId("myclient")
     .setSecret("mysecret")
     .setAllowUnsignedIdTokens(true);
