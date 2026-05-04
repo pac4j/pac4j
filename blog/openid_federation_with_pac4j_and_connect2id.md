@@ -170,7 +170,7 @@ public class SecurityConfig extends Pac4jSecurityConfig {
 
 This new configuration needs explanations!
 
-Notice that we don't have any `dicsoveryURI`, nor any `clientId` or any credentials!
+Notice that we don't have any `discoveryURI`, nor any `clientId` or any credentials!
 
 We need two distinct and separate JWKS for our setup here: one for the federation (to sign our entity statement) and one for the `private_key_jwt` client authentication (when calling the token endpoint). **You should never use the same JWKS for both!**
 
