@@ -3,6 +3,8 @@ layout: homeblog
 title: <i class="fa fa-info-circle" aria-hidden="true"></i> Blog&#58;
 ---
 
+## &bull; May 2026: [What's new in pac4j v6.4 and v6.5?](/blog/what_s_new_in_pac4j_v6_4_and_v6_5.html)
+
 ## &bull; April 2026: [Security advisory for pac4j-core and pac4j-ldap](/blog/security-advisory-pac4j-core-and-ldap.html)
 
 ## &bull; April 2026: [OpenID Federation with pac4j and Connect2id](/blog/openid_federation_with_pac4j_and_connect2id.html)

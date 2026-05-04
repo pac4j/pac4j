@@ -2,7 +2,7 @@
 layout: blog
 title: More OpenID Federation with pac4j and Connect2id
 author: Jérôme LELEU
-date: 2026
+date: May 2026
 ---
 
 I strongly recommend that you read the first article about the [OpenID Federation protocol](/blog/openid_federation_with_pac4j_and_connect2id.html).
@@ -318,7 +318,7 @@ We get two clients:
                     "kty":"RSA",
                     "e":"AQAB",
                     "use":"sig",
-                    "kid":"defaultjwks0326",
+                    "kid":"defaultjwks0426",
                     "n":"2moV...aq7Q"
                 }
             ]
@@ -356,7 +356,7 @@ We get two clients:
                     "kty":"RSA",
                     "e":"AQAB",
                     "use":"sig",
-                    "kid":"defaultjwks0326",
+                    "kid":"defaultjwks0426",
                     "n":"2moV...aq7Q"
                 }
             ]
