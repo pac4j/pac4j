@@ -5,7 +5,7 @@ author: Jérôme LELEU
 date: June 2026
 ---
 
-In previous posts, we have presented the OpenID (Connect) Federation protocol: [(Part 1)](/blog/openid_federation_with_pac4j_and_connect2id.html) + [(Part 2)](/blog/more_openid_federation_with_pac4j_and_connect2id.html) with pac4j and the Connect2id server.
+In previous posts, we have presented the OpenID (Connect) Federation protocol with pac4j and the Connect2id server: [(Part 1)](/blog/openid_federation_with_pac4j_and_connect2id.html) + [(Part 2)](/blog/more_openid_federation_with_pac4j_and_connect2id.html).
 
 From our previous setup, we have 3 components:
 - a client, which is called the Relying Party (RP) in OIDC, and we use pac4j
@@ -457,5 +457,43 @@ Federation is enabled of course. The CAS trust anchor is defined as the first tr
 
 Stop (`./tomcat/bin/shutdown.sh`) and restart (`./tomcat/bin/startup.sh`) the Connect2id server.
 
+To make a proper test, you need to remove any previous registered `http://localhost:8081` client.
+
+Using your token from the `oidcProvider.properties` file, you can query all existing clients:
+
+```shell
+curl -X GET http://127.0.0.1:8080/c2id/clients -H "Authorization: Bearer ztucZ...exmd6"
+```
+
+And remove it if it is still registered:
+
+```shell
+curl -X DELETE http://127.0.0.1:8080/c2id/clients/http%3A%2F%2Flocalhost%3A8081 -H "Authorization: Bearer ztucZ...exmd6"
+```
+
+Notice that you may need to update:
+- the `setenv.sh` file to add `export JAVA_OPTS="$JAVA_OPTS -Dorg.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH=true"`
+- the `server.xml` file to add `encodedSolidusHandling="decode"`on the `<Connector>` definition.
+
 
 ## 4) Test again
+
+With the RP and OP updated and restart and the CAS trust anchor running, you may try to log in by calling `http://localhost:8081` in your browser and clicking on the protected link.
+
+Now it works thanks to the real trust anchor.
+
+If we take a look at the logs of the CAS server:
+
+```
+INFO [org.apereo.cas.oidc.federation.web.OidcWellKnownFederationEndpointController] - <Generating federation entity statement>
+INFO [org.apereo.cas.oidc.federation.subordinate.OidcFederationSubordinateRepository] - <Loaded [2] subordinates>
+INFO [org.apereo.cas.oidc.federation.web.OidcTrustAnchorFetchEndpointController] - <Building entity statement for
+ subordinate: [http://127.0.0.1:8080/c2id]>
+INFO [org.apereo.cas.oidc.federation.web.OidcWellKnownFederationEndpointController] - <Generating federation entity statement>
+INFO [org.apereo.cas.oidc.federation.web.OidcTrustAnchorFetchEndpointController] - <Building entity statement for
+ subordinate: [http://localhost:8081]>
+```
+
+We see that the federation endpoint has been called twice and the `fetch` endpoint (which returns the trust anchor confidence for the entity) has been called twice as well: one for the OP (`http://127.0.0.1:8080/c2id`) and the other one for the RP (`http://localhost:8081`).
+
+If we do the test again, nothing appears in the CAS trust anchor logs this time as the entity statements are not requested again, they are already known by the RP a nd the OP, until they expired or get lost (in-memory storage).
