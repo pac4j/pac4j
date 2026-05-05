@@ -17,13 +17,13 @@ title: Getting started
 <dependency>
     <groupId>org.pac4j</groupId>
     <artifactId>spring-webmvc-pac4j</artifactId>
-    <version>8.0.2</version>
+    <version>8.0.3</version>
 </dependency>
 <!-- pac4j support for OpenID Connect -->
 <dependency>
     <groupId>org.pac4j</groupId>
     <artifactId>pac4j-oidc</artifactId>
-    <version>6.4.0</version>
+    <version>6.5.0</version>
 </dependency>
 ```
 
@@ -112,7 +112,7 @@ Nothing to change, except [one dependency](https://github.com/pac4j/simple-sprin
 <dependency>
     <groupId>org.pac4j</groupId>
     <artifactId>pac4j-cas</artifactId>
-    <version>6.4.0</version>
+    <version>6.5.0</version>
 </dependency>
 ```
 
@@ -149,7 +149,7 @@ We need a [new dependency](https://github.com/pac4j/simple-spring-boot-pac4j-dem
 <dependency>
     <groupId>org.pac4j</groupId>
     <artifactId>pac4j-saml</artifactId>
-    <version>6.4.0</version>
+    <version>6.5.0</version>
 </dependency>
 ```
 
