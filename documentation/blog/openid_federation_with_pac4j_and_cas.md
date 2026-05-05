@@ -238,7 +238,8 @@ The `metadata` and the `keys` from the `jwks` property (not in the `metadata` pr
         "authorization_code"
       ],
       "scope": "openid email profile",
-      "token_endpoint_auth_method": "client_secret_basic",
+      "token_endpoint_auth_method": "private_key_jwt",
+      "token_endpoint_auth_signing_alg": "RS256",
       "request_object_signing_alg": "RS256",
       "jwks": {
         "keys": [
@@ -267,13 +268,13 @@ The `metadata` and the `keys` from the `jwks` property (not in the `metadata` pr
       "e": "AQAB",
       "use": "sig",
       "kid": "mykeyoidcfede26",
-      "n": "nVoecqELzQ"
+      "n": "nVoec...qELzQ"
     }
   ]
 }
 ```
 
-For the OP, we do something similar and call the URL: `http://127.0.0.1:8080/c2id/.well-know/openid-federation` to get the metadata and the federation keys:
+For the OP, we do something similar and call the URL: `http://127.0.0.1:8080/c2id/.well-known/openid-federation` to get the metadata and the federation keys:
 
 ```json
 {
@@ -474,7 +475,7 @@ And remove it if it is still registered:
 curl -X DELETE http://127.0.0.1:8080/c2id/clients/http%3A%2F%2Flocalhost%3A8081 -H "Authorization: Bearer ztucZ...exmd6"
 ```
 
-Notice that for the `client_id` defined as as URL, you may need to update:
+Notice that for the `client_id` defined as a URL, you may need to update:
 - the `setenv.sh` file to add `export JAVA_OPTS="$JAVA_OPTS -Dorg.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH=true"`
 - the `server.xml` file to add `encodedSolidusHandling="decode"` on the `<Connector>` definition.
 
@@ -501,4 +502,6 @@ We see that the federation endpoint has been called twice and the `fetch` endpoi
 
 This was fully expected: the trust anchor is used to build the trust chains!
 
-If we do the test again, nothing appears in the CAS trust anchor logs this time as the entity statements are not requested again, they are already known by the RP and the OP, until they expired or get lost (in-memory storage).
+If we do the test again, nothing appears in the CAS trust anchor logs this time as the entity statements are not requested again, they are already known by the RP and the OP, until they expire or get lost (in-memory storage).
+
+<div class="text-center highlight-blog">So the CAS server can act as a real trust anchor <i>between</i> the pac4j RP and the Connect2id OP.</div>
