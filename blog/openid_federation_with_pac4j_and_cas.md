@@ -12,7 +12,7 @@ From our previous setup, we have 3 components:
 - a server, which is called the OpenID Provider (OP) in OIDC, and we use the Connect2id server
 - a trust anchor (TA in short) and we use a simulated one.
 
-As pac4j is a first-class citizen of the CAS server (it is used for authentication delegation and the security of the OAuth/OIDC server support), let's bring the CAS server into action.
+As the **pac4j** library is a first-class citizen of the CAS server (it is used for authentication delegation and the security of the OAuth/OIDC server support), let's bring the CAS server into action.
 
 In this article, we will replace the simulated trust anchor by the CAS server.
 
@@ -145,7 +145,7 @@ cas.authn.oidc.federation.subordinate-directory: /etc/cas/config/subordinates
 
 The configuration is quite easy: we setup the CAS server to run on `localhost:8082` (no SSL, `Lax` policy, no cookie/webflow encryption).
 
-And for the federation part, we define the `TRUST_ANCHOR` role, its OIDC base URL (`isssuer`) as well as the file directory in which we will define its subordinates.
+And for the federation part, we define the `TRUST_ANCHOR` role, its OIDC base URL (`issuer`) as well as the file directory in which we will define its subordinates.
 
 The subordinates are the entities for which the CAS server provides trust. They must be defined upfront with their metadata and their federation key(s).
 
@@ -273,7 +273,7 @@ The `metadata` and the `keys` from the `jwks` property (not in the `metadata` pr
 }
 ```
 
-For the OP, we do something similar and call the URL: `http://127.0.0.1:8080/c2id/.well-know/openid-federation` to get the metadata and the federation keys and create the `op.json` file (in the `/etc/cas/config/subordinates` directory):
+For the OP, we do something similar and call the URL: `http://127.0.0.1:8080/c2id/.well-know/openid-federation` to get the metadata and the federation keys:
 
 ```json
 {
@@ -336,9 +336,12 @@ For the OP, we do something similar and call the URL: `http://127.0.0.1:8080/c2i
 }
 ```
 
-## 3) Declare it as the trust anchor
+and create the `op.json` file (in the `/etc/cas/config/subordinates` directory).
 
-We have a trust anchor ready for use, but the RP and the OP doesn't know it, they still refer to the simulated one.
+
+## 3) Declare CAS as the trust anchor
+
+We have a trust anchor ready to use, but the RP and the OP don't know it, they still refer to the simulated one.
 
 So let's update their configurations for that.
 
@@ -372,7 +375,7 @@ federation.setEntityId("http://localhost:8081");
 
 This setup is quite similar to the original one, except that the trust anchor is defined by the `http://localhost:8082/cas/oidc` URL and that we need to update its `trustanchor.jwks` definition file.
 
-For that, we call the `http://localhost:8082/cas/oidc/.well-known/openid-federation` URL and decode its result:
+For that, we call its federation endpoint (`http://localhost:8082/cas/oidc/.well-known/openid-federation`) and decode its result:
 
 ```json
 {
@@ -457,7 +460,7 @@ Federation is enabled of course. The CAS trust anchor is defined as the first tr
 
 Stop (`./tomcat/bin/shutdown.sh`) and restart (`./tomcat/bin/startup.sh`) the Connect2id server.
 
-To make a proper test, you need to remove any previous registered `http://localhost:8081` client.
+To make a proper test, you may need to remove any previous registered `http://localhost:8081` client.
 
 Using your token from the `oidcProvider.properties` file, you can query all existing clients:
 
@@ -471,14 +474,14 @@ And remove it if it is still registered:
 curl -X DELETE http://127.0.0.1:8080/c2id/clients/http%3A%2F%2Flocalhost%3A8081 -H "Authorization: Bearer ztucZ...exmd6"
 ```
 
-Notice that you may need to update:
+Notice that for the `client_id` defined as as URL, you may need to update:
 - the `setenv.sh` file to add `export JAVA_OPTS="$JAVA_OPTS -Dorg.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH=true"`
-- the `server.xml` file to add `encodedSolidusHandling="decode"`on the `<Connector>` definition.
+- the `server.xml` file to add `encodedSolidusHandling="decode"` on the `<Connector>` definition.
 
 
 ## 4) Test again
 
-With the RP and OP updated and restart and the CAS trust anchor running, you may try to log in by calling `http://localhost:8081` in your browser and clicking on the protected link.
+With the RP and OP updated and restarted, and the CAS trust anchor running, you may try to log in by calling `http://localhost:8081` in your browser and clicking on the protected link.
 
 Now it works thanks to the real trust anchor.
 
@@ -496,4 +499,6 @@ INFO [org.apereo.cas.oidc.federation.web.OidcTrustAnchorFetchEndpointController]
 
 We see that the federation endpoint has been called twice and the `fetch` endpoint (which returns the trust anchor confidence for the entity) has been called twice as well: one for the OP (`http://127.0.0.1:8080/c2id`) and the other one for the RP (`http://localhost:8081`).
 
-If we do the test again, nothing appears in the CAS trust anchor logs this time as the entity statements are not requested again, they are already known by the RP a nd the OP, until they expired or get lost (in-memory storage).
+This was fully expected: the trust anchor is used to build the trust chains!
+
+If we do the test again, nothing appears in the CAS trust anchor logs this time as the entity statements are not requested again, they are already known by the RP and the OP, until they expired or get lost (in-memory storage).
