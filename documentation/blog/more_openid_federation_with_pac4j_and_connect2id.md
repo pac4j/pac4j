@@ -71,7 +71,7 @@ INFO AUTHZ-STORE - [AS0213] Inspected valid SELF_CONTAINED Bearer access token: 
 INFO USERINFO - [OP7307] Received valid UserInfo request: sub=alice claims=null ia_id=aac191d2-dcc5-4837-8545-692e204bcc07
 ```
 
-This is "fairly" obvious:
+This is *fairly* obvious:
 
 1. A POST call is performed on the <code>/c2id/token</code> endpoint using the <code>private_key_jwt</code> client authentication method (this is what we have configured on the pac4j side)
 2. A GET call is performed on the <code>/c2id/userinfo</code> endpoint using the <code>access_token</code> as bearer (= HTTP header).
@@ -87,7 +87,7 @@ DEBUG o.p.o.c.e.OidcCredentialsExtractor       : Request state: d508c0f0ad/respo
 DEBUG org.pac4j.oidc.client.OidcClient         : clean authentication attempt from session
 DEBUG o.p.o.c.authenticator.OidcAuthenticator  : Token response: status=200, content={"access_token":"eyJ...bng","token_type":"Bearer","expires_in":600}
 DEBUG o.p.o.c.authenticator.OidcAuthenticator  : Token response successful
-DEBUG org.pac4j.oidc.client.OidcClient         : clean authentication attempt from session
+DEBUG org.pac4j.oidc.client.OidcClient         : clean authentication attempt from session (second call)
 DEBUG org.pac4j.oidc.client.OidcClient         : Credentials validation took: 32 ms
 DEBUG org.pac4j.oidc.client.OidcClient         : credentials : OidcCredentials(code=sjtox4...NQw, accessToken=...
 DEBUG org.pac4j.oidc.profile.OidcProfile       : adding => key: access_token / value: eyJh...MDB9 / class java.lang.String
@@ -125,7 +125,7 @@ Indeed, as Connect2id does not know the pac4j client, it has **temporarily** reg
 
 While this is a very convenient mechanism, it can impact server performance.
 
-Therefore, it would be wise to consider explicitly and permanently registering our OIDC pac4j client.
+Therefore, it could be useful to consider explicitly and permanently registering our OIDC pac4j client.
 
 
 # 2) Let's log in with explicit registration
@@ -211,7 +211,7 @@ public Config config() {
 }
 ```
 
-Here is the complete configuration to refresh memories (and not only the added `client_id`).
+Here is the complete configuration for reference (and not only the added `client_id`).
 
 We restart the Spring Boot application and try a new login process.
 
@@ -223,11 +223,11 @@ INFO AUTHZ-SESSION - [OP2101] Created new auth session: sid=reJ...58w client_id=
 
 ## b) The client secret
 
-At this point in the article, you should wonder why we only have a `client_id` and no `client_secret`.
+At this point in the article, you may wonder why we only have a `client_id` and no `client_secret`.
 
 In fact, we don't need a secret as we use the `private_key_jwt` client authentication method: the credential is the private key, not the secret.
 
-As this pac4j configuration is revealed in its entity statement, the Connect2id server is aware of that setting and **accordingly** decides to only return a `client_id` for this OIDC client.
+As this pac4j configuration is revealed in its entity statement, the Connect2id server is aware of that setting and, **accordingly**, decides to only return a `client_id` for this OIDC client.
 
 Let's go further and replace this configuration in pac4j:
 
@@ -267,7 +267,7 @@ And we get a new error from pac4j:
 org.pac4j.oidc.exceptions.OidcException: Client secret export file is required
 ```
 
-This seems definitely a weird one, but it's not. Let me explain: the received `client_id` is output in the logs, though it would not be safe to output the `client_secret` in the logs as well.
+This seems definitely a weird one, but it's not! Let me explain: the received `client_id` is output in the logs, though it would not be safe to output the `client_secret` in the logs as well.
 
 So the received `client_secret` is planned to be saved on the disk, on a file defined by the `secretExportFile` property.
 
@@ -390,7 +390,7 @@ The first one has the right `client_id` and `client_secret` and is defined with 
 
 Notice the appropriate `client_name` property as well.
 
-The Connect2id configuration perfectly matches what was received by pac4j (not that I had any doubts ;-)
+The Connect2id configuration perfectly matches what was received by pac4j (not that I had any doubts 😉)
 
 The **magic of the federation** continues:
 
