@@ -160,4 +160,42 @@ public final class CsrfAuthorizerTests implements TestsConstants {
         sessionStore.set(context, Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE, expirationDate);
         assertFalse(authorizer.isAuthorized(context, sessionStore, null));
     }
+
+    @Test
+    public void testEmptyParameterMustBeRejectedWhenPreviousTokenMissing() {
+        val context = MockWebContext.create()
+            .setRequestMethod(HttpConstants.HTTP_METHOD.POST.name())
+            .addRequestParameter(Pac4jConstants.CSRF_TOKEN, "");
+        val sessionStore = new MockSessionStore();
+        sessionStore.set(context, Pac4jConstants.CSRF_TOKEN, VALUE);
+        sessionStore.set(context, Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE, expirationDate);
+        sessionStore.set(context, Pac4jConstants.PREVIOUS_CSRF_TOKEN, null);
+
+        assertFalse(authorizer.isAuthorized(context, sessionStore, null));
+    }
+
+    @Test
+    public void testEmptyHeaderMustBeRejectedWhenPreviousTokenMissing() {
+        val context = MockWebContext.create()
+            .setRequestMethod(HttpConstants.HTTP_METHOD.POST.name())
+            .addRequestHeader(Pac4jConstants.CSRF_TOKEN, "");
+        val sessionStore = new MockSessionStore();
+        sessionStore.set(context, Pac4jConstants.CSRF_TOKEN, VALUE);
+        sessionStore.set(context, Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE, expirationDate);
+        sessionStore.set(context, Pac4jConstants.PREVIOUS_CSRF_TOKEN, null);
+
+        assertFalse(authorizer.isAuthorized(context, sessionStore, null));
+    }
+
+    @Test
+    public void testBlankParameterMustBeRejected() {
+        val context = MockWebContext.create()
+            .setRequestMethod(HttpConstants.HTTP_METHOD.POST.name())
+            .addRequestParameter(Pac4jConstants.CSRF_TOKEN, "   ");
+        val sessionStore = new MockSessionStore();
+        sessionStore.set(context, Pac4jConstants.CSRF_TOKEN, "   ");
+        sessionStore.set(context, Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE, expirationDate);
+
+        assertFalse(authorizer.isAuthorized(context, sessionStore, null));
+    }
 }

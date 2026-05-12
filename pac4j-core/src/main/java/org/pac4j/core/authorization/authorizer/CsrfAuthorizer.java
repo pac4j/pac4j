@@ -82,9 +82,9 @@ public class CsrfAuthorizer implements Authorizer {
             // all checks are always performed and conditional operations are turned into logical ones
             // to reduce timing differences while keeping strict token equality checks
             val hasSessionData = sessionToken.isPresent() & sessionDate.isPresent();
-            val previousToken = (String) sessionPreviousToken.orElse(Pac4jConstants.EMPTY_STRING);
+            val previousToken = (String) sessionPreviousToken.orElse(null);
             LOGGER.debug("previous token: {}", previousToken);
-            val token = (String) sessionToken.orElse(Pac4jConstants.EMPTY_STRING);
+            val token = (String) sessionToken.orElse(null);
             LOGGER.debug("token: {}", token);
             val isGoodCurrentToken = strEquals(token, parameterToken) | strEquals(token, headerToken);
             val isGoodPreviousToken = strEquals(previousToken, parameterToken) | strEquals(previousToken, headerToken);
@@ -108,7 +108,7 @@ public class CsrfAuthorizer implements Authorizer {
      * @return a boolean
      */
     protected boolean strEquals(final String a, final String b) {
-        if (a == null || b == null) {
+        if (a == null || b == null || a.isBlank() || b.isBlank()) {
             return false;
         }
         return MessageDigest.isEqual(
