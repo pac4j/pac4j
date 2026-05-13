@@ -3,6 +3,9 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v5.7.11**:
+- Security fix on the `pac4j-core` module
+
 **v5.7.10**:
 - Security fixes on the `pac4j-core` and `pac4j-ldap` modules
 

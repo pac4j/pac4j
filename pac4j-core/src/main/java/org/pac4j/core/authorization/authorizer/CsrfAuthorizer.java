@@ -61,9 +61,9 @@ public class CsrfAuthorizer implements Authorizer {
             // all checks are always performed and conditional operations are turned into logical ones
             // to reduce timing differences while keeping strict token equality checks
             final var hasSessionData = sessionToken.isPresent() & sessionDate.isPresent();
-            final var previousToken = (String) sessionPreviousToken.orElse(Pac4jConstants.EMPTY_STRING);
+            final var previousToken = (String) sessionPreviousToken.orElse(null);
             LOGGER.debug("previous token: {}", previousToken);
-            final var token = (String) sessionToken.orElse(Pac4jConstants.EMPTY_STRING);
+            final var token = (String) sessionToken.orElse(null);
             LOGGER.debug("token: {}", token);
             final var isGoodCurrentToken = strEquals(token, parameterToken) | strEquals(token, headerToken);
             final var isGoodPreviousToken = strEquals(previousToken, parameterToken) | strEquals(previousToken, headerToken);
@@ -80,7 +80,7 @@ public class CsrfAuthorizer implements Authorizer {
     }
 
     protected boolean strEquals(final String a, final String b) {
-        if (a == null || b == null) {
+        if (a == null || b == null || a.isBlank() || b.isBlank()) {
             return false;
         }
         return MessageDigest.isEqual(
