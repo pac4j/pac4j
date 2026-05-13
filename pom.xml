@@ -93,7 +93,7 @@
 		<shiro.version>2.1.0</shiro.version>
         <jbcrypt.version>0.4.3</jbcrypt.version>
 		<mockito.version>5.23.0</mockito.version>
-		<slf4j.version>2.0.17</slf4j.version>
+		<slf4j.version>2.0.18</slf4j.version>
         <httpclient.version>5.3.1</httpclient.version>
         <jdbi.version>2.78</jdbi.version>
         <unboundid.version>7.0.4</unboundid.version>
