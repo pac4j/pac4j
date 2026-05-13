@@ -5,6 +5,9 @@ title: Release notes&#58;
 
 ### JDK17:
 
+**v6.5.1**:
+- Security fix on the `pac4j-core` module
+
 **v6.5.0**:
 - Removed the GAE, CouchDB and SpringBoot modules
 - Created the `org.pac4j.test` package for tests components in the `pac4j-core` module instead of `test-jar` modules
@@ -176,6 +179,9 @@ title: Release notes&#58;
 ---
 
 ### JDK11:
+
+**v5.7.11**:
+- Security fix on the `pac4j-core` module
 
 **v5.7.10**:
 - Security fixes on the `pac4j-core` and `pac4j-ldap` modules
