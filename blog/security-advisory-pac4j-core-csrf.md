@@ -14,4 +14,4 @@ To stay safe, you SHOULD upgrade:
 
 No additional details will be shared in this post.
 
-These vulnerabilities were discovered by **James Love**.
+This vulnerability was discovered by **James Love**.
