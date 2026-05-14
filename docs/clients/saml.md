@@ -81,8 +81,6 @@ After a successful authentication, a [`SAML2Profile`](https://github.com/pac4j/p
 
 The `SAML2Client` configures a `ReplayCache`, which protects against replay attacks. This `ReplayCache` must keep state between authentications. Therefore a single instance of the `SAML2Client` must be used. If this is not possible, you can override the `initSAMLReplayCache` method to create a custom `ReplayCacheProvider`.
 
-Note: after use `SAML2Client` must be explicitly destroyed with `destroy` method call. The importance of this step is justified by the underlying implementation. `FilesystemMetadataResolver` is using a daemon thread to watch the changes to metadata file. Without destroying `SAML2Client` this thread will keep running, thus there is a risk to get a threads leak problem.
-
 ## 3) Additional configuration:
 
 You can control the way SAML attributes are converted from the SAML authentication response into pac4j attributes by setting the appropriate `AttributeConverter` at the `SAML2Configuration` level (by default, it's `SimpleSAMLAttributeConverter`):
