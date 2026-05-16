@@ -1,23 +1,22 @@
 package org.pac4j.oidc.profile.creator;
 
-import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.proc.BadJOSEException;
-import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.jwt.JWTParser;
-import com.nimbusds.oauth2.sdk.ParseException;
-import com.nimbusds.oauth2.sdk.token.AccessToken;
-import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
-import com.nimbusds.openid.connect.sdk.*;
+import java.io.IOException;
+import java.net.URI;
+import java.util.Optional;
+
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.TokenCredentials;
+import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.profile.AttributeLocation;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.profile.definition.ProfileDefinitionAware;
 import org.pac4j.core.profile.jwt.JwtClaims;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
@@ -28,13 +27,18 @@ import org.pac4j.oidc.profile.OidcProfileDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.Optional;
-
-import static org.pac4j.core.credentials.authenticator.Authenticator.ALWAYS_VALIDATE;
-import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
-import static org.pac4j.core.util.CommonHelper.*;
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.proc.BadJOSEException;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.JWTParser;
+import com.nimbusds.oauth2.sdk.ParseException;
+import com.nimbusds.oauth2.sdk.token.AccessToken;
+import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
+import com.nimbusds.openid.connect.sdk.Nonce;
+import com.nimbusds.openid.connect.sdk.UserInfoErrorResponse;
+import com.nimbusds.openid.connect.sdk.UserInfoRequest;
+import com.nimbusds.openid.connect.sdk.UserInfoResponse;
+import com.nimbusds.openid.connect.sdk.UserInfoSuccessResponse;
 
 /**
  * OpenID Connect profile creator.
@@ -57,12 +61,12 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
 
     @Override
     protected void internalInit(final boolean forceReinit) {
-        assertNotNull("configuration", configuration);
+        CommonHelper.assertNotNull("configuration", configuration);
 
         defaultProfileDefinition(new OidcProfileDefinition());
 
         if (!configuration.isCallUserInfoEndpoint()
-            && (client.getAuthenticator() == null || client.getAuthenticator() == ALWAYS_VALIDATE)) {
+            && (client.getAuthenticator() == null || client.getAuthenticator() == Authenticator.ALWAYS_VALIDATE)) {
             // prevent creating a profile from an unvalidated access token
             throw new TechnicalException("You cannot disable the call to the UserInfo endpoint " +
                 "without providing an authenticator");
@@ -113,13 +117,13 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
             }
             // Check ID Token
             if (oidcCredentials != null && oidcCredentials.getIdToken() != null) {
-                final var claimsSet = configuration.findTokenValidator().validate(oidcCredentials.getIdToken(), nonce);
-                assertNotNull("claimsSet", claimsSet);
+                final var claimsSet = configuration.findTokenValidator().validateIdToken(oidcCredentials.getIdToken(), nonce);
+                CommonHelper.assertNotNull("claimsSet", claimsSet);
                 profile.setId(ProfileHelper.sanitizeIdentifier(claimsSet.getSubject()));
 
                 // keep the session ID if provided
                 final var sid = (String) claimsSet.getClaim(Pac4jConstants.OIDC_CLAIM_SESSIONID);
-                if (isNotBlank(sid)) {
+                if (CommonHelper.isNotBlank(sid)) {
                     configuration.findLogoutHandler().recordSession(context, sessionStore, sid);
                 }
             }
@@ -143,7 +147,7 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
                     final var value = entry.getValue();
                     // it's not the subject and this attribute does not already exist, add it
                     if (!JwtClaims.SUBJECT.equals(key) && profile.getAttribute(key) == null) {
-                        getProfileDefinition().convertAndAdd(profile, PROFILE_ATTRIBUTE, key, value);
+                        getProfileDefinition().convertAndAdd(profile, AttributeLocation.PROFILE_ATTRIBUTE, key, value);
                     }
                 }
             }
@@ -187,7 +191,7 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
                 }
                 if (userInfoClaimsSet != null) {
                     final String subject = userInfoClaimsSet.getSubject();
-                    if (isBlank(profile.getId()) && isNotBlank(subject)) {
+                    if (CommonHelper.isBlank(profile.getId()) && CommonHelper.isNotBlank(subject)) {
                         profile.setId(ProfileHelper.sanitizeIdentifier(subject));
                     }
                     getProfileDefinition().convertAndAdd(profile, userInfoClaimsSet.getClaims(), null);
@@ -204,14 +208,14 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
             final AccessToken accessToken = credentials.getAccessToken();
             if (accessToken != null) {
                 var accessTokenJwt = JWTParser.parse(accessToken.getValue());
-                var accessTokenClaims = configuration.findTokenValidator().validate(accessTokenJwt, nonce);
+                var accessTokenClaims = configuration.findTokenValidator().validateIdToken(accessTokenJwt, nonce);
 
                 // add attributes of the access token if they don't already exist
                 for (final var entry : accessTokenClaims.toJWTClaimsSet().getClaims().entrySet()) {
                     final var key = entry.getKey();
                     final var value = entry.getValue();
                     if (!JwtClaims.SUBJECT.equals(key) && profile.getAttribute(key) == null) {
-                        getProfileDefinition().convertAndAdd(profile, PROFILE_ATTRIBUTE, key, value);
+                        getProfileDefinition().convertAndAdd(profile, AttributeLocation.PROFILE_ATTRIBUTE, key, value);
                     }
                 }
             }

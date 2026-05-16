@@ -66,7 +66,7 @@ public class OidcExtractor implements CredentialsExtractor {
                     }
                     String sid;
                     if (configuration.isLogoutValidation()) {
-                        final var claims = configuration.findTokenValidator().validate(jwt, null);
+                        final var claims = configuration.findTokenValidator().validateLogoutToken(jwt);
                         if (claims.getClaim(OidcConfiguration.NONCE) != null) {
                             logger.error("The nonce claim should not exist for logout requests");
                             throw new BadRequestAction();
