@@ -1,9 +1,11 @@
 package org.pac4j.oidc.profile.creator;
 
-import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Mockito;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -57,26 +59,26 @@ public class OidcProfileCreatorTests implements TestsConstants {
             .subject("pac4j")
             .build());
 
-        configuration = mock(OidcConfiguration.class);
-        var metadata = mock(OIDCProviderMetadata.class);
-        when(metadata.getIssuer()).thenReturn(new Issuer(PAC4J_URL));
-        when(metadata.getJWKSetURI()).thenReturn(new URI(PAC4J_BASE_URL));
-        when(configuration.findProviderMetadata()).thenReturn(metadata);
+        configuration = Mockito.mock(OidcConfiguration.class);
+        var metadata = Mockito.mock(OIDCProviderMetadata.class);
+        Mockito.when(metadata.getIssuer()).thenReturn(new Issuer(PAC4J_URL));
+        Mockito.when(metadata.getJWKSetURI()).thenReturn(new URI(PAC4J_BASE_URL));
+        Mockito.when(configuration.findProviderMetadata()).thenReturn(metadata);
 
-        var tokenValidator = mock(TokenValidator.class);
-        when(tokenValidator.validate(any(), any())).thenAnswer(
+        var tokenValidator = Mockito.mock(TokenValidator.class);
+        Mockito.when(tokenValidator.validateIdToken(ArgumentMatchers.any(), ArgumentMatchers.any())).thenAnswer(
                 a -> IDTokenClaimsSet.parse(((JWT) a.getArgument(0)).getJWTClaimsSet().toString()));
 
-        when(configuration.findTokenValidator()).thenReturn(tokenValidator);
-        when(configuration.getClientId()).thenReturn(ID);
-        when(configuration.getSecret()).thenReturn(UUID.randomUUID().toString());
+        Mockito.when(configuration.findTokenValidator()).thenReturn(tokenValidator);
+        Mockito.when(configuration.getClientId()).thenReturn(ID);
+        Mockito.when(configuration.getSecret()).thenReturn(UUID.randomUUID().toString());
         algorithms = new ArrayList<>();
-        when(metadata.getIDTokenJWSAlgs()).thenReturn(algorithms);
+        Mockito.when(metadata.getIDTokenJWSAlgs()).thenReturn(algorithms);
     }
 
     @Test
     public void testCreateOidcProfile() throws Exception {
-        when(configuration.isIncludeAccessTokenClaimsInProfile()).thenReturn(true);
+        Mockito.when(configuration.isIncludeAccessTokenClaimsInProfile()).thenReturn(true);
         OidcClient client = new OidcClient(configuration);
         client.setAuthenticator(new OidcAuthenticator(configuration, client));
         ProfileCreator creator = new OidcProfileCreator(configuration, client);
@@ -90,7 +92,7 @@ public class OidcProfileCreatorTests implements TestsConstants {
 
     @Test
     public void testCreateOidcProfileWithoutAccessToken() throws Exception {
-        when(configuration.isIncludeAccessTokenClaimsInProfile()).thenReturn(true);
+        Mockito.when(configuration.isIncludeAccessTokenClaimsInProfile()).thenReturn(true);
         OidcClient client = new OidcClient(configuration);
         client.setAuthenticator(new OidcAuthenticator(configuration, client));
         ProfileCreator creator = new OidcProfileCreator(configuration, client);
@@ -104,7 +106,7 @@ public class OidcProfileCreatorTests implements TestsConstants {
 
     @Test
     public void testCreateOidcProfileJwtAccessToken() throws Exception {
-        when(configuration.isIncludeAccessTokenClaimsInProfile()).thenReturn(false);
+        Mockito.when(configuration.isIncludeAccessTokenClaimsInProfile()).thenReturn(false);
         OidcClient client = new OidcClient(configuration);
         client.setAuthenticator(new OidcAuthenticator(configuration, client));
         ProfileCreator creator = new OidcProfileCreator(configuration, client);
@@ -121,7 +123,7 @@ public class OidcProfileCreatorTests implements TestsConstants {
         assertTrue(profile.isPresent());
         assertNull(profile.get().getAttribute("client"));
 
-        when(configuration.isIncludeAccessTokenClaimsInProfile()).thenReturn(true);
+        Mockito.when(configuration.isIncludeAccessTokenClaimsInProfile()).thenReturn(true);
         profile = creator.create(credentials, webContext, new MockSessionStore());
         assertTrue(profile.isPresent());
         assertEquals("pac4j", profile.get().getAttribute("client"));
@@ -129,8 +131,8 @@ public class OidcProfileCreatorTests implements TestsConstants {
 
     @Test
     public void testNoOidcProfileWithoutAuthenticator() throws Exception {
-        when(configuration.isIncludeAccessTokenClaimsInProfile()).thenReturn(false);
-        when(configuration.isCallUserInfoEndpoint()).thenReturn(false);
+        Mockito.when(configuration.isIncludeAccessTokenClaimsInProfile()).thenReturn(false);
+        Mockito.when(configuration.isCallUserInfoEndpoint()).thenReturn(false);
         ProfileCreator creator = new OidcProfileCreator(configuration, new OidcClient(configuration));
         var webContext = MockWebContext.create();
         var credentials = new OidcCredentials();
