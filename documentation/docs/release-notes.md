@@ -180,6 +180,9 @@ title: Release notes&#58;
 
 ### JDK11:
 
+**v5.8.0**:
+- OIDC: Fix issue with rejected logout token (backchannel logout)
+
 **v5.7.11**:
 - Security fix on the `pac4j-core` module
 
