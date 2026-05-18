@@ -25,7 +25,9 @@ title: <i class="fa fa-user" aria-hidden="true"></i> All <i>pac4j</i> engine/cor
 
 <b>JDK 11:</b>
 
-<h2><a id="v5.7" href="https://www.pac4j.org/5.7.x/docs/index.html">v5.7</a> <small>(MINOR)</small>
+<h2><a id="v5.8" href="https://www.pac4j.org/5.8.x/docs/index.html">v5.8</a> <small>(MINOR)</small>
+
+<a id="v5.7" href="https://www.pac4j.org/5.7.x/docs/index.html">v5.7</a> <small>(MINOR)</small>
 
 <a id="v5.6" href="https://www.pac4j.org/5.6.x/docs/index.html">v5.6</a> <small>(MINOR)</small>
 
