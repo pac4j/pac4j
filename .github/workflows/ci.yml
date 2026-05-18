@@ -7,10 +7,10 @@ env:
 on:
     push:
         branches:
-            - 5.7.x
+            - 5.8.x
     pull_request:
         branches:
-            - 5.7.x
+            - 5.8.x
 
 permissions:
   contents: read
