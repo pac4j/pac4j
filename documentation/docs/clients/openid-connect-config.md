@@ -191,3 +191,10 @@ You can enable the PAR mechanism via:
 ```java
 config.setPushedAuthorizationRequest(true);
 ```
+
+
+## 6) Keys rotation
+
+Every time the entity statement expires in federation, the federation keys are reloaded.
+
+Though, the generic RP keys (used for the "Request Object" signing) as well as the ones for the `private_key_jwt` authn method, are only loaded at startup.
