@@ -106,6 +106,7 @@ public class DefaultEntityConfigurationGenerator extends InitializableObject imp
             .subject(entityId)
             .jwtID(UUID.randomUUID().toString())
             .issueTime(now)
+            .audience(federation.getTargetOp())
             .expirationTime(expirationDate)
             .notBeforeTime(now);
 

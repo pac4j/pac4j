@@ -113,7 +113,7 @@ public final class OidcFederationOpMetadataResolverTests {
         explicitConfiguration.getFederation().setSecretExportFile(secretFile.toString());
 
         val entityConfigurationGenerator = Mockito.mock(EntityConfigurationGenerator.class);
-        Mockito.when(entityConfigurationGenerator.getContentType()).thenReturn("application/entity-statement+jwt");
+        Mockito.when(entityConfigurationGenerator.getContentType()).thenReturn("application/explicit-registration-response+jwt");
         Mockito.when(entityConfigurationGenerator.generateEntityStatement()).thenReturn("entity-configuration");
         explicitConfiguration.getFederation().setEntityConfigurationGenerator(entityConfigurationGenerator);
 
@@ -122,7 +122,7 @@ public final class OidcFederationOpMetadataResolverTests {
 
         val webServer = new WebServer(0)
             .defineResponse("ok", new ServerResponse(WebServer.Response.Status.CREATED,
-                "application/entity-statement+jwt", registrationResponse));
+                "application/explicit-registration-response+jwt", registrationResponse));
         webServer.start();
         try {
             val metadata = OIDCProviderMetadata.parse(METADATA_CLIENT_SECRET_BASIC);
@@ -310,6 +310,6 @@ public final class OidcFederationOpMetadataResolverTests {
                 "client_id", clientId,
                 "client_secret", clientSecret)))
             .build();
-        return JwkHelper.buildSignedJwt(claims, signingKey, "entity-statement+jwt");
+        return JwkHelper.buildSignedJwt(claims, signingKey, "explicit-registration-response+jwt");
     }
 }

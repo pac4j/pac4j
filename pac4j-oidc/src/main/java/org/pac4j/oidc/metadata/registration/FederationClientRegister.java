@@ -1,5 +1,7 @@
 package org.pac4j.oidc.metadata.registration;
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JOSEObjectType;
@@ -11,6 +13,9 @@ import com.nimbusds.openid.connect.sdk.federation.entities.EntityStatement;
 import com.nimbusds.openid.connect.sdk.federation.entities.EntityStatementClaimsVerifier;
 import com.nimbusds.openid.connect.sdk.federation.registration.ClientRegistrationType;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.text.ParseException;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
@@ -18,12 +23,6 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.FileHelper;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.exceptions.OidcException;
-
-import java.io.IOException;
-import java.nio.file.Path;
-import java.text.ParseException;
-
-import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
  * Handles OpenID Federation client registration logic for OP in federation.
@@ -78,7 +77,7 @@ public class FederationClientRegister {
         String clientId = null;
         try {
             val request = new HTTPRequest(HTTPRequest.Method.POST, registrationEndpoint);
-            request.setContentType("application/jose");
+            request.setContentType(EntityStatement.CONTENT_TYPE.toString());
             request.setBody(entityConfig);
             configuration.configureHttpRequest(request);
             val response = request.send();
@@ -87,9 +86,10 @@ public class FederationClientRegister {
             val content = response.getContent();
             if (code == 200 || code == 201) {
                 LOGGER.debug("Received response registration: {}", content);
-                val statement = EntityStatement.parse(content);
+                val statement = ExplicitRegistrationResponse.parse(content);
                 val type = statement.getSignedStatement().getHeader().getType();
-                if (type != null && !JOSEObjectType.JWT.equals(type) && !EntityStatement.JOSE_OBJECT_TYPE.equals(type)) {
+                if (type != null && !JOSEObjectType.JWT.equals(type) &&
+                    !ExplicitRegistrationResponse.EXPLICIT_RESPONSE_JOSE_OBJECT_TYPE.equals(type)) {
                     throw new OidcException("Unexpected explicit registration response typ: " + type);
                 }
                 statement.verifySignature(federationJWKS);

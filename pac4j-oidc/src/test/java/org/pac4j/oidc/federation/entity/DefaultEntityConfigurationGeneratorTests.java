@@ -398,6 +398,7 @@ public final class DefaultEntityConfigurationGeneratorTests {
         federation.setScopes(List.of("openid", "email"));
         federation.setContactName("pac4j buildConfig client");
         federation.setContactEmails(List.of("build@example.org"));
+        federation.setTargetOp("https://op.example.org");
         val generator = newGenerator();
 
         val signingKey = new RSAKeyGenerator(2048)
@@ -414,6 +415,7 @@ public final class DefaultEntityConfigurationGeneratorTests {
 
         assertEquals("https://entity.example.org", claims.getIssuer());
         assertEquals("https://entity.example.org", claims.getSubject());
+        assertEquals(federation.getTargetOp(), claims.getAudience().get(0));
         assertNotNull(claims.getJWTID());
         assertNotNull(claims.getIssueTime());
         assertNotNull(claims.getNotBeforeTime());
