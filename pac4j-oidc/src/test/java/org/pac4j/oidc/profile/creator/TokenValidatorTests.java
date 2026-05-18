@@ -5,8 +5,12 @@ import com.nimbusds.jwt.SignedJWT;
 import com.nimbusds.oauth2.sdk.id.Issuer;
 import com.nimbusds.openid.connect.sdk.Nonce;
 import com.nimbusds.openid.connect.sdk.claims.IDTokenClaimsSet;
+import com.nimbusds.openid.connect.sdk.claims.LogoutTokenClaimsSet;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import com.nimbusds.openid.connect.sdk.validators.IDTokenValidator;
+
+import net.minidev.json.JSONObject;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.exception.TechnicalException;
@@ -120,12 +124,49 @@ public final class TokenValidatorTests implements TestsConstants {
         claims.put("nonce", nonce.toString());
         final String idToken = generator.generate(claims);
 
-        final IDTokenClaimsSet claimsSet = validator.validate(SignedJWT.parse(idToken), nonce);
+        final IDTokenClaimsSet claimsSet = validator.validateIdToken(SignedJWT.parse(idToken), nonce);
         assertEquals(KEY, claimsSet.getSubject().toString());
         assertEquals(PAC4J_URL, claimsSet.getIssuer().toString());
         assertEquals(ID, claimsSet.getAudience().get(0).toString());
         assertNotNull(claimsSet.getExpirationTime());
         assertNotNull(claimsSet.getIssueTime());
         assertEquals(nonce, claimsSet.getNonce());
+    }
+    
+    @Test
+    public void testValidateLogoutToken() throws Exception {
+        algorithms.add(JWSAlgorithm.HS256);
+        when(configuration.findProviderMetadata().supportsBackChannelLogout()).thenReturn(true);
+
+        final TokenValidator validator = new TokenValidator(configuration);
+
+        final JwtGenerator generator = new JwtGenerator(new SecretSignatureConfiguration(CLIENT_SECRET, JWSAlgorithm.HS256));
+        final Map<String, Object> claims = new HashMap<>();
+        claims.put("iss", PAC4J_URL);
+        claims.put("sub", KEY);
+        claims.put("aud", ID);
+        final long now = new Date().getTime() / 1000;
+        claims.put("exp", now + 1000);
+        claims.put("iat", now);
+
+        JSONObject events = new JSONObject();
+        events.put(LogoutTokenClaimsSet.EVENT_TYPE, new JSONObject());
+        claims.put(LogoutTokenClaimsSet.EVENTS_CLAIM_NAME, events);
+
+        final String jti = UUID.randomUUID().toString();
+        claims.put("jti", jti);
+
+        String sessionId = UUID.randomUUID().toString();
+        claims.put("sid", sessionId);
+        final String logoutToken = generator.generate(claims);
+
+        final LogoutTokenClaimsSet claimsSet = validator.validateLogoutToken(SignedJWT.parse(logoutToken));
+        assertEquals(KEY, claimsSet.getSubject().toString());
+        assertEquals(PAC4J_URL, claimsSet.getIssuer().toString());
+        assertEquals(ID, claimsSet.getAudience().get(0).toString());
+        assertNotNull(claimsSet.getIssueTime());
+        assertEquals(claimsSet.getClaim(LogoutTokenClaimsSet.EVENTS_CLAIM_NAME), events);
+        assertEquals(jti, claimsSet.getJWTID().toString());
+        assertEquals(sessionId, claimsSet.getSessionID().toString());
     }
 }

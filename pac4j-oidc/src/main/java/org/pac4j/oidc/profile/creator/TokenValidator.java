@@ -1,5 +1,15 @@
 package org.pac4j.oidc.profile.creator;
 
+import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.util.CommonHelper;
+import org.pac4j.oidc.config.OidcConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.proc.BadJOSEException;
@@ -9,16 +19,9 @@ import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.openid.connect.sdk.Nonce;
 import com.nimbusds.openid.connect.sdk.OIDCResponseTypeValue;
 import com.nimbusds.openid.connect.sdk.claims.IDTokenClaimsSet;
+import com.nimbusds.openid.connect.sdk.claims.LogoutTokenClaimsSet;
 import com.nimbusds.openid.connect.sdk.validators.IDTokenValidator;
-import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.util.CommonHelper;
-import org.pac4j.oidc.config.OidcConfiguration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.List;
+import com.nimbusds.openid.connect.sdk.validators.LogoutTokenValidator;
 
 /**
  * ID Token validator.
@@ -31,7 +34,9 @@ public class TokenValidator {
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final List<IDTokenValidator> idTokenValidators;
-
+    
+    private final List<LogoutTokenValidator> logoutTokenValidators;
+    
     protected final OidcConfiguration configuration;
 
     public TokenValidator(final OidcConfiguration configuration) {
@@ -52,11 +57,13 @@ public class TokenValidator {
         }
 
         idTokenValidators = new ArrayList<>();
+        logoutTokenValidators = new ArrayList<>();
         final var _clientID = new ClientID(configuration.getClientId());
 
         for (var jwsAlgorithm : jwsAlgorithms) {
             // build validator
             final IDTokenValidator idTokenValidator;
+            final LogoutTokenValidator logoutTokenValidator;
             if ("none".equals(jwsAlgorithm.getName())) {
                 final String responseType = configuration.getResponseType();
                 final boolean responseTypeContainsIdToken = responseType != null
@@ -72,8 +79,18 @@ public class TokenValidator {
                 JWSAlgorithm.HS384.equals(jwsAlgorithm) || JWSAlgorithm.HS512.equals(jwsAlgorithm))) {
                 final var _secret = new Secret(configuration.getSecret());
                 idTokenValidator = createHMACTokenValidator(configuration, jwsAlgorithm, _clientID, _secret);
+                if (configuration.findProviderMetadata().supportsBackChannelLogout()) {
+                    logoutTokenValidator = new LogoutTokenValidator(configuration.findProviderMetadata().getIssuer(), _clientID, jwsAlgorithm, _secret);
+                    logoutTokenValidator.setMaxClockSkew(configuration.getMaxClockSkew());
+                    logoutTokenValidators.add(logoutTokenValidator);
+                }
             } else {
-                idTokenValidator = createRSATokenValidator(configuration, jwsAlgorithm, _clientID);
+                idTokenValidator = createRSAIdTokenValidator(configuration, jwsAlgorithm, _clientID);
+                if (configuration.findProviderMetadata().supportsBackChannelLogout()) {
+                    logoutTokenValidator = createRSALogoutTokenValidator(configuration, jwsAlgorithm, _clientID);
+                    logoutTokenValidator.setMaxClockSkew(configuration.getMaxClockSkew());
+                    logoutTokenValidators.add(logoutTokenValidator);
+                }
             }
             idTokenValidator.setMaxClockSkew(configuration.getMaxClockSkew());
 
@@ -83,7 +100,7 @@ public class TokenValidator {
         this.configuration = configuration;
     }
 
-    protected IDTokenValidator createRSATokenValidator(final OidcConfiguration configuration,
+    protected IDTokenValidator createRSAIdTokenValidator(final OidcConfiguration configuration,
                                                        final JWSAlgorithm jwsAlgorithm, final ClientID clientID) {
         try {
             return new IDTokenValidator(configuration.findProviderMetadata().getIssuer(), clientID, jwsAlgorithm,
@@ -93,12 +110,28 @@ public class TokenValidator {
         }
     }
 
+    /**
+     * <p>createRSATokenValidator.</p>
+     *
+     * @param jwsAlgorithm a {@link JWSAlgorithm} object
+     * @param clientID a {@link ClientID} object
+     * @return a {@link LogoutTokenValidator} object
+     */
+    protected LogoutTokenValidator createRSALogoutTokenValidator(final OidcConfiguration configuration, final JWSAlgorithm jwsAlgorithm, final ClientID clientID) {
+        try {
+            return new LogoutTokenValidator(configuration.findProviderMetadata().getIssuer(), clientID, jwsAlgorithm, configuration.findProviderMetadata().getJWKSetURI().toURL(),
+                configuration.findResourceRetriever());
+        } catch (final MalformedURLException e) {
+            throw new TechnicalException(e);
+        }
+    }
+    
     protected IDTokenValidator createHMACTokenValidator(final OidcConfiguration configuration, final JWSAlgorithm jwsAlgorithm,
                                                         final ClientID clientID, final Secret secret) {
         return new IDTokenValidator(configuration.findProviderMetadata().getIssuer(), clientID, jwsAlgorithm, secret);
     }
 
-    public IDTokenClaimsSet validate(final JWT idToken, final Nonce expectedNonce)
+    public IDTokenClaimsSet validateIdToken(final JWT idToken, final Nonce expectedNonce)
         throws BadJOSEException, JOSEException {
 
         BadJOSEException badJOSEException = null;
@@ -124,8 +157,48 @@ public class TokenValidator {
         }
     }
 
+    /**
+     * <p>validate the logout token.</p>
+     *
+     * @param logoutToken a {@link JWT} object
+     * @return a {@link IDTokenClaimsSet} object
+     * @throws BadJOSEException if any.
+     * @throws JOSEException if any.
+     */
+    public LogoutTokenClaimsSet validateLogoutToken(final JWT logoutToken)
+        throws BadJOSEException, JOSEException {
+
+        BadJOSEException badJOSEException = null;
+        JOSEException joseException = null;
+        for (final var logoutTokenValidator : logoutTokenValidators) {
+        	logger.debug("Trying LogoutToken validator: {}", logoutToken);
+            try {
+                return logoutTokenValidator.validate(logoutToken);
+            } catch (final BadJOSEException e1) {
+            	logger.debug(e1.getMessage(), e1);
+                badJOSEException = e1;
+            } catch (final JOSEException e2) {
+            	logger.debug(e2.getMessage(), e2);
+                joseException = e2;
+            }
+        }
+
+        if (badJOSEException != null) {
+            throw badJOSEException;
+        } else if (joseException != null) {
+            throw joseException;
+        } else {
+            throw new TechnicalException("Unable to validate the logout token");
+        }
+    }
+    
     // for tests
     List<IDTokenValidator> getIdTokenValidators() {
         return idTokenValidators;
+    }
+    
+    // for tests
+    List<LogoutTokenValidator> getLogoutTokenValidators() {
+        return logoutTokenValidators;
     }
 }
