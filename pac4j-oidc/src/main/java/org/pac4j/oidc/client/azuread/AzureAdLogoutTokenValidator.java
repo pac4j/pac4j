@@ -1,7 +1,5 @@
 package org.pac4j.oidc.client.azuread;
 
-import java.text.ParseException;
-
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.proc.BadJOSEException;
 import com.nimbusds.jwt.JWT;
@@ -9,6 +7,8 @@ import com.nimbusds.jwt.proc.BadJWTException;
 import com.nimbusds.oauth2.sdk.id.Issuer;
 import com.nimbusds.openid.connect.sdk.claims.LogoutTokenClaimsSet;
 import com.nimbusds.openid.connect.sdk.validators.LogoutTokenValidator;
+
+import java.text.ParseException;
 
 /**
  * Specialized logout token validator capable of handling the tenantid placeholder.
