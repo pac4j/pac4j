@@ -1,6 +1,6 @@
 ---
 layout: blog
-title: OpenID Federation with pac4j and Connect2id
+title: OpenID Federation with pac4j and Connect2id (1/2)
 author: Jérôme LELEU
 date: April 2026
 ---
