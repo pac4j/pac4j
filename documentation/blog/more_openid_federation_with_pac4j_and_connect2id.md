@@ -9,7 +9,7 @@ I strongly recommend that you read the first article about the [OpenID Federatio
 
 This new article dives deeper into the OpenID Federation support in pac4j and Connect2id.
 
-You should download and use the latest versions of both software (at least version 6.5.0 for pac4j).
+You should download and use the latest versions of both software (at least version 6.5.1 for pac4j).
 
 
 # 1) Let's log in (again)
