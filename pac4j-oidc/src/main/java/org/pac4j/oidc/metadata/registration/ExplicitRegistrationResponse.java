@@ -18,6 +18,12 @@ import com.nimbusds.openid.connect.sdk.federation.entities.EntityStatementClaims
 import com.nimbusds.openid.connect.sdk.federation.utils.JWTUtils;
 import net.jcip.annotations.Immutable;
 
+/**
+ * OpenID Federation explicit registration response
+ *
+ * @author Jan Pavlíček
+ * @since 6.5.2
+ */
 @Immutable
 public final class ExplicitRegistrationResponse {
     public static final JOSEObjectType EXPLICIT_RESPONSE_JOSE_OBJECT_TYPE = new JOSEObjectType("explicit-registration-response+jwt");
