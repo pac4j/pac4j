@@ -50,10 +50,12 @@ Available properties are:
 - `responseTypes` (`List<String>`, default: `["code"]`): value of the `response_types` RP metadata claim.
 - `grantTypes` (`List<String>`, default: `["authorization_code"]`): value of the `grant_types` RP metadata claim.
 - `scopes` (`List<String>`, default: `["openid", "email", "profile"]`): value of the `scope` RP metadata claim (serialized as a space-separated string).
+- `clientRegistrationTypes` (`List<String>`, default: `["explicit", "automatic"]`): RP registration modes accepted by pac4j for federation registration.
 - `clientName` (`String`, optional): value of the `client_name` RP metadata claim.
 - `contacts` (`List<String>`, default: empty list): value of the `contacts` RP metadata claim when at least one contact is provided.
 - `trustAnchors` (`List<OidcTrustAnchorProperties>`, default: empty list): trust anchors used to resolve trust chains (`issuer` and `jwksResource` for each anchor).
 - `targetOp` (`String`): OP entity identifier to resolve via federation. When set, federation mode is used instead of discovery URI resolution.
+- `sendTrustChain` (`boolean`, default: `false`): when enabled, sends the RP trust chain upfront in authorization requests.
 - `secretExportFile` (`String`): the file where to save a received secret during an explicit registration.
 
 At least one signing source must be configured with a resource/path (`jwks` or `keystore`) to generate the entity configuration.
@@ -71,6 +73,21 @@ You must use the `EntityConfigurationGenerator` component to retrieve the entity
     }
 ```
 
+or
+
+```java
+    @RequestMapping(value = "/.well-known/openid-federation")
+    @ResponseBody
+    public ResponseEntity<String> oidcFederation() throws HttpAction {
+        val oidcClient = (OidcClient) config.getClients().findClient("OidcClient").get();
+        val generator = oidcClient.getConfiguration().getFederation().getEntityConfigurationGenerator();
+        val entityStatement = generator.generateEntityStatement();
+        val contentType = generator.getContentType();
+    return ResponseEntity.ok()
+        .contentType(MediaType.parseMediaType(contentType))
+        .body(entityStatement);
+    }
+```
 
 ## 2) Using trust anchors
 
