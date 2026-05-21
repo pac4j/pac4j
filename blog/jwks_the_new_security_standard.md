@@ -154,7 +154,11 @@ Despite the more pleasant format, there is no magic, there are pitfalls to avoid
 
 Plain certificates were painful and no one would take them lightly. Yet, this nicer JWKS format must not make you forget that you deal with security.
 
+- *Trap #1*
+
 So you still need to take care of the rotation/revocation of the keys in your JWKS: add a JWK, remove an old one, ... things don't happen by themselves (hopefully).
+
+- *Trap #2*
 
 > **Above all, JWKS can contain public or private certificates and you must never publicly disclose a private certificate.**
 
@@ -181,5 +185,9 @@ This is the JWKS for the private certificate of our previous public JWK:
 ```
 
 There are more information for private certificates (you always find the `d` property).
+
+- *Trap #3*
+
+There is even a new trap with the `alg` property: this is absolutely not a security constraint, it is only a recommendation. Like for the JWT header where the `alg` key is only informative, you must always rely on what you actually defined and used for encryption/signature. You must never rely on what is provided to you from the outside.
 
 <div class="text-center highlight-blog">JWKS is a modern format to store/manage certificates, but you must never forget the good practices regardless.</div>
