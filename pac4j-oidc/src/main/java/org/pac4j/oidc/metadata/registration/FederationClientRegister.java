@@ -2,11 +2,15 @@ package org.pac4j.oidc.metadata.registration;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JOSEObjectType;
+import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.proc.BadJOSEException;
+import com.nimbusds.oauth2.sdk.ResponseType;
+import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
 import com.nimbusds.oauth2.sdk.http.HTTPRequest;
 import com.nimbusds.oauth2.sdk.id.Audience;
 import com.nimbusds.openid.connect.sdk.federation.entities.EntityStatement;
@@ -16,12 +20,16 @@ import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.FileHelper;
 import org.pac4j.oidc.config.OidcConfiguration;
+import org.pac4j.oidc.credentials.clientauth.DefaultClientAuthenticationBuilder;
 import org.pac4j.oidc.exceptions.OidcException;
 
 /**
@@ -33,6 +41,11 @@ import org.pac4j.oidc.exceptions.OidcException;
 @Slf4j
 public class FederationClientRegister {
 
+    private static final List<List<ResponseType>> PREFERRED_RESPONSE_TYPES = List.of(
+        OidcConfiguration.AUTHORIZATION_CODE_FLOWS,
+        OidcConfiguration.HYBRID_CODE_FLOWS,
+        OidcConfiguration.IMPLICIT_FLOWS
+    );
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     public void register(final OidcConfiguration configuration, final OIDCProviderMetadata metadata, final JWKSet federationJWKS) {
@@ -122,6 +135,37 @@ public class FederationClientRegister {
                         FileHelper.savePrivateFile(path, clientSecret);
                     }
                     logSeparator();
+                    val scope = orp.path("scope").asText();
+                    if (StringUtils.isNotBlank(scope)) {
+                        configuration.setScope(scope);
+                    }
+                    val tokenEndpointAuthMethod = orp.path("token_endpoint_auth_method").asText();
+                    if (StringUtils.isNotBlank(tokenEndpointAuthMethod)) {
+                        val clientAuthenticationMethod = ClientAuthenticationMethod.parse(tokenEndpointAuthMethod);
+                        if (!DefaultClientAuthenticationBuilder.SUPPORTED_METHODS.contains(clientAuthenticationMethod)) {
+                            throw new OidcException(
+                                "Unsupported token_endpoint_auth_method returned by explicit registration: " + tokenEndpointAuthMethod);
+                        }
+                        configuration.setClientAuthenticationMethod(clientAuthenticationMethod);
+                    }
+                    val requestObjectSigningAlg = orp.path("request_object_signing_alg").asText();
+                    if (StringUtils.isNotBlank(requestObjectSigningAlg)) {
+                        configuration.setRequestObjectSigningAlgorithm(JWSAlgorithm.parse(requestObjectSigningAlg));
+                    }
+                    val idTokenSigningAlg = orp.path("id_token_signed_response_alg").asText();
+                    if (StringUtils.isNotBlank(idTokenSigningAlg)) {
+                        configuration.setIdTokenSigningAlgorithmAsString(idTokenSigningAlg);
+                    }
+                    val responseTypes = getStringList(orp.path("response_types"));
+                    if (!responseTypes.isEmpty()) {
+                        val selectedResponseType = PREFERRED_RESPONSE_TYPES.stream()
+                            .flatMap(Collection::stream)
+                            .filter(preferredResponseType -> responseTypes.contains(preferredResponseType.toString()))
+                            .findFirst()
+                            .orElseThrow(() -> new OidcException(
+                                "No supported response_type returned by explicit registration: " + responseTypes));
+                        configuration.setResponseType(selectedResponseType.toString());
+                    }
                 }
             }
             if (isBlank(clientId)) {
@@ -137,5 +181,25 @@ public class FederationClientRegister {
 
     protected void logSeparator() {
         LOGGER.warn("/!\\ ================================================");
+    }
+
+    private static List<String> getStringList(final JsonNode node) {
+        if (node == null || node.isMissingNode() || node.isNull()) {
+            return List.of();
+        }
+        if (node.isTextual()) {
+            val value = node.asText();
+            return StringUtils.isNotBlank(value) ? List.of(value) : List.of();
+        }
+        if (node.isArray()) {
+            val values = new ArrayList<String>();
+            node.forEach(value -> {
+                if (value.isTextual() && StringUtils.isNotBlank(value.asText())) {
+                    values.add(value.asText());
+                }
+            });
+            return values;
+        }
+        return List.of();
     }
 }
