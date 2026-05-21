@@ -6,10 +6,6 @@ title: Release notes&#58;
 ### JDK17:
 
 **v6.5.2**:
-- OpenID federation entity configuration:
-  - add `jwksType` (`EMBEDDED`, `URI`, `SIGNED_URI`) and `exposedJwksUrl` properties to expose `jwks_uri` / `signed_jwks_uri` metadata publication modes
-  - deprecate ambiguous content-type constant `CONTENT_TYPE` to `ENTITY_STATEMENT_CONTENT_TYPE` and add `SIGNED_JWKS_CONTENT_TYPE` for signed JWKS responses
-  - deprecate the `getContentType` method in `EntityConfigurationGenerator` in favor of the `getEntityStatementContentType` and `getJwksContentType` methods
 - Fix OpenID federation explicit registration request Content-Type value to `application/entity-statement+jwt`
 - Fix OpenID federation explicit registration response Content-Type validation to expect `application/explicit-registration-response+jwt`
 - Added missing audience claim to the OpenID federation explicit registration request

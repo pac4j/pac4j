@@ -51,13 +51,8 @@ Available properties are:
 - `grantTypes` (`List<String>`, default: `["authorization_code"]`): value of the `grant_types` RP metadata claim.
 - `scopes` (`List<String>`, default: `["openid", "email", "profile"]`): value of the `scope` RP metadata claim (serialized as a space-separated string).
 - `clientRegistrationTypes` (`List<String>`, default: `["explicit", "automatic"]`): RP registration modes accepted by pac4j for federation registration.
-- `contactName` (`String`, optional): value of the `client_name` RP metadata claim.
-- `contactEmails` (`List<String>`, default: empty list): value of the `contacts` RP metadata claim when at least one contact is provided.
-- `exposedJwksUrl` (`String`, optional): URL where the RP exposes JWKS when `jwksType` is `URI` or `SIGNED_URI`.
-- `jwksType` (`JwksType`, default: `EMBEDDED`): how RP federation JWKS are published:
-  - `EMBEDDED`: JWKS is included as the `jwks` claim in the entity statement.
-  - `URI`: JWKS is exposed separately and the entity statement metadata contains `jwks_uri`.
-  - `SIGNED_URI`: signed JWKS is exposed separately and the entity statement metadata contains `signed_jwks_uri`.
+- `clientName` (`String`, optional): value of the `client_name` RP metadata claim.
+- `contacts` (`List<String>`, default: empty list): value of the `contacts` RP metadata claim when at least one contact is provided.
 - `trustAnchors` (`List<OidcTrustAnchorProperties>`, default: empty list): trust anchors used to resolve trust chains (`issuer` and `jwksResource` for each anchor).
 - `targetOp` (`String`): OP entity identifier to resolve via federation. When set, federation mode is used instead of discovery URI resolution.
 - `sendTrustChain` (`boolean`, default: `false`): when enabled, sends the RP trust chain upfront in authorization requests.
@@ -66,12 +61,19 @@ Available properties are:
 At least one signing source must be configured with a resource/path (`jwks` or `keystore`) to generate the entity configuration.
 
 You must use the `EntityConfigurationGenerator` component to retrieve the entity configuration:
-- `generateEntityStatement()` for the entity statement itself
-- `generateJwks` for the JWKS itself (when `jwksType` is `URI` or `SIGNED_URI`)
-- `getEntityStatementContentType()` for the entity statement content type
-- `getJwksContentType()` for the JWKS endpoint content type (when `jwksType` is `URI` or `SIGNED_URI`).
 
 **Spring Boot example**:
+
+```java
+    @RequestMapping(value = "/.well-known/openid-federation", produces = DefaultEntityConfigurationGenerator.CONTENT_TYPE)
+    @ResponseBody
+    public String oidcFederation() throws HttpAction {
+        val oidcClient = (OidcClient) config.getClients().findClient("OidcClient").get();
+        return oidcClient.getConfiguration().getFederation().getEntityConfigurationGenerator().generate();
+    }
+```
+
+or
 
 ```java
     @RequestMapping(value = "/.well-known/openid-federation")
@@ -80,29 +82,12 @@ You must use the `EntityConfigurationGenerator` component to retrieve the entity
         val oidcClient = (OidcClient) config.getClients().findClient("OidcClient").get();
         val generator = oidcClient.getConfiguration().getFederation().getEntityConfigurationGenerator();
         val entityStatement = generator.generateEntityStatement();
-        val contentType = generator.getEntityStatementContentType();
+        val contentType = generator.getContentType();
     return ResponseEntity.ok()
         .contentType(MediaType.parseMediaType(contentType))
         .body(entityStatement);
     }
 ```
-
-When `jwksType` is `URI` or `SIGNED_URI`, you must also expose the value returned by `generateJwks()` at `exposedJwksUrl`:
-
-```java
-    @RequestMapping(value = "/jwks")
-    @ResponseBody
-    public ResponseEntity<String> oidcFederationJwks() throws HttpAction {
-        val oidcClient = (OidcClient) config.getClients().findClient("OidcClient").get();
-        val generator = oidcClient.getConfiguration().getFederation().getEntityConfigurationGenerator();
-        val entityStatement = generator.generateJwks();
-        val contentType = generator.getJwksContentType();
-    return ResponseEntity.ok()
-        .contentType(MediaType.parseMediaType(contentType))
-        .body(entityStatement);
-    }
-```
-
 
 ## 2) Using trust anchors
 
@@ -114,8 +99,8 @@ val federation = oidcConfig.getFederation();
 federation.setTargetOp("http://localhost:8080/op");
 
 val trust = new OidcTrustAnchorProperties();
-trust.setIssuer("http://localhost:8081/ta");
-trust.setJwksPath("http://localhost:8081/ta/jwks.json");
+trust.setTaIssuer("http://localhost:8081/ta");
+trust.setTaJwksUrl("http://localhost:8081/ta/jwks.json");
 federation.getTrustAnchors().add(trust);
 ```
 
