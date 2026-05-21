@@ -21,7 +21,7 @@ Or we can use asymetric cryptography based on certificates.
 In that case, there are two certificates: a public one and a private one.
 
 Two mechanisms are available:
-- the signature ensures that the sender is confirmed (the sender uses its private key to sign the message and anyone can confirm that using the public key of the sender)
+- the signature ensures that the sender is confirmed (the sender uses its private key to sign the message and the receiver can confirm that using the public key of the sender)
 - the encryption protects the data itself (the sender uses the public key of the receiver to encrypt the data and only the receiver can read the data thanks to its private key).
 
 Both mechanisms are complementary and serve different purposes.
@@ -96,7 +96,7 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4
 KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30
 ```
 
-We indeed find three parts:
+We have three parts which decode to:
 - a header: `{ "alg": "HS256", "typ": "JWT" }`
 - a body: `{ "sub": "1234567890", "name": "John Doe", "admin": true, "iat": 1516239022 }`
 - a signature.
@@ -110,7 +110,76 @@ Given the popularity of JSON, it was high time to find a better format than the 
 
 Thus, JWK (for JSON Web Key) is the format to define certificates:
 - the `kty` property defines the type `RSA`, `EC`, ...
-- the `use` property indicates if the certificate is used for signature ("sig") or encryption ("enc)
-- the `alg` property defines the algorithm (can be ommitted)
-- the `kid` property defines the name for the certificate and this is a very cool feature to sort out certificates.
-...
+- the `use` property indicates if the certificate is used for signature ("sig") or encryption ("enc")
+- the `alg` property defines the algorithm (it can be ommitted)
+- the `kid` property defines the name for the certificate and this is a very cool feature to sort out certificates
+- the specific `n` and `e` properties for RSA, the specific `x` and `y` properties for Ellipic Curve.
+
+For example, you can have this JWK:
+
+```json
+{
+    "kty" : "RSA",
+    "e" : "AQAB",
+    "use" : "sig",
+    "kid" : "keyname",
+    "n" : "2moVQ...2aq7Q"
+}
+```
+
+And a JWKS, the S stands for Set (not for the plural), is a set of JWKs listed in an array defined by the `keys` property.
+
+For example, the JWKS of our previous JWK is:
+
+```json
+{
+  "keys" : [ {
+    "kty" : "RSA",
+    "e" : "AQAB",
+    "use" : "sig",
+    "kid" : "keyname",
+    "n" : "2moVQ...2aq7Q"
+  } ]
+}
+```
+
+This is super easy and much clearer than the PEM format given that you now have an identifier for your key, the use of your key, an algorithm, etc.
+
+Instead of a block certificate, you have several separate information.
+
+
+## 5) Easier but...
+
+Despite the more pleasant format, there is no magic, there are pitfalls to avoid (like with regular certificates).
+
+Plain certificates were painful and no one would take them lightly. Yet, this nicer JWKS format must not make you forget that you deal with security.
+
+So you still need to take care of the rotation/revocation of the keys in your JWKS: add a JWK, remove an old one, ... things don't happen by themselves (hopefully).
+
+> **Above all, JWKS can contain public or private certificates and you must never publicly disclose a private certificate.**
+
+This is the JWKS for the private certificate of our previous public JWK:
+
+```json
+{
+   "keys":[
+      {
+         "p":"-4uskk...sMm98",
+         "kty":"RSA",
+         "q":"3kg3S...FgErM",
+         "d":"UT_QS...l1LYw",
+         "e":"AQAB",
+         "use":"sig",
+         "kid":"keyname",
+         "qi":"Lp-0T...lo4afg",
+         "dp":"xcakA...18JHE",
+         "dq":"JByJV...XmqiP8",
+         "n":"2moVQ...2aq7Q"
+      }
+   ]
+}
+```
+
+There are more information for private certificates (you always find the `d` property).
+
+<div class="text-center highlight-blog">JWKS is a modern format to store/manage certificates, but you must never forget the good practices regardless.</div>
