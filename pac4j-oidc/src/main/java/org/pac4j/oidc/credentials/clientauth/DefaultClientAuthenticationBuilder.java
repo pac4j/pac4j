@@ -37,7 +37,7 @@ import static org.pac4j.core.util.CommonHelper.isNotEmpty;
 @RequiredArgsConstructor
 public class DefaultClientAuthenticationBuilder implements ClientAuthenticationBuilder {
 
-    protected Collection<ClientAuthenticationMethod> SUPPORTED_METHODS =
+    public static final Collection<ClientAuthenticationMethod> SUPPORTED_METHODS =
         Arrays.asList(
             ClientAuthenticationMethod.CLIENT_SECRET_POST,
             ClientAuthenticationMethod.CLIENT_SECRET_BASIC,

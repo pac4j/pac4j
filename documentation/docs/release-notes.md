@@ -9,6 +9,7 @@ title: Release notes&#58;
 - Fix OpenID federation explicit registration request Content-Type value to `application/entity-statement+jwt`
 - Fix OpenID federation explicit registration response Content-Type validation to expect `application/explicit-registration-response+jwt`
 - Added missing audience claim to the OpenID federation explicit registration request
+- respect `scope`, `token_endpoint_auth_method`, `request_object_signing_alg`, `id_token_signed_response_alg` and `response_types` claims from OpenID federation explicit registration response
 
 **v6.5.1**:
 - Security fix on the `pac4j-core` module
