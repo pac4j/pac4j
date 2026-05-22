@@ -1,22 +1,22 @@
 ---
 layout: blog
-title: JWKS&colon; the new security standard
+title: JWKS&colon; the modern way to manage keys
 author: Jérôme LELEU
 date: June 2026
 ---
 
-When it comes to security, certificates are used everywhere since almost forever.
+When it comes to security, certificates are used everywhere since the early days of the web.
 
 While storing them in PEM/DER format has always been complicated, things have become much easier with the new JWKS (J for JSON) format.
 
 
 ## 1) A word about cryptography
 
-We can use symetric cryptography based on a secret.
+We can use symmetric cryptography based on a secret.
 
 As this secret must be shared by both parties, this is not generally a very convenient solution.
 
-Or we can use asymetric cryptography based on certificates.
+Or we can use asymmetric cryptography based on certificates.
 
 In that case, there are two certificates: a public one and a private one.
 
@@ -83,11 +83,11 @@ Everyone knows the JSON format:
 }
 ```
 
-Most people also knows that a JSON Web Token (aka JWT) is a signed and/or encrypted JSON message.
+Most people also know that a JSON Web Token (aka JWT) is a signed and/or encrypted JSON message.
 
-It comes as as string in three parts separated by dots, each part being base64 encoded: `part1.part2.part3`.
+It comes as a string in three parts separated by dots, each part being base64 encoded: `part1.part2.part3`.
 
-`part1` is the header, `part2` is the the JSON itself (it can be encrypted) and `part3` is the signature (it may not be signed).
+`part1` is the header, `part2` is the JSON itself (it can be encrypted) and `part3` is the signature (it may not be signed).
 
 Let's take an example from `jwt.io`:
 
@@ -101,19 +101,19 @@ We have three parts which decode to:
 - a body: `{ "sub": "1234567890", "name": "John Doe", "admin": true, "iat": 1516239022 }`
 - a signature.
 
-And the encryption/signing of the JWTs is ensured by the public/private certificates.
+And the encryption/signing of the JWTs is ensured by the public/private keys.
 
 
 ## 4) JWK(S)
 
 Given the popularity of JSON, it was high time to find a better format than the PEM(/DER) format for certificates and what better format than JSON?
 
-Thus, JWK (for JSON Web Key) is the format to define certificates:
+Thus, JWK (for JSON Web Key) is the format to define keys:
 - the `kty` property defines the type `RSA`, `EC`, ...
-- the `use` property indicates if the certificate is used for signature ("sig") or encryption ("enc")
-- the `alg` property defines the algorithm (it can be ommitted)
-- the `kid` property defines the name for the certificate and this is a very cool feature to sort out certificates
-- the specific `n` and `e` properties for RSA, the specific `x` and `y` properties for Ellipic Curve.
+- the `use` property indicates if the key is used for signature ("sig") or encryption ("enc")
+- the `alg` property defines the algorithm (it can be omitted)
+- the `kid` property defines the name for the key and this is a very cool feature to distinguish between keys
+- the specific `n` and `e` properties for RSA, the specific `x` and `y` properties for Elliptic Curve.
 
 For example, you can have this JWK:
 
@@ -152,7 +152,7 @@ Instead of a block certificate, you have several separate information.
 
 Despite the more pleasant format, there is no magic, there are pitfalls to avoid (like with regular certificates).
 
-Plain certificates were painful and no one would take them lightly. Yet, this nicer JWKS format must not make you forget that you deal with security.
+Plain certificates were painful and no one would take them lightly. Yet, this nicer JWKS format of the keys must not make you forget that you deal with security.
 
 - *Trap #1*
 
@@ -160,9 +160,9 @@ So you still need to take care of the rotation/revocation of the keys in your JW
 
 - *Trap #2*
 
-> **Above all, JWKS can contain public or private certificates and you must never publicly disclose a private certificate.**
+While JWKS exposed on the internet contain public keys, private/internal JWKS can contain private keys.
 
-This is the JWKS for the private certificate of our previous public JWK:
+For example, this is the JWKS of the private key for our previous public JWK:
 
 ```json
 {
@@ -184,10 +184,20 @@ This is the JWKS for the private certificate of our previous public JWK:
 }
 ```
 
-There are more information for private certificates (you always find the `d` property).
+You should notice that there are more information for private keys and especially you always find the `d` property in a private key.
+
+This is really important as you must always be able to distinguish between a public key and a private key.
+
+> **Because the golden rule remains: you must never publicly disclose a private key.**
 
 - *Trap #3*
 
-There is even a new trap with the `alg` property: this is absolutely not a security constraint, it is only a recommendation. Like for the JWT header where the `alg` key is only informative, you must always rely on what you actually defined and used for encryption/signature. You must never rely on what is provided to you from the outside.
+There is even a new trap with the `alg` property: this is absolutely not a security constraint, it is only a recommendation.
 
-<div class="text-center highlight-blog">JWKS is a modern format to store/manage certificates, but you must never forget the good practices regardless.</div>
+So you must not be confused by this value and only trust what you have really configured and applied in your code.
+
+This is exactly like for the JWT header where the `alg` key is only informative: trusting it could expose you to the *algorithm confusion* attack.
+
+You must always rely on what you actually defined and used for encryption/signature. You must never rely on what is provided to you from the outside.
+
+<div class="text-center highlight-blog">JWKS is a modern format to store/manage keys, but you must never forget the good practices regardless.</div>
