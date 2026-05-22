@@ -7,7 +7,7 @@ date: June 2026
 
 When it comes to security, certificates are used everywhere since the early days of the web.
 
-While storing them in PEM/DER format has always been complicated, things have become much easier with the new JWKS (J for JSON) format.
+While storing them in PEM/DER format has always been complicated, things have become much easier with the modern JWKS (J for JSON) format.
 
 
 ## 1) A word about cryptography
@@ -16,7 +16,7 @@ We can use symmetric cryptography based on a secret.
 
 As this secret must be shared by both parties, this is not generally a very convenient solution.
 
-Or we can use asymmetric cryptography based on certificates.
+Or we can use asymmetric cryptography based on key pairs.
 
 In that case, there are two certificates: a public one and a private one.
 
@@ -72,7 +72,7 @@ You could even generate a keystore (for Java) using the `keytool` command line.
 
 ## 3) Modern ecosystem: OIDC and JSON
 
-Today, the OIDC protocol has somehow supplanted the SAML protocol and JSON has truely replaced the XML format.
+Today, the OIDC protocol has somehow supplanted the SAML protocol and JSON has truly replaced the XML format.
 
 Everyone knows the JSON format:
 
@@ -145,7 +145,7 @@ For example, the JWKS of our previous JWK is:
 
 This is super easy and much clearer than the PEM format given that you now have an identifier for your key, the use of your key, an algorithm, etc.
 
-Instead of a block certificate, you have several separate information.
+Instead of a block certificate, you have several separate pieces of information.
 
 
 ## 5) Easier but...
