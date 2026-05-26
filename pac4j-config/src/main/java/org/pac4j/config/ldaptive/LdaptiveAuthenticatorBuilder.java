@@ -23,7 +23,7 @@ import java.time.Duration;
 /**
  * Copy/pasted from CAS server v5.0.4: Beans + LdapAuthenticationConfiguration classes, only the Ldaptive stuffs are kept.
  *
- * @author bidou
+ * @author Jerome LELEU
  */
 @Slf4j
 public class LdaptiveAuthenticatorBuilder {

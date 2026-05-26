@@ -25,7 +25,7 @@ import java.util.Objects;
  * SOAP.
  *
  * @since 3.8.0
- * @author bidou
+ * @author Jerome LELEU
  */
 public class SAML2ArtifactBindingDecoder extends AbstractPac4jDecoder {
     private final SAML2MetadataResolver idpMetadataResolver;

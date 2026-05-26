@@ -8,7 +8,7 @@ import lombok.Setter;
  * Removed: passwordPolicy, principalTransformation, passwordEncoder, principalAttributeId, principalAttributeList,
  * allowMultiplePrincipalAttributeValues, allowMultiplePrincipalAttributeValues, credentialCriteria
  *
- * @author bidou
+ * @author Jerome LELEU
  */
 @Getter
 @Setter

@@ -11,7 +11,7 @@ import java.util.Collections;
  * {@link SAML2MetadataResolver}.
  *
  * @since 3.8.0
- * @author bidou
+ * @author Jerome LELEU
  */
 public class FixedEntityIdResolver implements Resolver<String, CriteriaSet> {
     private SAML2MetadataResolver metadataResolver;

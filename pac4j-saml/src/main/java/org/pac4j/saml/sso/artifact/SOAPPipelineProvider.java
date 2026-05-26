@@ -8,7 +8,7 @@ import org.opensaml.messaging.pipeline.httpclient.HttpClientMessagePipelineFacto
  * ArtifactResolve.
  *
  * @since 3.8.0
- * @author bidou
+ * @author Jerome LELEU
  */
 public interface SOAPPipelineProvider {
     /**

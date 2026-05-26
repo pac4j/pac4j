@@ -1,6 +1,5 @@
 package org.pac4j.saml.sso.artifact;
 
-
 import lombok.val;
 import net.shibboleth.shared.component.ComponentInitializationException;
 import net.shibboleth.shared.resolver.CriteriaSet;
@@ -43,7 +42,7 @@ import java.util.List;
  * specific handler, override the build method for that handler.
  *
  * @since 3.8.0
- * @author bidou
+ * @author Jerome LELEU
  */
 @SuppressWarnings("unchecked")
 public class DefaultSOAPPipelineFactory implements HttpClientMessagePipelineFactory {

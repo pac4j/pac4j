@@ -13,7 +13,7 @@ import org.opensaml.saml.saml2.core.StatusResponseType;
  * This is read from the message in the context.
  *
  * @since 3.8.0
- * @author bidou
+ * @author Jerome LELEU
  */
 @SuppressWarnings("rawtypes")
 public class IssuerFunction implements Function<MessageContext, String> {

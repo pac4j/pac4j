@@ -13,7 +13,7 @@ import org.pac4j.saml.exceptions.SAMLException;
  * implementation will not work in a clustered environment and requires the same
  * instance is used for all SAML authentications.
  *
- * @author bidou
+ * @author Jerome LELEU
  */
 public class InMemoryReplayCacheProvider implements ReplayCacheProvider {
     private StorageServiceReplayCache cache;

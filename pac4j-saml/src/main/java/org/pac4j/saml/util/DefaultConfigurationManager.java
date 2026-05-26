@@ -16,7 +16,7 @@ import java.util.Map;
 /**
  * <p>DefaultConfigurationManager class.</p>
  *
- * @author bidou
+ * @author Jerome LELEU
  */
 public class DefaultConfigurationManager implements ConfigurationManager {
     /** {@inheritDoc} */

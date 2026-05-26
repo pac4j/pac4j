@@ -8,7 +8,7 @@ package org.pac4j.saml.util;
  *
  * @see java.util.ServiceLoader
  * @since 3.3.0
- * @author bidou
+ * @author Jerome LELEU
  */
 @FunctionalInterface
 public interface ConfigurationManager {

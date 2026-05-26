@@ -9,7 +9,7 @@ import org.ldaptive.sasl.SecurityStrength;
 /**
  * Copy/pasted from CAS server v5.0.4 as is.
  *
- * @author bidou
+ * @author Jerome LELEU
  */
 @Getter
 @Setter

@@ -8,7 +8,7 @@ import org.opensaml.storage.ReplayCache;
  * multiple invocations.
  *
  * @since 3.8
- * @author bidou
+ * @author Jerome LELEU
  */
 @FunctionalInterface
 public interface ReplayCacheProvider {

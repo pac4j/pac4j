@@ -10,7 +10,7 @@ import org.pac4j.saml.client.SAML2Client;
  * default rules set by the SAML SSO Profile.
  *
  * @since 3.8.0
- * @author bidou
+ * @author Jerome LELEU
  */
 @RequiredArgsConstructor
 public class DefaultSOAPPipelineProvider implements SOAPPipelineProvider {

@@ -18,7 +18,7 @@ import java.util.Collections;
  * {@link SignatureSigningParametersProvider}.
  *
  * @since 3.8.0
- * @author bidou
+ * @author Jerome LELEU
  */
 public class DefaultSignatureSigningParametersResolver implements SignatureSigningParametersResolver {
     private SignatureSigningParametersProvider provider;

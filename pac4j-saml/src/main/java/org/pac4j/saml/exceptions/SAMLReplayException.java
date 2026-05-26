@@ -6,7 +6,7 @@ import java.io.Serial;
  * This is {@link SAMLReplayException}.
  *
  * @since 3.8.0
- * @author bidou
+ * @author Jerome LELEU
  */
 public class SAMLReplayException extends SAMLException {
     @Serial

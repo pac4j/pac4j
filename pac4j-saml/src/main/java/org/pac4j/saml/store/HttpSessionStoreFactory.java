@@ -6,7 +6,7 @@ import org.pac4j.core.context.session.SessionStore;
 /**
  * Default store factory which provides HTTP Session store.
  *
- * @author bidou
+ * @author Jerome LELEU
  */
 public class HttpSessionStoreFactory implements SAMLMessageStoreFactory {
 
