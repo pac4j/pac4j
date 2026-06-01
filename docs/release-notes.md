@@ -5,6 +5,11 @@ title: Release notes&#58;
 
 ### JDK17:
 
+**v6.5.3**:
+- SAML protocol:
+  - fix missing `InResponseTo` attribute in logout responses
+  - fix `PROTOCOL_MESSAGE` logging and Velocity deprecations
+
 **v6.5.2**:
 - Fix OpenID federation explicit registration request Content-Type value to `application/entity-statement+jwt`
 - Fix OpenID federation explicit registration response Content-Type validation to expect `application/explicit-registration-response+jwt`
