@@ -167,5 +167,9 @@ public abstract class AbstractPac4jDecoder extends AbstractMessageDecoder {
         Constraint.isNotNull(pool, "ParserPool cannot be null");
         parserPool = pool;
     }
+
+    @Override
+    protected void logDecodedMessage() {
+    }
 }
 

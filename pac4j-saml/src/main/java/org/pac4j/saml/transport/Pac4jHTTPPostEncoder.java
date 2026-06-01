@@ -255,4 +255,7 @@ public class Pac4jHTTPPostEncoder extends AbstractMessageEncoder {
             throw new MessageEncodingException("Error marshalling message", e);
         }
     }
+
+    @Override
+    protected void logEncodedMessage() {}
 }

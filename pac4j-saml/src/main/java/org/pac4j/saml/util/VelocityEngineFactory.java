@@ -28,10 +28,9 @@ public class VelocityEngineFactory {
         try {
             val props = new Properties();
             props.setProperty(RuntimeConstants.INPUT_ENCODING, "UTF-8");
-            props.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
+            props.setProperty(RuntimeConstants.RESOURCE_LOADERS, "classpath,string");
             props.setProperty("resource.loader.string.class", StringResourceLoader.class.getName());
             props.setProperty("resource.loader.classpath.class", ClasspathResourceLoader.class.getName());
-            props.setProperty(RuntimeConstants.RESOURCE_LOADERS, "classpath,string");
             val engine = new VelocityEngine();
             engine.init(props);
             return engine;

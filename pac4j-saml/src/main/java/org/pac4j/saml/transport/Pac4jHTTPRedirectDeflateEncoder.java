@@ -257,4 +257,7 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder {
 
         return b64Signature;
     }
+
+    @Override
+    protected void logEncodedMessage() {}
 }

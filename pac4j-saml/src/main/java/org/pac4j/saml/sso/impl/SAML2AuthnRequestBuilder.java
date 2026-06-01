@@ -7,16 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
 import org.opensaml.saml.common.SAMLObjectBuilder;
 import org.opensaml.saml.common.SAMLVersion;
-import org.opensaml.saml.saml2.core.AuthnContextClassRef;
-import org.opensaml.saml.saml2.core.AuthnContextComparisonTypeEnumeration;
-import org.opensaml.saml.saml2.core.AuthnRequest;
-import org.opensaml.saml.saml2.core.Extensions;
-import org.opensaml.saml.saml2.core.IDPEntry;
-import org.opensaml.saml.saml2.core.IDPList;
-import org.opensaml.saml.saml2.core.Issuer;
-import org.opensaml.saml.saml2.core.NameID;
-import org.opensaml.saml.saml2.core.Scoping;
-import org.opensaml.saml.saml2.core.Subject;
+import org.opensaml.saml.saml2.core.*;
 import org.opensaml.saml.saml2.core.impl.AuthnContextClassRefBuilder;
 import org.opensaml.saml.saml2.core.impl.NameIDPolicyBuilder;
 import org.opensaml.saml.saml2.core.impl.RequestedAuthnContextBuilder;
@@ -59,7 +50,6 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
             : null;
         val assertionConsumerService = context.getSPAssertionConsumerService(idx);
         val authnRequest = buildAuthnRequest(context, assertionConsumerService, ssoService);
-        SAML2Utils.logProtocolMessage(authnRequest);
         return authnRequest;
     }
 

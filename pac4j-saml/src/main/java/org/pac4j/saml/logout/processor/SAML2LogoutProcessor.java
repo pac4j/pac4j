@@ -77,6 +77,7 @@ public class SAML2LogoutProcessor implements LogoutProcessor {
 
         // IDP-initiated
         if (message instanceof LogoutRequest) {
+            samlContext.getMessageContext().setMessage(message);
             sendLogoutResponse(samlContext, saml2Credentials);
             return adaptLogoutResponseToBinding(ctx.webContext(), samlContext);
 

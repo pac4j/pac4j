@@ -21,7 +21,7 @@ public class VelocityEngineFactoryTest {
             engine.getProperty("resource.loader.string.class"));
         assertEquals("org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader",
             engine.getProperty("resource.loader.classpath.class"));
-        assertEquals(vector("classpath"), engine.getProperty("resource.loaders"));
+        assertEquals(vector("classpath", "string"), engine.getProperty("resource.loaders"));
         assertEquals("UTF-8", engine.getProperty(RuntimeConstants.INPUT_ENCODING));
     }
 

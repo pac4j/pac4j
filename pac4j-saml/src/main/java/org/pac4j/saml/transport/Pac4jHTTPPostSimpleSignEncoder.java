@@ -87,4 +87,7 @@ public class Pac4jHTTPPostSimpleSignEncoder extends HTTPPostSimpleSignEncoder {
             throw new ComponentInitializationException("Velocity template id must be supplied");
         }
     }
+
+    @Override
+    protected void logEncodedMessage() {}
 }
