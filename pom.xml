@@ -395,6 +395,21 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <version>6.0.2</version>
                 <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <id>bundle-manifest</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <instructions>
+                        <Specification-Version>${project.version}</Specification-Version>
+                        <Implementation-Version>${project.version}</Implementation-Version>
+                    </instructions>
+                </configuration>
             </plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
