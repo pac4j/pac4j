@@ -18,6 +18,7 @@ import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.definition.ProfileDefinitionAware;
 import org.pac4j.core.profile.jwt.JwtClaims;
+import org.pac4j.core.util.Announcement;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.util.generator.ValueGenerator;
 import org.pac4j.jwt.config.encryption.EncryptionConfiguration;
@@ -44,6 +45,12 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
 @Getter
 @Setter
 public class JwtAuthenticator extends ProfileDefinitionAware implements Authenticator {
+
+    private static final Announcement ANNOUNCE_NOSIGNCONF =
+        new Announcement("No signature configurations have been defined: plain JWT will be accepted!");
+
+    private static final Announcement ANNOUNCE_ENCRYPTOPTIONAL =
+        new Announcement("Encryption configurations have been defined, but not enforced so they remain optional");
 
     private static final String NONSIGNED_JWT_ERROR_MSG
         = "A non-signed JWT cannot be accepted as signature configurations have been defined";
@@ -121,7 +128,10 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
         setProfileDefinitionIfUndefined(new JwtProfileDefinition());
 
         if (signatureConfigurations.isEmpty()) {
-            logger.warn("No signature configurations have been defined: non-signed JWT will be accepted!");
+            ANNOUNCE_NOSIGNCONF.announce();
+        }
+        if (!encryptionConfigurations.isEmpty() && !encryptionRequired) {
+            ANNOUNCE_ENCRYPTOPTIONAL.announce();
         }
     }
 
