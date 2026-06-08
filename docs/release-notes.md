@@ -5,6 +5,9 @@ title: Release notes&#58;
 
 ### JDK17:
 
+**v6.5.4**:
+- Improve JWT warning messages
+
 **v6.5.3**:
 - SAML protocol:
   - fix missing `InResponseTo` attribute in logout responses
