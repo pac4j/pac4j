@@ -96,7 +96,7 @@
 		<slf4j.version>2.0.18</slf4j.version>
         <httpclient.version>5.3.1</httpclient.version>
         <jdbi.version>2.78</jdbi.version>
-        <unboundid.version>7.0.4</unboundid.version>
+        <unboundid.version>7.0.5</unboundid.version>
         <ldaptive.version>2.5.0</ldaptive.version>
         <h2.version>2.4.240</h2.version>
         <jackson.version>2.22.0</jackson.version>
