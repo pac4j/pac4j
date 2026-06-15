@@ -15,10 +15,7 @@ import org.pac4j.core.util.Pac4jConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.pac4j.core.profile.AttributeLocation.AUTHENTICATION_ATTRIBUTE;
 import static org.pac4j.core.profile.AttributeLocation.PROFILE_ATTRIBUTE;
@@ -42,6 +39,9 @@ public abstract class ProfileDefinition {
     private final List<String> secondaryAttributes = new ArrayList<>();
 
     private final Map<String, AttributeConverter> converters = new HashMap<>();
+
+    @Setter
+    private Map<String, String> attributesMapper = new LinkedHashMap<>();
 
     @Setter
     private ProfileFactory profileFactory = parameters -> new CommonProfile();
@@ -105,20 +105,24 @@ public abstract class ProfileDefinition {
         if (value != null) {
             final Object convertedValue;
             val converter = this.converters.get(name);
+            var finalName = name;
+            if (attributesMapper != null && attributesMapper.containsKey(name)) {
+                finalName = attributesMapper.get(name);
+            }
             if (converter != null) {
                 convertedValue = converter.convert(value);
                 if (convertedValue != null) {
-                    logger.debug("converted to => key: {} / value: {} / {}", name, convertedValue, convertedValue.getClass());
+                    logger.debug("converted to => key: {} / value: {} / {}", finalName, convertedValue, convertedValue.getClass());
                 }
             } else {
                 convertedValue = value;
-                logger.debug("no conversion => key: {} / value: {} / {}", name, convertedValue, convertedValue.getClass());
+                logger.debug("no conversion => key: {} / value: {} / {}", finalName, convertedValue, convertedValue.getClass());
             }
 
             if (attributeLocation.equals(AUTHENTICATION_ATTRIBUTE)) {
-                profile.addAuthenticationAttribute(name, convertedValue);
+                profile.addAuthenticationAttribute(finalName, convertedValue);
             } else {
-                profile.addAttribute(name, convertedValue);
+                profile.addAttribute(finalName, convertedValue);
             }
         }
     }

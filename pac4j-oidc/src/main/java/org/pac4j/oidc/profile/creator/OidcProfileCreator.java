@@ -68,6 +68,10 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
         assertNotNull("configuration", configuration);
 
         setProfileDefinitionIfUndefined(new OidcProfileDefinition());
+        val mappedClaims = configuration.getMappedClaims();
+        if (mappedClaims != null) {
+            getProfileDefinition().setAttributesMapper(mappedClaims);
+        }
 
         if (!configuration.isCallUserInfoEndpoint()
             && (client.getAuthenticator() == null || client.getAuthenticator() == ALWAYS_VALIDATE)) {

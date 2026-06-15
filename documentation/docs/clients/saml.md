@@ -191,6 +191,13 @@ Furthermore, bootstrapping the SAML configuration harness can be done using Java
 you must create a provider configuration file: `META-INF/services/org.pac4j.saml.util.ConfigurationManager`. The content of the file is the
 fully qualified class name of the SPI implementation: `com.example.impl.MyConfigurationManager`.
 
+Attributes can be mapped via the following configuration (mapping is from source to destination):
+
+```java
+cfg.setMappedAttributes(mapping);
+```
+
+
 ## 3.1) Metadata and Keystore configuration:
 
 - For service provider metadata generation, *pac4j* offers the following components:

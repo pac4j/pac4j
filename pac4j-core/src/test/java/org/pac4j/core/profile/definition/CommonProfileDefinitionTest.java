@@ -2,6 +2,7 @@ package org.pac4j.core.profile.definition;
 
 import lombok.val;
 import org.junit.jupiter.api.Test;
+import org.pac4j.core.profile.AttributeLocation;
 import org.pac4j.core.profile.BasicUserProfile;
 import org.pac4j.core.profile.CommonProfile;
 
@@ -45,5 +46,25 @@ public class CommonProfileDefinitionTest {
         definition.setRestoreProfileFromTypedId(true);
         val profile = definition.newProfile(String.class.getName() + "#");
         assertTrue(profile instanceof CommonProfile);
+    }
+
+    @Test
+    public void testAttributesMapping() {
+        val def = new CommonProfileDefinition();
+        def.getAttributesMapper().put("firstName", "prenom");
+        val profile = new CommonProfile();
+        def.convertAndAdd(profile, AttributeLocation.PROFILE_ATTRIBUTE, "firstName", "Jerome");
+        assertEquals("Jerome", profile.getAttribute("prenom"));
+        assertNull(profile.getAttribute("firstName"));
+    }
+
+    @Test
+    public void testNoAttributesMapping() {
+        val def = new CommonProfileDefinition();
+        def.setAttributesMapper(null);
+        val profile = new CommonProfile();
+        def.convertAndAdd(profile, AttributeLocation.PROFILE_ATTRIBUTE, "firstName", "Jerome");
+        assertEquals("Jerome", profile.getAttribute("firstName"));
+        assertNull(profile.getAttribute("prenom"));
     }
 }
