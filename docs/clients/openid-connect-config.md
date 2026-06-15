@@ -192,6 +192,12 @@ You can enable the PAR mechanism via:
 config.setPushedAuthorizationRequest(true);
 ```
 
+Claims can be mapped via the following configuration (mapping is from source to destination):
+
+```java
+config.setMappedClaims(mapping);
+```
+
 
 ## 6) Keys rotation
 

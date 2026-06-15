@@ -7,6 +7,7 @@ title: Release notes&#58;
 
 **v6.5.4**:
 - Improve JWT warning messages
+- OIDC attribute names can be mapped via the `OidcConfiguration.setMappedClaims` method
 
 **v6.5.3**:
 - SAML protocol:
