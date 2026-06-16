@@ -3,6 +3,8 @@ layout: homeblog
 title: <i class="fa fa-info-circle" aria-hidden="true"></i> Blog&#58;
 ---
 
+## &bull; June 2026: [JWKS explained: what every developer should know](/blog/jwks_explained_what_every_developer_should_know.html)
+
 ## &bull; May 2026: [More OpenID Federation with pac4j and Connect2id (2/2)](/blog/more_openid_federation_with_pac4j_and_connect2id.html)
 
 ## &bull; May 2026: [Security advisory for pac4j-core on CSRF](/blog/security-advisory-pac4j-core-csrf.html)

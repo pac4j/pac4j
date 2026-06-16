@@ -1,6 +1,6 @@
 ---
 layout: blog
-title: JWKS&colon; the modern way to manage keys
+title: JWKS explained&colon; what every developer should know
 author: Jérôme LELEU
 date: June 2026
 ---
@@ -18,7 +18,7 @@ As this secret must be shared by both parties, this is not generally a very conv
 
 Or we can use asymmetric cryptography based on key pairs.
 
-In that case, there are two certificates: a public one and a private one.
+In that case, there are two keys: a public one and a private one.
 
 Two mechanisms are available:
 - the signature ensures that the sender is confirmed (the sender uses its private key to sign the message and the receiver can confirm that using the public key of the sender)
@@ -108,7 +108,7 @@ And the encryption/signing of the JWTs is ensured by the public/private keys.
 
 Given the popularity of JSON, it was high time to find a better format than the PEM(/DER) format for certificates and what better format than JSON?
 
-Thus, JWK (for JSON Web Key) is the format to define keys:
+So, JWK (for JSON Web Key) is the format to define a key:
 - the `kty` property defines the type `RSA`, `EC`, ...
 - the `use` property indicates if the key is used for signature ("sig") or encryption ("enc")
 - the `alg` property defines the algorithm (it can be omitted)
@@ -127,7 +127,7 @@ For example, you can have this JWK:
 }
 ```
 
-And a JWKS, the S stands for Set (not for the plural), is a set of JWKs listed in an array defined by the `keys` property.
+And a JWKS, the S stands for Set (not for the plural), is a set of JWKs = keys listed in an array defined by the `keys` property.
 
 For example, the JWKS of our previous JWK is:
 
@@ -200,4 +200,4 @@ This is exactly like for the JWT header where the `alg` key is only informative:
 
 You must always rely on what you actually defined and used for encryption/signature. You must never rely on what is provided to you from the outside.
 
-<div class="text-center highlight-blog">JWKS is a modern format to store/manage keys, but you must never forget the good practices regardless.</div>
+<div class="text-center highlight-blog">JWKS is a modern format to store/manage keys you will really enjoy,<br/>but you must never forget the good practices regardless!</div>
