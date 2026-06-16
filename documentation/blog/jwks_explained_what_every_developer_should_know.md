@@ -9,6 +9,8 @@ When it comes to security, certificates are used everywhere since the early days
 
 While storing them in PEM/DER format has always been complicated, things have become much easier with the modern JWKS (J for JSON) format.
 
+And you're probably already using JWKS without knowing it, every time you validate a JWT from Google, GitHub, or your identity provider.
+
 
 ## 1) A word about cryptography
 
@@ -43,9 +45,7 @@ It created two files:
 -----BEGIN PRIVATE KEY-----
 MIIJQgIBADANBgkqhkiG9w0BAQEFAASCCSwwggkoAgEAAoICAQDdx8R3Y1Eyh69R
 O8iACpe6MWJAUgMadWPt1VW2XGkrkvSBn9hY866VBt8wkH1uFmOAvvjwx55Tvu1K
-1lJeHcyf/zxL8yhUAmMirs2KjmsRG9ObCRmaZWm2qn047+5yMYBAgJw6R3dRNCuy
 ...TRUNCATED...
-DxI7zekvoIySQJEfPsB/rNDxThgHfdjehnff4dp0MFfJC6SmjuCDyhymqgRO+zUP
 ySD6rqvGLLxGkZoUGyuHt9D7B/FaBAMvjjgOSMYbHxYj0ncQioaVSpcUZIpTrHRo
 jA1drmXT/LHPGeQgp/CJQ3Zf7qqavA==
 -----END PRIVATE KEY-----
@@ -57,9 +57,7 @@ jA1drmXT/LHPGeQgp/CJQ3Zf7qqavA==
 -----BEGIN CERTIFICATE-----
 MIIFLjCCAxagAwIBAgIUOtBi9hdWAqh1sL8U7wS3ttXgg40wDQYJKoZIhvcNAQEL
 BQAwITELMAkGA1UEBhMCRlIxEjAQBgNVBAMMCWxvY2FsaG9zdDAeFw0yNjA1MTgx
-MjUwNDNaFw0yNzA1MTgxMjUwNDNaMCExCzAJBgNVBAYTAkZSMRIwEAYDVQQDDAls
 ...TRUNCATED...
-fnS3DzBiMj+hdy5cuMQoMKvNo8K8HTozr60mK3FLkr5iZI06HivkZL1S14qWhcBe
 po1DwOR88q6xAws/qM1+PxigbFRh4E8zUeVVF0vED+VxeCG0AwKDYawPjw5/9qfJ
 qC8ewt6SVZmmdtMg2MK8Tdmzv0W+ciiYO21CF45Pa6YZVA==
 -----END CERTIFICATE-----
@@ -104,7 +102,7 @@ We have three parts which decode to:
 And the encryption/signing of the JWTs is ensured by the public/private keys.
 
 
-## 4) JWK(S)
+## 4) JWK and JWKS
 
 Given the popularity of JSON, it was high time to find a better format than the PEM(/DER) format for certificates and what better format than JSON?
 
@@ -201,3 +199,5 @@ This is exactly like for the JWT header where the `alg` key is only informative:
 You must always rely on what you actually defined and used for encryption/signature. You must never rely on what is provided to you from the outside.
 
 <div class="text-center highlight-blog">JWKS is a modern format to store/manage keys you will really enjoy,<br/>but you must never forget the good practices regardless!</div>
+
+See how pac4j deals with JWKS in the [OIDC private_key_jwt authentication method](/docs/clients/openid-connect-config.html#c-private_key_jwt) or in the [OpenID Federation](/docs/clients/openid-connect-federation.html#1-federation-endpoint)...
