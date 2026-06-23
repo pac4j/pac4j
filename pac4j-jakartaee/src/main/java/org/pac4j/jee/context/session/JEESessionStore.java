@@ -55,7 +55,8 @@ public class JEESessionStore extends PrefixedSessionStore {
         } else {
             val jeeContext = (JEEContext) context;
             val session = jeeContext.getNativeRequest().getSession(createSession);
-            LOGGER.debug("createSession: {}, retrieved session: {}", createSession, session);
+            LOGGER.debug("createSession: {}, retrieved session: {}", createSession,
+                createSession, session != null ? session.getId() : null);
             return Optional.ofNullable(session);
         }
     }
