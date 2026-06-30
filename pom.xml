@@ -105,6 +105,8 @@
         <nanohttpd.version>2.3.1</nanohttpd.version>
         <mockserver.version>5.10</mockserver.version>
         <lombok.version>1.18.46</lombok.version>
+        <!-- SpotBugs annotations artifact version -->
+        <spotbugs.annotations.version>4.10.2</spotbugs.annotations.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
@@ -354,10 +356,10 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>findbugs-annotations</artifactId>
-            <version>3.0.1</version>
-            <scope>provided</scope>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-annotations</artifactId>
+            <version>${spotbugs.annotations.version}</version>
+            <optional>true</optional>
         </dependency>
 
         <!-- for testing -->
