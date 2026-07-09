@@ -1,8 +1,8 @@
 ---
 layout: blog
-title: OpenID Federation with pac4j and CAS
+title: OpenID Federation with pac4j, Connect2id and CAS
 author: Jérôme LELEU
-date: June 2026
+date: September 2026
 ---
 
 In previous posts, we have presented the OpenID (Connect) Federation protocol with pac4j and the Connect2id server: [(Part 1)](/blog/openid_federation_with_pac4j_and_connect2id.html) + [(Part 2)](/blog/more_openid_federation_with_pac4j_and_connect2id.html).
@@ -21,11 +21,11 @@ In this article, we will replace the simulated trust anchor by the CAS server.
 
 The pac4j application runs on `localhost:8081` and the Connect2id server is on `127.0.0.1:8080`.
 
-So let's choose `localhost:8082` to run the CAS server.
+So let's choose `localhost:8082` to run the CAS server as a trust anchor.
 
 Let's start from this basic Maven overlay: [https://github.com/casinthecloud/cas-overlay-demo](https://github.com/casinthecloud/cas-overlay-demo).
 
-For the version, it must be at least `8.0.0-RC5`.
+For the version, it should be `8.0.0` (at least).
 
 We can remove the useless `cas-server-support-json-service-registry` dependency and add the new `cas-server-support-oidc-federation` module dedicated to the federation support.
 
@@ -90,7 +90,7 @@ So we have the following `pom.xml` file:
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>4.1.0-RC1</version>
+                <version>4.1.0</version>
                 <configuration>
                     <mainClass>org.apereo.cas.web.CasWebApplication</mainClass>
                     <excludes>
@@ -113,7 +113,7 @@ So we have the following `pom.xml` file:
     </build>
 
     <properties>
-        <cas.version>8.0.0-RC5</cas.version>
+        <cas.version>8.0.0</cas.version>
         <java.version>25</java.version>
         <tomcat.properties>-tomcat</tomcat.properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -143,7 +143,7 @@ cas.authn.oidc.core.issuer: ${cas.server.prefix}/oidc
 cas.authn.oidc.federation.subordinate-directory: /etc/cas/config/subordinates
 ```
 
-The configuration is quite easy: we setup the CAS server to run on `localhost:8082` (no SSL, `Lax` policy, no cookie/webflow encryption).
+The configuration is quite easy: we setup the CAS server to run on `localhost:8082` (no SSL, `Lax` policy, no cookie/webflow encryption, **for development only**).
 
 And for the federation part, we define the `TRUST_ANCHOR` role, its OIDC base URL (`issuer`) as well as the file directory in which we will define its subordinates.
 
