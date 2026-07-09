@@ -4,6 +4,7 @@ import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.proc.BadJOSEException;
 import com.nimbusds.jwt.JWT;
+import com.nimbusds.jwt.proc.BadJWTException;
 import com.nimbusds.oauth2.sdk.auth.Secret;
 import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.openid.connect.sdk.Nonce;
@@ -162,6 +163,7 @@ public class TokenValidator {
 
         String jws;
         String jwe;
+        BadJWTException badJWTException = null;
         BadJOSEException badJOSEException = null;
         JOSEException joseException = null;
         for (val idTokenValidator : idTokenValidators) {
@@ -181,16 +183,21 @@ public class TokenValidator {
                 val validated = idTokenValidator.validate(idToken, expectedNonce);
                 LOGGER.debug("Validated: {}", validated);
                 return validated;
-            } catch (final BadJOSEException e1) {
+            } catch (final BadJWTException e1) {
                 LOGGER.debug(e1.getMessage(), e1);
-                badJOSEException = e1;
-            } catch (final JOSEException e2) {
-                LOGGER.debug(e2.getMessage(), e2);
-                joseException = e2;
+                badJWTException = e1;
+            } catch (final BadJOSEException e2) {
+                LOGGER.debug(e2.getMessage());
+                badJOSEException = e2;
+            } catch (final JOSEException e3) {
+                LOGGER.debug(e3.getMessage(), e3);
+                joseException = e3;
             }
         }
 
-        if (badJOSEException != null) {
+        if (badJWTException != null) {
+            throw badJWTException;
+        } else if (badJOSEException != null) {
             throw badJOSEException;
         } else if (joseException != null) {
             throw joseException;
