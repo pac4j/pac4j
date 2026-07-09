@@ -74,7 +74,7 @@
 
 	<properties>
         <java.version>17</java.version>
-        <awssdk.version>2.47.1</awssdk.version>
+        <awssdk.version>2.47.3</awssdk.version>
         <mongo-driver.version>5.9.0</mongo-driver.version>
         <flapdoodle.version>4.33.0</flapdoodle.version>
 		<junit.version>6.1.1</junit.version>
