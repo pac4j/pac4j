@@ -38,7 +38,7 @@ public final class DbProfileServiceTests implements TestsConstants {
     private static final String DB_USER = "dbUser";
     private static final String DB_USER2 = "dbUser2";
 
-    private DataSource ds = DbServer.getInstance();
+    private static DataSource ds = new DbServer().start();
 
     @Test
     public void testNullPasswordEncoder() {

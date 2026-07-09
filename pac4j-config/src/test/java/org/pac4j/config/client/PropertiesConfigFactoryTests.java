@@ -8,26 +8,26 @@ import org.pac4j.cas.client.CasClient;
 import org.pac4j.cas.config.CasProtocol;
 import org.pac4j.core.config.ConfigFactory;
 import org.pac4j.core.context.CallContext;
-import org.pac4j.test.context.MockWebContext;
-import org.pac4j.test.context.session.MockSessionStore;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.util.Pac4jConstants;
-import org.pac4j.test.util.TestsConstants;
 import org.pac4j.http.client.direct.DirectBasicAuthClient;
 import org.pac4j.http.client.indirect.FormClient;
 import org.pac4j.http.client.indirect.IndirectBasicAuthClient;
 import org.pac4j.http.credentials.authenticator.RestAuthenticator;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
 import org.pac4j.ldap.profile.service.LdapProfileService;
-import org.pac4j.test.ldap.LdapServer;
 import org.pac4j.oauth.client.FacebookClient;
 import org.pac4j.oauth.client.TwitterClient;
 import org.pac4j.oidc.client.GoogleOidcClient;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.saml.client.SAML2Client;
 import org.pac4j.sql.profile.service.DbProfileService;
+import org.pac4j.test.context.MockWebContext;
+import org.pac4j.test.context.session.MockSessionStore;
+import org.pac4j.test.ldap.LdapServer;
 import org.pac4j.test.sql.DbServer;
+import org.pac4j.test.util.TestsConstants;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -50,7 +50,7 @@ public final class PropertiesConfigFactoryTests implements PropertiesConstants, 
         try {
             ldapServer = new LdapServer();
             ldapServer.start();
-            new DbServer();
+            new DbServer().start();
 
             final Map<String, String> properties = new HashMap<>();
             properties.put(FACEBOOK_ID, ID);

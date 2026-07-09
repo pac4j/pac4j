@@ -24,10 +24,8 @@ public final class DbServer implements TestsConstants {
 
     public final static PasswordEncoder PASSWORD_ENCODER = new SpringSecurityPasswordEncoder(new StandardPasswordEncoder(SALT));
 
-    private static DataSource ds;
-
-    static {
-        ds = JdbcConnectionPool.create("jdbc:h2:mem:test", Pac4jConstants.USERNAME, Pac4jConstants.PASSWORD);
+    public DataSource start() {
+        val ds = JdbcConnectionPool.create("jdbc:h2:mem:test", Pac4jConstants.USERNAME, Pac4jConstants.PASSWORD);
         IDBI dbi = new DBI(ds);
         val h = dbi.open();
         val password = PASSWORD_ENCODER.encode(PASSWORD);
@@ -38,9 +36,6 @@ public final class DbServer implements TestsConstants {
         h.execute("insert into users values(2, '" + MULTIPLE_USERNAME + "', '" + password + "', '', '', '')");
         h.execute("insert into users values(3, '" + MULTIPLE_USERNAME + "', '" + password + "', '', '', '')");
         h.close();
-    }
-
-    public static DataSource getInstance() {
         return ds;
     }
 }
