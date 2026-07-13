@@ -106,7 +106,7 @@
         <mockserver.version>5.10</mockserver.version>
         <lombok.version>1.18.46</lombok.version>
         <!-- SpotBugs annotations artifact version -->
-        <spotbugs.annotations.version>4.10.2</spotbugs.annotations.version>
+        <spotbugs.annotations.version>4.10.3</spotbugs.annotations.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
