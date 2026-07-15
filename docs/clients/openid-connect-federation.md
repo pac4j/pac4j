@@ -53,7 +53,7 @@ Available properties are:
 - `clientRegistrationTypes` (`List<String>`, default: `["explicit", "automatic"]`): RP registration modes accepted by pac4j for federation registration.
 - `clientName` (`String`, optional): value of the `client_name` RP metadata claim.
 - `contacts` (`List<String>`, default: empty list): value of the `contacts` RP metadata claim when at least one contact is provided.
-- `trustAnchors` (`List<OidcTrustAnchorProperties>`, default: empty list): trust anchors used to resolve trust chains (`issuer` and `jwksResource` for each anchor).
+- `trustAnchors` (`List<OidcTrustAnchorProperties>`, default: empty list): trust anchors used to resolve trust chains (`issuer` and optional `jwksResource` for each anchor).
 - `targetOp` (`String`): OP entity identifier to resolve via federation. When set, federation mode is used instead of discovery URI resolution.
 - `sendTrustChain` (`boolean`, default: `false`): when enabled, sends the RP trust chain upfront in authorization requests.
 - `secretExportFile` (`String`): the file where to save a received secret during an explicit registration.
@@ -99,8 +99,8 @@ val federation = oidcConfig.getFederation();
 federation.setTargetOp("http://localhost:8080/op");
 
 val trust = new OidcTrustAnchorProperties();
-trust.setTaIssuer("http://localhost:8081/ta");
-trust.setTaJwksUrl("http://localhost:8081/ta/jwks.json");
+trust.setIssuer("http://localhost:8081/ta");
+trust.setJwksUrl("http://localhost:8081/ta/jwks.json"); // optional
 federation.getTrustAnchors().add(trust);
 ```
 

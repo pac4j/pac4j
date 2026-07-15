@@ -5,6 +5,9 @@ title: Release notes&#58;
 
 ### JDK17:
 
+**v6.5.5**:
+- OpenID federation: trust anchors can now be defined only by their URLs (without specifying the JWKS) although it is better to have the JWKS out of band
+
 **v6.5.4**:
 - Improve JWT warning messages
 - OIDC attribute names can be mapped via the `OidcConfiguration.setMappedClaims` method
