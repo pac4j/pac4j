@@ -142,17 +142,16 @@ public class FederationChainResolver {
 
         for (val trustAnchor : trustAnchors) {
             val entity = new EntityID(trustAnchor.getIssuer());
-            JWKSet jwks;
-            try (val in = SpringResourceHelper.getResourceInputStream(
-                    trustAnchor.getJwksResource(),
-                    null,
-                    configuration.getSslSocketFactory(),
-                    configuration.getHostnameVerifier(),
-                    configuration.getConnectTimeout(),
-                    configuration.getReadTimeout())) {
-                jwks = JWKSet.load(in);
-            } catch (final IOException | ParseException e) {
-                throw new TechnicalException(e);
+            JWKSet jwks = null;
+            val jwkResource = trustAnchor.getJwksResource();
+            if (jwkResource != null) {
+                try (val in = SpringResourceHelper.getResourceInputStream(jwkResource, null,
+                    configuration.getSslSocketFactory(), configuration.getHostnameVerifier(),
+                    configuration.getConnectTimeout(), configuration.getReadTimeout())) {
+                    jwks = JWKSet.load(in);
+                } catch (final IOException | ParseException e) {
+                    throw new TechnicalException(e);
+                }
             }
             anchors.put(entity, jwks);
         }
@@ -160,6 +159,5 @@ public class FederationChainResolver {
         return anchors;
     }
 
-    public record ResolutionResult(OIDCProviderMetadata metadata, Date expirationTime, JWKSet federationJWKS, List<String> trustChain) {
-    }
+    public record ResolutionResult(OIDCProviderMetadata metadata, Date expirationTime, JWKSet federationJWKS, List<String> trustChain) {}
 }
