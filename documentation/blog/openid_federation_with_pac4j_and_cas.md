@@ -1,6 +1,6 @@
 ---
 layout: blog
-title: OpenID Federation with pac4j and CAS only
+title: OpenID Federation with pac4j and CAS
 author: Jérôme LELEU
 date: October 2026
 ---
@@ -125,14 +125,14 @@ The OP has one more CAS dependency though (compared to the TA):
 </dependency>
 ```
 
-And the configuration specific to each server notably changes.
+And the configuration specific to each server changes.
 
 For the pac4j application, we use this simple demo: [https://github.com/pac4j/simple-spring-boot-pac4j-demos/tree/oidc/src/main/java/org/pac4j/demos](https://github.com/pac4j/simple-spring-boot-pac4j-demos/tree/oidc/src/main/java/org/pac4j/demos).
 
 
 ## 1) Setup a CAS server as the OP
 
-In the `application.yml`, let's setup the CAS server to act as the trust anchor:
+In the `application.yml` file, let's setup the CAS server to act as the trust anchor:
 
 ```yml
 server.ssl.enabled: false
@@ -156,11 +156,11 @@ cas.authn.oidc.federation.authority-hints:
 cas.authn.oidc.core.issuer: ${cas.server.prefix}/oidc
 ```
 
-The configuration is quite easy: we setup the CAS server to run on `localhost:8080` (no SSL, `Lax` policy, no cookie/webflow encryption, **this is for development only**).
+The configuration is quite easy: we setup the CAS server to run on `http://localhost:8080/cas` (no SSL, `Lax` policy, no cookie/webflow encryption, **this is for development only**).
 
 For OIDC, we define its OIDC base URL (`issuer`) and its JWKS (`./metadata/oidc.jwks`).
 
-And for the federation part, we define the `OPENID_PROVIDER` role, the specific JWKS (`./metadata/federation.jwks`) and the trust anchor:
+And for the federation part, we set the `OPENID_PROVIDER` role, the specific JWKS (`./metadata/federation.jwks`) and the trust anchor:
 
 ```yml
 cas.authn.oidc.federation.authority-hints:
@@ -170,7 +170,7 @@ cas.authn.oidc.federation.authority-hints:
 
 ## 2) Setup the pac4j application as the RP
 
-In the pac4j ecosystem, Spring Boot is the most popular web stack, so we use the `spring-webmvc-pac4j` implementation:
+In the pac4j ecosystem, Spring Boot is the most popular web stack, so we use the `spring-webmvc-pac4j` implementation in this simple demo: [https://github.com/pac4j/simple-spring-boot-pac4j-demos/tree/oidc/src/main/java/org/pac4j/demos](https://github.com/pac4j/simple-spring-boot-pac4j-demos/tree/oidc/src/main/java/org/pac4j/demos):
 - the `SpringBootDemo` class runs the Spring Boot demo
 - the `SecurityConfig` class defines the security configuration (OIDC + URL protection)
 - the `Application` class is a simple controller with two URLs: one public and the other one protected.
@@ -192,7 +192,7 @@ We need the following dependencies:
 <dependency>
     <groupId>org.pac4j</groupId>
     <artifactId>pac4j-oidc</artifactId>
-    <version>6.5.4</version>
+    <version>6.5.5</version>
 </dependency>
 ```
 
@@ -207,7 +207,7 @@ app.base-url=http://localhost:8081
 ```
 
 
-### c) `SecurityConfig`
+### c) `SecurityConfig` class
 
 We update the `SecurityConfig` class to change the configuration for the federation:
 
@@ -247,6 +247,8 @@ public class SecurityConfig extends Pac4jSecurityConfig {
         final var privateKeyJwtConfig = new PrivateKeyJwtClientAuthnMethodConfig(rpJwks);
         config.setPrivateKeyJWTClientAuthnMethodConfig(privateKeyJwtConfig);
 
+        config.setRequestObjectSigningAlgorithm(JWSAlgorithm.RS256);
+
         final var federation = config.getFederation();
 
         federation.setTargetOp("http://localhost:8080/cas/oidc");
@@ -272,9 +274,9 @@ public class SecurityConfig extends Pac4jSecurityConfig {
 }
 ```
 
-The configuration is a little more complicated here.
+The configuration is a more complicated here.
 
-We define a global JWKS for the RP used for the `private_key_jwt` authentication method:
+We define a global JWKS for the RP that is also used for the `private_key_jwt` authentication method:
 
 ```java
     final var rpJwks = config.getRpJwks();
@@ -288,6 +290,8 @@ We define a global JWKS for the RP used for the `private_key_jwt` authentication
 For federation, we use:
 
 ```java
+    config.setRequestObjectSigningAlgorithm(JWSAlgorithm.RS256);
+
     final var federation = config.getFederation();
 
     federation.setTargetOp("http://localhost:8080/cas/oidc");
@@ -328,7 +332,7 @@ We also have a specific JWKS configuration dedicated to the federation (displaye
     federation.setEntityId("http://localhost:8081");
 ```
 
-### d) `Application`
+### d) `Application` class
 
 We also need to update the `Application` class to add the mapping for the OpenID federation endpoint:
 
@@ -353,7 +357,7 @@ public class Application {
 
 ## 3) Setup a CAS server as the trust anchor
 
-In the `application.yml`, let's setup this time the CAS server as the trust anchor:
+In the `application.yml` file, let's setup this time the CAS server as the trust anchor:
 
 ```yml
 server.ssl.enabled: false
@@ -470,7 +474,7 @@ For the OP (CAS server), we do something similar and call the URL: `http://local
                 "HS512"
             ],
 
-            ...
+            ...[TRUNCATED]...
 
             "registration_endpoint": "http://localhost:8080/cas/oidc/register",
             "request_object_signing_alg_values_supported": [
