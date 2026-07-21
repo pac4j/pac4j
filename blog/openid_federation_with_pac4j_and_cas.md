@@ -132,7 +132,7 @@ For the pac4j application, we use this simple demo: [https://github.com/pac4j/si
 
 ## 1) Setup a CAS server as the OP
 
-In the `application.yml` file, let's setup the CAS server to act as the trust anchor:
+In the `application.yml` file, let's set up the CAS server to act as the trust anchor:
 
 ```yml
 server.ssl.enabled: false
@@ -156,7 +156,7 @@ cas.authn.oidc.federation.authority-hints:
 cas.authn.oidc.core.issuer: ${cas.server.prefix}/oidc
 ```
 
-The configuration is quite easy: we setup the CAS server to run on `http://localhost:8080/cas` (no SSL, `Lax` policy, no cookie/webflow encryption, **this is for development only**).
+The configuration is quite easy: we set up the CAS server to run on `http://localhost:8080/cas` (no SSL, `Lax` policy, no cookie/webflow encryption, **this is for development only**).
 
 For OIDC, we define its OIDC base URL (`issuer`) and its JWKS (`./metadata/oidc.jwks`).
 
@@ -321,7 +321,7 @@ Example:
 }
 ```
 
-We also have a specific JWKS configuration dedicated to the federation (displayed on the `.well-known/openid-federation` endpoint):
+We also have a specific JWKS configuration dedicated to federation (displayed on the `.well-known/openid-federation` endpoint):
 
 ```java
     federation.getJwks().setJwksPath("file:./metadata/oidcfede.jwks");
@@ -357,7 +357,7 @@ public class Application {
 
 ## 3) Setup a CAS server as the trust anchor
 
-In the `application.yml` file, let's setup this time the CAS server as the trust anchor:
+In the `application.yml` file, let's set up this time the CAS server as the trust anchor:
 
 ```yml
 server.ssl.enabled: false
@@ -385,7 +385,7 @@ The subordinates are the entities for which the CAS server provides trust. They 
 
 Here, it will be the RP with the pac4j client (Spring Boot demo) and the other CAS server being the OP.
 
-For the RP (pac4j), we call the URL: `http://localhost:8081/.well-known/openid-federation`. An entity statement is returned by the SpringBoot demo and we can decode it via any JWT tool or the `jwt.io` website.
+For the RP (pac4j), we call the URL: `http://localhost:8081/.well-known/openid-federation`. An entity statement is returned by the Spring Boot demo and we can decode it via any JWT tool or the `jwt.io` website.
 
 The `metadata` and the `keys` from the `jwks` property (not in the `metadata` property) are the ones we use to build the subordinate `rp.json` file (placed in the `./subordinates` directory):
 
