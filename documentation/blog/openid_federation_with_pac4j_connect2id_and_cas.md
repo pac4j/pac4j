@@ -27,7 +27,7 @@ Let's start from this basic Maven overlay: [https://github.com/casinthecloud/cas
 
 For the version, it should be `8.0.0` (at least).
 
-We can remove the useless `cas-server-support-json-service-registry` dependency and add the new `cas-server-support-oidc-federation` module dedicated to the federation support.
+We can remove the useless `cas-server-support-json-service-registry` dependency and add the new `cas-server-support-oidc-federation` module dedicated to federation support.
 
 To make things easier, let's turn the CAS server into a standalone (Tomcat embedded) JAR using the `spring-boot-maven-plugin`.
 
@@ -122,7 +122,7 @@ So we have the following `pom.xml` file:
 </project>
 ```
 
-In the `application.yml` file, let's setup the CAS server to act as a trust anchor:
+In the `application.yml` file, let's set up the CAS server to act as a trust anchor:
 
 ```yml
 server.ssl.enabled: false
@@ -143,7 +143,7 @@ cas.authn.oidc.core.issuer: ${cas.server.prefix}/oidc
 cas.authn.oidc.federation.subordinate-directory: /etc/cas/config/subordinates
 ```
 
-The configuration is quite easy: we setup the CAS server to run on `localhost:8082` (no SSL, `Lax` policy, no cookie/webflow encryption, **for development only**).
+The configuration is quite easy: we set up the CAS server to run on `localhost:8082` (no SSL, `Lax` policy, no cookie/webflow encryption, **for development only**).
 
 And for the federation part, we define the `TRUST_ANCHOR` role, its OIDC base URL (`issuer`) as well as the file directory in which we will define its subordinates.
 
@@ -156,7 +156,7 @@ Here, it will be the RP = pac4j client (Spring Boot demo) and the Connect2id ser
 
 To define the subordinates of the trust anchor, we need to retrieve the information from the current RP and OP.
 
-For the RP (pac4j), we call the URL: `http://localhost:8081/.well-known/openid-federation`. An entity statement is returned by the SpringBoot demo and we can decode it via any JWT tool or the `jwt.io` website:
+For the RP (pac4j), we call the URL: `http://localhost:8081/.well-known/openid-federation`. An entity statement is returned by the Spring Boot demo and we can decode it via any JWT tool or the `jwt.io` website:
 
 ```json
 {
@@ -342,7 +342,7 @@ and create the `op.json` file (in the `/etc/cas/config/subordinates` directory).
 
 ## 3) Declare CAS as the trust anchor
 
-We have a trust anchor ready to use, but the RP and the OP don't know it, they still refer to the simulated one.
+We have a trust anchor ready to use, but the RP and the OP don't know it: they still refer to the simulated one.
 
 So let's update their configurations for that.
 
@@ -457,11 +457,11 @@ op.federation.authorityHints.3=
 op.federation.clientRegistrationTypes=automatic
 ```
 
-Federation is enabled of course. The CAS trust anchor is defined as the first trust anchor and as the first authority hint. The registration is set to `automatic`.
+Federation is enabled, of course. The CAS trust anchor is defined as the first trust anchor and as the first authority hint. The registration is set to `automatic`.
 
 Stop (`./tomcat/bin/shutdown.sh`) and restart (`./tomcat/bin/startup.sh`) the Connect2id server.
 
-To make a proper test, you may need to remove any previous registered `http://localhost:8081` client.
+To make a proper test, you may need to remove any previously registered `http://localhost:8081` client.
 
 Using your token from the `oidcProvider.properties` file, you can query all existing clients:
 
@@ -502,6 +502,6 @@ We see that the federation endpoint has been called twice and the `fetch` endpoi
 
 This was fully expected: the trust anchor is used to build the trust chains!
 
-If we do the test again, nothing appears in the CAS trust anchor logs this time as the entity statements are not requested again, they are already known by the RP and the OP, until they expire or get lost (in-memory storage).
+If we do the test again, nothing appears in the CAS trust anchor logs this time as the entity statements are not requested again: they are already known by the RP and the OP, until they expire or get lost (in-memory storage).
 
 <div class="text-center highlight-blog">So the CAS server can act as a real trust anchor <i>between</i> the pac4j RP and the Connect2id OP.</div>
