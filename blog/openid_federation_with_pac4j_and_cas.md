@@ -2,44 +2,37 @@
 layout: blog
 title: OpenID Federation with pac4j and CAS
 author: Jérôme LELEU
-date: June 2026
+date: October 2026
 ---
 
-In previous posts, we have presented the OpenID (Connect) Federation protocol with pac4j and the Connect2id server: [(Part 1)](/blog/openid_federation_with_pac4j_and_connect2id.html) + [(Part 2)](/blog/more_openid_federation_with_pac4j_and_connect2id.html).
+We have made a long journey with pac4j and the OpenID federation protocol in this serie of 3 articles:
+- 2 articles on the Connect2id server acting as a federated OP: [(Part 1)](/blog/openid_federation_with_pac4j_and_connect2id.html) + [(Part 2)](/blog/more_openid_federation_with_pac4j_and_connect2id.html)
+- 1 article on the Connect2id server being the OP and the CAS server being the trust anchor: [pac4j + Connect2id + CAS](/blog/openid_federation_with_pac4j_connect2id_and_cas.html).
 
-From our previous setup, we have 3 components:
+As CAS v8.1.0 will also support the OpenID federation protocol as a server (OP), it is time to conclude this serie with the latest fourth article, using pac4j and CAS only.
+
+Like in our previous setup, we have 3 components:
 - a client, which is called the Relying Party (RP) in OIDC, and we use pac4j
-- a server, which is called the OpenID Provider (OP) in OIDC, and we use the Connect2id server
-- a trust anchor (TA in short) and we use a simulated one.
+- a server, which is called the OpenID Provider (OP) in OIDC, and we use the CAS server
+- a trust anchor (TA in short) and we use the CAS server.
 
-As the **pac4j** library is a first-class citizen of the CAS server (it is used for authentication delegation and the security of the OAuth/OIDC server support), let's bring the CAS server into action.
+Although we use the CAS server for the OP and the TA, we can't use one CAS node, we have two separate nodes of the CAS server, each supporting an exclusive role.
 
-In this article, we will replace the simulated trust anchor by the CAS server.
+To be consistent with our previous insallation:
+- the OP runs on `http://localhost:8080/cas`
+- the RP runs on `http://localhost:8081`
+- the TA runs on `http://localhost:8082/cas`.
 
+For the CAS server nodes, we use this basic Maven overlay: [https://github.com/casinthecloud/cas-overlay-demo](https://github.com/casinthecloud/cas-overlay-demo).
 
-## 1) Setup a CAS server as a trust anchor
-
-The pac4j application runs on `localhost:8081` and the Connect2id server is on `127.0.0.1:8080`.
-
-So let's choose `localhost:8082` to run the CAS server.
-
-Let's start from this basic Maven overlay: [https://github.com/casinthecloud/cas-overlay-demo](https://github.com/casinthecloud/cas-overlay-demo).
-
-For the version, it must be at least `8.0.0-RC5`.
-
-We can remove the useless `cas-server-support-json-service-registry` dependency and add the new `cas-server-support-oidc-federation` module dedicated to the federation support.
-
-To make things easier, let's turn the CAS server into a standalone (Tomcat embedded) JAR using the `spring-boot-maven-plugin`.
-
-So we have the following `pom.xml` file:
-
+Both our CAS servers have a similar `pom.xml` file:
 ```xml
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.casinthecloud</groupId>
     <artifactId>cas-overlay-demo</artifactId>
-    <version>8.0.0-SNAPSHOT</version>
+    <version>8.1.0-SNAPSHOT</version>
     <packaging>war</packaging>
 
     <dependencies>
@@ -90,7 +83,7 @@ So we have the following `pom.xml` file:
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>4.1.0-RC1</version>
+                <version>4.1.0</version>
                 <configuration>
                     <mainClass>org.apereo.cas.web.CasWebApplication</mainClass>
                     <excludes>
@@ -113,7 +106,7 @@ So we have the following `pom.xml` file:
     </build>
 
     <properties>
-        <cas.version>8.0.0-RC5</cas.version>
+        <cas.version>8.1.0-RC1</cas.version>
         <java.version>25</java.version>
         <tomcat.properties>-tomcat</tomcat.properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -122,7 +115,249 @@ So we have the following `pom.xml` file:
 </project>
 ```
 
-In the `application.yml`, let's setup the CAS server to act as a trust anchor:
+The OP has one more CAS dependency though (compared to the TA):
+
+```xml
+<dependency>
+    <groupId>org.apereo.cas</groupId>
+    <artifactId>cas-server-support-oidc</artifactId>
+    <version>${cas.version}</version>
+</dependency>
+```
+
+And the configuration specific to each server changes.
+
+For the pac4j application, we use this simple demo: [https://github.com/pac4j/simple-spring-boot-pac4j-demos/tree/oidc/src/main/java/org/pac4j/demos](https://github.com/pac4j/simple-spring-boot-pac4j-demos/tree/oidc/src/main/java/org/pac4j/demos).
+
+
+## 1) Setup a CAS server as the OP
+
+In the `application.yml` file, let's setup the CAS server to act as the trust anchor:
+
+```yml
+server.ssl.enabled: false
+server.port: 8080
+
+cas.tgc.secure: false
+cas.tgc.same-site-policy: Lax
+
+cas.tgc.crypto.enabled: false
+cas.webflow.crypto.enabled: false
+
+cas.server.name: http://localhost:${server.port}
+cas.server.prefix: ${cas.server.name}/cas
+cas.host.name: casop
+
+cas.authn.oidc.jwks.file-system.jwks-file: file:./metadata/oidc.jwks
+cas.authn.oidc.federation.role: OPENID_PROVIDER
+cas.authn.oidc.federation.jwks-file: file:./metadata/federation.jwks
+cas.authn.oidc.federation.authority-hints:
+  - http://localhost:8082/cas/oidc
+cas.authn.oidc.core.issuer: ${cas.server.prefix}/oidc
+```
+
+The configuration is quite easy: we setup the CAS server to run on `http://localhost:8080/cas` (no SSL, `Lax` policy, no cookie/webflow encryption, **this is for development only**).
+
+For OIDC, we define its OIDC base URL (`issuer`) and its JWKS (`./metadata/oidc.jwks`).
+
+And for the federation part, we set the `OPENID_PROVIDER` role, the specific JWKS (`./metadata/federation.jwks`) and the trust anchor:
+
+```yml
+cas.authn.oidc.federation.authority-hints:
+  - http://localhost:8082/cas/oidc
+```
+
+
+## 2) Setup the pac4j application as the RP
+
+In the pac4j ecosystem, Spring Boot is the most popular web stack, so we use the `spring-webmvc-pac4j` implementation in this simple demo: [https://github.com/pac4j/simple-spring-boot-pac4j-demos/tree/oidc/src/main/java/org/pac4j/demos](https://github.com/pac4j/simple-spring-boot-pac4j-demos/tree/oidc/src/main/java/org/pac4j/demos):
+- the `SpringBootDemo` class runs the Spring Boot demo
+- the `SecurityConfig` class defines the security configuration (OIDC + URL protection)
+- the `Application` class is a simple controller with two URLs: one public and the other one protected.
+
+### a) Dependencies
+
+We need the following dependencies:
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.pac4j</groupId>
+    <artifactId>spring-webmvc-pac4j</artifactId>
+    <version>8.0.3</version>
+</dependency>
+<dependency>
+    <groupId>org.pac4j</groupId>
+    <artifactId>pac4j-oidc</artifactId>
+    <version>6.5.5</version>
+</dependency>
+```
+
+
+### b) Properties
+
+We run it on port 8081 thanks to the `application.properties` file:
+
+```properties
+server.port=8081
+app.base-url=http://localhost:8081
+```
+
+
+### c) `SecurityConfig` class
+
+We update the `SecurityConfig` class to change the configuration for the federation:
+
+```java
+package org.pac4j.demos;
+
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
+import org.pac4j.core.config.Config;
+import org.pac4j.oidc.client.OidcClient;
+import org.pac4j.oidc.config.OidcConfiguration;
+import org.pac4j.oidc.config.method.PrivateKeyJwtClientAuthnMethodConfig;
+import org.pac4j.oidc.federation.config.OidcTrustAnchorProperties;
+import org.pac4j.springframework.config.Pac4jSecurityConfig;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+
+import java.util.List;
+
+@Configuration
+public class SecurityConfig extends Pac4jSecurityConfig {
+
+    @Value("${app.base-url:http://localhost:8080}")
+    private String baseUri;
+
+    @Bean
+    public Config config() {
+        final var config = new OidcConfiguration();
+        config.setAllowUnsignedIdTokens(true);
+
+        final var rpJwks = config.getRpJwks();
+        rpJwks.setJwksPath("file:./metadata/rpjwks.jwks");
+        rpJwks.setKid("defaultjwks26");
+        config.setClientAuthenticationMethod(ClientAuthenticationMethod.PRIVATE_KEY_JWT);
+        final var privateKeyJwtConfig = new PrivateKeyJwtClientAuthnMethodConfig(rpJwks);
+        config.setPrivateKeyJWTClientAuthnMethodConfig(privateKeyJwtConfig);
+
+        config.setRequestObjectSigningAlgorithm(JWSAlgorithm.RS256);
+
+        final var federation = config.getFederation();
+
+        federation.setTargetOp("http://localhost:8080/cas/oidc");
+        final var trust = new OidcTrustAnchorProperties();
+        trust.setIssuer("http://localhost:8082/cas/oidc");
+        trust.setJwksPath("classpath:trustanchor.jwks");
+        federation.getTrustAnchors().add(trust);
+
+        federation.getJwks().setJwksPath("file:./metadata/oidcfede.jwks");
+        federation.getJwks().setKid("mykeyoidcfede26");
+        federation.setContactName("RP with CAS");
+        federation.setContactEmails(List.of("jerome@casinthecloud.com"));
+
+        federation.setEntityId("http://localhost:8081");
+
+        return new Config(baseUri + "/callback", new OidcClient(config));
+    }
+
+    @Override
+    public void addInterceptors(final InterceptorRegistry registry) {
+        addSecurity(registry, "OidcClient").addPathPatterns("/protected/**");
+    }
+}
+```
+
+The configuration is a more complicated here.
+
+We define a global JWKS for the RP that is also used for the `private_key_jwt` authentication method:
+
+```java
+    final var rpJwks = config.getRpJwks();
+    rpJwks.setJwksPath("file:./metadata/rpjwks.jwks");
+    rpJwks.setKid("defaultjwks26");
+    config.setClientAuthenticationMethod(ClientAuthenticationMethod.PRIVATE_KEY_JWT);
+    final var privateKeyJwtConfig = new PrivateKeyJwtClientAuthnMethodConfig(rpJwks);
+    config.setPrivateKeyJWTClientAuthnMethodConfig(privateKeyJwtConfig);
+```
+
+For federation, we use:
+
+```java
+    config.setRequestObjectSigningAlgorithm(JWSAlgorithm.RS256);
+
+    final var federation = config.getFederation();
+
+    federation.setTargetOp("http://localhost:8080/cas/oidc");
+    final var trust = new OidcTrustAnchorProperties();
+    trust.setIssuer("http://localhost:8082/cas/oidc");
+    trust.setJwksPath("classpath:trustanchor.jwks");
+    federation.getTrustAnchors().add(trust);
+```
+
+The target OP is of course the CAS server acting as an OP.
+
+For the trust anchor, it's the other CAS node (on port 8082) for which we retrieve the JWKS on `http://localhost:8082/cas/oidc/.well-known/openid-federation` and save it in the `trustanchor.jwks` file.
+
+Example:
+
+```json
+{
+    "keys": [
+        {
+            "kty": "RSA",
+            "e": "AQAB",
+            "use": "sig",
+            "kid": "19f7aaaa-c4d3-4c26-a26e-3ce4b8ab1beb",
+            "n": "uXgnb...SEdSw"
+        }
+    ]
+}
+```
+
+We also have a specific JWKS configuration dedicated to the federation (displayed on the `.well-known/openid-federation` endpoint):
+
+```java
+    federation.getJwks().setJwksPath("file:./metadata/oidcfede.jwks");
+    federation.getJwks().setKid("mykeyoidcfede26");
+    federation.setContactName("RP with CAS");
+    federation.setContactEmails(List.of("jerome@casinthecloud.com"));
+
+    federation.setEntityId("http://localhost:8081");
+```
+
+### d) `Application` class
+
+We also need to update the `Application` class to add the mapping for the OpenID federation endpoint:
+
+```java
+@Controller
+public class Application {
+
+    @Autowired
+    private Config config;
+
+    @RequestMapping(value = "/.well-known/openid-federation", produces = DefaultEntityConfigurationGenerator.CONTENT_TYPE)
+    @ResponseBody
+    public String oidcFederation() throws HttpAction {
+        final var oidcClient = (OidcClient) config.getClients().findClient("OidcClient").get();
+        return oidcClient.getConfiguration().getFederation().getEntityConfigurationGenerator().generateEntityStatement();
+    }
+
+    ...
+}
+```
+
+
+## 3) Setup a CAS server as the trust anchor
+
+In the `application.yml` file, let's setup this time the CAS server as the trust anchor:
 
 ```yml
 server.ssl.enabled: false
@@ -136,372 +371,167 @@ cas.webflow.crypto.enabled: false
 
 cas.server.name: http://localhost:${server.port}
 cas.server.prefix: ${cas.server.name}/cas
-cas.host.name: castest
+cas.host.name: casta
 
 cas.authn.oidc.federation.role: TRUST_ANCHOR
+cas.authn.oidc.federation.jwks-file: file:./metadata/trustanchor.jwks
 cas.authn.oidc.core.issuer: ${cas.server.prefix}/oidc
-cas.authn.oidc.federation.subordinate-directory: /etc/cas/config/subordinates
+cas.authn.oidc.federation.subordinate-directory: ./subordinates
 ```
 
-The configuration is quite easy: we setup the CAS server to run on `localhost:8082` (no SSL, `Lax` policy, no cookie/webflow encryption).
-
-And for the federation part, we define the `TRUST_ANCHOR` role, its OIDC base URL (`issuer`) as well as the file directory in which we will define its subordinates.
+The configuration is close to the configuration of the other CAS node. Except that we define the `TRUST_ANCHOR` role as well as the file directory in which we will define its subordinates.
 
 The subordinates are the entities for which the CAS server provides trust. They must be defined upfront with their metadata and their federation key(s).
 
-Here, it will be the RP = pac4j client (Spring Boot demo) and the Connect2id server = OP.
+Here, it will be the RP with the pac4j client (Spring Boot demo) and the other CAS server being the OP.
 
+For the RP (pac4j), we call the URL: `http://localhost:8081/.well-known/openid-federation`. An entity statement is returned by the SpringBoot demo and we can decode it via any JWT tool or the `jwt.io` website.
 
-## 2) Define its subordinates
-
-To define the subordinates of the trust anchor, we need to retrieve the information from the current RP and OP.
-
-For the RP (pac4j), we call the URL: `http://localhost:8081/.well-known/openid-federation`. An entity statement is returned by the SpringBoot demo and we can decode it via any JWT tool or the `jwt.io` website:
+The `metadata` and the `keys` from the `jwks` property (not in the `metadata` property) are the ones we use to build the subordinate `rp.json` file (placed in the `./subordinates` directory):
 
 ```json
 {
-  "sub": "http://localhost:8081",
-  "metadata": {
-    "openid_relying_party": {
-      "redirect_uris": [
-        "http://localhost:8081/callback?client_name=OidcClient"
-      ],
-      "application_type": "web",
-      "response_types": [
-        "code"
-      ],
-      "grant_types": [
-        "authorization_code"
-      ],
-      "scope": "openid email profile",
-      "token_endpoint_auth_method": "private_key_jwt",
-      "token_endpoint_auth_signing_alg": "RS256",
-      "request_object_signing_alg": "RS256",
-      "jwks": {
-        "keys": [
-          {
-            "kty": "RSA",
-            "e": "AQAB",
-            "use": "sig",
-            "kid": "defaultjwks0526",
-            "n": "2moVQ...2aq7Q"
-          }
-        ]
-      },
-      "client_registration_types": [
-        "explicit",
-        "automatic"
-      ],
-      "client_name": "New RP test",
-      "contacts": [
-        "jerome@casinthecloud.com"
-      ]
-    }
-  },
-  "nbf": 1777901081,
-  "jwks": {
-    "keys": [
-      {
-        "kty": "RSA",
-        "e": "AQAB",
-        "use": "sig",
-        "kid": "mykeyoidcfede26",
-        "n": "nVoec...qELzQ"
-      }
-    ]
-  },
-  "iss": "http://localhost:8081",
-  "authority_hints": [
-    "http://localhost:8081/trustanchor"
-  ],
-  "exp": 1785677081,
-  "iat": 1777901081,
-  "jti": "59fad759-60e7-4cc9-a3fe-203e6d02319b"
-}
-```
-
-The `metadata` and the `keys` from the `jwks` property (not in the `metadata` property) are the ones we use to build the subordinate `rp.json` file (placed in the `/etc/cas/config/subordinates` directory):
-
-```json
-{
-  "entityId": "http://localhost:8081",
-  "metadata": {
-    "openid_relying_party": {
-      "redirect_uris": [
-        "http://localhost:8081/callback?client_name=OidcClient"
-      ],
-      "application_type": "web",
-      "response_types": [
-        "code"
-      ],
-      "grant_types": [
-        "authorization_code"
-      ],
-      "scope": "openid email profile",
-      "token_endpoint_auth_method": "private_key_jwt",
-      "token_endpoint_auth_signing_alg": "RS256",
-      "request_object_signing_alg": "RS256",
-      "jwks": {
-        "keys": [
-          {
-            "kty": "RSA",
-            "e": "AQAB",
-            "use": "sig",
-            "kid": "defaultjwks0526",
-            "n": "2moVQ...2aq7Q"
-          }
-        ]
-      },
-      "client_registration_types": [
-        "explicit",
-        "automatic"
-      ],
-      "client_name": "New RP test",
-      "contacts": [
-        "jerome@casinthecloud.com"
-      ]
-    }
-  },
-  "federationKeys": [
-    {
-      "kty": "RSA",
-      "e": "AQAB",
-      "use": "sig",
-      "kid": "mykeyoidcfede26",
-      "n": "nVoec...qELzQ"
-    }
-  ]
-}
-```
-
-For the OP, we do something similar and call the URL: `http://127.0.0.1:8080/c2id/.well-known/openid-federation` to get the metadata and the federation keys:
-
-```json
-{
-  "sub": "http://127.0.0.1:8080/c2id",
-  "metadata": {
-    "federation_entity": {
-      "organization_name": "pac4j_test_c2id"
+    "entityId": "http://localhost:8081",
+    "metadata": {
+        "openid_relying_party": {
+            "redirect_uris": [
+                "http://localhost:8081/callback?client_name=OidcClient"
+            ],
+            "application_type": "web",
+            "response_types": [
+                "code"
+            ],
+            "grant_types": [
+                "authorization_code"
+            ],
+            "scope": "openid email profile",
+            "token_endpoint_auth_method": "private_key_jwt",
+            "token_endpoint_auth_signing_alg": "RS256",
+            "request_object_signing_alg": "RS256",
+            "jwks": {
+                "keys": [
+                    {
+                        "kty": "RSA",
+                        "e": "AQAB",
+                        "use": "sig",
+                        "kid": "defaultjwks26",
+                        "n": "v-zf7...G2tyw"
+                    }
+                ]
+            },
+            "client_registration_types": [
+                "explicit",
+                "automatic"
+            ],
+            "client_name": "RP with CAS",
+            "contacts": [
+                "jerome@casinthecloud.com"
+            ]
+        }
     },
-    "openid_provider": {
-      "authorization_endpoint": "http://127.0.0.1:8080/c2id-login",
-      "token_endpoint": "http://127.0.0.1:8080/c2id/token",
-      "registration_endpoint": "http://127.0.0.1:8080/c2id/clients",
-      "introspection_endpoint": "http://127.0.0.1:8080/c2id/token/introspect",
-      "revocation_endpoint": "http://127.0.0.1:8080/c2id/token/revoke",
-      "pushed_authorization_request_endpoint": "http://127.0.0.1:8080/c2id/par",
-      "issuer": "http://127.0.0.1:8080/c2id",
-      "jwks_uri": "http://127.0.0.1:8080/c2id/jwks.json",
-      "scopes_supported": [
-        "openid"
-      ],
-      "response_types_supported": [
-        "code",
-        "token",
-        "id_token",
-        "id_token token",
-        "code id_token",
-        "code id_token token"
-      ],
-
-      ...TRUNCATED...
-
-      "claims_parameter_supported": true,
-      "frontchannel_logout_supported": true,
-      "frontchannel_logout_session_supported": true,
-      "backchannel_logout_supported": true,
-      "backchannel_logout_session_supported": true
-    }
-  },
-  "jwks": {
-    "keys": [
-      {
-        "kty": "RSA",
-        "e": "AQAB",
-        "use": "sig",
-        "kid": "bjBN",
-        "iat": 1774636985,
-        "n": "qoXzz...atFCQ"
-      }
+    "federationKeys": [
+        {
+            "kty": "RSA",
+            "e": "AQAB",
+            "use": "sig",
+            "kid": "mykeyoidcfede26",
+            "n": "uaov...EpbZQ"
+        }
     ]
-  },
-  "iss": "http://127.0.0.1:8080/c2id",
-  "authority_hints": [
-    "http://localhost:8081/trustanchor"
-  ],
-  "exp": 1778493319,
-  "iat": 1777888519,
-  "constraints": {
-    "max_path_length": 2
-  }
 }
 ```
 
-and create the `op.json` file (in the `/etc/cas/config/subordinates` directory).
-
-
-## 3) Declare CAS as the trust anchor
-
-We have a trust anchor ready to use, but the RP and the OP don't know it, they still refer to the simulated one.
-
-So let's update their configurations for that.
-
-For the pac4j client, we adjust the `Pac4jConfig` Java configuration:
-
-```java
-final var rpJwks = config.getRpJwks();
-rpJwks.setJwksPath("file:./metadata/rpjwks.jwks");
-rpJwks.setKid("defaultjwks0526");
-config.setClientAuthenticationMethod(ClientAuthenticationMethod.PRIVATE_KEY_JWT);
-final var privateKeyJwtConfig = new PrivateKeyJwtClientAuthnMethodConfig(rpJwks);
-config.setPrivateKeyJWTClientAuthnMethodConfig(privateKeyJwtConfig);
-
-config.setRequestObjectSigningAlgorithm(JWSAlgorithm.RS256);
-
-val federation = config.getFederation();
-
-federation.setTargetOp("http://127.0.0.1:8080/c2id");
-val trust = new OidcTrustAnchorProperties();
-trust.setIssuer("http://localhost:8082/cas/oidc");
-trust.setJwksPath("classpath:trustanchor.jwks");
-federation.getTrustAnchors().add(trust);
-
-federation.getJwks().setJwksPath("file:./metadata/oidcfede.jwks");
-federation.getJwks().setKid("mykeyoidcfede26");
-federation.setContactName("New RP test");
-federation.setContactEmails(List.of("jerome@casinthecloud.com"));
-
-federation.setEntityId("http://localhost:8081");
-```
-
-This setup is quite similar to the original one, except that the trust anchor is defined by the `http://localhost:8082/cas/oidc` URL and that we need to update its `trustanchor.jwks` definition file.
-
-For that, we call its federation endpoint (`http://localhost:8082/cas/oidc/.well-known/openid-federation`) and decode its result:
+For the OP (CAS server), we do something similar and call the URL: `http://localhost:8080/cas/oidc/.well-known/openid-federation` to get the metadata and the federation keys and create the `op.json` file (in the `./subordinates` directory).
 
 ```json
 {
-  "sub": "http://localhost:8082/cas/oidc",
-  "metadata": {
-    "federation_entity": {
-      "organization_name": "Apereo CAS",
-      "federation_fetch_endpoint": "http://localhost:8082/cas/oidc/fetch",
-      "contacts": []
-    }
-  },
-  "jwks": {
-    "keys": [
-      {
-        "kty": "RSA",
-        "e": "AQAB",
-        "use": "sig",
-        "kid": "4ddec6ab-b5d2-453a-8036-932f8770c9af",
-        "n": "7jXA3...71IGw"
-      }
+    "entityId": "http://localhost:8080/cas/oidc",
+    "metadata": {
+        "openid_provider": {
+            "DPopSigningAlgValuesSupported": [
+                "RS256",
+                "RS384",
+                "RS512",
+                "ES256",
+                "ES384",
+                "ES512"
+            ],
+            "request_parameter_supported": true,
+            "pushed_authorization_request_endpoint": "http://localhost:8080/cas/oidc/oidcPushAuthorize",
+            "introspection_signing_alg_values_supported": [
+                "none",
+                "RS256",
+                "RS384",
+                "RS512",
+                "PS256",
+                "PS384",
+                "PS512",
+                "ES256",
+                "ES384",
+                "ES512",
+                "HS256",
+                "HS384",
+                "HS512"
+            ],
+
+            ...[TRUNCATED]...
+
+            "registration_endpoint": "http://localhost:8080/cas/oidc/register",
+            "request_object_signing_alg_values_supported": [
+                "none",
+                "RS256",
+                "RS384",
+                "RS512",
+                "PS256",
+                "PS384",
+                "PS512",
+                "ES256",
+                "ES384",
+                "ES512",
+                "HS256",
+                "HS384",
+                "HS512"
+            ],
+            "request_object_encryption_alg_values_supported": [
+                "RSA1_5",
+                "RSA-OAEP",
+                "RSA-OAEP-256",
+                "A128KW",
+                "A192KW",
+                "A256KW",
+                "A128GCMKW",
+                "A192GCMKW",
+                "A256GCMKW",
+                "ECDH-ES",
+                "ECDH-ES+A128KW",
+                "ECDH-ES+A192KW",
+                "ECDH-ES+A256KW"
+            ]
+        },
+        "federation_entity": {
+            "organization_name": "Apereo CAS",
+            "contacts": []
+        }
+    },
+    "federationKeys": [
+        {
+            "kty": "RSA",
+            "e": "AQAB",
+            "use": "sig",
+            "kid": "0bf6c36e-1cba-41d3-a50e-a11881fd85e7",
+            "n": "xoP5Q...3EkRw"
+        }
     ]
-  },
-  "iss": "http://localhost:8082/cas/oidc",
-  "exp": 1785628800,
-  "iat": 1777852800,
-  "constraints": {
-    "max_path_length": 1
-  }
 }
 ```
 
-The keys must be defined in the `trustanchor.jwks` file in the RP:
 
-```json
-{
-    "keys": [
-      {
-        "kty": "RSA",
-        "e": "AQAB",
-        "use": "sig",
-        "kid": "4ddec6ab-b5d2-453a-8036-932f8770c9af",
-        "n": "7jXA3...71IGw"
-      }
-    ]
-}
-```
+## 4) Final test
 
-After this change, restart the pac4j RP.
+With the RP, OP and TA started, we can log in by calling `http://localhost:8081` in the browser and clicking on the protected link.
 
-For the Connect2id server, things are even easier as only the URL of the trust anchor is required.
+On the CAS server login page, we use the pre-defined user: `casuer` / `Mellon` to log in.
 
-In the `./tomcat/webapps/c2id/WEB-INF/oidcProvider.properties`, you need this configuration:
+And it works: we are finally logged in in the pac4j application thanks to the OpenID Federation protocol and the two CAS server nodes.
 
-
-```properties
-### Federation ###
-
-# Enables / disables OpenID Federation 1.0. Disabled by default.
-op.federation.enable=true
-
-# The configured trust anchors. Leave blank if none.
-op.federation.trustAnchors.1=http://localhost:8082/cas/oidc
-
-# Trust anchors or intermediate entities that may issue an entity statement
-# about this OpenID provider. Leave blank if none.
-op.federation.authorityHints.1=http://localhost:8082/cas/oidc
-op.federation.authorityHints.2=
-op.federation.authorityHints.3=
-
-# The enabled OpenID Federation 1.0 client registration types. The default
-# value is none (for deployments that use manual client registration only).
-#
-# Supported OpenID Federation 1.0 client registration types:
-#
-#     * explicit
-#     * automatic
-#
-op.federation.clientRegistrationTypes=automatic
-```
-
-Federation is enabled of course. The CAS trust anchor is defined as the first trust anchor and as the first authority hint. The registration is set to `automatic`.
-
-Stop (`./tomcat/bin/shutdown.sh`) and restart (`./tomcat/bin/startup.sh`) the Connect2id server.
-
-To make a proper test, you may need to remove any previous registered `http://localhost:8081` client.
-
-Using your token from the `oidcProvider.properties` file, you can query all existing clients:
-
-```shell
-curl -X GET http://127.0.0.1:8080/c2id/clients -H "Authorization: Bearer ztucZ...exmd6"
-```
-
-And remove it if it is still registered:
-
-```shell
-curl -X DELETE http://127.0.0.1:8080/c2id/clients/http%3A%2F%2Flocalhost%3A8081 -H "Authorization: Bearer ztucZ...exmd6"
-```
-
-Notice that for the `client_id` defined as a URL, you may need to update:
-- the `setenv.sh` file to add `export JAVA_OPTS="$JAVA_OPTS -Dorg.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH=true"`
-- the `server.xml` file to add `encodedSolidusHandling="decode"` on the `<Connector>` definition.
-
-
-## 4) Test again
-
-With the RP and OP updated and restarted, and the CAS trust anchor running, you may try to log in by calling `http://localhost:8081` in your browser and clicking on the protected link.
-
-Now it works thanks to the real trust anchor.
-
-If we take a look at the logs of the CAS server:
-
-```
-INFO [org.apereo.cas.oidc.federation.web.OidcWellKnownFederationEndpointController] - <Generating federation entity statement>
-INFO [org.apereo.cas.oidc.federation.subordinate.OidcFederationSubordinateRepository] - <Loaded [2] subordinates>
-INFO [org.apereo.cas.oidc.federation.web.OidcTrustAnchorFetchEndpointController] - <Building entity statement for
- subordinate: [http://127.0.0.1:8080/c2id]>
-INFO [org.apereo.cas.oidc.federation.web.OidcWellKnownFederationEndpointController] - <Generating federation entity statement>
-INFO [org.apereo.cas.oidc.federation.web.OidcTrustAnchorFetchEndpointController] - <Building entity statement for
- subordinate: [http://localhost:8081]>
-```
-
-We see that the federation endpoint has been called twice and the `fetch` endpoint (which returns the trust anchor confidence for the entity) has been called twice as well: one for the OP (`http://127.0.0.1:8080/c2id`) and the other one for the RP (`http://localhost:8081`).
-
-This was fully expected: the trust anchor is used to build the trust chains!
-
-If we do the test again, nothing appears in the CAS trust anchor logs this time as the entity statements are not requested again, they are already known by the RP and the OP, until they expire or get lost (in-memory storage).
-
-<div class="text-center highlight-blog">So the CAS server can act as a real trust anchor <i>between</i> the pac4j RP and the Connect2id OP.</div>
+<div class="text-center highlight-blog">So the CAS server can now act as a federated OP and as a trust anchor <i>with</i> the pac4j RP client.</div>

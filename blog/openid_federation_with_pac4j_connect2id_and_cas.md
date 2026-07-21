@@ -12,7 +12,7 @@ From our previous setup, we have 3 components:
 - a server, which is called the OpenID Provider (OP) in OIDC, and we use the Connect2id server
 - a trust anchor (TA in short) and we use a simulated one.
 
-As the **pac4j** library is a first-class citizen of the CAS server (it is used for authentication delegation and the security of the OAuth/OIDC server support), let's bring the CAS server into action.
+As the **pac4j** library is a first-class citizen of the CAS server (it is used for authentication delegation, token authentication, the security of the OAuth/OIDC server support, etc.), let's bring the CAS server into action.
 
 In this article, we will replace the simulated trust anchor by the CAS server.
 
@@ -122,7 +122,7 @@ So we have the following `pom.xml` file:
 </project>
 ```
 
-In the `application.yml`, let's setup the CAS server to act as a trust anchor:
+In the `application.yml` file, let's setup the CAS server to act as a trust anchor:
 
 ```yml
 server.ssl.enabled: false
