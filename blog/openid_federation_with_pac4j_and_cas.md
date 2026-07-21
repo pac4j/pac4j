@@ -528,10 +528,32 @@ For the OP (CAS server), we do something similar and call the URL: `http://local
 
 ## 4) Final test
 
-With the RP, OP and TA started, we can log in by calling `http://localhost:8081` in the browser and clicking on the protected link.
+With the RP, OP and TA started, we call `http://localhost:8081` in the browser:
 
-On the CAS server login page, we use the pre-defined user: `casuer` / `Mellon` to log in.
+<div class="text-center">
+  <img alt="pac4j home page" src="/img/blog/2026_10/pac4j_before.png" />
+</div>
 
-And it works: we are finally logged in in the pac4j application thanks to the OpenID Federation protocol and the two CAS server nodes.
+Then, we click on the protected link.
+
+On the CAS server login page, we use the pre-defined user: `casuer` / `Mellon` to log in:
+
+<div class="text-center">
+  <img alt="pac4j home page" src="/img/blog/2026_10/cas_login.png" />
+</div>
+
+and we validate the authorizations:
+
+<div class="text-center">
+  <img alt="pac4j home page" src="/img/blog/2026_10/cas_authorize.png" />
+</div>
+
+And it works:
+
+<div class="text-center">
+  <img alt="pac4j home page" src="/img/blog/2026_10/pac4j_after.png" />
+</div>
+
+We are finally logged in in the pac4j application thanks to the OpenID Federation protocol and the two CAS server nodes.
 
 <div class="text-center highlight-blog">So the CAS server can now act as a federated OP and as a trust anchor <i>with</i> the pac4j RP client.</div>
