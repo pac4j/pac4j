@@ -5,20 +5,20 @@ author: Jérôme LELEU
 date: October 2026
 ---
 
-We have made a long journey with pac4j and the OpenID federation protocol in this serie of 3 articles:
+We have made a long journey with pac4j and the OpenID federation protocol in this series of 3 articles:
 - 2 articles on the Connect2id server acting as a federated OP: [(Part 1)](/blog/openid_federation_with_pac4j_and_connect2id.html) + [(Part 2)](/blog/more_openid_federation_with_pac4j_and_connect2id.html)
 - 1 article on the Connect2id server being the OP and the CAS server being the trust anchor: [pac4j + Connect2id + CAS](/blog/openid_federation_with_pac4j_connect2id_and_cas.html).
 
-As CAS v8.1.0 will also support the OpenID federation protocol as a server (OP), it is time to conclude this serie with the latest fourth article, using pac4j and CAS only.
+As CAS v8.1.0 will also support the OpenID federation protocol as a server (OP), it is time to conclude this series with this fourth and final article, using pac4j and CAS only.
 
 Like in our previous setup, we have 3 components:
 - a client, which is called the Relying Party (RP) in OIDC, and we use pac4j
 - a server, which is called the OpenID Provider (OP) in OIDC, and we use the CAS server
 - a trust anchor (TA in short) and we use the CAS server.
 
-Although we use the CAS server for the OP and the TA, we can't use one CAS node, we have two separate nodes of the CAS server, each supporting an exclusive role.
+Although we use the CAS server for the OP and the TA, we can't use one CAS node: we have two separate nodes of the CAS server, each supporting an exclusive role.
 
-To be consistent with our previous insallation:
+To be consistent with our previous installation:
 - the OP runs on `http://localhost:8080/cas`
 - the RP runs on `http://localhost:8081`
 - the TA runs on `http://localhost:8082/cas`.
@@ -274,7 +274,7 @@ public class SecurityConfig extends Pac4jSecurityConfig {
 }
 ```
 
-The configuration is a more complicated here.
+The configuration is more complicated here.
 
 We define a global JWKS for the RP that is also used for the `private_key_jwt` authentication method:
 
@@ -379,11 +379,11 @@ cas.authn.oidc.core.issuer: ${cas.server.prefix}/oidc
 cas.authn.oidc.federation.subordinate-directory: ./subordinates
 ```
 
-The configuration is close to the configuration of the other CAS node. Except that we define the `TRUST_ANCHOR` role as well as the file directory in which we will define its subordinates.
+The configuration is close to that of the other CAS node, except that we define the `TRUST_ANCHOR` role as well as the file directory in which we will define its subordinates.
 
 The subordinates are the entities for which the CAS server provides trust. They must be defined upfront with their metadata and their federation key(s).
 
-Here, it will be the RP with the pac4j client (Spring Boot demo) and the other CAS server being the OP.
+Here, it will be the RP (the pac4j client, Spring Boot demo) and the OP (the other CAS server).
 
 For the RP (pac4j), we call the URL: `http://localhost:8081/.well-known/openid-federation`. An entity statement is returned by the Spring Boot demo and we can decode it via any JWT tool or the `jwt.io` website.
 
@@ -534,9 +534,9 @@ With the RP, OP and TA started, we call `http://localhost:8081` in the browser:
   <img alt="pac4j home page" src="/img/blog/2026_10/pac4j_before.png" />
 </div>
 
-Then, we click on the protected link.
+Then, we click on the "Protected area" link.
 
-On the CAS server login page, we use the pre-defined user: `casuer` / `Mellon` to log in:
+On the CAS server login page, we use the pre-defined user: `casuser` / `Mellon` to log in:
 
 <div class="text-center">
   <img alt="pac4j home page" src="/img/blog/2026_10/cas_login.png" />
@@ -554,6 +554,6 @@ And it works:
   <img alt="pac4j home page" src="/img/blog/2026_10/pac4j_after.png" />
 </div>
 
-We are finally logged in in the pac4j application thanks to the OpenID Federation protocol and the two CAS server nodes.
+We are finally logged in to the pac4j application thanks to the OpenID Federation protocol and the two CAS server nodes.
 
 <div class="text-center highlight-blog">So the CAS server can now act as a federated OP and as a trust anchor <i>with</i> the pac4j RP client.</div>
