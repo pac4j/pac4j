@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>
         {%- if page.title -%}
         {{ page.title | strip_html }} | pac4j
@@ -8,22 +10,22 @@
         pac4j - security for Java
         {%- endif -%}
     </title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-    <link rel="stylesheet" href="/css/main4.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="/css/main5.css">
     <link rel="stylesheet" href="/css/highlight.css">
-    <link rel="stylesheet" href="/css/font-awesome.min.463.css">
     {% if page.url contains 'docs' or page.url contains 'mailing' or page.url contains 'blog/' or page.url contains 'commercial' %}
         <script src="/js/anchor.min.js"></script>
     {% endif %}
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css" />
 </head>
 
 <body>
-<a class="github-fork-ribbon" href="https://github.com/pac4j/pac4j" data-ribbon="Fork me on GitHub" title="Fork me on GitHub">Fork me on GitHub</a>
+<a class="github-fork-ribbon" href="https://github.com/pac4j/pac4j" title="Fork me on GitHub"><span>Fork me on GitHub</span></a>
 
-<nav>
-    <div class="nav-wrapper">
-        <div class="container">
-            <ul id="nav-mobile" class="left">
+<header class="site-header">
+    <div class="header-inner">
+        <a class="brand" href="/index.html">pac4j</a>
+        <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-mobile">
+            <span></span><span></span><span></span>
+        </button>
+        <nav class="site-nav" id="nav-mobile">
+            <ul class="nav-list">
