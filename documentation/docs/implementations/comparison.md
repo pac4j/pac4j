@@ -5,7 +5,7 @@ title: Implementations comparison
 
 While most *pac4j* security libraries provide the same features, there are differences due to the environment of the implementation itself, but also due to the various contributions and the pace followed by the maintainers.
 
-Here are the main features categories:
+Here are the main feature categories:
 
 - [version](./version.html)
 - [configuration](./config.html)

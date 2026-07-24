@@ -15,7 +15,7 @@ It has the following methods:
 - `buildFromTrackableSession`: builds a new session store from a trackable session (for back-channel logout)
 - `renewSession`: renews the native session by copying all data to a new one.
 
-Its implementations are different depending on the *pac4*j implementations.
+Its implementations are different depending on the *pac4j* implementations.
 
 For example, the `JEEContext` currently uses the [`JEESessionStore`](https://github.com/pac4j/pac4j/blob/master/pac4j-jakartaee/src/main/java/org/pac4j/jee/context/session/JEESessionStore.java) which relies on the JEE session. In Play, we have a specific cache-based [`PlayCacheSessionStore`](https://github.com/pac4j/play-pac4j/blob/master/shared/src/main/java/org/pac4j/play/store/PlayCacheSessionStore.java) as well as in Knox, which has a cookie-based `KnoxSessionStore`.
 

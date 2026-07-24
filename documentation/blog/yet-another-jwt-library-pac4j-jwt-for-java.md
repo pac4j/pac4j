@@ -29,11 +29,11 @@ td {
 _pac4j_ is a security engine for Java which supports authentication/authorization and is available for many frameworks: JEE, Play, Vertx, Spring Security, Shiro and Ratpack to name only a few.
 
 Regarding authentication, one very common use case is to have a user authenticating via a browser (Facebook login for example) and then turn his identity into something usable for calling web services.
-This could be an opaque string, but it requires checking the value to get the identity user.
+This could be an opaque string, but it requires checking the value to get the user identity.
 So the best solution would be some self-sufficient information.
 
 It is here that [JWT](https://jwt.io) comes into play: a JSON Web Token is a JSON object which can be signed and/or encrypted and is encoded in base64 format.
-It's an [industry standard](https://tools.ietf.org/html/rfc7519). Signature is used to ensure that the JWT has not been tampered. Encryption is used to hide the information held by the JWT.
+It's an [industry standard](https://tools.ietf.org/html/rfc7519). Signature is used to ensure that the JWT has not been tampered with. Encryption is used to hide the information held by the JWT.
 
 A JWT consists of three parts: a header, a payload and a signature. Here is an example taken from the [jwt.io](https://jwt.io) website.
 The value:

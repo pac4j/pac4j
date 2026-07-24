@@ -41,7 +41,7 @@ Here are their behaviors and differences:
 | | Direct clients = web services authentication | Indirect clients = UI authentication
 |------|----------------|-----------------
 | [Authentication flows](authentication-flows.html) | 1) Credentials are passed for each HTTP request (to the "[security filter](security-filter.html)") | 1) The originally requested URL is saved in session (by the "security filter")<br />2) The user is redirected to the identity provider (by the "security filter")<br />3) Authentication happens at the identity provider (or locally for the `FormClient` and the `IndirectBasicAuthClient`)<br />4) The user is redirected back to the callback endpoint/URL ("callback endpoint")<br />5) The user is redirected to the originally requested URL (by the "[callback endpoint](callback-endpoint.html)") |
-| How many times the login process occurs? | The authentication happens for every HTTP request (in the "security filter") via the defined [`Authenticator`](/docs/authenticators.html) and `ProfileCreator`.<br />For performance reasons, a cache may be used by wrapping the current `Authenticator` in a `LocalCachingAuthenticator` or the "security filter" can be configured to save the profile in session (`ProfileStorageDecision`) | The authentication happens only once (in the "callback filter") |
+| How many times does the login process occur? | The authentication happens for every HTTP request (in the "security filter") via the defined [`Authenticator`](/docs/authenticators.html) and `ProfileCreator`.<br />For performance reasons, a cache may be used by wrapping the current `Authenticator` in a `LocalCachingAuthenticator` or the "security filter" can be configured to save the profile in session (`ProfileStorageDecision`) | The authentication happens only once (in the "callback filter") |
 | Where is the user profile saved by default? | In the HTTP request  (stateless) | In the web session (stateful) |
 | Where are the credentials? | Passed for every HTTP request (processed by the "security filter") | On the callback endpoint returned by the identity provider (and retrieved by the "callback endpoint") |
 | What are the protected URLs? | The URLs of the web service are protected by the "security filter" | The URLs of the web application are protected by the "security filter", but the callback URL is not protected as it is used during the login process when the user is still anonymous |
@@ -112,7 +112,7 @@ Config config = new Config(clients);
 
 In that case, the callback URL will be `http://localhost:8080/callback/AzureAd2Client` for the `AzureAd2Client`.
 
-You may even use the [`NoParameterCallbackUrlResolver`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/http/callback/NoParameterCallbackUrlResolver.java) which left the callback URL untouched.
+You may even use the [`NoParameterCallbackUrlResolver`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/http/callback/NoParameterCallbackUrlResolver.java) which leaves the callback URL untouched.
 In that case, no parameter will be added to the callback URL and no client will be retrieved on the callback endpoint. You will be forced to define a "default client" at the `CallbackLogic` level.
 
 **Example:**
@@ -174,14 +174,14 @@ The `Client` interface has the following methods:
 | `Optional<RedirectionAction> getLogoutAction(CallContext ctx, UserProfile currentProfile, String targetUrl)`      | It returns the redirection action to call the identity provider logout.<br />The logout redirection action computation is done by a [`LogoutActionBuilder`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/logout/LogoutActionBuilder.java)                                                                                                     |
 {:.striped}
 
-Clients are generally populated with default sub-components: `RedirectionActionBuilder`, `CredentialsExtractor`, `ProfileCreator`, `LogoutActionBuilder`, `LogoutProcessor` and `Authenticator`, except for HTTP clients where the `Authenticator` must be explicitely defined. Sub-components can of course be changed for various [customizations](customizations.html).
+Clients are generally populated with default sub-components: `RedirectionActionBuilder`, `CredentialsExtractor`, `ProfileCreator`, `LogoutActionBuilder`, `LogoutProcessor` and `Authenticator`, except for HTTP clients where the `Authenticator` must be explicitly defined. Sub-components can of course be changed for various [customizations](customizations.html).
 
 
 ---
 
 ## 7) The originally requested URL
 
-The originally requested URL is the URL called before the authenticated process starts: it is restored by the "callback endpoint" after the login process has been completed.
+The originally requested URL is the URL called before the authentication process starts: it is restored by the "callback endpoint" after the login process has been completed.
 
 It is handled in the `DefaultSecurityLogic` and in the `DefaultCallbackLogic` by the `SavedRequestHandler` component.
 By default, it's the `DefaultSavedRequestHandler` which handles GET and POST requests.

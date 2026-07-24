@@ -137,7 +137,7 @@ public void addInterceptors(final InterceptorRegistry registry) {
 
 A new client (= authn mechanism): `CasClient` for the CAS protocol (like `OidcClient` for the OIDC protocol).
 
-The `CasConfiguration` class is optional on such an easy configuration: `return new Config(baseUri + "/callback", new CasClient(casLoginUrl));`.
+The `CasConfiguration` class is optional in such an easy configuration: `return new Config(baseUri + "/callback", new CasClient(casLoginUrl));`.
 
 
 # 3) Let's update to a Spring Boot demo secured by a SAML2 IdP

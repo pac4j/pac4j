@@ -3,7 +3,7 @@ layout: doc
 title: IP address validation
 ---
 
-*pac4j* allows you to validate incoming IP address.
+*pac4j* allows you to validate incoming IP addresses.
 
 ## 1) Dependency
 

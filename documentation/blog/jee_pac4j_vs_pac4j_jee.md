@@ -7,7 +7,7 @@ date: December 2021
 
 With `pac4j` v5.2, there is a very important new dependency: `pac4j-jee`. Though, there already exists a `jee-pac4j` artifact and this may seem confusing!
 
-Let's come back to the basics: unlike any other security framework, `pac4j` is first of all a security engine agnostic from any framework and it's hosted in the Github project: *https://github.com/pac4j/pac4j*
+Let's come back to the basics: unlike any other security framework, `pac4j` is first of all a security engine agnostic to any framework and it's hosted in the Github project: *https://github.com/pac4j/pac4j*
 
 ### 1) `pac4j-XXX` dependencies = protocol supports
 
@@ -27,13 +27,13 @@ So, on one side, `pac4j-XXX` dependencies are protocol supports in the main `pac
 
 On the other hand, you want to use `pac4j` in your development framework and the `pac4j-XXX` dependencies are not sufficient for that. You need to implement `pac4j` for your framework.
 
-For example, there is a `play-pac4j` library (hostead at: *https://github.com/pac4j/play-pac4j*) which adapts/implements `pac4j` for the Play framework v2. In this library, there are a `PlayWebContext`, a `SecurityAction` using the `DefaultSecurityLogic`, ...
+For example, there is a `play-pac4j` library (hosted at: *https://github.com/pac4j/play-pac4j*) which adapts/implements `pac4j` for the Play framework v2. In this library, there are a `PlayWebContext`, a `SecurityAction` using the `DefaultSecurityLogic`, ...
 
 The `YYY-pac4j` libraries are the [implementations](/implementations.html) of `pac4j` for various environments: Play, Spring Web, Shiro, Ratpack, Vert.x, ... and especially JEE.
 
-In the `jee-pac4j` library (hostead at: *https://github.com/pac4j/jee-pac4j*), there is a `SecurityFilter` which is a simple JEE filter using the `DefaultSecurityLogic`.
+In the `jee-pac4j` library (hosted at: *https://github.com/pac4j/jee-pac4j*), there is a `SecurityFilter` which is a simple JEE filter using the `DefaultSecurityLogic`.
 You could also expect to find a `JEEContext` which is the local implementation of the abstracted `WebContext`, but in fact, this component is not located in the `jee-pac4j` library.
-**As several development environnements are JEE based (like Spring, SparkJava, Shiro, JEE), the core JEE components were in the `pac4j-core` dependency.
+**As several development environments are JEE based (like Spring, SparkJava, Shiro, JEE), the core JEE components were in the `pac4j-core` dependency.
 They are now in the `pac4j-jee` dependency.**
 
 This way, things are cleaner: **any non-JEE-based implementation must pull `pac4j-core` while any JEE-based implementation must pull `pac4j-jee`.**

@@ -16,7 +16,7 @@ title: Release notes (older versions)&#58;
 
 - Add customizable SAML post Logout URL
 - QualifiedName must not be included by default in SAML authentication requests
-- Added replay protectection to the SAML client.
+- Added replay protection to the SAML client.
 - Fix SAML signature validation w.r.t. WantAssertionsSigned handling. Signing is now always required, even when WantAssertionsSigned is disabled. WantAssertionsSigned now requires explicit signing of the assertions, not the response.
 - Added support for the SAML artifact binding for the authentication response.
 - Sign metadata when configured to do so and open up the metadata generation API for customization.
@@ -39,9 +39,9 @@ title: Release notes (older versions)&#58;
 **v3.6.0**:
 
 - Multiple authn context class refs can be set in the SAML protocol support
-- For `Google2Client`, change profile url from `https://www.googleapis.com/plus/v1/people/me` to `https://www.googleapis.com/oauth2/v3/userinfo`. This change is to prepare for the shutdown of Google plus API. This change will make the `birthday` attribute return `null` and `emails` attribute resolve a single email from `email` attribute for `Google2Client`.
+- For `Google2Client`, change profile url from `https://www.googleapis.com/plus/v1/people/me` to `https://www.googleapis.com/oauth2/v3/userinfo`. This change is to prepare for the shutdown of Google plus API. This change will make the `birthday` attribute return `null` and the `emails` attribute resolve a single email from the `email` attribute for `Google2Client`.
 - Clean shutdown of the `SAML2Client` via the `destroy` method
-- Do not clear the ID Token as a sensitive data in the `OidcProfile`
+- Do not clear the ID Token as sensitive data in the `OidcProfile`
 - Improve signature and digest methods for SAML metadata
 - Enhance OAuth 2 generic support
 - Use the NameID as the fallback of the SessionIndex for the SAML SLO support
@@ -57,13 +57,13 @@ title: Release notes (older versions)&#58;
 **v3.4.0**:
 
 - Added ability to create a composition of authorizers (conjunction or disjunction)
-- SAML SLO support with SOAP (ingoing only), HTTP-POST and HTTP-Redirect bindings
+- SAML SLO support with SOAP (incoming only), HTTP-POST and HTTP-Redirect bindings
 - OpenID Connect improvements: supports multiple JWS algorithms from the identity server, retrieves the Keycloak roles
 
 **v3.3.0**:
 
 - Improve SAML support: always return a default key which is a private one, add a SingleLogoutService URL in the SP metadata, make local and central logouts work together, allow attributes to be mapped to new names
-- Default state generation can be overriden by your own `StateGenerator` for the OAuth, OpenID Connect and SAML protocols
+- Default state generation can be overridden by your own `StateGenerator` for the OAuth, OpenID Connect and SAML protocols
 - Custom OpenSAML bootstrapping in SAML authentication module
 - X509 certificate support
 
@@ -71,7 +71,7 @@ title: Release notes (older versions)&#58;
 
 - Allow to set the `profileId` for the `GenericOAuth20Client`
 - Fixed the `setConfiguration` method name in the OAuth v2.0 support
-- Optionally sign or specificy requested attributes in the SAML SP metadata
+- Optionally sign or specify requested attributes in the SAML SP metadata
 - Update to Scribejava v5.6.0
 - Added support for HiOrg-Server (OAuth)
 - Revised OAuth error handling for extracting user profiles. Now, an exception is thrown instead of returning an empty profile
@@ -80,7 +80,7 @@ title: Release notes (older versions)&#58;
 **v3.1.0**:
 
 - Added attribute merging capabilities for the user profile: multiple attributes with the same name and value of the collection type can be merged into a single attribute
-- Added Weibo, QQ and Wechat (OAuth) supports
+- Added Weibo, QQ and Wechat (OAuth) support
 
 **v3.0.3:**
 

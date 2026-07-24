@@ -5,7 +5,7 @@ author: Jérôme LELEU
 date: June 2026
 ---
 
-When it comes to security, certificates are used everywhere since the early days of the web.
+When it comes to security, certificates have been used everywhere since the early days of the web.
 
 While storing them in PEM/DER format has always been complicated, things have become much easier with the modern JWKS (J for JSON) format.
 
@@ -182,7 +182,7 @@ For example, this is the JWKS of the private key for our previous public JWK:
 }
 ```
 
-You should notice that there are more information for private keys and especially you always find the `d` property in a private key.
+You should notice that there is more information for private keys and especially you always find the `d` property in a private key.
 
 This is really important as you must always be able to distinguish between a public key and a private key.
 
@@ -194,7 +194,7 @@ There is even a new trap with the `alg` property: this is absolutely not a secur
 
 So you must not be confused by this value and only trust what you have really configured and applied in your code.
 
-This is exactly like for the JWT header where the `alg` key is only informative: trusting it could expose you to the *algorithm confusion* attack.
+This is exactly like the JWT header where the `alg` key is only informative: trusting it could expose you to the *algorithm confusion* attack.
 
 You must always rely on what you actually defined and used for encryption/signature. You must never rely on what is provided to you from the outside.
 

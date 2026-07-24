@@ -3,9 +3,9 @@ layout: doc
 title: Kerberos
 ---
 
-*pac4j* allows you to login using the Keberos authentication mechanism (also known as SPNEGO or Microsoft HTTP Negotiate).
+*pac4j* allows you to login using the Kerberos authentication mechanism (also known as SPNEGO or Microsoft HTTP Negotiate).
 
-The Kerberos clients require to define an [Authenticator](../authenticators.html) to handle the credentials validation.
+The Kerberos clients require defining an [Authenticator](../authenticators.html) to handle the credentials validation.
  Most likely all you need is to use the existing `KerberosAuthenticator` with a `SunJaasKerberosTicketValidator` which will do all the heavy-lifting of the Kerberos ticket validation.
 
 ## 1) Dependency
@@ -29,7 +29,7 @@ You can use the following clients:
 | Behaviour wanted | Client |
 |-------------|--------|
 | **Web Browser** (Firefox/Safari/IE)<br/> after ticket validation, it stores the user profile in the session| [`IndirectKerberosClient`](https://github.com/pac4j/pac4j/blob/master/pac4j-kerberos/src/main/java/org/pac4j/kerberos/client/indirect/IndirectKerberosClient.java)<br>(upon failure it sends a `HTTP 401` with a `WWW-Authenticate: Negotiate` header asking the browser to provide the Kerberos/SPNEGO credentials) |
-| **Stateless Web service** | [`DirectKerberosClient`](https://github.com/pac4j/pac4j/blob/master/pac4j-kerberos/src/main/java/org/pac4j/kerberos/client/direct/DirectKerberosClient.java) <br/>credentials can be provided upfront as a request's HTTP header:<br/>`Authentication: Negotiate SomeBase64EncKerberosTicket`<br/> (if not provided, the default strategy with send a `HTTP 401` with a `WWW-Authenticate: Negotiate` header asking the remote to provide the Kerberos/SPNEGO credentials) |
+| **Stateless Web service** | [`DirectKerberosClient`](https://github.com/pac4j/pac4j/blob/master/pac4j-kerberos/src/main/java/org/pac4j/kerberos/client/direct/DirectKerberosClient.java) <br/>credentials can be provided upfront as a request's HTTP header:<br/>`Authentication: Negotiate SomeBase64EncKerberosTicket`<br/> (if not provided, the default strategy will send a `HTTP 401` with a `WWW-Authenticate: Negotiate` header asking the remote to provide the Kerberos/SPNEGO credentials) |
 {:.table-striped}
 
 **Example:**

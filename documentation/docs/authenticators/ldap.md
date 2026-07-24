@@ -3,7 +3,7 @@ layout: doc
 title: LDAP
 ---
 
-*pac4j* allows you to validate username/password and create, update and delete users on a LDAP.
+*pac4j* allows you to validate username/password and create, update and delete users on an LDAP.
 
 ## 1) Dependency
 
@@ -23,12 +23,12 @@ You need to use the following module: `pac4j-ldap`.
 
 The [`LdapProfileService`](https://github.com/pac4j/pac4j/blob/master/pac4j-ldap/src/main/java/org/pac4j/ldap/profile/service/LdapProfileService.java) allows you to:
 
-- validate a username/password on a LDAP (it can be defined as the `Authenticator` for HTTP clients which deal with `UsernamePasswordCredentials`)
+- validate a username/password on an LDAP (it can be defined as the `Authenticator` for HTTP clients which deal with `UsernamePasswordCredentials`)
 - create, update or delete a user in the LDAP.
 
 It works with a [`LdapProfile`](https://github.com/pac4j/pac4j/blob/master/pac4j-ldap/src/main/java/org/pac4j/ldap/profile/LdapProfile.java).
 
-It is based on the great [Ldpative](http://www.ldaptive.org/) library and built from a `org.ldaptive.ConnectionFactory` and a `org.ldaptive.auth.Authenticator`.
+It is based on the great [Ldaptive](http://www.ldaptive.org/) library and built from a `org.ldaptive.ConnectionFactory` and a `org.ldaptive.auth.Authenticator`.
 
 **Example**:
 
@@ -76,5 +76,5 @@ The attributes of the user profile can be managed in the LDAP in two ways:
 - or the whole user profile is serialized and saved in the `serializedprofile` LDAP attribute.
 
 <div class="warning"><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i> Starting with v3.9.0 in the 3.x stream, v4.2.0 in the 4.x stream and v5.0,
-the <code>serializedprofile</code> the <code>serializedprofile</code> can be written in JSON instead of using the Java serialization (easier updates).
+the <code>serializedprofile</code> can be written in JSON instead of using the Java serialization (easier updates).
 Since v6.5.0, the <code>JsonSerializer</code> is even defined by default.</div>

@@ -18,11 +18,11 @@ First of all, I'd like to come back to definitions just to be sure UI and web se
 These are core concepts in pac4j as web authentication methods (called clients) are indirect (UI authentications) or direct (web services authentications).
 
 In any case, whether you deal with UI authentications or web services authentications, things are always easier in pac4j than in Spring Security because pac4j has only one mandatory concept for the authentication process (the client) while Spring Security has several: filter, provider, token, entry point...
-pac4j has a lot of concepts too, but by default, you don't need to known them or implement them (you can still do that for customisations). And that's the huge difference!
+pac4j has a lot of concepts too, but by default, you don’t need to know them or implement them (you can still do that for customisations). And that’s the huge difference!
 
 ## 2) Basic auth
 
-Let's start by an easy example with the basic auth authentication:
+Let’s start with an easy example with the basic auth authentication:
 
 With Spring Security ([https://www.baeldung.com/spring-security-basic-authentication](https://www.baeldung.com/spring-security-basic-authentication)):
 
@@ -162,7 +162,7 @@ class EmployeeController {
 }
 ```
 
-In *pac4j*, you could apply a different security mechanism for the same URL using the appropriate `Matcher` concept, but it made URLs definitions really cumbersome!
+In *pac4j*, you could apply a different security mechanism for the same URL using the appropriate `Matcher` concept, but it made URL definitions really cumbersome!
 
 ## 5) Security at the method level
 

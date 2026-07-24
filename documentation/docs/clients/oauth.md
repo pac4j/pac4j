@@ -3,7 +3,7 @@ layout: doc
 title: OAuth
 ---
 
-*pac4j* allows you to login with identity providers using the OAuth v1.0 and v2.0 protocol.
+*pac4j* allows you to login with identity providers using the OAuth v1.0 and v2.0 protocols.
 
 ## 1) Dependency
 

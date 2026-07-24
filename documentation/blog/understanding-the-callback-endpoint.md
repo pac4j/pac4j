@@ -20,8 +20,8 @@ On one side, when it comes to web services, credentials are passed on each HTTP 
 The authenticated user only lives during the HTTP request. Thus, we can talk about a *stateless* mode.
 
 On the other side, for the UI authentication process, the credentials are never passed to the application, they are filled in at the identity server level. In fact, in case of the basic auth and login form authentication processes, the identity server is the application, but it's more an exception than the general rule.  
-So, credentials are filled in at the identity provider level and the application and the identity server must communicate via the appropriate protocol like OAuth, CAS, SAML or OpenID Connect in order to make the authentication process works.  
-When a non-authenticated user calls an URL protected by an indirect client, the user is redirected to the related identity server for login. He fills in his credentials and if the credentials are valid, the user is redirected back to the application and the URL on which he is redirected back is the callback endpoint.  
+So, credentials are filled in at the identity provider level and the application and the identity server must communicate via the appropriate protocol like OAuth, CAS, SAML or OpenID Connect in order to make the authentication process work.  
+When a non-authenticated user calls a URL protected by an indirect client, the user is redirected to the related identity server for login. He fills in his credentials and if the credentials are valid, the user is redirected back to the application and the URL on which he is redirected back is the callback endpoint.  
 The authentication process happens only once for the user session, the authenticated user lives during the whole web session (until expiration or explicit logout). Thus, we can talk about a *stateful* mode.
 
 
@@ -109,7 +109,7 @@ will be computed as:
 - `http://app/callback/SAML2Client` for the callback URL of the `SAML2Client`
 - `http://app/callback?client_name=FacebookClient` for the callback URL of the `FacebookClient`.
 
-You can even use the `NoParameterCallbackUrlResolver` to block the addition of the `client_name` parameter. In that case, you need define a default client at the callback endpoint which is done *this time* at the callback level: `callbackController.setClient("SAML2Client");`
+You can even use the `NoParameterCallbackUrlResolver` to block the addition of the `client_name` parameter. In that case, you need to define a default client at the callback endpoint which is done *this time* at the callback level: `callbackController.setClient("SAML2Client");`
 
 Which may be not useful as **pac4j** v3 tries to be smarter than in its previous versions and will choose the appropriate client if only one client is defined for the callback endpoint (with v2, it fails).
 

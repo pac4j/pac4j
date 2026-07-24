@@ -21,7 +21,7 @@ You need to use the following module: `pac4j-http`.
 
 ## 2) `RestAuthenticator`
 
-The [`RestAuthenticator`](https://github.com/pac4j/pac4j/blob/master/pac4j-http/src/main/java/org/pac4j/http/credentials/authenticator/RestAuthenticator.java) validates the provided username/password by POSTing them as a basic authentication to an URL which must return:
+The [`RestAuthenticator`](https://github.com/pac4j/pac4j/blob/master/pac4j-http/src/main/java/org/pac4j/http/credentials/authenticator/RestAuthenticator.java) validates the provided username/password by POSTing them as a basic authentication to a URL which must return:
  
 - a 200 HTTP response with a user profile as a JSON if the username/password credentials are valid
 

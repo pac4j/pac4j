@@ -28,7 +28,7 @@ title: Release notes&#58;
 
 **v6.5.0**:
 - Removed the GAE, CouchDB and SpringBoot modules
-- Created the `org.pac4j.test` package for tests components in the `pac4j-core` module instead of `test-jar` modules
+- Created the `org.pac4j.test` package for test components in the `pac4j-core` module instead of `test-jar` modules
 - Removed the shading Maven phase
 - Update PMD plugin (v3.28.0)
 - Deprecated the "legacy mode" for the `(Ldap|Db|Mongo)ProfileService`
@@ -39,7 +39,7 @@ title: Release notes&#58;
 - Generalized the `Announcement` concept to existing warnings here and there
 
 **v6.4.3**:
-- Update annoucements
+- Update announcements
 
 **v6.4.2**:
 - Removes initialization check on the SP provider metadata resource/path (SAML support)
@@ -60,8 +60,8 @@ title: Release notes&#58;
   - it supports the `client_secret_jwt` authentication method via the `PrivateKeyJwtClientAuthnMethodConfig` (`PrivateKeyJWTClientAuthnMethodConfig` is deprecated)
   - it supports the request object signing (on the authorization URL) via the `config.setRequestObjectSigningAlgorithm`
   - it supports the PAR mechanism on the authorization URL
-- Support of the OpenID Connect Federation protocol v1.0
-- Improve object initialization by avoiding re-entrant call
+- Support for the OpenID Connect Federation protocol v1.0
+- Improve object initialization by avoiding re-entrant calls
 - Limit detection change in `SpringResourceLoader` (interval: 60s)
 - The `JWKHelper` (`pac4j-jwt`) is deprecated and replaced by `JwkHelper` (in `pac4j-core`) for `pac4j-jwt` and `pac4j-oidc`
 - The `pac4j-gae`, `pac4j-couchdb` and `pac4j-springboot` modules are deprecated and will be removed in the next version 6.5.0
@@ -76,7 +76,7 @@ title: Release notes&#58;
 
 **v6.3.2**:
 - Reinforce security in `PathMatcher`
-- OIDC : Manage PrivateJWTKey expiration
+- OIDC: Manage PrivateJWTKey expiration
 
 **v6.3.1**:
 - OIDC: Support `login_hint` parameter for authentication requests
@@ -117,7 +117,7 @@ title: Release notes&#58;
 - SAML2 metadata URLs can be downloaded and resolved concurrently if the URL resource supports the `Accept-Ranges` header as `bytes`.
 - SAML2 clients that point to the same SP metadata resource can be merged together so the final SP metadata may reference all clients.
 - SAML2 `BasicParserPool` is adjusted to have a larger pool size.
-- SAML2 client fields and reference are only initialized if they are undefined.
+- SAML2 client fields and references are only initialized if they are undefined.
 - There is `SAML2DelegatingMetadataResolver` that delegates resolution tasks to an existing metadata resolver.
 - There is `SAML2InMemoryMetadataGenerator` that keeps data in memory and acts as a virtual generator.
 - Removal of various code constructs in favor of Lombok.
@@ -186,7 +186,7 @@ title: Release notes&#58;
 - Renamed the `LogoutHandler` as `SessionLogoutHandler`
 - Created the `SpringResourceLoader` for OIDC/SAML metadata loading: for the OIDC support, the `discoveryURI` can use the "file:", "classpath:" or "resource:" prefix in addition to HTTP/HTTPS URLs
 - The `DefaultSessionLogoutHandler` smartly tries a front channel logout and then a back channel logout
-- The `OidcProfile` will internally encode/decode codes, access and refresh tokens. Asking the profile to return back the actual object will effectively reconstruct it, to avoid  issues with JSON serialization.
+- The `OidcProfile` will internally encode/decode codes, access and refresh tokens. Asking the profile to return back the actual object will effectively reconstruct it, to avoid issues with JSON serialization.
 - Added `getQueryString` on the `WebContext`
 - `X509CredentialsExtractor` is now given the ability to specify a custom header for certificate extraction.
 - `Credentials` are now able to specify and carry their source, typically set by the credential extraction process.
@@ -277,7 +277,7 @@ title: Release notes&#58;
 - Allow to include paths for the `PathMatcher`
 - Add the `Pac4jConstants.EMPTY_STRING` constant
 - Can set the content on the `BadRequestAction`, `ForbiddenAction`, `StatusAction` and `UnauthorizedAction` actions
-- Add the new concept of `SessionStoreFactory` to replace any direct `SessionStore` instantation
+- Add the new concept of `SessionStoreFactory` to replace any direct `SessionStore` instantiation
 - Add a `SecurityEndpointBuilder` to help build configuration for security endpoints from multiple parameters
 - Improve (SAML) user attribute types handling
 - Use `destroySessionBack` on `DefaultLogoutHandler` when session can't be inferred from the Logout Request's context
@@ -358,7 +358,7 @@ title: Release notes&#58;
 - SAML2 identity provider metadata resolver can optionally be forced to download the metadata again.
 - SAML2 identity provider metadata resolver is given the ability to support `last-modified` attributes for URLs.
 - SAML2 response validation can now disable the validation of `authnInstant` by assigning a zero/negative value to
-  `SAML2Configuration#configuration.setMaximumAuthenticationLifetime()`. This setting should not be using sparingly.
+  `SAML2Configuration#configuration.setMaximumAuthenticationLifetime()`. This setting should be used sparingly.
 - Clients can be changed at any time in the `Clients` component
 
 **v5.0.1**:
@@ -373,14 +373,14 @@ title: Release notes&#58;
 - Removed deprecated methods and classes
 - Removed most generics
 - Slightly refactored the auto-initialization
-- Refactored the session management (mainly `ProfileManager` and `SessionStore`): reading in the web session does not create it while writing a none-null value in the session always create it. The multi-profile and save-profile-in-session-or-not options can now be defined at the `Client` level, and no longer in the "security filter" and "callback endpoint". The `get(readFromSession)` and `getAll(readFromSession)` methods of the `ProfileManager` are replaced by the `getProfile()` and `getProfiles()` methods
+- Refactored the session management (mainly `ProfileManager` and `SessionStore`): reading in the web session does not create it while writing a non-null value in the session always creates it. The multi-profile and save-profile-in-session-or-not options can now be defined at the `Client` level, and no longer in the "security filter" and "callback endpoint". The `get(readFromSession)` and `getAll(readFromSession)` methods of the `ProfileManager` are replaced by the `getProfile()` and `getProfiles()` methods
 - The SAML central logout does not perform any local logout
-- When no authorizers is defined, one of the default authorizers is `isAuthenticated` if the `AnonymousClient` is not used
+- When no authorizers are defined, one of the default authorizers is `isAuthenticated` if the `AnonymousClient` is not used
 - Serialize profiles in JSON (instead of using the Java serialization) for the MongoDB, SQL, LDAP and CouchDB `ProfileService` supports; Added a `JsonSerializer` and turned the `JavaSerializationHelper` into a `JavaSerializer`; Removed the `ProfileServiceSerializer`
 - Removed the 307 HTTP code for a new POST request after a POST request (use 200 instead)
 - Turned the `UserProfile` component into a pure interface and use it as much as possible (especially in the `JwtGenerator` and `JwtAuthenticator`)
 - The `ProfileHelper.restoreOrBuildProfile` method has been removed and the behavior is controlled by the `ProfileDefinition` and its `setRestoreProfileFromTypedId` method (enabled for JWT, disabled for others)
-- Authorizers and matchers can be defined additionaly with "+"
+- Authorizers and matchers can be defined additionally with "+"
 - CSRF security improvements proposed by Xhelal Likaj (https://github.com/xhlika): longer CSRF token values (32 bytes), CSRF tokens generated per HTTP request and with an internal expiration date (4 hours), CSRF token verification protected against time-based attacks
 - Improved responses for unauthenticated users: 401 with "WWW-Authenticate" header or 403 to be compliant with the HTTP spec
 - Default authorizers and matchers can be re-defined by users
@@ -468,7 +468,7 @@ title: Release notes&#58;
 - Remove deprecated behaviors: the retrieval of one `CommonProfile` in request or session via the `ProfileManager` and the retrieval of a `String` as the requested URL
 - The default client name parameter used for security has a new value (`force_client`) to avoid conflicting with the default client name parameter (`client_name`) used on the callback (the old value is still used as a fallback, but will be removed)
 - Allow `pac4j-saml` to store and generate SAML metadata and keystores using a REST API and provide options for extensibility so custom components can be designed and injected to manage metadata artifacts externally. Resolution of SAML2 identity provider metadata can be controlled/overridden.
-- Handle a strange use case for the `JEEContext` where the `request.getRequestURI()` returns a path starting by a double slash
+- Handle a strange use case for the `JEEContext` where the `request.getRequestURI()` returns a path starting with a double slash
 - Can return a custom profile when the authentication fails or is cancelled ("silent login")
 - Fix the CAS logout URL computation (for central logout without prefix)
 - Introduce the `WebContextFactory` concept and the `JEEContextFactory` implementation
@@ -481,7 +481,7 @@ title: Release notes&#58;
 - HTTP actions are no longer applied automatically to the web context (the `setResponseStatus` and `writeResponseContent` methods have been removed from the `WebContext` interface), an `HttpActionAdapter` must be used for that. Multiple HTTP actions (inheriting from `HttpAction`) are created to handle the necessary HTTP actions. The `RedirectAction` is replaced by the new HTTP actions inheriting from `RedirectionAction`. The `redirect` method is renamed as `getRedirectionAction`
 - By default, the CSRF check applies on the PUT, PATCH and DELETE requests in addition to the POST requests
 - Renamed the `SAMLMessageStorage*` classes as `SAMLMessageStore*` (based on `Store`)
-- For `Google2Client`, change profile URL from `https://www.googleapis.com/plus/v1/people/me` to `https://www.googleapis.com/oauth2/v3/userinfo`. This change is to prepare for the shutdown of Google plus API. This change will remove the `birthday` and `emails` attribute for `Google2Client`.
+- For `Google2Client`, change profile URL from `https://www.googleapis.com/plus/v1/people/me` to `https://www.googleapis.com/oauth2/v3/userinfo`. This change is to prepare for the shutdown of Google plus API. This change will remove the `birthday` and `emails` attributes for `Google2Client`.
 - For an AJAX request, only generates the redirection URL when requested (`addRedirectionUrlAsHeader` property of the `DefaultAjaxRequestResolver`)
 - Updated the APIs to use `Optional` instead of returning `null`
 - Use the 303 "See Other" and 307 "Temporary Redirect" HTTP actions after a POST request (`RedirectionActionHelper`)
@@ -493,7 +493,7 @@ title: Release notes&#58;
 - Use the `FindBest` utility class to find the best adapter, logic...
 - Support for the OIDC back-channel and front-channel logouts
 - Load the profiles in the `ProfileManager` (from the session or not) like in the `DefaultSecurityLogic` via the `getLikeDefaultSecurityLogic` and `getAllLikeDefaultSecurityLogic` methods
-- REVERT: remove the ID token in the `removeLoginData`  method (previously `clearSensitiveData`)
+- REVERT: remove the ID token in the `removeLoginData` method (previously `clearSensitiveData`)
 - The `pac4j-saml` module is saved as the legacy `pac4j-saml-opensamlv3` module and upgraded to JDK 11 and OpenSAML v4
 
 [&#9656; Previous versions...](release-notes-previous.html)

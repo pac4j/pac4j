@@ -13,7 +13,7 @@ When the user is successfully authenticated by *pac4j*, his data are retrieved f
 - a remember-me nature (`isRemembered()`)
 - a linked identifier (`getLinkedId()`)
 
-In fact, the root class of the profiles hierarchy is the [`BasicUserProfile`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/BasicUserProfile.java). It implements the [`UserProfile`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/UserProfile.java) interface.
+In fact, the root class of the profile hierarchy is the [`BasicUserProfile`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/BasicUserProfile.java). It implements the [`UserProfile`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/UserProfile.java) interface.
 
 This is for specific use cases when you want a minimal user profile.
 
@@ -97,7 +97,7 @@ The `setProfileFactory` method allows you to define the instance class to return
 
 Many attribute converters already exist: [`BooleanConverter`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/converter/BooleanConverter.java), [`ColorConverter`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/converter/ColorConverter.java)... Check the [org.pac4j.core.profile.converter](https://github.com/pac4j/pac4j/tree/master/pac4j-core/src/main/java/org/pac4j/core/profile/converter) package.
 
-As a result, the `newProfile` method returns a new class instance while the `convertAndAdd` methods convert the attributes if there is an associated converter and adds them to the profile.
+As a result, the `newProfile` method returns a new class instance while the `convertAndAdd` methods convert the attributes if there is an associated converter and add them to the profile.
 
 The `newProfile` method may also return the related profile of a `typedId` if this one is specified as the first parameter and if the `setRestoreProfileFromTypedId(true)` method has been called.
 

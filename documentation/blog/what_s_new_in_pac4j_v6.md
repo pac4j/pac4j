@@ -108,6 +108,6 @@ As usual, new implementation versions have been released, based on pac4j v6:
 
 More implementation upgrades are coming.
 
-### 6) Learn more
+### 7) Learn more
 
 Read the [release notes](../docs/release-notes.html) for a thorough presentation of the changes.

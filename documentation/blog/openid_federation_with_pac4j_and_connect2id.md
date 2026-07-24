@@ -7,7 +7,7 @@ date: April 2026
 
 Since version 6.4.0, pac4j supports the [OpenID (Connect) Federation specification](https://openid.net/specs/openid-federation-1_0.html).
 
-The OpenID Connect (in short, OIDC) support in pac4j (`pac4j-oidc` module) is strongly based on the Nimbus libraries:
+The OpenID Connect (for short, OIDC) support in pac4j (`pac4j-oidc` module) is strongly based on the Nimbus libraries:
 
 ```xml
 <dependency>
@@ -34,7 +34,7 @@ In this article, we will focus on the setup of this particular configuration mor
 We need 3 components:
 - a client, which is called the Relying Party (RP) in OIDC, and we will use pac4j
 - a server, which is called the OpenID Provider (OP) in OIDC, and we will use the Connect2id server
-- a trust anchor (TA in short) and we will create a simulated one to simplify the whole installation.
+- a trust anchor (TA for short) and we will create a simulated one to simplify the whole installation.
 
 
 ### a) RP = pac4j
@@ -230,7 +230,7 @@ public String oidcFederation() throws HttpAction {
 
 ## b) Connect2id
 
-The Connect2Id server is available on the `http://127.0.0.1:8080/c2id` URL.
+The Connect2id server is available on the `http://127.0.0.1:8080/c2id` URL.
 
 To enable federation, in the `tomcat/webapps/c2id/WEB-INF/oidcProvider.properties` file, you need to change:
 
@@ -280,7 +280,7 @@ op.federation.authorityHints.1=http://localhost:8081/trustanchor
 
 And we use the automatic registration mode (the simplest way): `op.federation.clientRegistrationTypes=automatic`.
 
-Stop and start again the Connect2id server. You should see this welcome page on `http://127.0.0.1:8080/c2id`:
+Stop and restart the Connect2id server. You should see this welcome page on `http://127.0.0.1:8080/c2id`:
 
 <div class="text-center">
   <img alt="Connect2id welcome page" src="/img/blog/2026_04/c2id_welcome.png" />
