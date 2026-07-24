@@ -251,14 +251,15 @@ main ul li { list-style-type: disc; }
   border-radius: 6px;
   color: #fff;
   font-weight: 700;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, .25);
   box-shadow: 0 2px 4px rgba(0, 0, 0, .15);
 }
-.alert-implem { background: #03c3a4; }
-.alert-doc    { background: #fb4d3d; }
-.alert-contrib{ background: #eac435; }
-.alert-blog   { background: #3aadff; }
-.alert-support{ background: #bbbbbb; }
-.alert-mailing{ background: #a580ee; }
+.alert-implem,
+.alert-doc,
+.alert-contrib,
+.alert-blog,
+.alert-support,
+.alert-mailing { background: linear-gradient(90deg, #e6b800, #f4c430); }
 
 .highlight-blog {
   padding: 15px;
