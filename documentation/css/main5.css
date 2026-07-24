@@ -337,6 +337,28 @@ main ul li { list-style-type: disc; }
 }
 .bio img { border-radius: 50%; }
 
+/* ---------- Commercial support logos ---------- */
+.support-logos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 24px 48px;
+  margin: 1.5rem 0 2.25rem;
+}
+.support-logos a {
+  display: inline-flex;
+  align-items: center;
+}
+.support-logos img {
+  border: 0;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+}
+.support-logos img[src*="logo-citc"] { max-width: 280px; }
+.support-logos img[src*="logo-fawnoos"] { max-width: 240px; }
+
 /* ---------- Responsive video / iframe ---------- */
 .video-embed {
   position: relative;
@@ -429,4 +451,5 @@ main ul li { list-style-type: disc; }
   p { text-align: left; }
   #home #supporters { font-size: 1.05rem; }
   .blog-index time { flex-basis: 100%; }
+  .support-logos { gap: 56px; }
 }
