@@ -14,9 +14,9 @@ As CAS v8.1.0 will also support the OpenID federation protocol as a server (OP),
 Like in our previous setup, we have 3 components:
 - a client, which is called the Relying Party (RP) in OIDC, and we use pac4j
 - a server, which is called the OpenID Provider (OP) in OIDC, and we use the CAS server
-- a trust anchor (TA in short) and we use the CAS server.
+- a trust anchor (TA for short) and we use the CAS server.
 
-Although we use the CAS server for the OP and the TA, we can't use one CAS node: we have two separate nodes of the CAS server, each supporting an exclusive role.
+Although we use the CAS server for the OP and the TA, we can't use a single CAS node: we have two separate nodes of the CAS server, each supporting an exclusive role.
 
 To be consistent with our previous installation:
 - the OP runs on `http://localhost:8080/cas`
@@ -303,7 +303,7 @@ For federation, we use:
 
 The target OP is of course the CAS server acting as an OP.
 
-For the trust anchor, it's the other CAS node (on port 8082) for which we retrieve the JWKS on `http://localhost:8082/cas/oidc/.well-known/openid-federation` and save it in the `trustanchor.jwks` file.
+For the trust anchor, it's the other CAS node (on port 8082) for which we retrieve the JWKS from `http://localhost:8082/cas/oidc/.well-known/openid-federation` and save it in the `trustanchor.jwks` file.
 
 Example:
 
@@ -357,7 +357,7 @@ public class Application {
 
 ## 3) Setup a CAS server as the trust anchor
 
-In the `application.yml` file, let's set up this time the CAS server as the trust anchor:
+In the `application.yml` file, let's set up the CAS server as the trust anchor this time:
 
 ```yml
 server.ssl.enabled: false

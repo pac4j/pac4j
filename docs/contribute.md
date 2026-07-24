@@ -18,4 +18,4 @@ If you need to update the documentation (for a new feature/bug fix), you may nee
 - the `README.md` file
 
 - one or several files in the `documentation` directory: it is published as this website.
-You can browse it locally at [http://localhost:4000](http://localhost:4000) by running: `bundle exec jekyll serve`. Any changes made on the files will be seen immediately.
+You can browse it locally at [http://localhost:4000](http://localhost:4000) by running: `bundle exec jekyll serve`. Any changes made to the files will be seen immediately.

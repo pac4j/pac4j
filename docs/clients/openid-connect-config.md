@@ -143,7 +143,7 @@ By default, the local session expires when the access token does, but this can b
 config.setExpireSessionWithToken(false);
 ```
 
-The additional param `TokenExpirationAdvance` allows to set the time in seconds, previous to the token expiration, in which the expiration is advanced. By default it is `0` seconds.
+The additional param `TokenExpirationAdvance` allows you to set the time in seconds, previous to the token expiration, in which the expiration is advanced. By default it is `0` seconds.
 
 ```java
 config.setTokenExpirationAdvance(10);
@@ -156,7 +156,7 @@ When validating the IDToken in the login process, you can set a clock skew:
 config.setMaxClockSkew(60);
 ```
 
-To reinforce security, the `none` alogithm for ID tokens (meaning no signature validation) must be explicitly accepted by using:
+To reinforce security, the `none` algorithm for ID tokens (meaning no signature validation) must be explicitly accepted by using:
 
 ```java
 config.setAllowUnsignedIdTokens(true);

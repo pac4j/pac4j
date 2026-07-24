@@ -9,9 +9,9 @@ For a long time, the Java Enterprise Edition has lived its life under the umbrel
 
 But the project is now hosted by the Eclipse Foundation.
 
-While the transition started smoothly, things have come to a breaking turn when the `javax.servlet` package has been moved to the `jakarta.servlet` package.
+While the transition started smoothly, things have come to a breaking point when the `javax.servlet` package has been moved to the `jakarta.servlet` package.
 
-Several voices have raised to request the support of JakartaEE in `pac4j` and this post explains the roadmap on this.
+Several voices have been raised to request the support of JakartaEE in `pac4j` and this post explains the roadmap on this.
 
 In fact, several `pac4j` implementations exist for various JEE frameworks so the main JEE components exist in the `pac4j` core project instead of inside each of the implementations.
 
@@ -21,7 +21,7 @@ A first step was made in version 5.2 of pac4j where the JEE components (= JavaEE
 
 This was not really a breaking change as they remain in the same `org.pac4j.core` package; this was just a matter of switching from one dependency to another dependency.
 
-Apart from the JakartaEE roadmap, it really was a good change to be able to differentiate between the `pac4j` JEE implementations (based on `pac4j-jee`) and the `pac4j` none-JEE implementations (based on `pac4j-core`).
+Apart from the JakartaEE roadmap, it really was a good change to be able to differentiate between the `pac4j` JEE implementations (based on `pac4j-jee`) and the `pac4j` non-JEE implementations (based on `pac4j-core`).
 
 ## pac4j v5.4: 2/2
 

@@ -3,11 +3,11 @@ layout: doc
 title: HTTP
 ---
 
-*pac4j* allows you to login using HTTP mechanims (like basic auth or form posting).
+*pac4j* allows you to login using HTTP mechanisms (like basic auth or form posting).
 
-The HTTP clients require to define an [Authenticator](../authenticators.html) to handle the credentials validation.
+The HTTP clients require defining an [Authenticator](../authenticators.html) to handle the credentials validation.
 
-Except the `X509Client` with its default `X509Authenticator` whichs extracts an identifier from the subjectDN of the X509 certificate.
+Except for the `X509Client` with its default `X509Authenticator`, which extracts an identifier from the subjectDN of the X509 certificate.
 
 
 ## 1) Dependency

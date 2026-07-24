@@ -31,7 +31,7 @@ It supports plain text, signed and/or encrypted JWT tokens.
 
 In all cases, the `JwtAuthenticator` requires the JWT to have a subject (`sub` claim) unless you have defined an `identifierGenerator` (of type `ValueGenerator`) to generate an identifier. Otherwise it will throw an exception.
 
-If the provided JWT has an expiration date, then `JwtAuthenticator` may also be configured to only accept JWTs that pass a date criteria that is compared against the JWT expiration date, via `JwtAuthenticator#setExpirationTime()`
+If the provided JWT has an expiration date, then `JwtAuthenticator` may also be configured to only accept JWTs that pass a date criterion that is compared against the JWT expiration date, via `JwtAuthenticator#setExpirationTime()`
 
 <div class="warning"><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i> Notice that for security reasons, plain text JWT tokens will be accepted ONLY if no signature configuration is defined. If one or more signature configurations are defined, the JWT tokens are expected to be signed accordingly.</div>
 
@@ -41,7 +41,7 @@ To handle signed JWT, you must define one or more [`SignatureConfiguration`](htt
 
 Three signature configurations are available: with a secret (`SecretSignatureConfiguration`), using an RSA key pair (`RSASignatureConfiguration`) or using an elliptic-curve key pair (`ECSignatureConfiguration`).
 
-To verify a signed JWT, the defined signature configurations will be tried successfully (if the algorithm of the JWT matches the one supported by the signature configuration).
+To verify a signed JWT, the defined signature configurations will be tried successively (if the algorithm of the JWT matches the one supported by the signature configuration).
 
 ### b) Encryption
 
@@ -49,7 +49,7 @@ To handle encrypted JWT, you must define one or more [`EncryptionConfiguration`]
 
 Like for signature configurations, three encryption configurations are available: with a secret (`SecretEncryptionConfiguration`), using an RSA key pair (`RSAEncryptionConfiguration`) or using an elliptic-curve key pair (`ECEncryptionConfiguration`).
 
-To decrypt an encrypted JWT, the defined encryption configurations will be tried successfully (if the algorithm of the JWT matches the one supported by the encryption configuration).
+To decrypt an encrypted JWT, the defined encryption configurations will be tried successively (if the algorithm of the JWT matches the one supported by the encryption configuration).
 
 **Behavior notes (signature vs encryption)**
 
@@ -89,13 +89,13 @@ jwtAuthenticator.validate(new TokenCredentials(token, "myclient"));
 The `JwtAuthenticator` also offers two convenient methods to handle JWT:
 
 - `CommonProfile validateToken(final String token)` validates a token and directly returns a *pac4j* user profile
-- `Map<String, Object> validateTokenAndGetClaims(final String token)` validates a token and directly returns a set of claims/attributes, this method is completely agnostic from *pac4j* profiles.
+- `Map<String, Object> validateTokenAndGetClaims(final String token)` validates a token and directly returns a set of claims/attributes, this method is completely agnostic to *pac4j* profiles.
 
 
 ### c) User profiles
 
 - if the provided JWT has been generated from a *pac4j* profile (like `FacebookProfile` for example) using the `JwtGenerator`, the `JwtAuthenticator` will re-create the same profile
-- if the provided JWT has been created with any other mean, the `JwtAuthenticator` will create a [`JwtProfile`](https://github.com/pac4j/pac4j/blob/master/pac4j-jwt/src/main/java/org/pac4j/jwt/profile/JwtProfile.java).
+- if the provided JWT has been created with any other means, the `JwtAuthenticator` will create a [`JwtProfile`](https://github.com/pac4j/pac4j/blob/master/pac4j-jwt/src/main/java/org/pac4j/jwt/profile/JwtProfile.java).
 
 
 ## 3) `JwtGenerator`

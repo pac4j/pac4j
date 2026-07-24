@@ -59,7 +59,7 @@ public class ExampleAuthorizer implements Authorizer {
 
 ### 3) Customizing the web integration
 
-*pac4j* implementations heavily rely on the `WebContext` and `SessionStore` to deal with the HTTP request, response and session. The default implementations of theses component may be override or replaced.
+*pac4j* implementations heavily rely on the `WebContext` and `SessionStore` to deal with the HTTP request, response and session. The default implementations of these components may be overridden or replaced.
 
 As well as the default `ProfileManager` (used to save/restore the profile) or `GuavaStore` (to save data in cache).
 

@@ -10,7 +10,7 @@ In previous posts, we have presented the OpenID (Connect) Federation protocol wi
 From our previous setup, we have 3 components:
 - a client, which is called the Relying Party (RP) in OIDC, and we use pac4j
 - a server, which is called the OpenID Provider (OP) in OIDC, and we use the Connect2id server
-- a trust anchor (TA in short) and we use a simulated one.
+- a trust anchor (TA for short) and we use a simulated one.
 
 As the **pac4j** library is a first-class citizen of the CAS server (it is used for authentication delegation, token authentication, the security of the OAuth/OIDC server support, etc.), let's bring the CAS server into action.
 
@@ -498,7 +498,7 @@ INFO [org.apereo.cas.oidc.federation.web.OidcTrustAnchorFetchEndpointController]
  subordinate: [http://localhost:8081]>
 ```
 
-We see that the federation endpoint has been called twice and the `fetch` endpoint (which returns the trust anchor confidence for the entity) has been called twice as well: one for the OP (`http://127.0.0.1:8080/c2id`) and the other one for the RP (`http://localhost:8081`).
+We see that the federation endpoint has been called twice and the `fetch` endpoint (which returns the trust anchor confidence for the entity) has been called twice as well: one for the OP (`http://127.0.0.1:8080/c2id`) and the other for the RP (`http://localhost:8081`).
 
 This was fully expected: the trust anchor is used to build the trust chains!
 

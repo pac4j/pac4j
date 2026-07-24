@@ -107,7 +107,7 @@ DEBUG org.pac4j.oidc.client.OidcClient         : profile: Optional[OidcProfile(s
  iss=http://127.0.0.1:8080/c2id, groups=[admin, audit], expiration=1775214522541, exp=Fri Apr 03 13:08:42 CEST 2026,
 ```
 
-The logs are straightforward on the pac4j side as well: we see the successful authentication, the token and the userprofile calls.
+The logs are straightforward on the pac4j side as well: we see the successful authentication, the token and the userinfo calls.
 
 ## c) After the login process
 
@@ -136,7 +136,7 @@ And this is a feature supported by the OpenID Federation protocol:
 
 > the explicit registration of the OIDC client.
 
-This must be of course supported by the OIDC server and this is the case of the Connect2id server.
+This must of course be supported by the OIDC server and this is the case of the Connect2id server.
 
 pac4j supports both modes depending on the OIDC server, so the configuration must only be updated on the Connect2id server.
 
@@ -269,7 +269,7 @@ org.pac4j.oidc.exceptions.OidcException: Client secret export file is required
 
 This seems definitely a weird one, but it's not! Let me explain: the received `client_id` is output in the logs, though it would not be safe to output the `client_secret` in the logs as well.
 
-So the received `client_secret` is planned to be saved on the disk, on a file defined by the `secretExportFile` property.
+So the received `client_secret` is planned to be saved to disk, in a file defined by the `secretExportFile` property.
 
 Let's define it in the configuration:
 
@@ -287,7 +287,7 @@ The `client_secret` is in the defined file: `The received secret has been saved 
 
 These seem to be the right settings as the login process has worked, but we'd like to check that on the Connect2id side.
 
-Let's seek in the Connect2id configuration file `oidcProvider.properties` for the property: `op.reg.apiAccessTokenSHA256`. I find:
+Let's search in the Connect2id configuration file `oidcProvider.properties` for the property: `op.reg.apiAccessTokenSHA256`. I find:
 
 ```properties
 # Evaluation note: Use token value ztucZS1ZyFKgh0tUEruUtiSTXhnexmd6
@@ -400,6 +400,6 @@ The pac4j RP and the Connect2id OP only know and rely on the trust anchor, they 
 
 <br/>
 
-But nonetheless the <b>RP has been able to definitely register itself on the OP!</b>
+But nonetheless the <b>RP has been able to permanently register itself with the OP!</b>
 
 </div>

@@ -6,13 +6,13 @@ date: January 2018
 ---
 
 Recently, a client asked me to write a secured Spring Boot webapp sample to interact with his CAS server.
-He requested me to use Spring Security and I proposed him to test _pac4j_ as well. He was reluctant first, but accepted to give it a try.
+He requested me to use Spring Security and I proposed that he test _pac4j_ as well. He was reluctant at first, but agreed to give it a try.
 
 _pac4j_ is not only a security library, it’s a security framework/engine implemented for many environments.
 Generally, for a Spring Boot webapp, the first insight is to use the [spring-security-pac4j](https://github.com/pac4j/spring-security-pac4j) library, which is the pac4j security capabilities adapted to Spring Security.
 But it’s not the right choice for a new webapp, it only makes sense for legacy purposes.
 
-A Spring Boot app is a Spring MVC webapp so it’s much better to use the [spring-webmvc-pac4j](https://github.com/pac4j/spring-webmvc-pac4j) library, which is the pac4j security capabitilites adapted to Spring Web MVC.
+A Spring Boot app is a Spring MVC webapp so it’s much better to use the [spring-webmvc-pac4j](https://github.com/pac4j/spring-webmvc-pac4j) library, which is the pac4j security capabilities adapted to Spring Web MVC.
 It's as powerful as _spring-security-pac4j_, but it's much easier.
 
 I hadn’t planned to write a post to compare both solutions, but the end result was so significant that it’s worth the deal talking about it.

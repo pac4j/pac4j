@@ -38,13 +38,13 @@ Of course, you cannot only assess a software by the number of its features but h
 
 ### 4) CAS is very popular
 
-The CAS server is one of the most popular software in IAM. With around five thousands stars on github.com, CAS is a well-known project.
+The CAS server is one of the most popular software in IAM. With around five thousand stars on github.com, CAS is a well-known project.
 Many higher-education schools and companies use it, so you can easily find help from the CAS community or paid consultants. The more the CAS server is installed, the more people read its source code and test it, the more security vulnerabilities are discovered and fixed. It makes it a safe choice for your SSO system.
 
 
 ### 5) CAS fits everywhere
 
-Your existing environment is the first most important criteria when choosing an SSO system. Most companies never start a new project from scratch: for example, they use Redis on CentOS, a bit of MongoDB also and their users' storage is an old LDAP system. You must cope with all that constraints.
+Your existing environment is the first most important criteria when choosing an SSO system. Most companies never start a new project from scratch: for example, they use Redis on CentOS, a bit of MongoDB also and their users' storage is an old LDAP system. You must cope with all those constraints.
 If your software only supports technologies A and B, you can only address clients willing to use A or B. The CAS server can:
 - use many authentication methods: LDAP, databases, X509, Cassandra, Radius, Spnego, JWT, AWS Cloud Directory and many more
 - handle many storage systems: Memcached, Redis, Oracle, Hazelcast, CouchDB, Couchbase, etc.
@@ -54,7 +54,7 @@ If your software only supports technologies A and B, you can only address client
 
 Your existing environment is also the second most important criteria when choosing an SSO system! Big bang projects almost always fail and it's hard to deal with legacy. I don't remember having a customer without an existing software to integrate with.
 And this is the great strength of CAS:
-- the CAS server can act as a SAML IdP, an OAuth provider, an OpenID Connect provder or as a CAS server of course
+- the CAS server can act as a SAML IdP, an OAuth provider, an OpenID Connect provider or as a CAS server of course
 - but it can also play the role of a client delegating the authentication to another CAS server, to a SAML IdP, to Facebook, Google, Twitter and many other identity providers.
 
 This is one of the main contributions I brought to CAS and I'm especially proud of this interoperability.

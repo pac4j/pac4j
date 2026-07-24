@@ -14,7 +14,7 @@ This `Authenticator` interface has only one method: `Optional<Credentials> valid
 
 The [`HttpAction`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/exception/http/HttpAction.java) allows you to interrupt the credentials validation and trigger a specific HTTP action (like a temporary redirection).
 
-You can use various `Authenticator` for many identity mechanisms:
+You can use various `Authenticator`s for many identity mechanisms:
 
 - [LDAP](authenticators/ldap.html)
 - [SQL](authenticators/sql.html)
@@ -28,7 +28,7 @@ You can use various `Authenticator` for many identity mechanisms:
 
 For direct HTTP clients, credentials are passed and validated for each request, which may lead to performance issues (too many calls to the underlying identity system). So the use of a cache is highly recommended.
 
-This can be done using the [`LocalCachingAuthenticator`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/authenticator/LocalCachingAuthenticator.java) class (available in the `pac4j-core` module) which caches the resulted user profile depending on the provided credentials and can thus spare credentials validation on the identity system.
+This can be done using the [`LocalCachingAuthenticator`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/authenticator/LocalCachingAuthenticator.java) class (available in the `pac4j-core` module) which caches the resulting user profile depending on the provided credentials and can thus spare credentials validation on the identity system.
 
 **Example:**
 
@@ -38,7 +38,7 @@ LocalCachingAuthenticator authent = new LocalCachingAuthenticator(new JwtAuthent
 
 By default, the `LocalCachingAuthenticator` uses Guava as its internal [`Store`](store.html) but you can provide your own store via the `setStore` method.
 
-<div class="warning"><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i> Notice that this <code>LocalCachingAuthenticator</code> requires the additionnal <i>guava</i> dependency.</div>
+<div class="warning"><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i> Notice that this <code>LocalCachingAuthenticator</code> requires the additional <i>guava</i> dependency.</div>
 
 In some cases, you may also rely on the session by using: `client.setSaveProfileInSession(true);`.
 
@@ -59,7 +59,7 @@ Three `PasswordEncoder` implementations are available:
 - a wrapper for the Apache Shiro [`PasswordService`](https://shiro.apache.org/static/1.4.0/apidocs/org/apache/shiro/authc/credential/PasswordService.html):  the [`ShiroPasswordEncoder`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/password/ShiroPasswordEncoder.java)
 - one based on the jBCrypt library:  the [`JBCryptPasswordEncoder`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/password/JBCryptPasswordEncoder.java).
 
-<div class="warning"><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i> Notice that the <code>SpringSecurityPasswordEncoder</code> requires the additionnal <i>spring-security-crypto</i> dependency, the <code>ShiroPasswordEncoder</code> the <i>shiro-core</i> dependency and the <code>JBCryptPasswordEncoder</code> the <i>jBCrypt</i> dependency.</div>
+<div class="warning"><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i> Notice that the <code>SpringSecurityPasswordEncoder</code> requires the additional <i>spring-security-crypto</i> dependency, the <code>ShiroPasswordEncoder</code> the <i>shiro-core</i> dependency and the <code>JBCryptPasswordEncoder</code> the <i>jBCrypt</i> dependency.</div>
 
 
 ## 3) `ProfileCreator`
@@ -68,7 +68,7 @@ In fact, in the HTTP clients, you can also define the way the user profile is cr
 
 In practice:
 
-- all the available `Authenticator` create a specific user profile when validating credentials and save it in the current `Credentials`
+- all the available `Authenticator`s create a specific user profile when validating credentials and save it in the current `Credentials`
 - all the clients are configured by default with the [`AuthenticatorProfileCreator`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/creator/AuthenticatorProfileCreator.java) which retrieves the user profile from the current `Credentials` and returns it.
 
 So it works out of the box, even if providing a specific `ProfileCreator` is possible.

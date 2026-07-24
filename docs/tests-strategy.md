@@ -7,7 +7,7 @@ title: Tests strategy&#58;
 
 ## 1) Unit tests
 
-Unit tests are run on each `mvn clean test` build and unit tests classes are suffixed by `Tests`.
+Unit tests are run on each `mvn clean test` build and unit test classes are suffixed by `Tests`.
 
 ## 2) Manual tests
 

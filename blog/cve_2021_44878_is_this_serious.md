@@ -9,13 +9,13 @@ A few weeks ago, a security vulnerability was published about pac4j: [CVE-2021-4
 
 I have received many questions and requests related to this security vulnerability and I'd like to publicly reply to them.
 
-Here si the description of the CVE:
+Here is the description of the CVE:
 
 *Pac4j v5.1 and earlier allows (by default) clients to accept and successfully validate ID Tokens with "none" algorithm (i.e., tokens with no signature) which is not secure and violates the OpenID Core Specification. The "none" algorithm does not require any signature verification when validating the ID tokens, which allows the attacker to bypass the token validation by injecting a malformed ID token using "none" as the value of "alg" key in the header with an empty signature value.*
 
 and its CVSS score is: **7.5 HIGH**
 
-It seems pretty serious, isn't it?
+It seems pretty serious, doesn't it?
 
 Not really.
 
@@ -43,8 +43,8 @@ Does it make sense not to sign the ID tokens provided after a successful OIDC au
 
 I would very much doubt it.
 
-Please don't hesitate to report me any OIDC server supporting the "none" algorithm for its ID tokens.
+Please don't hesitate to report to me any OIDC server supporting the "none" algorithm for its ID tokens.
 
-Does a security vulnerability that is unlikely and mainly related to another component misconfiguration can be considered serious? I don't think so.
+Can a security vulnerability that is unlikely and mainly related to another component misconfiguration be considered serious? I don't think so.
 
 @CVE/NVD teams, please change the CVE description and the score.

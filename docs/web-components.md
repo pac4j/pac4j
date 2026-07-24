@@ -5,7 +5,7 @@ title: Web components&#58;
 
 A *pac4j* implementation must implement the necessary web components based on the *pac4j* logics:
 
-- the [security filer](security-filter.html) to secure an URL, based on the `SecurityLogic`
+- the [security filter](security-filter.html) to secure a URL, based on the `SecurityLogic`
 - the [callback endpoint](callback-endpoint.html) to finish the login process for `IndirectClient` in web applications. Based on the `CallbackLogic`
 - the [logout endpoint](logout-endpoint.html) to handle the local and central logouts, based on the `LogoutLogic`.
 
