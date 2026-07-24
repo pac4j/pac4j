@@ -23,7 +23,7 @@ title: Getting started
 <dependency>
     <groupId>org.pac4j</groupId>
     <artifactId>pac4j-oidc</artifactId>
-    <version>6.5.1</version>
+    <version>6.5.5</version>
 </dependency>
 ```
 
@@ -112,7 +112,7 @@ Nothing to change, except [one dependency](https://github.com/pac4j/simple-sprin
 <dependency>
     <groupId>org.pac4j</groupId>
     <artifactId>pac4j-cas</artifactId>
-    <version>6.5.1</version>
+    <version>6.5.5</version>
 </dependency>
 ```
 
@@ -149,7 +149,7 @@ We need a [new dependency](https://github.com/pac4j/simple-spring-boot-pac4j-dem
 <dependency>
     <groupId>org.pac4j</groupId>
     <artifactId>pac4j-saml</artifactId>
-    <version>6.5.1</version>
+    <version>6.5.5</version>
 </dependency>
 ```
 
@@ -186,4 +186,6 @@ A little more complicated but the SAML2 protocol requires that and generally a l
 
 # 4) The grand tour
 
-<iframe src="https://docs.google.com/presentation/d/1ScGtdqRBUpGYA915sn6L3CXOB3axzJa1H3rj7i27MZs/embed?start=false&loop=false&delayms=60000" frameborder="0" width="1108" height="652" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+<div class="video-embed">
+<iframe src="https://docs.google.com/presentation/d/1ScGtdqRBUpGYA915sn6L3CXOB3axzJa1H3rj7i27MZs/embed?start=false&loop=false&delayms=60000" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+</div>

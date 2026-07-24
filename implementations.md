@@ -5,14 +5,18 @@ title: <i class="fa fa-user" aria-hidden="true"></i> All available <i>pac4j</i> 
 
 <style>
     table {
-        margin-top: 40px
+        margin-top: 16px
     }
     table h1 {
         margin: 0
     }
     table,tr,td {
-        padding :0;
+        padding: 0;
         border: 0
+    }
+    table td {
+        padding-top: 6px;
+        padding-bottom: 6px
     }
     table img {
         border: 0
@@ -21,7 +25,7 @@ title: <i class="fa fa-user" aria-hidden="true"></i> All available <i>pac4j</i> 
 
 <h2>All <i>pac4j</i> implementations offer <a href="docs/implementations/comparison.html"><b>similar</b> features</a>:</h2>
 
-<table class="centered" style="margin-bottom: 60px">
+<table class="centered" style="margin-bottom: 20px">
 	<tr>
 		<td><a target="_blank" href="https://github.com/pac4j/spring-webmvc-pac4j"><img height="100" src="/img/logo-spring-webmvc.png" /></a></td>
         <td><a target="_blank" href="https://github.com/pac4j/j2e-pac4j"><img height="100" src="/img/logo-j2e.png" /></a></td>
@@ -53,7 +57,7 @@ title: <i class="fa fa-user" aria-hidden="true"></i> All available <i>pac4j</i> 
     </tr>
 </table>
 
-<table class="centered" style="margin-bottom: 60px">
+<table class="centered" style="margin-bottom: 20px">
     <tr>
         <td><a target="_blank" href="https://github.com/pac4j/play-pac4j"><img height="100" src="/img/logo-play.png" /></a></td>
         <td><a target="_blank" href="https://github.com/pac4j/vertx-pac4j"><img height="100" src="/img/logo-vertx.png" /></a></td>
@@ -72,7 +76,7 @@ title: <i class="fa fa-user" aria-hidden="true"></i> All available <i>pac4j</i> 
     </tr>
 </table>
 
-<table class="centered" style="margin-bottom: 60px">
+<table class="centered" style="margin-bottom: 20px">
 	<tr>
         <td><a target="_blank" href="https://github.com/pac4j/javalin-pac4j"><img height="100" src="/img/logo-javalin.png" /></a></td>
         <td><a target="_blank" href="http://www.pippo.ro/doc/security.html#pac4j-integration"><img height="100" src="/img/logo-pippo.png" /></a></td>

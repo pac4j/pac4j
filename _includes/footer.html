@@ -3,7 +3,7 @@
 
 <footer class="page-footer">
     <div class="footer-copyright">
-        <div class="container center">
+        <div class="container">
             Made by <a href="/docs/the-team.html">Jérôme LELEU and other volunteers</a> with <a target="_blank" href="https://www.nobutapa.dev">NOBUTAPA</a>, &copy; 2012 - <script>document.write(new Date().getFullYear());</script>
         </div>
     </div>
@@ -14,5 +14,24 @@
         anchors.add();
     </script>
 {% endif %}
+
+<script>
+(function () {
+    var btn = document.getElementById('navToggle');
+    var nav = document.getElementById('nav-mobile');
+    if (!btn || !nav) return;
+    btn.addEventListener('click', function () {
+        var open = nav.classList.toggle('open');
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    // Close the menu when a link is clicked (mobile)
+    nav.addEventListener('click', function (e) {
+        if (e.target.tagName === 'A') {
+            nav.classList.remove('open');
+            btn.setAttribute('aria-expanded', 'false');
+        }
+    });
+})();
+</script>
 </body>
 </html>

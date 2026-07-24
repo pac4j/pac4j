@@ -3,11 +3,17 @@ layout: alldoc
 title: <i class="fa fa-user" aria-hidden="true"></i> All <i>pac4j</i> engine/core documentations&#58;
 ---
 
-<h3><i>MAJOR: with breaking changes, deprecated classes are removed - MINOR: without breaking changes, classes are deprecated</i></h3>
+<style>
+    h1, h2 { margin-top: .7rem; margin-bottom: .7rem; }
+    hr { margin-top: 1.6rem; margin-bottom: 1.6rem; }
+    .jdk-label { margin-top: 1.4rem; margin-bottom: .7rem; }
+</style>
 
-<div class="text-center" style="padding-top: 20px">
+<p class="caption">MAJOR: with breaking changes, deprecated classes are removed &mdash; MINOR: without breaking changes, classes are deprecated</p>
 
-<b>JDK 17:</b>
+<div class="text-center" style="padding-top: 8px">
+
+<div class="jdk-label">JDK 17</div>
 
 <h2><a id="v6.5" href="/docs/index.html">v6.5</a> <small>(MINOR)</small>
 
@@ -23,7 +29,7 @@ title: <i class="fa fa-user" aria-hidden="true"></i> All <i>pac4j</i> engine/cor
 
 <hr/>
 
-<b>JDK 11:</b>
+<div class="jdk-label">JDK 11</div>
 
 <h2><a id="v5.8" href="https://www.pac4j.org/5.8.x/docs/index.html">v5.8</a> <small>(MINOR)</small>
 
@@ -45,7 +51,7 @@ title: <i class="fa fa-user" aria-hidden="true"></i> All <i>pac4j</i> engine/cor
 
 <hr/>
 
-<b>JDK 8:</b>
+<div class="jdk-label">JDK 8</div>
 
 <h2><a id="v4.5" href="https://www.pac4j.org/4.5.x/docs/index.html">v4.5</a> <small>(MINOR)</small>
 
