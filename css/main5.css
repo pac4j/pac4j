@@ -343,12 +343,13 @@ main ul li { list-style-type: disc; }
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 24px 48px;
+  gap: 48px 48px;
   margin: 1.5rem 0 2.25rem;
 }
 .support-logos a {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
 }
 .support-logos img {
   border: 0;
@@ -356,8 +357,8 @@ main ul li { list-style-type: disc; }
   max-width: 100%;
   height: auto;
 }
-.support-logos img[src*="logo-citc"] { max-width: 280px; }
-.support-logos img[src*="logo-fawnoos"] { max-width: 240px; }
+.support-logos img[src*="logo-citc"] { max-width: min(280px, 70vw); }
+.support-logos img[src*="logo-fawnoos"] { max-width: min(240px, 60vw); }
 
 /* ---------- Responsive video / iframe ---------- */
 .video-embed {
@@ -451,5 +452,4 @@ main ul li { list-style-type: disc; }
   p { text-align: left; }
   #home #supporters { font-size: 1.05rem; }
   .blog-index time { flex-basis: 100%; }
-  .support-logos { gap: 56px; }
 }
