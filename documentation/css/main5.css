@@ -321,7 +321,7 @@ main ul li { list-style-type: disc; }
 #home { margin-top: 1.2rem; }
 #home h1 { font-weight: 600; }
 #home h2 { font-weight: 400; }
-#home #engine { margin-bottom: 2.5rem; }
+#home #engine { max-width: 80%; margin: 0 auto 2.5rem; }
 #home #implem { margin-bottom: 1.8rem; line-height: 1.6; }
 #home #authent, #home #authoriz { line-height: 1.4; }
 #home #supporters { margin-top: 3rem; font-size: 1.25rem; }

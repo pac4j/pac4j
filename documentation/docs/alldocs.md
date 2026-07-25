@@ -19,7 +19,8 @@ title: <i class="fa fa-user" aria-hidden="true"></i> All <i>pac4j</i> engine/cor
 <div class="jdk-label">JDK 17</div>
 
 <div class="version-group">
-<h2 class="ver-minor" id="v6.5"><a href="/docs/index.html">v6.5</a> <small>(MINOR)</small></h2>
+<h2 class="ver-minor" id="v6.6"><a href="/docs/index.html">v6.6</a> <small>(MINOR)</small></h2>
+<h2 class="ver-minor" id="v6.5"><a href="https://www.pac4j.org/6.5.x/docs/index.html">v6.5</a> <small>(MINOR)</small></h2>
 <h2 class="ver-minor" id="v6.4"><a href="https://www.pac4j.org/6.4.x/docs/index.html">v6.4</a> <small>(MINOR)</small></h2>
 <h2 class="ver-minor" id="v6.3"><a href="https://www.pac4j.org/6.3.x/docs/index.html">v6.3</a> <small>(MINOR)</small></h2>
 <h2 class="ver-minor" id="v6.2"><a href="https://www.pac4j.org/6.2.x/docs/index.html">v6.2</a> <small>(MINOR)</small></h2>

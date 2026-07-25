@@ -30,7 +30,7 @@ For older streams, contributions may be accepted and bug/security fixes may be b
 
 The "major" implementations are:
 
-- *jee-pac4j*
+- *javaee-pac4j* and *jakartaee-pac4j*
 - *buji-pac4j*
 - *spring-webmvc-pac4j*
 - *spring-security-pac4j*
