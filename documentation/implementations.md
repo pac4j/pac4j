@@ -4,93 +4,72 @@ title: <i class="fa fa-user" aria-hidden="true"></i> All available <i>pac4j</i> 
 ---
 
 <style>
-    table {
-        margin-top: 16px
+    .implem-block {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: flex-start;
+        gap: 16px 24px;
+        margin: 16px 0 24px;
+        padding: 18px 12px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
     }
-    table h1 {
-        margin: 0
+    .implem-block .spacer { flex: 0 0 20%; }
+    .implem {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex: 0 0 auto;
+        text-align: center;
     }
-    table,tr,td {
-        padding: 0;
-        border: 0
+    .implem-block .implem img { height: 120px; width: auto; border: 0; }
+    .implem h1 { font-size: 1.05rem; font-weight: 700; margin: 6px 0 0; line-height: 1.25; }
+    .implem h1 small { font-size: .8em; }
+    @media (max-width: 560px) {
+        .implem-block { flex-direction: column; align-items: center; gap: 10px; }
+        .implem-block .spacer { display: none; }
+        .implem-block .implem img { height: 100px; max-width: 100%; }
     }
-    table td {
-        padding-top: 6px;
-        padding-bottom: 6px
+    @media (max-width: 480px) {
+        .implem-block .implem img { height: 80px; }
     }
-    table img {
-        border: 0
+    @media (max-width: 360px) {
+        .implem-block .implem img { height: 60px; }
     }
 </style>
 
 <h2>All <i>pac4j</i> implementations offer <a href="docs/implementations/comparison.html"><b>similar</b> features</a>:</h2>
 
-<table class="centered" style="margin-bottom: 20px">
-	<tr>
-		<td><a target="_blank" href="https://github.com/pac4j/spring-webmvc-pac4j"><img height="100" src="/img/logo-spring-webmvc.png" /></a></td>
-        <td><a target="_blank" href="https://github.com/pac4j/j2e-pac4j"><img height="100" src="/img/logo-j2e.png" /></a></td>
-        <td><a target="_blank" href="https://github.com/pac4j/spring-webflux-pac4j"><img height="100" src="/img/logo-spring-webflux.png" /></a></td>
-        <td width="20%"></td>
-        <td><a target="_blank" href="https://github.com/bujiio/buji-pac4j"><img height="100" src="/img/logo-shiro.png" /></a></td>
-        <td><a target="_blank" href="https://github.com/pac4j/spring-security-pac4j"><img height="100" src="/img/logo-spring-security.png" /></a></td>
-	</tr>
-	<tr>
-        <td><a target="_blank" href="https://github.com/pac4j/spring-webmvc-pac4j"><h1>Spring Web MVC<br /><small>(Spring Boot)</small></h1></a></td>
-        <td><a target="_blank" href="https://github.com/pac4j/j2e-pac4j"><h1>J2E</h1></a></td>
-        <td><a target="_blank" href="https://github.com/pac4j/spring-webflux-pac4j"><h1>Spring Webflux<br /><small>(Spring Boot)</small></h1></a></td>
-        <td></td>
-        <td><a target="_blank" href="https://github.com/bujiio/buji-pac4j"><h1>Shiro</h1></a></td>
-        <td><a target="_blank" href="https://github.com/pac4j/spring-security-pac4j"><h1>Spring Security<br /><small>(Spring Boot)</small></h1></a></td>
-	</tr>
-</table>
+<div class="implem-block">
+    <div class="implem"><a target="_blank" href="https://github.com/pac4j/spring-webmvc-pac4j"><img height="100" src="/img/logo-spring-webmvc.png" /></a><a target="_blank" href="https://github.com/pac4j/spring-webmvc-pac4j"><h1>Spring Web MVC<br /><small>(Spring Boot)</small></h1></a></div>
+    <div class="implem"><a target="_blank" href="https://github.com/pac4j/j2e-pac4j"><img height="100" src="/img/logo-j2e.png" /></a><a target="_blank" href="https://github.com/pac4j/j2e-pac4j"><h1>J2E</h1></a></div>
+    <div class="implem"><a target="_blank" href="https://github.com/pac4j/spring-webflux-pac4j"><img height="100" src="/img/logo-spring-webflux.png" /></a><a target="_blank" href="https://github.com/pac4j/spring-webflux-pac4j"><h1>Spring Webflux<br /><small>(Spring Boot)</small></h1></a></div>
+    <div class="spacer" aria-hidden="true"></div>
+    <div class="implem"><a target="_blank" href="https://github.com/bujiio/buji-pac4j"><img height="100" src="/img/logo-shiro.png" /></a><a target="_blank" href="https://github.com/bujiio/buji-pac4j"><h1>Shiro</h1></a></div>
+    <div class="implem"><a target="_blank" href="https://github.com/pac4j/spring-security-pac4j"><img height="100" src="/img/logo-spring-security.png" /></a><a target="_blank" href="https://github.com/pac4j/spring-security-pac4j"><h1>Spring Security<br /><small>(Spring Boot)</small></h1></a></div>
+</div>
 
-<table class="centered">
-    <tr>
-        <td><a target="_blank" href="http://apereo.github.io/cas/7.3.x/integration/Delegate-Authentication.html"><img height="100" src="/img/logo-cas.png" /></a></td>
-        <td><a target="_blank" href="https://syncope.apache.org"><img height="100" src="/img/logo-syncope.png" /></a></td>
-        <td><a target="_blank" href="http://knox.apache.org/books/knox-2-1-0/user-guide.html#Pac4j+Provider+-+CAS+/+OAuth+/+SAML+/+OpenID+Connect"><img height="100" src="/img/logo-knox.png" /></a></td>
-    </tr>
-    <tr>
-        <td><a target="_blank" href="http://apereo.github.io/cas/7.3.x/integration/Delegate-Authentication.html"><h1>CAS server</h1></a></td>
-        <td><a target="_blank" href="https://syncope.apache.org"><h1>Syncope</h1></a></td>
-        <td><a target="_blank" href="http://knox.apache.org/books/knox-2-1-0/user-guide.html#Pac4j+Provider+-+CAS+/+OAuth+/+SAML+/+OpenID+Connect"><h1>Knox</h1></a></td>
-    </tr>
-</table>
+<div class="implem-block">
+    <div class="implem"><a target="_blank" href="http://apereo.github.io/cas/7.3.x/integration/Delegate-Authentication.html"><img height="100" src="/img/logo-cas.png" /></a><a target="_blank" href="http://apereo.github.io/cas/7.3.x/integration/Delegate-Authentication.html"><h1>CAS server</h1></a></div>
+    <div class="implem"><a target="_blank" href="https://syncope.apache.org"><img height="100" src="/img/logo-syncope.png" /></a><a target="_blank" href="https://syncope.apache.org"><h1>Syncope</h1></a></div>
+    <div class="implem"><a target="_blank" href="http://knox.apache.org/books/knox-2-1-0/user-guide.html#Pac4j+Provider+-+CAS+/+OAuth+/+SAML+/+OpenID+Connect"><img height="100" src="/img/logo-knox.png" /></a><a target="_blank" href="http://knox.apache.org/books/knox-2-1-0/user-guide.html#Pac4j+Provider+-+CAS+/+OAuth+/+SAML+/+OpenID+Connect"><h1>Knox</h1></a></div>
+</div>
 
-<table class="centered" style="margin-bottom: 20px">
-    <tr>
-        <td><a target="_blank" href="https://github.com/pac4j/play-pac4j"><img height="100" src="/img/logo-play.png" /></a></td>
-        <td><a target="_blank" href="https://github.com/pac4j/vertx-pac4j"><img height="100" src="/img/logo-vertx.png" /></a></td>
-        <td><a target="_blank" href="https://github.com/pac4j/spark-pac4j"><img height="100" src="/img/logo-spark.png" /></a></td>
-        <td><a target="_blank" href="http://ratpack.io/manual/current/pac4j.html#pac4j"><img height="100" src="/img/logo-ratpack.png" /></a></td>
-        <td><a target="_blank" href="https://github.com/pac4j/jax-rs-pac4j"><img height="100" src="/img/logo-jaxrs.png" /></a></td>
-        <td><a target="_blank" href="https://github.com/pac4j/dropwizard-pac4j"><img height="100" src="/img/logo-dropwizard.png" /></a></td>
-    </tr>
-    <tr>
-        <td><a target="_blank" href="https://github.com/pac4j/play-pac4j"><h1>Play 2.x/3.x</h1></a></td>
-        <td><a target="_blank" href="https://github.com/pac4j/vertx-pac4j"><h1>Vertx</h1></a></td>
-        <td><a target="_blank" href="https://github.com/pac4j/spark-pac4j"><h1>Spark Java</h1></a></td>
-        <td><a target="_blank" href="http://ratpack.io/manual/current/pac4j.html#pac4j"><h1>Ratpack</h1></a></td>
-        <td><a target="_blank" href="https://github.com/pac4j/jax-rs-pac4j"><h1>JAX-RS</h1></a></td>
-        <td><a target="_blank" href="https://github.com/pac4j/dropwizard-pac4j"><h1>Dropwizard</h1></a></td>
-    </tr>
-</table>
+<div class="implem-block">
+    <div class="implem"><a target="_blank" href="https://github.com/pac4j/play-pac4j"><img height="100" src="/img/logo-play.png" /></a><a target="_blank" href="https://github.com/pac4j/play-pac4j"><h1>Play 2.x/3.x</h1></a></div>
+    <div class="implem"><a target="_blank" href="https://github.com/pac4j/vertx-pac4j"><img height="100" src="/img/logo-vertx.png" /></a><a target="_blank" href="https://github.com/pac4j/vertx-pac4j"><h1>Vertx</h1></a></div>
+    <div class="implem"><a target="_blank" href="https://github.com/pac4j/spark-pac4j"><img height="100" src="/img/logo-spark.png" /></a><a target="_blank" href="https://github.com/pac4j/spark-pac4j"><h1>Spark Java</h1></a></div>
+    <div class="implem"><a target="_blank" href="http://ratpack.io/manual/current/pac4j.html#pac4j"><img height="100" src="/img/logo-ratpack.png" /></a><a target="_blank" href="http://ratpack.io/manual/current/pac4j.html#pac4j"><h1>Ratpack</h1></a></div>
+    <div class="implem"><a target="_blank" href="https://github.com/pac4j/jax-rs-pac4j"><img height="100" src="/img/logo-jaxrs.png" /></a><a target="_blank" href="https://github.com/pac4j/jax-rs-pac4j"><h1>JAX-RS</h1></a></div>
+    <div class="implem"><a target="_blank" href="https://github.com/pac4j/dropwizard-pac4j"><img height="100" src="/img/logo-dropwizard.png" /></a><a target="_blank" href="https://github.com/pac4j/dropwizard-pac4j"><h1>Dropwizard</h1></a></div>
+</div>
 
-<table class="centered" style="margin-bottom: 20px">
-	<tr>
-        <td><a target="_blank" href="https://github.com/pac4j/javalin-pac4j"><img height="100" src="/img/logo-javalin.png" /></a></td>
-        <td><a target="_blank" href="http://www.pippo.ro/doc/security.html#pac4j-integration"><img height="100" src="/img/logo-pippo.png" /></a></td>
-		<td><a target="_blank" href="https://github.com/pac4j/undertow-pac4j"><img height="100" src="/img/logo-undertow.png" /></a></td>
-        <td><a target="_blank" href="https://github.com/pac4j/lagom-pac4j"><img height="100" src="/img/logo-lagom.png" /></a></td>
-        <td><a target="_blank" href="https://github.com/StackVista/akka-http-pac4j"><img height="100" src="/img/logo-akkahttp.png" /></a></td>
-        <td><a target="_blank" href="https://jooby.io/modules/pac4j"><img height="100" src="/img/logo-jooby.png" /></a></td>
-	</tr>
-	<tr>
-        <td><a target="_blank" href="https://github.com/pac4j/javalin-pac4j"><h1>Javalin</h1></a></td>
-        <td><a target="_blank" href="http://www.pippo.ro/doc/security.html#pac4j-integration"><h1>Pippo</h1></a></td>
-		<td><a target="_blank" href="https://github.com/pac4j/undertow-pac4j"><h1>Undertow</h1></a></td>
-        <td><a target="_blank" href="https://github.com/pac4j/lagom-pac4j"><h1>Lagom</h1></a></td>
-        <td><a target="_blank" href="https://github.com/StackVista/akka-http-pac4j"><h1>Akka HTTP</h1></a></td>
-        <td><a target="_blank" href="https://jooby.io/modules/pac4j"><h1>Jooby</h1></a></td>
-	</tr>
-</table>
+<div class="implem-block">
+    <div class="implem"><a target="_blank" href="https://github.com/pac4j/javalin-pac4j"><img height="100" src="/img/logo-javalin.png" /></a><a target="_blank" href="https://github.com/pac4j/javalin-pac4j"><h1>Javalin</h1></a></div>
+    <div class="implem"><a target="_blank" href="http://www.pippo.ro/doc/security.html#pac4j-integration"><img height="100" src="/img/logo-pippo.png" /></a><a target="_blank" href="http://www.pippo.ro/doc/security.html#pac4j-integration"><h1>Pippo</h1></a></div>
+    <div class="implem"><a target="_blank" href="https://github.com/pac4j/undertow-pac4j"><img height="100" src="/img/logo-undertow.png" /></a><a target="_blank" href="https://github.com/pac4j/undertow-pac4j"><h1>Undertow</h1></a></div>
+    <div class="implem"><a target="_blank" href="https://github.com/pac4j/lagom-pac4j"><img height="100" src="/img/logo-lagom.png" /></a><a target="_blank" href="https://github.com/pac4j/lagom-pac4j"><h1>Lagom</h1></a></div>
+    <div class="implem"><a target="_blank" href="https://github.com/StackVista/akka-http-pac4j"><img height="100" src="/img/logo-akkahttp.png" /></a><a target="_blank" href="https://github.com/StackVista/akka-http-pac4j"><h1>Akka HTTP</h1></a></div>
+    <div class="implem"><a target="_blank" href="https://jooby.io/modules/pac4j"><img height="100" src="/img/logo-jooby.png" /></a><a target="_blank" href="https://jooby.io/modules/pac4j"><h1>Jooby</h1></a></div>
+</div>
