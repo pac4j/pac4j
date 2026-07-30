@@ -8,6 +8,7 @@ title: Release notes&#58;
 **v6.6.0**:
 - Update dependencies. Especially Spring v7: although the project is built against this version, you may use older versions of Spring
 - Reduce the default change-detection interval in `SpringResourceLoader` from 60s to 5s so OIDC/SAML metadata can recover faster after a transient remote failure
+- `SpringResourceLoader` keeps serving the last known OIDC/SAML metadata when a reload fails (e.g. remote server down) instead of throwing, so authentication can continue during transient outages
 
 **v6.5.5**:
 - OpenID federation: trust anchors can now be defined only by their URLs (without specifying the JWKS) although it is better to have the JWKS out of band
