@@ -50,7 +50,15 @@ public abstract class SpringResourceLoader<M> extends InitializableObject {
         if (lock.tryLock()) {
             try {
                 if (shouldCheckForChanges() && hasChanged()) {
-                    internalLoad();
+                    try {
+                        internalLoad();
+                    } catch (final RuntimeException e) {
+                        if (loaded == null) {
+                            throw e;
+                        }
+                        // keep serving the last known value (graceful degradation) instead of failing hard
+                        LOGGER.error("Failed to reload resource, serving last known value", e);
+                    }
                 }
             } finally {
                 lock.unlock();
