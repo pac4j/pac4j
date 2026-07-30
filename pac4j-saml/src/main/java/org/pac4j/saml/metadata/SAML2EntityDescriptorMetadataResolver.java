@@ -15,7 +15,7 @@ import java.util.Objects;
 
 @Slf4j
 @Getter
-public class SAML2EntityDescriptorMetadataResolver extends AbstractBatchMetadataResolver {
+public final class SAML2EntityDescriptorMetadataResolver extends AbstractBatchMetadataResolver {
     private final EntityDescriptor entityDescriptor;
 
     public SAML2EntityDescriptorMetadataResolver(final EntityDescriptor entityDescriptor) {

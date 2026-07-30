@@ -6,7 +6,7 @@ title: Release notes&#58;
 ### JDK17:
 
 **v6.6.0**:
-
+- Update dependencies. Especially Spring v7: although the project is built against this version, you may use older versions of Spring
 
 **v6.5.5**:
 - OpenID federation: trust anchors can now be defined only by their URLs (without specifying the JWKS) although it is better to have the JWKS out of band

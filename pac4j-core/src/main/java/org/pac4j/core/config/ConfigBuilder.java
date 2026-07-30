@@ -14,6 +14,8 @@ import org.pac4j.core.util.CommonHelper;
 @Slf4j
 public final class ConfigBuilder {
 
+    private static final Object LOCK = new Object();
+
     /**
      * <p>build.</p>
      *
@@ -22,14 +24,16 @@ public final class ConfigBuilder {
      * @return a {@link Config} object
      */
     @SuppressWarnings("unchecked")
-    public synchronized static Config build(final String factoryName, final Object... parameters) {
-        try {
-            LOGGER.info("Build the configuration from factory: {}", factoryName);
+    public static Config build(final String factoryName, final Object... parameters) {
+        synchronized (LOCK) {
+            try {
+                LOGGER.info("Build the configuration from factory: {}", factoryName);
 
-            val factory = (ConfigFactory) CommonHelper.getConstructor(factoryName).newInstance();
-            return factory.build(parameters);
-        } catch (final Exception e) {
-            throw new TechnicalException("Cannot build configuration", e);
+                val factory = (ConfigFactory) CommonHelper.getConstructor(factoryName).newInstance();
+                return factory.build(parameters);
+            } catch (final Exception e) {
+                throw new TechnicalException("Cannot build configuration", e);
+            }
         }
     }
 }

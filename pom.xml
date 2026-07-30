@@ -87,8 +87,8 @@
         <commons-text.version>1.15.0</commons-text.version>
 		<guava.version>33.6.0-jre</guava.version>
 		<nimbus-jose-jwt.version>10.9.1</nimbus-jose-jwt.version>
-		<spring.version>6.2.19</spring.version>
-		<spring.security.version>7.0.5</spring.security.version>
+		<spring.version>7.0.8</spring.version>
+		<spring.security.version>7.1.0</spring.security.version>
         <bouncycastle.version>1.85</bouncycastle.version>
 		<shiro.version>3.0.0</shiro.version>
         <jbcrypt.version>0.4.3</jbcrypt.version>
@@ -530,7 +530,7 @@
 			<plugin>
 				<groupId>com.github.spotbugs</groupId>
 				<artifactId>spotbugs-maven-plugin</artifactId>
-				<version>4.9.8.4</version>
+				<version>4.10.3.0</version>
 				<configuration>
 					<effort>Low</effort> <!-- Max -->
 					<threshold>Max</threshold> <!-- Medium Low -->

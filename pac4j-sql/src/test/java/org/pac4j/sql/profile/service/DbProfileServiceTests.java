@@ -160,24 +160,28 @@ public final class DbProfileServiceTests implements TestsConstants {
     public void testChangeUserAndPasswordAttributes() {
         alterTableChangeColumnName(USERNAME, ALT_USER_ATT);
         alterTableChangeColumnName(PASSWORD, ALT_PASS_ATT);
-        val dbProfileService = new DbProfileService(ds, DbServer.PASSWORD_ENCODER);
-        dbProfileService.setPasswordAttribute(ALT_PASS_ATT);
-        dbProfileService.setUsernameAttribute(ALT_USER_ATT);
-        val profile = new DbProfile();
-        profile.setId(Pac4jConstants.EMPTY_STRING + DB_ID);
-        profile.setLinkedId(DB_LINKED_ID);
-        profile.addAttribute(USERNAME, DB_USER);
-        // create
-        dbProfileService.create(profile, DB_PASS);
-        // check credentials
-        val credentials = new UsernamePasswordCredentials(DB_USER, DB_PASS);
-        dbProfileService.validate(null, credentials);
-        assertNotNull(credentials.getUserProfile());
+        try {
+            val dbProfileService = new DbProfileService(ds, DbServer.PASSWORD_ENCODER);
+            dbProfileService.setPasswordAttribute(ALT_PASS_ATT);
+            dbProfileService.setUsernameAttribute(ALT_USER_ATT);
+            val profile = new DbProfile();
+            profile.setId(Pac4jConstants.EMPTY_STRING + DB_ID);
+            profile.setLinkedId(DB_LINKED_ID);
+            profile.addAttribute(USERNAME, DB_USER);
+            // create
+            dbProfileService.create(profile, DB_PASS);
+            // check credentials
+            val credentials = new UsernamePasswordCredentials(DB_USER, DB_PASS);
+            dbProfileService.validate(null, credentials);
+            assertNotNull(credentials.getUserProfile());
 
-        // clean up
-        dbProfileService.remove((DbProfile) credentials.getUserProfile());
-        alterTableChangeColumnName(ALT_USER_ATT, USERNAME);
-        alterTableChangeColumnName(ALT_PASS_ATT, PASSWORD);
+            // clean up
+            dbProfileService.remove((DbProfile) credentials.getUserProfile());
+        } finally {
+            // restore the original schema even if the test fails
+            alterTableChangeColumnName(ALT_USER_ATT, USERNAME);
+            alterTableChangeColumnName(ALT_PASS_ATT, PASSWORD);
+        }
     }
 
     private void alterTableChangeColumnName(String from, String to) {
