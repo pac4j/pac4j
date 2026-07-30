@@ -1,7 +1,7 @@
 name: Java CI
 
 env:
-    JDK_CURRENT: 17
+    JDK_CURRENT: 21
     DISTRIBUTION: zulu
 
 on:
