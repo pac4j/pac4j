@@ -8,6 +8,8 @@ title: <i class="fa fa-user" aria-hidden="true"></i> All <i>pac4j</i> engine/cor
     .version-group { max-width: 70%; margin: 0 auto; }
     .version-group .ver-minor { display: inline-block; font-size: 1.45rem; margin: .15rem 0.8em .15rem 0; }
     .version-group .ver-major { display: block; font-size: 1.9rem; margin: .4rem 0 0; }
+    .version-group .ver-minor:first-child,
+    .version-group .ver-minor:first-child a { color: #fb4d3d; font-weight: 700; }
     hr { margin-top: 1.6rem; margin-bottom: 1.6rem; }
     .jdk-label { margin-top: 1.4rem; margin-bottom: .7rem; }
 </style>
