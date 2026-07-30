@@ -74,14 +74,14 @@
 
 	<properties>
         <java.version>17</java.version>
-        <awssdk.version>2.49.3</awssdk.version>
+        <awssdk.version>2.49.6</awssdk.version>
         <mongo-driver.version>5.9.1</mongo-driver.version>
         <flapdoodle.version>4.33.0</flapdoodle.version>
 		<junit.version>6.1.2</junit.version>
 		<servlet-api.version>4.0.1</servlet-api.version>
         <jakarta-servlet-api.version>6.1.0</jakarta-servlet-api.version>
-		<logback.version>1.6.0</logback.version>
-		<commons-codec.version>1.22.0</commons-codec.version>
+		<logback.version>1.6.1</logback.version>
+		<commons-codec.version>1.22.1</commons-codec.version>
 		<commons-io.version>2.22.0</commons-io.version>
 		<commons-lang3.version>3.20.0</commons-lang3.version>
         <commons-text.version>1.15.0</commons-text.version>
@@ -406,7 +406,7 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <version>6.0.2</version>
+                <version>6.1.0</version>
                 <extensions>true</extensions>
                 <executions>
                     <execution>
@@ -450,7 +450,7 @@
 					<dependency>
 						<groupId>com.puppycrawl.tools</groupId>
 						<artifactId>checkstyle</artifactId>
-						<version>13.8.0</version>
+						<version>13.9.0</version>
 					</dependency>
 				</dependencies>
                 <configuration>
