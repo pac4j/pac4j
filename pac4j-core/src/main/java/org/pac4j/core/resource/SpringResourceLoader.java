@@ -23,7 +23,7 @@ import java.util.concurrent.locks.ReentrantLock;
 @RequiredArgsConstructor
 public abstract class SpringResourceLoader<M> extends InitializableObject {
     private static final long NO_LAST_MODIFIED = -1;
-    private static final long DEFAULT_MINIMUM_DELAY_BETWEEN_CHANGE_DETECTION_IN_MILLISECONDS = 60_000;
+    private static final long DEFAULT_MINIMUM_DELAY_BETWEEN_CHANGE_DETECTION_IN_MILLISECONDS = 5_000;
 
     private final Lock lock = new ReentrantLock();
     private final AtomicBoolean byteArrayHasChanged = new AtomicBoolean(true);
