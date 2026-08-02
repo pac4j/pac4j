@@ -25,6 +25,11 @@ Static analysis configuration files are at the repo root:
 - `checkstyle.xml`
 - `spotbugs-exclude.xml`
 
+## Code style
+
+- Favor code that is easy and readable for humans: clear naming, concise expressions, and comments only where they aid understanding.
+- Use Lombok annotations as much as possible (for example `@Getter`, `@Setter`, `@Slf4j`, `@RequiredArgsConstructor`, and `val` for local-variable type inference) to reduce boilerplate.
+
 ## High-level architecture
 
 ### Module layout and dependency direction

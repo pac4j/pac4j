@@ -3,7 +3,6 @@ package org.pac4j.core.resource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -23,7 +22,8 @@ import java.util.concurrent.locks.ReentrantLock;
 @RequiredArgsConstructor
 public abstract class SpringResourceLoader<M> extends InitializableObject {
     private static final long NO_LAST_MODIFIED = -1;
-    private static final long DEFAULT_MINIMUM_DELAY_BETWEEN_CHANGE_DETECTION_IN_MILLISECONDS = 5_000;
+    private static final long RETRY_DELAY_BEFORE_FIRST_LOAD = 2_000;
+    private static final long RETRY_DELAY_AFTER_FIRST_LOAD = 60_000;
 
     private final Lock lock = new ReentrantLock();
     private final AtomicBoolean byteArrayHasChanged = new AtomicBoolean(true);
@@ -33,7 +33,6 @@ public abstract class SpringResourceLoader<M> extends InitializableObject {
     protected final Resource resource;
 
     protected M loaded;
-    private volatile long minimumDelayBetweenChangeDetectionInMilliseconds = DEFAULT_MINIMUM_DELAY_BETWEEN_CHANGE_DETECTION_IN_MILLISECONDS;
 
     /** {@inheritDoc} */
     protected final void internalInit(final boolean forceReinit) {
@@ -93,12 +92,15 @@ public abstract class SpringResourceLoader<M> extends InitializableObject {
         return false;
     }
 
-    private boolean shouldCheckForChanges() {
+    protected boolean shouldCheckForChanges() {
         val now = System.currentTimeMillis();
         val elapsed = now - lastTimeCheckedForChanges.get();
-        val shouldCheck = elapsed >= minimumDelayBetweenChangeDetectionInMilliseconds;
-        LOGGER.debug("elapsed: {} / checkInterval: {} -> shouldCheck: {}",
-            elapsed, minimumDelayBetweenChangeDetectionInMilliseconds, shouldCheck);
+        var minimumDelay = RETRY_DELAY_AFTER_FIRST_LOAD;
+        if (loaded == null) {
+            minimumDelay = RETRY_DELAY_BEFORE_FIRST_LOAD;
+        }
+        val shouldCheck = elapsed >= minimumDelay;
+        LOGGER.debug("elapsed: {} / checkInterval: {} -> shouldCheck: {}", elapsed, minimumDelay, shouldCheck);
         return shouldCheck;
     }
 
@@ -116,23 +118,13 @@ public abstract class SpringResourceLoader<M> extends InitializableObject {
         return lastModified.get();
     }
 
-    /**
-     * <p>Getter for the field <code>minimumDelayBetweenChangeDetectionInMilliseconds</code>.</p>
-     *
-     * @return a long
-     */
+    @Deprecated
     public long getMinimumDelayBetweenChangeDetectionInMilliseconds() {
-        return minimumDelayBetweenChangeDetectionInMilliseconds;
+        throw new UnsupportedOperationException("Cannot get minimumDelayBetweenChangeDetectionInMilliseconds for SpringResourceLoader");
     }
 
-    /**
-     * <p>Setter for the field <code>minimumDelayBetweenChangeDetectionInMilliseconds</code>.</p>
-     *
-     * @param minimumDelayBetweenChangeDetectionInMilliseconds a long
-     */
+    @Deprecated
     public void setMinimumDelayBetweenChangeDetectionInMilliseconds(long minimumDelayBetweenChangeDetectionInMilliseconds) {
-        CommonHelper.assertTrue(minimumDelayBetweenChangeDetectionInMilliseconds >= 0,
-            "minimumDelayBetweenChangeDetectionInMilliseconds must be greater than or equal to zero");
-        this.minimumDelayBetweenChangeDetectionInMilliseconds = minimumDelayBetweenChangeDetectionInMilliseconds;
+        throw new UnsupportedOperationException("Cannot set minimumDelayBetweenChangeDetectionInMilliseconds for SpringResourceLoader");
     }
 }

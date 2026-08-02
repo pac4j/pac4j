@@ -3,7 +3,6 @@ package org.pac4j.saml.config;
 import lombok.val;
 import org.junit.jupiter.api.Test;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.resource.SpringResourceLoader;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
@@ -69,12 +68,12 @@ public class SAML2ConfigurationTests {
         configuration.setForceKeystoreGeneration(true);
         configuration.setServiceProviderMetadataResource(new FileSystemResource("target/out.xml"));
         configuration.init();
-        ((SpringResourceLoader) configuration.getIdentityProviderMetadataResolver()).setMinimumDelayBetweenChangeDetectionInMilliseconds(0);
         var metadataResolver = configuration.getIdentityProviderMetadataResolver().resolve();
         assertNull(metadataResolver);
         configuration.setSslSocketFactory(disabledSslContext().getSocketFactory());
         configuration.setHostnameVerifier((s, sslSession) -> true);
-        assertThrows(TechnicalException.class, () -> configuration.getIdentityProviderMetadataResolver().resolve());
+        // a forced reload bypasses the graceful degradation of load() and surfaces the failure
+        assertThrows(TechnicalException.class, () -> configuration.getIdentityProviderMetadataResolver().resolve(true));
     }
 
     @Test

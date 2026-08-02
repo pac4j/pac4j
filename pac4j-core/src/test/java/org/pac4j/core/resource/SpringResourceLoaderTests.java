@@ -1,5 +1,7 @@
 package org.pac4j.core.resource;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 import org.junit.jupiter.api.Test;
 import org.pac4j.core.exception.TechnicalException;
@@ -7,8 +9,7 @@ import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.test.util.TestsConstants;
 import org.springframework.core.io.ClassPathResource;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests {@link SpringResourceLoader}.
@@ -19,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class SpringResourceLoaderTests implements TestsConstants {
 
     @Test
-    public void test() {
+    public void testMultipleLoadings() {
         val loader = new MockSpringResourceLoader();
         assertEquals(-1, loader.getLastModified());
         loader.load();
@@ -44,9 +45,9 @@ public class SpringResourceLoaderTests implements TestsConstants {
     }
 
     @Test
-    public void testCanDisableDelayBetweenChecks() {
+    public void testForcesChangeCheckOnEveryLoad() {
         val loader = new MockSpringResourceLoader();
-        loader.setMinimumDelayBetweenChangeDetectionInMilliseconds(0);
+        loader.setForceShouldCheckForChanges(true);
         loader.load();
         loader.load();
         loader.load();
@@ -54,9 +55,29 @@ public class SpringResourceLoaderTests implements TestsConstants {
     }
 
     @Test
+    public void testRetryDelayIsShorterBeforeFirstLoadThanAfter() throws Exception {
+        // a loader that has never loaded yet uses the short retry delay
+        val neverLoaded = new MockSpringResourceLoader();
+        // a loader that has already loaded uses the long retry delay
+        val alreadyLoaded = new MockSpringResourceLoader();
+        alreadyLoaded.setForceShouldCheckForChanges(true);
+        alreadyLoaded.load();
+        alreadyLoaded.setForceShouldCheckForChanges(false);
+        assertEquals("0", alreadyLoaded.getLoaded());
+
+        // synchronize both change-detection clocks to "now"
+        neverLoaded.hasChanged();
+        alreadyLoaded.hasChanged();
+        // wait long enough to exceed the short delay (2s) but stay far below the long delay (60s)
+        Thread.sleep(2_500);
+        assertTrue(neverLoaded.shouldCheckForChanges());
+        assertFalse(alreadyLoaded.shouldCheckForChanges());
+    }
+
+    @Test
     public void testFailureAfterSuccessfulLoadKeepsLastKnownValue() {
         val loader = new MockSpringResourceLoader();
-        loader.setMinimumDelayBetweenChangeDetectionInMilliseconds(0);
+        loader.setForceShouldCheckForChanges(true);
         // first load succeeds and produces a valid value
         loader.load();
         assertEquals("0", loader.getLoaded());
@@ -68,23 +89,26 @@ public class SpringResourceLoaderTests implements TestsConstants {
         assertEquals("0", loader.getLoaded());
     }
 
+    @Getter
     private static class MockSpringResourceLoader extends SpringResourceLoader<String> {
 
-        private int seq = 0;
-        private int hasChangedCallCount = 0;
-        private boolean failInternalLoad = false;
-        private boolean forceChanged = false;
+        private int seq;
+        private int hasChangedCallCount;
+        @Setter
+        private boolean failInternalLoad;
+        @Setter
+        private boolean forceChanged;
+        @Setter
+        private boolean forceShouldCheckForChanges;
 
         public MockSpringResourceLoader() {
             super(new ClassPathResource("testFile.txt"));
         }
 
-        public void setFailInternalLoad(final boolean failInternalLoad) {
-            this.failInternalLoad = failInternalLoad;
-        }
-
-        public void setForceChanged(final boolean forceChanged) {
-            this.forceChanged = forceChanged;
+        @Override
+        protected boolean shouldCheckForChanges() {
+            // bypass the retry delay so load() checks for changes on every call
+            return forceShouldCheckForChanges || super.shouldCheckForChanges();
         }
 
         @Override
@@ -98,23 +122,13 @@ public class SpringResourceLoaderTests implements TestsConstants {
         @Override
         public boolean hasChanged() {
             hasChangedCallCount++;
-            if (forceChanged) {
-                // simulate a changed resource so load() attempts a reload
-                return true;
-            }
-            return super.hasChanged();
+            // simulate a changed resource so load() attempts a reload
+            return forceChanged || super.hasChanged();
         }
 
+        // 'loaded' is a protected field inherited from SpringResourceLoader, expose it for assertions
         public String getLoaded() {
             return this.loaded;
-        }
-
-        public int getSeq() {
-            return this.seq;
-        }
-
-        public int getHasChangedCallCount() {
-            return hasChangedCallCount;
         }
     }
 }
