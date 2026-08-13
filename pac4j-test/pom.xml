@@ -8,48 +8,56 @@
         <version>6.6.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>pac4j-mongo</artifactId>
-    <packaging>bundle</packaging>
-    <name>pac4j for MongoDB</name>
+    <artifactId>pac4j-test</artifactId>
+    <name>pac4j test support</name>
 
     <dependencies>
         <dependency>
             <groupId>org.pac4j</groupId>
             <artifactId>pac4j-core</artifactId>
         </dependency>
+
+        <!-- for MockWebContext, MockSessionStore, TestsHelper, RunClient -->
         <dependency>
-            <groupId>org.mongodb</groupId>
-            <artifactId>mongodb-driver-sync</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+        </dependency>
+
+        <!-- for WebServer, ServerResponse -->
+        <dependency>
+            <groupId>org.nanohttpd</groupId>
+            <artifactId>nanohttpd</artifactId>
+        </dependency>
+
+        <!-- for LdapServer, LdapClient -->
+        <dependency>
+            <groupId>com.unboundid</groupId>
+            <artifactId>unboundid-ldapsdk</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.mongodb</groupId>
-            <artifactId>bson</artifactId>
+            <groupId>org.ldaptive</groupId>
+            <artifactId>ldaptive</artifactId>
+        </dependency>
+
+        <!-- for DbServer -->
+        <dependency>
+            <groupId>org.jdbi</groupId>
+            <artifactId>jdbi</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.mongodb</groupId>
-            <artifactId>mongodb-driver-core</artifactId>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-crypto</artifactId>
         </dependency>
-        <!-- for testing -->
-        <dependency>
-            <groupId>org.pac4j</groupId>
-            <artifactId>pac4j-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.shiro</groupId>
-            <artifactId>shiro-core</artifactId>
-            <scope>test</scope>
-        </dependency>
+
+        <!-- for MongoServer -->
         <dependency>
             <groupId>de.flapdoodle.embed</groupId>
             <artifactId>de.flapdoodle.embed.mongo</artifactId>
-            <scope>test</scope>
         </dependency>
-        <!-- for testing -->
     </dependencies>
 
 </project>

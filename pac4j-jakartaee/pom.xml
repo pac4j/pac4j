@@ -32,6 +32,13 @@
             <version>3.0.0</version>
             <scope>provided</scope>
         </dependency>
+        <!-- for testing -->
+        <dependency>
+            <groupId>org.pac4j</groupId>
+            <artifactId>pac4j-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- for testing -->
     </dependencies>
 
 </project>

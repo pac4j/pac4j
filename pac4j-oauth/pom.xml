@@ -38,6 +38,13 @@
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>
         </dependency>
+        <!-- for testing -->
+        <dependency>
+            <groupId>org.pac4j</groupId>
+            <artifactId>pac4j-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- for testing -->
     </dependencies>
 
 </project>
