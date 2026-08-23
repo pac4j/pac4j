@@ -10,7 +10,10 @@ title: Release notes&#58;
 - Rework the `SpringResourceLoader` behavior to improve the OIDC/SAML metadata loading resilience:
   - retry every 2 seconds before anything has been loaded
   - retry every 60 seconds after the first loading and return the old data in case of error
-- JEESessionStore: Consider invalidated session in set method (handle IllegalStateException)
+- `JEESessionStore`: Consider invalidated session in set method (handle `IllegalStateException`)
+
+**v6.5.6**:
+- Upgrade `httpclient5` (and `httpclient5-cache`) to v5.6.4 and `httpcore5` to v5.4.3 as a precaution against three CVEs (CVE-2026-54399, CVE-2026-54428, CVE-2026-71290)
 
 **v6.5.5**:
 - OpenID federation: trust anchors can now be defined only by their URLs (without specifying the JWKS) although it is better to have the JWKS out of band
