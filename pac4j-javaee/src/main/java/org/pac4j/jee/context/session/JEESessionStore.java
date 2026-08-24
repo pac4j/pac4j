@@ -110,7 +110,11 @@ public class JEESessionStore extends PrefixedSessionStore {
             } else {
                 LOGGER.debug("Set key: {} for value: {}", prefixedKey, value);
             }
-            httpSession.get().setAttribute(prefixedKey, value);
+            try {
+                httpSession.get().setAttribute(prefixedKey, value);
+            } catch (IllegalStateException e) {
+                LOGGER.debug("Session has already been invalidated.");
+            }
         }
     }
 

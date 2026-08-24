@@ -6,7 +6,16 @@ title: Release notes&#58;
 ### JDK17:
 
 **v6.5.6**:
+- Security fixes/reinforcements:
+  - an unsigned SAML `LogoutRequest` can no longer destroy a session based on the `NameID` (when the IdP sends no `SessionIndex`) unless the signature is validated
+  - fix an open redirect in the logout
+  - fix the reversed profile type check of the `CheckProfileTypeAuthorizer` (this may change the outcome of existing type checks in both directions)
+  - the OIDC callback no longer accepts an access token without an authorization code or an ID token
+  - the UserInfo subject is now compared to the ID token subject if available
+  - the Keycloak access token is now validated before its roles are added to the profile (no role is added if it cannot be validated)
+  - display a warning if no `state` parameter is enabled for the OAuth 2 protocol
 - Upgrade `httpclient5` (and `httpclient5-cache`) to v5.6.4 and `httpcore5` to v5.4.3 as a precaution against three CVEs (CVE-2026-54399, CVE-2026-54428, CVE-2026-71290)
+- `JEESessionStore`: Consider invalidated session in set method (handle `IllegalStateException`)
 
 **v6.5.5**:
 - OpenID federation: trust anchors can now be defined only by their URLs (without specifying the JWKS) although it is better to have the JWKS out of band

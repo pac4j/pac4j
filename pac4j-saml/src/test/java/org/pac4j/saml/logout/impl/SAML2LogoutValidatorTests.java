@@ -2,6 +2,7 @@ package org.pac4j.saml.logout.impl;
 
 import lombok.val;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.saml.saml2.core.LogoutResponse;
 import org.opensaml.saml.saml2.encryption.Decrypter;
@@ -14,6 +15,7 @@ import org.pac4j.core.logout.handler.SessionLogoutHandler;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.crypto.ExplicitSignatureTrustEngineProvider;
+import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.metadata.SAML2IdentityProviderMetadataResolver;
 import org.pac4j.saml.metadata.SAML2ServiceProviderMetadataResolver;
@@ -29,6 +31,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 
@@ -148,6 +151,85 @@ public class SAML2LogoutValidatorTests {
             "</samlp:LogoutResponse>";
 
         validateResponse(xml);
+    }
+
+    private static final String IDP_ENTITY_ID = "http://idp.example.com/metadata.php";
+
+    private static final String NAME_ID = "victim@example.org";
+
+    private static String buildLogoutRequest(final String sessionIndexElement) {
+        return "<samlp:LogoutRequest xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" "
+            + "xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\" "
+            + "ID=\"_a1b2c3\" Version=\"2.0\" IssueInstant=\"" + ZonedDateTime.now(ZoneOffset.UTC) + "\">"
+            + "  <saml:Issuer>" + IDP_ENTITY_ID + "</saml:Issuer>"
+            + "  <saml:NameID>" + NAME_ID + "</saml:NameID>"
+            + sessionIndexElement
+            + "</samlp:LogoutRequest>";
+    }
+
+    private static SAML2MessageContext getLogoutRequestContext(final String xml) {
+        val context = new SAML2MessageContext(new CallContext(getMockWebContext(), new MockSessionStore()));
+        context.setSaml2Configuration(getSaml2Configuration());
+
+        val samlMessage = new MessageContext();
+        samlMessage.setMessage(Configuration.deserializeSamlObject(xml).orElseThrow());
+        context.setMessageContext(samlMessage);
+        context.getSAMLPeerMetadataContext().setEntityDescriptor(new EntityDescriptorBuilder().buildObject());
+        context.getSAMLPeerEntityContext().setEntityId(IDP_ENTITY_ID);
+        return context;
+    }
+
+    private static SAML2LogoutValidator getLogoutValidator(final SessionLogoutHandler logoutHandler) {
+        return new SAML2LogoutValidator(
+            mock(SAML2SignatureTrustEngineProvider.class),
+            mock(Decrypter.class),
+            logoutHandler,
+            mock(ReplayCacheProvider.class),
+            new ExcludingParametersURIComparator());
+    }
+
+    @Test
+    public void verifyUnsignedLogoutRequestWithOnlyANameIdDoesNotDestroyTheSession() {
+        val logoutHandler = mock(SessionLogoutHandler.class);
+        val context = getLogoutRequestContext(buildLogoutRequest(""));
+
+        assertThrows(SAMLException.class, () -> getLogoutValidator(logoutHandler).validate(context));
+
+        Mockito.verify(logoutHandler, Mockito.never()).destroySession(Mockito.any(), Mockito.any());
+    }
+
+    @Test
+    public void verifyUnsignedLogoutRequestWithASessionIndexDestroysTheSession() {
+        val logoutHandler = mock(SessionLogoutHandler.class);
+        // the session index is opaque and cannot be guessed: the request is still accepted unsigned
+        val context = getLogoutRequestContext(
+            buildLogoutRequest("<samlp:SessionIndex>_opaque-session-index</samlp:SessionIndex>"));
+
+        getLogoutValidator(logoutHandler).validate(context);
+
+        Mockito.verify(logoutHandler).destroySession(Mockito.any(), Mockito.eq("_opaque-session-index"));
+    }
+
+    @Test
+    public void verifyUnsignedLogoutRequestWithABlankSessionIndexDoesNotDestroyTheSession() {
+        val logoutHandler = mock(SessionLogoutHandler.class);
+        val context = getLogoutRequestContext(buildLogoutRequest("<samlp:SessionIndex></samlp:SessionIndex>"));
+
+        assertThrows(SAMLException.class, () -> getLogoutValidator(logoutHandler).validate(context));
+
+        Mockito.verify(logoutHandler, Mockito.never()).destroySession(Mockito.any(), Mockito.any());
+    }
+
+    @Test
+    public void verifyAuthenticatedLogoutRequestWithOnlyANameIdDestroysTheSession() {
+        val logoutHandler = mock(SessionLogoutHandler.class);
+        val context = getLogoutRequestContext(buildLogoutRequest(""));
+        // set by validateSignatureIfItExists once the signature has been validated against the IdP metadata
+        context.getSAMLPeerEntityContext().setAuthenticated(true);
+
+        getLogoutValidator(logoutHandler).validate(context);
+
+        Mockito.verify(logoutHandler).destroySession(Mockito.any(), Mockito.eq(NAME_ID));
     }
 
     private void validateResponse(String xml) {

@@ -26,6 +26,7 @@ public final class CheckProfileTypeAuthorizerTests {
 
         public FakeProfile1() {}
     }
+
     private static class FakeProfile2 extends CommonProfile {
         @Serial
         private static final long serialVersionUID = -7923087937494697612L;
@@ -47,5 +48,21 @@ public final class CheckProfileTypeAuthorizerTests {
         final List<UserProfile> profiles = new ArrayList<>();
         profiles.add(new FakeProfile2());
         assertFalse(authorizer.isAuthorized(null, new MockSessionStore(), profiles));
+    }
+
+    @Test
+    public void testSuperClassProfileDoesNotMatchASubClassType() {
+        Authorizer authorizer = new CheckProfileTypeAuthorizer(FakeProfile1.class);
+        final List<UserProfile> profiles = new ArrayList<>();
+        profiles.add(new CommonProfile());
+        assertFalse(authorizer.isAuthorized(null, new MockSessionStore(), profiles));
+    }
+
+    @Test
+    public void testSubClassProfileMatchesASuperClassType() {
+        Authorizer authorizer = new CheckProfileTypeAuthorizer(CommonProfile.class);
+        final List<UserProfile> profiles = new ArrayList<>();
+        profiles.add(new FakeProfile1());
+        assertTrue(authorizer.isAuthorized(null, new MockSessionStore(), profiles));
     }
 }

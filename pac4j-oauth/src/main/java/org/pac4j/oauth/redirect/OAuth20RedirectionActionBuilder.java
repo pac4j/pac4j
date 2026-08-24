@@ -10,6 +10,7 @@ import org.pac4j.core.context.CallContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
+import org.pac4j.core.util.Announcement;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.oauth.config.OAuth20Configuration;
@@ -24,6 +25,9 @@ import java.util.Optional;
  */
 @Slf4j
 public class OAuth20RedirectionActionBuilder implements RedirectionActionBuilder {
+    private static final Announcement ANNOUNCE_WITH_STATE_DISABLED = new Announcement(
+        "The 'withState' property is disabled by default: you should enable it to protect the client against login CSRF "
+            + "(session swapping) attacks, unless your OAuth2 provider does not support the 'state' parameter.");
 
     protected OAuth20Configuration configuration;
 
@@ -55,6 +59,7 @@ public class OAuth20RedirectionActionBuilder implements RedirectionActionBuilder
                 LOGGER.debug("save sessionState: {}", state);
                 ctx.sessionStore().set(webContext, client.getStateSessionAttributeName(), state);
             } else {
+                ANNOUNCE_WITH_STATE_DISABLED.announce();
                 state = null;
             }
             val service = (OAuth20Service) this.configuration.buildService(webContext, client);
