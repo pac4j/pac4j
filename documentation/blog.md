@@ -19,6 +19,11 @@ title: <i class="fa fa-info-circle" aria-hidden="true"></i> Blog&#58;
     </li>
     -->
     <li>
+        <time>August 2026</time>
+        <a href="/blog/security-advisory-pac4j-core-oidc-saml.html">Security advisory for pac4j-core, pac4j-oidc and pac4j-saml</a>
+        <span class="tag tag-sec">Security</span>
+    </li>
+    <li>
         <time>June 2026</time>
         <a href="/blog/jwks_explained_what_every_developer_should_know.html">JWKS explained: what every developer should know</a>
         <span class="tag tag-guide">Guide</span>
