@@ -202,4 +202,23 @@ public class OidcProfileCreatorTests implements TestsConstants {
         assertThrows(OidcConfigurationException.class,
             () -> creator.create(new CallContext(webContext, new MockSessionStore()), credentials));
     }
+
+    @Test
+    public void testBearerAccessTokenSkipNonce() throws Exception {
+        when(configuration.isIncludeAccessTokenClaimsInProfile()).thenReturn(true);
+        when(configuration.isCallUserInfoEndpoint()).thenReturn(true);
+        when(configuration.isUseNonce()).thenReturn(true);
+        ProfileCreator creator = new OidcProfileCreator(configuration, new OidcClient(configuration));
+        var webContext = MockWebContext.create();
+        var credentials = new TokenCredentials();
+
+        var accessTokenClaims = new JWTClaimsSet.Builder(idTokenClaims.toJWTClaimsSet()).claim("client", "pac4j").build();
+        var accessTokenToken = new PlainJWT(accessTokenClaims);
+        credentials.setToken(accessTokenToken.serialize());
+
+        // create does not throw exception in this case and we do not extract the token claims
+        var profile = creator.create(new CallContext(webContext, new MockSessionStore()), credentials);
+        assertTrue(profile.isPresent());
+        assertNull(profile.get().getAttribute("client"));
+    }
 }
