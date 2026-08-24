@@ -213,6 +213,7 @@ main ul li { list-style-type: disc; }
 /* ---------- Helpers ---------- */
 .text-center { text-align: center; }
 .text-right { text-align: right; }
+.blog-author { margin-top: 30px; }
 .centered { text-align: center; }
 .clear { clear: both; }
 .warning { color: #fb4d3d; }

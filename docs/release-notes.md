@@ -12,7 +12,7 @@ title: Release notes&#58;
   - retry every 60 seconds after the first loading and return the old data in case of error
 
 **v6.5.6**:
-- Security fixes/reinforcements:
+- Security fixes/hardenings:
   - an unsigned SAML `LogoutRequest` can no longer destroy a session based on the `NameID` (when the IdP sends no `SessionIndex`) unless the signature is validated
   - fix an open redirect in the logout
   - fix the reversed profile type check of the `CheckProfileTypeAuthorizer` (this may change the outcome of existing type checks in both directions)
