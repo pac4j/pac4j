@@ -21,8 +21,11 @@ import org.pac4j.test.util.TestsHelper;
 
 import java.util.LinkedHashMap;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
 /**
@@ -224,6 +227,43 @@ public final class DefaultLogoutLogicTests implements TestsConstants {
         call();
         assertEquals(302, action.getCode());
         assertEquals(CALLBACK_URL, ((FoundAction) action).getLocation());
+    }
+
+    @Test
+    public void testDefaultLogoutUrlPatternRejectsBackslashes() {
+        val pattern = Pac4jConstants.DEFAULT_LOGOUT_URL_PATTERN_VALUE;
+        assertTrue(Pattern.matches(pattern, "/"));
+        assertTrue(Pattern.matches(pattern, "/page"));
+        assertFalse(Pattern.matches(pattern, "//evil.example.org"));
+        assertFalse(Pattern.matches(pattern, "/\\evil.example.org"));
+    }
+
+    @Test
+    public void testLogoutWithBackslashUrlNoDefaultUrl() {
+        // the browsers turn the backslash into a slash: it would be resolved as //evil.example.org
+        context.addRequestParameter(Pac4jConstants.URL, "/\\evil.example.org/download.exe");
+        call();
+        assertEquals(204, action.getCode());
+        assertEquals(Pac4jConstants.EMPTY_STRING, context.getResponseContent());
+    }
+
+    @Test
+    public void testLogoutWithBackslashUrlDefaultUrl() {
+        context.addRequestParameter(Pac4jConstants.URL, "/\\evil.example.org/download.exe");
+        defaultUrl = CALLBACK_URL;
+        call();
+        assertEquals(302, action.getCode());
+        assertEquals(CALLBACK_URL, ((FoundAction) action).getLocation());
+    }
+
+    @Test
+    public void testLogoutWithBackslashUrlAndPermissiveLogoutUrlPattern() {
+        // even a custom permissive pattern must not let a backslash through
+        context.addRequestParameter(Pac4jConstants.URL, "/\\evil.example.org/download.exe");
+        logoutUrlPattern = ".*";
+        call();
+        assertEquals(204, action.getCode());
+        assertEquals(Pac4jConstants.EMPTY_STRING, context.getResponseContent());
     }
 
     @Test

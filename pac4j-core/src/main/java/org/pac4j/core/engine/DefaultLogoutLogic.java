@@ -68,7 +68,7 @@ public class DefaultLogoutLogic extends AbstractExceptionAwareLogic implements L
             // compute redirection URL
             val url = webContext.getRequestParameter(Pac4jConstants.URL);
             var redirectUrl = defaultUrl;
-            if (url.isPresent() && Pattern.matches(logoutUrlPattern, url.get())) {
+            if (url.isPresent() && isUrlAllowedForRedirect(url.get(), logoutUrlPattern)) {
                 redirectUrl = url.get();
             }
             LOGGER.debug("redirectUrl: {}", redirectUrl);
@@ -134,6 +134,22 @@ public class DefaultLogoutLogic extends AbstractExceptionAwareLogic implements L
         }
 
         return httpActionAdapter.adapt(action, webContext);
+    }
+
+    /**
+     * Whether the requested url can be used as a redirection: it must match the logout url pattern and must not
+     * contain any backslash.
+     *
+     * @param url the requested url
+     * @param logoutUrlPattern the logout url pattern
+     * @return whether the url can be used as a redirection
+     */
+    protected boolean isUrlAllowedForRedirect(final String url, final String logoutUrlPattern) {
+        if (url.indexOf('\\') != -1) {
+            LOGGER.warn("Rejected URL containing a backslash: {}", url);
+            return false;
+        }
+        return Pattern.matches(logoutUrlPattern, url);
     }
 
     /**

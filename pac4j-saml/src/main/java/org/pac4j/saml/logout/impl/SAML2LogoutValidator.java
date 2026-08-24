@@ -126,6 +126,11 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
 
         val sloKey = computeSloKey(sessionIndex, samlNameId);
         if (sloKey != null && logoutHandler != null) {
+            // only an authenticated logout request may destroy a session identified by a NameID (too guessable)
+            if (StringUtils.isBlank(sessionIndex) && !context.getSAMLPeerEntityContext().isAuthenticated()) {
+                throw new SAMLException("Refusing to destroy a session keyed on the NameID "
+                    + "for an unauthenticated logout request");
+            }
             logoutHandler.destroySession(context.getCallContext(), sloKey);
         }
     }

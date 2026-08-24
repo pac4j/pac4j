@@ -22,9 +22,12 @@ import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.credentials.OidcCredentials;
 import org.pac4j.oidc.credentials.authenticator.OidcAuthenticator;
 import org.pac4j.oidc.exceptions.OidcConfigurationException;
+import org.pac4j.oidc.exceptions.OidcException;
 import org.pac4j.oidc.federation.config.OidcFederationProperties;
 import org.pac4j.oidc.metadata.OidcOpMetadataResolver;
 import org.pac4j.test.context.MockWebContext;
+import org.pac4j.test.web.ServerResponse;
+import org.pac4j.test.web.WebServer;
 
 import java.net.URI;
 import java.util.*;
@@ -47,6 +50,8 @@ public class OidcProfileCreatorTests implements TestsConstants {
 
     private List<JWSAlgorithm> algorithms;
 
+    private OIDCProviderMetadata metadata;
+
     @BeforeEach
     public void setUp() throws Exception {
         this.idTokenClaims = new IDTokenClaimsSet(new JWTClaimsSet.Builder()
@@ -58,7 +63,7 @@ public class OidcProfileCreatorTests implements TestsConstants {
             .build());
 
         configuration = mock(OidcConfiguration.class);
-        var metadata = mock(OIDCProviderMetadata.class);
+        metadata = mock(OIDCProviderMetadata.class);
         when(configuration.getFederation()).thenReturn(new OidcFederationProperties());
         when(metadata.getIssuer()).thenReturn(new Issuer(PAC4J_URL));
         when(metadata.getJWKSetURI()).thenReturn(new URI(PAC4J_BASE_URL));
@@ -75,6 +80,58 @@ public class OidcProfileCreatorTests implements TestsConstants {
         when(configuration.getSecret()).thenReturn(UUID.randomUUID().toString());
         algorithms = new ArrayList<>();
         when(metadata.getIDTokenJWSAlgs()).thenReturn(algorithms);
+    }
+
+    /**
+     * Starts a local UserInfo endpoint returning the given subject and declares it in the OP metadata.
+     */
+    private WebServer startUserInfoEndpoint(final String subject) {
+        val body = "{\"sub\":\"" + subject + "\",\"email\":\"" + subject + "@example.org\"}";
+        val webServer = new WebServer(0)
+            .defineResponse("ok", new ServerResponse(WebServer.Response.Status.OK, "application/json", body));
+        webServer.start();
+
+        when(metadata.getUserInfoEndpointURI())
+            .thenReturn(java.net.URI.create("http://localhost:" + webServer.getListeningPort() + "/userinfo?r=ok"));
+        when(configuration.isCallUserInfoEndpoint()).thenReturn(true);
+        return webServer;
+    }
+
+    private Optional<UserProfile> createProfileWithIdToken() throws Exception {
+        val client = new OidcClient(configuration);
+        client.setAuthenticator(new OidcAuthenticator(configuration, client));
+        val creator = new OidcProfileCreator(configuration, client);
+        val credentials = new OidcCredentials();
+        credentials.setAccessToken(new BearerAccessToken(UUID.randomUUID().toString()).toJSONObject());
+        credentials.setIdToken(new PlainJWT(idTokenClaims.toJWTClaimsSet()).serialize());
+        return creator.create(new CallContext(MockWebContext.create(), new MockSessionStore()), credentials);
+    }
+
+    @Test
+    public void testUserInfoSubjectMatchingTheIdTokenSubject() throws Exception {
+        // the ID token subject is 'pac4j'
+        val webServer = startUserInfoEndpoint("pac4j");
+        try {
+            val profile = createProfileWithIdToken();
+
+            assertTrue(profile.isPresent());
+            assertEquals("pac4j", profile.get().getId());
+            assertEquals("pac4j@example.org", profile.get().getAttribute("email"));
+        } finally {
+            webServer.stop();
+        }
+    }
+
+    @Test
+    public void testUserInfoSubjectNotMatchingTheIdTokenSubject() throws Exception {
+        // the access token belongs to another user than the one of the validated ID token
+        val webServer = startUserInfoEndpoint("another-user");
+        try {
+            val e = assertThrows(OidcException.class, this::createProfileWithIdToken);
+            assertTrue(e.getMessage().contains("does not match the ID token subject"));
+        } finally {
+            webServer.stop();
+        }
     }
 
     @Test

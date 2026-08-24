@@ -207,9 +207,19 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
                     userInfoClaimsSet = userInfoSuccessResponse.getUserInfoJWT().getJWTClaimsSet();
                 }
                 if (userInfoClaimsSet != null) {
-                    final String subject = userInfoClaimsSet.getSubject();
-                    if (StringUtils.isBlank(profile.getId()) && StringUtils.isNotBlank(subject)) {
-                        profile.setId(ProfileHelper.sanitizeIdentifier(subject));
+                    val subject = ProfileHelper.sanitizeIdentifier(userInfoClaimsSet.getSubject());
+                    val id = profile.getId();
+                    if (StringUtils.isBlank(id)) {
+                        if (StringUtils.isNotBlank(subject)) {
+                            profile.setId(subject);
+                        }
+                    // the id comes from the validated ID token: the UserInfo subject must be the same one
+                    } else if (StringUtils.isBlank(subject)) {
+                        throw new OidcException("The UserInfo response has no subject: it cannot be matched "
+                            + "against the ID token subject: " + id);
+                    } else if (!id.equals(subject)) {
+                        throw new OidcException("The UserInfo subject: " + subject
+                            + " does not match the ID token subject: " + id);
                     }
                     getProfileDefinition().convertAndAdd(profile, userInfoClaimsSet.getClaims(), null);
                 } else {

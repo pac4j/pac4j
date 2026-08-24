@@ -43,7 +43,7 @@ public class KeycloakOidcClient extends OidcClient {
         profileCreator.setProfileDefinition(new OidcProfileDefinition(x -> new KeycloakOidcProfile()));
         setProfileCreatorIfUndefined(profileCreator);
 
-        addAuthorizationGenerator(new KeycloakRolesAuthorizationGenerator(getConfiguration().getClientId()));
+        addAuthorizationGenerator(new KeycloakRolesAuthorizationGenerator(getConfiguration()));
 
         super.internalInit(forceReinit);
     }

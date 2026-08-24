@@ -13,6 +13,7 @@ import org.mockito.Mockito;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.test.context.session.MockSessionStore;
 import org.pac4j.core.credentials.SessionKeyCredentials;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.BadRequestAction;
 import org.pac4j.core.logout.LogoutType;
 import org.pac4j.oidc.client.OidcClient;
@@ -222,6 +223,32 @@ public final class OidcCredentialsExtractorTests {
         assertEquals("auth-code", extracted.getCode());
         assertNotNull(extracted.getIdToken());
         assertNotNull(extracted.getAccessToken());
+    }
+
+    @Test
+    public void testExtractAuthenticationSuccessWithIdTokenOnly() {
+        sessionStore.set(webContext, client.getStateSessionAttributeName(), new State("expected-state"));
+        webContext.addRequestParameter("state", "expected-state");
+        webContext.addRequestParameter("id_token", buildPlainJwt(Map.of(
+            "iss", "https://issuer.expected",
+            "sub", "subject",
+            "iat", new Date().getTime() / 1000)));
+
+        val extracted = (OidcCredentials) extractor.extract(context).orElseThrow();
+        assertNull(extracted.getCode());
+        assertNotNull(extracted.getIdToken());
+    }
+
+    @Test
+    public void testExtractAuthenticationFailsWithAnAccessTokenOnly() {
+        sessionStore.set(webContext, client.getStateSessionAttributeName(), new State("expected-state"));
+        webContext.addRequestParameter("state", "expected-state");
+        webContext.addRequestParameter("access_token", "access-token");
+        webContext.addRequestParameter("token_type", "Bearer");
+
+        // no supported response type returns an access token without a code nor an ID token
+        val e = assertThrows(TechnicalException.class, () -> extractor.extract(context));
+        assertTrue(e.getMessage().contains("without an authorization code or an ID token"));
     }
 
     private static String buildPlainJwt(final Map<String, Object> claims) {

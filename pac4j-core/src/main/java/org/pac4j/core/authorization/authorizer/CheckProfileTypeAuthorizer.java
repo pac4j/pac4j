@@ -50,7 +50,7 @@ public class CheckProfileTypeAuthorizer extends AbstractRequireAnyAuthorizer<Cla
     /** {@inheritDoc} */
     @Override
     protected boolean check(final WebContext context, final SessionStore sessionStore, final UserProfile profile, final Class element) {
-        return profile.getClass().isAssignableFrom(element);
+        return element.isAssignableFrom(profile.getClass());
     }
 
     /**

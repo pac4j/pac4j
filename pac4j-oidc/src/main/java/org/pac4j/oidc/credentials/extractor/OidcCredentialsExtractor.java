@@ -177,8 +177,9 @@ public class OidcCredentialsExtractor implements CredentialsExtractor {
             if (accessToken != null) {
                 credentials.setAccessTokenObject(accessToken);
             }
-            if (code == null && idToken == null && accessToken == null) {
-                throw new TechnicalException("Cannot accept empty OIDC credentials");
+            // no supported response type returns an access token alone: it must come with a code or an ID token
+            if (code == null && idToken == null) {
+                throw new TechnicalException("Cannot accept OIDC credentials without an authorization code or an ID token");
             }
 
             return Optional.of(credentials);
