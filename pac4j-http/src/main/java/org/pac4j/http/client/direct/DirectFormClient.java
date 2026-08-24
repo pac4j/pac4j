@@ -19,7 +19,7 @@ import static org.pac4j.core.util.CommonHelper.assertNotBlank;
  */
 @Getter
 @Setter
-@ToString
+@ToString(callSuper = true)
 public class DirectFormClient extends DirectClient {
 
     private String usernameParameter = Pac4jConstants.USERNAME;
