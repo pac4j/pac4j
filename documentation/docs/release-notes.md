@@ -5,6 +5,9 @@ title: Release notes&#58;
 
 ### JDK17:
 
+**v6.5.7**:
+- OIDC: ProfileCreator - skip nonce when Bearer Access Token is used
+
 **v6.5.6**:
 - Security fixes/reinforcements:
   - an unsigned SAML `LogoutRequest` can no longer destroy a session based on the `NameID` (when the IdP sends no `SessionIndex`) unless the signature is validated
