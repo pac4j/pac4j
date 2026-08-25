@@ -2,6 +2,7 @@ package org.pac4j.oidc.redirect;
 
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jwt.SignedJWT;
+import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
 import com.nimbusds.oauth2.sdk.auth.ClientSecretBasic;
 import com.nimbusds.oauth2.sdk.auth.Secret;
 import com.nimbusds.oauth2.sdk.id.ClientID;
@@ -97,6 +98,19 @@ public class OidcRedirectionActionBuilderTests implements TestsConstants {
         when(providerMetadata.getPushedAuthorizationRequestEndpointURI()).thenReturn(parEndpointUri);
         when(metadataResolver.getClientAuthenticationPAREndpoint())
             .thenReturn(new ClientSecretBasic(new ClientID(TEST_CLIENT_ID), new Secret(TEST_CLIENT_SECRET)));
+    }
+
+    private void assertNoRequestObjectInFederationMode(final ClientAuthenticationMethod clientAuthenticationMethod) throws Exception {
+        configuration.getFederation().setTargetOp(FEDERATION_TARGET_OP);
+        configuration.setClientAuthenticationMethod(clientAuthenticationMethod);
+
+        val action = getFoundAction();
+        assertEquals(302, action.getCode());
+
+        val url = new URIBuilder(action.getLocation());
+        assertAuthorizationEndpointUrl(url);
+        assertNull(url.getFirstQueryParam("request"));
+        assertEquals(TEST_CLIENT_ID, url.getFirstQueryParam(OidcConfiguration.CLIENT_ID).getValue());
     }
 
     private static JwksProperties buildRpJwks(String kid) throws Exception {
@@ -245,6 +259,16 @@ public class OidcRedirectionActionBuilderTests implements TestsConstants {
         assertEquals(JWSAlgorithm.RS512, signedRequest.getHeader().getAlgorithm());
         assertEquals("federation-kid", signedRequest.getHeader().getKeyID());
         assertStandardSignedRequestClaims(signedRequest);
+    }
+
+    @Test
+    public void testOidcRedirectionSkipsSignedRequestObjectInFederationModeWithClientSecretBasic() throws Exception {
+        assertNoRequestObjectInFederationMode(ClientAuthenticationMethod.CLIENT_SECRET_BASIC);
+    }
+
+    @Test
+    public void testOidcRedirectionSkipsSignedRequestObjectInFederationModeWithClientSecretPost() throws Exception {
+        assertNoRequestObjectInFederationMode(ClientAuthenticationMethod.CLIENT_SECRET_POST);
     }
 
     @Test
