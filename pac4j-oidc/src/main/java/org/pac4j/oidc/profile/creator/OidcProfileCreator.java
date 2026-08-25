@@ -88,7 +88,7 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
         init();
 
         OidcCredentials oidcCredentials = null;
-        AccessToken accessToken = null;
+        AccessToken accessToken;
         // credentials were obtained from a refresh token
         boolean refreshedCredentials = false;
         val regularOidcFlow = credentials instanceof OidcCredentials;
@@ -119,28 +119,29 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
         }
 
         try {
+            Nonce nonce = null;
+            if (regularOidcFlow) {
+                // skipRefreshedNonce is true when the token was created with the refresh token and we don't want to check nonce
+                // in idToken in this case
+                val skipRefreshedNonce = refreshedCredentials && !configuration.isUseNonceOnRefresh();
+                if (configuration.isUseNonce() && !skipRefreshedNonce) {
+                    nonce = new Nonce(
+                        (String) ctx.sessionStore().get(ctx.webContext(), client.getNonceSessionAttributeName()).orElse(null)
+                    );
+                }
+                // Check ID Token
+                if (oidcCredentials.getIdToken() != null) {
+                    val claimsSet = configuration.getOpMetadataResolver().getTokenValidator()
+                        .validateIdToken(oidcCredentials.toIdToken(), nonce);
+                    assertNotNull("claimsSet", claimsSet);
+                    profile.setId(ProfileHelper.sanitizeIdentifier(claimsSet.getSubject()));
 
-            final Nonce nonce;
-            // skipRefreshedNonce is true when the token was created with the refresh token and we don't want to check nonce
-            // in idToken in this case
-            val skipRefreshedNonce = refreshedCredentials && !configuration.isUseNonceOnRefresh();
-            if (configuration.isUseNonce() && !skipRefreshedNonce) {
-                nonce = new Nonce((String) ctx.sessionStore().get(ctx.webContext(), client.getNonceSessionAttributeName()).orElse(null));
-            } else {
-                nonce = null;
-            }
-            // Check ID Token
-            if (oidcCredentials != null && oidcCredentials.getIdToken() != null) {
-                val claimsSet = configuration.getOpMetadataResolver().getTokenValidator()
-                    .validateIdToken(oidcCredentials.toIdToken(), nonce);
-                assertNotNull("claimsSet", claimsSet);
-                profile.setId(ProfileHelper.sanitizeIdentifier(claimsSet.getSubject()));
-
-                // keep the session ID if provided
-                val sid = (String) claimsSet.getClaim(Pac4jConstants.OIDC_CLAIM_SESSIONID);
-                val sessionLogoutHandler = client.findSessionLogoutHandler();
-                if (StringUtils.isNotBlank(sid) && sessionLogoutHandler != null) {
-                    sessionLogoutHandler.recordSession(ctx, sid);
+                    // keep the session ID if provided
+                    val sid = (String) claimsSet.getClaim(Pac4jConstants.OIDC_CLAIM_SESSIONID);
+                    val sessionLogoutHandler = client.findSessionLogoutHandler();
+                    if (StringUtils.isNotBlank(sid) && sessionLogoutHandler != null) {
+                        sessionLogoutHandler.recordSession(ctx, sid);
+                    }
                 }
             }
 
