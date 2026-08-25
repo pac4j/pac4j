@@ -68,16 +68,24 @@ public class OidcRedirectionActionBuilder extends InitializableObject implements
         val config = client.getConfiguration();
         val requestedAlg = config.getRequestObjectSigningAlgorithm();
 
+        val authMethod = config.getClientAuthenticationMethod();
+
+        // Do not require request object signing when having OIDC explicitly registered client
+        val usesClientSecretAuth = config.getSecret() != null && (ClientAuthenticationMethod.CLIENT_SECRET_BASIC.equals(authMethod)
+            || ClientAuthenticationMethod.CLIENT_SECRET_POST.equals(authMethod));
+
         val reqObjSigningRequired = requestedAlg != null;
-        val reqObjSigningMandatoryForFederation = config.isFederation() && !config.isPushedAuthorizationRequest()
-            && !ClientAuthenticationMethod.PRIVATE_KEY_JWT.equals(config.getClientAuthenticationMethod());
+        val reqObjSigningMandatoryForFederation = config.isFederation()
+            && !config.isPushedAuthorizationRequest()
+            && !ClientAuthenticationMethod.PRIVATE_KEY_JWT.equals(authMethod)
+            && !usesClientSecretAuth;
         if (reqObjSigningRequired || reqObjSigningMandatoryForFederation) {
             assertTrue(config.getRpJwks().isDefined(), "config.rpJwks must be defined to sign request objects");
 
             config.ensuresMetadataResolverInitialized();
             val opAlgs = config.getOpMetadataResolver().load().getRequestObjectJWSAlgs();
             val matchedAlgs = OidcHelper.matchRPAlgAgainstOPAlgs("Request Object", requestedAlg, opAlgs);
-            assertTrue(matchedAlgs != null && matchedAlgs.size() >= 1, "At least one algorithm is expected");
+            assertTrue(matchedAlgs != null && !matchedAlgs.isEmpty(), "At least one algorithm is expected");
 
             signingAlg = matchedAlgs.get(0);
             LOGGER.debug("Algorithm used for request object signing: {}", signingAlg);
