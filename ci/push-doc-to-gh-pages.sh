@@ -22,6 +22,12 @@ echo -e "BRANCH: $BRANCH"
 
 if [ "$GITHUB_REF" == "refs/heads/master" ]; then
 
+    echo -e "Removing previous documentation from the root...\n"
+    # cp -Rf never deletes, so files renamed or removed in master would otherwise
+    # linger here forever. Only prune the directories that documentation/ fully
+    # owns: apidocs/, others/, CNAME and the per-version directories must survive.
+    git rm -rq --ignore-unmatch blog docs css fonts img js _layouts _includes _data
+
     echo -e "Copying new docs from $HOME/docs-latest over to gh-pages...\n"
     cp -Rf $HOME/docs-latest/* .
     echo -e "Copied project documentation...\n"

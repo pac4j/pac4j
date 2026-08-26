@@ -12,7 +12,7 @@ title: <i class="fa fa-info-circle" aria-hidden="true"></i> Blog&#58;
 {%- endcomment -%}
 {%- capture keys -%}
 {%- for p in site.pages -%}
-{%- if p.layout == "blog" and p.draft != true and p.title and p.date -%}
+{%- if p.dir == "/blog/" and p.layout == "blog" and p.draft != true and p.title and p.date -%}
 {{ p.date | date: "%Y%m%d" }}|{{ p.url }}~
 {%- endif -%}
 {%- endfor -%}
