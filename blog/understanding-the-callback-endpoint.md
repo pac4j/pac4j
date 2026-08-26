@@ -3,6 +3,7 @@ layout: blog
 title: Understanding the callback endpoint
 author: Jérôme LELEU
 date: June 2018
+tags: [guide]
 ---
 
 This is one of the most important concepts in **pac4j** and unfortunately, there are still many questions about it on the [pac4j-users mailing list](https://groups.google.com/forum/?fromgroups#!forum/pac4j-users). So let's focus on this topic.

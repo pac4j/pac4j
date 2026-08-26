@@ -2,7 +2,8 @@
 layout: blog
 title: What's new in pac4j v6.4 and v6.5?
 author: Jérôme LELEU
-date: May 2026
+date: May 4, 2026
+tags: [rel]
 ---
 
 ## 1) Removal of the "old" modules

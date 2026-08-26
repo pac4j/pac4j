@@ -3,6 +3,7 @@ layout: blog
 title: JWKS explained&colon; what every developer should know
 author: Jérôme LELEU
 date: June 2026
+tags: [guide]
 ---
 
 When it comes to security, certificates have been used everywhere since the early days of the web.

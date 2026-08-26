@@ -2,7 +2,8 @@
 layout: blog
 title: OpenID Federation with pac4j and Connect2id (1/2)
 author: Jérôme LELEU
-date: April 2026
+date: April 1, 2026
+tags: [tuto]
 ---
 
 Since version 6.4.0, pac4j supports the [OpenID (Connect) Federation specification](https://openid.net/specs/openid-federation-1_0.html).

@@ -3,6 +3,7 @@ layout: blog
 title: JakartaEE is coming
 author: Jérôme LELEU
 date: April 2022
+tags: [guide, rel]
 ---
 
 For a long time, the Java Enterprise Edition has lived its life under the umbrella of Sun Microsystems then Oracle.

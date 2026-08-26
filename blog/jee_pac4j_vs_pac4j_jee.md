@@ -3,6 +3,7 @@ layout: blog
 title: jee-pac4j versus pac4j-jee
 author: Jérôme LELEU
 date: December 2021
+tags: [guide]
 ---
 
 With `pac4j` v5.2, there is a very important new dependency: `pac4j-jee`. Though, there already exists a `jee-pac4j` artifact and this may seem confusing!

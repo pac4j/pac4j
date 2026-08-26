@@ -3,6 +3,7 @@ layout: blog
 title: CVE-2021-44878&colon; is this serious?
 author: Jérôme LELEU
 date: March 2022
+tags: [sec]
 ---
 
 A few weeks ago, a security vulnerability was published about pac4j: [CVE-2021-44878](https://nvd.nist.gov/vuln/detail/CVE-2021-44878).

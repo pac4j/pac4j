@@ -2,7 +2,8 @@
 layout: blog
 title: Security advisory for pac4j-core, pac4j-oidc and pac4j-saml
 author: Jérôme LELEU
-date: August 2026
+date: August 24, 2026
+tags: [sec]
 ---
 
 A few security fixes/hardenings have been applied in version `6.5.6`.

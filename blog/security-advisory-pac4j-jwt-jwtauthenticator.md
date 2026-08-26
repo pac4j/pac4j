@@ -3,6 +3,7 @@ layout: blog
 title: Security advisory for pac4j-jwt (JwtAuthenticator)
 author: Jérôme LELEU
 date: March 2026
+tags: [sec]
 ---
 
 A security vulnerability affecting the `JwtAuthenticator` in the `pac4j-jwt` module has been identified and fixed.

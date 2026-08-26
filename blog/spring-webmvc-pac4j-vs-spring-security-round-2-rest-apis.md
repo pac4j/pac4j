@@ -3,6 +3,7 @@ layout: blog
 title: spring-webmvc-pac4j vs Spring Security&#58; Round 2, REST APIs
 author: Jérôme LELEU
 date: February 2019
+tags: [spring, guide]
 ---
 
 ## 1) Introduction
