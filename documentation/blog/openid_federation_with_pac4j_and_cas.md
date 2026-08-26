@@ -3,6 +3,8 @@ layout: blog
 title: OpenID Federation with pac4j and CAS
 author: Jérôme LELEU
 date: October 2026
+tags: [tuto, cas]
+draft: true
 ---
 
 We have made a long journey with pac4j and the OpenID federation protocol in this series of 3 articles:

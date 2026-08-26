@@ -3,6 +3,7 @@ layout: blog
 title: pac4j v4 is coming
 author: Jérôme LELEU
 date: February 2020
+tags: [rel]
 ---
 
 A few days ago, I released *pac4j* v4.0.0-RC3 as well as three of the main implementations:

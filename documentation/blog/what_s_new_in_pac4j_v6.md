@@ -3,6 +3,7 @@ layout: blog
 title: What's new in pac4j v6?
 author: Jérôme LELEU
 date: January 2024
+tags: [rel]
 ---
 
 ### 1) Java version

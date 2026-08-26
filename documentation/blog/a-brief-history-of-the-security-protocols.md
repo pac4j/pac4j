@@ -3,6 +3,7 @@ layout: blog
 title: A brief history of the security protocols
 author: Jérôme LELEU
 date: September 2019
+tags: [guide]
 ---
 
 This is certainly the number one presentation I make when doing consulting missions for my clients. While most people I meet have some knowledge about the security protocols, they generally lack the historical background, the broader vision and the hindsight that would help them make the best choices. So let’s talk about the security protocols and let’s try to make it a little funny, right?

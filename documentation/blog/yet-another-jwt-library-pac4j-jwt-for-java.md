@@ -3,6 +3,7 @@ layout: blog
 title: Yet another JWT library (pac4j-jwt) for Java
 author: Jérôme LELEU
 date: September 2017
+tags: [guide]
 ---
 
 <style>

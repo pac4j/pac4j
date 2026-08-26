@@ -2,7 +2,8 @@
 layout: blog
 title: Security advisory for pac4j-core and pac4j-ldap
 author: Jérôme LELEU
-date: April 2026
+date: April 2, 2026
+tags: [sec]
 ---
 
 A security vulnerability affecting the CSRF support in the `pac4j-core` module has been identified and fixed.

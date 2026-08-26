@@ -3,6 +3,7 @@ layout: blog
 title: What's new with Spring and pac4j?
 author: Jérôme LELEU
 date: September 2022
+tags: [spring, rel]
 ---
 
 `pac4j` is a security framework available for many frameworks in the Java ecosystem.

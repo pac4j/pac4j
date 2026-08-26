@@ -1,0 +1,48 @@
+---
+layout: null
+sitemap: false
+---
+{%- assign site_url = "https://www.pac4j.org" -%}
+{%- comment -%}
+  A post appears in this feed only if it uses the "blog" layout and is NOT
+  flagged "draft: true" in its front matter. Drafts stay reachable at their own
+  URL for proofreading, but are kept out of the feed and out of /blog.html.
+  To publish a post: remove its "draft: true" line AND uncomment its entry in
+  blog.md.
+{%- endcomment -%}
+{%- capture keys -%}
+{%- for p in site.pages -%}
+{%- if p.layout == "blog" and p.draft != true and p.title and p.date -%}
+{{ p.date | date: "%Y%m%d" }}|{{ p.url }}~
+{%- endif -%}
+{%- endfor -%}
+{%- endcapture -%}
+{%- assign sorted = keys | split: "~" | sort | reverse -%}
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>pac4j blog</title>
+    <link>{{ site_url }}/blog.html</link>
+    <description>News, guides and tutorials about pac4j, the security engine for Java.</description>
+    <language>en</language>
+    <atom:link href="{{ site_url }}/feed.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>{{ site.time | date: "%a, %d %b %Y %H:%M:%S %z" }}</lastBuildDate>
+{% for key in sorted -%}
+{%- assign purl = key | split: "|" | last -%}
+{%- for p in site.pages -%}
+{%- if p.url == purl %}
+    <item>
+      <title>{{ p.title | replace: "&colon;", ":" | replace: "&#58;", ":" | strip_html | xml_escape }}</title>
+      <link>{{ site_url }}{{ p.url }}</link>
+      <guid isPermaLink="true">{{ site_url }}{{ p.url }}</guid>
+      <pubDate>{{ p.date | date: "%a, %d %b %Y %H:%M:%S %z" }}</pubDate>
+      {%- if p.author %}
+      <dc:creator>{{ p.author | xml_escape }}</dc:creator>
+      {%- endif %}
+      <description>{{ p.content | markdownify | strip_html | normalize_whitespace | truncate: 400 | xml_escape }}</description>
+    </item>
+{%- endif -%}
+{%- endfor -%}
+{%- endfor %}
+  </channel>
+</rss>

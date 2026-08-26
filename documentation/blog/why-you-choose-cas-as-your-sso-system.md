@@ -3,6 +3,7 @@ layout: blog
 title: Why you should choose CAS as your SSO system
 author: Jérôme LELEU
 date: October 2018
+tags: [cas, guide]
 ---
 
 Most of the customers for whom I work have already chosen the CAS server and its ecosystem when I come in to help them.

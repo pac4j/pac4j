@@ -3,6 +3,7 @@ layout: blog
 title: Spring Boot security&colon; choose spring-webmvc-pac4j over Spring Security
 author: Jérôme LELEU
 date: January 2018
+tags: [spring, guide]
 ---
 
 Recently, a client asked me to write a secured Spring Boot webapp sample to interact with his CAS server.

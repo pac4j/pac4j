@@ -21,6 +21,6 @@
 
         {{ content }}
 
-        <div class="blog-author text-right"><i>{{ page.author }} - {{ page.date }}</i></div><br />
+        <div class="blog-author text-right"><i>{{ page.author }} - {{ page.date | date: "%B %Y" }}</i></div><br />
 
 {% include footer.html %}

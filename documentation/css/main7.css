@@ -317,6 +317,15 @@ main ul li { list-style-type: disc; }
 .tag-tuto { background: #a580ee; }
 .tag-spring { background: #6db33f; }
 .tag-cas { background: #ef6c00; }
+.tag-fund {
+  background: linear-gradient(135deg, #f6d365 0%, #d4a017 45%, #f7e08a 70%, #c8901a 100%);
+  color: #4a3208;
+  font-size: .78rem;
+  padding: .22em .8em;
+  border: 1px solid #b8860b;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, .35);
+  box-shadow: 0 1px 3px rgba(184, 134, 11, .45);
+}
 
 /* ---------- Home ---------- */
 #home { margin-top: 1.2rem; }
