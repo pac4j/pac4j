@@ -27,6 +27,10 @@
         </dependency>
         <!-- for testing -->
         <dependency>
+            <groupId>org.pac4j</groupId>
+            <artifactId>pac4j-test</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-crypto</artifactId>
             <scope>test</scope>

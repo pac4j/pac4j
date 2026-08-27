@@ -35,6 +35,10 @@
         </dependency>
         <!-- for testing -->
         <dependency>
+            <groupId>org.pac4j</groupId>
+            <artifactId>pac4j-test</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-core</artifactId>
             <scope>test</scope>

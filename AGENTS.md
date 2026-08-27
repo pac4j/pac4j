@@ -37,6 +37,7 @@ Static analysis configuration files are at the repo root:
 - `pac4j-core` is the foundation: shared interfaces and default runtime engine logic.
 - Feature modules build on `pac4j-core` and implement protocol/auth mechanisms:
   - `pac4j-oauth`, `pac4j-oidc`, `pac4j-saml`, `pac4j-cas`, `pac4j-http`, `pac4j-ldap`, `pac4j-sql`, `pac4j-jwt`, `pac4j-mongo`, `pac4j-kerberos`.
+- `pac4j-test` provides test components (`org.pac4j.test`) reused by the feature modules in `test` scope.
 - Environment/framework integration modules:
   - `pac4j-javaee` and `pac4j-jakartaee` adapt servlet APIs to pac4j context abstractions.
 

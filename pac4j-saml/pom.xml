@@ -196,6 +196,10 @@
         </dependency>
         <!-- for testing -->
         <dependency>
+            <groupId>org.pac4j</groupId>
+            <artifactId>pac4j-test</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <version>2.4.240</version>
