@@ -1,5 +1,5 @@
 # Label shown on each blog tag. The key is also the CSS modifier class
-# (e.g. "sec" -> .tag-sec in css/main7.css).
+# (e.g. "sec" -> .tag-sec in css/main8.css).
 sec: Security
 rel: Release
 guide: Guide

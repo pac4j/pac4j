@@ -42,7 +42,7 @@ It is licensed under the Apache 2 license.
 
 ## Authentication mechanisms:
 
-[OpenID Connect](https://www.pac4j.org/docs/clients/openid-connect.html) - [SAML](https://www.pac4j.org/docs/clients/saml.html) - [CAS](https://www.pac4j.org/docs/clients/cas.html) - [OAuth (Facebook, Twitter...)](https://www.pac4j.org/docs/clients/oauth.html) - [HTTP](https://www.pac4j.org/docs/clients/http.html) - [Kerberos (SPNEGO)](https://www.pac4j.org/docs/clients/kerberos.html)
+[OpenID Connect](https://www.pac4j.org/docs/clients/openid-connect.html) - [SAML](https://www.pac4j.org/docs/clients/saml.html) - [CAS](https://www.pac4j.org/docs/clients/cas.html) - [OAuth](https://www.pac4j.org/docs/clients/oauth.html) - [HTTP](https://www.pac4j.org/docs/clients/http.html) - [Kerberos](https://www.pac4j.org/docs/clients/kerberos.html)
 
 [LDAP](https://www.pac4j.org/docs/authenticators/ldap.html) - [SQL](https://www.pac4j.org/docs/authenticators/sql.html) - [JWT](https://www.pac4j.org/docs/authenticators/jwt.html) - [MongoDB](https://www.pac4j.org/docs/authenticators/mongodb.html) - [IP address](https://www.pac4j.org/docs/authenticators/ip.html) - [REST API](https://www.pac4j.org/docs/authenticators/rest.html)
 
@@ -51,6 +51,10 @@ It is licensed under the Apache 2 license.
 [Roles](https://www.pac4j.org/docs/authorizers/profile-authorizers.html#1-roles) - [Anonymous/remember-me/(fully) authenticated](https://www.pac4j.org/docs/authorizers/profile-authorizers.html#2-authentication-levels) - [Profile type, attribute](https://www.pac4j.org/docs/authorizers/profile-authorizers.html#3-others)
 
 [CORS](https://www.pac4j.org/docs/matchers.html#3-cors) - [CSRF](https://www.pac4j.org/docs/authorizers/web-authorizers.html#1-csrf) - [Security headers](https://www.pac4j.org/docs/matchers.html#4-securityheaders) - [IP address, HTTP method](https://www.pac4j.org/docs/authorizers/web-authorizers.html#2-others)
+
+## Advanced mechanisms:
+
+[OpenID Federation](https://www.pac4j.org/docs/clients/openid-connect-federation.html) - EUDI Wallet/eIDAS 2.0
 
 ---
 

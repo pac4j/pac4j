@@ -5,12 +5,24 @@ title: OpenID Connect / Federation
 
 See also:
 
-<p> &nbsp; &#9656; <a href="openid-connect-clients.html">Basic configuration and OIDC clients</a></p>
-<p> &nbsp; &#9656; <a href="openid-connect-config.html">Advanced configuration settings</a></p>
+<p> &nbsp; &#9656; <a href="openid-connect-clients.html">Basic OIDC configuration and clients</a></p>
+<p> &nbsp; &#9656; <a href="openid-connect-config.html">Advanced OIDC configuration settings</a></p>
 
 <hr/>
 
 Since v6.4.0, pac4j supports the [OpenID Connect Federation v1.0](https://openid.net/specs/openid-federation-1_0.html). It has been tested with Connect2id v19.8.
+
+It only requires the same dependency `pac4j-oidc` as for the OIDC protocol:
+
+**Example (Maven dependency):**
+
+```xml
+<dependency>
+    <groupId>org.pac4j</groupId>
+    <artifactId>pac4j-oidc</artifactId>
+    <version>${pac4j.version}</version>
+</dependency>
+```
 
 The OIDC client is considered to have the federation enabled if the property `federation.targetOp` is not blank.
 
