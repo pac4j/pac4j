@@ -6,6 +6,7 @@ title: Release notes&#58;
 ### JDK17:
 
 **v6.6.0**:
+- Moved most test components from the `org.pac4j.test` package of the `pac4j-core` module into the new `pac4j-test` module (only `MockWebContext`, `MockSessionStore`, `TestsConstants` and `TestsHelper` remain in `pac4j-core`)
 - Update dependencies. Especially Spring v7: although the project is built against this version, you may use older versions of Spring
 - Rework the `SpringResourceLoader` behavior to improve the OIDC/SAML metadata loading resilience:
   - retry every 2 seconds before anything has been loaded
