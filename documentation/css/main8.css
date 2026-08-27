@@ -491,7 +491,7 @@ main ul li { list-style-type: disc; }
   max-width: 100%;
   height: auto;
 }
-.support-logos img[src*="logo-citc"] { max-width: min(280px, 70vw); }
+.support-logos img[src*="new_cas_in_the_cloud_logo"] { max-width: min(180px, 50vw); }
 .support-logos img[src*="logo-fawnoos"] { max-width: min(240px, 60vw); }
 
 /* ---------- Responsive video / iframe ---------- */
