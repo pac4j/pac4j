@@ -209,6 +209,7 @@ main ul li { list-style-type: disc; }
 
 /* ---------- Helpers ---------- */
 .text-center { text-align: center; }
+.nowrap { white-space: nowrap; }
 .text-right { text-align: right; }
 .blog-author { margin-top: 30px; }
 .centered { text-align: center; }
@@ -434,6 +435,48 @@ main ul li { list-style-type: disc; }
 }
 #home .chips-links .chip:hover small { color: rgba(255, 255, 255, .8); }
 
+/* quickstart */
+#home .home-code .highlight,
+#home .home-code figure.highlight {
+  max-width: 46rem;
+  margin: 0 auto;
+  text-align: left;
+}
+#home .home-code pre {
+  margin: 0;
+  font-size: .82rem;
+}
+#home .code-note {
+  max-width: 44rem;
+  margin: 1.1rem auto 1.5rem;
+  font-size: .9rem;
+  color: var(--muted);
+  text-align: center;
+}
+#home .code-note code {
+  white-space: nowrap;
+  background: var(--code-bg);
+  padding: .1em .35em;
+  border-radius: 4px;
+  border: 1px solid #e3e8ef;
+}
+#home .chips-label {
+  margin: 1.6rem 0 .8rem;
+  font-size: .85rem;
+  color: var(--muted);
+  text-align: center;
+}
+#home .chips-muted .chip {
+  color: var(--muted);
+  border-color: #e0e6ea;
+  font-size: .85rem;
+}
+#home .chips-muted .chip:hover {
+  color: #fff;
+  background: var(--muted);
+  border-color: var(--muted);
+}
+
 /* mechanisms */
 #home .mechanisms {
   display: grid;
@@ -615,5 +658,6 @@ main ul li { list-style-type: disc; }
   #home .hero-sub { font-size: .98rem; }
   #bannerImage { width: 165px; }
   #home .chip { font-size: .85rem; }
+  #home .home-code pre { font-size: .7rem; }
   .blog-index time { flex-basis: 100%; }
 }

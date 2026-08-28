@@ -22,9 +22,12 @@
     <meta property="og:title" content="{% if seo_title %}{{ seo_title | strip_html }}{% elsif page.title %}{{ page.title | strip_html }} | pac4j{% else %}pac4j - security for Java{% endif %}"/>
     <meta property="og:description" content="{{ seo_desc | strip_html | strip_newlines }}"/>
     <meta property="og:url" content="{{ seo_url }}"/>
-    <meta property="og:image" content="{{ site.url }}/img/logo.png"/>
-    <meta name="twitter:card" content="summary"/>
-    <link rel="stylesheet" href="/css/main8.css">
+    <meta property="og:image" content="{{ site.url }}/img/og-image.png"/>
+    <meta property="og:image:width" content="2400"/>
+    <meta property="og:image:height" content="1260"/>
+    <meta property="og:image:alt" content="pac4j - one Java security framework for every web framework"/>
+    <meta name="twitter:card" content="summary_large_image"/>
+    <link rel="stylesheet" href="/css/main9.css">
     <link rel="stylesheet" href="/css/highlight.css">
     <link rel="alternate" type="application/rss+xml" title="pac4j blog" href="/feed.xml">
     {% if page.url contains 'docs' or page.url contains 'mailing' or page.url contains 'blog/' or page.url contains 'commercial' %}

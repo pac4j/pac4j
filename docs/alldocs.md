@@ -55,7 +55,6 @@ title: <i class="fa fa-user" aria-hidden="true"></i> All <i>pac4j</i> engine/cor
 <h2 class="ver-minor" id="v4.4"><a href="https://www.pac4j.org/4.4.x/docs/index.html">v4.4</a> <small>(MINOR)</small></h2>
 <h2 class="ver-minor" id="v4.3"><a href="https://www.pac4j.org/4.3.x/docs/index.html">v4.3</a> <small>(MINOR)</small></h2>
 <h2 class="ver-minor" id="v4.2"><a href="https://www.pac4j.org/4.2.x/docs/index.html">v4.2</a> <small>(MINOR)</small></h2>
-<h2 class="ver-minor" id="v4.1"><a href="https://www.pac4j.org/4.1.x/docs/index.html">v4.1</a> <small>(MINOR)</small></h2>
 <h1 class="ver-major" id="v4.0"><a href="https://www.pac4j.org/4.0.x/docs/index.html">v4.0</a> <small>(MAJOR)</small></h1>
 </div>
 

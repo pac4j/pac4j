@@ -14,7 +14,7 @@ The matchers can also be used to always apply some logic on the URLs, like addin
 
 ## 2) Available matchers
 
-A matcher can be defined by implementing the [`Matcher`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/matching/Matcher.java) interface. It has only one method: `boolean matches(WebContext context)` to say if the "security filter" must be applied.
+A matcher can be defined by implementing the [`Matcher`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/matching/matcher/Matcher.java) interface. It has only one method: `boolean matches(WebContext context)` to say if the "security filter" must be applied.
 
 A few matchers are available (but you can of course develop your own matchers):
 

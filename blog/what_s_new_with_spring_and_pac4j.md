@@ -39,7 +39,7 @@ All related `pac4j` security libraries have been already upgraded (using Spring 
 - [`spring-webmvc-pac4j`](https://github.com/pac4j/spring-webmvc-pac4j) has been upgraded to Spring 6, it's a new version 7.0.0 (-SNAPSHOT for now) as well as the demo: [`spring-webmvc-pac4j-boot-demo`](https://github.com/pac4j/spring-webmvc-pac4j-boot-demo) (v7.0.0-SNAPSHOT)
 - `spring-webflux-pac4j` has been upgraded to Spring 6, it's a new version 2.0.0 (-SNAPSHOT for now) as well as the demo: [`spring-webflux-pac4j-boot-demo`](https://github.com/pac4j/spring-webflux-pac4j-boot-demo) (v2.0.0-SNAPSHOT)
 - [`spring-security-pac4j`](https://github.com/pac4j/spring-security-pac4j) has been upgraded to Spring 6, it's a new version 9.0.0 (-SNAPSHOT for now) as well as the demo: [`spring-security-webmvc-pac4j-boot-demo`](https://github.com/pac4j/spring-security-webmvc-pac4j-boot-demo) (v9.0.0-SNAPSHOT)
-- a new [`pac4j-springbootv3`](https://github.com/pac4j/pac4j/tree/master/pac4j-springbootv3) module has been added to the "core" `pac4j` project version 5.6.0 (-SNAPSHOT for now): only this module is compiled in JDK 17 while the rest remains in JDK 11.
+- a new [`pac4j-springbootv3`](https://github.com/pac4j/pac4j/tree/5.6.x) module has been added to the "core" `pac4j` project version 5.6.0 (-SNAPSHOT for now): only this module is compiled in JDK 17 while the rest remains in JDK 11.
 
 
 ## Bridge from pac4j to Spring Security

@@ -17,5 +17,6 @@ Old messages can be read on the [pac4j-users](https://groups.google.com/forum/?f
 - To receive the security alerts, please subscribe to the [pac4j-security](https://groups.google.com/forum/?fromgroups#!forum/pac4j-security) Google group
 
 - To privately report any security issue, send an email to <a href="mailto:security&#64;pac4j.org">security&#64;pac4j.org</a>.
+Read the [security policy](https://github.com/pac4j/pac4j/blob/master/SECURITY.md) first: it explains what to include in your report, which versions are supported and how the disclosure works.
 
 <div style="margin-bottom: 50px;"></div>

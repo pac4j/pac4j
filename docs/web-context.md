@@ -14,7 +14,7 @@ It is used to work with:
 
 Its implementations are different depending on the *pac4j* implementations.
 
-For example, there is a [`JEEContext`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/context/JEEContext.java) for JEE applications, a `PlayWebContext` for Play applications, etc.
+For example, there is a [`JEEContext`](https://github.com/pac4j/pac4j/blob/master/pac4j-jakartaee/src/main/java/org/pac4j/jee/context/JEEContext.java) for JEE applications, a `PlayWebContext` for Play applications, etc.
 
 ## 2) `WebContextFactory`
 
