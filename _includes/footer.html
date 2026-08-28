@@ -32,6 +32,30 @@
         }
     });
 })();
+
+// GitHub star count, fetched once per browsing session
+(function () {
+    var el = document.getElementById('ghStars');
+    if (!el || !window.fetch) return;
+
+    function show(n) {
+        el.textContent = n >= 1000 ? (n / 1000).toFixed(1).replace(/\.0$/, '') + 'k' : String(n);
+        el.hidden = false;
+    }
+
+    var cached = null;
+    try { cached = sessionStorage.getItem('pac4jStars'); } catch (e) {}
+    if (cached) { show(parseInt(cached, 10)); return; }
+
+    fetch('https://api.github.com/repos/pac4j/pac4j')
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (d) {
+            if (!d || typeof d.stargazers_count !== 'number') return;
+            try { sessionStorage.setItem('pac4jStars', d.stargazers_count); } catch (e) {}
+            show(d.stargazers_count);
+        })
+        .catch(function () { /* no count, no badge */ });
+})();
 </script>
 </body>
 </html>

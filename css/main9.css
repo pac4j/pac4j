@@ -148,6 +148,12 @@ main ul li { list-style-type: disc; }
 }
 .gh-link:hover { text-decoration: none; background: rgba(255, 255, 255, .15); }
 .gh-link svg { display: block; }
+.gh-stars {
+  font-variant-numeric: tabular-nums;
+  font-size: .8rem;
+  font-weight: 700;
+  letter-spacing: .02em;
+}
 
 .nav-toggle {
   order: 3;
