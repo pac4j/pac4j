@@ -86,7 +86,7 @@ Assuming your callback URL is `http://localhost:8080/callback`, the CAS server w
 
 So you must define in the CAS services registry the appropriate CAS service matching this URL: `http://localhost:8080/callback?client_name=CasClient` and with the appropriate configuration: which attributes to return? Does it support proxies?
 
-Read the [CAS documentation](https://apereo.github.io/cas/6.2.x/services/Service-Management.html) for that.
+Read the [CAS documentation](https://apereo.github.io/cas/7.3.x/services/Service-Management.html) for that.
 
 
 ### c) Proxy support
@@ -145,7 +145,7 @@ This `DirectCasProxyClient` internally relies on the [`CasAuthenticator`](https:
 
 ## 3) CAS REST API (web service)
 
-The CAS server can be called via a [REST API](https://apereo.github.io/cas/6.2.x/protocol/REST-Protocol.html) if the feature is enabled.
+The CAS server can be called via a [REST API](https://apereo.github.io/cas/7.3.x/protocol/REST-Protocol.html) if the feature is enabled.
 
 The [`CasRestFormClient`](https://github.com/pac4j/pac4j/blob/master/pac4j-cas/src/main/java/org/pac4j/cas/client/rest/CasRestFormClient.java) and [`CasRestBasicAuthClient`](https://github.com/pac4j/pac4j/blob/master/pac4j-cas/src/main/java/org/pac4j/cas/client/rest/CasRestBasicAuthClient.java) are direct clients which can be used to interact with the REST API of a CAS server:
 

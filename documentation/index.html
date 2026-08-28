@@ -7,7 +7,7 @@ seo_title: pac4j - OIDC, SAML, CAS and OAuth security for Java
 <div id="home" class="text-center">
 
     <div class="hero">
-        <img width="320" height="285" id="bannerImage" src="/img/logo.png" alt="pac4j" />
+        <img width="397" height="354" id="bannerImage" src="/img/pac4j-logo.svg" alt="pac4j" />
 
         <h1 id="engine">One <span class="accent">Java security framework</span> for every web framework</h1>
 
@@ -22,12 +22,42 @@ seo_title: pac4j - OIDC, SAML, CAS and OAuth security for Java
 
         <p class="hero-proof">
             <a target="_blank" href="https://github.com/pac4j/pac4j/blob/master/LICENSE">Apache 2.0</a> &middot;
-            Maintained for Java 8, 11 and 17 &middot; Open source since 2012 &middot;
+            Java 17+ <span class="nowrap">(8 and 11 on older lines)</span> &middot; Open source since 2012 &middot;
             Used by <a target="_blank" href="https://apereo.github.io/cas/7.3.x/integration/Delegate-Authentication.html">CAS server</a>,
             <a target="_blank" href="https://syncope.apache.org">Apache Syncope</a> and
             <a target="_blank" href="https://knox.apache.org/books/knox-2-1-0/user-guide.html#Pac4j+Provider+-+CAS+/+OAuth+/+SAML+/+OpenID+Connect">Apache Knox</a>
         </p>
     </div>
+
+    <section class="home-section home-code">
+        <h2 class="section-title">Secure a Spring Boot app</h2>
+        <p class="section-sub">One configuration class. Change the client, change the protocol.</p>
+
+{% highlight java %}
+@Configuration
+public class SecurityConfig extends Pac4jSecurityConfig {
+
+    @Bean
+    public Config config() {
+        var oidc = new OidcConfiguration()
+            .setDiscoveryURI("https://sso.example.org/.well-known/openid-configuration")
+            .setClientId("myclient")
+            .setSecret("mysecret");
+        return new Config("http://localhost:8080/callback", new OidcClient(oidc));
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        addSecurity(registry, "OidcClient").addPathPatterns("/protected/**");
+    }
+}
+{% endhighlight %}
+
+        <p class="code-note">The <code>/callback</code> and <code>/logout</code> endpoints are created for you, and
+            <code>ProfileManager</code> gives you the authenticated user.<br />
+            Same application against a CAS server: <code>new CasClient(casLoginUrl)</code> &mdash;
+            against a SAML2 IdP: <code>new SAML2Client(saml2Config)</code>. Nothing else changes.</p>
+    </section>
 
     <section class="home-section">
         <h2 class="section-title">Implementations</h2>
@@ -46,11 +76,17 @@ seo_title: pac4j - OIDC, SAML, CAS and OAuth security for Java
             <a target="_blank" class="chip" href="https://github.com/pac4j/jax-rs-pac4j">JAX-RS</a>
             <a target="_blank" class="chip" href="https://github.com/pac4j/dropwizard-pac4j">Dropwizard</a>
             <a target="_blank" class="chip" href="https://github.com/pac4j/javalin-pac4j">Javalin</a>
-            <a target="_blank" class="chip" href="https://github.com/pippo-java/pippo/tree/master/pippo-security-parent/pippo-pac4j">Pippo</a>
             <a target="_blank" class="chip" href="https://github.com/pac4j/undertow-pac4j">Undertow</a>
-            <a target="_blank" class="chip" href="https://github.com/pac4j/lagom-pac4j">Lagom</a>
-            <a target="_blank" class="chip" href="https://github.com/StackVista/akka-http-pac4j">Akka HTTP</a>
             <a target="_blank" class="chip" href="https://jooby.io/modules/pac4j">Jooby</a>
+            <a target="_blank" class="chip" href="https://github.com/pac4j/http4s-pac4j">http4s</a>
+        </div>
+
+        <p class="chips-label">Also available, on an older <i>pac4j</i> line:</p>
+
+        <div class="chips chips-links chips-muted">
+            <a target="_blank" class="chip" href="https://github.com/pac4j/lagom-pac4j">Lagom <small>(pac4j 3.x)</small></a>
+            <a target="_blank" class="chip" href="https://github.com/pippo-java/pippo/tree/master/pippo-security-parent/pippo-pac4j">Pippo <small>(pac4j 2.x)</small></a>
+            <a target="_blank" class="chip" href="https://github.com/StackVista/akka-http-pac4j">Akka HTTP <small>(pac4j 5.x, archived)</small></a>
         </div>
     </section>
 

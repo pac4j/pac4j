@@ -8,4 +8,4 @@ The [`HttpActionAdapter`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/
 
 Its implementations are different depending on the *pac4j* implementations.
 
-For example, there is a [`JEEHttpActionAdapter`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/http/adapter/JEEHttpActionAdapter.java) for JEE applications, a `PlayHttpActionAdapter` for Play applications, etc.
+For example, there is a [`JEEHttpActionAdapter`](https://github.com/pac4j/pac4j/blob/master/pac4j-jakartaee/src/main/java/org/pac4j/jee/http/adapter/JEEHttpActionAdapter.java) for JEE applications, a `PlayHttpActionAdapter` for Play applications, etc.

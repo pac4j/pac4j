@@ -108,9 +108,9 @@ title: Implementations comparison regarding the version of pac4j&#58;
     </tr>
     <tr>
         <td>http4s-pac4j</td>
-        <td>5.x</td>
+        <td>6.x</td>
         <td>Http4s 0.23+</td>
-        <td>JDK 11+</td>
+        <td>JDK 17+</td>
     </tr>
     <tr>
         <td>Knox</td>
@@ -119,10 +119,10 @@ title: Implementations comparison regarding the version of pac4j&#58;
         <td>JDK 8+</td>
     </tr>
     <tr>
-        <td>jooby-pac4j2</td>
-        <td>3.x</td>
-        <td>Jooby 2.x</td>
-        <td>JDK 8+</td>
+        <td>jooby-pac4j</td>
+        <td>6.x</td>
+        <td>Jooby 3.x</td>
+        <td>JDK 17+</td>
     </tr>
     <tr>
         <td>pippo-pac4j</td>
@@ -138,6 +138,7 @@ title: Implementations comparison regarding the version of pac4j&#58;
     </tr>
 </table>
 
-<p class="caption">This table lists the <b>latest</b> version of each implementation. Older <i>pac4j</i> lines
-are still maintained and security fixes are backported to all of them:
-<b>pac4j 4.5.x</b> runs on JDK 8, <b>pac4j 5.8.x</b> on JDK 11 and <b>pac4j 6.x</b> on JDK 17.</p>
+<p class="caption">This table lists the <b>latest</b> version of each implementation. The current
+<b>pac4j 6.x</b> line requires JDK 17; the older <b>4.x</b> (JDK 8) and <b>5.x</b> (JDK 11) lines are no longer
+maintained, though critical security fixes are backported to them &mdash; see the
+<a target="_blank" href="https://github.com/pac4j/pac4j/blob/master/SECURITY.md">security policy</a>.</p>

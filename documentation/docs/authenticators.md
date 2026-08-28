@@ -42,7 +42,7 @@ By default, the `LocalCachingAuthenticator` uses Guava as its internal [`Store`]
 
 In some cases, you may also rely on the session by using: `client.setSaveProfileInSession(true);`.
 
-In case of a "noop" authenticator (`Authenticator.ALWAYS_VALIDATE`) where only the profile creation matters, you should use the [`LocalCachingProfileCreator`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/creator/LocalCachingProfileCreator) instead.
+In case of a "noop" authenticator (`Authenticator.ALWAYS_VALIDATE`) where only the profile creation matters, you should use the [`LocalCachingProfileCreator`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/creator/LocalCachingProfileCreator.java) instead.
 
 ## 2) `PasswordEncoder`
 
@@ -56,7 +56,7 @@ The password encoder must be defined for these two authenticators via constructo
 Three `PasswordEncoder` implementations are available:
 
 - a wrapper for the Spring Security Crypto [`PasswordEncoder`](https://github.com/spring-projects/spring-security/blob/master/crypto/src/main/java/org/springframework/security/crypto/password/PasswordEncoder.java): the [`SpringSecurityPasswordEncoder`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/password/SpringSecurityPasswordEncoder.java)
-- a wrapper for the Apache Shiro [`PasswordService`](https://shiro.apache.org/static/1.4.0/apidocs/org/apache/shiro/authc/credential/PasswordService.html):  the [`ShiroPasswordEncoder`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/password/ShiroPasswordEncoder.java)
+- a wrapper for the Apache Shiro [`PasswordService`](https://shiro.apache.org/static/current/apidocs/org/apache/shiro/authc/credential/PasswordService.html):  the [`ShiroPasswordEncoder`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/password/ShiroPasswordEncoder.java)
 - one based on the jBCrypt library:  the [`JBCryptPasswordEncoder`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/password/JBCryptPasswordEncoder.java).
 
 <div class="warning"><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i> Notice that the <code>SpringSecurityPasswordEncoder</code> requires the additional <i>spring-security-crypto</i> dependency, the <code>ShiroPasswordEncoder</code> the <i>shiro-core</i> dependency and the <code>JBCryptPasswordEncoder</code> the <i>jBCrypt</i> dependency.</div>
