@@ -143,9 +143,9 @@ title: Implementations comparison for the profile management&#58;
     </tr>
     <tr>
         <td>Knox</td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">ProfileManager</code> (via j2e-pac4j)</td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">ProfileManager</code> (via jee-pac4j)</td>
         <td><img src="/img/red_cross.png" /></td>
-        <td><img src="/img/green_check.png" /><br />via <code class="highlighter-rouge">getUserPrincipal()</code> method (via j2e-pac4j)</td>
+        <td><img src="/img/green_check.png" /><br />via <code class="highlighter-rouge">getUserPrincipal()</code> method (via jee-pac4j)</td>
         <td><img src="/img/red_cross.png" /></td>
     </tr>
     <tr>
