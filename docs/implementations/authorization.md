@@ -89,7 +89,7 @@ title: Implementations comparison for the authorization checks&#58;
     </tr>
     <tr>
         <td>Knox</td>
-        <td><img src="/img/red_cross.png" /><br />No method-level authorization (via j2e-pac4j)</td>
+        <td><img src="/img/red_cross.png" /><br />No method-level authorization (via jee-pac4j)</td>
     </tr>
     <tr>
         <td>jooby-pac4j2</td>

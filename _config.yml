@@ -1,3 +1,10 @@
+# Site settings
+url: https://www.pac4j.org
+title: pac4j
+description: >-
+  One Java security framework for every web framework: add OpenID Connect, SAML, CAS, OAuth and JWT
+  authentication and authorization to Spring Boot, Jakarta EE, Play, Vert.x and 15+ others, with the same security model.
+
 # Build settings
 markdown: kramdown
 theme: minima

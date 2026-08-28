@@ -18,9 +18,9 @@ title: Implementations comparison regarding the version of pac4j&#58;
 <table class="centered">
     <tr>
         <th>Implementation</th>
-        <th>pac4j version</th>
+        <th>pac4j version<br /><small>(latest)</small></th>
         <th>Framework version</th>
-        <th>JDK requirement</th>
+        <th>JDK requirement<br /><small>(for that version)</small></th>
     </tr>
     <tr>
         <td>spring-webmvc-pac4j</td>
@@ -137,3 +137,7 @@ title: Implementations comparison regarding the version of pac4j&#58;
         <td>JDK 17+</td>
     </tr>
 </table>
+
+<p class="caption">This table lists the <b>latest</b> version of each implementation. Older <i>pac4j</i> lines
+are still maintained and security fixes are backported to all of them:
+<b>pac4j 4.5.x</b> runs on JDK 8, <b>pac4j 5.8.x</b> on JDK 11 and <b>pac4j 6.x</b> on JDK 17.</p>

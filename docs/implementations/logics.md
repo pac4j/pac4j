@@ -125,9 +125,9 @@ title: Implementations comparison for the default logics&#58;
     </tr>
     <tr>
         <td>Knox</td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultSecurityLogic.INSTANCE</code> (via j2e-pac4j)</td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultCallbackLogic.INSTANCE</code> (via j2e-pac4j)</td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultLogoutLogic.INSTANCE</code> (via j2e-pac4j)</td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultSecurityLogic.INSTANCE</code> (via jee-pac4j)</td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultCallbackLogic.INSTANCE</code> (via jee-pac4j)</td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultLogoutLogic.INSTANCE</code> (via jee-pac4j)</td>
     </tr>
     <tr>
         <td>jooby-pac4j2</td>

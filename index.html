@@ -1,99 +1,52 @@
 ---
 layout: content
 title: Home
+seo_title: pac4j - OIDC, SAML, CAS and OAuth security for Java
 ---
-
-<script>
-    var links = ["https://github.com/pac4j/spring-webmvc-pac4j",
-        "https://github.com/pac4j/j2e-pac4j",
-        "https://github.com/pac4j/spring-webflux-pac4j",
-        "https://github.com/bujiio/buji-pac4j",
-        "https://github.com/pac4j/spring-security-pac4j",
-        "http://apereo.github.io/cas/7.3.x/integration/Delegate-Authentication.html",
-        "https://syncope.apache.org",
-        "http://knox.apache.org/books/knox-2-1-0/user-guide.html#Pac4j+Provider+-+CAS+/+OAuth+/+SAML+/+OpenID+Connect",
-        "https://github.com/pac4j/play-pac4j",
-        "https://github.com/pac4j/vertx-pac4j",
-        "https://github.com/pac4j/spark-pac4j",
-        "http://ratpack.io/manual/current/pac4j.html#pac4j",
-        "https://github.com/pac4j/jax-rs-pac4j",
-        "https://github.com/pac4j/dropwizard-pac4j",
-        "https://github.com/pac4j/javalin-pac4j",
-        "http://www.pippo.ro/doc/security.html#pac4j-integration",
-        "https://github.com/pac4j/undertow-pac4j",
-        "https://github.com/pac4j/lagom-pac4j",
-        "https://github.com/StackVista/akka-http-pac4j",
-        "https://jooby.io/modules/pac4j",
-        "https://github.com/pac4j/pac4j"];
-
-    var images = ["/img/logo-spring-webmvc.png",
-        "/img/logo-j2e.png",
-        "/img/logo-spring-webflux.png",
-        "/img/logo-shiro.png",
-        "/img/logo-spring-security.png",
-        "/img/logo-cas.png",
-        "/img/logo-syncope.png",
-        "/img/logo-knox.png",
-        "/img/logo-play.png",
-        "/img/logo-vertx.png",
-        "/img/logo-spark.png",
-        "/img/logo-ratpack.png",
-        "/img/logo-jaxrs.png",
-        "/img/logo-dropwizard.png",
-        "/img/logo-javalin.png",
-        "/img/logo-pippo.png",
-        "/img/logo-undertow.png",
-        "/img/logo-lagom.png",
-        "/img/logo-akkahttp.png",
-        "/img/logo-jooby.png",
-        "/img/logo.png"];
-    var i = 0;
-    setInterval(function(){
-        if(links.length == i){
-            i = 0;
-        }
-        else {
-            document.getElementById("bannerImage").src = images[i];
-            document.getElementById("bannerLink").href = links[i];
-            i++;
-        }
-    },2000);
-</script>
 
 <div id="home" class="text-center">
 
     <div class="hero">
-        <a target="_blank" id="bannerLink" href="https://github.com/pac4j/pac4j"><img width="320" height="285" id="bannerImage" src="/img/logo.png" /></a>
+        <img width="320" height="285" id="bannerImage" src="/img/logo.png" alt="pac4j" />
 
-        <h1 id="engine">The <a target="_blank" href="https://github.com/pac4j/pac4j">Java security framework</a> to protect all your web applications and web services</h1>
+        <h1 id="engine">One <span class="accent">Java security framework</span> for every web framework</h1>
+
+        <p class="hero-sub">Authentication <i>and</i> authorization &mdash; OpenID Connect, SAML, CAS, OAuth, JWT &mdash;
+            with the same security model in Spring Boot, Jakarta EE, Play, Vert.x and 15+ other frameworks.<br />
+            Change your stack, keep your security code.</p>
 
         <div class="home-cta">
             <a class="btn" href="/gettingstarted.html">Getting started</a>
             <a class="btn" href="/docs/index.html">Documentation</a>
         </div>
+
+        <p class="hero-proof">
+            <a target="_blank" href="https://github.com/pac4j/pac4j/blob/master/LICENSE">Apache 2.0</a> &middot;
+            Maintained for Java 8, 11 and 17 &middot; Open source since 2012 &middot;
+            Used by <a target="_blank" href="https://apereo.github.io/cas/7.3.x/integration/Delegate-Authentication.html">CAS server</a>,
+            <a target="_blank" href="https://syncope.apache.org">Apache Syncope</a> and
+            <a target="_blank" href="https://knox.apache.org/books/knox-2-1-0/user-guide.html#Pac4j+Provider+-+CAS+/+OAuth+/+SAML+/+OpenID+Connect">Apache Knox</a>
+        </p>
     </div>
 
     <section class="home-section">
         <h2 class="section-title">Implementations</h2>
-        <p class="section-sub">Ready to use for most frameworks and tools</p>
+        <p class="section-sub">Ready to use in most Java frameworks</p>
 
         <div class="chips chips-links">
             <a target="_blank" class="chip" href="https://github.com/pac4j/spring-webmvc-pac4j">Spring Web MVC <small>(Spring Boot)</small></a>
-            <a target="_blank" class="chip" href="https://github.com/pac4j/j2e-pac4j">J2E</a>
+            <a target="_blank" class="chip" href="https://github.com/pac4j/jee-pac4j">Jakarta EE <small>(Servlet)</small></a>
             <a target="_blank" class="chip" href="https://github.com/pac4j/spring-webflux-pac4j">Spring Webflux <small>(Spring Boot)</small></a>
             <a target="_blank" class="chip" href="https://github.com/bujiio/buji-pac4j">Shiro</a>
             <a target="_blank" class="chip" href="https://github.com/pac4j/spring-security-pac4j">Spring Security <small>(Spring Boot)</small></a>
-            <a target="_blank" class="chip" href="https://apereo.github.io/cas/7.3.x/integration/Delegate-Authentication.html">CAS server</a>
-            <a target="_blank" class="chip" href="https://syncope.apache.org">Syncope</a>
-            <a target="_blank" class="chip" href="http://knox.apache.org/books/knox-2-1-0/user-guide.html#Pac4j+Provider+-+CAS+/+OAuth+/+SAML+/+OpenID+Connect">Knox</a>
             <a target="_blank" class="chip" href="https://github.com/pac4j/play-pac4j">Play 2.x/3.x</a>
             <a target="_blank" class="chip" href="https://github.com/pac4j/vertx-pac4j">Vertx</a>
             <a target="_blank" class="chip" href="https://github.com/pac4j/spark-pac4j">Spark Java</a>
-            <a target="_blank" class="chip" href="http://ratpack.io/manual/current/pac4j.html#pac4j">Ratpack</a>
+            <a target="_blank" class="chip" href="https://ratpack.io/manual/current/pac4j.html#pac4j">Ratpack</a>
             <a target="_blank" class="chip" href="https://github.com/pac4j/jax-rs-pac4j">JAX-RS</a>
             <a target="_blank" class="chip" href="https://github.com/pac4j/dropwizard-pac4j">Dropwizard</a>
             <a target="_blank" class="chip" href="https://github.com/pac4j/javalin-pac4j">Javalin</a>
-            <a target="_blank" class="chip" href="http://www.pippo.ro/doc/security.html#pac4j-integration">Pippo</a>
+            <a target="_blank" class="chip" href="https://github.com/pippo-java/pippo/tree/master/pippo-security-parent/pippo-pac4j">Pippo</a>
             <a target="_blank" class="chip" href="https://github.com/pac4j/undertow-pac4j">Undertow</a>
             <a target="_blank" class="chip" href="https://github.com/pac4j/lagom-pac4j">Lagom</a>
             <a target="_blank" class="chip" href="https://github.com/StackVista/akka-http-pac4j">Akka HTTP</a>
