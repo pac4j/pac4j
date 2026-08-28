@@ -4,7 +4,8 @@
 
 **Please do not report security issues through public GitHub issues, pull requests or discussions.**
 
-Send your report privately to **security@pac4j.org**.
+Report it privately through GitHub: **[Report a vulnerability](https://github.com/pac4j/pac4j/security/advisories/new)**.
+If you prefer email, send it to **security@pac4j.org**.
 
 Please include as much as you can:
 
