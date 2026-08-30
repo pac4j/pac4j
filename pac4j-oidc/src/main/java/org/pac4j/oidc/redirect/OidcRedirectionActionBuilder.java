@@ -190,7 +190,7 @@ public class OidcRedirectionActionBuilder extends InitializableObject implements
         val clientId = configContext.getConfiguration().getClientId();
         authParams.requestObject().put(CLIENT_ID, clientId);
         authParams.url().put(CLIENT_ID, clientId);
-        val loginHint = configContext.getConfiguration().getLoginHint();
+        val loginHint = configContext.getLoginHint();
         if (loginHint != null && !loginHint.isEmpty()) {
             authParams.requestObject().put(OidcConfiguration.LOGIN_HINT, loginHint);
         }
