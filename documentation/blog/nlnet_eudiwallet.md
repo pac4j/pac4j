@@ -14,7 +14,7 @@ pac4j has been awarded a grant by <a href="https://nlnet.nl" target="_blank">NLn
 
 The eIDAS 2.0 regulation requires every EU member state to provide its citizens with a European Digital Identity Wallet. For applications, this means a new way to authenticate users and to request verified attributes — and, for the Java ecosystem, no library covers it properly today.
 
-pac4j has spent 15 years turning authentication protocols — OAuth, SAML, OpenID Connect, CAS — into one security engine usable from any Java framework. EUDI Wallet is simply the next protocol on that list.
+pac4j has spent 15 years turning authentication protocols — OAuth, SAML, OpenID Connect, CAS — into one security engine usable from any Java framework. After supporting the OpenID Federation protocol, EUDI Wallet is simply the next protocol on that list.
 
 
 ## What happens next
