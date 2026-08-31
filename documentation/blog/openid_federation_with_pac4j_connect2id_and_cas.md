@@ -4,7 +4,6 @@ title: OpenID Federation with pac4j, Connect2id and CAS
 author: Jérôme LELEU
 date: September 2026
 tags: [tuto, cas]
-draft: true
 ---
 
 In previous posts, we have presented the OpenID (Connect) Federation protocol with pac4j and the Connect2id server: [(Part 1)](/blog/openid_federation_with_pac4j_and_connect2id.html) + [(Part 2)](/blog/more_openid_federation_with_pac4j_and_connect2id.html).
