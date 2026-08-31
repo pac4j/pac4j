@@ -85,7 +85,7 @@ Both our CAS servers have a similar `pom.xml` file:
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>4.1.0</version>
+                <version>4.2.0-M1</version>
                 <configuration>
                     <mainClass>org.apereo.cas.web.CasWebApplication</mainClass>
                     <excludes>
@@ -194,7 +194,7 @@ We need the following dependencies:
 <dependency>
     <groupId>org.pac4j</groupId>
     <artifactId>pac4j-oidc</artifactId>
-    <version>6.5.5</version>
+    <version>6.5.6</version>
 </dependency>
 ```
 
@@ -541,19 +541,19 @@ Then, we click on the "Protected area" link.
 On the CAS server login page, we use the pre-defined user: `casuser` / `Mellon` to log in:
 
 <div class="text-center">
-  <img alt="pac4j home page" src="/img/blog/2026_10/cas_login.png" />
+  <img alt="pac4j home page" src="/img/blog/2026_10/cas_login.jpg" />
 </div>
 
 and we validate the authorizations:
 
 <div class="text-center">
-  <img alt="pac4j home page" src="/img/blog/2026_10/cas_authorize.png" />
+  <img alt="pac4j home page" src="/img/blog/2026_10/cas_authorize.jpg" />
 </div>
 
 And it works:
 
 <div class="text-center">
-  <img alt="pac4j home page" src="/img/blog/2026_10/pac4j_after.png" />
+  <img alt="pac4j home page" src="/img/blog/2026_10/pac4j_after.jpg" />
 </div>
 
 We are finally logged in to the pac4j application thanks to the OpenID Federation protocol and the two CAS server nodes.
