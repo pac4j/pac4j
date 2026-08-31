@@ -58,8 +58,12 @@ It is licensed under the Apache 2 license.
 
 ---
 
-## Versions
+## Use of AI
 
+This project is developed using various AI tools across multiple areas, including development, testing, and documentation.
+
+
+## Versions
 
 The latest released version is the [![Maven Central](https://img.shields.io/maven-central/v/org.pac4j/pac4j-core.svg)](https://repo1.maven.org/maven2/org/pac4j/pac4j-core/).
 The [next version](https://www.pac4j.org/docs/next-version.html) is under development.
@@ -75,3 +79,5 @@ You can use the [mailing lists](https://www.pac4j.org/mailing-lists.html) or the
 ## Supported by
 
 [![CAS in the cloud](https://www.pac4j.org/img/new_cas_in_the_cloud_logo.png)](https://www.casinthecloud.com) *The CAS and pac4j consulting company*
+
+[![NLnet](https://www.pac4j.org/img/nlnet-logo.png)]((https://nlnet.nl)) *NLnet foundation*
