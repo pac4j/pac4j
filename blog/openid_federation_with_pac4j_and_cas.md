@@ -307,7 +307,7 @@ The target OP is of course the CAS server acting as an OP.
 
 For the trust anchor, it's the other CAS node (on port 8082) for which we retrieve the JWKS from `http://localhost:8082/cas/oidc/.well-known/openid-federation` and save it in the `trustanchor.jwks` file.
 
-Example:
+*Example:*
 
 ```json
 {
@@ -541,19 +541,19 @@ Then, we click on the "Protected area" link.
 On the CAS server login page, we use the pre-defined user: `casuser` / `Mellon` to log in:
 
 <div class="text-center">
-  <img alt="pac4j home page" src="/img/blog/2026_10/cas_login.jpg" />
+  <img alt="CAS login page" src="/img/blog/2026_10/cas_login.jpg" />
 </div>
 
 and we validate the authorizations:
 
 <div class="text-center">
-  <img alt="pac4j home page" src="/img/blog/2026_10/cas_authorize.jpg" />
+  <img alt="CAS authorization page" src="/img/blog/2026_10/cas_authorize.jpg" />
 </div>
 
 And it works:
 
 <div class="text-center">
-  <img alt="pac4j home page" src="/img/blog/2026_10/pac4j_after.jpg" />
+  <img alt="pac4j authenticated page" src="/img/blog/2026_10/pac4j_after.jpg" />
 </div>
 
 We are finally logged in to the pac4j application thanks to the OpenID Federation protocol and the two CAS server nodes.
