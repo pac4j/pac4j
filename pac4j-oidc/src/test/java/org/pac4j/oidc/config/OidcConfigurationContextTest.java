@@ -46,4 +46,18 @@ public class OidcConfigurationContextTest {
 
         assertEquals("openid profile email", result);
     }
+
+    @Test
+    public void shouldResolveLoginHintFromRequest() {
+        var webContext = MockWebContext.create();
+        webContext.setRequestAttribute(OidcConfiguration.LOGIN_HINT, "user@example.org");
+        var oidcConfiguration = new OidcConfiguration();
+        oidcConfiguration.setLoginHint("user@pac4j.org");
+        var oidcConfigurationContext = new OidcConfigurationContext(webContext, oidcConfiguration);
+        var result = oidcConfigurationContext.getLoginHint();
+        assertEquals("user@example.org", result);
+        webContext.setRequestAttribute(OidcConfiguration.LOGIN_HINT, null);
+        result = oidcConfigurationContext.getLoginHint();
+        assertEquals("user@pac4j.org", result);
+    }
 }

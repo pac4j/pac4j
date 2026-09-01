@@ -91,6 +91,16 @@ public class OidcConfigurationContext {
     }
 
     /**
+     * <p>getLoginHint.</p>
+     *
+     * @return a {@link String} object
+     */
+    public String getLoginHint() {
+        return (String) context.getRequestAttribute(OidcConfiguration.LOGIN_HINT)
+            .orElse(configuration.getLoginHint());
+    }
+
+    /**
      * <p>getCustomParams.</p>
      *
      * @return a {@link Map} object

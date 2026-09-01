@@ -12,6 +12,7 @@ title: Release notes&#58;
   - retry every 2 seconds before anything has been loaded
   - retry every 60 seconds after the first loading and return the old data in case of error
 - Fix OpenID federation forced signing of the auth request object for explicitly registered clients when it is not mandatory.
+- OIDC's login hints can be provided dynamically as a `login_hint` request attribute.
 
 **v6.5.7**:
 - OIDC: ProfileCreator - skip nonce when Bearer Access Token is used
