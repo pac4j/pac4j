@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Tests {@link DefaultConfigurationManager}, and in particular the fallback on the JDK parser when the
  * XML parser in use rejects the {@code jdk.xml.*} attributes set by the OpenSAML initializers.
  *
- * @since 6.6.0
+ * @since 6.5.7
  * @author Jerome LELEU
  */
 class DefaultConfigurationManagerTests {
