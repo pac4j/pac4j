@@ -23,12 +23,9 @@ import java.security.spec.ECGenParameterSpec;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.pac4j.openid4vp.util.OpenId4VpConstants.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.pac4j.openid4vp.util.OpenId4VpConstants.RESPONSE;
+import static org.pac4j.openid4vp.util.OpenId4VpConstants.VP_TRANSACTION_ID;
 
 /**
  * Drives a whole presentation, the three legs in a row: the browser leaves, the wallet fetches the request
