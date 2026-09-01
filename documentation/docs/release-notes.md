@@ -7,6 +7,7 @@ title: Release notes&#58;
 
 **v6.5.7**:
 - OIDC: ProfileCreator - skip nonce when Bearer Access Token is used
+- SAML: OpenSAML can again be initialized when a standalone Apache Xerces is on the classpath
 
 **v6.5.6**:
 - Security fixes/reinforcements:
