@@ -107,7 +107,7 @@
         <reflections.version>0.10.2</reflections.version>
         <nanohttpd.version>2.3.1</nanohttpd.version>
         <mockserver.version>5.10</mockserver.version>
-        <lombok.version>1.18.46</lombok.version>
+        <lombok.version>1.18.48</lombok.version>
         <!-- SpotBugs annotations artifact version -->
         <spotbugs.annotations.version>4.10.4</spotbugs.annotations.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
