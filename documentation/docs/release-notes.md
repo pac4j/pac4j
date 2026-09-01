@@ -11,8 +11,11 @@ title: Release notes&#58;
 - Rework the `SpringResourceLoader` behavior to improve the OIDC/SAML metadata loading resilience:
   - retry every 2 seconds before anything has been loaded
   - retry every 60 seconds after the first loading and return the old data in case of error
-- Fix OpenID federation forced signing of the auth request object for explicitly registered clients when it is not mandatory.
-- OIDC's login hints can be provided dynamically as a `login_hint` request attribute.
+- Fix OpenID federation forced signing of the auth request object for explicitly registered clients when it is not mandatory
+- OIDC's login hints can be provided dynamically as a `login_hint` request attribute
+- `IndirectClient`: the `saveAttemptedAuthentication` method is now `protected`, so that a client can skip the attempted authentication flag for the requests which are not browser navigations
+- Added the `ConcurrentMapStore`, a `Store` expiring its entries (without any additional dependency), and the `AbstractConcurrentMapStore` for the values carrying their own expiration date
+- JWT: a `SignatureConfiguration` can now sign with a specific header via the new `sign(JWSHeader, JWTClaimsSet)` method.
 
 **v6.5.7**:
 - OIDC: ProfileCreator - skip nonce when Bearer Access Token is used

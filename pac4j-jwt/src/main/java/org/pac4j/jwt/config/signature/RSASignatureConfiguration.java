@@ -2,12 +2,10 @@ package org.pac4j.jwt.config.signature;
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
-import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.JWSSigner;
 import com.nimbusds.jose.JWSVerifier;
 import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jose.crypto.RSASSAVerifier;
-import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import lombok.Getter;
 import lombok.Setter;
@@ -80,18 +78,9 @@ public class RSASignatureConfiguration extends AbstractSignatureConfiguration {
 
     /** {@inheritDoc} */
     @Override
-    public SignedJWT sign(JWTClaimsSet claims) {
-        init();
+    protected JWSSigner buildSigner() {
         CommonHelper.assertNotNull("privateKey", privateKey);
-
-        try {
-            JWSSigner signer = new RSASSASigner(this.privateKey);
-            val signedJWT = new SignedJWT(new JWSHeader(algorithm), claims);
-            signedJWT.sign(signer);
-            return signedJWT;
-        } catch (final JOSEException e) {
-            throw new TechnicalException(e);
-        }
+        return new RSASSASigner(this.privateKey);
     }
 
     /** {@inheritDoc} */
