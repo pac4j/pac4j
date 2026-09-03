@@ -188,7 +188,7 @@ public abstract class IndirectClient extends BaseClient {
         sessionStore.set(context, Pac4jConstants.REQUESTED_URL, null);
     }
 
-    private void cleanAttemptedAuthentication(final WebContext context, final SessionStore sessionStore) {
+    protected void cleanAttemptedAuthentication(final WebContext context, final SessionStore sessionStore) {
         logger.debug("clean authentication attempt from session");
         sessionStore.set(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, null);
     }
@@ -220,7 +220,7 @@ public abstract class IndirectClient extends BaseClient {
         return getName() + CODE_VERIFIER_SESSION_PARAMETER;
     }
 
-    private void saveAttemptedAuthentication(final WebContext context, final SessionStore sessionStore) {
+    protected void saveAttemptedAuthentication(final WebContext context, final SessionStore sessionStore) {
         if (checkAuthenticationAttempt) {
             logger.debug("save authentication attempt in session");
             sessionStore.set(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, "true");

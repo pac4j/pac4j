@@ -5,6 +5,7 @@ import lombok.ToString;
 import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.CallContext;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.credentials.OidcCredentials;
@@ -83,6 +84,39 @@ public class OidcClient extends IndirectClient {
         if (federation.getEntityId() == null) {
             federation.setEntityId(callbackUrl);
         }
+    }
+
+    @Override
+    protected void checkCredentials(CallContext ctx, Credentials credentials) {
+        val webContext = ctx.webContext();
+        val sessionStore = ctx.sessionStore();
+
+        if (credentials == null && getProfileFactoryWhenNotAuthenticated() == null) {
+            val currentPath = webContext.getPath();
+            val resolver = this.getCallbackUrlResolver();
+            if (resolver != null && currentPath != null) {
+                val computedCallbackUrl = resolver.compute(
+                    this.getUrlResolver(),
+                    this.getCallbackUrl(),
+                    this.getName(),
+                    webContext
+                );
+                if (computedCallbackUrl != null) {
+                    try {
+                        val expectedCallbackPath = new java.net.URI(computedCallbackUrl).getPath();
+                        if (currentPath.equals(expectedCallbackPath)) {
+                            logger.debug("OIDC callback execution failed validation on explicit path '{}'. " +
+                                "Cleaning attempted authentication to prevent 401 error.", currentPath);
+                            cleanAttemptedAuthentication(webContext, sessionStore);
+                            return;
+                        }
+                    } catch (java.net.URISyntaxException e) {
+                        logger.error("Failed to parse computed callback URL: {}", computedCallbackUrl, e);
+                    }
+                }
+            }
+        }
+        super.checkCredentials(ctx, credentials);
     }
 
     /** {@inheritDoc} */
