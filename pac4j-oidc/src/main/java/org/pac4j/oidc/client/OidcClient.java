@@ -6,6 +6,7 @@ import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.http.url.DefaultUrlResolver;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.credentials.OidcCredentials;
@@ -93,10 +94,11 @@ public class OidcClient extends IndirectClient {
 
         if (credentials == null && getProfileFactoryWhenNotAuthenticated() == null) {
             val currentPath = webContext.getPath();
+            val defaultUrlResolver = new DefaultUrlResolver(true);
             val resolver = this.getCallbackUrlResolver();
             if (resolver != null && currentPath != null) {
                 val computedCallbackUrl = resolver.compute(
-                    this.getUrlResolver(),
+                    defaultUrlResolver,
                     this.getCallbackUrl(),
                     this.getName(),
                     webContext
