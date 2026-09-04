@@ -1,8 +1,5 @@
 package org.pac4j.openid4vp.redirect;
 
-import com.nimbusds.jose.JWSAlgorithm;
-import com.nimbusds.jose.jwk.ECKey;
-import com.nimbusds.jwt.SignedJWT;
 import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,24 +8,20 @@ import org.pac4j.core.config.properties.JwksProperties;
 
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.exception.http.FoundAction;
-import com.nimbusds.jose.crypto.ECDSAVerifier;
 import org.pac4j.openid4vp.client.OpenId4VpClient;
 import org.pac4j.openid4vp.config.ClientIdPrefix;
 import org.pac4j.openid4vp.config.OpenId4VpConfiguration;
-import org.pac4j.openid4vp.config.WalletInvocationMode;
 import org.pac4j.openid4vp.transaction.VpTransaction;
 import org.pac4j.openid4vp.verifier.SdJwtVcVerifier;
 import org.pac4j.test.context.MockWebContext;
 import org.pac4j.test.context.session.MockSessionStore;
 
-import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.pac4j.openid4vp.util.OpenId4VpConstants.*;
 
 /**
- * Tests the request object actually handed over to a wallet.
+ * Tests the transaction opened when a presentation starts, and the URL handed over to invoke a wallet.
  *
  * @author Jerome LELEU
  * @since 6.6.0
@@ -49,12 +42,11 @@ class OpenId4VpRedirectionActionBuilderTests {
     void setUp() throws Exception {
         configuration = new OpenId4VpConfiguration();
         configuration.setJwks(new JwksProperties()
-            .setJwksPath(directory.resolve("keys.jwks").toString()));
+            .setJwksPath(directory.resolve("keys.jwks").toString()).setKid("key-1"));
         configuration.setClientId(CLIENT);
-        configuration.setClientIdPrefix(ClientIdPrefix.REDIRECT_URI);
+        configuration.setClientIdPrefix(ClientIdPrefix.DECENTRALIZED_IDENTIFIER);
         configuration.setDcqlQuery(DCQL);
         configuration.addCredentialVerifier(new SdJwtVcVerifier());
-        configuration.setInvocationMode(WalletInvocationMode.CUSTOM_SCHEME);
 
         client = new OpenId4VpClient(configuration);
         client.setName("EudiWallet");
@@ -71,48 +63,6 @@ class OpenId4VpRedirectionActionBuilderTests {
 
         val transactionId = ctx.sessionStore().get(ctx.webContext(), SESSION_TRANSACTION_ID).get().toString();
         return configuration.getTransactionStore().get(transactionId).get();
-    }
-
-    @Test
-    void testTheRequestObjectIsSignedAndTyped() throws Exception {
-        val requestObject = SignedJWT.parse(openTransaction().getRequestObject());
-
-        assertEquals(REQUEST_OBJECT_TYPE, requestObject.getHeader().getType().toString());
-        assertEquals(JWSAlgorithm.ES256, requestObject.getHeader().getAlgorithm());
-        assertTrue(requestObject.verify(
-            new ECDSAVerifier(((ECKey) configuration.getRequestObjectSigningKey()).toPublicJWK())));
-    }
-
-    @Test
-    void testTheRequestObjectClaims() throws Exception {
-        val transaction = openTransaction();
-        val claims = SignedJWT.parse(transaction.getRequestObject()).getJWTClaimsSet();
-
-        assertEquals(ClientIdPrefix.REDIRECT_URI.getValue() + ":" + CLIENT, claims.getStringClaim(CLIENT_ID));
-        assertEquals(RESPONSE_TYPE_VP_TOKEN, claims.getStringClaim(RESPONSE_TYPE));
-        assertEquals("direct_post.jwt", claims.getStringClaim(RESPONSE_MODE));
-        assertEquals(transaction.getNonce(), claims.getStringClaim(NONCE));
-        assertNotNull(claims.getExpirationTime());
-
-        // the response comes back on the very endpoint the request object was fetched from
-        assertTrue(claims.getStringClaim(RESPONSE_URI).contains(VP_TRANSACTION_ID + "=" + transaction.getId()));
-
-        assertEquals(List.of(Map.of("id", "pid", "format", "dc+sd-jwt")),
-            claims.getJSONObjectClaim(DCQL_QUERY).get("credentials"));
-    }
-
-    @Test
-    void testThePublishedEncryptionKeyIsPublicOnly() throws Exception {
-        val transaction = openTransaction();
-        val claims = SignedJWT.parse(transaction.getRequestObject()).getJWTClaimsSet();
-
-        // the private part is kept in the transaction, only the public one reaches the wallet
-        assertTrue(ECKey.parse(transaction.getEncryptionKey()).isPrivate());
-
-        val jwks = (Map<String, Object>) claims.getJSONObjectClaim(CLIENT_METADATA).get(JWKS);
-        val keys = (List<Map<String, Object>>) jwks.get(KEYS);
-        assertEquals(1, keys.size());
-        assertFalse(ECKey.parse(keys.get(0)).isPrivate());
     }
 
     @Test

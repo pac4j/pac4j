@@ -1,5 +1,6 @@
 package org.pac4j.openid4vp.credentials.extractor;
 
+import com.nimbusds.jwt.SignedJWT;
 import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,9 @@ import org.pac4j.openid4vp.credentials.VerifiablePresentationCredentials;
 import org.pac4j.openid4vp.exceptions.OpenId4VpException;
 import org.pac4j.openid4vp.transaction.VpTransaction;
 import org.pac4j.test.context.MockWebContext;
+import org.junit.jupiter.api.io.TempDir;
+import org.pac4j.core.config.properties.JwksProperties;
+import org.pac4j.openid4vp.verifier.SdJwtVcVerifier;
 import org.pac4j.test.context.session.MockSessionStore;
 
 import java.time.Instant;
@@ -30,8 +34,10 @@ import static org.pac4j.openid4vp.util.OpenId4VpConstants.*;
 class OpenId4VpCredentialsExtractorTests {
 
     private static final String TX_ID = "tx-1";
-    private static final String REQUEST_OBJECT = "eyJ0eXAiOiJvYXV0aC1hdXRoei1yZXErand0In0.claims.signature";
     private static final String WALLET_RESPONSE = "eyJhbGciOiJFQ0RILUVTIn0.encrypted.response";
+
+    @TempDir
+    private java.nio.file.Path directory;
 
     private OpenId4VpConfiguration configuration;
     private OpenId4VpCredentialsExtractor extractor;
@@ -39,8 +45,16 @@ class OpenId4VpCredentialsExtractorTests {
     @BeforeEach
     void setUp() {
         configuration = new OpenId4VpConfiguration();
+        configuration.setClientId("https://app.example.org/callback");
+        configuration.setDcqlQuery("{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\"}]}");
+        configuration.setClientIdPrefix(org.pac4j.openid4vp.config.ClientIdPrefix.DECENTRALIZED_IDENTIFIER);
+        configuration.setJwks(new JwksProperties().setJwksPath(directory.resolve("keys.jwks").toString()).setKid("key-1"));
+        configuration.addCredentialVerifier(new SdJwtVcVerifier());
+
         val client = new OpenId4VpClient(configuration);
         client.setName("EudiWallet");
+        client.setCallbackUrl("https://app.example.org/callback");
+        client.init();
         extractor = new OpenId4VpCredentialsExtractor(client);
     }
 
@@ -48,20 +62,23 @@ class OpenId4VpCredentialsExtractorTests {
         val transaction = new VpTransaction()
             .setId(TX_ID)
             .setNonce("nonce")
-            .setRequestObject(REQUEST_OBJECT)
+            .setCreatedAt(Instant.now())
             .setExpiresAt(Instant.now().plus(5, ChronoUnit.MINUTES));
         configuration.getTransactionStore().set(TX_ID, transaction);
         return transaction;
     }
 
     @Test
-    void testWalletFetchesTheRequestObject() {
+    void testWalletFetchesTheRequestObject() throws Exception {
         storeTransaction();
         val webContext = MockWebContext.create().addRequestParameter(VP_TRANSACTION_ID, TX_ID);
         val ctx = new CallContext(webContext, new MockSessionStore());
 
         val action = assertThrows(OkAction.class, () -> extractor.extract(ctx));
-        assertEquals(REQUEST_OBJECT, action.getContent());
+        // the request object is built on demand, for this very transaction
+        val requestObject = SignedJWT.parse(action.getContent());
+        assertEquals(REQUEST_OBJECT_TYPE, requestObject.getHeader().getType().toString());
+        assertEquals("nonce", requestObject.getJWTClaimsSet().getStringClaim(NONCE));
         assertEquals(VpTransaction.Status.REQUEST_RETRIEVED,
             configuration.getTransactionStore().get(TX_ID).get().getStatus());
     }

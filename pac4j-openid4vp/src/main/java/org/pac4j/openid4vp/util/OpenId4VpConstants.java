@@ -41,6 +41,10 @@ public interface OpenId4VpConstants {
     /** The session attribute holding the identifier of the pending transaction, on the browser side. */
     String SESSION_TRANSACTION_ID = "$openid4vpTransactionId";
 
+    /** The parameters of a request sent over the digital credentials API. */
+    String EXPECTED_ORIGINS = "expected_origins";
+    String REQUEST = "request";
+
     /** The default custom scheme used to invoke a wallet on the same device. */
     String OPENID4VP_SCHEME = "openid4vp://";
 

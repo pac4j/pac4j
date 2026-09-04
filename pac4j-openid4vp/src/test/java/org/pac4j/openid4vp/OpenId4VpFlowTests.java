@@ -14,7 +14,6 @@ import org.pac4j.core.exception.http.OkAction;
 import org.pac4j.openid4vp.client.OpenId4VpClient;
 import org.pac4j.openid4vp.config.ClientIdPrefix;
 import org.pac4j.openid4vp.config.OpenId4VpConfiguration;
-import org.pac4j.openid4vp.config.WalletInvocationMode;
 import org.pac4j.openid4vp.credentials.VerifiablePresentationCredentials;
 import org.pac4j.openid4vp.verifier.SdJwtVcVerifier;
 import org.pac4j.openid4vp.wallet.WalletSimulator;
@@ -52,10 +51,9 @@ class OpenId4VpFlowTests {
     void setUp() throws Exception {
         configuration = new OpenId4VpConfiguration();
         configuration.setJwks(new JwksProperties()
-            .setJwksPath(directory.resolve("keys.jwks").toString()));
+            .setJwksPath(directory.resolve("keys.jwks").toString()).setKid("key-1"));
         configuration.setClientId(CALLBACK_URL);
-        configuration.setClientIdPrefix(ClientIdPrefix.REDIRECT_URI);
-        configuration.setInvocationMode(WalletInvocationMode.CUSTOM_SCHEME);
+        configuration.setClientIdPrefix(ClientIdPrefix.DECENTRALIZED_IDENTIFIER);
         configuration.setDcqlQuery("{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\"}]}");
         configuration.addCredentialVerifier(new SdJwtVcVerifier());
 
@@ -84,7 +82,7 @@ class OpenId4VpFlowTests {
             () -> client.getCredentials(new CallContext(fetch, new MockSessionStore())));
 
         val request = simulator.readRequestObject(served.getContent());
-        assertEquals(ClientIdPrefix.REDIRECT_URI.getValue() + ":" + CALLBACK_URL, request.getClientId());
+        assertEquals(ClientIdPrefix.DECENTRALIZED_IDENTIFIER.getValue() + ":" + CALLBACK_URL, request.getClientId());
         assertTrue(request.getResponseUri().contains(VP_TRANSACTION_ID + "=" + transactionId));
 
         // 3. the wallet answers, encrypted to the key the request object published

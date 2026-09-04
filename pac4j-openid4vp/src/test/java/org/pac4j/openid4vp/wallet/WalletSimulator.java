@@ -7,6 +7,7 @@ import com.nimbusds.jose.crypto.ECDHEncrypter;
 import com.nimbusds.jose.jwk.ECKey;
 import com.nimbusds.jwt.EncryptedJWT;
 import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jose.util.JSONObjectUtils;
 import com.nimbusds.jwt.SignedJWT;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -15,6 +16,8 @@ import org.pac4j.openid4vp.exceptions.OpenId4VpException;
 
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -87,27 +90,78 @@ public class WalletSimulator {
     public WalletRequest readRequestObject(final String signedRequestObject) {
         try {
             val claims = SignedJWT.parse(signedRequestObject).getJWTClaimsSet();
-            val metadata = claims.getJSONObjectClaim(CLIENT_METADATA);
-
-            ECKey encryptionKey = null;
-            if (metadata != null && metadata.get(JWKS) != null) {
-                val keys = (List<Map<String, Object>>) ((Map<String, Object>) metadata.get(JWKS)).get(KEYS);
-                if (keys != null && !keys.isEmpty()) {
-                    encryptionKey = ECKey.parse(keys.get(0));
-                }
-            }
-            val request = new WalletRequest(claims.getStringClaim(CLIENT_ID), claims.getStringClaim(NONCE),
-                claims.getStringClaim(RESPONSE_URI), encryptionKey, claims.getJSONObjectClaim(DCQL_QUERY));
             LOGGER.debug("Wallet simulator <- request object from the verifier {}, expiring at {}",
-                request.getClientId(), claims.getExpirationTime());
-            LOGGER.debug("Wallet simulator    it asks for {} and expects the answer at {}",
-                request.getDcqlQuery(), request.getResponseUri());
-            LOGGER.debug("Wallet simulator    the answer must be bound to the nonce {} and encrypted to the key {}",
-                request.getNonce(), encryptionKey != null ? encryptionKey.getKeyID() : "none");
-            return request;
+                claims.getStringClaim(CLIENT_ID), claims.getExpirationTime());
+            return buildRequest(claims.getClaims());
         } catch (final Exception e) {
             throw new OpenId4VpException("unable to read the request object", e);
         }
+    }
+
+    /**
+     * <p>Whether the wallet URL points at a request object to fetch, or carries the request itself.</p>
+     *
+     * @param walletUrl the URL handed over by the verifier
+     * @return whether a request object must be fetched
+     */
+    public boolean hasRequestUri(final String walletUrl) {
+        return readParameter(walletUrl, REQUEST_URI) != null;
+    }
+
+    /**
+     * <p>Read a request carried by the wallet URL itself, the way a wallet does when the verifier could not
+     * sign: there is nothing to fetch, the parameters are the URL.</p>
+     *
+     * @param walletUrl the URL handed over by the verifier
+     * @return what the wallet needs to answer
+     */
+    public WalletRequest readRequestParameters(final String walletUrl) {
+        LOGGER.debug("Wallet simulator <- invoked with the request in the URL itself: {}", walletUrl);
+        try {
+            val parameters = new LinkedHashMap<String, Object>();
+            for (val name : List.of(CLIENT_ID, NONCE, RESPONSE_URI, RESPONSE_MODE, RESPONSE_TYPE, STATE)) {
+                val value = readParameter(walletUrl, name);
+                if (value != null) {
+                    parameters.put(name, value);
+                }
+            }
+            // the query and the metadata are carried as JSON, since a URL parameter is only ever a string
+            for (val name : List.of(DCQL_QUERY, CLIENT_METADATA)) {
+                val value = readParameter(walletUrl, name);
+                if (value != null) {
+                    parameters.put(name, JSONObjectUtils.parse(value));
+                }
+            }
+            return buildRequest(parameters);
+        } catch (final Exception e) {
+            throw new OpenId4VpException("unable to read the request from the wallet URL", e);
+        }
+    }
+
+    /**
+     * <p>What both forms of a request boil down to, once their parameters are in hand.</p>
+     *
+     * @param parameters the request parameters, whether claims of a request object or members of a URL
+     * @return what the wallet needs to answer
+     */
+    @SuppressWarnings("unchecked")
+    protected WalletRequest buildRequest(final Map<String, Object> parameters) throws ParseException {
+        val metadata = (Map<String, Object>) parameters.get(CLIENT_METADATA);
+
+        ECKey encryptionKey = null;
+        if (metadata != null && metadata.get(JWKS) != null) {
+            val keys = (List<Map<String, Object>>) ((Map<String, Object>) metadata.get(JWKS)).get(KEYS);
+            if (keys != null && !keys.isEmpty()) {
+                encryptionKey = ECKey.parse(keys.get(0));
+            }
+        }
+        val request = new WalletRequest((String) parameters.get(CLIENT_ID), (String) parameters.get(NONCE),
+            (String) parameters.get(RESPONSE_URI), encryptionKey, (Map<String, Object>) parameters.get(DCQL_QUERY));
+        LOGGER.debug("Wallet simulator    it asks for {} and expects the answer at {}",
+            request.getDcqlQuery(), request.getResponseUri());
+        LOGGER.debug("Wallet simulator    the answer must be bound to the nonce {} and encrypted to the key {}",
+            request.getNonce(), encryptionKey != null ? encryptionKey.getKeyID() : "none");
+        return request;
     }
 
     /**

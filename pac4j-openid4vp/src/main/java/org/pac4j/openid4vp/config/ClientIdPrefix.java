@@ -15,12 +15,22 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum ClientIdPrefix {
 
-    X509_SAN_DNS("x509_san_dns"),
-    X509_HASH("x509_hash"),
-    REDIRECT_URI("redirect_uri"),
-    DECENTRALIZED_IDENTIFIER("decentralized_identifier"),
-    VERIFIER_ATTESTATION("verifier_attestation"),
-    OPENID_FEDERATION("openid_federation");
+    X509_SAN_DNS("x509_san_dns", true),
+    X509_HASH("x509_hash", true),
+    /**
+     * The identifier is the redirect or response URI of the verifier itself. Requests using it cannot be
+     * signed: there is no way for the wallet to obtain a key it can trust, so a signature would prove
+     * nothing. The request parameters travel in the wallet URL instead of a request object.
+     */
+    REDIRECT_URI("redirect_uri", false),
+    DECENTRALIZED_IDENTIFIER("decentralized_identifier", true);
+
+    // the verifier_attestation and openid_federation prefixes of the specification are not offered yet: the
+    // first needs the attestation in a "jwt" header of the request object, the second a trust chain and the
+    // federation machinery, and a prefix which cannot be honoured is worse than none
 
     private final String value;
+
+    /** Whether the wallet can obtain a trusted key for this prefix, and the request is therefore signed. */
+    private final boolean signedRequest;
 }

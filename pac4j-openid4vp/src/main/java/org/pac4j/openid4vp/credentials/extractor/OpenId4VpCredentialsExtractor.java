@@ -73,8 +73,10 @@ public class OpenId4VpCredentialsExtractor implements CredentialsExtractor {
         transaction.setStatus(VpTransaction.Status.REQUEST_RETRIEVED);
         client.getConfiguration().getTransactionStore().set(transactionId, transaction);
         LOGGER.debug("the wallet fetches the request object of the transaction: {}", transactionId);
+        val requestObject = client.getRequestObjectBuilder().build(ctx, transaction);
+        LOGGER.trace("request object of the transaction {}: {}", transactionId, requestObject);
         ctx.webContext().setResponseContentType(REQUEST_OBJECT_CONTENT_TYPE);
-        return new OkAction(transaction.getRequestObject());
+        return new OkAction(requestObject);
     }
 
     /**

@@ -1,10 +1,12 @@
 package org.pac4j.openid4vp.client;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.http.ajax.DefaultAjaxRequestResolver;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
@@ -13,6 +15,7 @@ import org.pac4j.openid4vp.credentials.authenticator.OpenId4VpAuthenticator;
 import org.pac4j.openid4vp.credentials.extractor.OpenId4VpCredentialsExtractor;
 import org.pac4j.openid4vp.profile.VerifiableCredentialProfile;
 import org.pac4j.openid4vp.profile.creator.OpenId4VpProfileCreator;
+import org.pac4j.openid4vp.request.RequestObjectBuilder;
 import org.pac4j.openid4vp.redirect.OpenId4VpRedirectionActionBuilder;
 
 import static org.pac4j.core.util.CommonHelper.assertNotNull;
@@ -34,6 +37,11 @@ public class OpenId4VpClient extends IndirectClient {
 
     @Getter
     private OpenId4VpConfiguration configuration;
+
+    /** Builds the request object served to the wallet. Replace it to add claims or to answer wallet metadata. */
+    @Getter
+    @Setter
+    private RequestObjectBuilder requestObjectBuilder;
 
     /**
      * <p>Constructor for OpenId4VpClient.</p>
@@ -79,6 +87,9 @@ public class OpenId4VpClient extends IndirectClient {
     /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
+        if (requestObjectBuilder == null) {
+            requestObjectBuilder = new RequestObjectBuilder(this);
+        }
         setRedirectionActionBuilderIfUndefined(new OpenId4VpRedirectionActionBuilder(this));
         setCredentialsExtractorIfUndefined(new OpenId4VpCredentialsExtractor(this));
         setAuthenticatorIfUndefined(new OpenId4VpAuthenticator(this));
@@ -105,6 +116,18 @@ public class OpenId4VpClient extends IndirectClient {
         if (context.getRequestParameter(VP_TRANSACTION_ID).isEmpty()) {
             super.saveAttemptedAuthentication(context, sessionStore);
         }
+    }
+
+    /**
+     * <p>The URL a wallet fetches the request object from and posts its response to: the regular callback
+     * endpoint, qualified by the transaction identifier since those two legs carry no session.</p>
+     *
+     * @param context the web context
+     * @param transactionId the identifier of the transaction
+     * @return the request URI
+     */
+    public String computeRequestUri(final WebContext context, final String transactionId) {
+        return CommonHelper.addParameter(computeFinalCallbackUrl(context), VP_TRANSACTION_ID, transactionId);
     }
 
     /**

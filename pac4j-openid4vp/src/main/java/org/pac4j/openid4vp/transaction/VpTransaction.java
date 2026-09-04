@@ -59,9 +59,6 @@ public class VpTransaction implements Serializable {
 
     private Status status = Status.CREATED;
 
-    /** The signed request object (JAR) served to the wallet. */
-    private String requestObject;
-
     /** The ephemeral response encryption key of this transaction, in its JWK form, private part included. */
     private String encryptionKey;
 

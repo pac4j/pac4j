@@ -23,6 +23,12 @@
             <groupId>com.nimbusds</groupId>
             <artifactId>nimbus-jose-jwt</artifactId>
         </dependency>
+        <!-- loading a key and its certificate chain from a keystore, which the x509 client identifier prefixes
+             require, goes through BouncyCastle in nimbus -->
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcpkix-jdk18on</artifactId>
+        </dependency>
         <!-- the JWKS and keystore properties expose a Spring Resource, so the configuration needs it -->
         <dependency>
             <groupId>org.springframework</groupId>
