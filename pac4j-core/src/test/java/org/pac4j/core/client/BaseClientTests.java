@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.credentials.TokenCredentials;
+import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.WithLocationAction;
@@ -17,8 +19,7 @@ import org.pac4j.test.util.TestsHelper;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * This class tests the {@link BaseClient} class.
@@ -114,5 +115,89 @@ public final class BaseClientTests implements TestsConstants {
             new MockIndirectClient(TYPE, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
         val context = MockWebContext.create();
         TestsHelper.expectException(() -> client.getRedirectionAction(new CallContext(context, null)));
+    }
+
+    @Test
+    public void testGetCredentialsCleansAttemptedAuthentication() {
+        val client = new MockIndirectClient(TYPE, new FoundAction(LOGIN_URL), Optional.of(new TokenCredentials(TOKEN)),
+            new CommonProfile());
+        client.setCallbackUrl(CALLBACK_URL);
+        val context = MockWebContext.create();
+        final SessionStore sessionStore = new MockSessionStore();
+        sessionStore.set(context, client.getName() + IndirectClient.ATTEMPTED_AUTHENTICATION_SUFFIX, "true");
+        val credentials = client.getCredentials(new CallContext(context, sessionStore));
+        assertTrue(credentials.isPresent());
+        assertFalse(sessionStore.get(context, client.getName() + IndirectClient.ATTEMPTED_AUTHENTICATION_SUFFIX).isPresent());
+    }
+
+    @Test
+    public void testGetCredentialsWithCredentialsExceptionSavesAttemptedAuthentication() {
+        val client = new MockIndirectClient(TYPE, new FoundAction(LOGIN_URL), () -> { throw new CredentialsException("bad"); },
+            new CommonProfile());
+        client.setCallbackUrl(CALLBACK_URL);
+        val context = MockWebContext.create();
+        final SessionStore sessionStore = new MockSessionStore();
+        val credentials = client.getCredentials(new CallContext(context, sessionStore));
+        assertFalse(credentials.isPresent());
+        assertEquals("true", sessionStore.get(context, client.getName() + IndirectClient.ATTEMPTED_AUTHENTICATION_SUFFIX).get());
+    }
+
+    @Test
+    public void testGetCredentialsWithOtherExceptionAllowsRetry() {
+        val client = new MockIndirectClient(TYPE, new FoundAction(LOGIN_URL), () -> { throw new IllegalStateException("boom"); },
+            new CommonProfile());
+        client.setCallbackUrl(CALLBACK_URL);
+        val context = MockWebContext.create();
+        final SessionStore sessionStore = new MockSessionStore();
+        assertThrows(IllegalStateException.class, () -> client.getCredentials(new CallContext(context, sessionStore)));
+        assertFalse(sessionStore.get(context, client.getName() + IndirectClient.ATTEMPTED_AUTHENTICATION_SUFFIX).isPresent());
+    }
+
+    @Test
+    public void testValidateCredentialsCleansAttemptedAuthentication() {
+        val client = new MockIndirectClient(TYPE, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
+        client.setCallbackUrl(CALLBACK_URL);
+        val context = MockWebContext.create();
+        final SessionStore sessionStore = new MockSessionStore();
+        sessionStore.set(context, client.getName() + IndirectClient.ATTEMPTED_AUTHENTICATION_SUFFIX, "true");
+        val credentials = client.validateCredentials(new CallContext(context, sessionStore), new TokenCredentials(TOKEN));
+        assertTrue(credentials.isPresent());
+        assertFalse(sessionStore.get(context, client.getName() + IndirectClient.ATTEMPTED_AUTHENTICATION_SUFFIX).isPresent());
+    }
+
+    @Test
+    public void testValidateCredentialsWithEmptyResultSavesAttemptedAuthentication() {
+        val client = new MockIndirectClient(TYPE, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
+        client.setCallbackUrl(CALLBACK_URL);
+        client.setAuthenticator((ctx, cred) -> Optional.empty());
+        val context = MockWebContext.create();
+        final SessionStore sessionStore = new MockSessionStore();
+        val credentials = client.validateCredentials(new CallContext(context, sessionStore), new TokenCredentials(TOKEN));
+        assertFalse(credentials.isPresent());
+        assertEquals("true", sessionStore.get(context, client.getName() + IndirectClient.ATTEMPTED_AUTHENTICATION_SUFFIX).get());
+    }
+
+    @Test
+    public void testValidateCredentialsWithCredentialsExceptionSavesAttemptedAuthentication() {
+        val client = new MockIndirectClient(TYPE, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
+        client.setCallbackUrl(CALLBACK_URL);
+        client.setAuthenticator((ctx, cred) -> { throw new CredentialsException("bad"); });
+        val context = MockWebContext.create();
+        final SessionStore sessionStore = new MockSessionStore();
+        val credentials = client.validateCredentials(new CallContext(context, sessionStore), new TokenCredentials(TOKEN));
+        assertFalse(credentials.isPresent());
+        assertEquals("true", sessionStore.get(context, client.getName() + IndirectClient.ATTEMPTED_AUTHENTICATION_SUFFIX).get());
+    }
+
+    @Test
+    public void testValidateCredentialsWithOtherExceptionAllowsRetry() {
+        val client = new MockIndirectClient(TYPE, new FoundAction(LOGIN_URL), Optional.empty(), new CommonProfile());
+        client.setCallbackUrl(CALLBACK_URL);
+        client.setAuthenticator((ctx, cred) -> { throw new IllegalStateException("boom"); });
+        val context = MockWebContext.create();
+        final SessionStore sessionStore = new MockSessionStore();
+        assertThrows(IllegalStateException.class,
+            () -> client.validateCredentials(new CallContext(context, sessionStore), new TokenCredentials(TOKEN)));
+        assertFalse(sessionStore.get(context, client.getName() + IndirectClient.ATTEMPTED_AUTHENTICATION_SUFFIX).isPresent());
     }
 }

@@ -13,6 +13,7 @@ title: Release notes&#58;
   - retry every 60 seconds after the first loading and return the old data in case of error
 - Fix OpenID federation forced signing of the auth request object for explicitly registered clients when it is not mandatory
 - OIDC's login hints can be provided dynamically as a `login_hint` request attribute
+- Only empty credentials or a `CredentialsException` (from the `CredentialsExtractor` or the `Authenticator`) now block further authentication attempts of an indirect client: any other exception allows a retry.
 - `IndirectClient`: the `saveAttemptedAuthentication` method is now `protected`, so that a client can skip the attempted authentication flag for the requests which are not browser navigations
 - Added the `ConcurrentMapStore`, a `Store` expiring its entries (without any additional dependency), and the `AbstractConcurrentMapStore` for the values carrying their own expiration date
 - `JwkHelper`: `buildSignedJwt` can now publish in the `x5c` header the certificate chain the signing key carries, for the protocols binding the identity of the signer to a certificate rather than to a key
