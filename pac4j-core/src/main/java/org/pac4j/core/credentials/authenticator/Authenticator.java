@@ -21,6 +21,8 @@ public interface Authenticator {
 
     /**
      * Validate the credentials. It should throw a {@link org.pac4j.core.exception.CredentialsException} in case of failure.
+     * Note that returning an empty {@code Optional} or throwing a {@code CredentialsException} will block
+     * any further authentication attempt. Any other exception will allow a retry.
      *
      * @param ctx the context
      * @param credentials the given credentials

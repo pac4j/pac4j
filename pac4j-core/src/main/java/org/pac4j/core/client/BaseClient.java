@@ -81,12 +81,12 @@ public abstract class BaseClient extends InitializableObject implements Client {
         Credentials credentials = null;
         try {
             credentials = this.credentialsExtractor.extract(ctx).orElse(null);
+            checkCredentials(ctx, credentials);
             return Optional.ofNullable(credentials);
-        } catch (CredentialsException e) {
+        } catch (final CredentialsException e) {
+            checkCredentials(ctx, credentials);
             logger.info("Failed to retrieve credentials: {}", e.getMessage());
             logger.debug("Failed to retrieve redentials", e);
-        } finally {
-            checkCredentials(ctx, credentials);
         }
         return Optional.empty();
     }
@@ -118,13 +118,13 @@ public abstract class BaseClient extends InitializableObject implements Client {
         Credentials newCredentials = null;
         try {
             newCredentials = this.authenticator.validate(ctx, credentials).orElse(null);
+            checkCredentials(ctx, newCredentials);
             return Optional.ofNullable(newCredentials);
-        } catch (CredentialsException e) {
+        } catch (final CredentialsException e) {
+            checkCredentials(ctx, newCredentials);
             logger.info("Failed to validate credentials: {}", e.getMessage());
             logger.debug("Failed to validate credentials", e);
             return Optional.empty();
-        } finally {
-            checkCredentials(ctx, newCredentials);
         }
     }
 
