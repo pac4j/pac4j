@@ -1,14 +1,11 @@
 package org.pac4j.openid4vp.redirect;
 
 import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.JOSEObjectType;
 import com.nimbusds.jose.JWEAlgorithm;
-import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.jwk.Curve;
 import com.nimbusds.jose.jwk.ECKey;
 import com.nimbusds.jose.jwk.KeyUse;
 import com.nimbusds.jose.jwk.gen.ECKeyGenerator;
-import com.nimbusds.jose.util.Base64;
 import com.nimbusds.jose.util.JSONObjectUtils;
 import com.nimbusds.jwt.JWTClaimsSet;
 import lombok.RequiredArgsConstructor;
@@ -19,17 +16,15 @@ import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.JwkHelper;
 import org.pac4j.openid4vp.client.OpenId4VpClient;
-import org.pac4j.openid4vp.config.ClientIdPrefix;
 import org.pac4j.openid4vp.config.ResponseMode;
 import org.pac4j.openid4vp.exceptions.OpenId4VpException;
 import org.pac4j.openid4vp.transaction.VpTransaction;
 
-import java.security.cert.CertificateEncodingException;
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -154,35 +149,9 @@ public class OpenId4VpRedirectionActionBuilder implements RedirectionActionBuild
             builder.claim(STATE, transaction.getState());
         }
 
-        val signedRequestObject = configuration.getRequestObjectSignatureConfiguration()
-            .sign(buildRequestObjectHeader(), builder.build());
-        return signedRequestObject.serialize();
-    }
-
-    /**
-     * <p>Build the header of the request object: the type the wallet expects, and the relying party
-     * certificate chain when the client identifier is bound to it.</p>
-     *
-     * @return the header
-     */
-    protected JWSHeader buildRequestObjectHeader() {
-        val configuration = client.getConfiguration();
-        val builder = new JWSHeader.Builder(configuration.getRequestObjectSignatureConfiguration().getAlgorithm())
-            .type(new JOSEObjectType(REQUEST_OBJECT_TYPE));
-
-        val prefix = configuration.getClientIdPrefix();
-        if (prefix == ClientIdPrefix.X509_SAN_DNS || prefix == ClientIdPrefix.X509_HASH) {
-            val chain = new ArrayList<Base64>();
-            try {
-                for (val certificate : configuration.getRelyingPartyCertificateChain()) {
-                    chain.add(Base64.encode(certificate.getEncoded()));
-                }
-            } catch (final CertificateEncodingException e) {
-                throw new OpenId4VpException("unable to encode the relying party certificate chain", e);
-            }
-            builder.x509CertChain(chain);
-        }
-        return builder.build();
+        return JwkHelper.buildSignedJwt(builder.build(), configuration.getRequestObjectSigningKey(),
+            configuration.computeRequestObjectSigningAlgorithm(), REQUEST_OBJECT_TYPE,
+            configuration.publishesCertificateChain());
     }
 
     /**

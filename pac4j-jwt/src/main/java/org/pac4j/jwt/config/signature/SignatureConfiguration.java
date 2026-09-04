@@ -2,7 +2,6 @@ package org.pac4j.jwt.config.signature;
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
-import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
@@ -29,21 +28,6 @@ public interface SignatureConfiguration {
      * @return the signed JWT
      */
     SignedJWT sign(JWTClaimsSet claims);
-
-    /**
-     * Generate a signed JWT based on a header and claims, for the protocols requiring specific header
-     * parameters: a "typ", a "kid", the certificate chain in "x5c"...
-     *
-     * <p>The algorithm of the header must be the one of this configuration.</p>
-     *
-     * @param header the provided header
-     * @param claims the provided claims
-     * @return the signed JWT
-     * @since 6.6.0
-     */
-    default SignedJWT sign(JWSHeader header, JWTClaimsSet claims) {
-        throw new UnsupportedOperationException("signing with a specific header is not supported by " + getClass().getName());
-    }
 
     /**
      * Verify a signed JWT.

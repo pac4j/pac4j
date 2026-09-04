@@ -8,8 +8,12 @@ import org.pac4j.core.client.config.BaseClientConfiguration;
 import org.pac4j.core.store.Store;
 import org.pac4j.core.util.generator.RandomValueGenerator;
 import org.pac4j.core.util.generator.ValueGenerator;
-import org.pac4j.jwt.config.encryption.EncryptionConfiguration;
-import org.pac4j.jwt.config.signature.AbstractSignatureConfiguration;
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.jwk.JWK;
+import lombok.AccessLevel;
+import org.pac4j.core.config.properties.JwksProperties;
+import org.pac4j.core.config.properties.KeystoreProperties;
+import org.pac4j.core.util.JwkHelper;
 import org.pac4j.openid4vp.transaction.VpTransaction;
 import org.pac4j.openid4vp.transaction.VpTransactionStore;
 import org.pac4j.openid4vp.verifier.CredentialVerifier;
@@ -43,6 +47,9 @@ public class OpenId4VpConfiguration extends BaseClientConfiguration {
     /** The default lifetime of a presentation request, in seconds. */
     public static final int DEFAULT_TRANSACTION_LIFETIME_SECONDS = 300;
 
+    /** The signature algorithm mandated by the high assurance profile, and the curve it implies. */
+    public static final JWSAlgorithm DEFAULT_SIGNING_ALGORITHM = JWSAlgorithm.ES256;
+
     /** The identifier of this verifier, without its prefix: a DNS name for {@link ClientIdPrefix#X509_SAN_DNS}. */
     private String clientId;
 
@@ -61,25 +68,18 @@ public class OpenId4VpConfiguration extends BaseClientConfiguration {
      */
     private String dcqlQuery;
 
-    /**
-     * Signs the request object. ES256 is the algorithm mandated by the profile. The type is the abstract
-     * class rather than the interface, so that the algorithm of the signature is read from a single place:
-     * the header of the request object must announce the very algorithm the signature uses.
-     */
-    private AbstractSignatureConfiguration requestObjectSignatureConfiguration;
+    /** Where the signing key comes from: a JWKS, or a keystore when it is not defined. */
+    private JwksProperties jwks = new JwksProperties();
+
+    private KeystoreProperties keystore = new KeystoreProperties();
 
     /**
-     * The relying party certificate chain, published in the {@code x5c} header of the request object.
-     * With {@link ClientIdPrefix#X509_SAN_DNS}, the leaf certificate is the relying party access certificate
-     * and its subject alternative name must match {@link #clientId}.
+     * Signs the request object, resolved from the sources above at initialization. The signature algorithm is
+     * derived from the key itself, so a P-256 key gives the ES256 the profile mandates and there is no second
+     * setting to keep in agreement with it.
      */
-    private List<X509Certificate> relyingPartyCertificateChain = new ArrayList<>();
-
-    /**
-     * Decrypts the response in the {@code direct_post.jwt} response mode. When left undefined, an ephemeral
-     * key is generated for each transaction, which is the recommended hygiene.
-     */
-    private EncryptionConfiguration responseEncryptionConfiguration;
+    @Setter(AccessLevel.NONE)
+    private JWK requestObjectSigningKey;
 
     /** The verifiers, by credential format. */
     private Map<CredentialFormat, CredentialVerifier> credentialVerifiers = new LinkedHashMap<>();
@@ -117,13 +117,33 @@ public class OpenId4VpConfiguration extends BaseClientConfiguration {
         assertNotNull("transactionIdGenerator", transactionIdGenerator);
         assertNotBlank("dcqlQuery", dcqlQuery);
         assertTrue(supportedFormats != null && !supportedFormats.isEmpty(), "supportedFormats cannot be empty");
-        assertNotNull("requestObjectSignatureConfiguration", requestObjectSignatureConfiguration);
-        if (clientIdPrefix == ClientIdPrefix.X509_SAN_DNS || clientIdPrefix == ClientIdPrefix.X509_HASH) {
-            assertTrue(relyingPartyCertificateChain != null && !relyingPartyCertificateChain.isEmpty(),
-                "relyingPartyCertificateChain cannot be empty for the " + clientIdPrefix.getValue() + " client identifier prefix");
+        requestObjectSigningKey = JwkHelper.resolveSigningKey(jwks, keystore, DEFAULT_SIGNING_ALGORITHM);
+        if (publishesCertificateChain()) {
+            assertTrue(requestObjectSigningKey.getX509CertChain() != null && !requestObjectSigningKey.getX509CertChain().isEmpty(),
+                "the signing key must carry a certificate chain for the " + clientIdPrefix.getValue()
+                    + " client identifier prefix: load it from a keystore, or from a JWKS holding a x5c member");
         }
         supportedFormats.forEach(format -> assertNotNull("credentialVerifier for " + format.getValue(),
             credentialVerifiers.get(format)));
+    }
+
+    /**
+     * <p>Whether the certificate chain must be published in the request object: the wallet trusts this
+     * verifier through its certificate rather than through its key.</p>
+     *
+     * @return a boolean
+     */
+    public boolean publishesCertificateChain() {
+        return clientIdPrefix == ClientIdPrefix.X509_SAN_DNS || clientIdPrefix == ClientIdPrefix.X509_HASH;
+    }
+
+    /**
+     * <p>The signature algorithm of the request object, derived from the signing key.</p>
+     *
+     * @return a {@link JWSAlgorithm} object
+     */
+    public JWSAlgorithm computeRequestObjectSigningAlgorithm() {
+        return JwkHelper.determineAlgorithm(requestObjectSigningKey, false);
     }
 
     /**

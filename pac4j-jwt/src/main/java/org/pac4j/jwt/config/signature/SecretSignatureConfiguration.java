@@ -2,12 +2,15 @@ package org.pac4j.jwt.config.signature;
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.JWSSigner;
 import com.nimbusds.jose.JWSVerifier;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jose.util.Base64;
+import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import lombok.val;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 
@@ -91,9 +94,14 @@ public class SecretSignatureConfiguration extends AbstractSignatureConfiguration
 
     /** {@inheritDoc} */
     @Override
-    protected JWSSigner buildSigner() {
+    public SignedJWT sign(final JWTClaimsSet claims) {
+        init();
+
         try {
-            return new MACSigner(this.secret);
+            JWSSigner signer = new MACSigner(this.secret);
+            val signedJWT = new SignedJWT(new JWSHeader(algorithm), claims);
+            signedJWT.sign(signer);
+            return signedJWT;
         } catch (final JOSEException e) {
             throw new TechnicalException(e);
         }

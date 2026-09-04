@@ -2,10 +2,12 @@ package org.pac4j.jwt.config.signature;
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.JWSSigner;
 import com.nimbusds.jose.JWSVerifier;
 import com.nimbusds.jose.crypto.ECDSASigner;
 import com.nimbusds.jose.crypto.ECDSAVerifier;
+import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import lombok.Getter;
 import lombok.Setter;
@@ -79,10 +81,15 @@ public class ECSignatureConfiguration extends AbstractSignatureConfiguration {
 
     /** {@inheritDoc} */
     @Override
-    protected JWSSigner buildSigner() {
+    public SignedJWT sign(JWTClaimsSet claims) {
+        init();
         CommonHelper.assertNotNull("privateKey", privateKey);
+
         try {
-            return new ECDSASigner(this.privateKey);
+            JWSSigner signer = new ECDSASigner(this.privateKey);
+            val signedJWT = new SignedJWT(new JWSHeader(algorithm), claims);
+            signedJWT.sign(signer);
+            return signedJWT;
         } catch (final JOSEException e) {
             throw new TechnicalException(e);
         }

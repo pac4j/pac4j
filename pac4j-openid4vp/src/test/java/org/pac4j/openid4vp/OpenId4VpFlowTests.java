@@ -3,11 +3,14 @@ package org.pac4j.openid4vp;
 import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+import org.pac4j.core.config.properties.JwksProperties;
+
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.exception.http.OkAction;
-import org.pac4j.jwt.config.signature.ECSignatureConfiguration;
+
 import org.pac4j.openid4vp.client.OpenId4VpClient;
 import org.pac4j.openid4vp.config.ClientIdPrefix;
 import org.pac4j.openid4vp.config.OpenId4VpConfiguration;
@@ -18,8 +21,6 @@ import org.pac4j.openid4vp.wallet.WalletSimulator;
 import org.pac4j.test.context.MockWebContext;
 import org.pac4j.test.context.session.MockSessionStore;
 
-import java.security.KeyPairGenerator;
-import java.security.spec.ECGenParameterSpec;
 import java.util.List;
 import java.util.Map;
 
@@ -41,20 +42,21 @@ class OpenId4VpFlowTests {
     private static final String CALLBACK_URL = "https://app.example.org/callback";
     private static final String PRESENTATION = "a-presentation-this-verifier-cannot-validate-yet";
 
+    @TempDir
+    private java.nio.file.Path directory;
+
     private OpenId4VpClient client;
     private OpenId4VpConfiguration configuration;
 
     @BeforeEach
     void setUp() throws Exception {
-        val generator = KeyPairGenerator.getInstance("EC");
-        generator.initialize(new ECGenParameterSpec("secp256r1"));
-
         configuration = new OpenId4VpConfiguration();
+        configuration.setJwks(new JwksProperties()
+            .setJwksPath(directory.resolve("keys.jwks").toString()));
         configuration.setClientId(CALLBACK_URL);
         configuration.setClientIdPrefix(ClientIdPrefix.REDIRECT_URI);
         configuration.setInvocationMode(WalletInvocationMode.CUSTOM_SCHEME);
         configuration.setDcqlQuery("{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\"}]}");
-        configuration.setRequestObjectSignatureConfiguration(new ECSignatureConfiguration(generator.generateKeyPair()));
         configuration.addCredentialVerifier(new SdJwtVcVerifier());
 
         client = new OpenId4VpClient(configuration);

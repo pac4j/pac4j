@@ -6,9 +6,12 @@ import com.nimbusds.jwt.SignedJWT;
 import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+import org.pac4j.core.config.properties.JwksProperties;
+
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.exception.http.FoundAction;
-import org.pac4j.jwt.config.signature.ECSignatureConfiguration;
+import com.nimbusds.jose.crypto.ECDSAVerifier;
 import org.pac4j.openid4vp.client.OpenId4VpClient;
 import org.pac4j.openid4vp.config.ClientIdPrefix;
 import org.pac4j.openid4vp.config.OpenId4VpConfiguration;
@@ -18,8 +21,6 @@ import org.pac4j.openid4vp.verifier.SdJwtVcVerifier;
 import org.pac4j.test.context.MockWebContext;
 import org.pac4j.test.context.session.MockSessionStore;
 
-import java.security.KeyPairGenerator;
-import java.security.spec.ECGenParameterSpec;
 import java.util.List;
 import java.util.Map;
 
@@ -38,21 +39,20 @@ class OpenId4VpRedirectionActionBuilderTests {
     private static final String CLIENT = "https://app.example.org/callback";
     private static final String DCQL = "{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\"}]}";
 
+    @TempDir
+    private java.nio.file.Path directory;
+
     private OpenId4VpClient client;
     private OpenId4VpConfiguration configuration;
-    private ECSignatureConfiguration signatureConfiguration;
 
     @BeforeEach
     void setUp() throws Exception {
-        val generator = KeyPairGenerator.getInstance("EC");
-        generator.initialize(new ECGenParameterSpec("secp256r1"));
-        signatureConfiguration = new ECSignatureConfiguration(generator.generateKeyPair());
-
         configuration = new OpenId4VpConfiguration();
+        configuration.setJwks(new JwksProperties()
+            .setJwksPath(directory.resolve("keys.jwks").toString()));
         configuration.setClientId(CLIENT);
         configuration.setClientIdPrefix(ClientIdPrefix.REDIRECT_URI);
         configuration.setDcqlQuery(DCQL);
-        configuration.setRequestObjectSignatureConfiguration(signatureConfiguration);
         configuration.addCredentialVerifier(new SdJwtVcVerifier());
         configuration.setInvocationMode(WalletInvocationMode.CUSTOM_SCHEME);
 
@@ -79,7 +79,8 @@ class OpenId4VpRedirectionActionBuilderTests {
 
         assertEquals(REQUEST_OBJECT_TYPE, requestObject.getHeader().getType().toString());
         assertEquals(JWSAlgorithm.ES256, requestObject.getHeader().getAlgorithm());
-        assertTrue(signatureConfiguration.verify(requestObject));
+        assertTrue(requestObject.verify(
+            new ECDSAVerifier(((ECKey) configuration.getRequestObjectSigningKey()).toPublicJWK())));
     }
 
     @Test
