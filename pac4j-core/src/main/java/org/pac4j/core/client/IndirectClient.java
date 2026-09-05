@@ -149,7 +149,7 @@ public abstract class IndirectClient extends BaseClient {
         val sessionStore = ctx.sessionStore();
         // no credentials and no profile returned -> save this authentication has already been tried and failed
         if (credentials == null && getProfileFactoryWhenNotAuthenticated() == null) {
-            logger.debug("no credentials and profile returned -> remember the authentication attempt");
+            logger.debug("no credentials and no profile returned");
             saveAttemptedAuthentication(webContext, sessionStore);
         } else {
             cleanAttemptedAuthentication(webContext, sessionStore);
@@ -220,7 +220,15 @@ public abstract class IndirectClient extends BaseClient {
         return getName() + CODE_VERIFIER_SESSION_PARAMETER;
     }
 
-    private void saveAttemptedAuthentication(final WebContext context, final SessionStore sessionStore) {
+    /**
+     * <p>Remember that an authentication has been attempted and failed, so that the next attempt returns an
+     * unauthorized response instead of looping. Subclasses may skip it for the requests which are not browser
+     * navigations, and thus have no session to remember anything in.</p>
+     *
+     * @param context the web context
+     * @param sessionStore the session store
+     */
+    protected void saveAttemptedAuthentication(final WebContext context, final SessionStore sessionStore) {
         if (checkAuthenticationAttempt) {
             logger.debug("save authentication attempt in session");
             sessionStore.set(context, getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, "true");

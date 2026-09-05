@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.*;
 import com.nimbusds.jose.jwk.*;
+import com.nimbusds.jose.jwk.gen.ECKeyGenerator;
 import com.nimbusds.jose.jwk.gen.RSAKeyGenerator;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
@@ -35,7 +36,58 @@ public class JwkHelper {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
+    /**
+     * Resolve the signing key from the JWKS if it is defined, from the keystore otherwise, creating one for
+     * the default algorithm when the JWKS resource does not exist yet.
+     *
+     * @param jwks the JWKS properties, may be null
+     * @param keystore the keystore properties, may be null
+     * @return the signing key
+     */
+    public static JWK resolveSigningKey(final JwksProperties jwks, final KeystoreProperties keystore) {
+        return resolveSigningKey(jwks, keystore, DEFAULT_CREATED_KEY_ALGORITHM);
+    }
+
+    /**
+     * Resolve the signing key from the JWKS if it is defined, from the keystore otherwise.
+     *
+     * <p>Either source carries the whole material: a JWK holds the private key and, in its "x5c" member, the
+     * certificate chain. A keystore is what a certification authority hands over, a JWKS is the usual shape
+     * of a key without any certificate, but both can hold both.</p>
+     *
+     * @param jwks the JWKS properties, may be null
+     * @param keystore the keystore properties, may be null
+     * @param createdKeyAlgorithm the algorithm of the key created when the JWKS resource does not exist yet
+     * @return the signing key
+     */
+    public static JWK resolveSigningKey(final JwksProperties jwks, final KeystoreProperties keystore,
+                                        final JWSAlgorithm createdKeyAlgorithm) {
+        if (jwks != null && jwks.isDefined()) {
+            return loadJwkFromOrCreateJwks(jwks, createdKeyAlgorithm);
+        }
+        if (keystore != null && keystore.getKeystoreResource() != null) {
+            return loadJwkFromOrCreateKeyStore(keystore);
+        }
+        throw new TechnicalException("A JWKS or a keystore is mandatory to get the signing key");
+    }
+
+    /** The algorithm of the key created when none exists yet, kept for backward compatibility. */
+    public static final JWSAlgorithm DEFAULT_CREATED_KEY_ALGORITHM = JWSAlgorithm.RS256;
+
     public static JWK loadJwkFromOrCreateJwks(final JwksProperties jwksProperties) {
+        return loadJwkFromOrCreateJwks(jwksProperties, DEFAULT_CREATED_KEY_ALGORITHM);
+    }
+
+    /**
+     * Load the signing key from the JWKS, creating one for the given algorithm when the resource does not
+     * exist yet. Some profiles mandate an algorithm the default RSA key would not satisfy: OpenID4VP's high
+     * assurance profile requires ES256, hence a P-256 key.
+     *
+     * @param jwksProperties where the JWKS lives
+     * @param createdKeyAlgorithm the algorithm of the key to create when none exists
+     * @return the signing key
+     */
+    public static JWK loadJwkFromOrCreateJwks(final JwksProperties jwksProperties, final JWSAlgorithm createdKeyAlgorithm) {
         LOGGER.debug("Loading signingKey from JWKS");
         val jwksResource = jwksProperties.getJwksResource();
         val kid = jwksProperties.getKid();
@@ -43,20 +95,15 @@ public class JwkHelper {
             if (!jwksResource.isFile()) {
                 throw new TechnicalException("Cannot create JWKS resource which is not a file: " + jwksResource);
             }
-            LOGGER.debug("No signingKey found in JWKS: generating one");
+            LOGGER.debug("No signingKey found in JWKS: generating a {} one", createdKeyAlgorithm);
             try {
-                // not supported for federation yet (SDK 11.31.1):
-                // new OctetKeyPairGenerator(Curve.Ed25519).keyID(kid).keyUse(KeyUse.SIGNATURE).generate();
-                val generatedKey = new RSAKeyGenerator(2048)
-                    .keyUse(KeyUse.SIGNATURE)
-                    .keyID(kid)
-                    .generate();
+                val generatedKey = generateKey(createdKeyAlgorithm, kid);
 
                 val path = jwksResource.getFile().toPath().toString();
                 saveJwkPrivate(generatedKey, path);
 
                 return generatedKey;
-            } catch (final JOSEException | IOException e) {
+            } catch (final IOException e) {
                 throw new TechnicalException(e);
             }
         }
@@ -85,6 +132,43 @@ public class JwkHelper {
         }
 
         return signingJwk;
+    }
+
+    /**
+     * Generate a signature key for the given algorithm, without any key identifier.
+     *
+     * @param algorithm the algorithm the key must be usable with
+     * @return the generated key, private part included
+     */
+    public static JWK generateKey(final JWSAlgorithm algorithm) {
+        return generateKey(algorithm, null);
+    }
+
+    /**
+     * Generate a signature key for the given algorithm, identified by the given key identifier.
+     *
+     * @param algorithm the algorithm the key must be usable with
+     * @param kid the key identifier, null to generate a key carrying none
+     * @return the generated key, private part included
+     */
+    public static JWK generateKey(final JWSAlgorithm algorithm, final String kid) {
+        try {
+            // not supported for federation yet (SDK 11.31.1):
+            // new OctetKeyPairGenerator(Curve.Ed25519).keyID(kid).keyUse(KeyUse.SIGNATURE).generate();
+            if (JWSAlgorithm.ES256.equals(algorithm) || JWSAlgorithm.ES384.equals(algorithm)
+                || JWSAlgorithm.ES512.equals(algorithm)) {
+                val curve = Curve.forJWSAlgorithm(algorithm).iterator().next();
+                return new ECKeyGenerator(curve).keyUse(KeyUse.SIGNATURE).keyID(kid).algorithm(algorithm).generate();
+            }
+            if (JWSAlgorithm.RS256.equals(algorithm) || JWSAlgorithm.RS384.equals(algorithm)
+                || JWSAlgorithm.RS512.equals(algorithm) || JWSAlgorithm.PS256.equals(algorithm)
+                || JWSAlgorithm.PS384.equals(algorithm) || JWSAlgorithm.PS512.equals(algorithm)) {
+                return new RSAKeyGenerator(2048).keyUse(KeyUse.SIGNATURE).keyID(kid).algorithm(algorithm).generate();
+            }
+        } catch (final JOSEException e) {
+            throw new TechnicalException(e);
+        }
+        throw new TechnicalException("Cannot generate a key for the algorithm: " + algorithm);
     }
 
     public static void saveJwkPrivate(final JWK key, final String path) {
@@ -296,10 +380,38 @@ public class JwkHelper {
     }
 
     public static String buildSignedJwt(final JWTClaimsSet claims, final JWK key, final JWSAlgorithm algorithm, final String type) {
-        val header = new JWSHeader.Builder(algorithm)
+        return buildSignedJwt(claims, key, algorithm, type, false);
+    }
+
+    /**
+     * Build a signed JWT, publishing in the "x5c" header the certificate chain the signing key carries.
+     *
+     * <p>Some protocols bind the identity of the signer to a certificate rather than to a key: OpenID4VP does
+     * so with its "x509_san_dns" client identifier prefix, where the verifier is trusted through the relying
+     * party access certificate its request object carries.</p>
+     *
+     * <p>The chain is read from the key itself, so that it can never disagree with the signature.</p>
+     *
+     * @param claims the claims
+     * @param key the signing key
+     * @param algorithm the signature algorithm
+     * @param type the "typ" header
+     * @param withCertificateChain whether the certificate chain of the key must be published
+     * @return the serialized signed JWT
+     */
+    public static String buildSignedJwt(final JWTClaimsSet claims, final JWK key, final JWSAlgorithm algorithm,
+                                        final String type, final boolean withCertificateChain) {
+        val builder = new JWSHeader.Builder(algorithm)
             .type(new JOSEObjectType(type))
-            .keyID(key.getKeyID())
-            .build();
+            .keyID(key.getKeyID());
+        if (withCertificateChain) {
+            val chain = key.getX509CertChain();
+            if (chain == null || chain.isEmpty()) {
+                throw new TechnicalException("No certificate chain in the signing key: " + key.getKeyID());
+            }
+            builder.x509CertChain(chain);
+        }
+        val header = builder.build();
 
         val signedJWT = new SignedJWT(header, claims);
         val signer = determineSigner(key, false);
