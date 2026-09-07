@@ -4,9 +4,8 @@ layout: null
 <?xml version="1.0" encoding="UTF-8"?>
 {%- comment -%}
 Hand-written on purpose: jekyll-sitemap would walk everything sitting on the
-gh-pages branch, which means the ~43,000 javadoc files and the 30 archived
-version directories. Only the current site belongs here, so we filter on:
-  - "/apidocs/"  the generated javadoc, not indexed (see robots.txt)
+gh-pages branch, which means the 30 archived version directories. Only the
+current site belongs here, so we filter on:
   - ".x/"        the archived documentation of past releases, which would
                  compete with the current docs in search results
   - "/others/"   leftovers kept on gh-pages
@@ -14,8 +13,7 @@ version directories. Only the current site belongs here, so we filter on:
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 {%- for page in site.pages -%}
   {%- assign url = page.url -%}
-  {%- unless url contains '/apidocs/'
-          or url contains '.x/'
+  {%- unless url contains '.x/'
           or url contains '/others/'
           or url contains 'sitemap.xml'
           or url contains 'robots.txt'

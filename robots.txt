@@ -2,10 +2,6 @@
 layout: null
 ---
 User-agent: *
-
-# The javadoc is generated for every released version of every module: ~43,000
-# pages that would eat the crawl budget and compete with the documentation.
-# It stays served, it is just not indexed.
-Disallow: /apidocs/
+Disallow:
 
 Sitemap: {{ site.url }}/sitemap.xml
