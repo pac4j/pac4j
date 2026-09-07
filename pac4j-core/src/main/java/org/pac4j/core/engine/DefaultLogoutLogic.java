@@ -138,16 +138,19 @@ public class DefaultLogoutLogic extends AbstractExceptionAwareLogic implements L
 
     /**
      * Whether the requested url can be used as a redirection: it must match the logout url pattern and must not
-     * contain any backslash.
+     * contain any backslash, control character or space.
      *
      * @param url the requested url
      * @param logoutUrlPattern the logout url pattern
      * @return whether the url can be used as a redirection
      */
     protected boolean isUrlAllowedForRedirect(final String url, final String logoutUrlPattern) {
-        if (url.indexOf('\\') != -1) {
-            LOGGER.warn("Rejected URL containing a backslash: {}", url);
-            return false;
+        for (int i = 0; i < url.length(); i++) {
+            final char c = url.charAt(i);
+            if (c == '\\' || c <= ' ' || c == 0x7F) {
+                LOGGER.warn("Rejected URL containing a backslash, a control character or a space: {}", url);
+                return false;
+            }
         }
         return Pattern.matches(logoutUrlPattern, url);
     }

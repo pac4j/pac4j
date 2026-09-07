@@ -267,6 +267,47 @@ public final class DefaultLogoutLogicTests implements TestsConstants {
     }
 
     @Test
+    public void testLogoutWithTabUrlNoDefaultUrl() {
+        // the browsers strip the tabs before parsing the URL: it would be resolved as //evil.example.org
+        context.addRequestParameter(Pac4jConstants.URL, "/\t/evil.example.org/download.exe");
+        call();
+        assertEquals(204, action.getCode());
+        assertEquals(Pac4jConstants.EMPTY_STRING, context.getResponseContent());
+    }
+
+    @Test
+    public void testLogoutWithTabUrlDefaultUrl() {
+        context.addRequestParameter(Pac4jConstants.URL, "/\t/evil.example.org/download.exe");
+        defaultUrl = CALLBACK_URL;
+        call();
+        assertEquals(302, action.getCode());
+        assertEquals(CALLBACK_URL, ((FoundAction) action).getLocation());
+    }
+
+    @Test
+    public void testLogoutWithControlCharactersUrl() {
+        for (val url : new String[] {"/\n/evil.example.org", "/\r/evil.example.org", "/\u0000/evil.example.org",
+            "/\u007F/evil.example.org", "/ /evil.example.org", "/page\t"}) {
+            setUp();
+            context.addRequestParameter(Pac4jConstants.URL, url);
+            defaultUrl = CALLBACK_URL;
+            call();
+            assertEquals(302, action.getCode());
+            assertEquals(CALLBACK_URL, ((FoundAction) action).getLocation());
+        }
+    }
+
+    @Test
+    public void testLogoutWithTabUrlAndPermissiveLogoutUrlPattern() {
+        // even a custom permissive pattern must not let a tab through
+        context.addRequestParameter(Pac4jConstants.URL, "/\t/evil.example.org/download.exe");
+        logoutUrlPattern = ".*";
+        call();
+        assertEquals(204, action.getCode());
+        assertEquals(Pac4jConstants.EMPTY_STRING, context.getResponseContent());
+    }
+
+    @Test
     public void testLogoutWithBadUrlNoDefaultUrl() {
         context.addRequestParameter(Pac4jConstants.URL, PATH);
         logoutUrlPattern = VALUE;
