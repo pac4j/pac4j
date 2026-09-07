@@ -18,13 +18,4 @@ No additional details will be shared in this post.
 
 These vulnerabilities were discovered by **[Joshua Rogers](https://joshua.hu) of [AISLE Research](https://aisle.com)**.
 
-<div class="warning">
-  <i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i>
-    This is the fourth security advisory we have published this year, which may sound alarming. AI-powered tools have fundamentally changed the security landscape, making it much easier and faster to identify potential vulnerabilities and weaknesses.<br/>
-    <br/>
-    While this may initially seem like a bad thing, it is actually a positive development: it is far better to remain vigilant and fix security issues than to overlook them and have a false sense of security.<br/>
-    <br/>
-    Security advisories are not necessarily a sign of poor code quality. They also reflect a project's visibility, widespread use, and active security scrutiny. Open-source software can be publicly inspected, tested, and continuously improved—provided that reported issues are addressed promptly.<br/>
-    <br/>
-    <b>The practical takeaway is clear: use the latest mature version of pac4j and apply security updates as soon as possible.</b>
-</div>
+{% include security_warning.html %}
