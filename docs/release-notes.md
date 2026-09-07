@@ -15,6 +15,9 @@ title: Release notes&#58;
 - OIDC's login hints can be provided dynamically as a `login_hint` request attribute.
 - Only empty credentials or a `CredentialsException` (from the `CredentialsExtractor` or the `Authenticator`) now block further authentication attempts of an indirect client: any other exception allows a retry.
 
+**v6.5.8**:
+- Security fix: the logout redirect URL is rejected if it contains a control character or a space (the browsers strip tabs and new lines before parsing a URL, which allowed an open redirect with `/<TAB>/evil.example.org`)
+
 **v6.5.7**:
 - OIDC: ProfileCreator - skip nonce when Bearer Access Token is used
 - SAML: OpenSAML can be initialized when a standalone Apache Xerces is on the classpath
