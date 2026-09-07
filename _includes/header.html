@@ -5,7 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     {%- assign seo_title = page.seo_title | default: nil -%}
     {%- assign seo_desc = page.description | default: site.description -%}
-    {%- assign seo_url = page.url | replace: 'index.html', '' | prepend: site.url -%}
+    {%- comment -%}
+    The archived documentation of past releases lives in /N.N.x/ directories on
+    gh-pages and is rebuilt with this very header. Those pages duplicate the
+    current documentation, so their canonical URL is the same path at the root.
+    {%- endcomment -%}
+    {%- assign seo_path = page.url | replace: 'index.html', '' -%}
+    {%- assign seo_parts = seo_path | split: '/' -%}
+    {%- assign seo_version = seo_parts[1] | split: '.' -%}
+    {%- if seo_version.size == 3 and seo_version[2] == 'x' -%}
+        {%- assign seo_prefix = '/' | append: seo_parts[1] -%}
+        {%- assign seo_path = seo_path | remove_first: seo_prefix -%}
+    {%- endif -%}
+    {%- assign seo_url = seo_path | prepend: site.url -%}
     <title>
         {%- if seo_title -%}
         {{ seo_title | strip_html }}
