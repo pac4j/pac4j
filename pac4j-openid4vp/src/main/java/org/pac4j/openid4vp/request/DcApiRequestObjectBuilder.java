@@ -20,7 +20,7 @@ import static org.pac4j.openid4vp.util.OpenId4VpConstants.EXPECTED_ORIGINS;
  * @author Jerome LELEU
  * @since 6.6.0
  */
-public class DcApiRequestObjectBuilder extends RequestObjectBuilder {
+public class DcApiRequestObjectBuilder extends OpenId4VpRequestObjectBuilder {
 
     /**
      * <p>Constructor for DcApiRequestObjectBuilder.</p>

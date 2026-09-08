@@ -21,6 +21,9 @@ import static org.pac4j.openid4vp.util.OpenId4VpConstants.SESSION_TRANSACTION_ID
  * expects, for the page to place in its {@code navigator.credentials.get} call. The signed request object
  * goes in the {@code request} member, which is the shape of the {@code openid4vp-v1-signed} protocol.</p>
  *
+ * @see <a href="https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#signed_request">
+ *     OpenID4VP 1.0, signed request over the DC API</a>
+ *
  * @author Jerome LELEU
  * @since 6.6.0
  */

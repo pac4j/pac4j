@@ -33,7 +33,7 @@ import static org.pac4j.openid4vp.util.OpenId4VpConstants.*;
  * @since 6.6.0
  */
 @RequiredArgsConstructor
-public class RequestObjectBuilder {
+public class OpenId4VpRequestObjectBuilder {
 
     protected final OpenId4VpClient client;
 
@@ -128,7 +128,10 @@ public class RequestObjectBuilder {
             try {
                 val publicKey = ECKey.parse(transaction.getEncryptionKey()).toPublicJWK().toJSONObject();
                 metadata.put(JWKS, Map.of(KEYS, List.of(publicKey)));
-                metadata.put(ENCRYPTED_RESPONSE_ENC_VALUES_SUPPORTED, List.of("A128GCM"));
+                // the high assurance profile has verifiers list both, the wallet picking A256GCM when it can
+                // see HAIP, "Verifiers MUST list both A128GCM and A256GCM in encrypted_response_enc_values_supported":
+                // https://openid.net/specs/openid4vc-high-assurance-interoperability-profile-1_0.html
+                metadata.put(ENCRYPTED_RESPONSE_ENC_VALUES_SUPPORTED, List.of("A128GCM", "A256GCM"));
             } catch (final ParseException e) {
                 throw new OpenId4VpException("unable to publish the response encryption key", e);
             }

@@ -20,6 +20,9 @@ import static org.pac4j.core.util.CommonHelper.assertTrue;
  * <p>It builds the very same signed request object as {@link OpenId4VpClient}, only the claims tied to the
  * way the wallet is reached differ, so the protocol is {@code openid4vp-v1-signed}.</p>
  *
+ *
+ * @see <a href="https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#dc_api">OpenID4VP over the Digital Credentials API</a>
+ * @see <a href="https://www.w3.org/TR/digital-credentials/">W3C Digital Credentials API</a>
  * @author Jerome LELEU
  * @since 6.6.0
  */

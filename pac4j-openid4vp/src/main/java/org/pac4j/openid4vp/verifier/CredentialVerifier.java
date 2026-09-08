@@ -7,10 +7,13 @@ import org.pac4j.openid4vp.transaction.VpTransaction;
 /**
  * Validates one credential of a given format, taken from the {@code vp_token}.
  *
- * <p>A verifier is responsible for the whole cryptographic validation of a credential: the issuer signature,
- * the chain up to a trust anchor, the revocation status, the holder key binding, and the reconstruction of
- * the disclosed claims. The transaction is passed because the key binding is bound to the nonce and to the
- * verifier identity, neither of which can be found in the credential itself.</p>
+ * <p>A verifier is responsible for the whole cryptographic validation of a credential: the issuer signature, the
+ * trust in that issuer, the revocation status, the holder key binding, and the reconstruction of the disclosed
+ * claims. Establishing trust in the issuer is its business, and its alone: the ways to do so differ by
+ * ecosystem, a certificate chain up to a trusted list, the metadata published under the issuer identifier, a
+ * decentralized identifier, so the configuration holds no trust anchors of its own. The transaction is passed
+ * because the key binding is bound to the nonce and to the verifier identity, neither of which can be found in
+ * the credential itself.</p>
  *
  * @author Jerome LELEU
  * @since 6.6.0

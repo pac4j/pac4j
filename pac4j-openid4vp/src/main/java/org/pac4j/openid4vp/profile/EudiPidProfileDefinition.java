@@ -41,7 +41,7 @@ public class EudiPidProfileDefinition extends CommonProfileDefinition {
      * <p>Constructor for EudiPidProfileDefinition.</p>
      */
     public EudiPidProfileDefinition() {
-        super(x -> new VerifiableCredentialProfile());
+        super(x -> new EudiPidProfile());
         primary(GIVEN_NAME, Converters.STRING);
         primary(BIRTH_DATE, Converters.STRING);
         primary(AGE_OVER_18, Converters.BOOLEAN);

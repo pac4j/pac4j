@@ -31,6 +31,9 @@ public class OpenId4VpDcApiConfiguration extends OpenId4VpConfiguration {
     /**
      * The origins this verifier makes its requests from, as the browser authenticates them. Mandatory for a
      * signed request: the wallet compares them to the origin it was given, by plain string comparison.
+     *
+     * @see <a href="https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#dc_api_request">
+ *     OpenID4VP 1.0, request over the DC API, the expected_origins parameter</a>
      */
     private List<String> expectedOrigins = new ArrayList<>();
 

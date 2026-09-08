@@ -15,7 +15,7 @@ import org.pac4j.openid4vp.credentials.authenticator.OpenId4VpAuthenticator;
 import org.pac4j.openid4vp.credentials.extractor.OpenId4VpCredentialsExtractor;
 import org.pac4j.openid4vp.profile.VerifiableCredentialProfile;
 import org.pac4j.openid4vp.profile.creator.OpenId4VpProfileCreator;
-import org.pac4j.openid4vp.request.RequestObjectBuilder;
+import org.pac4j.openid4vp.request.OpenId4VpRequestObjectBuilder;
 import org.pac4j.openid4vp.redirect.OpenId4VpRedirectionActionBuilder;
 
 import static org.pac4j.core.util.CommonHelper.assertNotNull;
@@ -29,6 +29,8 @@ import static org.pac4j.core.util.CommonHelper.assertTrue;
  * <p>There is no identity provider here, no token endpoint and no user info: the wallet presents the
  * credentials directly and the whole validation happens locally.</p>
  *
+ *
+ * @see <a href="https://openid.net/specs/openid-4-verifiable-presentations-1_0.html">OpenID for Verifiable Presentations 1.0</a>
  * @author Jerome LELEU
  * @since 6.6.0
  */
@@ -41,7 +43,7 @@ public class OpenId4VpClient extends IndirectClient {
     /** Builds the request object served to the wallet. Replace it to add claims or to answer wallet metadata. */
     @Getter
     @Setter
-    private RequestObjectBuilder requestObjectBuilder;
+    private OpenId4VpRequestObjectBuilder requestObjectBuilder;
 
     /**
      * <p>Constructor for OpenId4VpClient.</p>
@@ -88,7 +90,7 @@ public class OpenId4VpClient extends IndirectClient {
     @Override
     protected void internalInit(final boolean forceReinit) {
         if (requestObjectBuilder == null) {
-            requestObjectBuilder = new RequestObjectBuilder(this);
+            requestObjectBuilder = new OpenId4VpRequestObjectBuilder(this);
         }
         setRedirectionActionBuilderIfUndefined(new OpenId4VpRedirectionActionBuilder(this));
         setCredentialsExtractorIfUndefined(new OpenId4VpCredentialsExtractor(this));

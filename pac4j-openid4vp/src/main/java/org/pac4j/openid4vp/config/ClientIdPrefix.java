@@ -21,6 +21,9 @@ public enum ClientIdPrefix {
      * The identifier is the redirect or response URI of the verifier itself. Requests using it cannot be
      * signed: there is no way for the wallet to obtain a key it can trust, so a signature would prove
      * nothing. The request parameters travel in the wallet URL instead of a request object.
+     *
+     * @see <a href="https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#client_identifier_prefixes">
+ *     OpenID4VP 1.0, defined Client Identifier Prefixes</a>
      */
     REDIRECT_URI("redirect_uri", false),
     DECENTRALIZED_IDENTIFIER("decentralized_identifier", true);

@@ -13,6 +13,13 @@ import lombok.RequiredArgsConstructor;
  * <p>The high assurance interoperability profile, which the EUDI architecture and reference framework
  * relies on, mandates the encrypted form of whichever is used.</p>
  *
+ * @see <a href="https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#response_encryption">
+ *     OpenID4VP 1.0, response encryption</a>
+ * @see <a href="https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#dc_api_request">
+ *     OpenID4VP 1.0, the dc_api and dc_api.jwt response modes</a>
+ * @see <a href="https://openid.net/specs/openid4vc-high-assurance-interoperability-profile-1_0.html">
+ *     HAIP, "Response encryption MUST be used"</a>
+ *
  * @author Jerome LELEU
  * @since 6.6.0
  */

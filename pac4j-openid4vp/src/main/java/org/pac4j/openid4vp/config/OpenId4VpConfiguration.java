@@ -9,7 +9,9 @@ import org.pac4j.core.store.Store;
 import org.pac4j.core.util.generator.RandomValueGenerator;
 import org.pac4j.core.util.generator.ValueGenerator;
 import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.jwk.ECKey;
 import com.nimbusds.jose.jwk.JWK;
+import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.util.Base64URL;
 import com.nimbusds.jose.util.JSONObjectUtils;
 import com.nimbusds.jose.util.X509CertUtils;
@@ -24,7 +26,6 @@ import org.pac4j.openid4vp.transaction.VpTransaction;
 import org.pac4j.openid4vp.transaction.VpTransactionStore;
 import org.pac4j.openid4vp.verifier.CredentialVerifier;
 
-import java.security.cert.X509Certificate;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateParsingException;
@@ -58,6 +59,12 @@ public class OpenId4VpConfiguration extends BaseClientConfiguration {
         new Announcement("An unencrypted response mode is used: the credentials will travel in clear, readable by whatever "
             + "carries them before they reach this application, be it a TLS termination and its logs or the page itself. The "
             + "high assurance profile mandates an encrypted response mode, and so does the EUDI wallet");
+
+    private static final Announcement ANNOUNCE_UNSIGNED_REQUEST =
+        new Announcement("An unsigned request is used: the wallet has no way to authenticate this verifier, the End-User "
+            + "only sees where the answer will go, and the request must not be shown as a QR code, where nothing tells "
+            + "the End-User who is asking. The high assurance profile mandates a signed request, and so does the EUDI "
+            + "wallet: keep this prefix for development");
 
     /** The default lifetime of a presentation request, in seconds. */
     public static final int DEFAULT_TRANSACTION_LIFETIME_SECONDS = 300;
@@ -98,12 +105,6 @@ public class OpenId4VpConfiguration extends BaseClientConfiguration {
     private Map<CredentialFormat, CredentialVerifier> credentialVerifiers = new LinkedHashMap<>();
 
     /**
-     * The trust anchors used to validate credential issuers. In a real EUDI deployment these come from the
-     * national trusted lists; a static list is enough to reach interoperability.
-     */
-    private List<X509Certificate> issuerTrustAnchors = new ArrayList<>();
-
-    /**
      * How long a presentation request stays valid. It is stamped on each transaction, sent to the wallet in
      * the request object, and the store drops the transaction on that very date.
      */
@@ -141,17 +142,28 @@ public class OpenId4VpConfiguration extends BaseClientConfiguration {
 
         if (clientIdPrefix.isSignedRequest()) {
             requestObjectSigningKey = JwkHelper.resolveSigningKey(jwks, keystore, DEFAULT_SIGNING_ALGORITHM);
+        } else {
+            // OpenID4VP 1.0, the redirect_uri prefix: "Requests using the redirect_uri Client Identifier Prefix cannot be
+            // signed because there is no method for the Wallet to obtain a trusted key for verification"
+            // https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#client_identifier_prefixes
+            ANNOUNCE_UNSIGNED_REQUEST.announce();
         }
         if (publishesCertificateChain()) {
             assertTrue(requestObjectSigningKey.getX509CertChain() != null && !requestObjectSigningKey.getX509CertChain().isEmpty(),
                 "the signing key must carry a certificate chain for the " + clientIdPrefix.getValue()
                     + " client identifier prefix: load it from a keystore, or from a JWKS holding a x5c member");
         }
+        if (publishesCertificateChain()) {
+            requestObjectSigningKey = withoutTrustAnchor(requestObjectSigningKey);
+        }
         if (clientIdPrefix == ClientIdPrefix.X509_HASH) {
             // the identifier is the certificate itself: computed rather than typed, so that it cannot diverge
             clientId = computeCertificateHash();
         }
         if (clientIdPrefix == ClientIdPrefix.DECENTRALIZED_IDENTIFIER) {
+            // OpenID4VP 1.0, the decentralized_identifier prefix: "a particular public key used to sign the request
+            // in question MUST be identified by the kid in the JOSE Header"
+            // https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#client_identifier_prefixes
             assertTrue(requestObjectSigningKey.getKeyID() != null,
                 "the signing key must carry a key identifier for the decentralized_identifier client identifier prefix: "
                     + "the wallet looks the key up in the DID document by the kid of the request object");
@@ -181,6 +193,9 @@ public class OpenId4VpConfiguration extends BaseClientConfiguration {
     /**
      * <p>For the {@code x509_san_dns} prefix, the client identifier must be a DNS name found among the
      * subject alternative names of the leaf certificate, otherwise the wallet refuses the request.</p>
+     *
+     * @see <a href="https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#client_identifier_prefixes">
+ *     OpenID4VP 1.0, the x509_san_dns prefix</a>
      */
     protected void checkClientIdIsASubjectAlternativeName() {
         try {
@@ -204,17 +219,46 @@ public class OpenId4VpConfiguration extends BaseClientConfiguration {
     }
 
     /**
+     * <p>The signing key with the trust anchor removed from its certificate chain, when the chain ends with
+     * one: HAIP has it that "The X.509 certificate of the trust anchor MUST NOT be included in the x5c JOSE
+     * header of the request object". A keystore hands the chain over whole, root included, so it is trimmed
+     * here once and for all, the leaf and the intermediates staying in place.</p>
+     *
+     * @param key the signing key as loaded
+     * @return the key to sign and publish with
+     * @see <a href="https://openid.net/specs/openid4vc-high-assurance-interoperability-profile-1_0.html">HAIP</a>
+     */
+    protected JWK withoutTrustAnchor(final JWK key) {
+        val chain = key.getX509CertChain();
+        if (chain == null || chain.size() < 2) {
+            return key;
+        }
+        val last = X509CertUtils.parse(chain.get(chain.size() - 1).decode());
+        if (last == null || !last.getSubjectX500Principal().equals(last.getIssuerX500Principal())) {
+            return key;
+        }
+        val trimmed = chain.subList(0, chain.size() - 1);
+        if (key instanceof ECKey ecKey) {
+            return new ECKey.Builder(ecKey).x509CertChain(trimmed).build();
+        }
+        if (key instanceof RSAKey rsaKey) {
+            return new RSAKey.Builder(rsaKey).x509CertChain(trimmed).build();
+        }
+        return key;
+    }
+
+    /**
      * <p>The value of the {@code x509_hash} client identifier: the base64url-encoded SHA-256 hash of the
-     * DER-encoded leaf certificate, which is exactly the {@code x5t#S256} thumbprint of the signing key when it
-     * carries one.</p>
+     * DER-encoded leaf certificate. Always computed from the first certificate of the chain, the one published
+     * in the request object, rather than read from a {@code x5t#S256} thumbprint which a hand-written JWKS may
+     * have let drift from it: the wallet hashes what it receives, so must we.</p>
+     *
+     * @see <a href="https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#client_identifier_prefixes">
+ *     OpenID4VP 1.0, the x509_hash prefix</a>
      *
      * @return the hash
      */
     protected String computeCertificateHash() {
-        val thumbprint = requestObjectSigningKey.getX509CertSHA256Thumbprint();
-        if (thumbprint != null) {
-            return thumbprint.toString();
-        }
         try {
             val leaf = requestObjectSigningKey.getX509CertChain().get(0).decode();
             return Base64URL.encode(MessageDigest.getInstance("SHA-256").digest(leaf)).toString();

@@ -85,6 +85,11 @@ public class OpenId4VpRedirectionActionBuilder implements RedirectionActionBuild
      * <p>A key is generated for each transaction rather than shared, so that a response can only ever be
      * read for the request it answers. Only the public part is published in the request object.</p>
      *
+     * <p>This is what the high assurance profile requires: "Verifiers MUST supply ephemeral encryption public
+     * keys specific to each Authorization Request passed via client metadata", with ECDH-ES on P-256.</p>
+     *
+     * @see <a href="https://openid.net/specs/openid4vc-high-assurance-interoperability-profile-1_0.html">HAIP</a>
+     *
      * @return the key, or null when the response is not encrypted
      */
     protected String buildEncryptionKey() {

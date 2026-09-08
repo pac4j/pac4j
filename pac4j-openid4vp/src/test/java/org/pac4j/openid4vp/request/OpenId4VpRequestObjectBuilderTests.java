@@ -32,7 +32,7 @@ import static org.pac4j.openid4vp.util.OpenId4VpConstants.*;
  * @author Jerome LELEU
  * @since 6.6.0
  */
-class RequestObjectBuilderTests {
+class OpenId4VpRequestObjectBuilderTests {
 
     private static final String CALLBACK_URL = "https://app.example.org/callback";
     private static final String CLIENT = "https://app.example.org/callback";
@@ -117,6 +117,11 @@ class RequestObjectBuilderTests {
         val keys = (List<Map<String, Object>>) jwks.get(KEYS);
         assertEquals(1, keys.size());
         assertFalse(ECKey.parse(keys.get(0)).isPrivate());
+        // ECDH-ES on P-256, and both content encryptions the high assurance profile requires a verifier to list
+        assertEquals("ECDH-ES", keys.get(0).get("alg"));
+        assertEquals("P-256", keys.get(0).get("crv"));
+        assertEquals(List.of("A128GCM", "A256GCM"),
+            claims.getJSONObjectClaim(CLIENT_METADATA).get(ENCRYPTED_RESPONSE_ENC_VALUES_SUPPORTED));
     }
 
 }
