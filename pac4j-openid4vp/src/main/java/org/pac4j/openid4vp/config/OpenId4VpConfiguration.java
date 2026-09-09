@@ -83,8 +83,12 @@ public class OpenId4VpConfiguration extends BaseClientConfiguration {
     private List<CredentialFormat> supportedFormats = new ArrayList<>(List.of(CredentialFormat.SD_JWT_VC));
 
     /**
-     * The DCQL query, as a raw JSON string for now. Presentation exchange is deliberately not supported:
-     * it is out of the HAIP profile and no longer used by the EUDI ecosystem.
+     * The DCQL query, as a raw JSON string for now. It is the only query language of OpenID4VP 1.0: the
+     * Presentation Exchange of the earlier drafts ({@code presentation_definition}) is gone from the final
+     * specification, so there is nothing else to support here.
+     *
+     * @see <a href="https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#dcql_query">
+     *     OpenID4VP 1.0, Digital Credentials Query Language</a>
      */
     private String dcqlQuery;
 
@@ -119,6 +123,13 @@ public class OpenId4VpConfiguration extends BaseClientConfiguration {
     /** The custom scheme used to invoke a wallet on the same device. */
     private String walletScheme = "openid4vp://";
 
+    /**
+     * How the wallet fetches the request object. Announced in the wallet URL when the request is signed,
+     * meaningless otherwise: an unsigned request has no request URI, and the digital credentials API hands
+     * the request object over directly.
+     */
+    private RequestUriMethod requestUriMethod = RequestUriMethod.POST;
+
     /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
@@ -127,6 +138,7 @@ public class OpenId4VpConfiguration extends BaseClientConfiguration {
         assertNotNull("transactionStore", transactionStore);
         assertNotNull("nonceGenerator", nonceGenerator);
         assertNotNull("transactionIdGenerator", transactionIdGenerator);
+        assertNotNull("requestUriMethod", requestUriMethod);
         assertNotBlank("dcqlQuery", dcqlQuery);
         try {
             JSONObjectUtils.parse(dcqlQuery);

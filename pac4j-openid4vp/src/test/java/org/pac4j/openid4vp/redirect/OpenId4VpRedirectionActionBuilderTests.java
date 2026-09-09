@@ -11,6 +11,7 @@ import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.openid4vp.client.OpenId4VpClient;
 import org.pac4j.openid4vp.config.ClientIdPrefix;
 import org.pac4j.openid4vp.config.OpenId4VpConfiguration;
+import org.pac4j.openid4vp.config.RequestUriMethod;
 import org.pac4j.openid4vp.transaction.VpTransaction;
 import org.pac4j.openid4vp.verifier.SdJwtVcVerifier;
 import org.pac4j.test.context.MockWebContext;
@@ -60,9 +61,19 @@ class OpenId4VpRedirectionActionBuilderTests {
         assertTrue(action.getLocation().startsWith("openid4vp://"));
         assertTrue(action.getLocation().contains(CLIENT_ID + "="));
         assertTrue(action.getLocation().contains(REQUEST_URI + "="));
+        assertTrue(action.getLocation().contains(REQUEST_URI_METHOD + "=" + REQUEST_URI_METHOD_POST));
 
         val transactionId = ctx.sessionStore().get(ctx.webContext(), SESSION_TRANSACTION_ID).get().toString();
         return configuration.getTransactionStore().get(transactionId).get();
+    }
+
+    @Test
+    void testTheRequestUriMethodIsNotAnnouncedForAGet() {
+        configuration.setRequestUriMethod(RequestUriMethod.GET);
+        val ctx = new CallContext(MockWebContext.create(), new MockSessionStore());
+        val action = assertInstanceOf(FoundAction.class, client.getRedirectionAction(ctx).get());
+        assertTrue(action.getLocation().contains(REQUEST_URI + "="));
+        assertFalse(action.getLocation().contains(REQUEST_URI_METHOD));
     }
 
     @Test

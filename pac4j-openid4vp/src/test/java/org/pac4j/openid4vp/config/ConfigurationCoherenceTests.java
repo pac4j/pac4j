@@ -66,6 +66,13 @@ class ConfigurationCoherenceTests {
     }
 
     @Test
+    void testTheRequestUriMethodIsMandatory() {
+        val configuration = valid().setRequestUriMethod(null);
+
+        TestsHelper.expectException(configuration::init, TechnicalException.class, "requestUriMethod cannot be null");
+    }
+
+    @Test
     void testTheTransactionLifetimeMustBePositive() {
         val configuration = valid().setTransactionLifetimeSeconds(0);
 

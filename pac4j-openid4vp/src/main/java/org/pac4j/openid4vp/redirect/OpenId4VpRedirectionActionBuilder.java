@@ -16,6 +16,7 @@ import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.openid4vp.client.OpenId4VpClient;
 import org.pac4j.openid4vp.config.ResponseMode;
+import org.pac4j.openid4vp.config.RequestUriMethod;
 import org.pac4j.openid4vp.exceptions.OpenId4VpException;
 import org.pac4j.openid4vp.transaction.VpTransaction;
 
@@ -119,8 +120,15 @@ public class OpenId4VpRedirectionActionBuilder implements RedirectionActionBuild
     protected String computeWalletUrl(final CallContext ctx, final VpTransaction transaction) {
         val configuration = client.getConfiguration();
         if (configuration.getClientIdPrefix().isSignedRequest()) {
-            val url = CommonHelper.addParameter(configuration.getWalletScheme(), CLIENT_ID, configuration.computeClientId());
-            return CommonHelper.addParameter(url, REQUEST_URI, client.computeRequestUri(ctx.webContext(), transaction.getId()));
+            var url = CommonHelper.addParameter(configuration.getWalletScheme(), CLIENT_ID, configuration.computeClientId());
+            url = CommonHelper.addParameter(url, REQUEST_URI, client.computeRequestUri(ctx.webContext(), transaction.getId()));
+            if (configuration.getRequestUriMethod() == RequestUriMethod.POST) {
+                // only next to a request_uri: "request_uri_method parameter MUST NOT be present if a request_uri
+                // parameter is not present"
+                // https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#request_uri_method_post
+                url = CommonHelper.addParameter(url, REQUEST_URI_METHOD, REQUEST_URI_METHOD_POST);
+            }
+            return url;
         }
         return computeUnsignedWalletUrl(ctx, transaction);
     }

@@ -13,6 +13,15 @@ import lombok.RequiredArgsConstructor;
  * <p>The high assurance interoperability profile, which the EUDI architecture and reference framework
  * relies on, mandates the encrypted form of whichever is used.</p>
  *
+ * <p>The {@code fragment} mode, the OAuth default for the {@code vp_token} response type, is deliberately
+ * absent: the profile excludes it, and the specification itself explains why it cannot carry a presentation,
+ * "the Authorization Response size exceeds the URL length limits of user agents, so flows relying only on
+ * redirects (such as Response Mode fragment) cannot be used", nor cross a device, "the Wallet cannot send the
+ * Authorization Response to the Verifier using a redirect". Same for the other redirect-based modes of
+ * OAuth 2.0 Multiple Response Types.</p>
+ *
+ * @see <a href="https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#response_mode_post">
+ *     OpenID4VP 1.0, the direct_post response mode, why redirects are not enough</a>
  * @see <a href="https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#response_encryption">
  *     OpenID4VP 1.0, response encryption</a>
  * @see <a href="https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#dc_api_request">

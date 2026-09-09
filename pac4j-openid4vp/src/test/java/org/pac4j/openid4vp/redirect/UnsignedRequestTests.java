@@ -78,6 +78,14 @@ class UnsignedRequestTests {
     }
 
     @Test
+    void testNoRequestUriMethodWithoutARequestUri() {
+        val ctx = new CallContext(MockWebContext.create(), new MockSessionStore());
+        val url = assertInstanceOf(FoundAction.class, client.getRedirectionAction(ctx).get()).getLocation();
+        // "request_uri_method parameter MUST NOT be present if a request_uri parameter is not present"
+        assertFalse(url.contains(REQUEST_URI_METHOD));
+    }
+
+    @Test
     void testTheParametersTravelInTheUrl() {
         val url = walletUrl();
 

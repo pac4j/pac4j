@@ -16,6 +16,7 @@ import org.pac4j.test.context.MockWebContext;
 import org.junit.jupiter.api.io.TempDir;
 import org.pac4j.core.config.properties.JwksProperties;
 import org.pac4j.openid4vp.verifier.SdJwtVcVerifier;
+import org.pac4j.openid4vp.wallet.WalletSimulator;
 import org.pac4j.test.context.session.MockSessionStore;
 
 import java.time.Instant;
@@ -81,6 +82,52 @@ class OpenId4VpCredentialsExtractorTests {
         assertEquals("nonce", requestObject.getJWTClaimsSet().getStringClaim(NONCE));
         assertEquals(VpTransaction.Status.REQUEST_RETRIEVED,
             configuration.getTransactionStore().get(TX_ID).get().getStatus());
+    }
+
+    @Test
+    void testWalletPostsItsCapabilitiesThenGetsARequestObjectFitForIt() throws Exception {
+        storeTransaction();
+        val webContext = MockWebContext.create()
+            .setRequestMethod(HttpConstants.HTTP_METHOD.POST.name())
+            .addRequestParameter(VP_TRANSACTION_ID, TX_ID)
+            .addRequestParameter(WALLET_METADATA, WalletSimulator.WALLET_METADATA_JSON)
+            .addRequestParameter(WALLET_NONCE, "wallet-nonce");
+        val ctx = new CallContext(webContext, new MockSessionStore());
+
+        val action = assertThrows(OkAction.class, () -> extractor.extract(ctx));
+        // the request object carries the wallet nonce back, and the transaction keeps what the wallet said
+        val claims = SignedJWT.parse(action.getContent()).getJWTClaimsSet();
+        assertEquals("wallet-nonce", claims.getStringClaim(WALLET_NONCE));
+        val transaction = configuration.getTransactionStore().get(TX_ID).get();
+        assertEquals("wallet-nonce", transaction.getWalletNonce());
+        assertEquals(WalletSimulator.WALLET_METADATA_JSON, transaction.getWalletMetadata());
+        assertEquals(VpTransaction.Status.REQUEST_RETRIEVED, transaction.getStatus());
+    }
+
+    @Test
+    void testARequestObjectFetchedWithAGetCarriesNoWalletNonce() throws Exception {
+        storeTransaction();
+        val webContext = MockWebContext.create()
+            .addRequestParameter(VP_TRANSACTION_ID, TX_ID)
+            .addRequestParameter(WALLET_NONCE, "ignored-on-a-get");
+        val ctx = new CallContext(webContext, new MockSessionStore());
+
+        val action = assertThrows(OkAction.class, () -> extractor.extract(ctx));
+        assertNull(SignedJWT.parse(action.getContent()).getJWTClaimsSet().getStringClaim(WALLET_NONCE));
+        assertNull(configuration.getTransactionStore().get(TX_ID).get().getWalletNonce());
+    }
+
+    @Test
+    void testMalformedWalletMetadataIsRefused() {
+        storeTransaction();
+        val webContext = MockWebContext.create()
+            .setRequestMethod(HttpConstants.HTTP_METHOD.POST.name())
+            .addRequestParameter(VP_TRANSACTION_ID, TX_ID)
+            .addRequestParameter(WALLET_METADATA, "not-json");
+        val ctx = new CallContext(webContext, new MockSessionStore());
+
+        val e = assertThrows(OpenId4VpException.class, () -> extractor.extract(ctx));
+        assertTrue(e.getMessage().startsWith("the wallet metadata is not a JSON object"));
     }
 
     @Test

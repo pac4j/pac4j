@@ -59,6 +59,15 @@ public class VpTransaction implements Serializable {
 
     private Status status = Status.CREATED;
 
+    /**
+     * The nonce the wallet posted to the request URI, if it did: the request object must carry it back in a
+     * {@code wallet_nonce} claim, or the wallet terminates.
+     */
+    private String walletNonce;
+
+    /** The metadata the wallet posted to the request URI, if it did: a JSON object, kept raw. */
+    private String walletMetadata;
+
     /** The ephemeral response encryption key of this transaction, in its JWK form, private part included. */
     private String encryptionKey;
 

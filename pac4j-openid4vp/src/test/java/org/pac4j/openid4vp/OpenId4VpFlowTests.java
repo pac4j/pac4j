@@ -75,13 +75,19 @@ class OpenId4VpFlowTests {
         val requestUri = simulator.readRequestUri(walletUrl);
         val transactionId = simulator.readParameter(requestUri, VP_TRANSACTION_ID);
         assertNotNull(transactionId);
+        assertTrue(simulator.postsToRequestUri(walletUrl));
 
-        // 2. the wallet fetches the request object, on a request carrying no session at all
-        val fetch = MockWebContext.create().addRequestParameter(VP_TRANSACTION_ID, transactionId);
+        // 2. the wallet posts its capabilities and a nonce to the request URI, on a request carrying no session at all,
+        // and gets a request object built for it
+        val walletNonce = simulator.generateWalletNonce();
+        val fetch = MockWebContext.create()
+            .setRequestMethod(HttpConstants.HTTP_METHOD.POST.name())
+            .addRequestParameter(VP_TRANSACTION_ID, transactionId);
+        simulator.buildRequestUriPostParameters(walletNonce).forEach(fetch::addRequestParameter);
         val served = assertThrows(OkAction.class,
             () -> client.getCredentials(new CallContext(fetch, new MockSessionStore())));
 
-        val request = simulator.readRequestObject(served.getContent());
+        val request = simulator.readRequestObject(served.getContent(), walletNonce);
         assertEquals(ClientIdPrefix.DECENTRALIZED_IDENTIFIER.getValue() + ":" + CALLBACK_URL, request.getClientId());
         assertTrue(request.getResponseUri().contains(VP_TRANSACTION_ID + "=" + transactionId));
 

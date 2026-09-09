@@ -18,10 +18,18 @@ public interface OpenId4VpConstants {
     String RESPONSE_URI = "response_uri";
     String REQUEST_URI = "request_uri";
     String REQUEST_URI_METHOD = "request_uri_method";
+    String REQUEST_URI_METHOD_POST = "post";
     String NONCE = "nonce";
     String STATE = "state";
     String DCQL_QUERY = "dcql_query";
     String CLIENT_METADATA = "client_metadata";
+
+    /**
+     * The parameters a wallet may post to the request URI before getting the request object, when the
+     * request URI method is post: what it supports, and a nonce the request object must carry back.
+     */
+    String WALLET_METADATA = "wallet_metadata";
+    String WALLET_NONCE = "wallet_nonce";
 
     /** Authorization response parameters. */
     String VP_TOKEN = "vp_token";

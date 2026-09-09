@@ -1,5 +1,6 @@
 package org.pac4j.openid4vp.credentials.extractor;
 
+import com.nimbusds.jose.util.JSONObjectUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -14,12 +15,10 @@ import org.pac4j.openid4vp.credentials.VerifiablePresentationCredentials;
 import org.pac4j.openid4vp.exceptions.OpenId4VpException;
 import org.pac4j.openid4vp.transaction.VpTransaction;
 
+import java.text.ParseException;
 import java.util.Optional;
 
-import static org.pac4j.openid4vp.util.OpenId4VpConstants.REQUEST_OBJECT_CONTENT_TYPE;
-import static org.pac4j.openid4vp.util.OpenId4VpConstants.RESPONSE;
-import static org.pac4j.openid4vp.util.OpenId4VpConstants.SESSION_TRANSACTION_ID;
-import static org.pac4j.openid4vp.util.OpenId4VpConstants.VP_TRANSACTION_ID;
+import static org.pac4j.openid4vp.util.OpenId4VpConstants.*;
 
 /**
  * Extracts an OpenID4VP presentation, dispatching the three kinds of requests reaching the callback endpoint.
@@ -53,23 +52,28 @@ public class OpenId4VpCredentialsExtractor implements CredentialsExtractor {
         if (post && webContext.getRequestParameter(RESPONSE).isPresent()) {
             throw acceptWalletResponse(ctx, transactionId);
         }
-        // the wallet fetches the signed request object
+        // the wallet fetches the signed request object, having posted its capabilities first or not
         if (transactionId != null) {
-            throw serveRequestObject(ctx, transactionId);
+            throw serveRequestObject(ctx, transactionId, post);
         }
         // the browser comes back: this is the only branch with a session
         return buildCredentials(ctx);
     }
 
     /**
-     * <p>Serve the signed request object to the wallet.</p>
+     * <p>Serve the signed request object to the wallet. On a POST, the wallet first says what it supports
+     * and hands over a nonce, and the request object is built accordingly.</p>
      *
      * @param ctx the context
      * @param transactionId the identifier of the pending transaction
+     * @param post whether the wallet posted to the request URI rather than fetching it
      * @return the action to perform
      */
-    protected HttpAction serveRequestObject(final CallContext ctx, final String transactionId) {
+    protected HttpAction serveRequestObject(final CallContext ctx, final String transactionId, final boolean post) {
         val transaction = findTransaction(transactionId);
+        if (post) {
+            readWalletCapabilities(ctx, transaction);
+        }
         transaction.setStatus(VpTransaction.Status.REQUEST_RETRIEVED);
         client.getConfiguration().getTransactionStore().set(transactionId, transaction);
         LOGGER.debug("the wallet fetches the request object of the transaction: {}", transactionId);
@@ -77,6 +81,33 @@ public class OpenId4VpCredentialsExtractor implements CredentialsExtractor {
         LOGGER.trace("request object of the transaction {}: {}", transactionId, requestObject);
         ctx.webContext().setResponseContentType(REQUEST_OBJECT_CONTENT_TYPE);
         return new OkAction(requestObject);
+    }
+
+    /**
+     * <p>Keep what the wallet posted to the request URI: its metadata, and a nonce of its own. Both are
+     * optional, and anything else is ignored, as the specification requires: "The Verifier MUST ignore any
+     * unrecognized parameters".</p>
+     *
+     * @param ctx the context
+     * @param transaction the transaction being answered
+     * @see <a href="https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#request_uri_method_post">
+     *     OpenID4VP 1.0, request URI method post</a>
+     */
+    protected void readWalletCapabilities(final CallContext ctx, final VpTransaction transaction) {
+        val webContext = ctx.webContext();
+        webContext.getRequestParameter(WALLET_METADATA).ifPresent(metadata -> {
+            try {
+                JSONObjectUtils.parse(metadata);
+            } catch (final ParseException e) {
+                throw new OpenId4VpException("the wallet metadata is not a JSON object: " + e.getMessage(), e);
+            }
+            transaction.setWalletMetadata(metadata);
+            LOGGER.debug("the wallet posted its metadata for the transaction {}: {}", transaction.getId(), metadata);
+        });
+        webContext.getRequestParameter(WALLET_NONCE).ifPresent(walletNonce -> {
+            transaction.setWalletNonce(walletNonce);
+            LOGGER.debug("the wallet posted its nonce for the transaction {}: {}", transaction.getId(), walletNonce);
+        });
     }
 
     /**

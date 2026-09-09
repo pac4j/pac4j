@@ -68,6 +68,11 @@ public class OpenId4VpRequestObjectBuilder {
     protected JWTClaimsSet.Builder buildClaims(final CallContext ctx, final VpTransaction transaction) {
         val builder = new JWTClaimsSet.Builder();
         buildParameters(ctx, transaction).forEach(builder::claim);
+        if (transaction.getWalletNonce() != null) {
+            // "When received, the Verifier MUST use it as the wallet_nonce value in the signed authorization request object"
+            // https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#request_uri_method_post
+            builder.claim(WALLET_NONCE, transaction.getWalletNonce());
+        }
         // the claims a request object carries on top of the protocol parameters
         return builder
             .issuer(client.getConfiguration().computeClientId())
@@ -87,6 +92,10 @@ public class OpenId4VpRequestObjectBuilder {
         val configuration = client.getConfiguration();
         val parameters = new LinkedHashMap<String, Object>();
         parameters.put(CLIENT_ID, configuration.computeClientId(client.computeRequestUri(ctx.webContext(), transaction.getId())));
+        // the only response type honoured, of the three OpenID4VP 1.0 defines: "vp_token id_token" adds a self-issued
+        // ID token which would need SIOPv2 to be validated, and "code" has the wallet run a token endpoint. Neither
+        // is used by the high assurance profile, and neither is offered until the extractor reads what it brings
+        // https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#response_type_vp_token
         parameters.put(RESPONSE_TYPE, RESPONSE_TYPE_VP_TOKEN);
         parameters.put(RESPONSE_MODE, configuration.getResponseMode().getValue());
         parameters.put(NONCE, transaction.getNonce());

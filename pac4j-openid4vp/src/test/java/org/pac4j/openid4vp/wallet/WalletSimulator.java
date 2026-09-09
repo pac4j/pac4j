@@ -8,6 +8,7 @@ import com.nimbusds.jose.jwk.ECKey;
 import com.nimbusds.jwt.EncryptedJWT;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jose.util.JSONObjectUtils;
+import com.nimbusds.jose.util.Base64URL;
 import com.nimbusds.jwt.SignedJWT;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -16,6 +17,7 @@ import org.pac4j.openid4vp.exceptions.OpenId4VpException;
 
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
 import java.text.ParseException;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -42,6 +44,11 @@ import static org.pac4j.openid4vp.util.OpenId4VpConstants.*;
 @Slf4j
 public class WalletSimulator {
 
+    /** What this simulator claims to support, in the form of the wallet metadata of the specification. */
+    public static final String WALLET_METADATA_JSON = "{\"vp_formats_supported\":{\"dc+sd-jwt\":{\"sd-jwt_alg_values\":[\"ES256\"],"
+        + "\"kb-jwt_alg_values\":[\"ES256\"]}},\"client_id_prefixes_supported\":[\"x509_hash\",\"x509_san_dns\","
+        + "\"decentralized_identifier\",\"redirect_uri\"]}";
+
     /**
      * <p>Read the request URI out of a wallet invocation URL.</p>
      *
@@ -56,6 +63,69 @@ public class WalletSimulator {
         }
         LOGGER.debug("Wallet simulator -> about to fetch the request object at: {}", requestUri);
         return requestUri;
+    }
+
+    /**
+     * <p>Whether the verifier lets the wallet post its capabilities to the request URI before getting the
+     * request object, rather than plainly fetching it.</p>
+     *
+     * @param walletUrl the URL handed over by the verifier
+     * @return whether the request URI accepts a POST
+     */
+    public boolean postsToRequestUri(final String walletUrl) {
+        val method = readParameter(walletUrl, REQUEST_URI_METHOD);
+        LOGGER.debug("Wallet simulator    the request object is to be fetched with: {}", method == null ? "GET (default)" : method);
+        return REQUEST_URI_METHOD_POST.equals(method);
+    }
+
+    /**
+     * <p>What the wallet posts to the request URI: what it supports, and a fresh nonce the request object
+     * must carry back, "a base64url-encoded, fresh, cryptographically random number with sufficient entropy".</p>
+     *
+     * @param walletNonce the nonce of the wallet, from {@link #generateWalletNonce()}
+     * @return the form parameters to post
+     */
+    public Map<String, String> buildRequestUriPostParameters(final String walletNonce) {
+        val parameters = new LinkedHashMap<String, String>();
+        parameters.put(WALLET_METADATA, WALLET_METADATA_JSON);
+        parameters.put(WALLET_NONCE, walletNonce);
+        LOGGER.debug("Wallet simulator -> posting its capabilities and the nonce {} to the request URI", walletNonce);
+        return parameters;
+    }
+
+    /**
+     * <p>A fresh nonce for the request URI POST.</p>
+     *
+     * @return the nonce
+     */
+    public String generateWalletNonce() {
+        val bytes = new byte[16];
+        new SecureRandom().nextBytes(bytes);
+        return Base64URL.encode(bytes).toString();
+    }
+
+    /**
+     * <p>Read a request object obtained after a POST to the request URI: it must carry the wallet nonce
+     * back, "if the Wallet passed a wallet_nonce in the POST request, the Wallet MUST validate whether the
+     * request object contains the respective nonce value in a wallet_nonce claim. If it does not, the Wallet
+     * MUST terminate request processing".</p>
+     *
+     * @param signedRequestObject the request object served by the verifier
+     * @param walletNonce the nonce the wallet posted
+     * @return what the wallet needs to answer
+     */
+    public WalletRequest readRequestObject(final String signedRequestObject, final String walletNonce) {
+        try {
+            val claims = SignedJWT.parse(signedRequestObject).getJWTClaimsSet();
+            if (!walletNonce.equals(claims.getStringClaim(WALLET_NONCE))) {
+                throw new OpenId4VpException("the request object does not carry the wallet nonce back: expected " + walletNonce
+                    + ", got " + claims.getStringClaim(WALLET_NONCE));
+            }
+            LOGGER.debug("Wallet simulator <- the request object carries the wallet nonce back: {}", walletNonce);
+        } catch (final ParseException e) {
+            throw new OpenId4VpException("unable to read the request object", e);
+        }
+        return readRequestObject(signedRequestObject);
     }
 
     /**
