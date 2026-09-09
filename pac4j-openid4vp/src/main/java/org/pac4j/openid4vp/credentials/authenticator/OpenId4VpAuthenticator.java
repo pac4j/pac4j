@@ -47,7 +47,7 @@ public class OpenId4VpAuthenticator implements Authenticator {
         vpCredentials.setVpToken(readVpToken(transaction));
         vpCredentials.getVpToken().forEach((queryId, presentations) -> {
             val raw = presentations.isEmpty() ? null : presentations.get(0);
-            val verifier = findVerifier(raw);
+            val verifier = findVerifier(queryId);
             vpCredentials.getVerifiedCredentials()
                 .put(queryId, verifier.verify(raw, transaction, client.getConfiguration()));
         });
@@ -70,17 +70,21 @@ public class OpenId4VpAuthenticator implements Authenticator {
     }
 
     /**
-     * <p>Find the verifier able to validate the given raw presentation.</p>
+     * <p>Find the verifier of a presentation: the one registered for the format of the credential query it
+     * answers, the presentations of the response being indexed by the identifiers of those queries.</p>
      *
-     * <p>To be implemented: the format is not carried by the presentation itself, it is the one the DCQL
-     * query asked for, so the query identifier has to be resolved against the query.</p>
-     *
-     * @param rawPresentation the presentation as found in the vp_token
-     * @return the verifier of its format
+     * @param queryId the identifier of the credential query the presentation answers
+     * @return the verifier
      */
-    protected CredentialVerifier findVerifier(final String rawPresentation) {
+    protected CredentialVerifier findVerifier(final String queryId) {
         val configuration = client.getConfiguration();
-        val format = configuration.getSupportedFormats().stream().findFirst().orElse(CredentialFormat.SD_JWT_VC);
+        // the presentations are indexed by the identifier of the credential query they answer, which says the format;
+        // with a scope, the query is not known here, and the first configured format is assumed
+        val format = configuration.getDcqlQuery() == null
+            ? configuration.getSupportedFormats().stream().findFirst().orElse(CredentialFormat.SD_JWT_VC)
+            : configuration.getDcqlQuery().findCredential(queryId)
+                .orElseThrow(() -> new OpenId4VpException("no credential query for the presentation: " + queryId))
+                .getFormat();
         val verifier = configuration.getCredentialVerifiers().get(format);
         if (verifier == null) {
             throw new OpenId4VpException("no credential verifier registered for the format: " + format.getValue());

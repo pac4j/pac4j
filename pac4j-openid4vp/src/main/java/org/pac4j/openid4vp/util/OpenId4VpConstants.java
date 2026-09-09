@@ -22,7 +22,14 @@ public interface OpenId4VpConstants {
     String NONCE = "nonce";
     String STATE = "state";
     String DCQL_QUERY = "dcql_query";
+    String SCOPE = "scope";
     String CLIENT_METADATA = "client_metadata";
+    String VERIFIER_INFO = "verifier_info";
+
+    /** The members of an attestation of the verifier_info parameter. */
+    String FORMAT = "format";
+    String DATA = "data";
+    String CREDENTIAL_IDS = "credential_ids";
 
     /**
      * The parameters a wallet may post to the request URI before getting the request object, when the
@@ -35,6 +42,12 @@ public interface OpenId4VpConstants {
     String VP_TOKEN = "vp_token";
     String RESPONSE = "response";
     String RESPONSE_CODE = "response_code";
+
+    /**
+     * The audience of a request object when the wallet is not identified beforehand: "a symbolic string
+     * [which] can be used as an aud claim value even when this specification is used standalone, without SIOPv2".
+     */
+    String REQUEST_OBJECT_AUDIENCE = "https://self-issued.me/v2";
 
     /** The "typ" header and content type of a signed request object (JAR). */
     String REQUEST_OBJECT_TYPE = "oauth-authz-req+jwt";

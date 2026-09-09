@@ -66,7 +66,7 @@ OpenId4VpConfiguration config = new OpenId4VpConfiguration()
         .setKeystorePath("/path/to/access-certificate.p12")
         .setKeystorePassword("...")
         .setKeyStoreAlias("rp"))
-    .setDcqlQuery("{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\",\"meta\":{\"vct_values\":[\"urn:eudi:pid:1\"]},\"claims\":[{\"path\":[\"given_name\"]},{\"path\":[\"age_over_18\"]}]}]}");
+    .setDcqlQuery(EudiPidQuery.sdJwtVc(GIVEN_NAME, AGE_OVER_18));
 EudiWalletClient client = new EudiWalletClient(config);
 ```
 
@@ -78,9 +78,23 @@ config.setExpectedOrigins(List.of("https://verifier.example.org"))
     .setClientId("did:web:verifier.example.org")
     .setClientIdPrefix(ClientIdPrefix.DECENTRALIZED_IDENTIFIER)
     .setJwks(new JwksProperties().setJwksPath("/path/to/verifier.jwks").setKid("verifier-key"))
-    .setDcqlQuery("...")
+    .setDcqlQuery(new DcqlQuery()
+        .addCredential(new CredentialQuery("mdl", CredentialFormat.MSO_MDOC)
+            .setDoctypeValue("org.iso.18013.5.1.mDL")
+            .addClaim("org.iso.18013.5.1", "family_name")
+            .addClaim(new ClaimsQuery("org.iso.18013.5.1", "age_over_18").withValues(true))))
     .addCredentialVerifier(new SdJwtVcVerifier());
 OpenId4VpDcApiClient client = new OpenId4VpDcApiClient(config);
+```
+
+### The query
+
+The credentials are asked for with a DCQL query, which the `dcql` package models: a `DcqlQuery` holds `CredentialQuery` objects, one per credential, each with its format, its format-specific `meta` (`setVctValues` for a SD-JWT VC, `setDoctypeValue` for a mobile document), the `ClaimsQuery` objects naming the claims by their path, and optional `TrustedAuthority` constraints on the issuers; `CredentialSetQuery` objects say which combinations of credentials satisfy the verifier. The query is checked at initialization, serialized into the request, and read back from JSON with `DcqlQuery.parse`. For the person identification data of the EUDI wallet, `EudiPidQuery.sdJwtVc(...)` and `EudiPidQuery.mdoc(...)` build the query from the attribute names of `EudiPidProfileDefinition`. Matching the query against the credentials is the wallet's job: the model writes, checks and reads, nothing more.
+
+The query can also be given as plain JSON text, which `setDcqlQuery(String)` parses into the same model, checked the same way at initialization:
+
+```java
+config.setDcqlQuery("{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\",\"meta\":{\"vct_values\":[\"urn:eudi:pid:1\"]},\"claims\":[{\"path\":[\"given_name\"]},{\"path\":[\"age_over_18\"]}]}]}");
 ```
 
 ### The configuration
@@ -95,7 +109,9 @@ The `OpenId4VpConfiguration` has the following properties, with the HAIP choices
 | `keystore` | | A `KeystoreProperties`: the keystore holding the signing key and its certificate chain, used when no JWKS is defined. The natural source for the X.509 prefixes |
 | `requestObjectSigningKey` | | Read-only: the key resolved from the two sources above at initialization. Its algorithm is derived from the key itself, so a P-256 key signs with the ES256 that HAIP mandates |
 | `responseMode` | `DIRECT_POST_JWT` | How the wallet returns the presentation: `DIRECT_POST` posted in clear or `DIRECT_POST_JWT` posted encrypted to the response URI, `DC_API` or `DC_API_JWT` through the browser. The encrypted modes generate an ephemeral ECDH-ES P-256 key for each request and accept A128GCM and A256GCM; a clear mode is announced once with a warning as it does not fit HAIP |
-| `dcqlQuery` | | The DCQL query, as a JSON object in a string: which credentials, of which format, with which claims. The only query language of OpenID4VP 1.0 |
+| `dcqlQuery` | | The DCQL query, the only query language of OpenID4VP 1.0: which credentials, of which format, with which claims. A `DcqlQuery` built programmatically (`CredentialQuery`, `ClaimsQuery`, `TrustedAuthority`, `CredentialSetQuery`, with `EudiPidQuery` for the person identification data), or its JSON given as plain text to `setDcqlQuery(String)`. Checked at initialization against the rules of the specification: unique identifiers, sets referencing existing credentials, claim identifiers where claim sets need them |
+| `scope` | | An alias for a DCQL query, sent instead of it: which aliases exist, and which query each stands for, is defined by an ecosystem, not by the specification, and a wallet may support none. Exactly one of `dcqlQuery` and `scope` must be set |
+| `verifierInfo` | empty | Attestations about the verifier (`VerifierAttestation`: a `format`, the `data`, optional `credentialIds`), sent as the `verifier_info` parameter: what a third party says this verifier is entitled to ask, such as the registration certificate of an EUDI relying party, which the wallet may show to the End-User or check the request against. The formats belong to the ecosystem; nothing comes back |
 | `supportedFormats` | `[SD_JWT_VC]` | The credential formats requested from the wallet (`SD_JWT_VC` is `dc+sd-jwt`, `MSO_MDOC` is `mso_mdoc`), published in the `client_metadata` of the request. A verifier must be registered for each of them |
 | `credentialVerifiers` | | The `CredentialVerifier` for each format, registered with `addCredentialVerifier(verifier)`: it validates a presentation (issuer signature, trust in the issuer, revocation, key binding) and returns the disclosed claims. `SdJwtVcVerifier` is provided, not yet implemented |
 | `transactionLifetimeSeconds` | `300` | How long a request stays valid: stamped as the `exp` of the request object, and the date at which the pending transaction is dropped from the store |

@@ -1,13 +1,13 @@
 package org.pac4j.openid4vp.request;
 
 import com.nimbusds.jose.jwk.ECKey;
-import com.nimbusds.jose.util.JSONObjectUtils;
 import com.nimbusds.jwt.JWTClaimsSet;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.util.JwkHelper;
 import org.pac4j.openid4vp.client.OpenId4VpClient;
+import org.pac4j.openid4vp.config.VerifierAttestation;
 import org.pac4j.openid4vp.exceptions.OpenId4VpException;
 import org.pac4j.openid4vp.transaction.VpTransaction;
 
@@ -44,12 +44,16 @@ public class OpenId4VpRequestObjectBuilder {
      * apart by the HTTP method and the posted parameters, so {@code response_uri} and {@code request_uri}
      * hold the same URL.</p>
      *
-     * <p>The {@code aud} claim is deliberately left out: its expected value moved across the drafts, and an
-     * audience the wallet does not expect is worse than none. Check it against the version targeted.</p>
+     * <p>The {@code aud} claim depends on whether the wallet is known beforehand: "the aud claim MUST be equal
+     * to the iss (issuer) claim value, when Dynamic Discovery is performed", and "MUST be
+     * https://self-issued.me/v2, when Static Discovery metadata is used". No wallet is ever discovered here,
+     * the request being handed to whichever wallet the End-User holds, so the symbolic value is used.</p>
      *
      * @param ctx the context
      * @param transaction the transaction being answered
      * @return the serialized signed request object
+     * @see <a href="https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#section-5.8">
+     *     OpenID4VP 1.0, aud of a request object</a>
      */
     public String build(final CallContext ctx, final VpTransaction transaction) {
         val configuration = client.getConfiguration();
@@ -76,6 +80,7 @@ public class OpenId4VpRequestObjectBuilder {
         // the claims a request object carries on top of the protocol parameters
         return builder
             .issuer(client.getConfiguration().computeClientId())
+            .audience(REQUEST_OBJECT_AUDIENCE)
             .issueTime(Date.from(transaction.getCreatedAt()))
             .expirationTime(Date.from(transaction.getExpiresAt()));
     }
@@ -99,8 +104,15 @@ public class OpenId4VpRequestObjectBuilder {
         parameters.put(RESPONSE_TYPE, RESPONSE_TYPE_VP_TOKEN);
         parameters.put(RESPONSE_MODE, configuration.getResponseMode().getValue());
         parameters.put(NONCE, transaction.getNonce());
-        parameters.put(DCQL_QUERY, parseDcqlQuery(configuration.getDcqlQuery()));
+        if (configuration.getScope() != null) {
+            parameters.put(SCOPE, configuration.getScope());
+        } else {
+            parameters.put(DCQL_QUERY, configuration.getDcqlQuery().toJson());
+        }
         parameters.put(CLIENT_METADATA, buildClientMetadata(transaction));
+        if (!configuration.getVerifierInfo().isEmpty()) {
+            parameters.put(VERIFIER_INFO, configuration.getVerifierInfo().stream().map(VerifierAttestation::toMember).toList());
+        }
         addBindingParameters(ctx, transaction, parameters);
         return parameters;
     }
@@ -115,7 +127,11 @@ public class OpenId4VpRequestObjectBuilder {
      */
     protected void addBindingParameters(final CallContext ctx, final VpTransaction transaction,
                                         final Map<String, Object> parameters) {
-        // the response comes back on the very endpoint the request object is fetched from
+        // the response comes back on the very endpoint the request object is fetched from. Sent even with the
+        // redirect_uri prefix, where the client identifier already holds it: "The Verifier MAY omit the redirect_uri
+        // Authorization Request parameter (or response_uri when Response Mode direct_post is used)", and the
+        // specification's own example of such a request carries both, so a wallet may well read the parameter
+        // https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#client_identifier_prefixes
         parameters.put(RESPONSE_URI, client.computeRequestUri(ctx.webContext(), transaction.getId()));
         if (transaction.getState() != null) {
             parameters.put(STATE, transaction.getState());
@@ -151,19 +167,5 @@ public class OpenId4VpRequestObjectBuilder {
         metadata.put(VP_FORMATS_SUPPORTED, formats);
 
         return metadata;
-    }
-
-    /**
-     * <p>Read the DCQL query, held as a raw JSON string until it gets a type of its own.</p>
-     *
-     * @param dcqlQuery the query
-     * @return the query as a JSON object
-     */
-    protected Map<String, Object> parseDcqlQuery(final String dcqlQuery) {
-        try {
-            return JSONObjectUtils.parse(dcqlQuery);
-        } catch (final ParseException e) {
-            throw new OpenId4VpException("unable to read the DCQL query: " + dcqlQuery, e);
-        }
     }
 }

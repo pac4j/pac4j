@@ -19,6 +19,7 @@ import org.pac4j.test.util.TestsHelper;
 
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.pac4j.openid4vp.util.OpenId4VpConstants.*;
@@ -64,6 +65,20 @@ class DcApiRequestObjectBuilderTests {
         val content = action.getContent();
         assertTrue(content.startsWith("{\"" + REQUEST + "\":\""));
         return SignedJWT.parse(content.substring(content.indexOf(':') + 2, content.length() - 2));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void testTheEncryptedModePublishesAKeyToEncryptTo() throws Exception {
+        // the default mode of this binding is dc_api.jwt, "The Verifier MUST use the Response Mode dc_api.jwt" says HAIP:
+        // the wallet needs a key to encrypt to, and the algorithms the verifier accepts
+        val metadata = handOver().getJWTClaimsSet().getJSONObjectClaim(CLIENT_METADATA);
+        val keys = (List<Map<String, Object>>) ((Map<String, Object>) metadata.get(JWKS)).get(KEYS);
+        assertEquals(1, keys.size());
+        assertEquals("EC", keys.get(0).get("kty"));
+        assertEquals("ECDH-ES", keys.get(0).get("alg"));
+        assertNull(keys.get(0).get("d"));
+        assertEquals(List.of("A128GCM", "A256GCM"), metadata.get(ENCRYPTED_RESPONSE_ENC_VALUES_SUPPORTED));
     }
 
     @Test

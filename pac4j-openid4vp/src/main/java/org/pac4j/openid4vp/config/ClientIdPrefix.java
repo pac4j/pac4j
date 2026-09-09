@@ -5,8 +5,17 @@ import lombok.RequiredArgsConstructor;
 
 /**
  * The prefix qualifying how the verifier identifier must be authenticated by the wallet.
- * In the EUDI context, {@link #X509_SAN_DNS} is used: the client identifier is the DNS name
- * of the verifier, bound to its relying party access certificate.
+ * The EUDI wallet, through the high assurance profile, uses {@link #X509_HASH}: the client identifier is
+ * the hash of the relying party access certificate of the verifier, published with the request.
+ *
+ * <p>A client identifier without any prefix, "if a : character is not present in the Client Identifier",
+ * names a client pre-registered with the wallet, whose metadata the wallet already holds: the request
+ * must then carry no {@code client_metadata}, hence no ephemeral encryption key. That case is not offered:
+ * it shares its mechanics, metadata known beforehand rather than carried, with the openid_federation
+ * prefix, and will come with it.</p>
+ *
+ * @see <a href="https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#client_identifier_prefixes">
+ *     OpenID4VP 1.0, client identifier prefixes, and its fallback for pre-registered clients</a>
  *
  * @author Jerome LELEU
  * @since 6.6.0

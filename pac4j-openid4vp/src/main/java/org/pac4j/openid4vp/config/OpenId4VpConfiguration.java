@@ -13,7 +13,6 @@ import com.nimbusds.jose.jwk.ECKey;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.util.Base64URL;
-import com.nimbusds.jose.util.JSONObjectUtils;
 import com.nimbusds.jose.util.X509CertUtils;
 import lombok.val;
 import org.pac4j.core.exception.TechnicalException;
@@ -24,12 +23,12 @@ import org.pac4j.core.util.Announcement;
 import org.pac4j.core.util.JwkHelper;
 import org.pac4j.openid4vp.transaction.VpTransaction;
 import org.pac4j.openid4vp.transaction.VpTransactionStore;
+import org.pac4j.openid4vp.dcql.DcqlQuery;
 import org.pac4j.openid4vp.verifier.CredentialVerifier;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateParsingException;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -38,6 +37,7 @@ import java.util.Map;
 import static org.pac4j.core.util.CommonHelper.assertNotBlank;
 import static org.pac4j.core.util.CommonHelper.assertNotNull;
 import static org.pac4j.core.util.CommonHelper.assertTrue;
+import static org.pac4j.core.util.CommonHelper.isNotBlank;
 
 /**
  * The configuration of an OpenID4VP verifier (relying party).
@@ -83,14 +83,33 @@ public class OpenId4VpConfiguration extends BaseClientConfiguration {
     private List<CredentialFormat> supportedFormats = new ArrayList<>(List.of(CredentialFormat.SD_JWT_VC));
 
     /**
-     * The DCQL query, as a raw JSON string for now. It is the only query language of OpenID4VP 1.0: the
-     * Presentation Exchange of the earlier drafts ({@code presentation_definition}) is gone from the final
-     * specification, so there is nothing else to support here.
+     * The DCQL query: which credentials, with which claims. Built programmatically, or given as JSON with
+     * {@link #setDcqlQuery(String)}. It is the only query language of OpenID4VP 1.0: the Presentation
+     * Exchange of the earlier drafts ({@code presentation_definition}) is gone from the final specification,
+     * so there is nothing else to support here.
      *
      * @see <a href="https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#dcql_query">
      *     OpenID4VP 1.0, Digital Credentials Query Language</a>
      */
-    private String dcqlQuery;
+    private DcqlQuery dcqlQuery;
+
+    /**
+     * An alias for a DCQL query, sent instead of it: "Such a scope parameter value MUST be an alias for a
+     * well-defined DCQL query". Which values exist, and which query each stands for, is the business of the
+     * ecosystem, not of the specification, and a wallet may not support any. Either this or the DCQL query,
+     * "but not both".
+     *
+     * @see <a href="https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#request_scope">
+     *     OpenID4VP 1.0, using scope parameter to request presentations</a>
+     */
+    private String scope;
+
+    /**
+     * The attestations about this verifier sent to the wallet, the {@code verifier_info} parameter: what a
+     * third party says it is entitled to ask. Stable for a verifier, hence configured once. Empty by default,
+     * the parameter is then not sent.
+     */
+    private List<VerifierAttestation> verifierInfo = new ArrayList<>();
 
     /** Where the signing key comes from: a JWKS, or a keystore when it is not defined. */
     private JwksProperties jwks = new JwksProperties();
@@ -139,13 +158,16 @@ public class OpenId4VpConfiguration extends BaseClientConfiguration {
         assertNotNull("nonceGenerator", nonceGenerator);
         assertNotNull("transactionIdGenerator", transactionIdGenerator);
         assertNotNull("requestUriMethod", requestUriMethod);
-        assertNotBlank("dcqlQuery", dcqlQuery);
-        try {
-            JSONObjectUtils.parse(dcqlQuery);
-        } catch (final ParseException e) {
-            throw new TechnicalException("dcqlQuery is not a JSON object: " + e.getMessage(), e);
+        // "Either a dcql_query or a scope parameter representing a DCQL Query MUST be present in the Authorization
+        // Request, but not both" https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#vp_token_request
+        val hasQuery = dcqlQuery != null;
+        assertTrue(hasQuery != isNotBlank(scope), "either dcqlQuery or scope must be defined, but not both");
+        if (dcqlQuery != null) {
+            dcqlQuery.check();
         }
         assertTrue(transactionLifetimeSeconds > 0, "transactionLifetimeSeconds must be greater than zero");
+        assertNotNull("verifierInfo", verifierInfo);
+        verifierInfo.forEach(VerifierAttestation::check);
         assertTrue(supportedFormats != null && !supportedFormats.isEmpty(), "supportedFormats cannot be empty");
         checkResponseModeBinding();
         if (!responseMode.isEncrypted()) {
@@ -191,6 +213,28 @@ public class OpenId4VpConfiguration extends BaseClientConfiguration {
         }
         supportedFormats.forEach(format -> assertNotNull("credentialVerifier for " + format.getValue(),
             credentialVerifiers.get(format)));
+    }
+
+    /**
+     * <p>The DCQL query. Written by hand since the JSON overload below stops Lombok from generating it.</p>
+     *
+     * @param dcqlQuery the query, or null
+     * @return this configuration
+     */
+    public OpenId4VpConfiguration setDcqlQuery(final DcqlQuery dcqlQuery) {
+        this.dcqlQuery = dcqlQuery;
+        return this;
+    }
+
+    /**
+     * <p>The DCQL query, from its JSON form.</p>
+     *
+     * @param dcqlQuery the query as a JSON object, or null
+     * @return this configuration
+     */
+    public OpenId4VpConfiguration setDcqlQuery(final String dcqlQuery) {
+        this.dcqlQuery = dcqlQuery == null ? null : DcqlQuery.parse(dcqlQuery);
+        return this;
     }
 
     /**

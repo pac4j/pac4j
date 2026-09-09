@@ -44,6 +44,8 @@ import static org.pac4j.openid4vp.util.OpenId4VpConstants.*;
 @Slf4j
 public class WalletSimulator {
 
+    private static final SecureRandom RANDOM = new SecureRandom();
+
     /** What this simulator claims to support, in the form of the wallet metadata of the specification. */
     public static final String WALLET_METADATA_JSON = "{\"vp_formats_supported\":{\"dc+sd-jwt\":{\"sd-jwt_alg_values\":[\"ES256\"],"
         + "\"kb-jwt_alg_values\":[\"ES256\"]}},\"client_id_prefixes_supported\":[\"x509_hash\",\"x509_san_dns\","
@@ -100,7 +102,7 @@ public class WalletSimulator {
      */
     public String generateWalletNonce() {
         val bytes = new byte[16];
-        new SecureRandom().nextBytes(bytes);
+        RANDOM.nextBytes(bytes);
         return Base64URL.encode(bytes).toString();
     }
 
@@ -189,7 +191,7 @@ public class WalletSimulator {
         LOGGER.debug("Wallet simulator <- invoked with the request in the URL itself: {}", walletUrl);
         try {
             val parameters = new LinkedHashMap<String, Object>();
-            for (val name : List.of(CLIENT_ID, NONCE, RESPONSE_URI, RESPONSE_MODE, RESPONSE_TYPE, STATE)) {
+            for (val name : List.of(CLIENT_ID, NONCE, RESPONSE_URI, RESPONSE_MODE, RESPONSE_TYPE, STATE, SCOPE)) {
                 val value = readParameter(walletUrl, name);
                 if (value != null) {
                     parameters.put(name, value);

@@ -5,6 +5,7 @@ import com.nimbusds.jose.JWEAlgorithm;
 import com.nimbusds.jose.jwk.Curve;
 import com.nimbusds.jose.jwk.KeyUse;
 import com.nimbusds.jose.jwk.gen.ECKeyGenerator;
+import com.nimbusds.jose.util.JSONArrayUtils;
 import com.nimbusds.jose.util.JSONObjectUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,13 +16,13 @@ import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.openid4vp.client.OpenId4VpClient;
-import org.pac4j.openid4vp.config.ResponseMode;
 import org.pac4j.openid4vp.config.RequestUriMethod;
 import org.pac4j.openid4vp.exceptions.OpenId4VpException;
 import org.pac4j.openid4vp.transaction.VpTransaction;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -94,7 +95,8 @@ public class OpenId4VpRedirectionActionBuilder implements RedirectionActionBuild
      * @return the key, or null when the response is not encrypted
      */
     protected String buildEncryptionKey() {
-        if (client.getConfiguration().getResponseMode() != ResponseMode.DIRECT_POST_JWT) {
+        // both encrypted modes, posted or returned through the digital credentials API, need the key
+        if (!client.getConfiguration().getResponseMode().isEncrypted()) {
             return null;
         }
         try {
@@ -144,12 +146,28 @@ public class OpenId4VpRedirectionActionBuilder implements RedirectionActionBuild
      * @param transaction the transaction being opened
      * @return the wallet URL
      */
+    /**
+     * <p>A URL parameter is only ever a string: a JSON object or array goes through as JSON.</p>
+     *
+     * @param value the parameter value
+     * @return the string form
+     */
+    @SuppressWarnings("unchecked")
+    protected String toUrlValue(final Object value) {
+        if (value instanceof Map) {
+            return JSONObjectUtils.toJSONString((Map<String, ?>) value);
+        }
+        if (value instanceof List) {
+            return JSONArrayUtils.toJSONString((List<?>) value);
+        }
+        return String.valueOf(value);
+    }
+
     protected String computeUnsignedWalletUrl(final CallContext ctx, final VpTransaction transaction) {
         var url = client.getConfiguration().getWalletScheme();
         for (val parameter : client.getRequestObjectBuilder().buildParameters(ctx, transaction).entrySet()) {
             val value = parameter.getValue();
-            url = CommonHelper.addParameter(url, parameter.getKey(),
-                value instanceof Map ? JSONObjectUtils.toJSONString((Map<String, ?>) value) : String.valueOf(value));
+            url = CommonHelper.addParameter(url, parameter.getKey(), toUrlValue(value));
         }
         return url;
     }

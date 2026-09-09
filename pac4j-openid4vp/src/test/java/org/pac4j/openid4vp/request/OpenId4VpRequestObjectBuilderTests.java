@@ -14,6 +14,8 @@ import org.pac4j.core.exception.http.FoundAction;
 import com.nimbusds.jose.crypto.ECDSAVerifier;
 import org.pac4j.openid4vp.client.OpenId4VpClient;
 import org.pac4j.openid4vp.config.ClientIdPrefix;
+import org.pac4j.openid4vp.dcql.DcqlQuery;
+import org.pac4j.openid4vp.config.VerifierAttestation;
 import org.pac4j.openid4vp.config.OpenId4VpConfiguration;
 import org.pac4j.openid4vp.transaction.VpTransaction;
 import org.pac4j.openid4vp.verifier.SdJwtVcVerifier;
@@ -97,12 +99,48 @@ class OpenId4VpRequestObjectBuilderTests {
         assertEquals("direct_post.jwt", claims.getStringClaim(RESPONSE_MODE));
         assertEquals(transaction.getNonce(), claims.getStringClaim(NONCE));
         assertNotNull(claims.getExpirationTime());
+        // no wallet is discovered beforehand: the symbolic audience of the static discovery case
+        assertEquals(List.of(REQUEST_OBJECT_AUDIENCE), claims.getAudience());
 
         // the response comes back on the very endpoint the request object was fetched from
         assertTrue(claims.getStringClaim(RESPONSE_URI).contains(VP_TRANSACTION_ID + "=" + transaction.getId()));
 
-        assertEquals(List.of(Map.of("id", "pid", "format", "dc+sd-jwt")),
+        // the meta member is always sent, empty when there is no constraint
+        assertEquals(List.of(Map.of("id", "pid", "format", "dc+sd-jwt", "meta", Map.of())),
             claims.getJSONObjectClaim(DCQL_QUERY).get("credentials"));
+    }
+
+    @Test
+    void testAScopeStandsForTheDcqlQuery() throws Exception {
+        configuration.setDcqlQuery((DcqlQuery) null).setScope("com.example.pid_presentation");
+        val transaction = openTransaction();
+        val claims = requestObjectOf(transaction).getJWTClaimsSet();
+
+        // "Either a dcql_query or a scope parameter representing a DCQL Query MUST be present [...], but not both"
+        assertEquals("com.example.pid_presentation", claims.getStringClaim(SCOPE));
+        assertNull(claims.getClaim(DCQL_QUERY));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void testTheVerifierAttestationsAreSentAsIs() throws Exception {
+        configuration.getVerifierInfo().add(new VerifierAttestation("jwt", "eyJhbGciOiJFUzI1NiJ9.registration.certificate")
+            .setCredentialIds(List.of("pid")));
+        configuration.getVerifierInfo().add(new VerifierAttestation("example+json", Map.of("purpose", "age verification")));
+        val claims = requestObjectOf(openTransaction()).getJWTClaimsSet();
+
+        val verifierInfo = (List<Map<String, Object>>) claims.getClaim(VERIFIER_INFO);
+        assertEquals(2, verifierInfo.size());
+        assertEquals(Map.of(FORMAT, "jwt", DATA, "eyJhbGciOiJFUzI1NiJ9.registration.certificate", CREDENTIAL_IDS, List.of("pid")),
+            verifierInfo.get(0));
+        // relevant to every requested credential: no credential_ids
+        assertEquals(Map.of(FORMAT, "example+json", DATA, Map.of("purpose", "age verification")), verifierInfo.get(1));
+    }
+
+    @Test
+    void testNoVerifierInfoParameterWithoutAttestations() throws Exception {
+        val claims = requestObjectOf(openTransaction()).getJWTClaimsSet();
+        assertNull(claims.getClaim(VERIFIER_INFO));
     }
 
     @Test

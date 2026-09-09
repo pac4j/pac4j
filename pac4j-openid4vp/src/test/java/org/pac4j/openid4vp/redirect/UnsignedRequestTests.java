@@ -11,6 +11,7 @@ import org.pac4j.openid4vp.credentials.VerifiablePresentationCredentials;
 import org.pac4j.openid4vp.wallet.WalletSimulator;
 import org.pac4j.openid4vp.client.OpenId4VpClient;
 import org.pac4j.openid4vp.config.ClientIdPrefix;
+import org.pac4j.openid4vp.config.VerifierAttestation;
 import org.pac4j.openid4vp.config.OpenId4VpConfiguration;
 import org.pac4j.openid4vp.verifier.SdJwtVcVerifier;
 import org.pac4j.test.context.MockWebContext;
@@ -75,6 +76,15 @@ class UnsignedRequestTests {
         // there is nothing to fetch: the request is the URL
         assertNull(parameter(url, REQUEST_URI));
         assertTrue(url.startsWith("openid4vp://"));
+    }
+
+    @Test
+    void testTheVerifierAttestationsTravelInTheUrlAsJson() {
+        client.getConfiguration().getVerifierInfo().add(new VerifierAttestation("jwt", "eyJ.attestation"));
+        val ctx = new CallContext(MockWebContext.create(), new MockSessionStore());
+        val url = assertInstanceOf(FoundAction.class, client.getRedirectionAction(ctx).get()).getLocation();
+        val verifierInfo = new WalletSimulator().readParameter(url, VERIFIER_INFO);
+        assertEquals("[{\"format\":\"jwt\",\"data\":\"eyJ.attestation\"}]", verifierInfo);
     }
 
     @Test

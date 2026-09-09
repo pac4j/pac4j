@@ -3,6 +3,7 @@ package org.pac4j.openid4vp.config;
 import lombok.val;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.pac4j.openid4vp.dcql.DcqlQuery;
 import org.pac4j.core.config.properties.JwksProperties;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.openid4vp.verifier.SdJwtVcVerifier;
@@ -47,7 +48,7 @@ class ConfigurationCoherenceTests {
         val configuration = new OpenId4VpDcApiConfiguration();
         configuration.setClientId("did:example:123")
             .setClientIdPrefix(ClientIdPrefix.DECENTRALIZED_IDENTIFIER)
-            .setDcqlQuery("{\"credentials\":[]}")
+            .setDcqlQuery("{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\"}]}")
             .setJwks(new JwksProperties().setJwksPath(directory.resolve("keys.jwks").toString()).setKid("key-1"))
             .setResponseMode(ResponseMode.DIRECT_POST_JWT);
         configuration.setExpectedOrigins(List.of("https://app.example.org"));
@@ -58,11 +59,43 @@ class ConfigurationCoherenceTests {
     }
 
     @Test
-    void testAMalformedDcqlQueryIsRefusedAtInitialization() {
-        val configuration = valid().setDcqlQuery("{\"credentials\": [");
-
-        val e = TestsHelper.expectException(configuration::init);
+    void testAMalformedDcqlQueryIsRefusedWhenSet() {
+        val e = TestsHelper.expectException(() -> valid().setDcqlQuery("{\"credentials\": ["));
         org.junit.jupiter.api.Assertions.assertTrue(e.getMessage().startsWith("dcqlQuery is not a JSON object: "), e.getMessage());
+    }
+
+    @Test
+    void testAnEmptyDcqlQueryIsRefusedAtInitialization() {
+        val configuration = valid().setDcqlQuery("{\"credentials\":[]}");
+
+        TestsHelper.expectException(configuration::init, TechnicalException.class, "credentials cannot be empty");
+    }
+
+    @Test
+    void testEitherADcqlQueryOrAScopeButNotBoth() {
+        val both = valid().setScope("com.example.pid_presentation");
+        TestsHelper.expectException(both::init, TechnicalException.class, "either dcqlQuery or scope must be defined, but not both");
+
+        val neither = valid().setDcqlQuery((DcqlQuery) null);
+        TestsHelper.expectException(neither::init, TechnicalException.class, "either dcqlQuery or scope must be defined, but not both");
+
+        val scopeOnly = valid().setDcqlQuery((DcqlQuery) null).setScope("com.example.pid_presentation");
+        scopeOnly.init();
+    }
+
+    @Test
+    void testAVerifierAttestationNeedsAFormatAndData() {
+        val noFormat = valid();
+        noFormat.getVerifierInfo().add(new VerifierAttestation(null, "eyJ..."));
+        TestsHelper.expectException(noFormat::init, TechnicalException.class, "format cannot be blank");
+
+        val noData = valid();
+        noData.getVerifierInfo().add(new VerifierAttestation("jwt", null));
+        TestsHelper.expectException(noData::init, TechnicalException.class, "data cannot be null");
+
+        val wrongData = valid();
+        wrongData.getVerifierInfo().add(new VerifierAttestation("jwt", 42));
+        TestsHelper.expectException(wrongData::init, TechnicalException.class, "data must be a string or a JSON object");
     }
 
     @Test
@@ -85,7 +118,7 @@ class ConfigurationCoherenceTests {
         val configuration = new OpenId4VpDcApiConfiguration();
         configuration.setClientId("did:example:123")
             .setClientIdPrefix(ClientIdPrefix.DECENTRALIZED_IDENTIFIER)
-            .setDcqlQuery("{\"credentials\":[]}")
+            .setDcqlQuery("{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\"}]}")
             .setJwks(new JwksProperties().setJwksPath(directory.resolve("keys.jwks").toString()).setKid("key-1"));
         // the browser origin never has a path: this value could never match it
         configuration.setExpectedOrigins(List.of("https://app.example.org/login"));
