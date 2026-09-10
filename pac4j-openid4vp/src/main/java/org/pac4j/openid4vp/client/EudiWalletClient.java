@@ -7,7 +7,6 @@ import org.pac4j.openid4vp.config.OpenId4VpConfiguration;
 import org.pac4j.openid4vp.config.ResponseMode;
 import org.pac4j.openid4vp.profile.EudiPidProfileDefinition;
 import org.pac4j.openid4vp.profile.creator.OpenId4VpProfileCreator;
-import org.pac4j.openid4vp.verifier.SdJwtVcVerifier;
 
 /**
  * This class is the client to authenticate users against a European digital identity (EUDI) wallet.
@@ -54,9 +53,6 @@ public class EudiWalletClient extends OpenId4VpClient {
         // is then the hash of the access certificate, computed by the configuration: nothing to type
         configuration.setClientIdPrefix(ClientIdPrefix.X509_HASH);
         configuration.setResponseMode(ResponseMode.DIRECT_POST_JWT);
-        if (configuration.getCredentialVerifiers().isEmpty()) {
-            configuration.addCredentialVerifier(new SdJwtVcVerifier());
-        }
         setProfileCreatorIfUndefined(new OpenId4VpProfileCreator(this, new EudiPidProfileDefinition()));
 
         super.internalInit(forceReinit);

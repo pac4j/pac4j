@@ -14,7 +14,6 @@ import org.pac4j.core.redirect.RedirectionActionBuilder;
 
 import org.pac4j.openid4vp.config.ClientIdPrefix;
 import org.pac4j.openid4vp.config.OpenId4VpConfiguration;
-import org.pac4j.openid4vp.verifier.SdJwtVcVerifier;
 import org.pac4j.test.util.TestsHelper;
 
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
@@ -45,7 +44,6 @@ class OpenId4VpClientTests {
         configuration.setClientId("verifier.example.org");
         configuration.setClientIdPrefix(ClientIdPrefix.DECENTRALIZED_IDENTIFIER);
         configuration.setDcqlQuery("{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\"}]}");
-        configuration.addCredentialVerifier(new SdJwtVcVerifier());
         return configuration;
     }
 
@@ -106,11 +104,12 @@ class OpenId4VpClientTests {
     }
 
     @Test
-    void testEveryRequestedFormatNeedsAVerifier() throws Exception {
+    void testEveryQueriedFormatNeedsAVerifier() throws Exception {
         val client = validClient();
+        // the default SD-JWT VC verifier gone, the query still asks for one
         client.getConfiguration().getCredentialVerifiers().clear();
 
         TestsHelper.expectException(client::init, TechnicalException.class,
-            "credentialVerifier for dc+sd-jwt cannot be null");
+            "credentialVerifier for the format dc+sd-jwt of the credential query pid cannot be null");
     }
 }

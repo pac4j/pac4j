@@ -13,7 +13,6 @@ import org.pac4j.openid4vp.client.OpenId4VpClient;
 import org.pac4j.openid4vp.config.ClientIdPrefix;
 import org.pac4j.openid4vp.config.VerifierAttestation;
 import org.pac4j.openid4vp.config.OpenId4VpConfiguration;
-import org.pac4j.openid4vp.verifier.SdJwtVcVerifier;
 import org.pac4j.test.context.MockWebContext;
 import org.pac4j.test.context.session.MockSessionStore;
 
@@ -47,7 +46,6 @@ class UnsignedRequestTests {
         val configuration = new OpenId4VpConfiguration();
         configuration.setClientIdPrefix(ClientIdPrefix.REDIRECT_URI)
             .setDcqlQuery("{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\"}]}");
-        configuration.addCredentialVerifier(new SdJwtVcVerifier());
 
         client = new OpenId4VpClient(configuration);
         client.setName("Wallet");

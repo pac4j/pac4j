@@ -228,12 +228,48 @@ public class WalletSimulator {
             }
         }
         val request = new WalletRequest((String) parameters.get(CLIENT_ID), (String) parameters.get(NONCE),
-            (String) parameters.get(RESPONSE_URI), encryptionKey, (Map<String, Object>) parameters.get(DCQL_QUERY));
+            (String) parameters.get(RESPONSE_URI), encryptionKey, (Map<String, Object>) parameters.get(DCQL_QUERY),
+            (String) parameters.get(RESPONSE_MODE));
         LOGGER.debug("Wallet simulator    it asks for {} and expects the answer at {}",
             request.getDcqlQuery(), request.getResponseUri());
         LOGGER.debug("Wallet simulator    the answer must be bound to the nonce {} and encrypted to the key {}",
             request.getNonce(), encryptionKey != null ? encryptionKey.getKeyID() : "none");
         return request;
+    }
+
+    /**
+     * <p>The parameters posted back to the verifier, the way it asked: the presentations encrypted in a
+     * {@code response} parameter, or in clear in a {@code vp_token} parameter.</p>
+     *
+     * @param request the request being answered
+     * @param vpToken the presentations, indexed by the identifier of the DCQL credential query they answer
+     * @return the form parameters to post
+     */
+    public Map<String, String> buildResponseParameters(final WalletRequest request, final Map<String, List<String>> vpToken) {
+        if (request.getEncryptionKey() != null) {
+            return Map.of(RESPONSE, buildResponse(request, vpToken));
+        }
+        val serialized = JSONObjectUtils.toJSONString(vpToken);
+        LOGGER.debug("Wallet simulator -> posting {} presentation(s) in clear to {}, as asked ({})",
+            vpToken.values().stream().mapToInt(List::size).sum(), request.getResponseUri(), request.getResponseMode());
+        return Map.of(VP_TOKEN, serialized);
+    }
+
+    /**
+     * <p>The parameters posted back to the verifier when the wallet refuses: an error, never encrypted.</p>
+     *
+     * @param error the error code
+     * @param description the description, or null
+     * @return the form parameters to post
+     */
+    public Map<String, String> buildErrorParameters(final String error, final String description) {
+        LOGGER.debug("Wallet simulator -> refusing with the error {} ({})", error, description);
+        val parameters = new LinkedHashMap<String, String>();
+        parameters.put(ERROR, error);
+        if (description != null) {
+            parameters.put(ERROR_DESCRIPTION, description);
+        }
+        return parameters;
     }
 
     /**

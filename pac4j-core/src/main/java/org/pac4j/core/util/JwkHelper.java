@@ -37,15 +37,15 @@ public class JwkHelper {
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
     /**
-     * Resolve the signing key from the JWKS if it is defined, from the keystore otherwise, creating one for
-     * the default algorithm when the JWKS resource does not exist yet.
+     * Resolve the signing key from the JWKS if it is defined, from the keystore otherwise, creating an RSA
+     * key bound to no algorithm when the JWKS resource does not exist yet.
      *
      * @param jwks the JWKS properties, may be null
      * @param keystore the keystore properties, may be null
      * @return the signing key
      */
     public static JWK resolveSigningKey(final JwksProperties jwks, final KeystoreProperties keystore) {
-        return resolveSigningKey(jwks, keystore, DEFAULT_CREATED_KEY_ALGORITHM);
+        return resolveSigningKey(jwks, keystore, null);
     }
 
     /**
@@ -57,7 +57,8 @@ public class JwkHelper {
      *
      * @param jwks the JWKS properties, may be null
      * @param keystore the keystore properties, may be null
-     * @param createdKeyAlgorithm the algorithm of the key created when the JWKS resource does not exist yet
+     * @param createdKeyAlgorithm the algorithm of the key created when the JWKS resource does not exist yet,
+     *                            null for an RSA key bound to no algorithm
      * @return the signing key
      */
     public static JWK resolveSigningKey(final JwksProperties jwks, final KeystoreProperties keystore,
@@ -71,11 +72,15 @@ public class JwkHelper {
         throw new TechnicalException("A JWKS or a keystore is mandatory to get the signing key");
     }
 
-    /** The algorithm of the key created when none exists yet, kept for backward compatibility. */
-    public static final JWSAlgorithm DEFAULT_CREATED_KEY_ALGORITHM = JWSAlgorithm.RS256;
-
+    /**
+     * Load the signing key from the JWKS, creating an RSA key bound to no algorithm when the resource does
+     * not exist yet, so that it signs with whichever algorithm the other party negotiates.
+     *
+     * @param jwksProperties where the JWKS lives
+     * @return the signing key
+     */
     public static JWK loadJwkFromOrCreateJwks(final JwksProperties jwksProperties) {
-        return loadJwkFromOrCreateJwks(jwksProperties, DEFAULT_CREATED_KEY_ALGORITHM);
+        return loadJwkFromOrCreateJwks(jwksProperties, null);
     }
 
     /**
@@ -84,7 +89,8 @@ public class JwkHelper {
      * assurance profile requires ES256, hence a P-256 key.
      *
      * @param jwksProperties where the JWKS lives
-     * @param createdKeyAlgorithm the algorithm of the key to create when none exists
+     * @param createdKeyAlgorithm the algorithm of the key to create when none exists, null for an RSA key
+     *                            bound to no algorithm
      * @return the signing key
      */
     public static JWK loadJwkFromOrCreateJwks(final JwksProperties jwksProperties, final JWSAlgorithm createdKeyAlgorithm) {
@@ -95,7 +101,7 @@ public class JwkHelper {
             if (!jwksResource.isFile()) {
                 throw new TechnicalException("Cannot create JWKS resource which is not a file: " + jwksResource);
             }
-            LOGGER.debug("No signingKey found in JWKS: generating a {} one", createdKeyAlgorithm);
+            LOGGER.debug("No signingKey found in JWKS: generating one for the algorithm: {}", createdKeyAlgorithm);
             try {
                 val generatedKey = generateKey(createdKeyAlgorithm, kid);
 
@@ -137,7 +143,7 @@ public class JwkHelper {
     /**
      * Generate a signature key for the given algorithm, without any key identifier.
      *
-     * @param algorithm the algorithm the key must be usable with
+     * @param algorithm the algorithm the key must be usable with, null for an RSA key bound to no algorithm
      * @return the generated key, private part included
      */
     public static JWK generateKey(final JWSAlgorithm algorithm) {
@@ -147,12 +153,21 @@ public class JwkHelper {
     /**
      * Generate a signature key for the given algorithm, identified by the given key identifier.
      *
-     * @param algorithm the algorithm the key must be usable with
+     * <p>A requested algorithm is carried by the key as its "alg" member, since the key type alone does not
+     * tell it apart (PS256 and RS256 share the same RSA key). Without any, the key is an RSA one bound to
+     * no algorithm: an "alg" member means the key is "intended for use with" that one algorithm
+     * (RFC 7517 section 4.4) and a strict verifier rejects a JWS header naming another one, whereas the
+     * same RSA key legitimately signs RS256 today and RS512 tomorrow, when the OP asks for it.</p>
+     *
+     * @param algorithm the algorithm the key must be usable with, null for an RSA key bound to no algorithm
      * @param kid the key identifier, null to generate a key carrying none
      * @return the generated key, private part included
      */
     public static JWK generateKey(final JWSAlgorithm algorithm, final String kid) {
         try {
+            if (algorithm == null) {
+                return new RSAKeyGenerator(2048).keyUse(KeyUse.SIGNATURE).keyID(kid).generate();
+            }
             // not supported for federation yet (SDK 11.31.1):
             // new OctetKeyPairGenerator(Curve.Ed25519).keyID(kid).keyUse(KeyUse.SIGNATURE).generate();
             if (JWSAlgorithm.ES256.equals(algorithm) || JWSAlgorithm.ES384.equals(algorithm)

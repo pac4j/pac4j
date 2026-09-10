@@ -13,7 +13,6 @@ import org.pac4j.openid4vp.config.ClientIdPrefix;
 import org.pac4j.openid4vp.config.OpenId4VpConfiguration;
 import org.pac4j.openid4vp.config.RequestUriMethod;
 import org.pac4j.openid4vp.transaction.VpTransaction;
-import org.pac4j.openid4vp.verifier.SdJwtVcVerifier;
 import org.pac4j.test.context.MockWebContext;
 import org.pac4j.test.context.session.MockSessionStore;
 
@@ -47,7 +46,6 @@ class OpenId4VpRedirectionActionBuilderTests {
         configuration.setClientId(CLIENT);
         configuration.setClientIdPrefix(ClientIdPrefix.DECENTRALIZED_IDENTIFIER);
         configuration.setDcqlQuery(DCQL);
-        configuration.addCredentialVerifier(new SdJwtVcVerifier());
 
         client = new OpenId4VpClient(configuration);
         client.setName("EudiWallet");

@@ -48,8 +48,8 @@ public class OpenId4VpCredentialsExtractor implements CredentialsExtractor {
         val transactionId = webContext.getRequestParameter(VP_TRANSACTION_ID).orElse(null);
         val post = HttpConstants.HTTP_METHOD.POST.name().equalsIgnoreCase(webContext.getRequestMethod());
 
-        // the wallet posts its response
-        if (post && webContext.getRequestParameter(RESPONSE).isPresent()) {
+        // the wallet posts its response: encrypted, in clear, or an error
+        if (post && WalletResponseReader.carriesAnswer(webContext)) {
             throw acceptWalletResponse(ctx, transactionId);
         }
         // the wallet fetches the signed request object, having posted its capabilities first or not
@@ -62,7 +62,8 @@ public class OpenId4VpCredentialsExtractor implements CredentialsExtractor {
 
     /**
      * <p>Serve the signed request object to the wallet. On a POST, the wallet first says what it supports
-     * and hands over a nonce, and the request object is built accordingly.</p>
+     * and hands over a nonce: the request object carries the nonce back, and publishes only the credential
+     * formats and the encryption algorithms the wallet declared.</p>
      *
      * @param ctx the context
      * @param transactionId the identifier of the pending transaction
@@ -71,6 +72,12 @@ public class OpenId4VpCredentialsExtractor implements CredentialsExtractor {
      */
     protected HttpAction serveRequestObject(final CallContext ctx, final String transactionId, final boolean post) {
         val transaction = findTransaction(transactionId);
+        // the request object is only served while the transaction awaits its answer: the transaction identifier
+        // being visible in the wallet URL (thus in the QR code), a request the wallet already answered has no
+        // reason to be read again, and the presentation it asks for must not be answered twice
+        if (transaction.getStatus() == VpTransaction.Status.RESPONSE_RECEIVED) {
+            throw new OpenId4VpException("the wallet already answered the transaction: " + transactionId);
+        }
         if (post) {
             readWalletCapabilities(ctx, transaction);
         }
@@ -119,14 +126,37 @@ public class OpenId4VpCredentialsExtractor implements CredentialsExtractor {
      */
     protected HttpAction acceptWalletResponse(final CallContext ctx, final String transactionId) {
         val transaction = findTransaction(transactionId);
-        val response = ctx.webContext().getRequestParameter(RESPONSE)
-            .orElseThrow(() -> new OpenId4VpException("no response posted by the wallet"));
-        transaction.setRawResponse(response);
-        transaction.setStatus(VpTransaction.Status.RESPONSE_RECEIVED);
+        checkAwaitsAnswer(transaction);
+        WalletResponseReader.read(ctx.webContext(), transaction, client.getConfiguration().getResponseMode());
         client.getConfiguration().getTransactionStore().set(transactionId, transaction);
-        LOGGER.debug("the wallet posted its response for the transaction: {} ({} bytes)", transactionId, response.length());
         // TODO: answer the redirect_uri holding the response code, so that the wallet can hand the browser back
         return new OkAction("{}");
+    }
+
+    /**
+     * <p>Check that the transaction can take the answer the wallet posts: one answer at most, and only once
+     * the wallet has read the request, when it had to fetch it.</p>
+     *
+     * <p>The response URI is not authenticated and the transaction identifier is visible in the wallet URL,
+     * thus in the QR code of the cross device flow: whoever sees it can post to the response URI. The first
+     * answer is the one kept, so a later post cannot overwrite what the wallet said; and with a signed
+     * request, served by reference, an answer to a request nobody fetched can only be forged, since the
+     * nonce to bind it to lives in that request. A request passed by value in the wallet URL, the case of the
+     * {@code redirect_uri} prefix, is never fetched: its transaction stays created until it is answered.</p>
+     *
+     * @param transaction the transaction the wallet answers
+     * @see <a href="https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#session_fixation">
+     *     OpenID4VP 1.0, session fixation</a>
+     */
+    protected void checkAwaitsAnswer(final VpTransaction transaction) {
+        val status = transaction.getStatus();
+        if (status == VpTransaction.Status.RESPONSE_RECEIVED) {
+            throw new OpenId4VpException("the transaction was already answered: " + transaction.getId());
+        }
+        if (status == VpTransaction.Status.CREATED && client.getConfiguration().getClientIdPrefix().isSignedRequest()) {
+            throw new OpenId4VpException("the wallet never fetched the request object of the transaction: "
+                + transaction.getId());
+        }
     }
 
     /**
@@ -150,13 +180,16 @@ public class OpenId4VpCredentialsExtractor implements CredentialsExtractor {
             sessionStore.set(webContext, SESSION_TRANSACTION_ID, null);
             return Optional.empty();
         }
-        if (transaction.getRawResponse() == null) {
+        if (!transaction.isAnswered()) {
             LOGGER.debug("the wallet has not answered the transaction yet: {}", transactionId);
             return Optional.empty();
         }
         // a transaction is used once
         store.remove(transactionId);
         sessionStore.set(webContext, SESSION_TRANSACTION_ID, null);
+        if (transaction.getError() != null) {
+            throw new OpenId4VpException(WalletResponseReader.refusalMessage(transaction));
+        }
         LOGGER.debug("the browser comes back with the response of the transaction: {}", transactionId);
         return Optional.of(new VerifiablePresentationCredentials(transaction));
     }

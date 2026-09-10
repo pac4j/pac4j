@@ -29,4 +29,7 @@ public class WalletRequest {
     private final ECKey encryptionKey;
 
     private final Map<String, Object> dcqlQuery;
+
+    /** How the verifier asked to be answered: posted in clear or encrypted, or through the browser. */
+    private final String responseMode;
 }

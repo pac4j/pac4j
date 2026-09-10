@@ -54,6 +54,9 @@ public final class JwkHelperTests {
         assertNotNull(signingJwk);
         assertTrue(signingJwk.isPrivate());
         assertEquals("generated-kid", signingJwk.getKeyID());
+        // bound to no algorithm: the published key must match a request object signed with RS512 too
+        assertInstanceOf(RSAKey.class, signingJwk);
+        assertNull(signingJwk.getAlgorithm());
         assertTrue(Files.exists(jwksPath));
 
         val jwkSet = JWKSet.load(jwksPath.toFile());
@@ -206,7 +209,8 @@ public final class JwkHelperTests {
         assertEquals(Curve.P_256, ecKey.getCurve());
         assertEquals("kid-ec", ecKey.getKeyID());
         assertTrue(ecKey.isPrivate());
-        // the algorithm is carried by the key, so that it never has to be configured twice
+        // the requested algorithm is carried by the key, so that it never has to be configured twice
+        assertEquals(JWSAlgorithm.ES256, ecKey.getAlgorithm());
         assertEquals(JWSAlgorithm.ES256, JwkHelper.determineAlgorithm(ecKey, false));
     }
 
@@ -224,6 +228,19 @@ public final class JwkHelperTests {
 
         assertInstanceOf(RSAKey.class, key);
         assertEquals("kid-rsa", key.getKeyID());
+        assertEquals(JWSAlgorithm.RS256, key.getAlgorithm());
+    }
+
+    @Test
+    public void testGenerateAnRsaKeyBoundToNoAlgorithmByDefault() {
+        val key = JwkHelper.generateKey(null, "kid-default");
+
+        assertInstanceOf(RSAKey.class, key);
+        assertEquals("kid-default", key.getKeyID());
+        // the key type alone tells PS256 from RS256 apart only through "alg": a requested one is kept
+        // (see above), the default one is left out so that the key signs whatever the OP negotiates
+        assertNull(key.getAlgorithm());
+        assertEquals(JWSAlgorithm.RS256, JwkHelper.determineAlgorithm(key, false));
     }
 
     @Test

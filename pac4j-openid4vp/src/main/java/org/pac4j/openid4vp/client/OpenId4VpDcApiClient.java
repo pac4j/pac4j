@@ -50,7 +50,11 @@ public class OpenId4VpDcApiClient extends OpenId4VpClient {
             "the configuration of an " + getClass().getSimpleName() + " must be an "
                 + OpenId4VpDcApiConfiguration.class.getSimpleName());
 
-        setRequestObjectBuilder(new DcApiRequestObjectBuilder(this));
+        // before the parent, which would otherwise set the URL binding builder; but only when none was given,
+        // the request object builder being the extension point to add parameters to the request
+        if (getRequestObjectBuilder() == null) {
+            setRequestObjectBuilder(new DcApiRequestObjectBuilder(this));
+        }
         setRedirectionActionBuilderIfUndefined(new DcApiRedirectionActionBuilder(this));
         setCredentialsExtractorIfUndefined(new DcApiCredentialsExtractor(this));
 

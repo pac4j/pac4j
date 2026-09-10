@@ -6,7 +6,6 @@ import org.junit.jupiter.api.io.TempDir;
 import org.pac4j.openid4vp.dcql.DcqlQuery;
 import org.pac4j.core.config.properties.JwksProperties;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.openid4vp.verifier.SdJwtVcVerifier;
 import org.pac4j.test.util.TestsHelper;
 
 import java.nio.file.Path;
@@ -30,7 +29,6 @@ class ConfigurationCoherenceTests {
             .setClientIdPrefix(ClientIdPrefix.DECENTRALIZED_IDENTIFIER)
             .setDcqlQuery("{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\"}]}")
             .setJwks(new JwksProperties().setJwksPath(directory.resolve("keys.jwks").toString()).setKid("key-1"));
-        configuration.addCredentialVerifier(new SdJwtVcVerifier());
         return configuration;
     }
 
@@ -52,10 +50,19 @@ class ConfigurationCoherenceTests {
             .setJwks(new JwksProperties().setJwksPath(directory.resolve("keys.jwks").toString()).setKid("key-1"))
             .setResponseMode(ResponseMode.DIRECT_POST_JWT);
         configuration.setExpectedOrigins(List.of("https://app.example.org"));
-        configuration.addCredentialVerifier(new SdJwtVcVerifier());
 
         TestsHelper.expectException(configuration::init, TechnicalException.class,
             "the response mode of a digital credentials API request must be dc_api or dc_api.jwt");
+    }
+
+    @Test
+    void testEveryQueriedFormatNeedsAVerifier() {
+        val configuration = valid();
+        // a mobile document is asked for, but only the SD-JWT VC verifier is registered
+        configuration.setDcqlQuery("{\"credentials\":[{\"id\":\"mdl\",\"format\":\"mso_mdoc\"}]}");
+
+        TestsHelper.expectException(configuration::init, TechnicalException.class,
+            "credentialVerifier for the format mso_mdoc of the credential query mdl cannot be null");
     }
 
     @Test
@@ -122,7 +129,6 @@ class ConfigurationCoherenceTests {
             .setJwks(new JwksProperties().setJwksPath(directory.resolve("keys.jwks").toString()).setKid("key-1"));
         // the browser origin never has a path: this value could never match it
         configuration.setExpectedOrigins(List.of("https://app.example.org/login"));
-        configuration.addCredentialVerifier(new SdJwtVcVerifier());
 
         TestsHelper.expectException(configuration::init, TechnicalException.class,
             "an expected origin must be a scheme, a host and an optional port, nothing more: https://app.example.org/login");

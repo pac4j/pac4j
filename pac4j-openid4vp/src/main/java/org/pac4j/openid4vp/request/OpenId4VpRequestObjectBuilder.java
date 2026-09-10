@@ -1,12 +1,14 @@
 package org.pac4j.openid4vp.request;
 
 import com.nimbusds.jose.jwk.ECKey;
+import com.nimbusds.jose.util.JSONObjectUtils;
 import com.nimbusds.jwt.JWTClaimsSet;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.util.JwkHelper;
 import org.pac4j.openid4vp.client.OpenId4VpClient;
+import org.pac4j.openid4vp.config.CredentialFormat;
 import org.pac4j.openid4vp.config.VerifierAttestation;
 import org.pac4j.openid4vp.exceptions.OpenId4VpException;
 import org.pac4j.openid4vp.transaction.VpTransaction;
@@ -17,6 +19,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.pac4j.core.util.CommonHelper.isNotBlank;
 import static org.pac4j.openid4vp.util.OpenId4VpConstants.*;
 
 /**
@@ -34,6 +37,15 @@ import static org.pac4j.openid4vp.util.OpenId4VpConstants.*;
  */
 @RequiredArgsConstructor
 public class OpenId4VpRequestObjectBuilder {
+
+    /**
+     * The content encryption algorithms accepted for the response, both listed as the high assurance profile
+     * requires: "Verifiers MUST list both A128GCM and A256GCM in encrypted_response_enc_values_supported".
+     *
+     * @see <a href="https://openid.net/specs/openid4vc-high-assurance-interoperability-profile-1_0.html">
+     *     OpenID4VC High Assurance Interoperability Profile</a>
+     */
+    public static final List<String> ACCEPTED_ENC_VALUES = List.of("A128GCM", "A256GCM");
 
     protected final OpenId4VpClient client;
 
@@ -104,7 +116,9 @@ public class OpenId4VpRequestObjectBuilder {
         parameters.put(RESPONSE_TYPE, RESPONSE_TYPE_VP_TOKEN);
         parameters.put(RESPONSE_MODE, configuration.getResponseMode().getValue());
         parameters.put(NONCE, transaction.getNonce());
-        if (configuration.getScope() != null) {
+        // the same test as the configuration applies at initialization: a blank scope, as a properties file
+        // binding hands one over, is no scope
+        if (isNotBlank(configuration.getScope())) {
             parameters.put(SCOPE, configuration.getScope());
         } else {
             parameters.put(DCQL_QUERY, configuration.getDcqlQuery().toJson());
@@ -139,33 +153,119 @@ public class OpenId4VpRequestObjectBuilder {
     }
 
     /**
-     * <p>Build the metadata the wallet needs about this verifier: the key to encrypt its response to, and
-     * the credential formats asked for.</p>
+     * <p>Build the metadata the wallet needs about this verifier: the key to encrypt its response to, the
+     * content encryption algorithms accepted, and the credential formats it can verify.</p>
+     *
+     * <p>A wallet which posted its own metadata to the request URI is answered what it can honour: the
+     * formats and the encryption algorithms are narrowed down to those it declared, and the request is
+     * refused when nothing is left, rather than sent to fail.</p>
      *
      * @param transaction the transaction being answered
      * @return the client metadata
+     * @see <a href="https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#client_metadata_parameters">
+     *     OpenID4VP 1.0, verifier metadata</a>
      */
     protected Map<String, Object> buildClientMetadata(final VpTransaction transaction) {
-        val configuration = client.getConfiguration();
+        val walletMetadata = readWalletMetadata(transaction);
         val metadata = new LinkedHashMap<String, Object>();
 
         if (transaction.getEncryptionKey() != null) {
             try {
                 val publicKey = ECKey.parse(transaction.getEncryptionKey()).toPublicJWK().toJSONObject();
                 metadata.put(JWKS, Map.of(KEYS, List.of(publicKey)));
-                // the high assurance profile has verifiers list both, the wallet picking A256GCM when it can
-                // see HAIP, "Verifiers MUST list both A128GCM and A256GCM in encrypted_response_enc_values_supported":
-                // https://openid.net/specs/openid4vc-high-assurance-interoperability-profile-1_0.html
-                metadata.put(ENCRYPTED_RESPONSE_ENC_VALUES_SUPPORTED, List.of("A128GCM", "A256GCM"));
+                metadata.put(ENCRYPTED_RESPONSE_ENC_VALUES_SUPPORTED, computeEncValues(walletMetadata, transaction));
             } catch (final ParseException e) {
                 throw new OpenId4VpException("unable to publish the response encryption key", e);
             }
         }
 
         val formats = new LinkedHashMap<String, Object>();
-        configuration.getSupportedFormats().forEach(format -> formats.put(format.getValue(), Map.of()));
+        computeFormats(walletMetadata, transaction).forEach(format -> formats.put(format, Map.of()));
         metadata.put(VP_FORMATS_SUPPORTED, formats);
 
         return metadata;
+    }
+
+    /**
+     * <p>The metadata the wallet posted to the request URI, empty when it fetched the request object with
+     * a GET.</p>
+     *
+     * @param transaction the transaction being answered
+     * @return the wallet metadata
+     * @see <a href="https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#as_metadata_parameters">
+     *     OpenID4VP 1.0, wallet metadata</a>
+     */
+    protected Map<String, Object> readWalletMetadata(final VpTransaction transaction) {
+        if (transaction.getWalletMetadata() == null) {
+            return Map.of();
+        }
+        try {
+            return JSONObjectUtils.parse(transaction.getWalletMetadata());
+        } catch (final ParseException e) {
+            throw new OpenId4VpException("the wallet metadata of the transaction " + transaction.getId()
+                + " is not a JSON object: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * <p>The content encryption algorithms to publish: the accepted ones, narrowed down to those the wallet
+     * declared when it did. "If the Wallet supports encrypting the Authorization Response, it SHOULD specify
+     * supported encryption algorithms using the authorization_encryption_alg_values_supported and
+     * authorization_encryption_enc_values_supported parameters".</p>
+     *
+     * @param walletMetadata the metadata the wallet posted, empty when it posted none
+     * @param transaction the transaction being answered
+     * @return the enc values
+     * @see <a href="https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#as_metadata_parameters">
+     *     OpenID4VP 1.0, wallet metadata</a>
+     */
+    protected List<String> computeEncValues(final Map<String, Object> walletMetadata, final VpTransaction transaction) {
+        final List<String> walletEncValues;
+        try {
+            walletEncValues = JSONObjectUtils.getStringList(walletMetadata, AUTHORIZATION_ENCRYPTION_ENC_VALUES_SUPPORTED);
+        } catch (final ParseException e) {
+            throw new OpenId4VpException("the wallet metadata member " + AUTHORIZATION_ENCRYPTION_ENC_VALUES_SUPPORTED
+                + " must be an array of strings: " + e.getMessage(), e);
+        }
+        if (walletEncValues == null) {
+            return ACCEPTED_ENC_VALUES;
+        }
+        val encValues = ACCEPTED_ENC_VALUES.stream().filter(walletEncValues::contains).toList();
+        if (encValues.isEmpty()) {
+            throw new OpenId4VpException("the wallet encrypts its response with none of the accepted content encryption "
+                + "algorithms " + ACCEPTED_ENC_VALUES + ", but with " + walletEncValues + ": " + transaction.getId());
+        }
+        return encValues;
+    }
+
+    /**
+     * <p>The credential formats to publish: those a verifier is registered for, narrowed down to those the
+     * wallet declared in its {@code vp_formats_supported} when it did.</p>
+     *
+     * @param walletMetadata the metadata the wallet posted, empty when it posted none
+     * @param transaction the transaction being answered
+     * @return the format identifiers
+     * @see <a href="https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#as_metadata_parameters">
+     *     OpenID4VP 1.0, wallet metadata</a>
+     */
+    protected List<String> computeFormats(final Map<String, Object> walletMetadata, final VpTransaction transaction) {
+        val verifiedFormats = client.getConfiguration().getCredentialVerifiers().keySet().stream()
+            .map(CredentialFormat::getValue).toList();
+        final Map<String, Object> walletFormats;
+        try {
+            walletFormats = JSONObjectUtils.getJSONObject(walletMetadata, VP_FORMATS_SUPPORTED);
+        } catch (final ParseException e) {
+            throw new OpenId4VpException("the wallet metadata member " + VP_FORMATS_SUPPORTED
+                + " must be a JSON object: " + e.getMessage(), e);
+        }
+        if (walletFormats == null) {
+            return verifiedFormats;
+        }
+        val formats = verifiedFormats.stream().filter(walletFormats::containsKey).toList();
+        if (formats.isEmpty()) {
+            throw new OpenId4VpException("the wallet presents none of the credential formats this verifier verifies "
+                + verifiedFormats + ", but " + walletFormats.keySet() + ": " + transaction.getId());
+        }
+        return formats;
     }
 }

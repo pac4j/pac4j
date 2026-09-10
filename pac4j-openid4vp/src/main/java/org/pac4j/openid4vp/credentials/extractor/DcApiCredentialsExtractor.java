@@ -8,10 +8,10 @@ import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.openid4vp.client.OpenId4VpClient;
 import org.pac4j.openid4vp.credentials.VerifiablePresentationCredentials;
+import org.pac4j.openid4vp.exceptions.OpenId4VpException;
 
 import java.util.Optional;
 
-import static org.pac4j.openid4vp.util.OpenId4VpConstants.RESPONSE;
 import static org.pac4j.openid4vp.util.OpenId4VpConstants.SESSION_TRANSACTION_ID;
 
 /**
@@ -41,8 +41,7 @@ public class DcApiCredentialsExtractor implements CredentialsExtractor {
             LOGGER.debug("no pending OpenID4VP transaction in the session");
             return Optional.empty();
         }
-        val response = webContext.getRequestParameter(RESPONSE).orElse(null);
-        if (response == null) {
+        if (!WalletResponseReader.carriesAnswer(webContext)) {
             LOGGER.debug("the page brings back no answer for the transaction: {}", transactionId);
             return Optional.empty();
         }
@@ -54,11 +53,14 @@ public class DcApiCredentialsExtractor implements CredentialsExtractor {
             return Optional.empty();
         }
 
-        transaction.setRawResponse(response);
+        WalletResponseReader.read(webContext, transaction, client.getConfiguration().getResponseMode());
         // a transaction is used once
         store.remove(transactionId);
         sessionStore.set(webContext, SESSION_TRANSACTION_ID, null);
-        LOGGER.debug("the page brings back the answer of the transaction: {} ({} bytes)", transactionId, response.length());
+        if (transaction.getError() != null) {
+            throw new OpenId4VpException(WalletResponseReader.refusalMessage(transaction));
+        }
+        LOGGER.debug("the page brings back the answer of the transaction: {}", transactionId);
         return Optional.of(new VerifiablePresentationCredentials(transaction));
     }
 }

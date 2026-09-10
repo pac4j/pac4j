@@ -15,7 +15,11 @@ import org.pac4j.openid4vp.client.OpenId4VpClient;
 import org.pac4j.openid4vp.config.ClientIdPrefix;
 import org.pac4j.openid4vp.config.OpenId4VpConfiguration;
 import org.pac4j.openid4vp.credentials.VerifiablePresentationCredentials;
-import org.pac4j.openid4vp.verifier.SdJwtVcVerifier;
+import org.pac4j.openid4vp.config.CredentialFormat;
+import org.pac4j.openid4vp.config.ResponseMode;
+import org.pac4j.openid4vp.verifier.CredentialVerifier;
+import org.pac4j.openid4vp.verifier.VerifiedCredential;
+import org.pac4j.openid4vp.transaction.VpTransaction;
 import org.pac4j.openid4vp.wallet.WalletSimulator;
 import org.pac4j.test.context.MockWebContext;
 import org.pac4j.test.context.session.MockSessionStore;
@@ -55,7 +59,6 @@ class OpenId4VpFlowTests {
         configuration.setClientId(CALLBACK_URL);
         configuration.setClientIdPrefix(ClientIdPrefix.DECENTRALIZED_IDENTIFIER);
         configuration.setDcqlQuery("{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\"}]}");
-        configuration.addCredentialVerifier(new SdJwtVcVerifier());
 
         client = new OpenId4VpClient(configuration);
         client.setName("EudiWallet");
@@ -108,6 +111,47 @@ class OpenId4VpFlowTests {
 
         // and the transaction is consumed
         assertTrue(configuration.getTransactionStore().get(transactionId).isEmpty());
+    }
+
+    @Test
+    void testTheWholeFlowInClearUpToTheVpToken() {
+        // the same flow with direct_post: the wallet posts its vp_token as it is, and the authenticator reads it
+        configuration.setResponseMode(ResponseMode.DIRECT_POST);
+        configuration.getCredentialVerifiers().put(CredentialFormat.SD_JWT_VC, new CredentialVerifier() {
+            @Override
+            public CredentialFormat getFormat() {
+                return CredentialFormat.SD_JWT_VC;
+            }
+
+            @Override
+            public VerifiedCredential verify(final String rawCredential, final VpTransaction transaction,
+                                             final OpenId4VpConfiguration configuration) {
+                // nothing is verified here: the presentation is only expected to reach this point
+                return null;
+            }
+        });
+        val simulator = new WalletSimulator();
+        val browserContext = MockWebContext.create();
+        val browserCtx = new CallContext(browserContext, new MockSessionStore());
+        val walletUrl = assertInstanceOf(FoundAction.class, client.getRedirectionAction(browserCtx).get()).getLocation();
+        val transactionId = simulator.readParameter(simulator.readRequestUri(walletUrl), VP_TRANSACTION_ID);
+
+        val fetch = MockWebContext.create().addRequestParameter(VP_TRANSACTION_ID, transactionId);
+        val served = assertThrows(OkAction.class, () -> client.getCredentials(new CallContext(fetch, new MockSessionStore())));
+        val request = simulator.readRequestObject(served.getContent());
+        assertNull(request.getEncryptionKey());
+        assertEquals("direct_post", request.getResponseMode());
+
+        val post = MockWebContext.create()
+            .setRequestMethod(HttpConstants.HTTP_METHOD.POST.name())
+            .addRequestParameter(VP_TRANSACTION_ID, transactionId);
+        simulator.buildResponseParameters(request, Map.of("pid", List.of(PRESENTATION))).forEach(post::addRequestParameter);
+        assertThrows(OkAction.class, () -> client.getCredentials(new CallContext(post, new MockSessionStore())));
+
+        val credentials = assertInstanceOf(VerifiablePresentationCredentials.class, client.getCredentials(browserCtx).get());
+        val validated = assertInstanceOf(VerifiablePresentationCredentials.class,
+            client.validateCredentials(browserCtx, credentials).get());
+        assertEquals(Map.of("pid", List.of(PRESENTATION)), validated.getVpToken());
     }
 
     @Test

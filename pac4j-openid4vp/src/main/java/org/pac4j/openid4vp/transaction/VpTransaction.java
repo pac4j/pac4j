@@ -71,10 +71,26 @@ public class VpTransaction implements Serializable {
     /** The ephemeral response encryption key of this transaction, in its JWK form, private part included. */
     private String encryptionKey;
 
-    /** The raw response posted by the wallet: a JWE in the {@code direct_post.jwt} response mode. */
+    /** The raw response posted by the wallet in an encrypted response mode: the JWE of the {@code response} parameter. */
     private String rawResponse;
+
+    /** The raw {@code vp_token} posted by the wallet in a clear response mode: a JSON object, as a string. */
+    private String rawVpToken;
+
+    /** The error the wallet answered with, if it did, and its description. */
+    private String error;
+
+    private String errorDescription;
 
     /** The code handed to the wallet and given back by the browser to claim the response. */
     private String responseCode;
 
+    /**
+     * <p>Whether the wallet answered, with presentations or with an error.</p>
+     *
+     * @return a boolean
+     */
+    public boolean isAnswered() {
+        return rawResponse != null || rawVpToken != null || error != null;
+    }
 }

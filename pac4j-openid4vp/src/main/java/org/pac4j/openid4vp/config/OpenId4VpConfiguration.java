@@ -25,6 +25,7 @@ import org.pac4j.openid4vp.transaction.VpTransaction;
 import org.pac4j.openid4vp.transaction.VpTransactionStore;
 import org.pac4j.openid4vp.dcql.DcqlQuery;
 import org.pac4j.openid4vp.verifier.CredentialVerifier;
+import org.pac4j.openid4vp.verifier.SdJwtVcVerifier;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -43,8 +44,9 @@ import static org.pac4j.core.util.CommonHelper.isNotBlank;
  * The configuration of an OpenID4VP verifier (relying party).
  *
  * <p>The defaults are the ones mandated by the high assurance interoperability profile (HAIP), which the
- * EUDI architecture and reference framework relies on: a signed request object served by reference, an
- * encrypted response posted directly, and ES256 as the signature algorithm.</p>
+ * EUDI architecture and reference framework relies on: the {@code x509_hash} client identifier prefix, a
+ * signed request object served by reference, an encrypted response posted directly, and ES256 as the
+ * signature algorithm.</p>
  *
  * @author Jerome LELEU
  * @since 6.6.0
@@ -72,15 +74,16 @@ public class OpenId4VpConfiguration extends BaseClientConfiguration {
     /** The signature algorithm mandated by the high assurance profile, and the curve it implies. */
     public static final JWSAlgorithm DEFAULT_SIGNING_ALGORITHM = JWSAlgorithm.ES256;
 
-    /** The identifier of this verifier, without its prefix: a DNS name for {@link ClientIdPrefix#X509_SAN_DNS}. */
+    /**
+     * The identifier of this verifier, without its prefix: a DNS name for {@link ClientIdPrefix#X509_SAN_DNS},
+     * the DID for {@link ClientIdPrefix#DECENTRALIZED_IDENTIFIER}. Computed, and not to be set, for the default
+     * {@link ClientIdPrefix#X509_HASH} and for {@link ClientIdPrefix#REDIRECT_URI}.
+     */
     private String clientId;
 
-    private ClientIdPrefix clientIdPrefix = ClientIdPrefix.X509_SAN_DNS;
+    private ClientIdPrefix clientIdPrefix = ClientIdPrefix.X509_HASH;
 
     private ResponseMode responseMode = ResponseMode.DIRECT_POST_JWT;
-
-    /** The credential formats requested from the wallet. */
-    private List<CredentialFormat> supportedFormats = new ArrayList<>(List.of(CredentialFormat.SD_JWT_VC));
 
     /**
      * The DCQL query: which credentials, with which claims. Built programmatically, or given as JSON with
@@ -124,8 +127,12 @@ public class OpenId4VpConfiguration extends BaseClientConfiguration {
     @Setter(AccessLevel.NONE)
     private JWK requestObjectSigningKey;
 
-    /** The verifiers, by credential format. */
-    private Map<CredentialFormat, CredentialVerifier> credentialVerifiers = new LinkedHashMap<>();
+    /**
+     * The verifiers, by credential format: one for each format the DCQL query asks for, the SD-JWT VC one
+     * being registered by default. Their formats are the ones published to the wallet as supported.
+     */
+    private Map<CredentialFormat, CredentialVerifier> credentialVerifiers =
+        new LinkedHashMap<>(Map.of(CredentialFormat.SD_JWT_VC, new SdJwtVcVerifier()));
 
     /**
      * How long a presentation request stays valid. It is stamped on each transaction, sent to the wallet in
@@ -162,13 +169,18 @@ public class OpenId4VpConfiguration extends BaseClientConfiguration {
         // Request, but not both" https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#vp_token_request
         val hasQuery = dcqlQuery != null;
         assertTrue(hasQuery != isNotBlank(scope), "either dcqlQuery or scope must be defined, but not both");
+        assertNotNull("credentialVerifiers", credentialVerifiers);
         if (dcqlQuery != null) {
             dcqlQuery.check();
+            // the presentations come back indexed by the credential query they answer, whose format picks the
+            // verifier: a format without any could never be verified, better refused here than at the first response
+            dcqlQuery.getCredentials().forEach(credential -> assertNotNull("credentialVerifier for the format "
+                + credential.getFormat().getValue() + " of the credential query " + credential.getId(),
+                credentialVerifiers.get(credential.getFormat())));
         }
         assertTrue(transactionLifetimeSeconds > 0, "transactionLifetimeSeconds must be greater than zero");
         assertNotNull("verifierInfo", verifierInfo);
         verifierInfo.forEach(VerifierAttestation::check);
-        assertTrue(supportedFormats != null && !supportedFormats.isEmpty(), "supportedFormats cannot be empty");
         checkResponseModeBinding();
         if (!responseMode.isEncrypted()) {
             ANNOUNCE_CLEAR_RESPONSE.announce();
@@ -211,8 +223,6 @@ public class OpenId4VpConfiguration extends BaseClientConfiguration {
         if (clientIdPrefix == ClientIdPrefix.X509_SAN_DNS) {
             checkClientIdIsASubjectAlternativeName();
         }
-        supportedFormats.forEach(format -> assertNotNull("credentialVerifier for " + format.getValue(),
-            credentialVerifiers.get(format)));
     }
 
     /**

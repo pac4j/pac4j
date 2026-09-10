@@ -7,7 +7,6 @@ import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.http.ajax.DefaultAjaxRequestResolver;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.openid4vp.config.OpenId4VpConfiguration;
@@ -101,23 +100,6 @@ public class OpenId4VpClient extends IndirectClient {
         checkAjaxRequestResolver();
 
         configuration.init(this.getClass().getSimpleName(), forceReinit);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * <p>Skipped for the two legs coming from the wallet. They carry no session, so there is nothing to
-     * remember and nothing worth creating a session for; and the flag would make the next browser navigation
-     * answer an unauthorized response although nothing failed.</p>
-     *
-     * <p>Both legs are told apart by the transaction identifier they carry, which a browser navigation to the
-     * callback never does.</p>
-     */
-    @Override
-    protected void saveAttemptedAuthentication(final WebContext context, final SessionStore sessionStore) {
-        if (context.getRequestParameter(VP_TRANSACTION_ID).isEmpty()) {
-            super.saveAttemptedAuthentication(context, sessionStore);
-        }
     }
 
     /**

@@ -12,7 +12,7 @@ import org.pac4j.core.exception.http.OkAction;
 import org.pac4j.openid4vp.client.OpenId4VpDcApiClient;
 import org.pac4j.openid4vp.config.ClientIdPrefix;
 import org.pac4j.openid4vp.config.OpenId4VpDcApiConfiguration;
-import org.pac4j.openid4vp.verifier.SdJwtVcVerifier;
+import org.pac4j.openid4vp.transaction.VpTransaction;
 import org.pac4j.test.context.MockWebContext;
 import org.pac4j.test.context.session.MockSessionStore;
 import org.pac4j.test.util.TestsHelper;
@@ -50,7 +50,6 @@ class DcApiRequestObjectBuilderTests {
             .setDcqlQuery("{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\"}]}")
             .setJwks(new JwksProperties().setJwksPath(directory.resolve("keys.jwks").toString()).setKid("key-1"));
         configuration.setExpectedOrigins(List.of(ORIGIN));
-        configuration.addCredentialVerifier(new SdJwtVcVerifier());
 
         client = new OpenId4VpDcApiClient(configuration);
         client.setName("Wallet");
@@ -65,6 +64,26 @@ class DcApiRequestObjectBuilderTests {
         val content = action.getContent();
         assertTrue(content.startsWith("{\"" + REQUEST + "\":\""));
         return SignedJWT.parse(content.substring(content.indexOf(':') + 2, content.length() - 2));
+    }
+
+    @Test
+    void testAGivenRequestObjectBuilderSurvivesTheInitialization() throws Exception {
+        // the extension point to add parameters to the request: an application binding the presentation to
+        // a transaction of its own hands over its builder before the initialization, and must find it after
+        val builder = new DcApiRequestObjectBuilder(client) {
+            @Override
+            protected void addBindingParameters(final CallContext ctx, final VpTransaction transaction,
+                                                final Map<String, Object> parameters) {
+                super.addBindingParameters(ctx, transaction, parameters);
+                parameters.put("transaction_data", List.of("a-transaction"));
+            }
+        };
+        client.setRequestObjectBuilder(builder);
+
+        val claims = handOver().getJWTClaimsSet();
+        assertSame(builder, client.getRequestObjectBuilder());
+        assertEquals(List.of("a-transaction"), claims.getClaim("transaction_data"));
+        assertNotNull(claims.getClaim(EXPECTED_ORIGINS));
     }
 
     @Test

@@ -42,6 +42,9 @@ public interface OpenId4VpConstants {
     String VP_TOKEN = "vp_token";
     String RESPONSE = "response";
     String RESPONSE_CODE = "response_code";
+    /** The error response parameters, RFC 6749 as OpenID4VP clarifies them. */
+    String ERROR = "error";
+    String ERROR_DESCRIPTION = "error_description";
 
     /**
      * The audience of a request object when the wallet is not identified beforehand: "a symbolic string
@@ -77,4 +80,6 @@ public interface OpenId4VpConstants {
     String KEYS = "keys";
     String VP_FORMATS_SUPPORTED = "vp_formats_supported";
     String ENCRYPTED_RESPONSE_ENC_VALUES_SUPPORTED = "encrypted_response_enc_values_supported";
+    /** The wallet metadata member naming the content encryption algorithms it encrypts its response with. */
+    String AUTHORIZATION_ENCRYPTION_ENC_VALUES_SUPPORTED = "authorization_encryption_enc_values_supported";
 }

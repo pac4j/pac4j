@@ -14,11 +14,15 @@ import org.pac4j.core.exception.http.FoundAction;
 import com.nimbusds.jose.crypto.ECDSAVerifier;
 import org.pac4j.openid4vp.client.OpenId4VpClient;
 import org.pac4j.openid4vp.config.ClientIdPrefix;
+import org.pac4j.openid4vp.config.CredentialFormat;
+import org.pac4j.openid4vp.exceptions.OpenId4VpException;
+import org.pac4j.openid4vp.verifier.CredentialVerifier;
+import org.pac4j.openid4vp.verifier.VerifiedCredential;
+import org.pac4j.openid4vp.wallet.WalletSimulator;
 import org.pac4j.openid4vp.dcql.DcqlQuery;
 import org.pac4j.openid4vp.config.VerifierAttestation;
 import org.pac4j.openid4vp.config.OpenId4VpConfiguration;
 import org.pac4j.openid4vp.transaction.VpTransaction;
-import org.pac4j.openid4vp.verifier.SdJwtVcVerifier;
 import org.pac4j.test.context.MockWebContext;
 import org.pac4j.test.context.session.MockSessionStore;
 
@@ -54,7 +58,6 @@ class OpenId4VpRequestObjectBuilderTests {
         configuration.setClientId(CLIENT);
         configuration.setClientIdPrefix(ClientIdPrefix.DECENTRALIZED_IDENTIFIER);
         configuration.setDcqlQuery(DCQL);
-        configuration.addCredentialVerifier(new SdJwtVcVerifier());
 
         client = new OpenId4VpClient(configuration);
         client.setName("EudiWallet");
@@ -141,6 +144,82 @@ class OpenId4VpRequestObjectBuilderTests {
     void testNoVerifierInfoParameterWithoutAttestations() throws Exception {
         val claims = requestObjectOf(openTransaction()).getJWTClaimsSet();
         assertNull(claims.getClaim(VERIFIER_INFO));
+    }
+
+    /** A second registered format, so that the narrowing down to what the wallet declares is visible. */
+    private void registerAnMdocVerifier() {
+        configuration.addCredentialVerifier(new CredentialVerifier() {
+            @Override
+            public CredentialFormat getFormat() {
+                return CredentialFormat.MSO_MDOC;
+            }
+
+            @Override
+            public VerifiedCredential verify(final String rawCredential, final VpTransaction transaction,
+                                             final OpenId4VpConfiguration configuration) {
+                throw new UnsupportedOperationException();
+            }
+        });
+    }
+
+    @Test
+    void testABlankScopeIsNoScope() throws Exception {
+        // what a properties file binding hands over for an absent scope: accepted at initialization, so the
+        // DCQL query must go out, not an empty scope
+        configuration.setScope("  ");
+        val transaction = openTransaction();
+        val claims = requestObjectOf(transaction).getJWTClaimsSet();
+
+        assertNull(claims.getClaim(SCOPE));
+        assertNotNull(claims.getJSONObjectClaim(DCQL_QUERY));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void testTheFormatsAreNarrowedDownToWhatTheWalletDeclares() throws Exception {
+        registerAnMdocVerifier();
+        val transaction = openTransaction();
+        // fetched with a GET, the wallet said nothing: every verified format is published
+        var formats = (Map<String, Object>) requestObjectOf(transaction).getJWTClaimsSet()
+            .getJSONObjectClaim(CLIENT_METADATA).get(VP_FORMATS_SUPPORTED);
+        assertEquals(List.of("dc+sd-jwt", "mso_mdoc"), List.copyOf(formats.keySet()));
+
+        // posted with its metadata, the wallet only presents SD-JWT VCs: the mobile documents are left out
+        transaction.setWalletMetadata(WalletSimulator.WALLET_METADATA_JSON);
+        formats = (Map<String, Object>) requestObjectOf(transaction).getJWTClaimsSet()
+            .getJSONObjectClaim(CLIENT_METADATA).get(VP_FORMATS_SUPPORTED);
+        assertEquals(List.of("dc+sd-jwt"), List.copyOf(formats.keySet()));
+    }
+
+    @Test
+    void testAWalletPresentingNoneOfTheVerifiedFormatsIsRefused() {
+        val transaction = openTransaction()
+            .setWalletMetadata("{\"vp_formats_supported\":{\"mso_mdoc\":{}}}");
+
+        val e = assertThrows(OpenId4VpException.class, () -> requestObjectOf(transaction));
+        assertEquals("the wallet presents none of the credential formats this verifier verifies [dc+sd-jwt], "
+            + "but [mso_mdoc]: " + transaction.getId(), e.getMessage());
+    }
+
+    @Test
+    void testTheEncryptionIsNarrowedDownToWhatTheWalletDeclares() throws Exception {
+        val transaction = openTransaction()
+            .setWalletMetadata("{\"vp_formats_supported\":{\"dc+sd-jwt\":{}},"
+                + "\"authorization_encryption_enc_values_supported\":[\"A256GCM\",\"A128CBC-HS256\"]}");
+
+        val metadata = requestObjectOf(transaction).getJWTClaimsSet().getJSONObjectClaim(CLIENT_METADATA);
+        assertEquals(List.of("A256GCM"), metadata.get(ENCRYPTED_RESPONSE_ENC_VALUES_SUPPORTED));
+    }
+
+    @Test
+    void testAWalletEncryptingWithNoneOfTheAcceptedAlgorithmsIsRefused() {
+        val transaction = openTransaction()
+            .setWalletMetadata("{\"vp_formats_supported\":{\"dc+sd-jwt\":{}},"
+                + "\"authorization_encryption_enc_values_supported\":[\"A128CBC-HS256\"]}");
+
+        val e = assertThrows(OpenId4VpException.class, () -> requestObjectOf(transaction));
+        assertEquals("the wallet encrypts its response with none of the accepted content encryption algorithms "
+            + "[A128GCM, A256GCM], but with [A128CBC-HS256]: " + transaction.getId(), e.getMessage());
     }
 
     @Test

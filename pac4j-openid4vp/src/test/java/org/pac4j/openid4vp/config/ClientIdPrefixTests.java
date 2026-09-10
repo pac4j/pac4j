@@ -7,7 +7,6 @@ import org.pac4j.core.config.properties.JwksProperties;
 import org.pac4j.core.config.properties.KeystoreProperties;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.keystore.generation.FileSystemKeystoreGenerator;
-import org.pac4j.openid4vp.verifier.SdJwtVcVerifier;
 import org.pac4j.test.util.TestsHelper;
 
 import java.io.ByteArrayInputStream;
@@ -73,7 +72,6 @@ class ClientIdPrefixTests {
         val configuration = new OpenId4VpConfiguration();
         configuration.setClientIdPrefix(prefix)
             .setDcqlQuery("{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\"}]}");
-        configuration.addCredentialVerifier(new SdJwtVcVerifier());
         return configuration;
     }
 
