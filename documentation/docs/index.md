@@ -7,7 +7,7 @@ title: <i class="fa fa-user" aria-hidden="true"></i> The <i>pac4j</i> engine/cor
 
 ## 2) Authentication mechanisms:
 
-### &#9656; [Clients](clients.html): [OpenID Connect](clients/openid-connect.html) - [SAML](clients/saml.html) - [CAS](clients/cas.html) - [OAuth](clients/oauth.html) - [HTTP](clients/http.html) - [Kerberos (SPNEGO)](clients/kerberos.html)
+### &#9656; [Clients](clients.html): [OpenID Connect](clients/openid-connect.html) - [SAML](clients/saml.html) - [CAS](clients/cas.html) - [OAuth](clients/oauth.html) - [HTTP](clients/http.html) - [Kerberos (SPNEGO)](clients/kerberos.html) - [OpenID4VP (EUDI wallet, eIDAS 2.0)](clients/openid4vp.html)
 
 ### &#9656; [Authenticators](authenticators.html): [LDAP](authenticators/ldap.html) - [SQL](authenticators/sql.html) - [JWT](authenticators/jwt.html) - [MongoDB](authenticators/mongodb.html) - [IP address](authenticators/ip.html) - [REST API](authenticators/rest.html)
 
@@ -25,7 +25,7 @@ title: <i class="fa fa-user" aria-hidden="true"></i> The <i>pac4j</i> engine/cor
 
 ### &#9656; [OpenID Federation](clients/openid-connect-federation.html)
 
-### &#9656; EUDI Wallet/eIDAS 2.0
+### &#9656; [OpenID for Verifiable Presentations (EUDI wallet, eIDAS 2.0)](clients/openid4vp.html)
 
 ## 6) [Security configuration](config.html)
 

@@ -67,16 +67,7 @@ public class DefaultEntityConfigurationGenerator extends InitializableObject imp
     protected void internalInit(final boolean forceReinit) {
         val config = client.getConfiguration();
         val federation = config.getFederation();
-        JWK signingKey = null;
-        val jwksProperties = federation.getJwks();
-        val keystoreProperties = federation.getKeystore();
-        if (jwksProperties != null && jwksProperties.getJwksResource() != null) {
-            signingKey = loadJwkFromOrCreateJwks(jwksProperties);
-        } else if (keystoreProperties != null && keystoreProperties.getKeystoreResource() != null) {
-            signingKey = loadJwkFromOrCreateKeyStore(federation.getKeystore());
-        } else {
-            throw new TechnicalException("OIDC JWKS or keystore mandatory to generate the entity configuration");
-        }
+        val signingKey = resolveSigningKey(federation.getJwks(), federation.getKeystore());
 
         data = buildConfig(signingKey);
     }

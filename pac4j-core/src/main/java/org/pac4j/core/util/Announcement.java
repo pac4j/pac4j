@@ -8,7 +8,16 @@ import lombok.extern.slf4j.Slf4j;
 import static org.pac4j.core.util.Pac4jConstants.EMPTY_STRING;
 
 /**
- * Announcing next versions.
+ * A warning logged once, whatever the number of times the situation is met.
+ *
+ * <p>Two kinds of warnings go through it. A configuration which deserves attention, built with the message
+ * alone: an option weakening the security, a matcher whose definition is easy to get wrong, a profile
+ * returned although the authentication failed. And a change coming in a later version, built with that
+ * version and optionally a pointer to the mailing list, so that an application can be adapted before it
+ * breaks.</p>
+ *
+ * <p>Declare it as a constant and call {@link #announce()} where the situation is met, so that the message
+ * is written once rather than at every request.</p>
  *
  * @author Jerome LELEU
  * @since 6.4.3

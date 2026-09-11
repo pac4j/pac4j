@@ -11,9 +11,15 @@ title: Release notes&#58;
 - Rework the `SpringResourceLoader` behavior to improve the OIDC/SAML metadata loading resilience:
   - retry every 2 seconds before anything has been loaded
   - retry every 60 seconds after the first loading and return the old data in case of error
-- Fix OpenID federation forced signing of the auth request object for explicitly registered clients when it is not mandatory.
-- OIDC's login hints can be provided dynamically as a `login_hint` request attribute.
+- Fix OpenID federation forced signing of the auth request object for explicitly registered clients when it is not mandatory
+- OIDC's login hints can be provided dynamically as a `login_hint` request attribute
 - Only empty credentials or a `CredentialsException` (from the `CredentialsExtractor` or the `Authenticator`) now block further authentication attempts of an indirect client: any other exception allows a retry.
+- Added the `ConcurrentMapStore`, a `Store` expiring its entries (without any additional dependency), and the `AbstractConcurrentMapStore` for the values carrying their own expiration date
+- Updated the `JwkHelper`:
+  - `buildSignedJwt` can now publish in the `x5c` header the certificate chain the signing key carries, for the protocols binding the identity of the signer to a certificate rather than to a key
+  - the new `resolveSigningKey` method reads the signing key from a JWKS, or from a keystore when the JWKS is not defined, the logic the OpenID federation used to hold
+  - the new `generateKey` method creates a signature key for a given algorithm, and `loadJwkFromOrCreateJwks` takes an optional algorithm for the key it creates when none exists yet, the default staying RSA-2048
+- Added the OpenID4VP protocol support via the new `pac4j-openid4vp` module and the `EudiWalletClient`, `OpenId4VpClient` and `OpenId4VpDcApiClient` clients (+ `OpenId4VpConfiguration` and `OpenId4VpDcApiConfiguration` configurations)
 
 **v6.5.8**:
 - Security fix: the logout redirect URL is rejected if it contains a control character or a space (the browsers strip tabs and new lines before parsing a URL, which allowed an open redirect with `/<TAB>/evil.example.org`)

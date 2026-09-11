@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.pac4j</groupId>
+        <artifactId>pac4j-parent</artifactId>
+        <version>6.6.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>pac4j-openid4vp</artifactId>
+    <packaging>bundle</packaging>
+    <name>pac4j: Java web security for OpenID 4 VP</name>
+    <description>Verifier (relying party) support for OpenID for Verifiable Presentations (OpenID4VP),
+        including the European Digital Identity (EUDI) wallet profile.</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.pac4j</groupId>
+            <artifactId>pac4j-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.nimbusds</groupId>
+            <artifactId>nimbus-jose-jwt</artifactId>
+        </dependency>
+        <!-- loading a key and its certificate chain from a keystore, which the x509 client identifier prefixes
+             require, goes through BouncyCastle in nimbus -->
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcpkix-jdk18on</artifactId>
+        </dependency>
+        <!-- the JWKS and keystore properties expose a Spring Resource, so the configuration needs it -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- the wallet simulator lives in the test sources: published so that an application can drive
+                 a presentation flow in its own integration tests, without a phone and without a certificate -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
