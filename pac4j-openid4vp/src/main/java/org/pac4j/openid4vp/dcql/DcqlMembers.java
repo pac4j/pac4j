@@ -14,7 +14,7 @@ import java.util.Map;
  * @since 6.6.0
  */
 @UtilityClass
-class Json {
+class DcqlMembers {
 
     @SuppressWarnings("unchecked")
     Map<String, Object> object(final Object value) {

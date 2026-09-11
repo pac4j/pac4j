@@ -87,8 +87,8 @@ public class TrustedAuthority {
      */
     public static TrustedAuthority fromJson(final Map<String, Object> json) {
         val authority = new TrustedAuthority();
-        authority.setType(Json.string(json, TYPE));
-        authority.setValues(Json.strings(json.get(VALUES)));
+        authority.setType(DcqlMembers.string(json, TYPE));
+        authority.setValues(DcqlMembers.strings(json.get(VALUES)));
         return authority;
     }
 }

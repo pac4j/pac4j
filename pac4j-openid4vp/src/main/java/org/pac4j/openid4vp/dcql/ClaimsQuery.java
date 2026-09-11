@@ -117,10 +117,10 @@ public class ClaimsQuery {
      */
     public static ClaimsQuery fromJson(final Map<String, Object> json) {
         val query = new ClaimsQuery();
-        query.setId(Json.string(json, ID));
-        query.setPath(new ArrayList<>(Json.list(json, PATH).stream().map(Json::pathSegment).toList()));
-        query.setValues(new ArrayList<>(Json.list(json, VALUES)));
-        query.setIntentToRetain(Json.bool(json, INTENT_TO_RETAIN));
+        query.setId(DcqlMembers.string(json, ID));
+        query.setPath(new ArrayList<>(DcqlMembers.list(json, PATH).stream().map(DcqlMembers::pathSegment).toList()));
+        query.setValues(new ArrayList<>(DcqlMembers.list(json, VALUES)));
+        query.setIntentToRetain(DcqlMembers.bool(json, INTENT_TO_RETAIN));
         return query;
     }
 }

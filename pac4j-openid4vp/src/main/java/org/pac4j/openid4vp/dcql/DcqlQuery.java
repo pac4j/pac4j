@@ -149,8 +149,9 @@ public class DcqlQuery {
      */
     public static DcqlQuery fromJson(final Map<String, Object> json) {
         val query = new DcqlQuery();
-        Json.list(json, CREDENTIALS).forEach(item -> query.addCredential(CredentialQuery.fromJson(Json.object(item))));
-        Json.list(json, CREDENTIAL_SETS).forEach(item -> query.addCredentialSet(CredentialSetQuery.fromJson(Json.object(item))));
+        DcqlMembers.list(json, CREDENTIALS).forEach(item -> query.addCredential(CredentialQuery.fromJson(DcqlMembers.object(item))));
+        DcqlMembers.list(json, CREDENTIAL_SETS)
+            .forEach(item -> query.addCredentialSet(CredentialSetQuery.fromJson(DcqlMembers.object(item))));
         return query;
     }
 }

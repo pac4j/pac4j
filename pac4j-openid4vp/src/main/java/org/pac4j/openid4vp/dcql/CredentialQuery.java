@@ -214,18 +214,19 @@ public class CredentialQuery {
      * @return the query
      */
     public static CredentialQuery fromJson(final Map<String, Object> json) {
-        val formatValue = Json.string(json, FORMAT);
+        val formatValue = DcqlMembers.string(json, FORMAT);
         val format = formatValue == null ? null : CredentialFormat.from(formatValue)
             .orElseThrow(() -> new TechnicalException("unsupported credential format in the DCQL query: " + formatValue));
-        val query = new CredentialQuery(Json.string(json, ID), format);
-        query.setMultiple(Json.bool(json, MULTIPLE));
+        val query = new CredentialQuery(DcqlMembers.string(json, ID), format);
+        query.setMultiple(DcqlMembers.bool(json, MULTIPLE));
         if (json.get(META) != null) {
-            query.setMeta(new LinkedHashMap<>(Json.object(json.get(META))));
+            query.setMeta(new LinkedHashMap<>(DcqlMembers.object(json.get(META))));
         }
-        Json.list(json, TRUSTED_AUTHORITIES).forEach(item -> query.addTrustedAuthority(TrustedAuthority.fromJson(Json.object(item))));
-        query.setRequireCryptographicHolderBinding(Json.bool(json, REQUIRE_CRYPTOGRAPHIC_HOLDER_BINDING));
-        Json.list(json, CLAIMS).forEach(item -> query.addClaim(ClaimsQuery.fromJson(Json.object(item))));
-        Json.list(json, CLAIM_SETS).forEach(item -> query.getClaimSets().add(Json.strings(item)));
+        DcqlMembers.list(json, TRUSTED_AUTHORITIES)
+            .forEach(item -> query.addTrustedAuthority(TrustedAuthority.fromJson(DcqlMembers.object(item))));
+        query.setRequireCryptographicHolderBinding(DcqlMembers.bool(json, REQUIRE_CRYPTOGRAPHIC_HOLDER_BINDING));
+        DcqlMembers.list(json, CLAIMS).forEach(item -> query.addClaim(ClaimsQuery.fromJson(DcqlMembers.object(item))));
+        DcqlMembers.list(json, CLAIM_SETS).forEach(item -> query.getClaimSets().add(DcqlMembers.strings(item)));
         return query;
     }
 }

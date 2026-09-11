@@ -105,8 +105,8 @@ public class CredentialSetQuery {
      */
     public static CredentialSetQuery fromJson(final Map<String, Object> json) {
         val query = new CredentialSetQuery();
-        Json.list(json, OPTIONS).forEach(option -> query.getOptions().add(Json.strings(option)));
-        query.setRequired(Json.bool(json, REQUIRED));
+        DcqlMembers.list(json, OPTIONS).forEach(option -> query.getOptions().add(DcqlMembers.strings(option)));
+        query.setRequired(DcqlMembers.bool(json, REQUIRED));
         query.setPurpose(json.get(PURPOSE));
         return query;
     }

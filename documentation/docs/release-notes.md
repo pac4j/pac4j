@@ -14,11 +14,12 @@ title: Release notes&#58;
 - Fix OpenID federation forced signing of the auth request object for explicitly registered clients when it is not mandatory
 - OIDC's login hints can be provided dynamically as a `login_hint` request attribute
 - Only empty credentials or a `CredentialsException` (from the `CredentialsExtractor` or the `Authenticator`) now block further authentication attempts of an indirect client: any other exception allows a retry.
-- `IndirectClient`: the `saveAttemptedAuthentication` method is now `protected`, so that a client can skip the attempted authentication flag for the requests which are not browser navigations
 - Added the `ConcurrentMapStore`, a `Store` expiring its entries (without any additional dependency), and the `AbstractConcurrentMapStore` for the values carrying their own expiration date
-- `JwkHelper`: `buildSignedJwt` can now publish in the `x5c` header the certificate chain the signing key carries, for the protocols binding the identity of the signer to a certificate rather than to a key
-- `JwkHelper`: the new `resolveSigningKey` method reads the signing key from a JWKS, or from a keystore when the JWKS is not defined, the logic the OpenID federation used to hold
-- `JwkHelper`: the new `generateKey` method creates a signature key for a given algorithm, and `loadJwkFromOrCreateJwks` takes an optional algorithm for the key it creates when none exists yet, the default staying RSA-2048
+- Updated the `JwkHelper`:
+  - `buildSignedJwt` can now publish in the `x5c` header the certificate chain the signing key carries, for the protocols binding the identity of the signer to a certificate rather than to a key
+  - the new `resolveSigningKey` method reads the signing key from a JWKS, or from a keystore when the JWKS is not defined, the logic the OpenID federation used to hold
+  - the new `generateKey` method creates a signature key for a given algorithm, and `loadJwkFromOrCreateJwks` takes an optional algorithm for the key it creates when none exists yet, the default staying RSA-2048
+- Added the OpenID4VP protocol support via the new `pac4j-openid4vp` module and the `EudiWalletClient`, `OpenId4VpClient` and `OpenId4VpDcApiClient` clients (+ `OpenId4VpConfiguration` and `OpenId4VpDcApiConfiguration` configurations)
 
 **v6.5.7**:
 - OIDC: ProfileCreator - skip nonce when Bearer Access Token is used
