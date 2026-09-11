@@ -6,6 +6,8 @@ title: OpenID for Verifiable Presentations (EUDI wallet, eIDAS 2.0)
 *pac4j* allows you to authenticate users with a digital wallet, using the OpenID for Verifiable Presentations protocol (OpenID4VP).
 Your application acts as a *verifier*: it asks the wallet to present credentials, such as the person identification data of the European Digital Identity wallet (EUDI wallet).
 
+The module implements the **final version 1.0** of [OpenID4VP](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html), not its earlier drafts, which differ on the wire: the drafts had a separate `client_id_scheme` parameter where 1.0 prefixes the `client_id` itself, and a `presentation_definition` query language which 1.0 replaced with DCQL. A wallet built on a draft will not understand these requests. The EUDI profile it follows is the [OpenID4VC High Assurance Interoperability Profile](https://openid.net/specs/openid4vc-high-assurance-interoperability-profile-1_0.html) 1.0.
+
 ## 1) Dependency
 
 You need to use the following module: `pac4j-openid4vp`.

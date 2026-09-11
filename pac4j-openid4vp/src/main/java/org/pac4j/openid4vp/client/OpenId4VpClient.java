@@ -23,11 +23,15 @@ import static org.pac4j.core.util.CommonHelper.assertTrue;
 
 /**
  * This class is the client to authenticate users against a wallet, using OpenID for Verifiable
- * Presentations (OpenID4VP): the application acts as a verifier and asks the wallet to present credentials.
+ * Presentations (OpenID4VP) in its final version 1.0: the application acts as a verifier and asks the
+ * wallet to present credentials.
  *
  * <p>There is no identity provider here, no token endpoint and no user info: the wallet presents the
  * credentials directly and the whole validation happens locally.</p>
  *
+ * <p>The earlier drafts differ on the wire, a separate {@code client_id_scheme} parameter and the
+ * {@code presentation_definition} query language among others, and a wallet built on one of them will not
+ * understand these requests.</p>
  *
  * @see <a href="https://openid.net/specs/openid-4-verifiable-presentations-1_0.html">OpenID for Verifiable Presentations 1.0</a>
  * @author Jerome LELEU
