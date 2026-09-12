@@ -15,6 +15,7 @@ current site belongs here, so we filter on:
   {%- assign url = page.url -%}
   {%- unless url contains '.x/'
           or url contains '/others/'
+          or url contains '404.html'
           or url contains 'sitemap.xml'
           or url contains 'robots.txt'
           or url contains 'feed.xml'
