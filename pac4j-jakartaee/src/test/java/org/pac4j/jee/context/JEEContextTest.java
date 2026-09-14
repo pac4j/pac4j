@@ -2,9 +2,13 @@ package org.pac4j.jee.context;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.test.context.session.MockSessionStore;
+import org.pac4j.core.matching.matcher.PathMatcher;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.test.util.TestsConstants;
 
@@ -92,5 +96,118 @@ public final class JEEContextTest implements TestsConstants {
         when(request.getContextPath()).thenReturn(CTX);
         WebContext context = new JEEContext(request, response);
         assertEquals(PATH, context.getPath());
+    }
+    @Test
+    public void testGetPathRootContext() {
+        when(request.getRequestURI()).thenReturn(PATH);
+        when(request.getContextPath()).thenReturn(Pac4jConstants.EMPTY_STRING);
+        WebContext context = new JEEContext(request, response);
+        assertEquals(PATH, context.getPath());
+    }
+
+    @Test
+    public void testGetPathContextOnly() {
+        when(request.getRequestURI()).thenReturn(CTX);
+        when(request.getContextPath()).thenReturn(CTX);
+        WebContext context = new JEEContext(request, response);
+        assertEquals(Pac4jConstants.EMPTY_STRING, context.getPath());
+    }
+
+    @Test
+    public void testGetPathContextPrefixOfAnotherContextIsNotStripped() {
+        when(request.getRequestURI()).thenReturn("/ctxother/path");
+        when(request.getContextPath()).thenReturn(CTX);
+        WebContext context = new JEEContext(request, response);
+        assertEquals("/ctxother/path", context.getPath());
+    }
+
+    @Test
+    public void testGetPathTrailingSlashIsKept() {
+        when(request.getRequestURI()).thenReturn(CTX_PATH + "/");
+        when(request.getContextPath()).thenReturn(CTX);
+        WebContext context = new JEEContext(request, response);
+        assertEquals(PATH + "/", context.getPath());
+    }
+
+    @Test
+    public void testGetPathDotDotSegmentIsCanonicalized() {
+        when(request.getRequestURI()).thenReturn("/ctx/public/../path");
+        when(request.getContextPath()).thenReturn(CTX);
+        WebContext context = new JEEContext(request, response);
+        assertEquals(PATH, context.getPath());
+    }
+
+    @Test
+    public void testGetPathEncodedDotDotSegmentIsCanonicalized() {
+        when(request.getRequestURI()).thenReturn("/ctx/public/%2e%2e/path");
+        when(request.getContextPath()).thenReturn(CTX);
+        WebContext context = new JEEContext(request, response);
+        assertEquals(PATH, context.getPath());
+    }
+
+    @Test
+    public void testGetPathEncodedSlashIsCanonicalized() {
+        when(request.getRequestURI()).thenReturn("/ctx/public%2F..%2Fpath");
+        when(request.getContextPath()).thenReturn(CTX);
+        WebContext context = new JEEContext(request, response);
+        assertEquals(PATH, context.getPath());
+    }
+
+    @Test
+    public void testGetPathDotDotEscapingTheContext() {
+        when(request.getRequestURI()).thenReturn("/other/../ctx/path");
+        when(request.getContextPath()).thenReturn(CTX);
+        WebContext context = new JEEContext(request, response);
+        assertEquals(PATH, context.getPath());
+    }
+
+    @Test
+    public void testGetPathPathParametersAreRemoved() {
+        when(request.getRequestURI()).thenReturn("/ctx;a=b/path;jsessionid=ABC123");
+        when(request.getContextPath()).thenReturn(CTX);
+        WebContext context = new JEEContext(request, response);
+        assertEquals(PATH, context.getPath());
+    }
+
+    @Test
+    public void testGetPathEncodedCharactersAreDecoded() {
+        when(request.getRequestURI()).thenReturn("/ctx/caf%C3%A9");
+        when(request.getContextPath()).thenReturn(CTX);
+        WebContext context = new JEEContext(request, response);
+        assertEquals("/café", context.getPath());
+    }
+
+    @Test
+    public void testPathMatcherExcludedBranchCannotBeUsedToReachAProtectedPath() {
+        // "/public/../admin" is served as "/admin" by the container but used to match the excluded branch "/public"
+        when(request.getRequestURI()).thenReturn("/ctx/public/../admin");
+        when(request.getContextPath()).thenReturn(CTX);
+        val matcher = new PathMatcher().excludeBranch("/public");
+        assertTrue(matcher.matches(new CallContext(new JEEContext(request, response), new MockSessionStore())));
+    }
+
+    @Test
+    public void testPathMatcherExcludedPathCannotBeUsedToReachAProtectedPath() {
+        when(request.getRequestURI()).thenReturn("/ctx/public;x=y/%2e%2e/admin");
+        when(request.getContextPath()).thenReturn(CTX);
+        val matcher = new PathMatcher().excludeRegex("^/public.*$");
+        assertTrue(matcher.matches(new CallContext(new JEEContext(request, response), new MockSessionStore())));
+    }
+
+    @Test
+    public void testPathMatcherIncludedPathCannotBeBypassed() {
+        // "/foo/../admin/users" is served as "/admin/users" by the container but did not start with "/admin"
+        when(request.getRequestURI()).thenReturn("/ctx/foo/../admin/users");
+        when(request.getContextPath()).thenReturn(CTX);
+        val matcher = new PathMatcher().includePath("/admin");
+        assertTrue(matcher.matches(new CallContext(new JEEContext(request, response), new MockSessionStore())));
+    }
+
+    @Test
+    public void testPathMatcherExcludedPathStillExcluded() {
+        when(request.getRequestURI()).thenReturn("/ctx/./public;jsessionid=ABC123");
+        when(request.getContextPath()).thenReturn(CTX);
+        val matcher = new PathMatcher().excludePath("/public");
+        assertFalse(matcher.matches(new CallContext(new JEEContext(request, response), new MockSessionStore())));
     }
 }

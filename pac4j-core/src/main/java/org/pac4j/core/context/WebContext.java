@@ -172,6 +172,10 @@ public interface WebContext {
     /**
      * Get the "servlet path" (in a JEE style).
      *
+     * <p>Implementations must return a canonical path (decoded, without path parameters nor {@code .} / {@code ..} segments)
+     * as it is compared with configured paths for security decisions (see {@code PathMatcher}).
+     * {@link org.pac4j.core.util.PathNormalizer#normalize(String)} can be used to canonicalize a raw path.</p>
+     *
      * @return the "servlet path"
      * @since 1.8.1
      */
