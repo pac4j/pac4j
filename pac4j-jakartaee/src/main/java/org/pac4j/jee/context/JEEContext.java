@@ -11,6 +11,7 @@ import org.pac4j.core.context.WebContextHelper;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
+import org.pac4j.core.util.PathNormalizer;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -224,24 +225,33 @@ public class JEEContext implements WebContext {
      * This is not implemented using {@link HttpServletRequest#getServletPath()} or
      * {@link HttpServletRequest#getPathInfo()} because they both have strange behaviours
      * in different contexts (inside servlets, inside filters, various container implementation, etc)
+     *
+     * {@link HttpServletRequest#getRequestURI()} is neither decoded nor canonicalized (see its javadoc), so the path
+     * is canonicalized with {@link PathNormalizer} before being returned: the callers compare it with configured paths
+     * (path matchers, callback URL resolvers) and a raw path would let {@code /public/../admin} or
+     * {@code /admin;x=y} bypass the rules applying to the resource actually served.
      */
     @Override
     public String getPath() {
-        var fullPath = request.getRequestURI();
+        val fullPath = request.getRequestURI();
         // it shouldn't be null, but in case it is, it's better to return empty string
         if (fullPath == null) {
             return Pac4jConstants.EMPTY_STRING;
         }
-        // very strange use case
-        if (fullPath.startsWith("//")) {
-            fullPath = fullPath.substring(1);
+        val path = PathNormalizer.normalize(fullPath);
+        // the context path is not decoded either and is empty for the root context (HttpServletRequest#getContextPath() javadoc)
+        val context = PathNormalizer.normalize(request.getContextPath());
+        if (context.isEmpty()) {
+            return path;
         }
-        val context = request.getContextPath();
-        // this one shouldn't be null either, but in case it is, then let's consider it is empty
-        if (context != null) {
-            return fullPath.substring(context.length());
+        if (path.equals(context)) {
+            return Pac4jConstants.EMPTY_STRING;
         }
-        return fullPath;
+        if (path.startsWith(context + "/")) {
+            return path.substring(context.length());
+        }
+        // a canonical path outside the context (like "/ctx/../other"): there is nothing to strip
+        return path;
     }
 
     /** {@inheritDoc} */
