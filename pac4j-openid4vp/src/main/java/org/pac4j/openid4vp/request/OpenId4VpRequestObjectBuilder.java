@@ -1,5 +1,6 @@
 package org.pac4j.openid4vp.request;
 
+import lombok.extern.slf4j.Slf4j;
 import com.nimbusds.jose.jwk.ECKey;
 import com.nimbusds.jose.util.JSONObjectUtils;
 import com.nimbusds.jwt.JWTClaimsSet;
@@ -36,6 +37,7 @@ import static org.pac4j.openid4vp.util.OpenId4VpConstants.*;
  * @since 6.6.0
  */
 @RequiredArgsConstructor
+@Slf4j
 public class OpenId4VpRequestObjectBuilder {
 
     /**
@@ -69,9 +71,13 @@ public class OpenId4VpRequestObjectBuilder {
      */
     public String build(final CallContext ctx, final VpTransaction transaction) {
         val configuration = client.getConfiguration();
-        return JwkHelper.buildSignedJwt(buildClaims(ctx, transaction).build(),
+        LOGGER.debug("signing request object for transaction {} with {}", transaction.getId(),
+            configuration.computeRequestObjectSigningAlgorithm());
+        val request = JwkHelper.buildSignedJwt(buildClaims(ctx, transaction).build(),
             configuration.getRequestObjectSigningKey(), configuration.computeRequestObjectSigningAlgorithm(),
             REQUEST_OBJECT_TYPE, configuration.publishesCertificateChain());
+        LOGGER.debug("request object signed for transaction {}", transaction.getId());
+        return request;
     }
 
     /**
@@ -101,12 +107,18 @@ public class OpenId4VpRequestObjectBuilder {
      * <p>Assemble the authorization request parameters, which a signed request carries as claims of its
      * request object and an unsigned one carries in the wallet URL.</p>
      *
+     * <p>A non-blank configured scope is sent as {@code scope}; otherwise, the configured query is sent as
+     * {@code dcql_query}. In both cases, the query and the authorization parameters are saved with the
+     * transaction for response validation.</p>
+     *
      * @param ctx the context
      * @param transaction the transaction being answered
      * @return the parameters
      */
     public Map<String, Object> buildParameters(final CallContext ctx, final VpTransaction transaction) {
         val configuration = client.getConfiguration();
+        LOGGER.debug("building request for transaction {}: response mode={}, query parameter={}", transaction.getId(),
+            configuration.getResponseMode(), isNotBlank(configuration.getScope()) ? SCOPE : DCQL_QUERY);
         val parameters = new LinkedHashMap<String, Object>();
         parameters.put(CLIENT_ID, configuration.computeClientId(client.computeRequestUri(ctx.webContext(), transaction.getId())));
         // the only response type honoured, of the three OpenID4VP 1.0 defines: "vp_token id_token" adds a self-issued
@@ -116,8 +128,7 @@ public class OpenId4VpRequestObjectBuilder {
         parameters.put(RESPONSE_TYPE, RESPONSE_TYPE_VP_TOKEN);
         parameters.put(RESPONSE_MODE, configuration.getResponseMode().getValue());
         parameters.put(NONCE, transaction.getNonce());
-        // the same test as the configuration applies at initialization: a blank scope, as a properties file
-        // binding hands one over, is no scope
+        // Send either the alias or the query. Both cases use the configured query for response validation.
         if (isNotBlank(configuration.getScope())) {
             parameters.put(SCOPE, configuration.getScope());
         } else {
@@ -128,6 +139,11 @@ public class OpenId4VpRequestObjectBuilder {
             parameters.put(VERIFIER_INFO, configuration.getVerifierInfo().stream().map(VerifierAttestation::toMember).toList());
         }
         addBindingParameters(ctx, transaction, parameters);
+        transaction.setDcqlQuery(configuration.getDcqlQuery().toJsonString());
+        transaction.setRequestParameters(JSONObjectUtils.toJSONString(parameters));
+        transaction.setResponseMode(configuration.getResponseMode());
+        LOGGER.debug("authorization request saved for transaction {}: {} credential queries", transaction.getId(),
+            configuration.getDcqlQuery().getCredentials().size());
         return parameters;
     }
 
@@ -150,6 +166,8 @@ public class OpenId4VpRequestObjectBuilder {
         if (transaction.getState() != null) {
             parameters.put(STATE, transaction.getState());
         }
+        LOGGER.debug("URL binding parameters added for transaction {}: state present={}", transaction.getId(),
+            transaction.getState() != null);
     }
 
     /**
@@ -182,7 +200,8 @@ public class OpenId4VpRequestObjectBuilder {
         val formats = new LinkedHashMap<String, Object>();
         computeFormats(walletMetadata, transaction).forEach(format -> formats.put(format, Map.of()));
         metadata.put(VP_FORMATS_SUPPORTED, formats);
-
+        LOGGER.debug("client metadata built for transaction {}: formats={}, response encryption methods={}",
+            transaction.getId(), formats.keySet(), metadata.get(ENCRYPTED_RESPONSE_ENC_VALUES_SUPPORTED));
         return metadata;
     }
 
@@ -197,6 +216,7 @@ public class OpenId4VpRequestObjectBuilder {
      */
     protected Map<String, Object> readWalletMetadata(final VpTransaction transaction) {
         if (transaction.getWalletMetadata() == null) {
+            LOGGER.debug("no wallet metadata for transaction {}; using configured capabilities", transaction.getId());
             return Map.of();
         }
         try {
@@ -232,6 +252,7 @@ public class OpenId4VpRequestObjectBuilder {
         }
         val encValues = ACCEPTED_ENC_VALUES.stream().filter(walletEncValues::contains).toList();
         if (encValues.isEmpty()) {
+            LOGGER.debug("request rejected for transaction {}: no common response encryption method", transaction.getId());
             throw new OpenId4VpException("the wallet encrypts its response with none of the accepted content encryption "
                 + "algorithms " + ACCEPTED_ENC_VALUES + ", but with " + walletEncValues + ": " + transaction.getId());
         }
@@ -263,6 +284,7 @@ public class OpenId4VpRequestObjectBuilder {
         }
         val formats = verifiedFormats.stream().filter(walletFormats::containsKey).toList();
         if (formats.isEmpty()) {
+            LOGGER.debug("request rejected for transaction {}: no common credential format", transaction.getId());
             throw new OpenId4VpException("the wallet presents none of the credential formats this verifier verifies "
                 + verifiedFormats + ", but " + walletFormats.keySet() + ": " + transaction.getId());
         }

@@ -3,6 +3,11 @@ package org.pac4j.openid4vp.profile;
 import lombok.val;
 import org.junit.jupiter.api.Test;
 import org.pac4j.core.profile.AttributeLocation;
+import org.pac4j.openid4vp.credentials.VerifiablePresentationCredentials;
+import org.pac4j.openid4vp.verifier.VerifiedCredential;
+
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.pac4j.openid4vp.profile.EudiPidProfileDefinition.*;
@@ -17,13 +22,15 @@ class EudiPidProfileTests {
 
     @Test
     void testTheDefinitionBuildsAPidProfile() {
-        assertInstanceOf(EudiPidProfile.class, new EudiPidProfileDefinition().newProfile());
+        val profile = new EudiPidProfileDefinition().newProfile(credentials());
+        assertInstanceOf(EudiPidProfile.class, profile);
+        assertNotNull(profile.getId());
     }
 
     @Test
     void testTheAccessorsReturnTheConvertedAttributes() {
         val definition = new EudiPidProfileDefinition();
-        val profile = (EudiPidProfile) definition.newProfile();
+        val profile = (EudiPidProfile) definition.newProfile(credentials());
         // the values arrive as strings and the definition converts them
         definition.convertAndAdd(profile, AttributeLocation.PROFILE_ATTRIBUTE, GIVEN_NAME, "Jeanne");
         definition.convertAndAdd(profile, AttributeLocation.PROFILE_ATTRIBUTE, AGE_OVER_18, "true");
@@ -34,5 +41,12 @@ class EudiPidProfileTests {
         assertEquals(34, profile.getAgeInYears());
         // an attribute the holder did not disclose
         assertNull(profile.getNationality());
+    }
+
+    private VerifiablePresentationCredentials credentials() {
+        val credentials = new VerifiablePresentationCredentials();
+        credentials.getVerifiedCredentials().put("pid", List.of(new VerifiedCredential()
+            .setIssuer("https://issuer.example.org").setClaims(Map.of("sub", "alice"))));
+        return credentials;
     }
 }

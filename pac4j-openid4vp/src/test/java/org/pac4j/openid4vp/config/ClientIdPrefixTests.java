@@ -71,7 +71,7 @@ class ClientIdPrefixTests {
     private OpenId4VpConfiguration configuration(final ClientIdPrefix prefix) {
         val configuration = new OpenId4VpConfiguration();
         configuration.setClientIdPrefix(prefix)
-            .setDcqlQuery("{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\"}]}");
+            .setDcqlQuery("{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\",\"meta\":{\"vct_values\":[\"urn:eudi:pid:1\"]}}]}");
         return configuration;
     }
 

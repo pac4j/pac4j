@@ -1,5 +1,6 @@
 package org.pac4j.openid4vp.request;
 
+import com.nimbusds.jose.util.JSONObjectUtils;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.jwk.ECKey;
 import com.nimbusds.jwt.SignedJWT;
@@ -42,7 +43,8 @@ class OpenId4VpRequestObjectBuilderTests {
 
     private static final String CALLBACK_URL = "https://app.example.org/callback";
     private static final String CLIENT = "https://app.example.org/callback";
-    private static final String DCQL = "{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\"}]}";
+    private static final String DCQL = "{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\","
+        + "\"meta\":{\"vct_values\":[\"urn:eudi:pid:1\"]}}]}";
 
     @TempDir
     private java.nio.file.Path directory;
@@ -108,20 +110,36 @@ class OpenId4VpRequestObjectBuilderTests {
         // the response comes back on the very endpoint the request object was fetched from
         assertTrue(claims.getStringClaim(RESPONSE_URI).contains(VP_TRANSACTION_ID + "=" + transaction.getId()));
 
-        // the meta member is always sent, empty when there is no constraint
-        assertEquals(List.of(Map.of("id", "pid", "format", "dc+sd-jwt", "meta", Map.of())),
+        // the required credential type is sent in meta
+        assertEquals(List.of(Map.of("id", "pid", "format", "dc+sd-jwt", "meta", Map.of("vct_values", List.of("urn:eudi:pid:1")))),
             claims.getJSONObjectClaim(DCQL_QUERY).get("credentials"));
     }
 
     @Test
     void testAScopeStandsForTheDcqlQuery() throws Exception {
-        configuration.setDcqlQuery((DcqlQuery) null).setScope("com.example.pid_presentation");
+        configuration.setScope("com.example.pid_presentation");
         val transaction = openTransaction();
         val claims = requestObjectOf(transaction).getJWTClaimsSet();
 
         // "Either a dcql_query or a scope parameter representing a DCQL Query MUST be present [...], but not both"
         assertEquals("com.example.pid_presentation", claims.getStringClaim(SCOPE));
         assertNull(claims.getClaim(DCQL_QUERY));
+        assertNotNull(transaction.getDcqlQuery());
+        assertEquals(configuration.getDcqlQuery().toJsonString(), transaction.getDcqlQuery());
+        assertEquals("pid", DcqlQuery.parse(transaction.getDcqlQuery()).getCredentials().get(0).getId());
+    }
+
+    @Test
+    void testTheSavedQueryDoesNotChangeWithTheConfiguration() throws Exception {
+        val transaction = openTransaction();
+        transaction.setState("state");
+        val claims = requestObjectOf(transaction).getJWTClaimsSet();
+        configuration.getDcqlQuery().getCredentials().get(0).setId("changed");
+        val saved = JSONObjectUtils.parse(transaction.getRequestParameters());
+        assertEquals(claims.getClaim(DCQL_QUERY), saved.get(DCQL_QUERY));
+        assertEquals(claims.getClaim(CLIENT_METADATA), saved.get(CLIENT_METADATA));
+        assertEquals("state", saved.get(STATE));
+        assertEquals("pid", DcqlQuery.parse(transaction.getDcqlQuery()).getCredentials().get(0).getId());
     }
 
     @Test

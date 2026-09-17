@@ -1,5 +1,6 @@
 package org.pac4j.openid4vp.verifier;
 
+import lombok.extern.slf4j.Slf4j;
 import lombok.ToString;
 import org.pac4j.openid4vp.config.CredentialFormat;
 import org.pac4j.openid4vp.config.OpenId4VpConfiguration;
@@ -17,6 +18,7 @@ import org.pac4j.openid4vp.transaction.VpTransaction;
  * @since 6.6.0
  */
 @ToString
+@Slf4j
 public class SdJwtVcVerifier implements CredentialVerifier {
 
     /** {@inheritDoc} */
@@ -35,6 +37,8 @@ public class SdJwtVcVerifier implements CredentialVerifier {
     @Override
     public VerifiedCredential verify(final String rawCredential, final VpTransaction transaction,
                                      final OpenId4VpConfiguration configuration) {
+        LOGGER.debug("SD-JWT VC verification unavailable for transaction {}: verifier not implemented",
+            transaction == null ? null : transaction.getId());
         throw new OpenId4VpException("the SD-JWT VC verification is not implemented yet");
     }
 }
