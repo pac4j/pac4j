@@ -285,7 +285,8 @@ public class WalletSimulator {
         try {
             val claims = new JWTClaimsSet.Builder().claim(VP_TOKEN, vpToken).build();
             val response = new EncryptedJWT(
-                new JWEHeader.Builder(JWEAlgorithm.ECDH_ES, EncryptionMethod.A128GCM).build(), claims);
+                new JWEHeader.Builder(JWEAlgorithm.ECDH_ES, EncryptionMethod.A128GCM)
+                    .keyID(request.getEncryptionKey().getKeyID()).build(), claims);
             response.encrypt(new ECDHEncrypter(request.getEncryptionKey()));
             val serialized = response.serialize();
             LOGGER.debug("Wallet simulator -> posting {} presentation(s) to {}",

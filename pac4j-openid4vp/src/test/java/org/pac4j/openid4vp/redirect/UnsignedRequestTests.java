@@ -45,7 +45,7 @@ class UnsignedRequestTests {
         // no client identifier is typed: for this prefix it is the response URI of each transaction
         val configuration = new OpenId4VpConfiguration();
         configuration.setClientIdPrefix(ClientIdPrefix.REDIRECT_URI)
-            .setDcqlQuery("{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\"}]}");
+            .setDcqlQuery("{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\",\"meta\":{\"vct_values\":[\"urn:eudi:pid:1\"]}}]}");
 
         client = new OpenId4VpClient(configuration);
         client.setName("Wallet");

@@ -74,23 +74,44 @@ public class WalletResponseReader {
         val response = webContext.getRequestParameter(RESPONSE).orElse(null);
         val vpToken = webContext.getRequestParameter(VP_TOKEN).orElse(null);
         val error = webContext.getRequestParameter(ERROR).orElse(null);
+        val mode = transaction.getResponseMode() == null ? responseMode : transaction.getResponseMode();
+        LOGGER.debug("reading wallet response for transaction {}: expected mode={}, saved mode={}", id, mode,
+            transaction.getResponseMode() != null);
+        if ((response != null ? 1 : 0) + (vpToken != null ? 1 : 0) + (error != null ? 1 : 0) != 1) {
+            LOGGER.debug("wallet response rejected for transaction {}: missing or mixed response parameters", id);
+            throw new OpenId4VpException("exactly one of response, vp_token or error must be posted by the wallet");
+        }
+        if ((response != null && response.isBlank()) || (vpToken != null && vpToken.isBlank())
+            || (error != null && error.isBlank())) {
+            LOGGER.debug("wallet response rejected for transaction {}: blank response parameter", id);
+            throw new OpenId4VpException("the wallet response cannot be blank");
+        }
         if (response != null) {
+            if (!mode.isEncrypted()) {
+                LOGGER.debug("wallet response rejected for transaction {}: unexpected encryption", id);
+                throw new OpenId4VpException("an encrypted response was not requested: " + id);
+            }
             transaction.setRawResponse(response);
-            LOGGER.debug("the wallet posted its encrypted response for the transaction: {} ({} bytes)", id, response.length());
+            LOGGER.debug("the wallet posted its encrypted response for the transaction: {} ({} characters)", id, response.length());
         } else if (vpToken != null) {
-            if (responseMode.isEncrypted()) {
+            if (mode.isEncrypted()) {
+                LOGGER.debug("wallet response rejected for transaction {}: encryption required", id);
                 throw new OpenId4VpException("the wallet answered in clear a request asking for an encrypted response ("
-                    + responseMode.getValue() + "): " + id);
+                    + mode.getValue() + "): " + id);
             }
             transaction.setRawVpToken(vpToken);
-            LOGGER.debug("the wallet posted its response in clear for the transaction: {} ({} bytes)", id, vpToken.length());
+            LOGGER.debug("the wallet posted its response in clear for the transaction: {} ({} characters)", id, vpToken.length());
         } else if (error != null) {
             transaction.setError(error);
             transaction.setErrorDescription(webContext.getRequestParameter(ERROR_DESCRIPTION).orElse(null));
-            LOGGER.debug("the wallet answered the transaction {} with an error: {} ({})", id, error, transaction.getErrorDescription());
+            LOGGER.debug("the wallet answered transaction {} with an error; description present={}", id,
+                transaction.getErrorDescription() != null);
         } else {
             throw new OpenId4VpException("no response, vp_token or error posted by the wallet for the transaction: " + id);
         }
+        transaction.setResponseState(webContext.getRequestParameter(STATE).orElse(null));
         transaction.setStatus(VpTransaction.Status.RESPONSE_RECEIVED);
+        LOGGER.debug("wallet response read for transaction {}: status={}, state present={}", id, transaction.getStatus(),
+            transaction.getResponseState() != null);
     }
 }

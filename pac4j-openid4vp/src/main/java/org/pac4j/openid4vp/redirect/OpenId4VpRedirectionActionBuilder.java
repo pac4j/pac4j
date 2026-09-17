@@ -55,11 +55,10 @@ public class OpenId4VpRedirectionActionBuilder implements RedirectionActionBuild
     public Optional<RedirectionAction> getRedirectionAction(final CallContext ctx) {
         val configuration = client.getConfiguration();
         val transaction = createTransaction(ctx);
+        val url = computeWalletUrl(ctx, transaction);
         configuration.getTransactionStore().set(transaction.getId(), transaction);
         ctx.sessionStore().set(ctx.webContext(), SESSION_TRANSACTION_ID, transaction.getId());
-
-        val url = computeWalletUrl(ctx, transaction);
-        LOGGER.debug("transaction {} opened, handing over: {}", transaction.getId(), url);
+        LOGGER.debug("transaction {} saved and associated with the browser session; handing over the wallet URL", transaction.getId());
         return Optional.of(new FoundAction(url));
     }
 
@@ -78,6 +77,9 @@ public class OpenId4VpRedirectionActionBuilder implements RedirectionActionBuild
             .setCreatedAt(now)
             .setExpiresAt(now.plus(configuration.getTransactionLifetimeSeconds(), ChronoUnit.SECONDS));
         transaction.setEncryptionKey(buildEncryptionKey());
+        LOGGER.debug("transaction {} created for client {}: response mode={}, expires at={}, encryption key generated={}",
+            transaction.getId(), client.getName(), configuration.getResponseMode(), transaction.getExpiresAt(),
+            transaction.getEncryptionKey() != null);
         return transaction;
     }
 
@@ -122,6 +124,8 @@ public class OpenId4VpRedirectionActionBuilder implements RedirectionActionBuild
     protected String computeWalletUrl(final CallContext ctx, final VpTransaction transaction) {
         val configuration = client.getConfiguration();
         if (configuration.getClientIdPrefix().isSignedRequest()) {
+            LOGGER.debug("building wallet URL for transaction {}: signed request by reference, request URI method={}",
+                transaction.getId(), configuration.getRequestUriMethod());
             var url = CommonHelper.addParameter(configuration.getWalletScheme(), CLIENT_ID, configuration.computeClientId());
             url = CommonHelper.addParameter(url, REQUEST_URI, client.computeRequestUri(ctx.webContext(), transaction.getId()));
             if (configuration.getRequestUriMethod() == RequestUriMethod.POST) {
@@ -132,6 +136,7 @@ public class OpenId4VpRedirectionActionBuilder implements RedirectionActionBuild
             }
             return url;
         }
+        LOGGER.debug("building wallet URL for transaction {}: unsigned request by value", transaction.getId());
         return computeUnsignedWalletUrl(ctx, transaction);
     }
 
@@ -139,8 +144,8 @@ public class OpenId4VpRedirectionActionBuilder implements RedirectionActionBuild
      * <p>The wallet URL of a request which cannot be signed: the parameters travel in it, since there is no
      * request object to fetch.</p>
      *
-     * <p>The URL grows accordingly, the client metadata and the DCQL query being carried whole. That is the
-     * price of a prefix for which the wallet has no key to trust.</p>
+     * <p>The URL carries the full client metadata and either the scope alias or the full DCQL query,
+     * depending on the configuration.</p>
      *
      * @param ctx the context
      * @param transaction the transaction being opened

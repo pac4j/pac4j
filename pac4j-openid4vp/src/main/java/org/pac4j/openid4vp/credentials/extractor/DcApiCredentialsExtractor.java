@@ -57,6 +57,7 @@ public class DcApiCredentialsExtractor implements CredentialsExtractor {
         // a transaction is used once
         store.remove(transactionId);
         sessionStore.set(webContext, SESSION_TRANSACTION_ID, null);
+        LOGGER.debug("DC API transaction {} consumed and removed from the store and browser session", transactionId);
         if (transaction.getError() != null) {
             throw new OpenId4VpException(WalletResponseReader.refusalMessage(transaction));
         }

@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
+import org.pac4j.openid4vp.config.ResponseMode;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -52,6 +53,18 @@ public class VpTransaction implements Serializable {
     private String nonce;
 
     private String state;
+
+    /** The authorization parameters actually sent, kept as JSON for response validation and holder binding. */
+    private String requestParameters;
+
+    /** The configured DCQL query saved as JSON for response validation, even when only a scope alias was sent. */
+    private String dcqlQuery;
+
+    /** The response mode saved when the authorization request was built. */
+    private ResponseMode responseMode;
+
+    /** The state returned outside an encrypted response. */
+    private String responseState;
 
     private Instant createdAt;
 

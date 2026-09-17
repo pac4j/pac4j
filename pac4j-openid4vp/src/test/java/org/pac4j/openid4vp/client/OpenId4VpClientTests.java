@@ -43,7 +43,8 @@ class OpenId4VpClientTests {
             .setJwksPath(directory.resolve("keys.jwks").toString()).setKid("key-1"));
         configuration.setClientId("verifier.example.org");
         configuration.setClientIdPrefix(ClientIdPrefix.DECENTRALIZED_IDENTIFIER);
-        configuration.setDcqlQuery("{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\"}]}");
+        configuration.setDcqlQuery("{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\","
+            + "\"meta\":{\"vct_values\":[\"urn:eudi:pid:1\"]}}]}");
         return configuration;
     }
 
