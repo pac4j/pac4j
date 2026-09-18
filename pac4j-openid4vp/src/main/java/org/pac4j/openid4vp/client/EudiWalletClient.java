@@ -54,6 +54,7 @@ public class EudiWalletClient extends OpenId4VpClient {
         configuration.setClientIdPrefix(ClientIdPrefix.X509_HASH);
         configuration.setResponseMode(ResponseMode.DIRECT_POST_JWT);
         setProfileCreatorIfUndefined(new OpenId4VpProfileCreator(this, new EudiPidProfileDefinition()));
+        logger.debug("applying EUDI wallet settings for client {}: X509_HASH, DIRECT_POST_JWT, PID profile definition", getName());
 
         super.internalInit(forceReinit);
     }

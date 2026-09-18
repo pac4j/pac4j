@@ -30,7 +30,8 @@ class OpenId4VpRedirectionActionBuilderTests {
 
     private static final String CALLBACK_URL = "https://app.example.org/callback";
     private static final String CLIENT = "https://app.example.org/callback";
-    private static final String DCQL = "{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\"}]}";
+    private static final String DCQL = "{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\","
+        + "\"meta\":{\"vct_values\":[\"urn:eudi:pid:1\"]}}]}";
 
     @TempDir
     private java.nio.file.Path directory;

@@ -50,10 +50,12 @@ public class OpenId4VpCredentialsExtractor implements CredentialsExtractor {
 
         // the wallet posts its response: encrypted, in clear, or an error
         if (post && WalletResponseReader.carriesAnswer(webContext)) {
+            LOGGER.debug("handling wallet response POST for transaction {}", transactionId);
             throw acceptWalletResponse(ctx, transactionId);
         }
         // the wallet fetches the signed request object, having posted its capabilities first or not
         if (transactionId != null) {
+            LOGGER.debug("handling request object retrieval for transaction {}: method={}", transactionId, post ? "POST" : "GET");
             throw serveRequestObject(ctx, transactionId, post);
         }
         // the browser comes back: this is the only branch with a session
@@ -76,16 +78,17 @@ public class OpenId4VpCredentialsExtractor implements CredentialsExtractor {
         // being visible in the wallet URL (thus in the QR code), a request the wallet already answered has no
         // reason to be read again, and the presentation it asks for must not be answered twice
         if (transaction.getStatus() == VpTransaction.Status.RESPONSE_RECEIVED) {
+            LOGGER.debug("request object retrieval rejected for transaction {}: response already received", transactionId);
             throw new OpenId4VpException("the wallet already answered the transaction: " + transactionId);
         }
         if (post) {
             readWalletCapabilities(ctx, transaction);
         }
-        transaction.setStatus(VpTransaction.Status.REQUEST_RETRIEVED);
-        client.getConfiguration().getTransactionStore().set(transactionId, transaction);
         LOGGER.debug("the wallet fetches the request object of the transaction: {}", transactionId);
         val requestObject = client.getRequestObjectBuilder().build(ctx, transaction);
-        LOGGER.trace("request object of the transaction {}: {}", transactionId, requestObject);
+        transaction.setStatus(VpTransaction.Status.REQUEST_RETRIEVED);
+        client.getConfiguration().getTransactionStore().set(transactionId, transaction);
+        LOGGER.debug("request object served for transaction {}: status={}", transactionId, transaction.getStatus());
         ctx.webContext().setResponseContentType(REQUEST_OBJECT_CONTENT_TYPE);
         return new OkAction(requestObject);
     }
@@ -109,11 +112,11 @@ public class OpenId4VpCredentialsExtractor implements CredentialsExtractor {
                 throw new OpenId4VpException("the wallet metadata is not a JSON object: " + e.getMessage(), e);
             }
             transaction.setWalletMetadata(metadata);
-            LOGGER.debug("the wallet posted its metadata for the transaction {}: {}", transaction.getId(), metadata);
+            LOGGER.debug("wallet metadata received for transaction {}", transaction.getId());
         });
         webContext.getRequestParameter(WALLET_NONCE).ifPresent(walletNonce -> {
             transaction.setWalletNonce(walletNonce);
-            LOGGER.debug("the wallet posted its nonce for the transaction {}: {}", transaction.getId(), walletNonce);
+            LOGGER.debug("wallet nonce received for transaction {}", transaction.getId());
         });
     }
 
@@ -129,7 +132,8 @@ public class OpenId4VpCredentialsExtractor implements CredentialsExtractor {
         checkAwaitsAnswer(transaction);
         WalletResponseReader.read(ctx.webContext(), transaction, client.getConfiguration().getResponseMode());
         client.getConfiguration().getTransactionStore().set(transactionId, transaction);
-        // TODO: answer the redirect_uri holding the response code, so that the wallet can hand the browser back
+        ctx.webContext().setResponseContentType("application/json");
+        LOGGER.debug("wallet response stored for transaction {}; acknowledging with an empty JSON object", transactionId);
         return new OkAction("{}");
     }
 
@@ -151,9 +155,11 @@ public class OpenId4VpCredentialsExtractor implements CredentialsExtractor {
     protected void checkAwaitsAnswer(final VpTransaction transaction) {
         val status = transaction.getStatus();
         if (status == VpTransaction.Status.RESPONSE_RECEIVED) {
+            LOGGER.debug("wallet response rejected for transaction {}: response already received", transaction.getId());
             throw new OpenId4VpException("the transaction was already answered: " + transaction.getId());
         }
         if (status == VpTransaction.Status.CREATED && client.getConfiguration().getClientIdPrefix().isSignedRequest()) {
+            LOGGER.debug("wallet response rejected for transaction {}: request object has not been retrieved", transaction.getId());
             throw new OpenId4VpException("the wallet never fetched the request object of the transaction: "
                 + transaction.getId());
         }
@@ -187,6 +193,7 @@ public class OpenId4VpCredentialsExtractor implements CredentialsExtractor {
         // a transaction is used once
         store.remove(transactionId);
         sessionStore.set(webContext, SESSION_TRANSACTION_ID, null);
+        LOGGER.debug("transaction {} consumed and removed from the store and browser session", transactionId);
         if (transaction.getError() != null) {
             throw new OpenId4VpException(WalletResponseReader.refusalMessage(transaction));
         }
@@ -202,9 +209,13 @@ public class OpenId4VpCredentialsExtractor implements CredentialsExtractor {
      */
     protected VpTransaction findTransaction(final String transactionId) {
         if (transactionId == null) {
+            LOGGER.debug("wallet request rejected: missing transaction identifier");
             throw new OpenId4VpException("no " + VP_TRANSACTION_ID + " parameter on the wallet request");
         }
         return client.getConfiguration().getTransactionStore().get(transactionId)
-            .orElseThrow(() -> new OpenId4VpException("no live OpenID4VP transaction: " + transactionId));
+            .orElseThrow(() -> {
+                LOGGER.debug("wallet request rejected: no live transaction {}", transactionId);
+                return new OpenId4VpException("no live OpenID4VP transaction: " + transactionId);
+            });
     }
 }

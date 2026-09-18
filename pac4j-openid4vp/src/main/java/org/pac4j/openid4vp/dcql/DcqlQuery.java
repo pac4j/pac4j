@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import lombok.val;
+import lombok.extern.slf4j.Slf4j;
 import org.pac4j.core.exception.TechnicalException;
 
 import java.text.ParseException;
@@ -21,8 +22,8 @@ import static org.pac4j.core.util.CommonHelper.assertTrue;
 /**
  * A DCQL query: which credentials the verifier asks for, and which combinations of them satisfy it.
  *
- * <p>The query is written, checked and read here; matching it against the credentials is the wallet's
- * job. Built programmatically, or parsed from its JSON form with {@link #parse(String)}, it is sent as the
+ * <p>The query is written, checked and read here; {@link DcqlValidator} matches verified credentials
+ * against it. Built programmatically, or parsed from its JSON form with {@link #parse(String)}, it is sent as the
  * {@code dcql_query} request parameter through {@link #toJson()}.</p>
  *
  * @see <a href="https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#dcql_query">
@@ -35,6 +36,7 @@ import static org.pac4j.core.util.CommonHelper.assertTrue;
 @Setter
 @ToString
 @Accessors(chain = true)
+@Slf4j
 public class DcqlQuery {
 
     /** JSON member names. */
@@ -84,6 +86,7 @@ public class DcqlQuery {
      * referencing existing credentials.</p>
      */
     public void check() {
+        LOGGER.debug("checking DCQL query structure");
         assertTrue(credentials != null && !credentials.isEmpty(), "credentials cannot be empty");
         val ids = new HashSet<String>();
         for (val credential : credentials) {

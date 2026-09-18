@@ -10,6 +10,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.List;
 
 /**
  * One attestation of a presentation, a PID or a mobile driving licence, once validated: a credential in the
@@ -44,6 +45,15 @@ public class VerifiedCredential implements Serializable {
 
     private String issuer;
 
-    /** The claims actually disclosed by the holder. */
+    /** True only after verifying the holder proof against this transaction, including nonce and audience. */
+    private boolean cryptographicHolderBinding;
+
+    /**
+     * Authorities established by the verifier's trust validation, indexed by DCQL authority type.
+     * These are verified evidence (AKIs, trusted list or federation identifiers), never unchecked wallet claims.
+     */
+    private Map<String, List<String>> trustedAuthorities = new LinkedHashMap<>();
+
+    /** The verified claims, retaining JSON nesting or, for mdoc, namespace maps of JSON-compatible values. */
     private Map<String, Object> claims = new LinkedHashMap<>();
 }

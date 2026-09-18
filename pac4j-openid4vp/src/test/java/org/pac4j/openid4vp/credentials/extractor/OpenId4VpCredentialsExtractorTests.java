@@ -52,7 +52,8 @@ class OpenId4VpCredentialsExtractorTests {
         configuration = new OpenId4VpConfiguration();
         configuration.setResponseMode(responseMode);
         configuration.setClientId("https://app.example.org/callback");
-        configuration.setDcqlQuery("{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\"}]}");
+        configuration.setDcqlQuery("{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\","
+            + "\"meta\":{\"vct_values\":[\"urn:eudi:pid:1\"]}}]}");
         configuration.setClientIdPrefix(org.pac4j.openid4vp.config.ClientIdPrefix.DECENTRALIZED_IDENTIFIER);
         configuration.setJwks(new JwksProperties().setJwksPath(directory.resolve("keys.jwks").toString()).setKid("key-1"));
 

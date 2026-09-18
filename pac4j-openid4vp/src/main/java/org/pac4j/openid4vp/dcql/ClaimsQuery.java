@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.math.BigInteger;
 
 import static org.pac4j.core.util.CommonHelper.assertTrue;
 
@@ -81,8 +82,15 @@ public class ClaimsQuery {
     public void check(final boolean idRequired) {
         assertTrue(path != null && !path.isEmpty(), "a claim query path cannot be empty");
         for (val segment : path) {
-            assertTrue(segment == null || segment instanceof String || segment instanceof Integer,
-                "a claim query path segment must be a string, an integer or null: " + segment);
+            assertTrue(segment == null || segment instanceof String || (segment instanceof Integer index && index >= 0),
+                "a claim query path segment must be a string, a non-negative integer or null: " + segment);
+        }
+        if (values != null) {
+            for (val value : values) {
+                assertTrue(value instanceof String || value instanceof Boolean || value instanceof Integer
+                    || value instanceof Long || value instanceof BigInteger,
+                    "a claim query value must be a string, an integer or a boolean");
+            }
         }
         assertTrue(id == null || CredentialQuery.IDENTIFIER.matcher(id).matches(),
             "a claim identifier must be a non-empty string of alphanumeric, underscore or hyphen characters: " + id);
