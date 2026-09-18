@@ -21,6 +21,7 @@ title: Release notes&#58;
   - the new `generateKey` method creates a signature key for a given algorithm, and `loadJwkFromOrCreateJwks` takes an optional algorithm for the key it creates when none exists yet, the default staying RSA-2048
 - Added the OpenID4VP protocol support via the new `pac4j-openid4vp` module and the `EudiWalletClient`, `OpenId4VpClient` and `OpenId4VpDcApiClient` clients (+ `OpenId4VpConfiguration` and `OpenId4VpDcApiConfiguration` configurations)
 - Normalize path in `JEEContext.getPath()`
+- `JwtAuthenticator`: reject RSA/EC-only encryption without a signature; warn for other encryption-only configurations
 
 **v6.5.8**:
 - Security fix: the logout redirect URL is rejected if it contains a control character or a space (the browsers strip tabs and new lines before parsing a URL, which allowed an open redirect with `/<TAB>/evil.example.org`)

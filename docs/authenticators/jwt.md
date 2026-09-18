@@ -45,50 +45,42 @@ To verify a signed JWT, the defined signature configurations will be tried succe
 
 ### b) Encryption
 
-To handle encrypted JWT, you must define one or more [`EncryptionConfiguration`](https://github.com/pac4j/pac4j/blob/master/pac4j-jwt/src/main/java/org/pac4j/jwt/config/encryption/EncryptionConfiguration.java) with the `addEncryptionConfiguration` method.
+Encryption (JWE) keeps JWT claims confidential, while a signature (JWS) verifies their authenticity. To use both, sign the JWT before encrypting it.
 
-Like for signature configurations, three encryption configurations are available: with a secret (`SecretEncryptionConfiguration`), using an RSA key pair (`RSAEncryptionConfiguration`) or using an elliptic-curve key pair (`ECEncryptionConfiguration`).
+To accept encrypted JWTs, register one or more [`EncryptionConfiguration`](https://github.com/pac4j/pac4j/blob/master/pac4j-jwt/src/main/java/org/pac4j/jwt/config/encryption/EncryptionConfiguration.java) instances with `addEncryptionConfiguration`. Three types are available: a shared secret (`SecretEncryptionConfiguration`), RSA (`RSAEncryptionConfiguration`) or elliptic curves (`ECEncryptionConfiguration`).
 
-To decrypt an encrypted JWT, the defined encryption configurations will be tried successively (if the algorithm of the JWT matches the one supported by the encryption configuration).
+<div class="warning"><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i> <strong>Always combine RSA/EC encryption with a signature.</strong> Anyone with the recipient's public key can create an encrypted JWT, so encryption alone does not authenticate its issuer. Configurations using only RSA/EC encryption without a signature are rejected. Adding a shared-secret encryption configuration does not remove this risk for RSA/EC tokens.</div>
 
-**Behavior notes (signature vs encryption)**
+Other encryption configurations without a signature remain allowed, but trigger a warning about this unusual setup.
 
-- **Signature (JWS)**
-  - If at least one `SignatureConfiguration` is defined on the `JwtAuthenticator`, a non-signed JWT (`PlainJWT`) is rejected.
-  - If no `SignatureConfiguration` is defined, non-signed JWTs may be accepted (with a warning at startup).
+Encryption and signature requirements are independent:
 
-- **Encryption (JWE)**
-  - Encryption is controlled by the `encryptionRequired` flag (default: `false`).
-  - If `encryptionRequired` is `false`, encryption remains optional: even if `EncryptionConfiguration`s are configured, a JWT may be only signed (JWS) and not encrypted, and it will be accepted if the signature is valid.
-  - If `encryptionRequired` is `true` and at least one `EncryptionConfiguration` is configured, a non-encrypted JWT (JWS or plain) is rejected.
-  - If a token is encrypted (JWE) and `SignatureConfiguration`s are defined, the decrypted payload must be a signed JWT (nested JWT); a JWE decrypting to a plain (unsigned) JWT is rejected.
+- Encryption is optional by default (`encryptionRequired = false`). Set `encryptionRequired` to `true` and configure encryption to reject unencrypted tokens.
+- When a signature configuration is defined, every JWT must have a valid signature, including the payload of an encrypted JWT.
+- Shared-secret encryption can be used without a signature, but anyone holding the secret can create tokens. Without a signature configuration, plain JWTs are also accepted if encryption is optional.
 
-**Example**:
+**Example: require both a signature and RSA encryption**
+
+Use your application's signing secret and RSA private key:
 
 ```java
 JwtAuthenticator jwtAuthenticator = new JwtAuthenticator();
 
-# define two signature configurations (one based on the KEY2 secret and the other one based on a generated RSA key pair)
-jwtAuthenticator.addSignatureConfiguration(new SecretSignatureConfiguration(KEY2));
-KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
-KeyPair rsaKeyPair = keyGen.generateKeyPair();
-jwtAuthenticator.addSignatureConfiguration(new RSASignatureConfiguration(rsaKeyPair));
+jwtAuthenticator.addSignatureConfiguration(new SecretSignatureConfiguration(SIGNING_SECRET));
 
-# define two encryption configurations (one based on the SECRET secret and the other one based on a generated elliptic curve key pair)
-jwtAuthenticator.addEncryptionConfiguration(new SecretEncryptionConfiguration(SECRET));
-KeyPairGenerator keyGen = KeyPairGenerator.getInstance("EC");
-KeyPair ecKeyPair = keyGen.generateKeyPair();
-ECEncryptionConfiguration encConfig = new ECEncryptionConfiguration(ecKeyPair);
-encConfig.setAlgorithm(JWEAlgorithm.ECDH_ES_A128KW);
-encConfig.setMethod(EncryptionMethod.A192CBC_HS384);
-jwtAuthenticator.addEncryptionConfiguration(encConfig);
+RSAEncryptionConfiguration encryptionConfiguration = new RSAEncryptionConfiguration();
+encryptionConfiguration.setPrivateKey(rsaPrivateKey);
+encryptionConfiguration.setAlgorithm(JWEAlgorithm.RSA_OAEP_256);
+encryptionConfiguration.setMethod(EncryptionMethod.A128GCM);
+jwtAuthenticator.addEncryptionConfiguration(encryptionConfiguration);
+jwtAuthenticator.setEncryptionRequired(true);
 
-jwtAuthenticator.validate(new TokenCredentials(token, "myclient"));
+UserProfile profile = jwtAuthenticator.validateToken(token);
 ```
 
 The `JwtAuthenticator` also offers two convenient methods to handle JWT:
 
-- `CommonProfile validateToken(final String token)` validates a token and directly returns a *pac4j* user profile
+- `UserProfile validateToken(final String token)` validates a token and directly returns a *pac4j* user profile
 - `Map<String, Object> validateTokenAndGetClaims(final String token)` validates a token and directly returns a set of claims/attributes, this method is completely agnostic to *pac4j* profiles.
 
 
