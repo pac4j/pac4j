@@ -17,6 +17,7 @@ import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.jwt.JwtClaims;
 import org.pac4j.test.util.TestsHelper;
 import org.pac4j.core.util.generator.StaticValueGenerator;
+import org.pac4j.jwt.config.encryption.ECEncryptionConfiguration;
 import org.pac4j.jwt.config.encryption.EncryptionConfiguration;
 import org.pac4j.jwt.config.encryption.RSAEncryptionConfiguration;
 import org.pac4j.jwt.config.encryption.SecretEncryptionConfiguration;
@@ -133,6 +134,95 @@ public final class JwtTests implements TestsConstants {
         val profile = createProfile();
         val token = generator.generate(profile);
         assertToken(profile, token, new JwtAuthenticator());
+    }
+
+    @Test
+    public void testAsymmetricEncryptionOnlyConfigurationRejected() {
+        val configurations = List.of(
+            List.<EncryptionConfiguration>of(new RSAEncryptionConfiguration()),
+            List.<EncryptionConfiguration>of(new ECEncryptionConfiguration()),
+            List.<EncryptionConfiguration>of(new RSAEncryptionConfiguration(), new ECEncryptionConfiguration()));
+        for (val encryptionConfigurations : configurations) {
+            for (val encryptionRequired : List.of(false, true)) {
+                val authenticator = new JwtAuthenticator(List.of(), encryptionConfigurations);
+                authenticator.setEncryptionRequired(encryptionRequired);
+                val exception = assertThrows(TechnicalException.class, authenticator::init);
+                assertEquals("A signature configuration is required when only asymmetric encryption configurations"
+                    + " (RSA/EC) are defined", exception.getMessage());
+                assertFalse(authenticator.isInitialized());
+            }
+        }
+    }
+
+    @Test
+    public void testJwtForgedWithPublicKeyRejectedOnRepeatedValidation() throws NoSuchAlgorithmException {
+        for (val encryptionConfiguration : buildAsymmetricEncryptionConfigurations()) {
+            final EncryptionConfiguration publicConfiguration;
+            if (encryptionConfiguration instanceof RSAEncryptionConfiguration rsaConfiguration) {
+                val configuration = new RSAEncryptionConfiguration();
+                configuration.setPublicKey(rsaConfiguration.getPublicKey());
+                configuration.setAlgorithm(JWEAlgorithm.RSA_OAEP_256);
+                configuration.setMethod(EncryptionMethod.A128GCM);
+                publicConfiguration = configuration;
+            } else {
+                val configuration = new ECEncryptionConfiguration();
+                configuration.setPublicKey(((ECEncryptionConfiguration) encryptionConfiguration).getPublicKey());
+                configuration.setAlgorithm(JWEAlgorithm.ECDH_ES_A128KW);
+                configuration.setMethod(EncryptionMethod.A128GCM);
+                publicConfiguration = configuration;
+            }
+            val token = publicConfiguration.encrypt(new PlainJWT(new JWTClaimsSet.Builder().subject("admin").build()));
+            val authenticator = new JwtAuthenticator(List.of(), List.of(encryptionConfiguration));
+            authenticator.setMinTimeIntervalBetweenAttemptsInMilliseconds(Long.MAX_VALUE);
+            for (var attempt = 0; attempt < 3; attempt++) {
+                val credentials = new TokenCredentials(token);
+                assertThrows(TechnicalException.class, () -> authenticator.validate(null, credentials));
+                assertNull(credentials.getUserProfile());
+            }
+        }
+    }
+
+    @Test
+    public void testSignedAndAsymmetricallyEncryptedJwtAccepted() throws NoSuchAlgorithmException {
+        val signatureConfiguration = new SecretSignatureConfiguration(MAC_SECRET);
+        val profile = createProfile();
+        for (val encryptionConfiguration : buildAsymmetricEncryptionConfigurations()) {
+            val token = new JwtGenerator(signatureConfiguration, encryptionConfiguration).generate(profile);
+            val authenticator = new JwtAuthenticator(signatureConfiguration, encryptionConfiguration);
+            authenticator.setEncryptionRequired(true);
+            assertToken(profile, token, authenticator);
+        }
+    }
+
+    @Test
+    public void testMixedEncryptionConfigurationsWithoutSignatureAccepted() {
+        val secretConfiguration = new SecretEncryptionConfiguration(MAC_SECRET);
+        val profile = createProfile();
+        val token = new JwtGenerator(null, secretConfiguration).generate(profile);
+        val authenticator = new JwtAuthenticator(List.of(), List.of(new RSAEncryptionConfiguration(),
+            new ECEncryptionConfiguration(), secretConfiguration));
+        authenticator.setEncryptionRequired(true);
+        assertToken(profile, token, authenticator);
+    }
+
+    @Test
+    public void testAsymmetricEncryptionOnlyConfigurationRejectedAfterInitialization() {
+        val authenticator = new JwtAuthenticator();
+        authenticator.init();
+        authenticator.addEncryptionConfiguration(new RSAEncryptionConfiguration());
+        val credentials = new TokenCredentials(new JwtGenerator().generate(createProfile()));
+        assertThrows(TechnicalException.class, () -> authenticator.validate(null, credentials));
+        assertNull(credentials.getUserProfile());
+    }
+
+    private List<EncryptionConfiguration> buildAsymmetricEncryptionConfigurations() throws NoSuchAlgorithmException {
+        val rsaKeyGen = KeyPairGenerator.getInstance("RSA");
+        rsaKeyGen.initialize(2048);
+        val ecKeyGen = KeyPairGenerator.getInstance("EC");
+        ecKeyGen.initialize(256);
+        return List.of(
+            new RSAEncryptionConfiguration(rsaKeyGen.generateKeyPair(), JWEAlgorithm.RSA_OAEP_256, EncryptionMethod.A128GCM),
+            new ECEncryptionConfiguration(ecKeyGen.generateKeyPair(), JWEAlgorithm.ECDH_ES_A128KW, EncryptionMethod.A128GCM));
     }
 
     @Test

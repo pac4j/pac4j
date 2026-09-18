@@ -5,6 +5,7 @@ import com.nimbusds.jwt.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
@@ -21,12 +22,12 @@ import org.pac4j.core.profile.jwt.JwtClaims;
 import org.pac4j.core.util.Announcement;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.core.util.generator.ValueGenerator;
+import org.pac4j.jwt.config.encryption.ECEncryptionConfiguration;
 import org.pac4j.jwt.config.encryption.EncryptionConfiguration;
+import org.pac4j.jwt.config.encryption.RSAEncryptionConfiguration;
 import org.pac4j.jwt.config.signature.SignatureConfiguration;
 import org.pac4j.jwt.profile.JwtGenerator;
 import org.pac4j.jwt.profile.JwtProfileDefinition;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.text.ParseException;
 import java.util.*;
@@ -44,18 +45,18 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
 @ToString
 @Getter
 @Setter
+@Slf4j
 public class JwtAuthenticator extends ProfileDefinitionAware implements Authenticator {
 
     private static final Announcement ANNOUNCE_NOSIGNCONF =
-        new Announcement("No signature configurations have been defined: plain JWT will be accepted!");
+        new Announcement("Encryption configurations have been defined without any signature configuration:"
+            + " this is an unusual setup; consider signing JWTs");
 
     private static final Announcement ANNOUNCE_ENCRYPTOPTIONAL =
         new Announcement("Encryption configurations have been defined, but not enforced so they remain optional");
 
     private static final String NONSIGNED_JWT_ERROR_MSG
         = "A non-signed JWT cannot be accepted as signature configurations have been defined";
-
-    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     private List<EncryptionConfiguration> encryptionConfigurations = new ArrayList<>();
 
@@ -127,11 +128,21 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
         assertNotBlank("realmName", this.realmName);
         setProfileDefinitionIfUndefined(new JwtProfileDefinition());
 
-        if (signatureConfigurations.isEmpty()) {
+        validateEncryptionConfiguration();
+        if (!encryptionConfigurations.isEmpty() && signatureConfigurations.isEmpty()) {
             ANNOUNCE_NOSIGNCONF.announce();
         }
         if (!encryptionConfigurations.isEmpty() && !encryptionRequired) {
             ANNOUNCE_ENCRYPTOPTIONAL.announce();
+        }
+    }
+
+    private void validateEncryptionConfiguration() {
+        if (signatureConfigurations.isEmpty() && !encryptionConfigurations.isEmpty()
+            && encryptionConfigurations.stream().allMatch(config -> config instanceof RSAEncryptionConfiguration
+                || config instanceof ECEncryptionConfiguration)) {
+            throw new TechnicalException("A signature configuration is required when only asymmetric encryption configurations"
+                + " (RSA/EC) are defined");
         }
     }
 
@@ -163,8 +174,8 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
         } catch (final HttpAction e) {
             throw new TechnicalException(e);
         } catch (final CredentialsException e) {
-            logger.warn("Failed to retrieve or validate credentials: {}", e.getMessage());
-            logger.debug("Failed to retrieve or validate credentials", e);
+            LOGGER.warn("Failed to retrieve or validate credentials: {}", e.getMessage());
+            LOGGER.debug("Failed to retrieve or validate credentials", e);
             return null;
         }
         return credentials.getUserProfile();
@@ -174,6 +185,8 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
     @Override
     public Optional<Credentials> validate(final CallContext ctx, final Credentials cred) {
         init();
+        // Initialization retries may be delayed after a failure; always enforce this security check.
+        validateEncryptionConfiguration();
 
         val credentials = (TokenCredentials) cred;
         val token = credentials.getToken();
@@ -197,7 +210,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
 
             if (jwt instanceof PlainJWT) {
                 if (signatureConfigurations.isEmpty()) {
-                    logger.debug("JWT is not signed and no signature configurations -> verified");
+                    LOGGER.debug("JWT is not signed and no signature configurations -> verified");
                 } else {
                     throw new CredentialsException(NONSIGNED_JWT_ERROR_MSG);
                 }
@@ -210,7 +223,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
 
                 // encrypted?
                 if (jwt instanceof EncryptedJWT encryptedJWT) {
-                    logger.debug("JWT is encrypted");
+                    LOGGER.debug("JWT is encrypted");
 
                     var found = false;
                     val header = encryptedJWT.getHeader();
@@ -218,7 +231,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
                     val method = header.getEncryptionMethod();
                     for (val config : encryptionConfigurations) {
                         if (config.supports(algorithm, method)) {
-                            logger.debug("Using encryption configuration: {}", config);
+                            LOGGER.debug("Using encryption configuration: {}", config);
                             try {
                                 config.decrypt(encryptedJWT);
                                 signedJWT = encryptedJWT.getPayload().toSignedJWT();
@@ -228,7 +241,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
                                 found = true;
                                 break;
                             } catch (final JOSEException e) {
-                                logger.debug("Decryption fails with encryption configuration: {}, passing to the next one", config);
+                                LOGGER.debug("Decryption fails with encryption configuration: {}, passing to the next one", config);
                             }
                         }
                     }
@@ -243,14 +256,14 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
                         throw new CredentialsException(NONSIGNED_JWT_ERROR_MSG);
                     }
 
-                    logger.debug("JWT is signed");
+                    LOGGER.debug("JWT is signed");
 
                     var verified = false;
                     var found = false;
                     val algorithm = signedJWT.getHeader().getAlgorithm();
                     for (val config : signatureConfigurations) {
                         if (config.supports(algorithm)) {
-                            logger.debug("Using signature configuration: {}", config);
+                            LOGGER.debug("Using signature configuration: {}", config);
                             try {
                                 verified = config.verify(signedJWT);
                                 found = true;
@@ -258,7 +271,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
                                     break;
                                 }
                             } catch (final JOSEException e) {
-                                logger.debug("Verification fails with signature configuration: {}, passing to the next one", config);
+                                LOGGER.debug("Verification fails with signature configuration: {}, passing to the next one", config);
                             }
                         }
                     }
@@ -305,11 +318,11 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
         if (expTime != null) {
             val now = new Date();
             if (expTime.before(now)) {
-                logger.warn("The JWT is expired: no profile is built");
+                LOGGER.warn("The JWT is expired: no profile is built");
                 return;
             }
             if (this.expirationTime != null && expTime.after(this.expirationTime)) {
-                logger.warn("The JWT is expired: no profile is built");
+                LOGGER.warn("The JWT is expired: no profile is built");
                 return;
             }
         }
