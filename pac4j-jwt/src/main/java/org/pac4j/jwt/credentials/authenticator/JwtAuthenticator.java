@@ -226,6 +226,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
                     LOGGER.debug("JWT is encrypted");
 
                     var found = false;
+                    EncryptionConfiguration usedEncryptionConfiguration = null;
                     val header = encryptedJWT.getHeader();
                     val algorithm = header.getAlgorithm();
                     val method = header.getEncryptionMethod();
@@ -239,6 +240,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
                                     jwt = signedJWT;
                                 }
                                 found = true;
+                                usedEncryptionConfiguration = config;
                                 break;
                             } catch (final JOSEException e) {
                                 LOGGER.debug("Decryption fails with encryption configuration: {}, passing to the next one", config);
@@ -247,6 +249,16 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
                     }
                     if (!found) {
                         throw new CredentialsException("No encryption algorithm found for JWT: " + token);
+                    }
+                    // Even when other (e.g. symmetric) encryption configurations are also defined, a token that
+                    // was actually decrypted via an asymmetric (RSA/EC) configuration proves nothing about its
+                    // sender: the encryption key is public. Without a signature to check, such a token must
+                    // still be rejected, regardless of what other encryption configurations are also configured.
+                    if (signatureConfigurations.isEmpty()
+                        && (usedEncryptionConfiguration instanceof RSAEncryptionConfiguration
+                            || usedEncryptionConfiguration instanceof ECEncryptionConfiguration)) {
+                        throw new CredentialsException("A JWT decrypted using an asymmetric (RSA/EC) encryption "
+                            + "configuration cannot be accepted without a signature configuration: " + token);
                     }
                 }
 
