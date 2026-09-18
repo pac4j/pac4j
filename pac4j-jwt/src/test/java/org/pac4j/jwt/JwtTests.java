@@ -206,6 +206,40 @@ public final class JwtTests implements TestsConstants {
     }
 
     @Test
+    public void testJwtForgedWithPublicKeyRejectedEvenWithMixedEncryptionConfigurations() throws NoSuchAlgorithmException {
+        val secretConfiguration = new SecretEncryptionConfiguration(MAC_SECRET);
+        for (val encryptionConfiguration : buildAsymmetricEncryptionConfigurations()) {
+            final EncryptionConfiguration publicConfiguration;
+            if (encryptionConfiguration instanceof RSAEncryptionConfiguration rsaConfiguration) {
+                val configuration = new RSAEncryptionConfiguration();
+                configuration.setPublicKey(rsaConfiguration.getPublicKey());
+                configuration.setAlgorithm(JWEAlgorithm.RSA_OAEP_256);
+                configuration.setMethod(EncryptionMethod.A128GCM);
+                publicConfiguration = configuration;
+            } else {
+                val configuration = new ECEncryptionConfiguration();
+                configuration.setPublicKey(((ECEncryptionConfiguration) encryptionConfiguration).getPublicKey());
+                configuration.setAlgorithm(JWEAlgorithm.ECDH_ES_A128KW);
+                configuration.setMethod(EncryptionMethod.A128GCM);
+                publicConfiguration = configuration;
+            }
+            // Attacker only ever touches the public key, forging an arbitrary subject.
+            val forgedToken = publicConfiguration.encrypt(
+                new PlainJWT(new JWTClaimsSet.Builder().subject("admin").build()));
+            // The authenticator also accepts a legitimate symmetric encryption configuration and no
+            // signature configuration -- the same setup testMixedEncryptionConfigurationsWithoutSignatureAccepted
+            // exercises with a genuinely secret-encrypted token. Here the forged token is encrypted with the
+            // asymmetric configuration instead, and must still be rejected even though other, symmetric
+            // configurations are also present.
+            val authenticator = new JwtAuthenticator(List.of(),
+                List.of(encryptionConfiguration, secretConfiguration));
+            val credentials = new TokenCredentials(forgedToken);
+            assertThrows(CredentialsException.class, () -> authenticator.validate(null, credentials));
+            assertNull(credentials.getUserProfile());
+        }
+    }
+
+    @Test
     public void testAsymmetricEncryptionOnlyConfigurationRejectedAfterInitialization() {
         val authenticator = new JwtAuthenticator();
         authenticator.init();
