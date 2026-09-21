@@ -18,7 +18,7 @@ See also:
 - [`EudiWalletClient`](https://github.com/pac4j/pac4j/blob/master/pac4j-openid4vp/src/main/java/org/pac4j/openid4vp/client/EudiWalletClient.java): the `OpenId4VpClient` with the HAIP choices pinned and not configurable: the `x509_hash` prefix, so the certificate loaded from the keystore is the identity of the verifier, the `direct_post.jwt` response mode, and the `EudiPidProfile`. Use it to read the person identification data of an EUDI wallet, the generic client to talk to any other wallet or to another credential.
 
 The following examples configure the presentation request. For persistent user identification, also request the
-identifier claim required by your profile definition, as described under [The profile identifier](#4-the-profile-identifier) below.
+identifier claim required by your profile definition, as described under [The profile identifier](openid4vp-advanced.html#1-the-profile-identifier).
 
 **Example (EUDI wallet, with the relying party access certificate in a keystore):**
 
@@ -129,35 +129,3 @@ The `OpenId4VpDcApiConfiguration` adds one property and closes two: its default 
 | `expectedOrigins` | | The origins (scheme, host and optional port, nothing more) the page calling the API runs from. The browser gives the wallet the actual origin of the page, which checks it is one of them: this is what ties a signed request to your site and defeats its replay from another one |
 
 The clients themselves expose a `requestObjectBuilder` (`OpenId4VpRequestObjectBuilder`, or `DcApiRequestObjectBuilder` over the Digital Credentials API), to be overridden to add parameters to the request object, and the usual `redirectionActionBuilder`, `credentialsExtractor`, `authenticator` and `profileCreator` of an indirect client.
-
-## 4) The profile identifier
-
-`OpenId4VpProfileCreator` passes the validated `VerifiablePresentationCredentials` to `ProfileDefinition.newProfile(...)`.
-The definition creates the profile and assigns its identifier; the creator then adds the disclosed attributes.
-The credentials retain their issuer and their DCQL query identifier, so a custom definition can select the credential
-used for identification before attributes from different credentials are merged.
-
-The generic clients use `OpenId4VpProfileDefinition`. It requires exactly one verified credential, a non-blank
-issuer and a disclosed, non-blank string claim named `sub`. The profile identifier is
-`base64url(issuer) + "." + base64url(subject)`, without padding, so different issuer/subject pairs remain distinct.
-Missing identifiers or multiple credentials cause profile creation to fail.
-
-The claim must be requested in DCQL. The application must ensure that it is stable, unique within its issuer and never
-reassigned, as required by [OpenID4VP section 14.4](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#section-14.4).
-The claim name can be changed for an ecosystem that provides another top-level identifier:
-
-```java
-OpenId4VpProfileDefinition definition = new OpenId4VpProfileDefinition();
-definition.setProfileId("account_id");
-client.setProfileCreator(new OpenId4VpProfileCreator(client, definition));
-```
-
-Here, `account_id` is an illustrative claim that must be included in the configured query and satisfy those identity
-guarantees. Override `computeProfileId(VerifiablePresentationCredentials)` to select among several credentials or read
-a nested claim, such as an mdoc namespace member. A custom `ProfileDefinition` or `ProfileFactory` can also use the
-credentials passed to `newProfile(...)` to assign an application-specific identifier.
-
-`EudiPidProfileDefinition` inherits this mapping while creating an `EudiPidProfile`. Configure or specialize it for the
-targeted PID ecosystem: neither the presence of `sub` nor the suitability of another PID attribute is assumed.
-A presentation disclosing only a name or an age predicate does not supply a persistent user identifier.
-

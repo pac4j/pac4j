@@ -6,7 +6,7 @@ title: OpenID4VP / Response validation and verifiers
 See also:
 
 <p> &nbsp; &#9656; <a href="openid4vp.html">OpenID4VP overview</a></p>
-<p> &nbsp; &#9656; <a href="openid4vp-clients.html">Clients, configuration and profile identifier</a></p>
+<p> &nbsp; &#9656; <a href="openid4vp-clients.html">Clients and configuration</a></p>
 <p> &nbsp; &#9656; <a href="openid4vp-advanced.html">Advanced</a></p>
 
 <hr/>
