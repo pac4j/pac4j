@@ -1,15 +1,14 @@
 ---
 layout: blog
-title: "JAX-RS now supports Jersey 4 and RESTEasy 7 with pac4j"
+title: "JAX-RS + pac4j now supports Jersey 4 and RESTEasy 7"
 author: Jérôme LELEU
 date: September 21, 2026
 tags: [rel, guide]
-draft: true
 ---
 
 **jax-rs-pac4j 8.0.0 is out, with support for Jersey 4 and RESTEasy 7!** Both implement **Jakarta REST 4**, the API formerly known as JAX-RS. Two new modules join the existing Jersey 3 and RESTEasy 6 integrations.
 
-You’ll need Java 17 and pac4j v6.x (at least v6.5.8). Let's get an endpoint running.
+You’ll need Java 17 and pac4j v6.x (at least v6.5.8).
 
 ## Choose your module
 
@@ -39,7 +38,7 @@ For Jersey 4 with HTTP Basic authentication, add these dependencies:
 
 For RESTEasy 7, swap `jersey4-pac4j` for `resteasy7-pac4j`. Your application or server supplies the Jersey or RESTEasy runtime.
 
-Remove the old module when upgrading. For example, `jersey3-pac4j` and `jersey4-pac4j` share Java packages, so you can't use both.
+Of course, you must remove the old module when upgrading.
 
 ## Secure a Jersey 4 endpoint
 
@@ -63,7 +62,9 @@ var application = new ResourceConfig(MeResource.class)
 
 `Pac4JServletFeature` uses the container's `HttpSession` for sessions. For **Grizzly without Servlet**, use `Pac4JGrizzlyFeature`.
 
-For an **API without sessions**, use `Pac4JJaxRsFeature` with `config.setSessionStoreFactory(NoOpSessionStoreFactory.INSTANCE)`. Remove that setting if you later enable container sessions: an explicit factory takes priority. Either way, the Basic client checks credentials on every request.
+For an **API without sessions**, use `Pac4JJaxRsFeature` with `config.setSessionStoreFactory(NoOpSessionStoreFactory.INSTANCE)`. Remove that setting if you later enable container sessions: an explicit factory takes priority.
+
+In any case, the Basic client checks credentials on every request.
 
 Now add the resource. `@Pac4JSecurity` protects it; `@Pac4JProfile` injects the user's profile:
 
@@ -92,7 +93,8 @@ curl --user alice http://localhost:8080/me
 
 The same resource works with RESTEasy. Only the registration changes.
 
-## Moving to RESTEasy 6.2 or 7
+
+## Moving to RESTEasy 7 (or 6.2)
 
 Check your server's Servlet and CDI versions before switching modules:
 
@@ -121,9 +123,7 @@ public Set<Object> getSingletons() {
 
 The [configuration guide](https://github.com/pac4j/jax-rs-pac4j/wiki/Security-configuration#resteasy-62-and-70-with-servlet-and-cdi) has the complete example, including imports and CDI setup.
 
-We also brought back the Jersey tests, aligned Grizzly dependencies and removed an unused Log4j 1 declaration. **All 214 tests pass**, including a Servlet 6.1 test on Undertow EE.
-
-To upgrade an existing application, follow the [v8 migration guide](https://github.com/pac4j/jax-rs-pac4j/wiki/Migration-guide).
+As usual, to upgrade an existing application, follow the [v8 migration guide](https://github.com/pac4j/jax-rs-pac4j/wiki/Migration-guide).
 
 <div class="text-center highlight-blog">
 With v8, <b>pac4j's JAX-RS integration is up to date with Jersey 4, RESTEasy 7 and Jakarta REST 4.</b>
