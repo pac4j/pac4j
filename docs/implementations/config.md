@@ -72,7 +72,7 @@ title: Implementations comparison for configuration&#58;
     </tr>
     <tr>
         <td>pippo-pac4j</td>
-        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">SettingsConfigFactory</code> (<code class="highlighter-rouge">pac4j.*</code> settings)</td>
         <td><img src="/img/green_check.png" /></td>
     </tr>
     <tr>
@@ -111,7 +111,7 @@ title: Implementations comparison for configuration&#58;
         <td><img src="/img/red_cross.png" /></td>
     </tr>
     <tr>
-        <td>jooby-pac4j2</td>
+        <td>jooby-pac4j</td>
         <td><img src="/img/red_cross.png" /></td>
         <td><img src="/img/green_check.png" /></td>
     </tr>
