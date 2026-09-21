@@ -89,6 +89,7 @@
         <commons-text.version>1.15.0</commons-text.version>
 		<guava.version>33.7.1-jre</guava.version>
 		<nimbus-jose-jwt.version>10.10</nimbus-jose-jwt.version>
+        <eudi-sdjwt.version>0.20.1</eudi-sdjwt.version>
 		<spring.version>7.0.9</spring.version>
 		<spring.security.version>7.1.1</spring.security.version>
         <bouncycastle.version>1.86</bouncycastle.version>
@@ -116,6 +117,11 @@
 
 	<dependencyManagement>
 		<dependencies>
+            <dependency>
+                <groupId>eu.europa.ec.eudi</groupId>
+                <artifactId>eudi-lib-jvm-sdjwt-kt</artifactId>
+                <version>${eudi-sdjwt.version}</version>
+            </dependency>
 			<dependency>
 				<groupId>org.pac4j</groupId>
 				<artifactId>pac4j-core</artifactId>

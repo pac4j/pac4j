@@ -104,4 +104,9 @@
         <Class name="~.*TokenValidator"/>
         <Bug pattern="CT_CONSTRUCTOR_THROW" />
     </Match>
+    <!-- Kotlin's generated continuation inherits Serializable; it is never serialized by pac4j. -->
+    <Match>
+        <Class name="org.pac4j.openid4vp.verifier.EudiSdJwtAdapter$verify$1"/>
+        <Bug pattern="SE_BAD_FIELD,SE_BAD_FIELD_STORE" />
+    </Match>
 </FindBugsFilter>

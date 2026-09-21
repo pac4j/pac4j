@@ -22,9 +22,19 @@ You need to use the following module: `pac4j-openid4vp`.
 </dependency>
 ```
 
-It only depends on `pac4j-core`, on `nimbus-jose-jwt` and on `spring-core` (for the resources holding the keys), plus BouncyCastle to read a key and its certificate chain from a keystore.
+OpenID4VP shares the OAuth vocabulary with OpenID Connect (`client_id`, `nonce`, signed request objects), but the wallet presents credentials directly to the application: there is no token endpoint or user info endpoint, and the module does not depend on `pac4j-oidc`.
 
-The module does not depend on `pac4j-oidc`: OpenID4VP shares the OAuth vocabulary (`client_id`, `nonce`, a signed request object) but none of the OpenID Connect mechanisms. There is no identity provider, no token endpoint and no user info: the wallet presents the credentials directly and the whole validation happens in the application.
+To validate SD-JWT VCs with `SdJwtVcVerifier`, explicitly add the following dependency, which is not included by default:
+
+```xml
+<dependency>
+    <groupId>eu.europa.ec.eudi</groupId>
+    <artifactId>eudi-lib-jvm-sdjwt-kt</artifactId>
+    <version>0.20.1</version>
+</dependency>
+```
+
+Without this dependency, `SdJwtVcVerifier` throws an `OpenId4VpException` when validating a credential, with a message identifying the dependency to add.
 
 ## 2) The protocol, briefly
 
@@ -157,7 +167,7 @@ The `OpenId4VpConfiguration` has the following properties, with the HAIP choices
 | `dcqlQuery` | | Required, including when `scope` is configured. Always used for response validation, and sent to the wallet only when `scope` is absent or blank. The DCQL query, the only query language of OpenID4VP 1.0: which credentials, of which format, with which claims. A `DcqlQuery` built programmatically (`CredentialQuery`, `ClaimsQuery`, `TrustedAuthority`, `CredentialSetQuery`, with `EudiPidQuery` for the person identification data), or its JSON given as plain text to `setDcqlQuery(String)`. Checked at initialization against the rules of the specification: unique identifiers, sets referencing existing credentials, claim identifiers where claim sets need them |
 | `scope` | | An alias for a DCQL query, sent instead of it: which aliases exist, and which query each stands for, is defined by an ecosystem, not by the specification, and a wallet may support none. Optional: when non-blank, only this alias is sent to the wallet. `dcqlQuery` must still be configured with the equivalent query to validate the response |
 | `verifierInfo` | empty | Attestations about the verifier (`VerifierAttestation`: a `format`, the `data`, optional `credentialIds`), sent as the `verifier_info` parameter: what a third party says this verifier is entitled to ask, such as the registration certificate of an EUDI relying party, which the wallet may show to the End-User or check the request against. The formats belong to the ecosystem; nothing comes back |
-| `credentialVerifiers` | `SdJwtVcVerifier` | The `CredentialVerifier` of each credential format (`SD_JWT_VC` is `dc+sd-jwt`, `MSO_MDOC` is `mso_mdoc`), registered with `addCredentialVerifier(verifier)`: it validates a presentation (issuer signature, trust in the issuer, revocation, key binding) and returns the disclosed claims. It must also report whether transaction-bound cryptographic holder binding was verified and which trusted authorities were established. One must be registered for each format the effective DCQL query asks for, and their formats are published as `vp_formats_supported` in the `client_metadata` of the request. `SdJwtVcVerifier` is provided, not yet implemented |
+| `credentialVerifiers` | `SdJwtVcVerifier` | The interchangeable `CredentialVerifier` of each credential format (`SD_JWT_VC` is `dc+sd-jwt`, `MSO_MDOC` is `mso_mdoc`), registered with `addCredentialVerifier(verifier)`. One must be registered for each requested format. The built-in SD-JWT VC verifier requires the optional EUDI dependency and explicit issuer trust configuration; see below. |
 | `transactionLifetimeSeconds` | `300` | How long a request stays valid: stamped as the `exp` of the request object, and the date at which the pending transaction is dropped from the store |
 | `transactionStore` | `VpTransactionStore` | The `Store` of the pending transactions, keyed by their identifier: the wallet legs carry no session and find the request there. In memory by default; use a shared store (Redis, Hazelcast...) behind several instances |
 | `nonceGenerator` | 32 random characters | Generates the `nonce` sent to the wallet, which the presentation must be bound to |
@@ -223,8 +233,88 @@ The common validator requires holder binding unless the query explicitly disable
 when the query supplies `trusted_authorities`. Disclosed claims retain their JSON nesting; mdoc claims use namespace maps whose
 values are JSON-compatible, so the same DCQL path and value checks can be applied.
 
-The built-in SD-JWT VC cryptographic verifier remains unimplemented, and no built-in mdoc verifier is provided yet.
-The common response checks do not replace issuer-signature, trust, status or holder-proof validation by a format verifier.
+## Configuring credential verifiers
+
+Register a `CredentialVerifier` for each credential format requested by your DCQL query using
+`config.addCredentialVerifier(verifier)`. Registration replaces the verifier for that format. The configuration
+provides a `SdJwtVcVerifier` by default, but it accepts no issuer until trusted issuer keys are configured.
+The same registration mechanism applies to `OpenId4VpClient`, `OpenId4VpDcApiClient` and `EudiWalletClient`.
+A custom implementation owns the format-specific cryptographic, issuer trust and status checks described above;
+the common response validator then checks its result against the saved DCQL query.
+
+The built-in SD-JWT VC verifier requires the optional EUDI dependency declared in the installation section.
+Applications replacing it with their own implementation do not need EUDI.
+
+### Built-in SD-JWT VC verifier
+
+#### Trusted issuers
+
+The initial implementation accepts trusted issuer keys configured explicitly. It does not discover issuer metadata,
+download JWKS, validate an `x5c` chain against a trust list, or fetch credential type metadata. It never treats keys
+or certificates embedded in a wallet presentation as trusted merely because they are present.
+
+```java
+// Load public verification keys from your trusted configuration, not from the wallet's presentation.
+JWKSet issuerKeys = JWKSet.parse(trustedIssuerJwksJson);
+SdJwtVcVerifier verifier = new SdJwtVcVerifier()
+    .setTrustedIssuers(Map.of("https://issuer.example", new SdJwtVcTrustedIssuer(issuerKeys)));
+config.addCredentialVerifier(verifier);
+```
+
+`SdJwtVcTrustedIssuer` describes an issuer your application has decided to trust; it does not issue credentials.
+Its `keys` field contains that issuer's public verification keys as a Nimbus `JWKSet`. Its optional
+`trustedAuthorities` field records established authority affiliations for DCQL checks and defaults to an empty map.
+The map key passed to `setTrustedIssuers` is the issuer identifier.
+
+The issuer identifier must match `iss` exactly. No issuer is accepted by default. The configured keys verify the
+issuer signature, with `kid` used to select a key when present. The verifier requires `typ=dc+sd-jwt`, `iss` and `vct`.
+EUDI verifies disclosure hashes and reconstructs nested objects and arrays, checks `exp`/`nbf`, and verifies a
+present key-binding JWT, including its signature, `typ=kb+jwt` and `sd_hash`.
+
+#### Signature algorithms and holder binding
+
+The holder proof must match the nonce and audience from the transaction's saved request. For URL flows the audience
+is the full `client_id`; for the Digital Credentials API it is `origin:` followed by one of the saved
+`expected_origins`. The proof's `iat` must fall between transaction creation and the current time, with a
+30-second tolerance configurable through `clockSkewSeconds`. Credential expiration is checked without that tolerance.
+Issuer and holder signature algorithms default to ES256 and can be configured with `issuerAlgorithms` and
+`holderAlgorithms`; symmetric algorithms are rejected.
+
+A presentation without key binding is reported as such and rejected by the common DCQL validator unless the query
+explicitly sets `require_cryptographic_holder_binding` to false. A present but invalid proof is always rejected.
+
+#### Trusted authorities
+
+Authority evidence may be configured on `SdJwtVcTrustedIssuer.setTrustedAuthorities(...)` only after establishing the
+corresponding trust relationship; otherwise it remains empty and a DCQL authority requirement cannot be satisfied.
+
+#### Credential status
+
+**Credential status is not checked automatically in this initial implementation.** A credential containing a
+`status` claim is rejected unless `SdJwtVcVerifier.setStatusChecker(...)` is configured. This checker receives the
+cryptographically verified credential, including its reconstructed claims, and must throw if status is invalid,
+unsupported or cannot be checked. If it uses a status list, it must authenticate that list and check its validity
+and the credential's status entry. A credential without a status claim does not invoke the checker.
+
+### Remote resources and application responsibilities
+
+The built-in verifier makes no automatic HTTP requests to obtain verification resources:
+
+- **Issuer keys:** it uses only the configured `JWKSet`. It does not download a remote JWKS or refresh keys
+  when an issuer rotates them. The application must supply updated trusted keys.
+- **Metadata:** it does not discover the issuer's metadata to locate its keys, or retrieve credential type
+  metadata describing the credential's schema and display information. It still checks `vct` and the common
+  validator checks the type and claims against the DCQL query.
+- **Status lists:** it does not download a list to determine whether a credential has been revoked or suspended.
+  When a credential contains `status`, a configured `statusChecker` must perform the required checks, including
+  retrieval if needed, authentication and validity of the status data. Without that checker, the credential is rejected.
+
+An application may obtain these resources separately and provide trusted keys and a status checker, or register
+a different `CredentialVerifier` that manages retrieval. Obtaining a key from an issuer's endpoint does not by
+itself establish that the application should trust that issuer.
+
+This is a minimal SD-JWT integration, not a complete EUDI trust-list or HAIP validation implementation.
+No built-in mdoc verifier is provided yet. All format verifiers remain replaceable through `addCredentialVerifier`.
 
 ## Diagnostic logging
 
