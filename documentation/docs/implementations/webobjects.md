@@ -26,7 +26,7 @@ title: Implementations comparison for the web objects&#58;
     <tr>
         <td>spring-webmvc-pac4j</td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEEContext</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEESessionStore.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEESessionStoreFactory.INSTANCE</code></td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEEHttpActionAdapter.INSTANCE</code></td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultUrlResolver</code></td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultAjaxRequestResolver</code></td>
@@ -42,7 +42,7 @@ title: Implementations comparison for the web objects&#58;
     <tr>
         <td>jee-pac4j</td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEEContext</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEESessionStore.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEESessionStoreFactory.INSTANCE</code></td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEEHttpActionAdapter.INSTANCE</code></td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultUrlResolver</code></td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultAjaxRequestResolver</code></td>
@@ -58,7 +58,7 @@ title: Implementations comparison for the web objects&#58;
     <tr>
         <td>spring-security-pac4j</td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEEContext</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEESessionStore.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEESessionStoreFactory.INSTANCE</code></td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEEHttpActionAdapter.INSTANCE</code></td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultUrlResolver</code></td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultAjaxRequestResolver</code></td>
@@ -75,7 +75,7 @@ title: Implementations comparison for the web objects&#58;
         <td>vertx-pac4j</td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">VertxWebContext</code></td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">VertxSessionStore</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultHttpActionAdapter</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">VertxHttpActionAdapter.INSTANCE</code></td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultUrlResolver</code></td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultAjaxRequestResolver</code></td>
     </tr>
@@ -115,14 +115,14 @@ title: Implementations comparison for the web objects&#58;
         <td>undertow-pac4j</td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">UndertowWebContext</code></td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">UndertowSessionStore</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">UndertowNopHttpActionAdapter</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">UndertowHttpActionAdapter.INSTANCE</code></td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultUrlResolver</code></td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultAjaxRequestResolver</code></td>
     </tr>
     <tr>
         <td>CAS</td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEEContext</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEESessionStore.INSTANCE</code> or <code class="highlighter-rouge">DistributedJEESessionStore</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEESessionStoreFactory.INSTANCE</code>, <code class="highlighter-rouge">TicketRegistrySessionStore</code> or <code class="highlighter-rouge">BrowserWebStorageSessionStore</code></td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEEHttpActionAdapter.INSTANCE</code></td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultUrlResolver</code></td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultAjaxRequestResolver</code></td>
@@ -154,25 +154,25 @@ title: Implementations comparison for the web objects&#58;
     <tr>
         <td>http4s-pac4j</td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">Http4sWebContext</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">Http4sCacheSessionStore</code> or <code class="highlighter-rouge">Http4sGenericSessionStore</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">Http4sCacheSessionStore</code>, <code class="highlighter-rouge">Http4sCookieSessionStore</code> or <code class="highlighter-rouge">Http4sGenericSessionStore</code></td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultHttpActionAdapter</code></td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultUrlResolver</code></td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultAjaxRequestResolver</code></td>
     </tr>
     <tr>
         <td>Knox</td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">J2EContext</code> (federation provider)</td>
-        <td><img src="/img/red_cross.png" /><br />SSO cookies managed by KnoxSSO service</td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">J2EHttpActionAdapter.INSTANCE</code> (federation)</td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEEContext</code> (federation provider)</td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">KnoxSessionStore</code> (encrypted cookies) or <code class="highlighter-rouge">JEESessionStore</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JEEHttpActionAdapter.INSTANCE</code> (federation)</td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultUrlResolver</code> (federation)</td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultAjaxRequestResolver</code> (federation)</td>
     </tr>
     <tr>
-        <td>jooby-pac4j2</td>
+        <td>jooby-pac4j</td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">Pac4jContext</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">Pac4jSessionStore</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">Pac4jActionAdapter</code></td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultUrlResolver</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">SessionStoreImpl</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">ActionAdapterImpl</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">UrlResolverImpl</code></td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultAjaxRequestResolver</code></td>
     </tr>
 </table>

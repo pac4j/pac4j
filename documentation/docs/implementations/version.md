@@ -25,13 +25,13 @@ title: Implementations comparison regarding the version of pac4j&#58;
     <tr>
         <td>spring-webmvc-pac4j</td>
         <td>6.x</td>
-        <td>Spring 5.x - 6.x</td>
+        <td>Spring 6.x - 7.x</td>
         <td>JDK 17+</td>
     </tr>
     <tr>
         <td>spring-webflux-pac4j</td>
         <td>6.x</td>
-        <td>Spring WebFlux 5.x - 6.x</td>
+        <td>Spring WebFlux 6.x+</td>
         <td>JDK 17+</td>
     </tr>
     <tr>
@@ -43,25 +43,25 @@ title: Implementations comparison regarding the version of pac4j&#58;
     <tr>
         <td>buji-pac4j</td>
         <td>6.x</td>
-        <td>Apache Shiro 1.x</td>
+        <td>Apache Shiro 3.x</td>
         <td>JDK 17+</td>
     </tr>
     <tr>
         <td>spring-security-pac4j</td>
         <td>6.x</td>
-        <td>Spring Security 5.x - 6.x</td>
+        <td>Spring Security 6.x</td>
         <td>JDK 17+</td>
     </tr>
     <tr>
         <td>play-pac4j</td>
         <td>6.x</td>
-        <td>Play Framework 2.8+</td>
+        <td>Play Framework 3.0<br /><small>(2.8 and 2.9 with play-pac4j 12.0.x)</small></td>
         <td>JDK 17+</td>
     </tr>
     <tr>
         <td>vertx-pac4j</td>
         <td>6.x</td>
-        <td>Vert.x 4.x</td>
+        <td>Vert.x 5.x</td>
         <td>JDK 17+</td>
     </tr>
     <tr>
@@ -73,7 +73,7 @@ title: Implementations comparison regarding the version of pac4j&#58;
     <tr>
         <td>javalin-pac4j</td>
         <td>6.x</td>
-        <td>Javalin 5.x - 6.x</td>
+        <td>Javalin 7.x</td>
         <td>JDK 17+</td>
     </tr>
     <tr>
@@ -85,13 +85,13 @@ title: Implementations comparison regarding the version of pac4j&#58;
     <tr>
         <td>undertow-pac4j</td>
         <td>6.x</td>
-        <td>Undertow 2.2+</td>
+        <td>Undertow 2.3+</td>
         <td>JDK 17+</td>
     </tr>
     <tr>
         <td>jax-rs-pac4j</td>
         <td>6.x</td>
-        <td>JAX-RS 2.0+ / Jakarta RS 3.0+</td>
+        <td>Jakarta RS 3.x - 4.x</td>
         <td>JDK 17+</td>
     </tr>
     <tr>
@@ -114,15 +114,15 @@ title: Implementations comparison regarding the version of pac4j&#58;
     </tr>
     <tr>
         <td>Knox</td>
-        <td>3.x</td>
-        <td>Apache Knox 1.x+</td>
-        <td>JDK 8+</td>
+        <td>6.x</td>
+        <td>Apache Knox 3.x</td>
+        <td>JDK 17+</td>
     </tr>
     <tr>
         <td>jooby-pac4j</td>
         <td>6.x</td>
-        <td>Jooby 3.x</td>
-        <td>JDK 17+</td>
+        <td>Jooby 4.x<br /><small>(3.x on JDK 17+)</small></td>
+        <td>JDK 21+</td>
     </tr>
     <tr>
         <td>pippo-pac4j</td>
@@ -133,8 +133,8 @@ title: Implementations comparison regarding the version of pac4j&#58;
     <tr>
         <td>CAS</td>
         <td>6.x</td>
-        <td>Apereo CAS 6.x+</td>
-        <td>JDK 17+</td>
+        <td>Apereo CAS 7.x - 8.x</td>
+        <td>JDK 21+<br /><small>(JDK 25+ for CAS 8.x)</small></td>
     </tr>
 </table>
 
