@@ -52,7 +52,7 @@ title: Implementations comparison for the profile management&#58;
     </tr>
     <tr>
         <td>spring-security-pac4j</td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">SpringProfileManager</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">SpringSecurityProfileManager</code></td>
         <td><img src="/img/red_cross.png" /></td>
         <td><img src="/img/green_check.png" /><br />via the regular <code class="highlighter-rouge">SecurityContextHolder.getContext().getAuthentication()</code></td>
         <td><img src="/img/green_check.png" /><br />via the regular <code class="highlighter-rouge">SecurityContextHolder.getContext().getAuthentication()</code></td>
@@ -87,9 +87,9 @@ title: Implementations comparison for the profile management&#58;
     </tr>
     <tr>
         <td>ratpack-pac4j</td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">ProfileManager</code></td>
         <td><img src="/img/red_cross.png" /></td>
-        <td><img src="/img/red_cross.png" /></td>
-        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/green_check.png" /><br />via the <code class="highlighter-rouge">RatpackPac4j.userProfile(ctx)</code> method</td>
         <td><img src="/img/red_cross.png" /></td>
     </tr>
     <tr>
@@ -117,14 +117,14 @@ title: Implementations comparison for the profile management&#58;
         <td>jax-rs-pac4j</td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JaxRsProfileManager</code></td>
         <td><img src="/img/green_check.png" /><br />via <code class="highlighter-rouge">@Pac4JProfileManager</code> injection</td>
-        <td><img src="/img/green_check.png" /><br />via <code class="highlighter-rouge">SecurityContext.getUserPrincipal()</code></td>
+        <td><img src="/img/green_check.png" /><br />via <code class="highlighter-rouge">@Pac4JProfile</code> injection or <code class="highlighter-rouge">SecurityContext.getUserPrincipal()</code></td>
         <td><img src="/img/green_check.png" /><br />via <code class="highlighter-rouge">Pac4JSecurityContext.getProfiles()</code></td>
     </tr>
     <tr>
         <td>dropwizard-pac4j</td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JaxRsProfileManager</code></td>
         <td><img src="/img/green_check.png" /><br />via <code class="highlighter-rouge">@Pac4JProfileManager</code> injection</td>
-        <td><img src="/img/green_check.png" /><br />via <code class="highlighter-rouge">SecurityContext.getUserPrincipal()</code></td>
+        <td><img src="/img/green_check.png" /><br />via <code class="highlighter-rouge">@Pac4JProfile</code> injection or <code class="highlighter-rouge">SecurityContext.getUserPrincipal()</code></td>
         <td><img src="/img/green_check.png" /><br />via <code class="highlighter-rouge">Pac4JSecurityContext.getProfiles()</code></td>
     </tr>
     <tr>
@@ -138,8 +138,8 @@ title: Implementations comparison for the profile management&#58;
         <td>http4s-pac4j</td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">ProfileManager</code></td>
         <td><img src="/img/red_cross.png" /></td>
-        <td><img src="/img/red_cross.png" /></td>
-        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/green_check.png" /><br />via the <code class="highlighter-rouge">AuthedRoutes[List[CommonProfile], F]</code> of the secured routes</td>
+        <td><img src="/img/green_check.png" /><br />via the <code class="highlighter-rouge">AuthedRoutes[List[CommonProfile], F]</code> of the secured routes</td>
     </tr>
     <tr>
         <td>Knox</td>
@@ -149,10 +149,10 @@ title: Implementations comparison for the profile management&#58;
         <td><img src="/img/red_cross.png" /></td>
     </tr>
     <tr>
-        <td>jooby-pac4j2</td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">Pac4jProfileManager</code></td>
+        <td>jooby-pac4j</td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">ProfileManager</code></td>
         <td><img src="/img/red_cross.png" /></td>
-        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/green_check.png" /><br />via the <code class="highlighter-rouge">ctx.getUser()</code> method</td>
         <td><img src="/img/red_cross.png" /></td>
     </tr>
 </table>

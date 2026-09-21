@@ -37,7 +37,7 @@ title: Implementations comparison for the authorization checks&#58;
     </tr>
     <tr>
         <td>spring-security-pac4j</td>
-        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">@Secure</code> and <code class="highlighter-rouge">@PreAuthorize</code> annotations</td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">@Secured</code> and <code class="highlighter-rouge">@PreAuthorize</code> annotations</td>
     </tr>
     <tr>
         <td>play-pac4j</td>
@@ -73,11 +73,11 @@ title: Implementations comparison for the authorization checks&#58;
     </tr>
     <tr>
         <td>jax-rs-pac4j</td>
-        <td><img src="/img/green_check.png" /><br />using <code class="highlighter-rouge">SecurityContext.isUserInRole()</code> method</td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">@Pac4JSecurity(authorizers = ...)</code> annotation or the <code class="highlighter-rouge">SecurityContext.isUserInRole()</code> method</td>
     </tr>
     <tr>
         <td>dropwizard-pac4j</td>
-        <td><img src="/img/green_check.png" /><br />using <code class="highlighter-rouge">SecurityContext.isUserInRole()</code> method</td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">@Pac4JSecurity(authorizers = ...)</code> annotation or the <code class="highlighter-rouge">SecurityContext.isUserInRole()</code> method</td>
     </tr>
     <tr>
         <td>lagom-pac4j</td>
@@ -92,7 +92,7 @@ title: Implementations comparison for the authorization checks&#58;
         <td><img src="/img/red_cross.png" /><br />No method-level authorization (via jee-pac4j)</td>
     </tr>
     <tr>
-        <td>jooby-pac4j2</td>
-        <td><img src="/img/green_check.png" /><br />using <code class="highlighter-rouge">Pac4jAuthorizer</code> filter</td>
+        <td>jooby-pac4j</td>
+        <td><img src="/img/red_cross.png" /><br />The authorizers are defined per path pattern in the <code class="highlighter-rouge">Pac4jModule</code></td>
     </tr>
 </table>

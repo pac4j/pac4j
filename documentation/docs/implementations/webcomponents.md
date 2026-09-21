@@ -31,10 +31,10 @@ title: Implementations comparison for the web components&#58;
     </tr>
     <tr>
         <td>spring-webflux-pac4j</td>
-        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">SecurityWebFilter</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">SecurityFilter</code></td>
         <td><img src="/img/red_cross.png" /></td>
-        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">CallbackHandler</code></td>
-        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">LogoutHandler</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">CallbackController</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">LogoutController</code></td>
     </tr>
     <tr>
         <td>jee-pac4j</td>
@@ -45,17 +45,17 @@ title: Implementations comparison for the web components&#58;
     </tr>
     <tr>
         <td>buji-pac4j</td>
-        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">SecurityFilter</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">SecurityFilter</code> (via jee-pac4j)</td>
         <td><img src="/img/red_cross.png" /></td>
-        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">CallbackFilter</code></td>
-        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">LogoutFilter</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">CallbackFilter</code> (via jee-pac4j)</td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">LogoutFilter</code> (via jee-pac4j)</td>
     </tr>
     <tr>
         <td>spring-security-pac4j</td>
-        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">SecurityFilter</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">SecurityFilter</code> (via jee-pac4j)</td>
         <td><img src="/img/red_cross.png" /></td>
-        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">CallbackFilter</code></td>
-        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">LogoutFilter</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">CallbackFilter</code> (via jee-pac4j)</td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">LogoutFilter</code> (via jee-pac4j)</td>
     </tr>
     <tr>
         <td>play-pac4j</td>
@@ -116,16 +116,16 @@ title: Implementations comparison for the web components&#58;
     <tr>
         <td>jax-rs-pac4j</td>
         <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">SecurityFilter</code></td>
-        <td><img src="/img/red_cross.png" /></td>
-        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">CallbackFilter</code></td>
-        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">LogoutFilter</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">@Pac4JSecurity</code> annotation</td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">CallbackFilter</code> or the <code class="highlighter-rouge">@Pac4JCallback</code> annotation</td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">LogoutFilter</code> or the <code class="highlighter-rouge">@Pac4JLogout</code> annotation</td>
     </tr>
     <tr>
         <td>dropwizard-pac4j</td>
         <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">SecurityFilter</code></td>
-        <td><img src="/img/red_cross.png" /></td>
-        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">CallbackFilter</code></td>
-        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">LogoutFilter</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">@Pac4JSecurity</code> annotation</td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">CallbackFilter</code> or the <code class="highlighter-rouge">@Pac4JCallback</code> annotation</td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">LogoutFilter</code> or the <code class="highlighter-rouge">@Pac4JLogout</code> annotation</td>
     </tr>
     <tr>
         <td>lagom-pac4j</td>
@@ -136,10 +136,10 @@ title: Implementations comparison for the web components&#58;
     </tr>
     <tr>
         <td>http4s-pac4j</td>
-        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">SecurityHandler</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">SecurityFilterMiddleware</code></td>
         <td><img src="/img/red_cross.png" /></td>
-        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">CallbackHandler</code></td>
-        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">LogoutHandler</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">CallbackService</code></td>
+        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">LogoutService</code></td>
     </tr>
     <tr>
         <td>Knox</td>
@@ -149,10 +149,10 @@ title: Implementations comparison for the web components&#58;
         <td><img src="/img/red_cross.png" /><br />SSO logout handled by identity provider</td>
     </tr>
     <tr>
-        <td>jooby-pac4j2</td>
-        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">Pac4jSecurityFilter</code></td>
+        <td>jooby-pac4j</td>
+        <td><img src="/img/green_check.png" /><br />installed by the <code class="highlighter-rouge">Pac4jModule</code></td>
         <td><img src="/img/red_cross.png" /></td>
-        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">Pac4jCallback</code></td>
-        <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">Pac4jLogout</code></td>
+        <td><img src="/img/green_check.png" /><br />installed by the <code class="highlighter-rouge">Pac4jModule</code></td>
+        <td><img src="/img/green_check.png" /><br />installed by the <code class="highlighter-rouge">Pac4jModule</code></td>
     </tr>
 </table>
