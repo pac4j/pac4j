@@ -75,6 +75,7 @@ public class OpenId4VpAuthenticator implements Authenticator {
             throw new OpenId4VpException("the wallet returned an error");
         }
         val query = DcqlQuery.parse(transaction.getDcqlQuery());
+        // Recheck the saved query: the mutable configuration may have changed after initialization.
         query.check();
         val presentations = readVpToken(transaction);
         LOGGER.debug("response envelope checked for transaction {}: {} credential query entries",

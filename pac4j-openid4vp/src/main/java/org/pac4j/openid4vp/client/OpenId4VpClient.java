@@ -102,9 +102,7 @@ public class OpenId4VpClient extends IndirectClient {
         checkAjaxRequestResolver();
 
         configuration.init(this.getClass().getSimpleName(), forceReinit);
-        logger.debug("OpenID4VP client {} initialized: request builder={}, extractor={}, authenticator={}, profile creator={}",
-            getName(), requestObjectBuilder.getClass().getSimpleName(), getCredentialsExtractor().getClass().getSimpleName(),
-            getAuthenticator().getClass().getSimpleName(), getProfileCreator().getClass().getSimpleName());
+        logger.debug("OpenID4VP client initialized: {}", this);
     }
 
     /**

@@ -39,12 +39,22 @@ The same registration mechanism applies to `OpenId4VpClient`, `OpenId4VpDcApiCli
 A custom implementation owns the format-specific cryptographic, issuer trust and status checks described above;
 the common response validator then checks its result against the saved DCQL query.
 
-The built-in SD-JWT VC verifier requires the optional EUDI dependency declared in the [Dependency section](openid4vp.html#1-dependency).
+To use `SdJwtVcVerifier`, explicitly add the following EUDI dependency, which is not included by default:
+
+```xml
+<dependency>
+    <groupId>eu.europa.ec.eudi</groupId>
+    <artifactId>eudi-lib-jvm-sdjwt-kt</artifactId>
+    <version>0.20.1</version>
+</dependency>
+```
+
+Without this dependency, `SdJwtVcVerifier` throws an `OpenId4VpException` when validating a credential, with a message identifying the dependency to add.
 Applications replacing it with their own implementation do not need EUDI.
 
-### Built-in SD-JWT VC verifier
+### 2.1) Built-in SD-JWT VC verifier
 
-#### Trusted issuers
+#### 2.1.1) Trusted issuers
 
 The initial implementation accepts trusted issuer keys configured explicitly. It does not discover issuer metadata,
 download JWKS, validate an `x5c` chain against a trust list, or fetch credential type metadata. It never treats keys
@@ -68,7 +78,7 @@ issuer signature, with `kid` used to select a key when present. The verifier req
 EUDI verifies disclosure hashes and reconstructs nested objects and arrays, checks `exp`/`nbf`, and verifies a
 present key-binding JWT, including its signature, `typ=kb+jwt` and `sd_hash`.
 
-#### Signature algorithms and holder binding
+#### 2.1.2) Signature algorithms and holder binding
 
 The holder proof must match the nonce and audience from the transaction's saved request. For URL flows the audience
 is the full `client_id`; for the Digital Credentials API it is `origin:` followed by one of the saved
@@ -80,12 +90,12 @@ Issuer and holder signature algorithms default to ES256 and can be configured wi
 A presentation without key binding is reported as such and rejected by the common DCQL validator unless the query
 explicitly sets `require_cryptographic_holder_binding` to false. A present but invalid proof is always rejected.
 
-#### Trusted authorities
+#### 2.1.3) Trusted authorities
 
 Authority evidence may be configured on `SdJwtVcTrustedIssuer.setTrustedAuthorities(...)` only after establishing the
 corresponding trust relationship; otherwise it remains empty and a DCQL authority requirement cannot be satisfied.
 
-#### Credential status
+#### 2.1.4) Credential status
 
 **Credential status is not checked automatically in this initial implementation.** A credential containing a
 `status` claim is rejected unless `SdJwtVcVerifier.setStatusChecker(...)` is configured. This checker receives the
@@ -93,7 +103,7 @@ cryptographically verified credential, including its reconstructed claims, and m
 unsupported or cannot be checked. If it uses a status list, it must authenticate that list and check its validity
 and the credential's status entry. A credential without a status claim does not invoke the checker.
 
-### Remote resources and application responsibilities
+### 2.2) Remote resources and application responsibilities
 
 The built-in verifier makes no automatic HTTP requests to obtain verification resources:
 
