@@ -432,6 +432,7 @@
                 </executions>
                 <configuration>
                     <instructions>
+                        <Import-Package>com.google.common.*;version="[33.7,50)",*</Import-Package>
                         <Specification-Version>${project.version}</Specification-Version>
                         <Implementation-Version>${project.version}</Implementation-Version>
                     </instructions>
