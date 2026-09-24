@@ -1,6 +1,8 @@
 ---
 layout: doc
 title: Authenticators&#58;
+seo_title: "Java credential validation and authenticators | pac4j"
+description: "Learn how pac4j authenticators validate credentials, encode passwords and create user profiles, with options for performance and session storage."
 ---
 
 [HTTP](clients/http.html) [clients](clients.html) require an [`Authenticator`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/authenticator/Authenticator.java) to validate the credentials.

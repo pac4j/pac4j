@@ -1,6 +1,8 @@
 ---
 layout: doc
 title: LDAP
+seo_title: "LDAP authentication and user profiles in Java | pac4j"
+description: "Connect Java applications to LDAP with pac4j-ldap. Configure LdapProfileService for password authentication and user profile management."
 ---
 
 *pac4j* allows you to validate username/password and create, update and delete users on an LDAP.

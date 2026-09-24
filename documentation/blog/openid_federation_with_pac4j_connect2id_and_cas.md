@@ -4,6 +4,8 @@ title: OpenID Federation with pac4j, Connect2id and CAS
 author: Jérôme LELEU
 date: September 2026
 tags: [tuto, cas]
+seo_title: "OpenID Federation with Connect2id and a CAS trust anchor | pac4j"
+description: "Configure CAS as a trust anchor for OpenID Federation between a pac4j Java client and Connect2id, including subordinate entity registration."
 ---
 
 In previous posts, we have presented the OpenID (Connect) Federation protocol with pac4j and the Connect2id server: [(Part 1)](/blog/openid_federation_with_pac4j_and_connect2id.html) + [(Part 2)](/blog/more_openid_federation_with_pac4j_and_connect2id.html).

@@ -1,6 +1,8 @@
 ---
 layout: doc
 title: HTTP action adapter&#58;
+seo_title: "HTTP action adapters for Java web frameworks | pac4j"
+description: "Learn how pac4j HTTP action adapters translate authentication and authorization outcomes into responses for your Java web framework."
 ---
 
 The [`HttpActionAdapter`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/http/adapter/HttpActionAdapter.java) is an abstraction to apply *pac4j* HTTP actions

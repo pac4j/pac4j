@@ -4,6 +4,8 @@ title: Security advisory for pac4j-core on CSRF
 author: Jérôme LELEU
 date: May 13, 2026
 tags: [sec]
+seo_title: "Security advisory: CSRF protection fixes | pac4j"
+description: "Read the pac4j-core CSRF security advisory and the required upgrade versions for applications using the pac4j 5.x and 6.x lines."
 ---
 
 A security vulnerability affecting the CSRF support in the `pac4j-core` module has been identified and fixed.

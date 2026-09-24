@@ -1,6 +1,8 @@
 ---
 layout: ddoc
 title: The team
+seo_title: "Project team and Java security maintainers | pac4j"
+description: "Meet the creator and contributors behind pac4j, its authentication clients and integrations with Java web frameworks."
 ---
 
 ## The Creator

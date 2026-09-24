@@ -1,6 +1,8 @@
 ---
 layout: doc
 title: Store
+seo_title: "Java caching with Store and expiring entries | pac4j"
+description: "Use pac4j Store implementations for cached values, timed expiration and custom storage, including GuavaStore and ConcurrentMapStore."
 ---
 
 In some cases, a cache mechanism is required. In *pac4j*, this is defined by the [`Store`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/store/Store.java) concept.

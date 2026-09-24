@@ -1,6 +1,8 @@
 ---
 layout: ddoc
 title: Tests strategy&#58;
+seo_title: "Contributor guide to unit and manual tests | pac4j"
+description: "Learn how pac4j organizes Maven unit tests and manual integration tests for authentication providers and Java security components."
 ---
 
 *pac4j* has two different kinds of tests:

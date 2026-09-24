@@ -1,6 +1,8 @@
 ---
 layout: idoc
 title: Implementations comparison
+seo_title: "Compare Java security framework integrations | pac4j"
+description: "Compare pac4j integrations by configuration, web components, security logic, authorization, profiles and supported core versions."
 ---
 
 While most *pac4j* security libraries provide the same features, there are differences due to the environment of the implementation itself, but also due to the various contributions and the pace followed by the maintainers.

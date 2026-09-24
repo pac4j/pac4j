@@ -4,6 +4,8 @@ title: pac4j v4 is coming
 author: Jérôme LELEU
 date: February 2020
 tags: [rel]
+seo_title: "pac4j 4.0 preview: Java security API changes | pac4j"
+description: "Explore the pac4j 4.0 release preview, including changes to user profiles, HTTP actions, Optional APIs, default authorizers and matchers."
 ---
 
 A few days ago, I released *pac4j* v4.0.0-RC3 as well as three of the main implementations:

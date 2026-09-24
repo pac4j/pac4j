@@ -1,6 +1,8 @@
 ---
 layout: doc
 title: IP address validation
+seo_title: "IP address authentication in Java | pac4j"
+description: "Configure pac4j IP address authentication with IpRegexpAuthenticator to validate client addresses against a regular expression."
 ---
 
 *pac4j* allows you to validate incoming IP addresses.

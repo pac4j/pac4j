@@ -1,6 +1,8 @@
 ---
 layout: ddoc
 title: How to contribute
+seo_title: "How to contribute code and documentation | pac4j"
+description: "Learn how to contribute features, bug fixes and documentation to pac4j, the Java authentication and authorization framework."
 ---
 
 ## 1) New feature/bug fix

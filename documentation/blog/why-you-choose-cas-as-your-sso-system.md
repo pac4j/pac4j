@@ -4,6 +4,8 @@ title: Why you should choose CAS as your SSO system
 author: Jérôme LELEU
 date: October 2018
 tags: [cas, guide]
+seo_title: "Why choose Apereo CAS for single sign-on? | pac4j"
+description: "Explore the case for Apereo CAS as an open source SSO server, including authentication features, deployment options and protocol interoperability."
 ---
 
 Most of the customers for whom I work have already chosen the CAS server and its ecosystem when I come in to help them.

@@ -1,6 +1,8 @@
 ---
 layout: doc
 title: Release notes&#58;
+seo_title: "Release notes for Java security and authentication | pac4j"
+description: "Review pac4j release notes for supported Java lines, including authentication features, security fixes, dependency updates and API changes."
 ---
 
 ### JDK17:

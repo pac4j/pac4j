@@ -42,7 +42,7 @@ It is licensed under the Apache 2 license.
 
 ## Authentication mechanisms:
 
-[OpenID Connect](https://www.pac4j.org/docs/clients/openid-connect.html) - [SAML](https://www.pac4j.org/docs/clients/saml.html) - [CAS](https://www.pac4j.org/docs/clients/cas.html) - [OAuth](https://www.pac4j.org/docs/clients/oauth.html) - [HTTP](https://www.pac4j.org/docs/clients/http.html) - [Kerberos](https://www.pac4j.org/docs/clients/kerberos.html) - [OpenID4VP (EUDI wallet, eIDAS 2.0)](https://www.pac4j.org/docs/clients/openid4vp.html)
+[OpenID Connect](https://www.pac4j.org/how-to-secure-a-java-application-with-oidc.html) - [SAML](https://www.pac4j.org/how-to-secure-a-java-application-with-saml.html) - [CAS](https://www.pac4j.org/how-to-secure-a-java-application-with-cas.html) - [OAuth](https://www.pac4j.org/docs/clients/oauth.html) - [HTTP](https://www.pac4j.org/docs/clients/http.html) - [Kerberos](https://www.pac4j.org/docs/clients/kerberos.html) - [OpenID4VP (EUDI wallet, eIDAS 2.0)](https://www.pac4j.org/docs/clients/openid4vp.html)
 
 [LDAP](https://www.pac4j.org/docs/authenticators/ldap.html) - [SQL](https://www.pac4j.org/docs/authenticators/sql.html) - [JWT](https://www.pac4j.org/docs/authenticators/jwt.html) - [MongoDB](https://www.pac4j.org/docs/authenticators/mongodb.html) - [IP address](https://www.pac4j.org/docs/authenticators/ip.html) - [REST API](https://www.pac4j.org/docs/authenticators/rest.html)
 

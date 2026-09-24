@@ -4,11 +4,13 @@ title: Understanding the callback endpoint
 author: Jérôme LELEU
 date: June 2018
 tags: [guide]
+seo_title: "How authentication callbacks work in Java web apps | pac4j"
+description: "Understand the pac4j callback endpoint, direct and indirect authentication clients, and the callback configuration changes between pac4j 2 and 3."
 ---
 
 This is one of the most important concepts in **pac4j** and unfortunately, there are still many questions about it on the [pac4j-users mailing list](https://groups.google.com/forum/?fromgroups#!forum/pac4j-users). So let's focus on this topic.
 
-# Overview
+## Overview
 
 **pac4j** splits the authentication processes (we say clients) into two kinds:
 
@@ -26,7 +28,7 @@ When a non-authenticated user calls a URL protected by an indirect client, the u
 The authentication process happens only once for the user session, the authenticated user lives during the whole web session (until expiration or explicit logout). Thus, we can talk about a *stateful* mode.
 
 
-# Configuration
+## Configuration
 
 So the callback endpoint is the URL which receives the responses from the identity providers after a successful login. It is generally defined via the `Config` component:
 
@@ -64,7 +66,7 @@ When reaching the callback endpoint, we are still in the middle of the authentic
 Each authentication process (client) could have a different callback URL, but **in pac4j, all authentication mechanisms are expected to use the same callback endpoint** (except the CAS proxy endpoint) **with a specific parameter: `client_name` to distinguish them**.
 
 
-# **pac4j** v2
+## **pac4j** v2
 
 You can define for each indirect client a specific callback URL, but even in that case, the `client_name` parameter would be added during the initialization of the *pac4j* framework.
 
@@ -86,7 +88,7 @@ Which leads to a new issue as the callback endpoint can no longer find out which
 It works, but it's a bit tricky!
 
 
-# **pac4j** v3
+## **pac4j** v3
 
 Hopefully, this is resolved in **pac4j** v3.
 

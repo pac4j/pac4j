@@ -1,6 +1,8 @@
 ---
 layout: ddoc
 title: Next version
+seo_title: "Next release: snapshot artifacts and source builds | pac4j"
+description: "Try the next pac4j version using Maven snapshot artifacts, or clone and build the Java security framework from source to contribute changes."
 ---
 
 The next version **6.6.0-SNAPSHOT** is under development.

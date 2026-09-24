@@ -1,6 +1,8 @@
 ---
 layout: doc
 title: Web context&#58;
+seo_title: "HTTP request and response access with WebContext | pac4j"
+description: "Use pac4j WebContext and WebContextFactory to access HTTP requests and responses across Java frameworks and customize context creation."
 ---
 
 ## 1) `WebContext`

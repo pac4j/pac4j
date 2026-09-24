@@ -1,6 +1,8 @@
 ---
 layout: doc
 title: REST API
+seo_title: "Authenticate Java users with a REST service | pac4j"
+description: "Configure pac4j RestAuthenticator to validate credentials through an external REST service and retrieve the authenticated user's profile."
 ---
 
 *pac4j* allows you to validate users via a REST API.

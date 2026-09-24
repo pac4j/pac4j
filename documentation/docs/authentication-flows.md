@@ -1,6 +1,8 @@
 ---
 layout: doc
 title: Authentication flows&#58;
+seo_title: "Java authentication flows: web login and REST APIs | pac4j"
+description: "Understand pac4j's redirect-based login for web applications and direct authentication for web services, including credential validation and user profiles."
 ---
 
 ## 1) UI authentication (stateful/indirect client)

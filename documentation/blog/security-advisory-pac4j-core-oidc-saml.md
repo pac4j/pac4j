@@ -4,6 +4,8 @@ title: Security advisory for pac4j-core, pac4j-oidc and pac4j-saml
 author: Jérôme LELEU
 date: August 24, 2026
 tags: [sec]
+seo_title: "Security advisory: core, OIDC and SAML hardening | pac4j"
+description: "Read the pac4j 6.5.6 security advisory covering fixes and hardening in pac4j-core, pac4j-oidc and pac4j-saml."
 ---
 
 A few security fixes/hardenings have been applied in version `6.5.6`.

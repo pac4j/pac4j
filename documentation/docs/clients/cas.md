@@ -1,7 +1,13 @@
 ---
 layout: doc
-title: CAS
+title: CAS client for Java
+seo_title: "CAS client for Java: SSO authentication | pac4j"
+description: "Configure Java CAS authentication with pac4j-cas. Integrate SSO login, service and proxy tickets, the CAS REST API and logout."
 ---
+
+CAS (Central Authentication Service) provides single sign-on (SSO). Your application redirects the user to a CAS server, then validates the service ticket returned after login.
+
+**[How to secure a Java application with CAS (using Spring Boot)](/how-to-secure-a-java-application-with-cas.html)** — follow a complete Spring Boot example, then use the reference below for the full configuration.
 
 *pac4j* allows you to login with a CAS server in various ways:
 

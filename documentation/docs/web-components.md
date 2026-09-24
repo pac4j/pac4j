@@ -1,6 +1,8 @@
 ---
 layout: doc
 title: Web components&#58;
+seo_title: "Security filters, callbacks and logout components | pac4j"
+description: "Explore the web components a pac4j integration provides: security filters, authentication callbacks and logout endpoints backed by shared security logic."
 ---
 
 A *pac4j* implementation must implement the necessary web components based on the *pac4j* logics:

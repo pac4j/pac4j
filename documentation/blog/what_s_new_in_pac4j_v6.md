@@ -4,6 +4,8 @@ title: What's new in pac4j v6?
 author: Jérôme LELEU
 date: January 2024
 tags: [rel]
+seo_title: "pac4j 6 migration: Java 17 and security integrations | pac4j"
+description: "Review pac4j 6 changes for Java 17, renamed modules, API contracts, Lombok and framework integration design."
 ---
 
 ### 1) Java version

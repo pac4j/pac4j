@@ -1,6 +1,8 @@
 ---
 layout: doc
 title: OpenID Connect / Federation
+seo_title: "OpenID Federation client configuration in Java | pac4j"
+description: "Configure OpenID Federation with pac4j: federation metadata, trust anchors and explicit or automatic registration of Java OIDC clients."
 ---
 
 See also:

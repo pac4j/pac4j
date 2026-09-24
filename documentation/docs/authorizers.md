@@ -1,6 +1,8 @@
 ---
 layout: doc
 title: Authorizers&#58;
+seo_title: "Java authorization and access control | pac4j"
+description: "Configure pac4j authorizers to control access by role, authentication level and other rules, and combine authorization checks in Java applications."
 ---
 
 **Authorizers** are meant to check authorizations when accessing an URL (in the "[security filter](security-filter.html)"):

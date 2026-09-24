@@ -1,6 +1,8 @@
 ---
 layout: doc
 title: MongoDB
+seo_title: "MongoDB authentication and user profiles in Java | pac4j"
+description: "Use pac4j-mongo and MongoProfileService to authenticate users and manage profiles stored in MongoDB from your Java application."
 ---
 
 *pac4j* allows you to validate username/password and create, update and delete users on a MongoDB database.

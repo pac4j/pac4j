@@ -1,6 +1,8 @@
 ---
 layout: doc
 title: User profile authorizers&#58;
+seo_title: "Role and user profile authorization in Java | pac4j"
+description: "Control access with pac4j profile authorizers using roles, permissions, authentication levels and user profile attributes."
 ---
 
 Some authorizers only apply on the user profile:

@@ -1,6 +1,8 @@
 ---
 layout: doc
 title: Kerberos
+seo_title: "Kerberos and SPNEGO authentication in Java | pac4j"
+description: "Configure Kerberos and SPNEGO authentication with pac4j-kerberos, including client setup and JVM integration considerations."
 ---
 
 *pac4j* allows you to login using the Kerberos authentication mechanism (also known as SPNEGO or Microsoft HTTP Negotiate).

@@ -1,6 +1,8 @@
 ---
 layout: idoc
 title: Implementations comparison for configuration&#58;
+seo_title: "Compare security configuration across frameworks | pac4j"
+description: "Compare how Java framework integrations define and supply pac4j security configuration for authentication and authorization."
 ---
 
 [<i class="fa fa-long-arrow-left fa-2x" aria-hidden="true"></i> Categories](./comparison.html)

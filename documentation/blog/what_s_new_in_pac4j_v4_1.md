@@ -4,6 +4,8 @@ title: What's new in pac4j v4.1?
 author: Jérôme LELEU
 date: September 2020
 tags: [rel]
+seo_title: "pac4j 4.1 changes: API cleanup and CSRF protection | pac4j"
+description: "Review pac4j 4.1 removals, deprecations and CSRF changes as the Java security framework simplifies its APIs ahead of version 5."
 ---
 
 One of the primary goals of pac4j has always been to be easy. One must admit that along the versions, it has gained some complexity and weight and time has come for cleaning.

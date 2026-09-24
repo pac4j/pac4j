@@ -1,6 +1,8 @@
 ---
 layout: doc
 title: Main concepts and components&#58;
+seo_title: "Java security model: concepts and components | pac4j"
+description: "Understand pac4j's security model: authentication clients, authenticators, user profiles, authorizers, matchers and web integration components."
 ---
 
 1) A [**client**](clients.html) represents an authentication mechanism (flow). It performs the login process and returns a user profile. An indirect client is for UI authentication while a direct client is for web services authentication

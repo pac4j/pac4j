@@ -1,6 +1,8 @@
 ---
 layout: homeblog
 title: <i class="fa fa-info-circle" aria-hidden="true"></i> Blog&#58;
+seo_title: "Java security blog and authentication tutorials | pac4j"
+description: "Explore Java authentication tutorials and articles on OIDC, SAML, CAS, JWT and JWKS, plus pac4j release news and security advisories."
 ---
 
 {%- comment -%}
@@ -18,6 +20,21 @@ title: <i class="fa fa-info-circle" aria-hidden="true"></i> Blog&#58;
 {%- endfor -%}
 {%- endcapture -%}
 {%- assign sorted = keys | split: "~" | sort | reverse -%}
+
+## Step-by-step guides
+
+<ul class="blog-index">
+{% assign protocols = "oidc,cas,saml" | split: "," %}
+{% for protocol in protocols %}
+    <li>
+        <a href="/how-to-secure-a-java-application-with-{{ protocol }}.html">How to secure a Java application with {{ protocol | upcase }} (using Spring Boot)</a>
+        <span class="tag tag-tuto">{{ site.data.blogtags.tuto }}</span>
+        <span class="tag tag-{{ protocol }}">{{ site.data.blogtags[protocol] }}</span>
+    </li>
+{% endfor %}
+</ul>
+
+## Latest articles
 
 <ul class="blog-index">
 {%- for key in sorted -%}

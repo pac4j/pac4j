@@ -1,6 +1,8 @@
 ---
 layout: ddoc
 title: Release process&#58;
+seo_title: "Maintainer guide to publishing a release | pac4j"
+description: "Follow the pac4j release process, from Javadoc checks and Maven release commands to publishing artifacts on Maven Central."
 ---
 
 1) Ensure your SSH key is properly loaded (`ssh-add -l`) and that your security key is loaded as well (GPG)

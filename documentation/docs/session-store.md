@@ -1,6 +1,8 @@
 ---
 layout: doc
 title: Session store
+seo_title: "Java session management with SessionStore | pac4j"
+description: "Use the pac4j SessionStore abstraction to read and write session attributes, renew or destroy sessions and support logout across Java frameworks."
 ---
 
 While the [`WebContext`](web-context.html) is related to the HTTP request and response, the [`SessionStore`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/context/session/SessionStore.java) is an abstraction to deal with the web session.

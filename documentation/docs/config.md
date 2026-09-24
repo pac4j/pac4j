@@ -1,6 +1,8 @@
 ---
 layout: doc
 title: Security configuration&#58;
+seo_title: "Java security configuration with Config and Clients | pac4j"
+description: "Configure pac4j authentication clients, authorizers, matchers and security logic using the Config and Clients classes in your Java application."
 ---
 
 The security configuration must be defined via a [`Config`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/config/Config.java) object.

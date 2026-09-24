@@ -4,6 +4,8 @@ title: "JAX-RS + pac4j now supports Jersey 4 and RESTEasy 7"
 author: Jérôme LELEU
 date: September 21, 2026
 tags: [rel, guide]
+seo_title: "JAX-RS security with Jersey 4 and RESTEasy 7 | pac4j"
+description: "Secure Jakarta REST endpoints with jax-rs-pac4j 8. Learn which module to choose for Jersey or RESTEasy and configure a protected endpoint."
 ---
 
 **jax-rs-pac4j 8.0.0 is out, with support for Jersey 4 and RESTEasy 7!** Both implement **Jakarta REST 4**, the API formerly known as JAX-RS. Two new modules join the existing Jersey 3 and RESTEasy 6 integrations.

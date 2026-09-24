@@ -1,6 +1,8 @@
 ---
 layout: idoc
 title: Implementations comparison for the web objects&#58;
+seo_title: "Compare HTTP contexts and sessions across frameworks | pac4j"
+description: "Compare the web context and session store implementations used by pac4j integrations across Java web frameworks."
 ---
 
 [<i class="fa fa-long-arrow-left fa-2x" aria-hidden="true"></i> Categories](./comparison.html)

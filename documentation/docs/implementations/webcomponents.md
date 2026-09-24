@@ -1,6 +1,8 @@
 ---
 layout: idoc
 title: Implementations comparison for the web components&#58;
+seo_title: "Compare security web components across frameworks | pac4j"
+description: "Compare the filters, controllers and endpoints that pac4j integrations provide for security checks, authentication callbacks and logout."
 ---
 
 [<i class="fa fa-long-arrow-left fa-2x" aria-hidden="true"></i> Categories](./comparison.html)

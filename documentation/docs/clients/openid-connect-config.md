@@ -1,6 +1,8 @@
 ---
 layout: doc
 title: OpenID Connect / Advanced configuration
+seo_title: "Advanced OIDC configuration for Java clients | pac4j"
+description: "Configure OpenID Connect client authentication, state, nonce, signing algorithms, tokens and key rotation with pac4j-oidc."
 ---
 
 See also:

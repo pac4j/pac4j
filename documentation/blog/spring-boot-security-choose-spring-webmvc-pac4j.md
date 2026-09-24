@@ -4,6 +4,8 @@ title: Spring Boot security&colon; choose spring-webmvc-pac4j over Spring Securi
 author: Jérôme LELEU
 date: January 2018
 tags: [spring, guide]
+seo_title: "Spring Boot CAS login: pac4j and Spring Security | pac4j"
+description: "Compare Spring Boot CAS authentication examples using spring-webmvc-pac4j and Spring Security, including configuration and integration choices."
 ---
 
 Recently, a client asked me to write a secured Spring Boot webapp sample to interact with his CAS server.
