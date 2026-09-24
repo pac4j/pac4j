@@ -7,9 +7,11 @@ description: "Add CAS single sign-on to a Java application with pac4j and Spring
 
 # How to secure a Java application with CAS (using Spring Boot)
 
-CAS (Central Authentication Service) is the open source single sign-on server widely used by universities and large organizations, maintained by the [Apereo foundation](https://apereo.github.io/cas/). The protocol is simple: your Java application redirects the user to the CAS login page, CAS sends the browser back with a short-lived **service ticket**, and your application validates that ticket with the CAS server to learn who the user is.
+CAS can mean two things: the open source single sign-on server maintained by the [Apereo foundation](https://apereo.github.io/cas/), or the Central Authentication Service protocol. Here, we'll use the CAS protocol to connect our Java application to a CAS server.
 
-This guide uses **pac4j with Spring Boot** to protect a Java web application with a CAS server. The demo authenticates against the public pac4j test server, and the section on service registration shows what to configure on your own CAS server.
+The flow is easy to follow. Your application redirects the user to the CAS login page. After authentication, CAS sends the browser back with a short-lived **service ticket**. Your application validates this ticket with the CAS server to find out who the user is.
+
+Let's see how to do this with **pac4j and Spring Boot**. We'll use the public pac4j test server first, then look at service registration for your own CAS server.
 
 **What you need:**
 
@@ -18,7 +20,7 @@ This guide uses **pac4j with Spring Boot** to protect a Java web application wit
 
 ## 1) Get the Spring Boot demo
 
-The [CAS demo project](https://github.com/pac4j/simple-spring-boot-pac4j-demos/tree/cas) contains the three classes shown in this guide, ready to run:
+Start with the [CAS demo project](https://github.com/pac4j/simple-spring-boot-pac4j-demos/tree/cas). The three classes we'll look at are already there:
 
 ```bash
 git clone --branch cas --single-branch https://github.com/pac4j/simple-spring-boot-pac4j-demos.git
@@ -79,12 +81,11 @@ public class SecurityConfig extends Pac4jSecurityConfig {
 }
 ```
 
-What each part does:
+The CAS configuration starts with a single URL: `CasConfiguration(casLoginUrl)`. pac4j derives the ticket validation URL from it. If validation must use an internal address, you can set it separately with `config.setPrefixUrl("http://cas-internal:8080/cas")`.
 
-- **`Pac4jSecurityConfig`** registers the `/callback` endpoint, where CAS sends the service ticket, and the `/logout` endpoint.
-- **`CasConfiguration(casLoginUrl)`** only needs the login URL: pac4j derives the ticket validation URL from it. If your server is reached through a different internal URL for validation, add `config.setPrefixUrl("http://cas-internal:8080/cas")`.
-- **`new Config(baseUri + "/callback", ...)`** sets the callback URL. pac4j appends `?client_name=CasClient`, and this full URL is the **service** CAS will see.
-- **`addSecurity(registry, "CasClient")`** protects `/protected/**`: an anonymous request there triggers the redirect to `casLoginUrl?service=http://localhost:8080/callback?client_name=CasClient`.
+`Pac4jSecurityConfig` registers `/callback`, where CAS sends the service ticket, and `/logout`. With `new Config(baseUri + "/callback", ...)`, we tell pac4j where the callback lives. It appends `?client_name=CasClient`, and **this full URL is the service CAS will see**.
+
+We then protect `/protected/**` with `addSecurity(registry, "CasClient")`. When an anonymous user requests a protected page, pac4j redirects the browser to `casLoginUrl` with that service URL as a parameter.
 
 pac4j uses the **CAS 3.0 protocol** by default, which returns the user attributes with the validation response. Switch with `config.setProtocol(CasProtocol.CAS20)` for an older server. Two other options are worth knowing: `setRenew(true)` forces the user to re-enter credentials even with an active SSO session, and `setGateway(true)` returns silently when the user is not logged in instead of showing the login page.
 
@@ -104,7 +105,7 @@ A CAS server only issues tickets for services it knows. In the CAS **service reg
 }
 ```
 
-Two settings matter here:
+There are two settings to pay attention to:
 
 - **`serviceId`** is a regular expression. Escape the `?` and keep the trailing `.*`, because CAS appends its own parameters to the callback.
 - **`attributeReleasePolicy`** decides which user attributes your application receives. `ReturnAllAttributeReleasePolicy` is fine for a demo; production services usually list the allowed attributes with `ReturnAllowedAttributeReleasePolicy`.
@@ -143,11 +144,11 @@ profile.getAttribute("email");
 profile.getAttributes();         // everything the release policy allowed
 ```
 
-An empty attribute map almost always means the release policy of the service is too restrictive, or the server still uses the CAS 2.0 protocol, which does not carry attributes.
+No attributes in the profile? Check what the service is allowed to receive. The release policy may filter them out, or the server may still use CAS 2.0, which does not carry attributes.
 
 ## 6) Logout
 
-The `/logout` link removes the profile from the local session. To also end the SSO session on the CAS server, enable the central logout in `application.properties`:
+Logging out of the application and logging out of CAS are two different operations. The `/logout` link removes the local profile. To also end the SSO session on the CAS server, enable central logout in `application.properties`:
 
 ```properties
 pac4j.logout.centralLogout=true
@@ -180,7 +181,7 @@ Open [http://localhost:8080/](http://localhost:8080/) and follow **Protected are
 
 ## Beyond the login page
 
-The same `pac4j-cas` module covers the other CAS use cases:
+So far, we have used CAS to log in through a browser. The same `pac4j-cas` module also handles other situations:
 
 - **Proxy tickets**: a web application authenticated by CAS calls a web service on behalf of the user. Configure a `CasProxyReceptor` on the caller and protect the web service with a `DirectCasProxyClient`.
 - **CAS REST API**: a mobile or standalone application sends the user credentials to your web service, which validates them against the CAS REST protocol with a `CasRestFormClient` or a `CasRestBasicAuthClient`.
@@ -190,6 +191,8 @@ The same `pac4j-cas` module covers the other CAS use cases:
 
 Read the [CAS reference](/docs/clients/cas.html) for the proxy and REST configurations, the stateless `DirectCasClient` and all the `CasConfiguration` options.
 
-**Using a different integration?** The [Jakarta EE guide](/how-to-secure-a-jakarta-ee-application-with-oidc.html) and [Spring Security guide](/how-to-secure-a-spring-security-application-with-oidc.html) explain the integration using OIDC. Follow their “Switching to SAML or CAS” section to use the CAS client configuration from this guide.
+**Using a different integration?** The [Shiro](/how-to-secure-a-shiro-application-with-cas.html) and [Vert.x](/how-to-secure-a-vertx-application-with-cas.html) guides also use CAS.
+
+For [Jakarta EE](/how-to-secure-a-jakarta-ee-application-with-oidc.html), [Spring Security](/how-to-secure-a-spring-security-application-with-oidc.html), [JAX-RS and Dropwizard](/how-to-secure-a-jax-rs-application-with-oidc.html), [Spark Java](/how-to-secure-a-spark-java-application-with-oidc.html), [Spring WebFlux](/how-to-secure-a-spring-webflux-application-with-oidc.html), [Play](/how-to-secure-a-play-application-with-saml.html) and [Javalin](/how-to-secure-a-javalin-application-with-saml.html), follow the integration guide and its final section on switching protocols, using the CAS configuration above.
 
 **Discover more [pac4j frameworks](/implementations.html) and more [authentication mechanisms](/docs/clients.html)…**
