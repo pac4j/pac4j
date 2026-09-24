@@ -11,13 +11,9 @@ The OIDC client does not change when we move from Spring MVC to WebFlux. The sur
 
 The [spring-webflux-pac4j](https://github.com/pac4j/spring-webflux-pac4j) integration connects these APIs to pac4j. We'll use the same OIDC configuration as in the [Spring Boot guide](/how-to-secure-a-java-application-with-oidc.html), then look at the WebFlux-specific parts.
 
-The example uses **Spring Boot 3, Java 17 and spring-webflux-pac4j 3.0.0**, with the default OIDC authorization code flow and a **GET callback**.
+The example uses **Spring Boot 3, Java 17 and spring-webflux-pac4j 3.0.1**, with the default OIDC authorization code flow.
 
-There is a detail to keep in mind: the pac4j authentication engine is still synchronous. We must load the reactive session before calling it, then run its blocking work on Reactor's bounded elastic scheduler.
-
-Version 3.0.0 also has a callback issue: its built-in `CallbackController` only invokes the callback logic when the request has a body. A normal OIDC GET callback has none.
-
-We'll therefore write an explicit GET endpoint, and use the reactive `WebSession` API for session renewal and invalidation. **Do not register the built-in callback and logout controllers alongside these endpoints.**
+The spring-webflux-pac4j integration bridges pac4j's synchronous security logic with Spring WebFlux's reactive model: it runs that logic asynchronously on worker threads, without blocking the event loop. The integration takes care of this for us.
 
 ## 1) Add the Maven dependencies
 
@@ -36,7 +32,7 @@ Start with a Spring Boot 3 Maven application using the WebFlux starter and the S
 <dependency>
     <groupId>org.pac4j</groupId>
     <artifactId>spring-webflux-pac4j</artifactId>
-    <version>3.0.0</version>
+    <version>3.0.1</version>
 </dependency>
 <dependency>
     <groupId>org.pac4j</groupId>
@@ -47,7 +43,7 @@ Start with a Spring Boot 3 Maven application using the WebFlux starter and the S
 
 Why declare `spring-jcl` explicitly? pac4j 6.5.8 excludes it from its transitive `spring-core` dependency, but Spring 6 still needs it at runtime.
 
-The [spring-webflux-pac4j-boot-demo](https://github.com/pac4j/spring-webflux-pac4j-boot-demo) contains a broader application. If adapting it, replace its security configuration with the one below and remove its component scan of `org.pac4j.springframework.web` to avoid duplicate endpoint mappings. Place the following classes under the package scanned by your `@SpringBootApplication`.
+The [spring-webflux-pac4j-boot-demo](https://github.com/pac4j/spring-webflux-pac4j-boot-demo) contains a broader application. If adapting it, replace its security configuration with the one below. Place the following classes under the package scanned by your `@SpringBootApplication`.
 
 ## 2) Configure pac4j and protect the routes
 
@@ -62,12 +58,11 @@ import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.springframework.web.SecurityFilter;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.server.WebFilter;
-import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 @Configuration
+@ComponentScan(basePackages = "org.pac4j.springframework.web")
 public class SecurityConfig {
 
     @Bean
@@ -81,12 +76,9 @@ public class SecurityConfig {
     }
 
     @Bean
-    public WebFilter protectedFilter(final Config config) {
-        final var security = SecurityFilter.build(config, "OidcClient",
+    public SecurityFilter protectedFilter(final Config config) {
+        return SecurityFilter.build(config, "OidcClient",
             new PathMatcher().includePath("/protected/"));
-        return (exchange, chain) -> exchange.getSession().then(
-            Mono.defer(() -> security.filter(exchange, chain))
-                .subscribeOn(Schedulers.boundedElastic()));
     }
 }
 ```
@@ -95,67 +87,29 @@ public class SecurityConfig {
 
 Look closely at the path: `PathMatcher.includePath` uses a **prefix match**. `/protected/` covers `/protected/index` and deeper paths, but not `/protected` itself or `/protected-other`. Add rules for those paths if you need them, and keep callback and logout outside the protected prefix.
 
-The scheduler wrapper follows [Reactor's pattern for blocking calls](https://projectreactor.io/docs/core/release/reference/faq.html#faq.wrap-blocking). The OIDC HTTP calls remain blocking, but they now run away from the Netty event loop.
+The `SecurityFilter` loads the session and dispatches synchronous pac4j work to Reactor's bounded elastic scheduler. The OIDC HTTP calls remain blocking, but they run away from the Netty event loop. There is no scheduler wrapper to add in the application.
 
 ## 3) Handle the callback and logout
 
-Now let's handle the return from the provider. We wait for session renewal before processing the callback. For logout, we remove the profile through pac4j, then wait for session invalidation before sending the response. These endpoints are for the default authorization code flow:
+The `@ComponentScan` above registers the library's `CallbackController` and `LogoutController`. Their default paths are `/callback` and `/logout`. The callback receives the provider's response, saves the authenticated profile and sends the user back to the requested page.
 
-```java
-package org.example;
+Let's set the callback and logout options in `src/main/resources/application.properties`:
 
-import org.pac4j.core.adapter.FrameworkAdapter;
-import org.pac4j.core.config.Config;
-import org.pac4j.springframework.context.SpringWebFluxFrameworkParameters;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ServerWebExchange;
-import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
-
-@RestController
-public class AuthController {
-
-    private final Config config;
-
-    @Value("${pac4j.logout.centralLogout:false}")
-    private boolean centralLogout;
-
-    @Value("${pac4j.logout.defaultUrl:http://localhost:8080/}")
-    private String logoutReturnUrl;
-
-    public AuthController(final Config config) {
-        this.config = config;
-    }
-
-    @GetMapping("/callback")
-    public Mono<Void> callback(final ServerWebExchange exchange) {
-        return exchange.getSession().flatMap(session -> session.changeSessionId().then(
-            Mono.defer(() -> {
-                FrameworkAdapter.INSTANCE.applyDefaultSettingsIfUndefined(config);
-                return (Mono<Void>) config.getCallbackLogic().perform(config, "/", false, null,
-                    new SpringWebFluxFrameworkParameters(exchange));
-            }).subscribeOn(Schedulers.boundedElastic())));
-    }
-
-    @GetMapping("/logout")
-    public Mono<Void> logout(final ServerWebExchange exchange) {
-        return exchange.getSession().flatMap(session ->
-            Mono.fromCallable(() -> {
-                FrameworkAdapter.INSTANCE.applyDefaultSettingsIfUndefined(config);
-                return (Mono<Void>) config.getLogoutLogic().perform(config, logoutReturnUrl,
-                    "^http://localhost:8080/$", true, false, centralLogout,
-                    new SpringWebFluxFrameworkParameters(exchange));
-            }).subscribeOn(Schedulers.boundedElastic())
-                .flatMap(response -> session.invalidate().then(response)));
-    }
-}
+```properties
+pac4j.callback.defaultUrl=/
+pac4j.callback.renewSession=true
+pac4j.logout.defaultUrl=http://localhost:8080/
+pac4j.logout.logoutUrlPattern=^http://localhost:8080/$
+pac4j.logout.localLogout=true
+pac4j.logout.destroySession=true
+pac4j.logout.centralLogout=false
 ```
 
-The `false` arguments may look surprising: they disable pac4j's synchronous session renewal and destruction because our controller already performs those operations through `WebSession`.
+The callback renews the session identifier after authentication to protect against session fixation. Logout removes the local profile and destroys the session. The integration waits for these session operations before continuing.
 
 The logout regex only allows the local home URL in the dynamic `url` parameter. For production, update both the return URL and this allowlist to your public HTTPS origin.
+
+If you used the earlier version of this guide, remove its custom `AuthController` when enabling the built-in controllers, so each endpoint has a single mapping.
 
 ## 4) Access the authenticated user
 
@@ -212,15 +166,13 @@ mvn spring-boot:run
 
 Open [http://localhost:8080/protected/index](http://localhost:8080/protected/index), sign in and verify that you return to the protected page. Visiting `/logout` removes the local profile and session.
 
-If the filter never triggers, check the full request path against the `/protected/` prefix. If the provider rejects the redirect URI, include `?client_name=OidcClient` in its registration. If the GET callback returns an empty response, check that the custom `AuthController` is registered and the built-in callback controller is not.
+If the filter never triggers, check the full request path against the `/protected/` prefix. If the provider rejects the redirect URI, include `?client_name=OidcClient` in its registration. If `/callback` or `/logout` returns 404, check that the component scan registers the library's controllers. If Spring reports duplicate mappings, remove any custom controller left over from the earlier example.
 
 ## Switching to SAML or CAS
 
-The protocol configuration from the [SAML guide](/how-to-secure-a-java-application-with-saml.html) or [CAS guide](/how-to-secure-a-java-application-with-cas.html) can be reused with this integration. Add the corresponding module, change the client name and adapt the profile type.
+The protocol configuration from the [SAML guide](/how-to-secure-a-java-application-with-saml.html) or [CAS guide](/how-to-secure-a-java-application-with-cas.html) can be reused with this integration. Add the corresponding module, replace the `OidcClient` and update the client name in the filter. Adapt the profile type and attributes, and register the callback and logout URLs at the provider. SAML also needs a keystore and metadata exchange.
 
-There is more to adapt than the client, though. Our callback only accepts GET requests. SAML POST responses, OIDC `form_post` and CAS back-channel logout need POST endpoints and request-body handling as well.
-
-Implement those parts before changing protocols, then test callback parsing and session handling with your provider and session store.
+The built-in callback accepts GET and POST requests and makes the raw request body available to clients such as SAML. Check the chosen protocol's bindings and single logout requirements, and test them with your provider and session store.
 
 ## Learn more
 
