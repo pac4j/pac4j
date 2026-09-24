@@ -32,6 +32,17 @@ description: "Explore Java authentication tutorials and articles on OIDC, SAML, 
         <span class="tag tag-{{ protocol }}">{{ site.data.blogtags[protocol] }}</span>
     </li>
 {% endfor %}
+    <li>
+        <a href="/how-to-secure-a-jakarta-ee-application-with-oidc.html">How to secure a Jakarta EE application with OIDC (using pac4j)</a>
+        <span class="tag tag-tuto">{{ site.data.blogtags.tuto }}</span>
+        <span class="tag tag-oidc">{{ site.data.blogtags.oidc }}</span>
+    </li>
+    <li>
+        <a href="/how-to-secure-a-spring-security-application-with-oidc.html">How to secure a Spring Security application with OIDC (using pac4j)</a>
+        <span class="tag tag-tuto">{{ site.data.blogtags.tuto }}</span>
+        <span class="tag tag-oidc">{{ site.data.blogtags.oidc }}</span>
+        <span class="tag tag-spring">{{ site.data.blogtags.spring }}</span>
+    </li>
 </ul>
 
 ## Latest articles
