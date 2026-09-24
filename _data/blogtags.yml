@@ -6,4 +6,6 @@ guide: Guide
 tuto: Tutorial
 spring: Spring
 cas: CAS
+oidc: OIDC
+saml: SAML
 fund: Funding

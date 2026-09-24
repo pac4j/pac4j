@@ -4,6 +4,8 @@ title: JWKS explained&colon; what every developer should know
 author: Jérôme LELEU
 date: June 2026
 tags: [guide]
+seo_title: "What is JWKS? JSON Web Keys and JWT verification | pac4j"
+description: "Understand JWK and JWKS meaning, JSON key format and their role in JWT signature verification, OpenID Connect and cryptographic key management."
 ---
 
 When it comes to security, certificates have been used everywhere since the early days of the web.
@@ -103,18 +105,39 @@ We have three parts which decode to:
 And the encryption/signing of the JWTs is ensured by the public/private keys.
 
 
-## 4) JWK and JWKS
+## 4) What does JWKS mean?
+
+**JWKS stands for JSON Web Key Set**: a JSON document that lists cryptographic keys. Each key in the list is a **JWK**, a JSON Web Key, defined by [RFC 7517](https://www.rfc-editor.org/rfc/rfc7517).
+
+The S stands for *Set*, not for the plural: a JWKS is a single JSON object with one property, `keys`, whose value is an array of JWKs.
+
+In practice, a JWKS is how an identity provider publishes its **public keys**. Every OpenID Connect provider exposes one at a URL named `jwks_uri` in its discovery document, for example:
+
+- Google: `https://www.googleapis.com/oauth2/v3/certs`
+- Keycloak: `https://keycloak.example.com/realms/myrealm/protocol/openid-connect/certs`
+- Microsoft Entra ID: `https://login.microsoftonline.com/common/discovery/v2.0/keys`
+
+When your application receives an ID token or an access token from one of them, it downloads this JWKS, picks the right key and verifies the signature of the JWT. That is the whole point: JWKS replaces the PEM certificate you used to copy around by a URL you fetch.
+
+
+## 5) The JWKS format: the fields of a JWK
 
 Given the popularity of JSON, it was high time to find a better format than the PEM(/DER) format for certificates and what better format than JSON?
 
-So, JWK (for JSON Web Key) is the format to define a key:
-- the `kty` property defines the type `RSA`, `EC`, ...
-- the `use` property indicates if the key is used for signature ("sig") or encryption ("enc")
-- the `alg` property defines the algorithm (it can be omitted)
-- the `kid` property defines the name for the key and this is a very cool feature to distinguish between keys
-- the specific `n` and `e` properties for RSA, the specific `x` and `y` properties for Elliptic Curve.
+A JWK describes one key with a handful of properties:
 
-For example, you can have this JWK:
+| Property | Meaning |
+|----------|---------|
+| `kty` | The key type: `RSA`, `EC` (elliptic curve) or `oct` (a symmetric secret) |
+| `use` | What the key is for: `sig` for signature or `enc` for encryption |
+| `alg` | The algorithm the key is meant for, such as `RS256` or `ES256` (optional) |
+| `kid` | The key identifier: a name to distinguish between keys, and a very cool feature |
+| `n`, `e` | The modulus and exponent of an RSA public key |
+| `crv`, `x`, `y` | The curve and the coordinates of an elliptic curve public key |
+| `x5c`, `x5t` | The X.509 certificate chain and thumbprint, when the key comes from a certificate (optional) |
+{:.striped}
+
+For example, this is an RSA public key as a JWK:
 
 ```json
 {
@@ -126,9 +149,7 @@ For example, you can have this JWK:
 }
 ```
 
-And a JWKS, the S stands for Set (not for the plural), is a set of JWKs = keys listed in an array defined by the `keys` property.
-
-For example, the JWKS of our previous JWK is:
+And the JWKS containing this single key:
 
 ```json
 {
@@ -147,7 +168,22 @@ This is super easy and much clearer than the PEM format given that you now have 
 Instead of a block certificate, you have several separate pieces of information.
 
 
-## 5) Easier but...
+## 6) How JWT verification uses the JWKS
+
+Put the two together and you get the standard JWT verification flow:
+
+1. Decode the JWT header: it carries the `alg` used for the signature and, usually, the `kid` of the signing key.
+2. Fetch the JWKS from the provider's `jwks_uri` (and cache it).
+3. Find the JWK whose `kid` matches the header. If there is no `kid`, try the keys whose `kty` and `use` fit.
+4. Verify the signature with that public key and the algorithm **you** configured for this provider.
+5. Only then trust the claims of the body: issuer, audience, expiration...
+
+The `kid` is what makes key rotation painless: the provider adds a new key to its JWKS, starts signing with it, and removes the old one later. Your application picks the right key by identifier without any redeployment, as long as it refreshes the JWKS when it meets an unknown `kid`.
+
+This is exactly what the [pac4j OIDC client](/docs/clients/openid-connect.html) does for you when it validates an ID token. And the [pac4j JWT authenticator](/docs/authenticators/jwt.html#4-jwk) can load its own keys from a JWK, so you can manage them in the same format.
+
+
+## 7) Easier but...
 
 Despite the more pleasant format, there is no magic, there are pitfalls to avoid (like with regular certificates).
 

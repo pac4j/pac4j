@@ -1,6 +1,8 @@
 ---
 layout: doc
 title: User profile
+seo_title: "Java user profiles, attributes and roles | pac4j"
+description: "Understand pac4j user profiles, identifiers, attributes, roles and authentication data, including CommonProfile and custom profile definitions."
 ---
 
 When the user is successfully authenticated by *pac4j*, his data are retrieved from the identity provider and a user profile is built. His profile has:

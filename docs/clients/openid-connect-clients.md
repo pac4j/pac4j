@@ -1,6 +1,8 @@
 ---
 layout: doc
 title: OpenID Connect / Clients
+seo_title: "OIDC client configuration for Java applications | pac4j"
+description: "Configure pac4j OIDC clients for browser login and direct authentication, including provider discovery and clients for common identity providers."
 ---
 
 See also:

@@ -322,6 +322,8 @@ main ul li { list-style-type: disc; }
 .tag-tuto { background: #a580ee; }
 .tag-spring { background: #6db33f; }
 .tag-cas { background: #ef6c00; }
+.tag-oidc { background: #007b83; }
+.tag-saml { background: #5261b8; }
 .tag-fund {
   background: linear-gradient(135deg, #f6d365 0%, #d4a017 45%, #f7e08a 70%, #c8901a 100%);
   color: #4a3208;
@@ -460,14 +462,14 @@ main ul li { list-style-type: disc; }
   white-space: nowrap;
 }
 #home .chip small { color: var(--muted); font-size: .8em; }
-#home .chips-links .chip { color: var(--link); }
-#home .chips-links .chip:hover {
+#home .chips-links a.chip { color: var(--link); }
+#home .chips-links a.chip:hover {
   text-decoration: none;
   color: #fff;
   background: var(--blue);
   border-color: var(--blue);
 }
-#home .chips-links .chip:hover small { color: rgba(255, 255, 255, .8); }
+#home .chips-links a.chip:hover small { color: rgba(255, 255, 255, .8); }
 
 /* quickstart */
 #home .home-code .highlight,

@@ -20,19 +20,19 @@
     {%- assign seo_url = seo_path | prepend: site.url -%}
     <title>
         {%- if seo_title -%}
-        {{ seo_title | strip_html }}
+        {{ seo_title | strip_html | escape_once }}
         {%- elsif page.title -%}
-        {{ page.title | strip_html }} | pac4j
+        {{ page.title | strip_html | escape_once }} | pac4j
         {%- else -%}
         pac4j - security for Java
         {%- endif -%}
     </title>
-    <meta name="description" content="{{ seo_desc | strip_html | strip_newlines }}"/>
+    <meta name="description" content="{{ seo_desc | strip_html | strip_newlines | escape_once }}"/>
     <link rel="canonical" href="{{ seo_url }}">
     <meta property="og:type" content="website"/>
     <meta property="og:site_name" content="pac4j"/>
-    <meta property="og:title" content="{% if seo_title %}{{ seo_title | strip_html }}{% elsif page.title %}{{ page.title | strip_html }} | pac4j{% else %}pac4j - security for Java{% endif %}"/>
-    <meta property="og:description" content="{{ seo_desc | strip_html | strip_newlines }}"/>
+    <meta property="og:title" content="{% if seo_title %}{{ seo_title | strip_html | escape_once }}{% elsif page.title %}{{ page.title | strip_html | escape_once }} | pac4j{% else %}pac4j - security for Java{% endif %}"/>
+    <meta property="og:description" content="{{ seo_desc | strip_html | strip_newlines | escape_once }}"/>
     <meta property="og:url" content="{{ seo_url }}"/>
     <meta property="og:image" content="{{ site.url }}/img/og-image.png"/>
     <meta property="og:image:width" content="2400"/>

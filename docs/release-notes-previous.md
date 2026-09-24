@@ -1,6 +1,8 @@
 ---
 layout: doc
 title: Release notes (older versions)&#58;
+seo_title: "Archived release notes for pac4j 3.x | pac4j"
+description: "Browse historical pac4j 3.x release notes for authentication improvements, security fixes, dependencies and API changes."
 ---
 
 [&#9656; Newer versions...](release-notes.html)

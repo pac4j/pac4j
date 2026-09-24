@@ -1,6 +1,8 @@
 ---
 layout: doc
 title: Matchers&#58;
+seo_title: "Request matchers, CORS and HTTP security headers | pac4j"
+description: "Configure when pac4j security applies to a request, manage CORS and HTTP security headers, and define custom request matchers."
 ---
 
 ## 1) Definition

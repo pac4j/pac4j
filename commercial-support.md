@@ -1,6 +1,8 @@
 ---
 layout: support
 title: <i class="fa fa-life-ring" aria-hidden="true"></i> Commercial support&#58;
+seo_title: "Java security consulting and commercial support | pac4j"
+description: "Get expert help with pac4j, Java authentication and SSO integrations, including OpenID Connect, SAML and CAS, through consulting and commercial support."
 ---
 
 Commercial support for pac4j is provided by the following entities:

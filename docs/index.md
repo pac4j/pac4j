@@ -1,6 +1,8 @@
 ---
 layout: doc
 title: <i class="fa fa-user" aria-hidden="true"></i> The <i>pac4j</i> engine/core documentation&#58;
+seo_title: "Java authentication and authorization documentation | pac4j"
+description: "Explore the pac4j reference for authentication clients, authorization, configuration, sessions and user profiles in Java applications."
 ---
 
 ## 1) [Main concepts and components](main-concepts-and-components.html)

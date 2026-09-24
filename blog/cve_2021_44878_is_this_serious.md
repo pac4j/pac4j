@@ -4,6 +4,8 @@ title: CVE-2021-44878&colon; is this serious?
 author: Jérôme LELEU
 date: March 2022
 tags: [sec]
+seo_title: "CVE-2021-44878 and unsigned OIDC ID tokens | pac4j"
+description: "Read the pac4j maintainer's explanation of CVE-2021-44878, unsigned OpenID Connect ID tokens and the changes made to token validation."
 ---
 
 A few weeks ago, a security vulnerability was published about pac4j: [CVE-2021-44878](https://nvd.nist.gov/vuln/detail/CVE-2021-44878).

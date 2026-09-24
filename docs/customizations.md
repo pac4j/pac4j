@@ -1,6 +1,8 @@
 ---
 layout: doc
 title: Customizations&#58;
+seo_title: "Customize Java authentication and security logic | pac4j"
+description: "Extend pac4j credential extraction, authentication, profile creation and security flows, or customize its integration with your Java web framework."
 ---
 
 *pac4j* comes with a huge set of components for various needs, so before any customization, you should carefully read the [Clients](clients.html), [Authenticators](authenticators.html) and [Authorizers](authorizers.html) pages to check what is already provided.

@@ -4,6 +4,8 @@ title: jee-pac4j versus pac4j-jee
 author: Jérôme LELEU
 date: December 2021
 tags: [guide]
+seo_title: "jee-pac4j vs pac4j-jee: understanding the modules | pac4j"
+description: "Understand the difference between pac4j protocol modules, framework integrations and the Java EE components introduced in pac4j 5.2."
 ---
 
 With `pac4j` v5.2, there is a very important new dependency: `pac4j-jee`. Though, there already exists a `jee-pac4j` artifact and this may seem confusing!

@@ -4,6 +4,8 @@ title: More OpenID Federation with pac4j and Connect2id (2/2)
 author: Jérôme LELEU
 date: May 18, 2026
 tags: [tuto]
+seo_title: "OpenID Federation with Connect2id: explicit registration | pac4j"
+description: "Continue the pac4j and Connect2id OpenID Federation tutorial with a closer look at login and explicit client registration."
 ---
 
 I strongly recommend that you read the first article about the [OpenID Federation protocol](/blog/openid_federation_with_pac4j_and_connect2id.html).
@@ -13,9 +15,9 @@ This new article dives deeper into the OpenID Federation support in pac4j and Co
 You should download and use the latest versions of both software (at least version 6.5.1 for pac4j).
 
 
-# 1) Let's log in (again)
+## 1) Let's log in (again)
 
-## a) Calling the login page
+### a) Calling the login page
 
 <div class="text-center">
   <img alt="Before login" src="/img/blog/2026_05/before_login.png" />
@@ -47,7 +49,7 @@ INFO AUTHZ-SESSION - [OP2101] Created new auth session: sid=FKEttMylh3MVBAtu59F7
 Hopefully, trust chains have been cached depending on the expiration time and the whole plumbing has not been triggered a second time.
 
 
-## b) After typing in the login and password
+### b) After typing in the login and password
 
 <div class="text-center">
   <img alt="After login" src="/img/blog/2026_05/after_login.png" />
@@ -110,7 +112,7 @@ DEBUG org.pac4j.oidc.client.OidcClient         : profile: Optional[OidcProfile(s
 
 The logs are straightforward on the pac4j side as well: we see the successful authentication, the token and the userinfo calls.
 
-## c) After the login process
+### c) After the login process
 
 Even though we’re not doing anything, new logs keep appearing for the Connect2id server:
 
@@ -129,9 +131,9 @@ While this is a very convenient mechanism, it can impact server performance.
 Therefore, it could be useful to consider explicitly and permanently registering our OIDC pac4j client.
 
 
-# 2) Let's log in with explicit registration
+## 2) Let's log in with explicit registration
 
-## a) The client identifier
+### a) The client identifier
 
 And this is a feature supported by the OpenID Federation protocol:
 
@@ -222,7 +224,7 @@ This time, no registration happens and Connect2id directly recognizes the provid
 INFO AUTHZ-SESSION - [OP2101] Created new auth session: sid=reJ...58w client_id=xkqolxvshcjv6 scope=[openid, profile, email]
 ```
 
-## b) The client secret
+### b) The client secret
 
 At this point in the article, you may wonder why we only have a `client_id` and no `client_secret`.
 

@@ -1,6 +1,8 @@
 ---
 layout: doc
 title: Backward compatibility&#58;
+seo_title: "Version compatibility and maintenance policy | pac4j"
+description: "Understand pac4j versioning, backward compatibility and maintenance policies for the core Java security library and its framework integrations."
 ---
 
 ## 1) Versioning & backward compatibility

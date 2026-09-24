@@ -4,6 +4,8 @@ title: OpenID Federation with pac4j and Connect2id (1/2)
 author: Jérôme LELEU
 date: April 1, 2026
 tags: [tuto]
+seo_title: "OpenID Federation in Java with Connect2id | pac4j"
+description: "Follow an OpenID Federation example with pac4j as the Java relying party, Connect2id as the provider and a simulated trust anchor."
 ---
 
 Since version 6.4.0, pac4j supports the [OpenID (Connect) Federation specification](https://openid.net/specs/openid-federation-1_0.html).

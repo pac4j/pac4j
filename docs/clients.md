@@ -1,6 +1,8 @@
 ---
 layout: doc
 title: Clients&#58;
+seo_title: "Java authentication clients and supported mechanisms | pac4j"
+description: "Explore pac4j authentication clients for OIDC, SAML, CAS, OAuth and more, including direct and redirect-based clients, callback URLs and profile options."
 ---
 
 A [`Client`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/client/Client.java) represents a **web authentication mechanism**. It performs the login process and returns (if successful) a [user profile](user-profile.html). Many clients are available for the:
