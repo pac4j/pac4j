@@ -16,24 +16,24 @@ It is licensed under the Apache 2 license.
 
 ## Available implementations (*Get started by clicking on your framework*):
 
-[Spring Web MVC (Spring Boot)](https://github.com/pac4j/spring-webmvc-pac4j)
-&bull; [J2E](https://github.com/pac4j/j2e-pac4j)
-&bull; [Spring Webflux (Spring Boot)](https://github.com/pac4j/spring-webflux-pac4j)
-&bull; [Apache Shiro](https://github.com/bujiio/buji-pac4j)
-&bull; [Spring Security (Spring Boot)](https://github.com/pac4j/spring-security-pac4j)
+[Spring Web MVC (Spring Boot)](https://www.pac4j.org/how-to-secure-a-java-application-with-oidc.html)
+&bull; [Jakarta EE](https://www.pac4j.org/how-to-secure-a-jakarta-ee-application-with-oidc.html)
+&bull; [Spring WebFlux (Spring Boot)](https://www.pac4j.org/how-to-secure-a-spring-webflux-application-with-oidc.html)
+&bull; [Apache Shiro](https://www.pac4j.org/how-to-secure-a-shiro-application-with-cas.html)
+&bull; [Spring Security (Spring Boot)](https://www.pac4j.org/how-to-secure-a-spring-security-application-with-oidc.html)
 
 [CAS server](https://apereo.github.io/cas/6.6.x/integration/Delegate-Authentication.html)
 &bull; [Syncope](https://syncope.apache.org)
 &bull; [Apache Knox](http://knox.apache.org/books/knox-1-6-0/user-guide.html#Pac4j+Provider+-+CAS+/+OAuth+/+SAML+/+OpenID+Connect)
 
-[Play 2.x/3.x](https://github.com/pac4j/play-pac4j)
-&bull; [Vertx](https://github.com/pac4j/vertx-pac4j)
-&bull; [Spark Java](https://github.com/pac4j/spark-pac4j)
+[Play 2.x/3.x](https://www.pac4j.org/how-to-secure-a-play-application-with-saml.html)
+&bull; [Vert.x](https://www.pac4j.org/how-to-secure-a-vertx-application-with-cas.html)
+&bull; [Spark Java](https://www.pac4j.org/how-to-secure-a-spark-java-application-with-oidc.html)
 &bull; [Ratpack](http://ratpack.io/manual/current/pac4j.html#pac4j)
-&bull; [JAX-RS](https://github.com/pac4j/jax-rs-pac4j)
-&bull; [Dropwizard](https://github.com/pac4j/dropwizard-pac4j)
+&bull; [JAX-RS](https://www.pac4j.org/how-to-secure-a-jax-rs-application-with-oidc.html)
+&bull; [Dropwizard](https://www.pac4j.org/how-to-secure-a-jax-rs-application-with-oidc.html#using-dropwizard)
 
-[Javalin](https://github.com/pac4j/javalin-pac4j)
+[Javalin](https://www.pac4j.org/how-to-secure-a-javalin-application-with-saml.html)
 &bull; [Pippo](http://www.pippo.ro/doc/security.html#pac4j-integration)
 &bull; [Undertow](https://github.com/pac4j/undertow-pac4j)
 &bull; [Lagom](https://github.com/pac4j/lagom-pac4j)

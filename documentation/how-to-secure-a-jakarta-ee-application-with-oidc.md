@@ -7,9 +7,11 @@ description: "Add OpenID Connect (OIDC) login to a Jakarta EE or servlet applica
 
 # How to secure a Jakarta EE application with OIDC (using pac4j)
 
-You have a Jakarta EE web application, or a plain servlet application, and you want users to log in through an OpenID Connect (OIDC) provider such as Keycloak, Google, Microsoft Entra ID or Okta. pac4j provides the authentication clients and servlet filters to integrate that login into your application.
+You do not need Spring to add OpenID Connect login to a Java web application. If you already have servlets and a servlet container, we can use those directly.
 
-This guide adds OIDC authentication to a servlet application with **three filters and one configuration class**, no Spring, no CDI required. The filters come from the [jee-pac4j](https://github.com/pac4j/jee-pac4j) library, and you can explore a broader example in the [jee-pac4j-demo](https://github.com/pac4j/jee-pac4j-demo) project, which also covers SAML, CAS, OAuth and form login. The protocol part is identical to the [Spring Boot guide](/how-to-secure-a-java-application-with-oidc.html): what changes is how the security is wired into the servlet container.
+The [jee-pac4j](https://github.com/pac4j/jee-pac4j) library provides **three filters**: one to protect your pages, one to handle the callback and one for logout. We'll configure them to authenticate users with an OIDC provider such as Keycloak, Google, Microsoft Entra ID or Okta.
+
+The OIDC configuration is the same as in the [Spring Boot guide](/how-to-secure-a-java-application-with-oidc.html). Here, we'll connect it to the servlet container with a configuration class and `web.xml`; CDI is optional. The [jee-pac4j-demo](https://github.com/pac4j/jee-pac4j-demo) goes further, with SAML, CAS, OAuth and form login as well.
 
 **What you need:**
 
@@ -47,7 +49,7 @@ For a legacy `javax.servlet` application, use the `javaee-pac4j` artifact instea
 
 ## 2) Write the security configuration
 
-pac4j needs a `Config` object holding the authentication clients. In a servlet application, you provide it through a `ConfigFactory`, a class with a single `build` method that the filters instantiate at startup:
+First, we need a `Config` to hold our authentication client. How do the filters get it? Through a `ConfigFactory`: they instantiate this class at startup and call its `build` method.
 
 ```java
 package org.example.security;
@@ -72,11 +74,9 @@ public class SecurityConfigFactory implements ConfigFactory {
 }
 ```
 
-What each part does:
+`setDiscoveryURI` gives pac4j the provider's `.well-known/openid-configuration` document. From it, pac4j reads the authorization, token, user info and JWKS endpoints. `setClientId` and `setSecret` are the credentials obtained when registering the application.
 
-- **`setDiscoveryURI`** points to the provider's `.well-known/openid-configuration` document. pac4j reads the authorization, token, user info and JWKS endpoints from it.
-- **`setClientId` and `setSecret`** are the credentials the provider gave you when you registered the application.
-- **`new Config("http://localhost:8080/callback", ...)`** sets the callback URL. pac4j appends `?client_name=OidcClient` to it, and this full URL is the **redirect URI** to register at the provider. Use the public URL of your application in production.
+The callback is configured by `new Config("http://localhost:8080/callback", ...)`. pac4j appends `?client_name=OidcClient`, so **register that full URL as the redirect URI** at the provider. In production, use the public URL of your application.
 
 By default pac4j uses the authorization code flow, with PKCE when the provider supports it. `setAllowUnsignedIdTokens(true)` only exists because the public demo server issues unsigned ID tokens: remove it for a real provider. To register the application at Keycloak, Google or Entra ID, follow the [provider section of the Spring Boot guide](/how-to-secure-a-java-application-with-oidc.html#4-register-the-application-at-your-identity-provider): the Java configuration is the same, only the wiring below differs.
 
@@ -148,15 +148,15 @@ The integration provides three servlet filters. Declare them in `WEB-INF/web.xml
 </web-app>
 ```
 
-What each filter does:
+Let's follow a request to `/protected/*`. The `SecurityFilter` checks whether the user is authenticated. If not, it redirects the browser to the provider using the client named by `clients`. You can also configure `authorizers`, such as `isAuthenticated` or a role check, and use `matchers` to exclude paths.
 
-- **`SecurityFilter`** is the guard. On `/protected/*`, an anonymous request is redirected to the provider's login page; an authenticated request goes through. The `clients` parameter names the client to use; you can also add an `authorizers` parameter, for example `isAuthenticated` or a role check, and a `matchers` parameter to exclude paths.
-- **`CallbackFilter`** receives the user on `/callback` after login, exchanges the authorization code for the tokens, validates the ID token, saves the profile in the session and redirects to the originally requested URL, or to `defaultUrl`. `renewSession` protects against session fixation.
-- **`LogoutFilter`** removes the profile and, with `destroySession`, invalidates the HTTP session.
+After login, the provider sends the browser to `/callback`. The `CallbackFilter` exchanges the authorization code for tokens, validates the ID token and saves the profile in the session. It then redirects to the originally requested page, or to `defaultUrl`. With `renewSession`, the session identifier is renewed to protect against session fixation.
+
+The third filter, `LogoutFilter`, removes the profile when the user logs out. `destroySession` also invalidates the HTTP session.
 
 The `configFactory` parameter builds the configuration once and shares it with the other pac4j filters, so declaring it on one filter is sufficient. You can declare several `SecurityFilter` instances with different clients or authorizers for different URL patterns.
 
-**Prefer Java to XML?** As an alternative to the filter declarations above, register the same filters from a `ServletContextListener` with the `FilterHelper`. Use one registration method, so each filter runs only once:
+If you prefer Java configuration, you can register the same filters from a `ServletContextListener` with `FilterHelper`. Choose this or the XML declarations above: registering both would run the filters twice.
 
 ```java
 package org.example.security;
@@ -187,7 +187,7 @@ public class SecurityInitializer implements ServletContextListener {
 
 ## 4) Access the authenticated user
 
-In a servlet or a JSP, wrap the request and the response in a `JEEContext` and read the profile with the `ProfileManager`:
+Once the filters have done their work, our servlet can read the user profile. Wrap the request and response in a `JEEContext`, then use the `ProfileManager`:
 
 ```java
 package org.example.security;
