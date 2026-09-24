@@ -1,6 +1,8 @@
 ---
 layout: ddoc
 title: How to implement <i>pac4j</i> for a new framework/tool&#58;
+seo_title: "Integrate pac4j with a Java web framework | pac4j"
+description: "Build a pac4j framework integration with web context and session adapters, security checks, authentication callbacks and logout handling."
 ---
 
 *pac4j* is an easy and powerful security engine. It comes with the appropriate concepts and components to be implemented in any framework/tools.

@@ -1,6 +1,8 @@
 ---
 layout: mailing
 title: <i class="fa fa-envelope" aria-hidden="true"></i> Mailing lists&#58;
+seo_title: "Community support, mailing lists and security reports | pac4j"
+description: "Find pac4j community support, development discussions, release announcements and security alerts, and learn how to report a vulnerability privately."
 ---
 
 ## General

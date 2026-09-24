@@ -1,6 +1,8 @@
 ---
 layout: doc
 title: OAuth
+seo_title: "OAuth clients and social login for Java | pac4j"
+description: "Configure OAuth 1.0 and OAuth 2.0 clients in Java with pac4j-oauth, using generic clients or integrations for social login providers."
 ---
 
 *pac4j* allows you to login with identity providers using the OAuth v1.0 and v2.0 protocols.

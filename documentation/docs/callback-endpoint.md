@@ -1,6 +1,8 @@
 ---
 layout: doc
 title: Callback endpoint&#58;
+seo_title: "Authentication callback configuration in Java | pac4j"
+description: "Configure the pac4j callback endpoint to validate login credentials, save user profiles, renew sessions and redirect users after authentication."
 ---
 
 To handle authentication for web applications, a callback endpoint is necessary to receive callback calls from the identity server and finish the login process.

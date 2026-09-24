@@ -4,6 +4,8 @@ title: spring-webmvc-pac4j vs Spring Security&#58; Round 2, REST APIs
 author: Jérôme LELEU
 date: February 2019
 tags: [spring, guide]
+seo_title: "Java REST API security: pac4j vs Spring Security | pac4j"
+description: "Compare spring-webmvc-pac4j and Spring Security for REST APIs, including HTTP Basic authentication, JWT and method-level access control."
 ---
 
 ## 1) Introduction

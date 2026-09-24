@@ -4,6 +4,8 @@ title: NLnet funding for EUDI Wallet/eIDAS 2.0 support
 author: Jérôme LELEU
 date: August 26, 2026
 tags: [fund]
+seo_title: "NLnet funding for EUDI Wallet and eIDAS 2.0 support | pac4j"
+description: "Learn about NLnet funding for EUDI Wallet support in pac4j and the work to bring wallet-based authentication to Java applications."
 ---
 
 pac4j has been awarded a grant by <a href="https://nlnet.nl" target="_blank">NLnet</a> through the NGI0 Commons Fund, which supports open technologies working towards a free, open and sovereign internet. The grant is dedicated to a single goal: bringing **EUDI Wallet / eIDAS 2.0** support to pac4j.

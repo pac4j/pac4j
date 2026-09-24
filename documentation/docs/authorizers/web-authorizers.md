@@ -1,6 +1,8 @@
 ---
 layout: doc
 title: Web context authorizers&#58;
+seo_title: "CSRF protection and HTTP request authorization | pac4j"
+description: "Configure pac4j web authorizers for CSRF protection and access rules based on client IP addresses or HTTP methods."
 ---
 
 Some authorizers only apply on the web context:

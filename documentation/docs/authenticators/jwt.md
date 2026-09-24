@@ -1,6 +1,8 @@
 ---
 layout: doc
 title: JWT
+seo_title: "JWT validation and generation in Java | pac4j"
+description: "Validate and generate JSON Web Tokens with pac4j-jwt. Configure signatures, encryption, user profiles and JSON Web Keys in Java."
 ---
 
 *pac4j* allows you to validate JSON web tokens.

@@ -1,6 +1,8 @@
 ---
 layout: doc
 title: HTTP
+seo_title: "HTTP authentication clients for Java | pac4j"
+description: "Add HTTP Basic, form, header or parameter authentication to Java applications using pac4j-http clients and credential authenticators."
 ---
 
 *pac4j* allows you to login using HTTP mechanisms (like basic auth or form posting).

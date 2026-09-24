@@ -4,6 +4,8 @@ title: What's new with Spring and pac4j?
 author: Jérôme LELEU
 date: September 2022
 tags: [spring, rel]
+seo_title: "Spring security integrations: WebFlux and Spring 6 | pac4j"
+description: "Explore pac4j support for Spring WebFlux, Spring 6, the Spring Security bridge and configuration builders for Spring web applications."
 ---
 
 `pac4j` is a security framework available for many frameworks in the Java ecosystem.

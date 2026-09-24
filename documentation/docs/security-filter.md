@@ -1,6 +1,8 @@
 ---
 layout: doc
 title: Security filter&#58;
+seo_title: "Protect Java application URLs with security filters | pac4j"
+description: "Configure pac4j security filters to authenticate requests, apply authorizers and matchers, and handle login redirects or access-denied responses."
 ---
 
 To protect URLs, a security filter is necessary that defines which authentication/authorization mechanisms are applied.

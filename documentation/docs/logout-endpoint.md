@@ -1,6 +1,8 @@
 ---
 layout: doc
 title: Logout endpoint&#58;
+seo_title: "Java logout and single logout configuration | pac4j"
+description: "Configure local logout, session destruction, identity provider logout and redirect validation with the pac4j logout endpoint."
 ---
 
 To handle the logout, a logout endpoint is necessary to perform:
