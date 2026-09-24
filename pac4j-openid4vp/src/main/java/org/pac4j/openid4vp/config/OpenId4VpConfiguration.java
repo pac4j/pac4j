@@ -131,6 +131,7 @@ public class OpenId4VpConfiguration extends BaseClientConfiguration {
      * setting to keep in agreement with it.
      */
     @Setter(AccessLevel.NONE)
+    @ToString.Exclude
     private JWK requestObjectSigningKey;
 
     /**

@@ -104,8 +104,7 @@ public class WalletResponseReader {
         } else if (error != null) {
             transaction.setError(error);
             transaction.setErrorDescription(webContext.getRequestParameter(ERROR_DESCRIPTION).orElse(null));
-            LOGGER.debug("the wallet answered transaction {} with an error; description present={}", id,
-                transaction.getErrorDescription() != null);
+            LOGGER.warn("{}", refusalMessage(transaction).replace('\r', ' ').replace('\n', ' '));
         } else {
             throw new OpenId4VpException("no response, vp_token or error posted by the wallet for the transaction: " + id);
         }

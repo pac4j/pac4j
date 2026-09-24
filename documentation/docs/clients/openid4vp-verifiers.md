@@ -13,31 +13,25 @@ See also:
 
 ## 1) Response validation
 
-The authorization parameters and effective DCQL query are saved with the transaction before the request is returned.
-Response validation uses this snapshot, including the negotiated encryption methods, even if the client configuration changes afterwards.
-The authenticator supports ECDH-ES/P-256 responses with the advertised A128GCM or A256GCM method, verifies the JWE authentication tag
-and key identifier, and checks `state` when it was sent over the URL binding. An encrypted response must contain a `vp_token` JSON object.
-Mixed success/error parameters, an unexpected response mode, malformed presentations and expired transactions are rejected.
+**A profile is created only after the complete response passes validation.**
 
-Every returned presentation is passed to its format's `CredentialVerifier`; a null result is rejected.
-`VerifiablePresentationCredentials.getVerifiedCredentials()` maps each DCQL query identifier to a **list** of verified credentials,
-so `multiple: true` preserves every presentation. Results are published only after the complete response passes validation.
+- **pac4j validates the exchange:** transaction expiry, expected response mode, response encryption and `state` when sent.
+  Malformed or conflicting response parameters are rejected.
+- **Credential verifiers validate the presentations:** signatures, issuer trust, holder proofs and credential status.
+  Register and configure a verifier for every requested format (see below).
+- **pac4j enforces the original DCQL query:** credential types, requested claims and values, claim and credential sets,
+  multiplicity and trusted authorities. Holder binding is required unless explicitly disabled in the query.
 
-A format verifier must set `VerifiedCredential.cryptographicHolderBinding` to true only after verifying the holder proof against the
-transaction nonce and the appropriate audience, using the saved request parameters. It must populate `trustedAuthorities` only with
-identifiers established through its trust validation, indexed by DCQL authority type (`aki`, `etsi_tl`, `openid_federation`).
-The common validator requires holder binding unless the query explicitly disables it, and requires at least one matching authority
-when the query supplies `trusted_authorities`. Disclosed claims retain their JSON nesting; mdoc claims use namespace maps whose
-values are JSON-compatible, so the same DCQL path and value checks can be applied.
+Validation uses the saved request, even if the configuration changes afterwards. Verified results are available through
+`VerifiablePresentationCredentials.getVerifiedCredentials()`: each query identifier maps to a **list of credentials**.
 
 ## 2) Configuring credential verifiers
 
 Register a `CredentialVerifier` for each credential format requested by your DCQL query using
 `config.addCredentialVerifier(verifier)`. Registration replaces the verifier for that format. The configuration
-provides a `SdJwtVcVerifier` by default, but it accepts no issuer until trusted issuer keys are configured.
+provides a `SdJwtVcVerifier` by default, but it accepts no issuer until trusted keys or certificate trust anchors are configured.
 The same registration mechanism applies to `OpenId4VpClient`, `OpenId4VpDcApiClient` and `EudiWalletClient`.
-A custom implementation owns the format-specific cryptographic, issuer trust and status checks described above;
-the common response validator then checks its result against the saved DCQL query.
+For implementation requirements, see [Custom verifiers](#23-custom-verifiers).
 
 To use `SdJwtVcVerifier`, explicitly add the following EUDI dependency, which is not included by default:
 
@@ -56,25 +50,40 @@ Applications replacing it with their own implementation do not need EUDI.
 
 #### 2.1.1) Trusted issuers
 
-The initial implementation accepts trusted issuer keys configured explicitly. It does not discover issuer metadata,
-download JWKS, validate an `x5c` chain against a trust list, or fetch credential type metadata. It never treats keys
-or certificates embedded in a wallet presentation as trusted merely because they are present.
+Choose how to trust the credential issuer:
+
+- **With `iss`:** configure `trustedIssuers` with its exact identifier and public keys.
+- **Without `iss`, with `x5c`:** configure a `trustStore` containing trusted CA certificates.
 
 ```java
-// Load public verification keys from your trusted configuration, not from the wallet's presentation.
-JWKSet issuerKeys = JWKSet.parse(trustedIssuerJwksJson);
-SdJwtVcVerifier verifier = new SdJwtVcVerifier()
-    .setTrustedIssuers(Map.of("https://issuer.example", new SdJwtVcTrustedIssuer(issuerKeys)));
+// For credentials with iss:
+var verifier = new SdJwtVcVerifier().setTrustedIssuers(Map.of(
+    "https://issuer.example", new SdJwtVcTrustedIssuer(JWKSet.parse(trustedIssuerJwksJson))));
+
+// For credentials with x5c and no iss; both settings can coexist:
+verifier.setTrustStore(new KeystoreProperties()
+    .setKeystorePath("classpath:trusted-issuers.p12")
+    .setKeyStoreType("PKCS12")
+    .setKeystorePassword("changeit"));
+
 config.addCredentialVerifier(verifier);
 ```
 
-`SdJwtVcTrustedIssuer` describes an issuer your application has decided to trust; it does not issue credentials.
-Its `keys` field contains that issuer's public verification keys as a Nimbus `JWKSet`. Its optional
-`trustedAuthorities` field records established authority affiliations for DCQL checks and defaults to an empty map.
-The map key passed to `setTrustedIssuers` is the issuer identifier.
+Use a JKS (default) or PKCS12 truststore with **trusted certificate entries**. An optional `keyStoreAlias`
+restricts trust to one entry. No private key, private-key password or automatic keystore generation is needed.
+Certificates supplied by the wallet are never automatically trusted.
 
-The issuer identifier must match `iss` exactly. No issuer is accepted by default. The configured keys verify the
-issuer signature, with `kid` used to select a key when present. The verifier requires `typ=dc+sd-jwt`, `iss` and `vct`.
+With `iss`, configured keys verify the signature; `kid` selects a key when present. This mode takes precedence
+over `x5c`. Without `iss`, the verifier validates the leaf-first certificate chain against the truststore,
+checks validity and signing usage, then verifies the JWT with the leaf key. Necessary intermediates must be
+in `x5c`. `VerifiedCredential.issuer` becomes the certificate subject (RFC 2253); no `iss` claim is invented.
+
+Certificate revocation checks are enabled by default. Supply local CRLs with
+`setCertificateRevocationLists(List<X509CRL>)`; unavailable or revoked status causes rejection.
+For a test PKI without revocation data, explicitly use `setCertificateRevocationEnabled(false)`.
+Credential status checking remains separate (see below).
+
+Both modes require `typ=dc+sd-jwt` and `vct`. No issuer is trusted by default.
 EUDI verifies disclosure hashes and reconstructs nested objects and arrays, checks `exp`/`nbf`, and verifies a
 present key-binding JWT, including its signature, `typ=kb+jwt` and `sd_hash`.
 
@@ -94,6 +103,7 @@ explicitly sets `require_cryptographic_holder_binding` to false. A present but i
 
 Authority evidence may be configured on `SdJwtVcTrustedIssuer.setTrustedAuthorities(...)` only after establishing the
 corresponding trust relationship; otherwise it remains empty and a DCQL authority requirement cannot be satisfied.
+The certificate mode returns no authority evidence automatically; use a custom verifier if DCQL requires it.
 
 #### 2.1.4) Credential status
 
@@ -105,10 +115,12 @@ and the credential's status entry. A credential without a status claim does not 
 
 ### 2.2) Remote resources and application responsibilities
 
-The built-in verifier makes no automatic HTTP requests to obtain verification resources:
+pac4j does not automatically download issuer metadata, keys or credential status lists:
 
-- **Issuer keys:** it uses only the configured `JWKSet`. It does not download a remote JWKS or refresh keys
-  when an issuer rotates them. The application must supply updated trusted keys.
+- **Issuer keys:** it uses a configured `JWKSet`, or the leaf key of an `x5c` chain validated against configured
+  truststore certificates when `iss` is absent. It does not download JWKS or trust lists. Keep trust configuration current.
+- **Certificate revocation:** checks use supplied CRLs and the Java provider; CRL/OCSP network access depends on
+  its configuration. This is separate from the credential's `status` claim.
 - **Metadata:** it does not discover the issuer's metadata to locate its keys, or retrieve credential type
   metadata describing the credential's schema and display information. It still checks `vct` and the common
   validator checks the type and claims against the DCQL query.
@@ -123,3 +135,13 @@ itself establish that the application should trust that issuer.
 This is a minimal SD-JWT integration, not a complete EUDI trust-list or HAIP validation implementation.
 No built-in mdoc verifier is provided yet. All format verifiers remain replaceable through `addCredentialVerifier`.
 
+### 2.3) Custom verifiers
+
+Implement `CredentialVerifier` and register it with `config.addCredentialVerifier(...)`:
+
+- **Reject invalid presentations:** perform signature, issuer trust and status checks; never return an unverified result or `null`.
+- **Holder binding:** set `VerifiedCredential.cryptographicHolderBinding` to true only after verifying the proof
+  against the saved request's nonce and audience.
+- **Trusted authorities:** populate `trustedAuthorities` only from established trust evidence, indexed by DCQL
+  authority type (`aki`, `etsi_tl`, `openid_federation`). A query requiring authorities needs at least one match.
+- **Claims:** preserve JSON nesting. For mdoc, use namespace maps containing JSON-compatible values.

@@ -13,27 +13,22 @@ See also:
 
 ## 1) The query
 
-The credentials are asked for with a DCQL query, which the `dcql` package models: a `DcqlQuery` holds `CredentialQuery`
-objects, one per credential, each with its format, its format-specific `meta` (`setVctValues` for a SD-JWT VC,
-`setDoctypeValue` for a mobile document), the `ClaimsQuery` objects naming the claims by their path, and optional
-`TrustedAuthority` constraints on the issuers; `CredentialSetQuery` objects say which combinations of credentials
-satisfy the verifier.
+**Always configure `setDcqlQuery(...)`: it defines what to request and what pac4j will accept.**
+Use a `DcqlQuery` object or a JSON string; both are checked at initialization.
 
-Each credential query selects its format with `CredentialFormat.SD_JWT_VC` or `CredentialFormat.MSO_MDOC`.
-Its `meta` must also specify the credential type: `setVctValues(...)` supplies a non-empty list of allowed SD-JWT VC
-types, while `setDoctypeValue(...)` supplies the mdoc document type. Missing, empty or malformed type constraints
-are rejected at initialization, whether the query is built programmatically or parsed from JSON.
-The `EudiPidQuery` helpers below set both the format and the required type constraint.
+- **SD-JWT VC:** use `CredentialFormat.SD_JWT_VC` and `setVctValues(...)` with the allowed credential types.
+- **mdoc:** use `CredentialFormat.MSO_MDOC` and `setDoctypeValue(...)` with the document type.
+- **Claims:** use `addClaim(...)` for a claim path, or a `ClaimsQuery` with `withValues(...)` to restrict its values.
+  An mdoc path contains the namespace followed by the attribute name.
+- **More complex requests:** use `TrustedAuthority` for issuer authority constraints and `CredentialSetQuery`
+  for allowed combinations of credentials.
 
-The query is always configured with `setDcqlQuery(...)` and checked at initialization.
-It is sent to the wallet unless a non-blank `scope` is configured; in that case, only the alias is sent,
-and `dcqlQuery` must describe its equivalent request. Both cases use the same query to validate the response.
-A query can be read back from JSON with `DcqlQuery.parse`.
+**For EUDI PID**, `EudiPidQuery.sdJwtVc(...)` and `EudiPidQuery.mdoc(...)` set the format and type for you.
+Pass the attribute names from `EudiPidProfileDefinition`, checking that the target wallet supports them.
+These helpers request the **PID**, not other credentials such as a separate age attestation.
 
-For the person identification data of the EUDI wallet, `EudiPidQuery.sdJwtVc(...)` and `EudiPidQuery.mdoc(...)` build
-the query from the attribute names of `EudiPidProfileDefinition`.
-
-The two alternatives below configure the query part of the client:
+**Optional scope alias:** if the wallet supports one, `setScope(...)` sends that alias instead of the query.
+You must still configure the equivalent DCQL query for response validation:
 
 ```java
 DcqlQuery query = EudiPidQuery.sdJwtVc(GIVEN_NAME, AGE_OVER_18);
@@ -48,35 +43,44 @@ OpenId4VpConfiguration scopeConfig = new OpenId4VpConfiguration()
     .setScope("com.example.pid");
 ```
 
-`com.example.pid` is an illustrative alias: the wallet must support it, and its definition must match `query`.
-Configuring `scope` alone is rejected at initialization because `dcqlQuery` is required for response validation.
+`com.example.pid` is an example alias, not a standard scope. Configuring `scope` alone is rejected.
 
-The authenticator also checks the verified credentials against the saved query: format and type, required claims and
-their paths, claim values, claim sets, credential sets, multiplicity, holder binding and trusted-authority evidence.
-Wallet-side value matching is best effort; pac4j enforces configured values on the verified claims. A mismatch rejects
-the response, including when it concerns an optional credential that was returned.
-
-The query can also be given as plain JSON text, which `setDcqlQuery(String)` parses into the same model, checked the same way at initialization:
+**JSON alternative:**
 
 ```java
-config.setDcqlQuery("{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\",\"meta\":{\"vct_values\":[\"urn:eudi:pid:1\"]},\"claims\":[{\"path\":[\"given_name\"]},{\"path\":[\"age_over_18\"]}]}]}");
+config.setDcqlQuery("""
+    {
+      "credentials": [{
+        "id": "pid",
+        "format": "dc+sd-jwt",
+        "meta": {"vct_values": ["urn:eudi:pid:1"]},
+        "claims": [
+          {"path": ["given_name"]},
+          {"path": ["age_over_18"]}
+        ]
+      }]
+    }
+    """);
 ```
+
+**Every returned credential must satisfy the query**, including optional credentials that the wallet chooses to send.
+pac4j enforces requested values on verified claims; wallet-side matching alone is not sufficient.
+See [Response validation](openid4vp-verifiers.html#1-response-validation).
 
 ## 2) The profile identifier
 
-`OpenId4VpProfileCreator` passes the validated `VerifiablePresentationCredentials` to `ProfileDefinition.newProfile(...)`.
-The definition creates the profile and assigns its identifier; the creator then adds the disclosed attributes.
-The credentials retain their issuer and their DCQL query identifier, so a custom definition can select the credential
-used for identification before attributes from different credentials are merged.
+**Request an identifier claim in DCQL if you need to identify a user.** A name or an age predicate alone does not
+provide a persistent user identifier.
 
-The generic clients use `OpenId4VpProfileDefinition`. It requires exactly one verified credential, a non-blank
-issuer and a disclosed, non-blank string claim named `sub`. The profile identifier is
-`base64url(issuer) + "." + base64url(subject)`, without padding, so different issuer/subject pairs remain distinct.
-Missing identifiers or multiple credentials cause profile creation to fail.
+The default `OpenId4VpProfileDefinition`:
 
-The claim must be requested in DCQL. The application must ensure that it is stable, unique within its issuer and never
-reassigned, as required by [OpenID4VP section 14.4](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#section-14.4).
-The claim name can be changed for an ecosystem that provides another top-level identifier:
+- Requires **exactly one verified credential**, a non-blank issuer and a disclosed, non-blank string `sub`.
+- Builds the ID as `base64url(issuer) + "." + base64url(sub)`, without padding, to distinguish issuers.
+- **Fails profile creation** if these requirements are not met, including when several credentials are returned.
+
+Choose an identifier that is **stable, unique within its issuer and never reassigned**
+([OpenID4VP section 14.4](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#section-14.4)).
+To use another top-level claim, request it in DCQL and configure its name:
 
 ```java
 OpenId4VpProfileDefinition definition = new OpenId4VpProfileDefinition();
@@ -84,14 +88,13 @@ definition.setProfileId("account_id");
 client.setProfileCreator(new OpenId4VpProfileCreator(client, definition));
 ```
 
-Here, `account_id` is an illustrative claim that must be included in the configured query and satisfy those identity
-guarantees. Override `computeProfileId(VerifiablePresentationCredentials)` to select among several credentials or read
-a nested claim, such as an mdoc namespace member. A custom `ProfileDefinition` or `ProfileFactory` can also use the
-credentials passed to `newProfile(...)` to assign an application-specific identifier.
+`account_id` is an example; use a claim that meets the identity requirements above.
 
-`EudiPidProfileDefinition` inherits this mapping while creating an `EudiPidProfile`. Configure or specialize it for the
-targeted PID ecosystem: neither the presence of `sub` nor the suitability of another PID attribute is assumed.
-A presentation disclosing only a name or an age predicate does not supply a persistent user identifier.
+- **Multiple credentials or nested claims (including mdoc):** override `computeProfileId(VerifiablePresentationCredentials)`.
+  You can select a verified credential by its DCQL query identifier and issuer before attributes are merged.
+- **Application-specific mapping:** a custom `ProfileDefinition` or `ProfileFactory` can assign the ID in `newProfile(...)`.
+- **EUDI PID:** `EudiPidProfileDefinition` uses the same default mapping. Configure or override it for your wallet;
+  a PID does not necessarily contain `sub`.
 
 ## 3) Diagnostic logging
 
@@ -100,6 +103,8 @@ transaction consumption, decryption, credential verification, DCQL checks and pr
 Transaction identifiers link these stages; credential query identifiers identify the presentations being checked.
 Rejections report the failing stage and, for common protocol checks, the reason. Custom verifier failures are logged
 by exception type without copying their potentially sensitive messages.
+Wallet error responses are logged at WARN on receipt, including their error code and optional description,
+without waiting for the browser callback.
 
 For example, enable these categories in Logback:
 
