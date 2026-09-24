@@ -197,4 +197,6 @@ Open [http://localhost:8080/](http://localhost:8080/) and follow **Protected are
 - The [SAML 2.0 reference](/docs/clients/saml.html): bindings, signature algorithms, forced and passive authentication, attribute converters and IdP-specific notes.
 - The `SAML2Client` keeps a replay cache between authentications, so define it once as a singleton, which is what the Spring bean above does.
 
+**Using a different integration?** The [Jakarta EE guide](/how-to-secure-a-jakarta-ee-application-with-oidc.html) and [Spring Security guide](/how-to-secure-a-spring-security-application-with-oidc.html) explain the integration using OIDC. Follow their “Switching to SAML or CAS” section to use the SAML client configuration from this guide.
+
 **Discover more [pac4j frameworks](/implementations.html) and more [authentication mechanisms](/docs/clients.html)…**

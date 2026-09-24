@@ -45,10 +45,10 @@ description: "Find pac4j integrations for Spring Boot, Jakarta EE, Play, Vert.x,
 
 <div class="implem-block">
     <div class="implem"><a target="_blank" href="https://github.com/pac4j/spring-webmvc-pac4j"><img height="100" src="/img/logo-spring-webmvc.png" /></a><a target="_blank" href="https://github.com/pac4j/spring-webmvc-pac4j"><h3>Spring Web MVC<br /><small>(Spring Boot)</small></h3></a></div>
-    <div class="implem"><a target="_blank" href="https://github.com/pac4j/jee-pac4j"><img height="100" src="/img/logo-j2e.png" /></a><a target="_blank" href="https://github.com/pac4j/jee-pac4j"><h3>Jakarta EE<br /><small>(Servlet)</small></h3></a></div>
+    <div class="implem"><a target="_blank" href="https://github.com/pac4j/jee-pac4j"><img height="100" src="/img/logo-j2e.png" /></a><a href="/how-to-secure-a-jakarta-ee-application-with-oidc.html"><h3>Jakarta EE<br /><small>(Servlet)</small></h3></a></div>
     <div class="implem"><a target="_blank" href="https://github.com/pac4j/spring-webflux-pac4j"><img height="100" src="/img/logo-spring-webflux.png" /></a><a target="_blank" href="https://github.com/pac4j/spring-webflux-pac4j"><h3>Spring Webflux<br /><small>(Spring Boot)</small></h3></a></div>
     <div class="implem"><a target="_blank" href="https://github.com/bujiio/buji-pac4j"><img height="100" src="/img/logo-shiro.png" /></a><a target="_blank" href="https://github.com/bujiio/buji-pac4j"><h3>Shiro</h3></a></div>
-    <div class="implem"><a target="_blank" href="https://github.com/pac4j/spring-security-pac4j"><img height="100" src="/img/logo-spring-security.png" /></a><a target="_blank" href="https://github.com/pac4j/spring-security-pac4j"><h3>Spring Security<br /><small>(Spring Boot)</small></h3></a></div>
+    <div class="implem"><a target="_blank" href="https://github.com/pac4j/spring-security-pac4j"><img height="100" src="/img/logo-spring-security.png" /></a><a href="/how-to-secure-a-spring-security-application-with-oidc.html"><h3>Spring Security<br /><small>(Spring Boot)</small></h3></a></div>
 </div>
 
 <div class="implem-block">
