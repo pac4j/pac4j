@@ -190,4 +190,6 @@ The same `pac4j-cas` module covers the other CAS use cases:
 
 Read the [CAS reference](/docs/clients/cas.html) for the proxy and REST configurations, the stateless `DirectCasClient` and all the `CasConfiguration` options.
 
+**Using a different integration?** The [Jakarta EE guide](/how-to-secure-a-jakarta-ee-application-with-oidc.html) and [Spring Security guide](/how-to-secure-a-spring-security-application-with-oidc.html) explain the integration using OIDC. Follow their “Switching to SAML or CAS” section to use the CAS client configuration from this guide.
+
 **Discover more [pac4j frameworks](/implementations.html) and more [authentication mechanisms](/docs/clients.html)…**

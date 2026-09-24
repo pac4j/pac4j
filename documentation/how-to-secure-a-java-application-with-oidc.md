@@ -212,4 +212,6 @@ Open [http://localhost:8080/](http://localhost:8080/) and follow **Protected are
 - [Direct OIDC authentication](/docs/clients/openid-connect-clients.html#2-direct-clients) to protect a REST API with the access tokens issued by your provider.
 - [OpenID Federation](/docs/clients/openid-connect-federation.html) when your application belongs to a trust federation.
 
+**Using a different integration?** Reuse the OIDC client configuration with [Jakarta EE servlet filters](/how-to-secure-a-jakarta-ee-application-with-oidc.html), or connect pac4j authentication to an existing [Spring Security application](/how-to-secure-a-spring-security-application-with-oidc.html).
+
 **Discover more [pac4j frameworks](/implementations.html) and more [authentication mechanisms](/docs/clients.html)…**
