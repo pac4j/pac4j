@@ -7,9 +7,11 @@ description: "Add OpenID Connect (OIDC) login to a Java application with pac4j a
 
 # How to secure a Java application with OIDC (using Spring Boot)
 
-OpenID Connect (OIDC) adds an identity layer on top of OAuth 2.0. Your Java application never sees the user's password: it redirects the browser to an identity provider (Keycloak, Google, Microsoft Entra ID, Okta, Auth0, a CAS server...), the provider authenticates the user and sends back an **ID token**, a signed JWT that tells your application who signed in.
+You want users to sign in to your Java application with Keycloak, Google, Microsoft Entra ID, Okta, Auth0 or even a CAS server. They already have an account there, so your application should not ask them for another password.
 
-This guide uses **pac4j with Spring Boot** to add OIDC login to a Java web application in seven steps. It works with any OpenID Connect provider: the demo points to the public pac4j test server, and a dedicated section shows what changes for Keycloak, Google and Azure AD.
+This is what OpenID Connect (OIDC) is for. It adds an identity layer on top of OAuth 2.0: the provider authenticates the user, and your application receives an **ID token**, a signed JWT describing who signed in. The user's password stays with the provider.
+
+Let's put this into practice with **pac4j and Spring Boot**. We'll start with the public pac4j test server, then see what to change for Keycloak, Google or Azure AD. The same approach applies to other OpenID Connect providers.
 
 **What you need:**
 
@@ -18,7 +20,7 @@ This guide uses **pac4j with Spring Boot** to add OIDC login to a Java web appli
 
 ## 1) Get the Spring Boot demo
 
-The [OIDC demo project](https://github.com/pac4j/simple-spring-boot-pac4j-demos/tree/oidc) contains the three classes shown in this guide, ready to run:
+First, get the [OIDC demo project](https://github.com/pac4j/simple-spring-boot-pac4j-demos/tree/oidc). It contains the three classes we'll use below, ready to run:
 
 ```bash
 git clone --branch oidc --single-branch https://github.com/pac4j/simple-spring-boot-pac4j-demos.git
@@ -49,7 +51,7 @@ The [demo's `pom.xml`](https://github.com/pac4j/simple-spring-boot-pac4j-demos/b
 </dependency>
 ```
 
-The `pac4j-oidc` module is framework-agnostic: the same `OidcClient` works with Jakarta EE, Play, Vert.x, JAX-RS and the other [pac4j integrations](/implementations.html). The `spring-webmvc-pac4j` dependency provides the Spring MVC integration used by this Spring Boot application.
+Why two dependencies? `pac4j-oidc` handles the protocol, while `spring-webmvc-pac4j` connects it to Spring MVC. The `OidcClient` itself knows nothing about Spring: you can use it with Jakarta EE, Play, Vert.x, JAX-RS and the other [pac4j integrations](/implementations.html).
 
 ## 3) Configure OpenID Connect (OIDC) authentication
 
@@ -81,15 +83,17 @@ public class SecurityConfig extends Pac4jSecurityConfig {
 }
 ```
 
-What each part does:
+There are two things to configure here: the OIDC client and the URLs of our application.
 
-- **`Pac4jSecurityConfig`** registers the two endpoints every redirect-based login needs: `/callback`, where the provider sends the user back, and `/logout`.
-- **`setDiscoveryURI`** points to the provider's `.well-known/openid-configuration` document. pac4j reads the authorization, token, user info and JWKS endpoints from it, so you never type them by hand.
-- **`setClientId` and `setSecret`** are the credentials the provider gave you when you registered the application.
-- **`new Config(baseUri + "/callback", ...)`** sets the callback URL. pac4j appends `?client_name=OidcClient` to it, and this full URL is the **redirect URI** you must register at the provider.
-- **`addSecurity(registry, "OidcClient")`** protects `/protected/**`: an anonymous request there triggers the redirect to the provider.
+For the client, `setDiscoveryURI` points to the provider's `.well-known/openid-configuration` document. pac4j reads the authorization, token, user info and JWKS endpoints from it. So you do not have to configure each endpoint yourself. `setClientId` and `setSecret` are the credentials you receive when registering the application at the provider.
 
-By default pac4j uses the **authorization code flow**, and it adds **PKCE** automatically when the provider advertises support for it in its discovery document. `setAllowUnsignedIdTokens(true)` only exists because the public demo server issues unsigned ID tokens: remove it for any real provider, so that the ID token signature is always verified against the provider's JWKS.
+On the application side, `Pac4jSecurityConfig` registers `/callback` and `/logout`. The callback URL comes from `new Config(baseUri + "/callback", ...)`, and pac4j appends `?client_name=OidcClient` to it. **This full URL is the redirect URI to register at the provider.**
+
+Finally, `addSecurity(registry, "OidcClient")` protects `/protected/**`. An anonymous user requesting one of these pages is redirected to the provider to log in.
+
+By default, pac4j uses the **authorization code flow** and adds **PKCE** when the provider advertises support for it in its discovery document.
+
+You may wonder why the example allows unsigned ID tokens. This is only because the public demo server issues them. **Remove `setAllowUnsignedIdTokens(true)` for a real provider**, so pac4j verifies the ID token signature against the provider's JWKS.
 
 ## 4) Register the application at your identity provider
 
@@ -157,7 +161,7 @@ public String secure() {
 }
 ```
 
-The `ProfileManager` gives you the profile saved in the session after login. For OpenID Connect it is an `OidcProfile`, which exposes the standard claims as typed getters and keeps the raw tokens:
+Now that the user is authenticated, how do we get their information? The `ProfileManager` reads the profile saved in the session. For OIDC, this is an `OidcProfile`, with getters for the standard claims and access to the raw tokens:
 
 ```java
 final var profile = (OidcProfile) profileManager.getProfile().orElseThrow();
@@ -173,7 +177,9 @@ Which claims are present depends on the **scopes** you request. The default is `
 
 ## 6) Logout
 
-The `/logout` link created by the integration removes the profile from the session: this is the **local logout**. To also end the session at the identity provider, enable the central logout in `application.properties`:
+The `/logout` link removes the profile from the application's session. This is the **local logout**: the user may still be logged in at the provider.
+
+To end that session as well, enable central logout in `application.properties`:
 
 ```properties
 pac4j.logout.centralLogout=true
@@ -212,6 +218,8 @@ Open [http://localhost:8080/](http://localhost:8080/) and follow **Protected are
 - [Direct OIDC authentication](/docs/clients/openid-connect-clients.html#2-direct-clients) to protect a REST API with the access tokens issued by your provider.
 - [OpenID Federation](/docs/clients/openid-connect-federation.html) when your application belongs to a trust federation.
 
-**Using a different integration?** Reuse the OIDC client configuration with [Jakarta EE servlet filters](/how-to-secure-a-jakarta-ee-application-with-oidc.html), or connect pac4j authentication to an existing [Spring Security application](/how-to-secure-a-spring-security-application-with-oidc.html).
+**Using a different integration?** These guides also use OIDC: [Jakarta EE](/how-to-secure-a-jakarta-ee-application-with-oidc.html), [Spring Security](/how-to-secure-a-spring-security-application-with-oidc.html), [JAX-RS and Dropwizard](/how-to-secure-a-jax-rs-application-with-oidc.html), [Spark Java](/how-to-secure-a-spark-java-application-with-oidc.html) and [Spring WebFlux](/how-to-secure-a-spring-webflux-application-with-oidc.html).
+
+The [Play](/how-to-secure-a-play-application-with-saml.html) and [Javalin](/how-to-secure-a-javalin-application-with-saml.html) guides use SAML; [Shiro](/how-to-secure-a-shiro-application-with-cas.html) and [Vert.x](/how-to-secure-a-vertx-application-with-cas.html) use CAS. Their final sections explain how to switch protocols.
 
 **Discover more [pac4j frameworks](/implementations.html) and more [authentication mechanisms](/docs/clients.html)…**

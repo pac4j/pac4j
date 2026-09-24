@@ -305,6 +305,13 @@ main ul li { list-style-type: disc; }
   line-height: 1.35;
 }
 .blog-index a:hover { text-decoration: none; }
+.blog-index .blog-group {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: .3em;
+}
+.blog-index .blog-group a { flex: none; }
 .blog-index li:hover { background: var(--code-bg); }
 .tag {
   flex: 0 0 auto;

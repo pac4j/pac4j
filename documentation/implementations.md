@@ -44,24 +44,24 @@ description: "Find pac4j integrations for Spring Boot, Jakarta EE, Play, Vert.x,
 <h2>All <i>pac4j</i> implementations offer <a href="docs/implementations/comparison.html"><b>similar</b> features</a>:</h2>
 
 <div class="implem-block">
-    <div class="implem"><a target="_blank" href="https://github.com/pac4j/spring-webmvc-pac4j"><img height="100" src="/img/logo-spring-webmvc.png" /></a><a target="_blank" href="https://github.com/pac4j/spring-webmvc-pac4j"><h3>Spring Web MVC<br /><small>(Spring Boot)</small></h3></a></div>
+    <div class="implem"><a target="_blank" href="https://github.com/pac4j/spring-webmvc-pac4j"><img height="100" src="/img/logo-spring-webmvc.png" /></a><a href="/how-to-secure-a-java-application-with-oidc.html"><h3>Spring Web MVC<br /><small>(Spring Boot)</small></h3></a></div>
     <div class="implem"><a target="_blank" href="https://github.com/pac4j/jee-pac4j"><img height="100" src="/img/logo-j2e.png" /></a><a href="/how-to-secure-a-jakarta-ee-application-with-oidc.html"><h3>Jakarta EE<br /><small>(Servlet)</small></h3></a></div>
-    <div class="implem"><a target="_blank" href="https://github.com/pac4j/spring-webflux-pac4j"><img height="100" src="/img/logo-spring-webflux.png" /></a><a target="_blank" href="https://github.com/pac4j/spring-webflux-pac4j"><h3>Spring Webflux<br /><small>(Spring Boot)</small></h3></a></div>
-    <div class="implem"><a target="_blank" href="https://github.com/bujiio/buji-pac4j"><img height="100" src="/img/logo-shiro.png" /></a><a target="_blank" href="https://github.com/bujiio/buji-pac4j"><h3>Shiro</h3></a></div>
+    <div class="implem"><a target="_blank" href="https://github.com/pac4j/spring-webflux-pac4j"><img height="100" src="/img/logo-spring-webflux.png" /></a><a href="/how-to-secure-a-spring-webflux-application-with-oidc.html"><h3>Spring WebFlux<br /><small>(Spring Boot)</small></h3></a></div>
+    <div class="implem"><a target="_blank" href="https://github.com/bujiio/buji-pac4j"><img height="100" src="/img/logo-shiro.png" /></a><a href="/how-to-secure-a-shiro-application-with-cas.html"><h3>Shiro</h3></a></div>
     <div class="implem"><a target="_blank" href="https://github.com/pac4j/spring-security-pac4j"><img height="100" src="/img/logo-spring-security.png" /></a><a href="/how-to-secure-a-spring-security-application-with-oidc.html"><h3>Spring Security<br /><small>(Spring Boot)</small></h3></a></div>
 </div>
 
 <div class="implem-block">
-    <div class="implem"><a target="_blank" href="https://github.com/pac4j/play-pac4j"><img height="100" src="/img/logo-play.png" /></a><a target="_blank" href="https://github.com/pac4j/play-pac4j"><h3>Play 2.x/3.x</h3></a></div>
-    <div class="implem"><a target="_blank" href="https://github.com/pac4j/vertx-pac4j"><img height="100" src="/img/logo-vertx.png" /></a><a target="_blank" href="https://github.com/pac4j/vertx-pac4j"><h3>Vertx</h3></a></div>
-    <div class="implem"><a target="_blank" href="https://github.com/pac4j/spark-pac4j"><img height="100" src="/img/logo-spark.png" /></a><a target="_blank" href="https://github.com/pac4j/spark-pac4j"><h3>Spark Java</h3></a></div>
+    <div class="implem"><a target="_blank" href="https://github.com/pac4j/play-pac4j"><img height="100" src="/img/logo-play.png" /></a><a href="/how-to-secure-a-play-application-with-saml.html"><h3>Play 2.x/3.x</h3></a></div>
+    <div class="implem"><a target="_blank" href="https://github.com/pac4j/vertx-pac4j"><img height="100" src="/img/logo-vertx.png" /></a><a href="/how-to-secure-a-vertx-application-with-cas.html"><h3>Vert.x</h3></a></div>
+    <div class="implem"><a target="_blank" href="https://github.com/pac4j/spark-pac4j"><img height="100" src="/img/logo-spark.png" /></a><a href="/how-to-secure-a-spark-java-application-with-oidc.html"><h3>Spark Java</h3></a></div>
     <div class="implem"><a target="_blank" href="https://ratpack.io/manual/current/pac4j.html#pac4j"><img height="100" src="/img/logo-ratpack.png" /></a><a target="_blank" href="https://ratpack.io/manual/current/pac4j.html#pac4j"><h3>Ratpack</h3></a></div>
-    <div class="implem"><a target="_blank" href="https://github.com/pac4j/jax-rs-pac4j"><img height="100" src="/img/logo-jaxrs.png" /></a><a target="_blank" href="https://github.com/pac4j/jax-rs-pac4j"><h3>JAX-RS</h3></a></div>
+    <div class="implem"><a target="_blank" href="https://github.com/pac4j/jax-rs-pac4j"><img height="100" src="/img/logo-jaxrs.png" /></a><a href="/how-to-secure-a-jax-rs-application-with-oidc.html"><h3>JAX-RS</h3></a></div>
 </div>
 
 <div class="implem-block">
-    <div class="implem"><a target="_blank" href="https://github.com/pac4j/dropwizard-pac4j"><img height="100" src="/img/logo-dropwizard.png" /></a><a target="_blank" href="https://github.com/pac4j/dropwizard-pac4j"><h3>Dropwizard</h3></a></div>
-    <div class="implem"><a target="_blank" href="https://github.com/pac4j/javalin-pac4j"><img height="100" src="/img/logo-javalin.png" /></a><a target="_blank" href="https://github.com/pac4j/javalin-pac4j"><h3>Javalin</h3></a></div>
+    <div class="implem"><a target="_blank" href="https://github.com/pac4j/dropwizard-pac4j"><img height="100" src="/img/logo-dropwizard.png" /></a><a href="/how-to-secure-a-jax-rs-application-with-oidc.html#using-dropwizard"><h3>Dropwizard</h3></a></div>
+    <div class="implem"><a target="_blank" href="https://github.com/pac4j/javalin-pac4j"><img height="100" src="/img/logo-javalin.png" /></a><a href="/how-to-secure-a-javalin-application-with-saml.html"><h3>Javalin</h3></a></div>
     <div class="implem"><a target="_blank" href="https://github.com/pac4j/undertow-pac4j"><img height="100" src="/img/logo-undertow.png" /></a><a target="_blank" href="https://github.com/pac4j/undertow-pac4j"><h3>Undertow</h3></a></div>
     <div class="implem"><a target="_blank" href="https://jooby.io/modules/pac4j"><img height="100" src="/img/logo-jooby.png" /></a><a target="_blank" href="https://jooby.io/modules/pac4j"><h3>Jooby</h3></a></div>
     <div class="implem"><a target="_blank" href="https://github.com/pac4j/http4s-pac4j"><img height="100" src="/img/logo-http4s.png" /></a><a target="_blank" href="https://github.com/pac4j/http4s-pac4j"><h3>http4s</h3></a></div>

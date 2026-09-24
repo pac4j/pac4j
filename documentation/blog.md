@@ -38,10 +38,42 @@ description: "Explore Java authentication tutorials and articles on OIDC, SAML, 
         <span class="tag tag-oidc">{{ site.data.blogtags.oidc }}</span>
     </li>
     <li>
-        <a href="/how-to-secure-a-spring-security-application-with-oidc.html">How to secure a Spring Security application with OIDC (using pac4j)</a>
+        <a href="/how-to-secure-a-play-application-with-saml.html">How to secure a Play application with SAML (using pac4j)</a>
+        <span class="tag tag-tuto">{{ site.data.blogtags.tuto }}</span>
+        <span class="tag tag-saml">{{ site.data.blogtags.saml }}</span>
+    </li>
+    <li>
+        <span class="blog-group">
+            <a href="/how-to-secure-a-spring-security-application-with-oidc.html">How to secure a Spring Security application with OIDC (using pac4j)</a>
+            <a href="/how-to-secure-a-shiro-application-with-cas.html">How to secure a Shiro application with CAS (using pac4j)</a>
+        </span>
         <span class="tag tag-tuto">{{ site.data.blogtags.tuto }}</span>
         <span class="tag tag-oidc">{{ site.data.blogtags.oidc }}</span>
-        <span class="tag tag-spring">{{ site.data.blogtags.spring }}</span>
+        <span class="tag tag-cas">{{ site.data.blogtags.cas }}</span>
+    </li>
+    <li>
+        <a href="/how-to-secure-a-spring-webflux-application-with-oidc.html">How to secure a Spring WebFlux application with OIDC (using pac4j)</a>
+        <span class="tag tag-tuto">{{ site.data.blogtags.tuto }}</span>
+        <span class="tag tag-oidc">{{ site.data.blogtags.oidc }}</span>
+    </li>
+    <li>
+        <a href="/how-to-secure-a-jax-rs-application-with-oidc.html">How to secure a JAX-RS application with OIDC (using pac4j)</a>
+        <span class="tag tag-tuto">{{ site.data.blogtags.tuto }}</span>
+        <span class="tag tag-oidc">{{ site.data.blogtags.oidc }}</span>
+    </li>
+    <li>
+        <a href="/how-to-secure-a-vertx-application-with-cas.html">How to secure a Vert.x application with CAS (using pac4j)</a>
+        <span class="tag tag-tuto">{{ site.data.blogtags.tuto }}</span>
+        <span class="tag tag-cas">{{ site.data.blogtags.cas }}</span>
+    </li>
+    <li>
+        <span class="blog-group">
+            <a href="/how-to-secure-a-javalin-application-with-saml.html">How to secure a Javalin application with SAML (using pac4j)</a>
+            <a href="/how-to-secure-a-spark-java-application-with-oidc.html">How to secure a Spark Java application with OIDC (using pac4j)</a>
+        </span>
+        <span class="tag tag-tuto">{{ site.data.blogtags.tuto }}</span>
+        <span class="tag tag-saml">{{ site.data.blogtags.saml }}</span>
+        <span class="tag tag-oidc">{{ site.data.blogtags.oidc }}</span>
     </li>
 </ul>
 

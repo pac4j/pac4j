@@ -7,9 +7,11 @@ description: "Add SAML 2.0 single sign-on to a Java application with pac4j and S
 
 # How to secure a Java application with SAML (using Spring Boot)
 
-SAML 2.0 is the single sign-on protocol of the enterprise world. Two parties exchange signed XML messages: the **identity provider** (IdP) authenticates the user (Microsoft Entra ID, Okta, ADFS, Shibboleth, Keycloak, a CAS server...), and the **service provider** (SP) is your Java application, which receives a signed assertion describing the user.
+Your organization already has an identity provider and asks you to connect your Java application using SAML 2.0. Before writing any code, let's clarify the two sides of that connection.
 
-This guide uses **pac4j with Spring Boot** to turn a Java web application into a SAML service provider. The demo authenticates against the public pac4j test IdP, and the sections on metadata, attributes and logout show what to adapt for your own IdP.
+The **identity provider** (IdP) authenticates the user. It might be Microsoft Entra ID, Okta, ADFS, Shibboleth, Keycloak or a CAS server. Your application is the **service provider** (SP): it receives a signed XML assertion from the IdP describing the authenticated user.
+
+We'll make our application a SAML service provider with **pac4j and Spring Boot**. The example uses the public pac4j test IdP. Along the way, we'll see how to exchange metadata with your own IdP, read user attributes and handle logout.
 
 **What you need:**
 
@@ -51,7 +53,7 @@ The [demo's `pom.xml`](https://github.com/pac4j/simple-spring-boot-pac4j-demos/b
 
 ## 3) Create the service provider keystore
 
-A SAML service provider signs its requests and decrypts the assertions it receives, so it needs its own key pair. Generate a Java keystore with `keytool`:
+Our service provider needs a key pair to sign requests and decrypt encrypted assertions. Let's create a Java keystore with `keytool`:
 
 ```bash
 keytool -genkeypair -alias pac4j-demo -keypass pac4j-demo-passwd -keystore samlKeystore.jks -storepass pac4j-demo-passwd -keyalg RSA -keysize 2048 -validity 3650
@@ -91,18 +93,17 @@ public class SecurityConfig extends Pac4jSecurityConfig {
 }
 ```
 
-What each part does:
+The first settings point to the keystore from step 3 and use the two passwords we gave to `keytool`. The `classpath:` prefix loads it from the application resources; `file:` and `https:` are also supported.
 
-- **`Pac4jSecurityConfig`** registers the `/callback` endpoint, which is the **Assertion Consumer Service** (ACS) of your service provider, and the `/logout` endpoint.
-- **The keystore lines** point to the file created in step 3 and give the two passwords used with `keytool`. The `classpath:` prefix loads it from the resources; `file:` and `https:` prefixes are supported as well.
-- **`setIdentityProviderMetadataPath`** is the IdP metadata from your prerequisites. pac4j reads the IdP's single sign-on URL, its signing certificate and its logout endpoint from it.
-- **`setServiceProviderEntityId`** is the unique name of your application in the SAML world. Any URI works, but the callback URL is a common and convenient choice.
-- **`setServiceProviderMetadataPath`** is where pac4j writes the metadata of your service provider, which you will give to the IdP in the next step.
-- **`addSecurity(registry, "SAML2Client")`** protects `/protected/**`.
+Then we tell pac4j about the IdP with `setIdentityProviderMetadataPath`. Its metadata contains the single sign-on URL, signing certificate and logout endpoint. There is no need to copy these values into separate settings.
+
+Our application also needs an identity of its own. `setServiceProviderEntityId` gives it a unique name in the SAML world. Any URI works; the callback URL is a convenient choice. `setServiceProviderMetadataPath` tells pac4j where to write our SP metadata. We'll give that file to the IdP in the next step.
+
+Finally, `Pac4jSecurityConfig` registers `/callback` and `/logout`, and `addSecurity(registry, "SAML2Client")` protects `/protected/**`. In SAML terms, the callback is our **Assertion Consumer Service** (ACS).
 
 ## 5) Exchange metadata with your identity provider
 
-SAML trust is mutual: your application trusts the IdP through its metadata, and the IdP must know your application the same way.
+We have given pac4j the IdP metadata, but we are only halfway there: **the IdP must also know our application**.
 
 When the `SAML2Client` initializes, pac4j generates the SP metadata into `metadata/sp-metadata-8080.xml`. This XML document contains your entity ID, your public certificate and your ACS URL, `http://localhost:8080/callback?client_name=SAML2Client`. Register it at the IdP:
 
@@ -136,7 +137,9 @@ public String secure() {
 }
 ```
 
-After login, the `ProfileManager` returns a `SAML2Profile`. Its identifier is the `NameID` of the assertion, and its attributes are the SAML attributes the IdP released, under the names the IdP used. Enterprise IdPs often send URNs rather than friendly names, and SAML attributes are multi-valued, so a value comes back as a list:
+After login, the `ProfileManager` returns a `SAML2Profile`. Its identifier is the assertion's `NameID`, and its attributes are those released by the IdP.
+
+Do not be surprised if the attribute names look like URNs instead of `email` or `name`: pac4j keeps the names supplied by the IdP. SAML attributes are also multi-valued, so you get a list:
 
 ```java
 final var profile = (SAML2Profile) profileManager.getProfile().orElseThrow();
@@ -145,7 +148,7 @@ profile.getAttribute("urn:oid:0.9.2342.19200300.100.1.3");  // "mail" in many di
 profile.getAttributes();                                    // everything the IdP sent
 ```
 
-To work with readable names in your code, map the attributes once in the configuration:
+Of course, you probably do not want these URNs all over your application code. Map them to readable names in the configuration:
 
 ```java
 cfg.setMappedAttributes(Map.of("urn:oid:0.9.2342.19200300.100.1.3", "email"));
@@ -155,7 +158,9 @@ The IdP decides which attributes it releases: if a value is missing, the attribu
 
 ## 7) Single logout
 
-The `/logout` link removes the profile from the local session. SAML also defines a **single logout** (SLO) that ends the session at the IdP and, through it, at the other applications. Enable it in `application.properties`:
+The `/logout` link removes the local profile. But the user can still have a session at the IdP and in other applications.
+
+SAML defines **single logout** (SLO) for this: our application asks the IdP to end its session and notify the other applications. Enable it in `application.properties`:
 
 ```properties
 pac4j.logout.centralLogout=true
@@ -197,6 +202,8 @@ Open [http://localhost:8080/](http://localhost:8080/) and follow **Protected are
 - The [SAML 2.0 reference](/docs/clients/saml.html): bindings, signature algorithms, forced and passive authentication, attribute converters and IdP-specific notes.
 - The `SAML2Client` keeps a replay cache between authentications, so define it once as a singleton, which is what the Spring bean above does.
 
-**Using a different integration?** The [Jakarta EE guide](/how-to-secure-a-jakarta-ee-application-with-oidc.html) and [Spring Security guide](/how-to-secure-a-spring-security-application-with-oidc.html) explain the integration using OIDC. Follow their “Switching to SAML or CAS” section to use the SAML client configuration from this guide.
+**Using a different integration?** The [Play](/how-to-secure-a-play-application-with-saml.html) and [Javalin](/how-to-secure-a-javalin-application-with-saml.html) guides also use SAML.
+
+For [Jakarta EE](/how-to-secure-a-jakarta-ee-application-with-oidc.html), [Spring Security](/how-to-secure-a-spring-security-application-with-oidc.html), [JAX-RS and Dropwizard](/how-to-secure-a-jax-rs-application-with-oidc.html), [Spark Java](/how-to-secure-a-spark-java-application-with-oidc.html), [Spring WebFlux](/how-to-secure-a-spring-webflux-application-with-oidc.html), [Shiro](/how-to-secure-a-shiro-application-with-cas.html) and [Vert.x](/how-to-secure-a-vertx-application-with-cas.html), follow the integration guide and its final section on switching protocols, using the SAML configuration above.
 
 **Discover more [pac4j frameworks](/implementations.html) and more [authentication mechanisms](/docs/clients.html)…**
