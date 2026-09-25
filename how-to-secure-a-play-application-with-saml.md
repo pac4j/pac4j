@@ -1,11 +1,9 @@
 ---
-layout: content
+layout: guide
 title: How to secure a Play application with SAML (using pac4j)
 seo_title: "How to secure a Play Framework application with SAML | pac4j"
 description: "Add SAML 2.0 single sign-on to a Play Framework Java application with pac4j: sbt dependencies, keystore, Guice module, routes, @Secure actions and logout."
 ---
-
-# How to secure a Play application with SAML (using pac4j)
 
 In a Play application, we want to protect actions while keeping the usual routes and controllers. The [play-pac4j](https://github.com/pac4j/play-pac4j) library lets us do that with a `@Secure` annotation, a `CallbackController` and a `LogoutController`.
 

@@ -1,11 +1,9 @@
 ---
-layout: content
+layout: guide
 title: How to secure a Java application with SAML (using Spring Boot)
 seo_title: "How to secure a Java application with SAML | pac4j"
 description: "Add SAML 2.0 single sign-on to a Java application with pac4j and Spring Boot: keystore, IdP metadata, SP metadata exchange, user attributes and single logout."
 ---
-
-# How to secure a Java application with SAML (using Spring Boot)
 
 Your organization already has an identity provider and asks you to connect your Java application using SAML 2.0. Before writing any code, let's clarify the two sides of that connection.
 
