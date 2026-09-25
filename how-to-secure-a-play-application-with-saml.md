@@ -282,6 +282,6 @@ Add `pac4j-oidc` or `pac4j-cas` to `build.sbt`, provide the corresponding client
 
 - The [play-pac4j](https://github.com/pac4j/play-pac4j) library and its [documentation](https://github.com/pac4j/play-pac4j/wiki), including the `Security` trait for Scala controllers and the Twirl template helper.
 - The [play-pac4j-java-demo](https://github.com/pac4j/play-pac4j-java-demo) and [play-pac4j-scala-demo](https://github.com/pac4j/play-pac4j-scala-demo) applications, with many authentication mechanisms.
-- The [SAML 2.0 reference](/docs/clients/saml.html) for bindings, signature algorithms, attribute converters and IdP-specific notes.
+- The documentation for the [SAML 2.0 client for Java](/docs/clients/saml.html) for bindings, signature algorithms, attribute converters and IdP-specific notes.
 
 **Discover more [pac4j frameworks](/implementations.html) and more [authentication mechanisms](/docs/clients.html)…**

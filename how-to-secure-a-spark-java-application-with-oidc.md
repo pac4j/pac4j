@@ -196,6 +196,6 @@ Add `pac4j-saml` or `pac4j-cas`, replace the `OidcClient` in `Config` and update
 - The [spark-pac4j](https://github.com/pac4j/spark-pac4j) library and its [documentation](https://github.com/pac4j/spark-pac4j/wiki).
 - The [spark-pac4j-demo](https://github.com/pac4j/spark-pac4j-demo) application, with many authentication mechanisms.
 - The [Javalin guide](/how-to-secure-a-javalin-application-with-saml.html) for a similar integration using SAML.
-- The [OpenID Connect reference](/docs/clients/openid-connect.html) for client configuration and provider options.
+- The documentation for the [OIDC client for Java](/docs/clients/openid-connect.html) for client configuration and provider options.
 
 **Discover more [pac4j frameworks](/implementations.html) and more [authentication mechanisms](/docs/clients.html)…**

@@ -221,6 +221,6 @@ Add `pac4j-oidc` or `pac4j-saml`, declare the corresponding client in the INI, r
 
 - The [buji-pac4j](https://github.com/bujiio/buji-pac4j) bridge and its [documentation](https://github.com/bujiio/buji-pac4j/wiki).
 - The [buji-pac4j-demo](https://github.com/pac4j/buji-pac4j-demo) application, with CAS, OIDC, SAML and HTTP basic authentication.
-- The [CAS reference](/docs/clients/cas.html) for proxy tickets, the CAS REST API and all the `CasConfiguration` options, and the [Jakarta EE guide](/how-to-secure-a-jakarta-ee-application-with-oidc.html) for the pac4j filters used here, outside Shiro.
+- The documentation for the [CAS client for Java](/docs/clients/cas.html) for proxy tickets, the CAS REST API and all the `CasConfiguration` options, and the [Jakarta EE guide](/how-to-secure-a-jakarta-ee-application-with-oidc.html) for the pac4j filters used here, outside Shiro.
 
 **Discover more [pac4j frameworks](/implementations.html) and more [authentication mechanisms](/docs/clients.html)…**
