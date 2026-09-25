@@ -249,8 +249,8 @@ main ul li { list-style-type: disc; }
 }
 
 /* ---------- Section title badges ---------- */
-.title { margin-bottom: 2rem; }
-.title h1 { margin-top: 10px; }
+.title { margin: 1.25rem 0 1.5rem; }
+.title h1 { margin: 0; }
 .alert {
   display: inline-block;
   padding: .35em .8em;
@@ -313,6 +313,14 @@ main ul li { list-style-type: disc; }
 }
 .blog-index .blog-group a { flex: none; }
 .blog-index li:hover { background: var(--code-bg); }
+.blog-index .guide-logo {
+  flex: 0 0 48px;
+  width: 48px;
+  height: 40px;
+  object-fit: contain;
+  align-self: center;
+  border-radius: 0;
+}
 .tag {
   flex: 0 0 auto;
   font-size: .68rem;
@@ -327,6 +335,7 @@ main ul li { list-style-type: disc; }
 .tag-rel { background: #03c3a4; }
 .tag-guide { background: #1565c0; }
 .tag-tuto { background: #a580ee; }
+.tag-howto { background: #b34668; }
 .tag-spring { background: #6db33f; }
 .tag-cas { background: #ef6c00; }
 .tag-oidc { background: #007b83; }

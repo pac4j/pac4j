@@ -1,11 +1,9 @@
 ---
-layout: content
+layout: guide
 title: How to secure a Spring WebFlux application with OIDC (using pac4j)
 seo_title: "How to secure a Spring WebFlux application with OIDC | pac4j"
 description: "Add OpenID Connect login to Spring WebFlux with pac4j: protect routes, handle the OIDC callback, read the user profile and configure logout."
 ---
-
-# How to secure a Spring WebFlux application with OIDC (using pac4j)
 
 The OIDC client does not change when we move from Spring MVC to WebFlux. The surrounding HTTP and session APIs do: we have `WebFilter`, `ServerWebExchange` and reactive return types instead of servlet filters.
 

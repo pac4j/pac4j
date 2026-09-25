@@ -1,11 +1,9 @@
 ---
-layout: content
+layout: guide
 title: How to secure a Jakarta EE application with OIDC (using pac4j)
 seo_title: "How to secure a Jakarta EE application with OIDC | pac4j"
 description: "Add OpenID Connect (OIDC) login to a Jakarta EE or servlet application with pac4j: security, callback and logout filters, user profile, SAML and CAS variants."
 ---
-
-# How to secure a Jakarta EE application with OIDC (using pac4j)
 
 You do not need Spring to add OpenID Connect login to a Java web application. If you already have servlets and a servlet container, we can use those directly.
 

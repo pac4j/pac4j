@@ -1,11 +1,9 @@
 ---
-layout: content
+layout: guide
 title: How to secure a Java application with OIDC (using Spring Boot)
 seo_title: "How to secure a Java application with OIDC | pac4j"
 description: "Add OpenID Connect (OIDC) login to a Java application with pac4j and Spring Boot: Maven setup, Keycloak, Google or Azure AD, user profile and logout."
 ---
-
-# How to secure a Java application with OIDC (using Spring Boot)
 
 You want users to sign in to your Java application with Keycloak, Google, Microsoft Entra ID, Okta, Auth0 or even a CAS server. They already have an account there, so your application should not ask them for another password.
 

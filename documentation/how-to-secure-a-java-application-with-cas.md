@@ -1,11 +1,9 @@
 ---
-layout: content
+layout: guide
 title: How to secure a Java application with CAS (using Spring Boot)
 seo_title: "How to secure a Java application with CAS | pac4j"
 description: "Add CAS single sign-on to a Java application with pac4j and Spring Boot: Maven setup, CAS login URL, service registration, user attributes and logout."
 ---
-
-# How to secure a Java application with CAS (using Spring Boot)
 
 CAS can mean two things: the open source single sign-on server maintained by the [Apereo foundation](https://apereo.github.io/cas/), or the Central Authentication Service protocol. Here, we'll use the CAS protocol to connect our Java application to a CAS server.
 

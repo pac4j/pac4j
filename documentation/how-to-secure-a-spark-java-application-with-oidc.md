@@ -1,11 +1,9 @@
 ---
-layout: content
+layout: guide
 title: How to secure a Spark Java application with OIDC (using pac4j)
 seo_title: "How to secure a Spark Java application with OIDC | pac4j"
 description: "Add OpenID Connect (OIDC) login to a Spark Java application with pac4j: a SecurityFilter on a before filter, callback and logout routes, user profile."
 ---
-
-# How to secure a Spark Java application with OIDC (using pac4j)
 
 You have a few Spark Java routes and want to require an OIDC login before users can reach some of them. Spark's `before` filters are a natural place to do this.
 
