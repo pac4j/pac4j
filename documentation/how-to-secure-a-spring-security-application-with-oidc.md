@@ -1,11 +1,9 @@
 ---
-layout: content
+layout: guide
 title: How to secure a Spring Security application with OIDC (using pac4j)
 seo_title: "How to secure a Spring Security application with OIDC | pac4j"
 description: "Add OpenID Connect (OIDC) login to a Spring Security application: configure pac4j servlet filters, map roles and access the Spring Security context."
 ---
-
-# How to secure a Spring Security application with OIDC (using pac4j)
 
 You already have Spring Security in your application, with `hasRole` rules, `@PreAuthorize` on services and code reading `SecurityContextHolder`. You want to use pac4j for OpenID Connect login, while keeping that authorization code.
 

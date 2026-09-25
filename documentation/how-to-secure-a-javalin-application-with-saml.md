@@ -1,11 +1,9 @@
 ---
-layout: content
+layout: guide
 title: How to secure a Javalin application with SAML (using pac4j)
 seo_title: "How to secure a Javalin application with SAML | pac4j"
 description: "Add SAML 2.0 single sign-on to a Javalin application with pac4j: keystore, SAML2Client, a SecurityHandler on a before handler, callback and logout handlers."
 ---
-
-# How to secure a Javalin application with SAML (using pac4j)
 
 In Javalin, we define routes and add handlers around them. So where should SAML authentication go? In a handler that runs before the protected route.
 

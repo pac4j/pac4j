@@ -1,0 +1,9 @@
+---
+layout: content
+---
+
+<div class="title">
+    <h1 class="text-center" id="{{ page.title | remove: '.' | remove: '(' | remove: ')' | slugify }}"><span class="alert alert-doc">{{ page.title }}</span></h1>
+</div>
+
+{{ content }}

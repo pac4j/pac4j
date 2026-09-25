@@ -1,11 +1,9 @@
 ---
-layout: content
+layout: guide
 title: How to secure a Vert.x application with CAS (using pac4j)
 seo_title: "How to secure a Vert.x Web application with CAS | pac4j"
 description: "Add CAS single sign-on to a Vert.x Web application with pac4j: session handler, CasClient, a SecurityHandler on a route, callback and logout handlers."
 ---
-
-# How to secure a Vert.x application with CAS (using pac4j)
 
 Let's connect a Vert.x Web application to a CAS server. We'll use the [vertx-pac4j](https://github.com/pac4j/vertx-pac4j) library to add three handlers to our router: `SecurityHandler`, `CallbackHandler` and `LogoutHandler`.
 

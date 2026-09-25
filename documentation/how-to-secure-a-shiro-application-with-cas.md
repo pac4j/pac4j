@@ -1,11 +1,9 @@
 ---
-layout: content
+layout: guide
 title: How to secure a Shiro application with CAS (using pac4j)
 seo_title: "How to secure an Apache Shiro application with CAS | pac4j"
 description: "Add CAS single sign-on to an Apache Shiro application: a pac4j implementation authenticates, the buji-pac4j bridge fills the Shiro subject and roles."
 ---
-
-# How to secure a Shiro application with CAS (using pac4j)
 
 Your application already uses Shiro: URL rules in `shiro.ini`, calls to `SecurityUtils.getSubject()`, role checks in the code. Now you need to connect it to a **CAS server**, while keeping those authorization rules.
 

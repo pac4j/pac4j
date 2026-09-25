@@ -1,11 +1,9 @@
 ---
-layout: content
+layout: guide
 title: How to secure a JAX-RS application with OIDC (using pac4j)
 seo_title: "How to secure a JAX-RS (Jersey, RESTEasy) application with OIDC | pac4j"
 description: "Add OpenID Connect (OIDC) to a JAX-RS application with pac4j on Jersey, RESTEasy or Dropwizard: browser login with @Pac4JSecurity, bearer tokens for a REST API."
 ---
-
-# How to secure a JAX-RS application with OIDC (using pac4j)
 
 Before adding OIDC to a JAX-RS application, let's distinguish two cases. A browser visits a protected page and needs to be redirected to a login form. An API caller, on the other hand, already has an **access token** and sends it with the request. The application must handle these differently.
 
