@@ -1,6 +1,8 @@
 ---
 layout: doc
 title: Release notes (dead versions)&#58;
+seo_title: "Archived release notes for pac4j 1.x and 2.x | pac4j"
+description: "Browse historical pac4j 1.x and 2.x release notes covering Java authentication features, client APIs and security improvements."
 ---
 
 **v2.3.1**:

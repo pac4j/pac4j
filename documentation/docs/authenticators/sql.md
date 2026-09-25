@@ -1,6 +1,8 @@
 ---
 layout: doc
 title: Relational database
+seo_title: "SQL database authentication in Java | pac4j"
+description: "Authenticate Java application users against a relational database with pac4j-sql and DbProfileService, including password and profile configuration."
 ---
 
 *pac4j* allows you to validate username/password and create, update and delete users on a SQL database.

@@ -4,6 +4,8 @@ title: What's new in pac4j v5?
 author: Jérôme LELEU
 date: January 2021
 tags: [rel]
+seo_title: "pac4j 5 migration: Java 11 and security API changes | pac4j"
+description: "Explore pac4j 5 changes, including Java 11, session management, SAML logout, user profiles, authorizers and CSRF protection."
 ---
 
 One of the primary goals of pac4j has always been to be easy. One must admit that over the versions, it has gained some complexity and weight and time has come for cleaning.

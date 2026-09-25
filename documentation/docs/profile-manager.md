@@ -1,6 +1,8 @@
 ---
 layout: doc
 title: Profile manager
+seo_title: "Manage authenticated user profiles in Java | pac4j"
+description: "Use pac4j ProfileManager to retrieve and manage authenticated users, work with multiple profiles and customize profile management."
 ---
 
 The profile manager is meant to deal with the user profile: it can be used to save or restore it.

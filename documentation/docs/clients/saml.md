@@ -1,9 +1,15 @@
 ---
 layout: doc
-title: SAML
+title: SAML 2.0 client for Java
+seo_title: "SAML 2.0 client for Java: SSO authentication | pac4j"
+description: "Use pac4j-saml as your SAML 2.0 client for Java. Set up your service provider with IdP metadata, a keystore and single logout, with a step-by-step tutorial."
 ---
 
-*pac4j* allows you to login with any SAML identity provider using the SAML v2.0 protocol.
+`pac4j-saml` provides a **SAML 2.0 client for Java** applications. Its `SAML2Client` lets your application act as a service provider (SP), connecting it to a SAML identity provider (IdP) through the [pac4j framework integrations](/implementations.html).
+
+SAML 2.0 provides single sign-on (SSO) through XML assertions exchanged between the identity provider and your application. The identity provider authenticates the user; the service provider validates the SAML response to establish who signed in.
+
+**[How to secure a Java application with SAML (using Spring Boot)](/how-to-secure-a-java-application-with-saml.html)** — follow a complete Spring Boot example, then use the reference below for the full configuration.
 
 It has been tested with various SAML 2 providers: Okta, testshib.org, CAS SAML2 IdP, Shibboleth v3.4...
 
@@ -382,13 +388,13 @@ Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files c
 
 ADFS 3.0 does not accept NameQualifier when using urn:oasis:names:tc:SAML:2.0:nameid-format:entity. For this reason, the parameter `useNameQualifier` in the `SAML2Configuration` must be set to false, which is the default value.
 
-# Integration with various IdPs
+## 7) Integration with various IdPs
 
-## SimpleSAMPphp
+### a) SimpleSAMLphp
 
 SimpleSAMLphp is a commonly used IdP. To integrate PAC4J with SimpleSAMLphp use the following steps as a start. Let's assume a *standard* simpleSAMLphp install.
 
-### DemoConfigFactory.java
+#### DemoConfigFactory.java
 
 ```java
 final SAML2Configuration cfg = new SAML2Configuration("resource:samlKeystore.jks",
@@ -401,7 +407,7 @@ final SAML2Configuration cfg = new SAML2Configuration("resource:samlKeystore.jks
  final SAML2Client saml2Client = new SAML2Client(cfg);
 ```
 
-### SimpleSAMLphp config
+#### SimpleSAMLphp config
 
 Please note that *pac4j* requires the binding `urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST` for both SingleSignOn and SingleLogout services while simpleSAMLphp is by default installed using only `urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect`. It is required to add the bindings to the **metadata/saml20-idp-hosted.php** file:
 
@@ -418,7 +424,7 @@ $metadata['test.pac4j'] = array(
 ...
 ```
 
-### Metadata
+#### Metadata
 
 SimpleSAMLphp exposes its IdP metadata on `http://idp-domain/simplesamlphp/saml2/idp/metadata.php?output=xhtml`. You can wrap this file in an additional `<md:EntitiesDescriptor ...` tag to generate the **idp-metadata.xml** file.
 
@@ -451,7 +457,7 @@ SimpleSAMLphp exposes its IdP metadata on `http://idp-domain/simplesamlphp/saml2
 </md:EntitiesDescriptor>
 ```
 
-## 7) Custom OpenSAML Bootstrap
+## 8) Custom OpenSAML Bootstrap
 
 Behind the scenes, OpenSAML uses a singleton registry to hold its configuration (builders, marshallers, parsers, etc).
 While *pac4j* ships with generally sane defaults for this configuration
@@ -529,7 +535,7 @@ of the `org.pac4j.saml.util.Configuration` implementation
 
 For more information, see [https://docs.oracle.com/javase/tutorial/ext/basics/spi.html]
 
-## 8) SAML message store
+## 9) SAML message store
 
 A Message Store is an abstraction used by pac4j to track ongoing requests and incoming responses.
 

@@ -4,6 +4,8 @@ title: Yet another JWT library (pac4j-jwt) for Java
 author: Jérôme LELEU
 date: September 2017
 tags: [guide]
+seo_title: "JWT authentication in Java with pac4j-jwt | pac4j"
+description: "Learn how pac4j-jwt generates and validates JSON Web Tokens for Java authentication, with examples of signing, encryption and user profiles."
 ---
 
 <style>

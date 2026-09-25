@@ -1,8 +1,8 @@
 ---
 layout: doc
 title: OpenID Connect / Federation
-seo_title: "OpenID Federation in Java: trust anchors and registration | pac4j"
-description: "Set up OpenID Federation in Java with pac4j-oidc: publish an RP entity configuration, configure trust anchors and register clients automatically or explicitly."
+seo_title: "OpenID Federation client configuration in Java | pac4j"
+description: "Configure OpenID Federation with pac4j: federation metadata, trust anchors and explicit or automatic registration of Java OIDC clients."
 ---
 
 See also:

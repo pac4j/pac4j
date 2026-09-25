@@ -4,6 +4,8 @@ title: JakartaEE is coming
 author: Jérôme LELEU
 date: April 2022
 tags: [guide, rel]
+seo_title: "Jakarta EE migration and Java servlet support | pac4j"
+description: "Follow the pac4j 5.x migration from javax.servlet to jakarta.servlet and the separation of Java EE and Jakarta EE dependencies."
 ---
 
 For a long time, the Java Enterprise Edition has lived its life under the umbrella of Sun Microsystems then Oracle.

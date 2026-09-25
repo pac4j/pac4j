@@ -1,8 +1,8 @@
 ---
 layout: doc
 title: OpenID Connect / Clients
-seo_title: "Java OIDC client configuration: providers and login flows | pac4j"
-description: "Configure a Java OIDC client with pac4j: provider discovery, Google, Entra ID and Keycloak clients, login flows, scopes and access-token requests."
+seo_title: "OIDC client configuration for Java applications | pac4j"
+description: "Configure pac4j OIDC clients for browser login and direct authentication, including provider discovery and clients for common identity providers."
 ---
 
 See also:

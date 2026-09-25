@@ -249,8 +249,8 @@ main ul li { list-style-type: disc; }
 }
 
 /* ---------- Section title badges ---------- */
-.title { margin-bottom: 2rem; }
-.title h1 { margin-top: 10px; }
+.title { margin: 1.25rem 0 1.5rem; }
+.title h1 { margin: 0; }
 .alert {
   display: inline-block;
   padding: .35em .8em;
@@ -305,7 +305,22 @@ main ul li { list-style-type: disc; }
   line-height: 1.35;
 }
 .blog-index a:hover { text-decoration: none; }
+.blog-index .blog-group {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: .3em;
+}
+.blog-index .blog-group a { flex: none; }
 .blog-index li:hover { background: var(--code-bg); }
+.blog-index .guide-logo {
+  flex: 0 0 48px;
+  width: 48px;
+  height: 40px;
+  object-fit: contain;
+  align-self: center;
+  border-radius: 0;
+}
 .tag {
   flex: 0 0 auto;
   font-size: .68rem;
@@ -320,8 +335,11 @@ main ul li { list-style-type: disc; }
 .tag-rel { background: #03c3a4; }
 .tag-guide { background: #1565c0; }
 .tag-tuto { background: #a580ee; }
+.tag-howto { background: #b34668; }
 .tag-spring { background: #6db33f; }
 .tag-cas { background: #ef6c00; }
+.tag-oidc { background: #007b83; }
+.tag-saml { background: #5261b8; }
 .tag-fund {
   background: linear-gradient(135deg, #f6d365 0%, #d4a017 45%, #f7e08a 70%, #c8901a 100%);
   color: #4a3208;
@@ -460,14 +478,14 @@ main ul li { list-style-type: disc; }
   white-space: nowrap;
 }
 #home .chip small { color: var(--muted); font-size: .8em; }
-#home .chips-links .chip { color: var(--link); }
-#home .chips-links .chip:hover {
+#home .chips-links a.chip { color: var(--link); }
+#home .chips-links a.chip:hover {
   text-decoration: none;
   color: #fff;
   background: var(--blue);
   border-color: var(--blue);
 }
-#home .chips-links .chip:hover small { color: rgba(255, 255, 255, .8); }
+#home .chips-links a.chip:hover small { color: rgba(255, 255, 255, .8); }
 
 /* quickstart */
 #home .home-code .highlight,

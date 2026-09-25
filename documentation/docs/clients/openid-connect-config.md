@@ -1,8 +1,8 @@
 ---
 layout: doc
 title: OpenID Connect / Advanced configuration
-seo_title: "Java OIDC client: authentication, tokens and advanced settings | pac4j"
-description: "Configure advanced pac4j OIDC settings in Java: client authentication, private_key_jwt, nonce, signing algorithms, token expiration and key rotation."
+seo_title: "Advanced OIDC configuration for Java clients | pac4j"
+description: "Configure OpenID Connect client authentication, state, nonce, signing algorithms, tokens and key rotation with pac4j-oidc."
 ---
 
 See also:

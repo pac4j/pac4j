@@ -4,6 +4,8 @@ title: What's new in pac4j v6.4 and v6.5?
 author: Jérôme LELEU
 date: May 4, 2026
 tags: [rel]
+seo_title: "pac4j 6.4 and 6.5: OIDC and Federation improvements | pac4j"
+description: "Explore pac4j 6.4 and 6.5 changes, including JWKS, request signing, PAR, OpenID Federation, profile services and Java configuration."
 ---
 
 ## 1) Removal of the "old" modules

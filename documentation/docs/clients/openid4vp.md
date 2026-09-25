@@ -1,8 +1,8 @@
 ---
 layout: doc
-title: OpenID4VP client for Java and EUDI wallet authentication
-seo_title: "OpenID4VP client for Java: EUDI wallet authentication | pac4j"
-description: "Authenticate Java users with OpenID4VP and digital wallets. Configure EUDI wallet clients, DCQL queries and credential verification with pac4j-openid4vp."
+title: OpenID for Verifiable Presentations (EUDI wallet, eIDAS 2.0)
+seo_title: "OpenID4VP for Java: EUDI Wallet authentication | pac4j"
+description: "Integrate OpenID for Verifiable Presentations with pac4j in Java. Explore wallet authentication, EUDI Wallet profiles, queries and client configuration."
 ---
 
 `pac4j-openid4vp` provides an **OpenID4VP client for Java**: it allows you to authenticate users with a digital wallet, using the OpenID for Verifiable Presentations protocol.

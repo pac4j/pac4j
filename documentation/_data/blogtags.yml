@@ -1,9 +1,12 @@
 # Label shown on each blog tag. The key is also the CSS modifier class
-# (e.g. "sec" -> .tag-sec in css/main8.css).
+# (e.g. "sec" -> .tag-sec in the main stylesheet).
 sec: Security
 rel: Release
 guide: Guide
 tuto: Tutorial
+howto: Howto
 spring: Spring
 cas: CAS
+oidc: OIDC
+saml: SAML
 fund: Funding
