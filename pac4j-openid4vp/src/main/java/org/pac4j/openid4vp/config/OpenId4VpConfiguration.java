@@ -1,5 +1,6 @@
 package org.pac4j.openid4vp.config;
 
+import lombok.extern.slf4j.Slf4j;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -38,7 +39,6 @@ import java.util.Map;
 import static org.pac4j.core.util.CommonHelper.assertNotBlank;
 import static org.pac4j.core.util.CommonHelper.assertNotNull;
 import static org.pac4j.core.util.CommonHelper.assertTrue;
-import static org.pac4j.core.util.CommonHelper.isNotBlank;
 
 /**
  * The configuration of an OpenID4VP verifier (relying party).
@@ -55,6 +55,7 @@ import static org.pac4j.core.util.CommonHelper.isNotBlank;
 @Setter
 @ToString
 @Accessors(chain = true)
+@Slf4j
 public class OpenId4VpConfiguration extends BaseClientConfiguration {
 
     private static final Announcement ANNOUNCE_CLEAR_RESPONSE =
@@ -87,9 +88,12 @@ public class OpenId4VpConfiguration extends BaseClientConfiguration {
 
     /**
      * The DCQL query: which credentials, with which claims. Built programmatically, or given as JSON with
-     * {@link #setDcqlQuery(String)}. It is the only query language of OpenID4VP 1.0: the Presentation
-     * Exchange of the earlier drafts ({@code presentation_definition}) is gone from the final specification,
-     * so there is nothing else to support here.
+     * {@link #setDcqlQuery(String)}. Required and checked at initialization, including when {@link #scope}
+     * is configured.
+     *
+     * <p>When {@code scope} is absent or blank, this query is sent as {@code dcql_query}. Otherwise, only
+     * the scope alias is sent, and this query must describe the equivalent request. In both cases, a snapshot
+     * of this query is saved with the transaction and used to validate the response.</p>
      *
      * @see <a href="https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#dcql_query">
      *     OpenID4VP 1.0, Digital Credentials Query Language</a>
@@ -97,10 +101,12 @@ public class OpenId4VpConfiguration extends BaseClientConfiguration {
     private DcqlQuery dcqlQuery;
 
     /**
-     * An alias for a DCQL query, sent instead of it: "Such a scope parameter value MUST be an alias for a
-     * well-defined DCQL query". Which values exist, and which query each stands for, is the business of the
-     * ecosystem, not of the specification, and a wallet may not support any. Either this or the DCQL query,
-     * "but not both".
+     * An optional alias for the DCQL query. The ecosystem defines the supported aliases and their meaning;
+     * the wallet must support the chosen alias.
+     *
+     * <p>When non-blank, this value is sent as {@code scope} instead of {@code dcql_query}.
+     * {@link #dcqlQuery} must still contain the equivalent query for response validation: configuring a scope
+     * alone is rejected at initialization. When absent or blank, the DCQL query itself is sent.</p>
      *
      * @see <a href="https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#request_scope">
      *     OpenID4VP 1.0, using scope parameter to request presentations</a>
@@ -125,6 +131,7 @@ public class OpenId4VpConfiguration extends BaseClientConfiguration {
      * setting to keep in agreement with it.
      */
     @Setter(AccessLevel.NONE)
+    @ToString.Exclude
     private JWK requestObjectSigningKey;
 
     /**
@@ -159,25 +166,21 @@ public class OpenId4VpConfiguration extends BaseClientConfiguration {
     /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
+        LOGGER.debug("checking OpenID4VP configuration: client ID prefix={}, response mode={}", clientIdPrefix, responseMode);
         assertNotNull("clientIdPrefix", clientIdPrefix);
         assertNotNull("responseMode", responseMode);
         assertNotNull("transactionStore", transactionStore);
         assertNotNull("nonceGenerator", nonceGenerator);
         assertNotNull("transactionIdGenerator", transactionIdGenerator);
         assertNotNull("requestUriMethod", requestUriMethod);
-        // "Either a dcql_query or a scope parameter representing a DCQL Query MUST be present in the Authorization
-        // Request, but not both" https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#vp_token_request
-        val hasQuery = dcqlQuery != null;
-        assertTrue(hasQuery != isNotBlank(scope), "either dcqlQuery or scope must be defined, but not both");
+        assertNotNull("dcqlQuery", dcqlQuery);
         assertNotNull("credentialVerifiers", credentialVerifiers);
-        if (dcqlQuery != null) {
-            dcqlQuery.check();
-            // the presentations come back indexed by the credential query they answer, whose format picks the
-            // verifier: a format without any could never be verified, better refused here than at the first response
-            dcqlQuery.getCredentials().forEach(credential -> assertNotNull("credentialVerifier for the format "
-                + credential.getFormat().getValue() + " of the credential query " + credential.getId(),
-                credentialVerifiers.get(credential.getFormat())));
-        }
+        dcqlQuery.check();
+        // the presentations come back indexed by the credential query they answer, whose format picks the
+        // verifier: a format without any could never be verified, better refused here than at the first response
+        dcqlQuery.getCredentials().forEach(credential -> assertNotNull("credentialVerifier for the format "
+            + credential.getFormat().getValue() + " of the credential query " + credential.getId(),
+            credentialVerifiers.get(credential.getFormat())));
         assertTrue(transactionLifetimeSeconds > 0, "transactionLifetimeSeconds must be greater than zero");
         assertNotNull("verifierInfo", verifierInfo);
         verifierInfo.forEach(VerifierAttestation::check);
@@ -223,12 +226,16 @@ public class OpenId4VpConfiguration extends BaseClientConfiguration {
         if (clientIdPrefix == ClientIdPrefix.X509_SAN_DNS) {
             checkClientIdIsASubjectAlternativeName();
         }
+        LOGGER.debug("OpenID4VP configuration checked: {} credential queries, verifier formats={}, signed requests={}",
+            dcqlQuery.getCredentials().size(), credentialVerifiers.keySet(), clientIdPrefix.isSignedRequest());
     }
 
     /**
-     * <p>The DCQL query. Written by hand since the JSON overload below stops Lombok from generating it.</p>
+     * Sets the query used to validate the response. It is also sent to the wallet unless {@link #scope}
+     * is non-blank, in which case it must describe the equivalent request represented by that alias.
+     * The query is required and checked at initialization.
      *
-     * @param dcqlQuery the query, or null
+     * @param dcqlQuery the query; null clears it and causes initialization to fail
      * @return this configuration
      */
     public OpenId4VpConfiguration setDcqlQuery(final DcqlQuery dcqlQuery) {
@@ -237,9 +244,11 @@ public class OpenId4VpConfiguration extends BaseClientConfiguration {
     }
 
     /**
-     * <p>The DCQL query, from its JSON form.</p>
+     * Parses and sets the query from its JSON form, with the same sending and validation rules as
+     * {@link #setDcqlQuery(DcqlQuery)}. Parsing happens immediately; the query is required and checked
+     * at initialization.
      *
-     * @param dcqlQuery the query as a JSON object, or null
+     * @param dcqlQuery the query as JSON text; null clears it and causes initialization to fail
      * @return this configuration
      */
     public OpenId4VpConfiguration setDcqlQuery(final String dcqlQuery) {

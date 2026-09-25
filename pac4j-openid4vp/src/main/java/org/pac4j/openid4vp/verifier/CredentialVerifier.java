@@ -30,10 +30,18 @@ public interface CredentialVerifier {
     /**
      * <p>Validate one raw credential and return its disclosed claims.</p>
      *
+     * <p>The returned evidence must include the format, type and verified claims. Set cryptographic holder
+     * binding only after checking the proof against the transaction's saved request, including nonce and
+     * audience (the full client identifier or the DC API origin, as applicable). Populate trusted authorities
+     * only from validated trust paths. The common validator checks this evidence against DCQL.</p>
+     *
+     * <p>Diagnostic logs should identify the transaction and validation stage, without including raw
+     * presentations, disclosed claim values, cryptographic keys or holder proofs.</p>
+     *
      * @param rawCredential the credential as found in the vp_token
      * @param transaction the transaction this presentation answers
      * @param configuration the verifier configuration
-     * @return the verified credential
+     * @return the verified credential, never null
      */
     VerifiedCredential verify(String rawCredential, VpTransaction transaction, OpenId4VpConfiguration configuration);
 }

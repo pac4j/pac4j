@@ -25,9 +25,7 @@ import static org.pac4j.core.util.CommonHelper.assertTrue;
  *
  * <p>The {@code meta} member is defined per format: {@code vct_values} for a SD-JWT VC, {@code doctype_value}
  * for a mobile document, set with {@link #setVctValues(String...)} and {@link #setDoctypeValue(String)}.
- * The specification has it required for those formats; it is not enforced here, so that a query written
- * for a wallet which does not care still goes through, but a real wallet is likely to refuse a query
- * without it.</p>
+ * These type constraints are required for their respective formats and checked at initialization.</p>
  *
  * @see <a href="https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#credential_query">
  *     OpenID4VP 1.0, credential query</a>
@@ -67,7 +65,7 @@ public class CredentialQuery {
     /** "Whether multiple Credentials can be returned for this Credential Query", false when absent. */
     private Boolean multiple;
 
-    /** The format-specific constraints on the credential's metadata, an empty object when there are none. */
+    /** The format-specific metadata constraints; the type constraint must be set before initialization. */
     private Map<String, Object> meta = new LinkedHashMap<>();
 
     private List<TrustedAuthority> trustedAuthorities = new ArrayList<>();
@@ -154,6 +152,22 @@ public class CredentialQuery {
             "a credential query identifier must be a non-empty string of alphanumeric, underscore or hyphen characters: " + id);
         assertNotNull("format of the credential query " + id, format);
         assertNotNull("meta of the credential query " + id, meta);
+        for (val member : meta.entrySet()) {
+            if (format == CredentialFormat.SD_JWT_VC && VCT_VALUES.equals(member.getKey())) {
+                assertTrue(member.getValue() instanceof List<?> types && !types.isEmpty()
+                    && types.stream().allMatch(type -> type instanceof String text && !text.isBlank()),
+                    "vct_values must be a non-empty array of non-empty strings");
+            } else if (format == CredentialFormat.MSO_MDOC && DOCTYPE_VALUE.equals(member.getKey())) {
+                assertTrue(member.getValue() instanceof String text && !text.isBlank(), "doctype_value must be a non-empty string");
+            } else {
+                throw new TechnicalException("unsupported DCQL metadata constraint: " + member.getKey());
+            }
+        }
+        if (format == CredentialFormat.SD_JWT_VC) {
+            assertTrue(meta.containsKey(VCT_VALUES), "vct_values is required for an SD-JWT VC credential query");
+        } else if (format == CredentialFormat.MSO_MDOC) {
+            assertTrue(meta.containsKey(DOCTYPE_VALUE), "doctype_value is required for an mdoc credential query");
+        }
         if (trustedAuthorities != null) {
             trustedAuthorities.forEach(TrustedAuthority::check);
         }
@@ -162,6 +176,10 @@ public class CredentialQuery {
         if (claims != null) {
             for (val claim : claims) {
                 claim.check(hasClaimSets);
+                if (format == CredentialFormat.MSO_MDOC) {
+                    assertTrue(claim.getPath().size() == 2 && claim.getPath().stream().allMatch(String.class::isInstance),
+                        "an mdoc claim path must contain a namespace and an element name");
+                }
                 // "Within the particular claims array, the same id MUST NOT be present more than once"
                 assertTrue(claim.getId() == null || claimIds.add(claim.getId()),
                     "duplicate claim identifier in the credential query " + id + ": " + claim.getId());

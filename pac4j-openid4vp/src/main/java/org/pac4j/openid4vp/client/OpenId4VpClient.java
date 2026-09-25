@@ -8,11 +8,10 @@ import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.http.ajax.DefaultAjaxRequestResolver;
-import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.openid4vp.config.OpenId4VpConfiguration;
 import org.pac4j.openid4vp.credentials.authenticator.OpenId4VpAuthenticator;
 import org.pac4j.openid4vp.credentials.extractor.OpenId4VpCredentialsExtractor;
-import org.pac4j.openid4vp.profile.VerifiableCredentialProfile;
+import org.pac4j.openid4vp.profile.OpenId4VpProfileDefinition;
 import org.pac4j.openid4vp.profile.creator.OpenId4VpProfileCreator;
 import org.pac4j.openid4vp.request.OpenId4VpRequestObjectBuilder;
 import org.pac4j.openid4vp.redirect.OpenId4VpRedirectionActionBuilder;
@@ -98,12 +97,12 @@ public class OpenId4VpClient extends IndirectClient {
         setRedirectionActionBuilderIfUndefined(new OpenId4VpRedirectionActionBuilder(this));
         setCredentialsExtractorIfUndefined(new OpenId4VpCredentialsExtractor(this));
         setAuthenticatorIfUndefined(new OpenId4VpAuthenticator(this));
-        setProfileCreatorIfUndefined(new OpenId4VpProfileCreator(this,
-            new CommonProfileDefinition(x -> new VerifiableCredentialProfile())));
+        setProfileCreatorIfUndefined(new OpenId4VpProfileCreator(this, new OpenId4VpProfileDefinition()));
 
         checkAjaxRequestResolver();
 
         configuration.init(this.getClass().getSimpleName(), forceReinit);
+        logger.debug("OpenID4VP client initialized: {}", this);
     }
 
     /**

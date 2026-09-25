@@ -14,7 +14,16 @@
     <description>Verifier (relying party) support for OpenID for Verifiable Presentations (OpenID4VP),
         including the European Digital Identity (EUDI) wallet profile.</description>
 
+    <properties>
+        <kotlin.version>2.2.21</kotlin.version>
+    </properties>
+
     <dependencies>
+        <dependency>
+            <groupId>eu.europa.ec.eudi</groupId>
+            <artifactId>eudi-lib-jvm-sdjwt-kt</artifactId>
+            <optional>true</optional>
+        </dependency>
         <dependency>
             <groupId>org.pac4j</groupId>
             <artifactId>pac4j-core</artifactId>
@@ -38,6 +47,48 @@
 
     <build>
         <plugins>
+            <!-- Register Kotlin sources so the published sources JAR also contains the adapter. -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.6.1</version>
+                <executions>
+                    <execution>
+                        <id>add-kotlin-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.basedir}/src/main/kotlin</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- EUDI exposes suspend functions returning Kotlin Result, which cannot be called directly from Java. -->
+            <plugin>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-maven-plugin</artifactId>
+                <version>${kotlin.version}</version>
+                <executions>
+                    <execution>
+                        <id>compile-eudi-adapter</id>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <jvmTarget>${java.version}</jvmTarget>
+                            <useDaemon>false</useDaemon>
+                            <sourceDirs>
+                                <sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
+                            </sourceDirs>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <!-- the wallet simulator lives in the test sources: published so that an application can drive
                  a presentation flow in its own integration tests, without a phone and without a certificate -->
             <plugin>

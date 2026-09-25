@@ -6,7 +6,6 @@ import org.junit.jupiter.api.io.TempDir;
 import org.pac4j.core.config.properties.JwksProperties;
 import org.pac4j.core.config.properties.KeystoreProperties;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.keystore.generation.FileSystemKeystoreGenerator;
 import org.pac4j.test.util.TestsHelper;
 
 import java.io.ByteArrayInputStream;
@@ -14,7 +13,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.KeyStore;
 import java.security.MessageDigest;
-import java.time.Period;
 import java.util.Base64;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -71,7 +69,7 @@ class ClientIdPrefixTests {
     private OpenId4VpConfiguration configuration(final ClientIdPrefix prefix) {
         val configuration = new OpenId4VpConfiguration();
         configuration.setClientIdPrefix(prefix)
-            .setDcqlQuery("{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\"}]}");
+            .setDcqlQuery("{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\",\"meta\":{\"vct_values\":[\"urn:eudi:pid:1\"]}}]}");
         return configuration;
     }
 
@@ -82,17 +80,12 @@ class ClientIdPrefixTests {
     private KeystoreProperties keystore(final String encoded) throws Exception {
         val file = directory.resolve("rp.p12");
         Files.write(file, Base64.getDecoder().decode(encoded));
-        val keystore = new KeystoreProperties()
+        return new KeystoreProperties()
             .setKeystorePath(file.toString())
             .setKeystorePassword("changeit")
             .setPrivateKeyPassword("changeit")
             .setKeyStoreAlias("rp")
-            .setKeyStoreType("PKCS12")
-            // required by the generator even when the keystore exists and nothing is generated
-            .setCertificatePrefix("rp-cert")
-            .setCertificateExpirationPeriod(Period.ofYears(1));
-        keystore.setKeystoreGenerator(new FileSystemKeystoreGenerator(keystore));
-        return keystore;
+            .setKeyStoreType("PKCS12");
     }
 
     @Test

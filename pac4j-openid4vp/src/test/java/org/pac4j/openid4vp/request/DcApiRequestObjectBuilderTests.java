@@ -47,7 +47,7 @@ class DcApiRequestObjectBuilderTests {
         configuration = new OpenId4VpDcApiConfiguration();
         configuration.setClientId("app.example.org")
             .setClientIdPrefix(ClientIdPrefix.DECENTRALIZED_IDENTIFIER)
-            .setDcqlQuery("{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\"}]}")
+            .setDcqlQuery("{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\",\"meta\":{\"vct_values\":[\"urn:eudi:pid:1\"]}}]}")
             .setJwks(new JwksProperties().setJwksPath(directory.resolve("keys.jwks").toString()).setKid("key-1"));
         configuration.setExpectedOrigins(List.of(ORIGIN));
 
