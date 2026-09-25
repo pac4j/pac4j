@@ -212,7 +212,7 @@ Open [http://localhost:8080/](http://localhost:8080/) and follow **Protected are
 
 ## Learn more
 
-- The [OpenID Connect reference](/docs/clients/openid-connect.html): all the `OidcConfiguration` options, the implicit flow, `private_key_jwt` client authentication, nonce and state handling.
+- The documentation for the [OIDC client for Java](/docs/clients/openid-connect.html): all the `OidcConfiguration` options, the implicit flow, `private_key_jwt` client authentication, nonce and state handling.
 - [Direct OIDC authentication](/docs/clients/openid-connect-clients.html#2-direct-clients) to protect a REST API with the access tokens issued by your provider.
 - [OpenID Federation](/docs/clients/openid-connect-federation.html) when your application belongs to a trust federation.
 

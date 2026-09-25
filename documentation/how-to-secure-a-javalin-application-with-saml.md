@@ -181,6 +181,6 @@ Add `pac4j-oidc` or `pac4j-cas`, replace the `SAML2Client` in the `Config` and u
 ## Learn more
 
 - The [javalin-pac4j](https://github.com/pac4j/javalin-pac4j) library and its [example application](https://github.com/pac4j/javalin-pac4j/tree/master/src/test/java/org/pac4j/javalin/example), with many authentication mechanisms.
-- The [SAML 2.0 reference](/docs/clients/saml.html) for bindings, signature algorithms, attribute converters and IdP-specific notes.
+- The documentation for the [SAML 2.0 client for Java](/docs/clients/saml.html) for bindings, signature algorithms, attribute converters and IdP-specific notes.
 
 **Discover more [pac4j frameworks](/implementations.html) and more [authentication mechanisms](/docs/clients.html)…**

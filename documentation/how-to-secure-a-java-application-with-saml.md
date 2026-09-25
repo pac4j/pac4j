@@ -197,7 +197,7 @@ Open [http://localhost:8080/](http://localhost:8080/) and follow **Protected are
 
 ## Learn more
 
-- The [SAML 2.0 reference](/docs/clients/saml.html): bindings, signature algorithms, forced and passive authentication, attribute converters and IdP-specific notes.
+- The documentation for the [SAML 2.0 client for Java](/docs/clients/saml.html): bindings, signature algorithms, forced and passive authentication, attribute converters and IdP-specific notes.
 - The `SAML2Client` keeps a replay cache between authentications, so define it once as a singleton, which is what the Spring bean above does.
 
 **Using a different integration?** The [Play](/how-to-secure-a-play-application-with-saml.html) and [Javalin](/how-to-secure-a-javalin-application-with-saml.html) guides also use SAML.

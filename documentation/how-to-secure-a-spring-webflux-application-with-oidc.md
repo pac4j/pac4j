@@ -174,7 +174,7 @@ The built-in callback accepts GET and POST requests and makes the raw request bo
 
 ## Learn more
 
-- The [OpenID Connect reference](/docs/clients/openid-connect.html) for the complete client configuration.
+- The documentation for the [OIDC client for Java](/docs/clients/openid-connect.html) for the complete client configuration.
 - The [spring-webflux-pac4j](https://github.com/pac4j/spring-webflux-pac4j) library and its [documentation](https://github.com/pac4j/spring-webflux-pac4j/wiki).
 - The [spring-webflux-pac4j-boot-demo](https://github.com/pac4j/spring-webflux-pac4j-boot-demo) and [Spring Security WebFlux demo](https://github.com/pac4j/spring-security-webflux-pac4j-boot-demo). The [Spring Security guide](/how-to-secure-a-spring-security-application-with-oidc.html) explains the bridge concept using servlet filters; reactive security requires its own configuration.
 

@@ -268,7 +268,7 @@ Add the corresponding `pac4j-saml` or `pac4j-cas` dependency, replace the `OidcC
 
 - The [jee-pac4j](https://github.com/pac4j/jee-pac4j) library and its [documentation](https://github.com/pac4j/jee-pac4j/wiki) for every filter parameter and the JSF and CDI support.
 - The [jee-pac4j-demo](https://github.com/pac4j/jee-pac4j-demo) web application, with JSP pages and many authentication mechanisms, and the [jee-pac4j-cdi-demo](https://github.com/pac4j/jee-pac4j-cdi-demo) with JSF and CDI.
-- The [OpenID Connect reference](/docs/clients/openid-connect.html) for all the `OidcConfiguration` options.
+- The documentation for the [OIDC client for Java](/docs/clients/openid-connect.html) for all the `OidcConfiguration` options.
 - [Authorizers](/docs/authorizers.html) to restrict access by role or attribute once the user is authenticated.
 
 **Discover more [pac4j frameworks](/implementations.html) and more [authentication mechanisms](/docs/clients.html)…**
