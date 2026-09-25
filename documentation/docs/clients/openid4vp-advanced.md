@@ -1,13 +1,17 @@
 ---
 layout: doc
-title: OpenID4VP / Advanced
+title: OpenID4VP / DCQL queries, user profiles and logging
+seo_title: "OpenID4VP in Java: DCQL queries and user profiles | pac4j"
+description: "Build OpenID4VP DCQL queries in Java, request EUDI PID attributes, choose stable user identifiers and trace wallet authentication with diagnostic logs."
 ---
+
+What should the wallet share, and how will your application identify the user afterwards? The DCQL query defines the credentials and claims you request; the profile definition turns the verified result into a user identifier. This page covers both, then shows which logs to enable when a presentation fails.
 
 See also:
 
 <p> &nbsp; &#9656; <a href="openid4vp.html">OpenID4VP overview</a></p>
 <p> &nbsp; &#9656; <a href="openid4vp-clients.html">Clients and configuration</a></p>
-<p> &nbsp; &#9656; <a href="openid4vp-verifiers.html">Response validation and credential verifiers</a></p>
+<p> &nbsp; &#9656; <a href="openid4vp-verifiers.html">Response validation and verifiers</a></p>
 
 <hr/>
 

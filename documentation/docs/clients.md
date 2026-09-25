@@ -6,6 +6,7 @@ title: Clients&#58;
 A [`Client`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/client/Client.java) represents a **web authentication mechanism**. It performs the login process and returns (if successful) a [user profile](user-profile.html). Many clients are available for the:
 
 - [OpenID Connect protocol](clients/openid-connect.html)
+- [OpenID4VP client for Java and digital wallet authentication](clients/openid4vp.html)
 - [SAML protocol](clients/saml.html)
 - [CAS protocol](clients/cas.html)
 - [OAuth protocol](clients/oauth.html)

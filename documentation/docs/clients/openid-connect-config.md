@@ -1,23 +1,26 @@
 ---
 layout: doc
 title: OpenID Connect / Advanced configuration
+seo_title: "Java OIDC client: authentication, tokens and advanced settings | pac4j"
+description: "Configure advanced pac4j OIDC settings in Java: client authentication, private_key_jwt, nonce, signing algorithms, token expiration and key rotation."
 ---
 
 See also:
 
+<p> &nbsp; &#9656; <a href="openid-connect.html">OpenID Connect client for Java</a></p>
 <p> &nbsp; &#9656; <a href="openid-connect-clients.html">Basic configuration and OIDC clients</a></p>
 <p> &nbsp; &#9656; <a href="openid-connect-federation.html">OIDC federation support</a></p>
 
 <hr/>
 
-The advanced configuration options are available:
+Once the client can log in, you may need to adapt it to your provider: how it authenticates at the token endpoint, which signing algorithms it accepts, or how long the user profile stays valid. These settings belong to `OidcConfiguration`.
 
 
 ## 1) Client authentication method
 
 ### a) `client_secret_basic` / `client_secret_post`
 
-You can define how the client credentials (`clientId` and `secret`) are passed to the token endpoint with the `setClientAuthenticationMethod` method:
+At the token endpoint, the client authenticates with its `clientId` and `secret`. Choose the method your provider expects with `setClientAuthenticationMethod`: `client_secret_basic` sends them in the HTTP Authorization header, while `client_secret_post` sends them in the request body.
 
 ```java
 config.setClientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC); // or CLIENT_SECRET_POST
@@ -26,7 +29,7 @@ config.setClientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BA
 
 ### b) `client_secret_jwt`
 
-You can use the `CLIENT_SECRET_JWT` authentication method by providing the `ClientSecretJwtClientAuthnMethodConfig` component:
+For `client_secret_jwt`, configure `ClientSecretJwtClientAuthnMethodConfig` with the audience and signing algorithm:
 
 ```java
 oidcConfiguration.setClientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_JWT);
@@ -38,7 +41,7 @@ oidcConfiguration.setClientSecretJwtClientAuthnMethodConfig(clientSecretJwtConfi
 
 ### c) `private_key_jwt`
 
-You can also use the `PRIVATE_KEY_JWT` authentication method by providing the `PrivateKeyJWTClientAuthnMethodConfig` component:
+For `private_key_jwt`, the client signs a JWT with its private key. Older configurations use `PrivateKeyJWTClientAuthnMethodConfig`:
 
 **Example:**
 ```java
@@ -55,7 +58,7 @@ oidcConfiguration.setPrivateKeyJWTClientAuthnMethodConfig(privateKeyJwtConfig);
 
 Since v6.4.0, this component is deprecated in favor of `PrivateKeyJwtClientAuthnMethodConfig` (notice `Jwt` instead of `JWT`) which is mandatory for federation.
 
-It uses a JWKS built on the fly:
+The newer component loads its signing key from a JWKS, which can be created on the fly:
 
 ```java
 config.setClientAuthenticationMethod(ClientAuthenticationMethod.PRIVATE_KEY_JWT);
@@ -65,7 +68,7 @@ privateKeyJwtConfig.getJwks().setKid("myprivatekeyjwt");
 config.setPrivateKeyJWTClientAuthnMethodConfig(privateKeyJwtConfig);
 ```
 
-Or it can use the default RP JWKS (this should be the right option in most cases):
+You can also reuse the relying party (RP) JWKS if that is where you keep the application's signing key:
 
 ```java
 val rpJwks = config.getRpJwks();
@@ -76,7 +79,7 @@ val privateKeyJwtConfig = new PrivateKeyJwtClientAuthnMethodConfig(rpJwks);
 config.setPrivateKeyJWTClientAuthnMethodConfig(privateKeyJwtConfig);
 ```
 
-Since version 6.3.2, the privateKeyJWT is recreated when expired, and expiration can be tuned :
+Since v6.3.2, pac4j recreates the client authentication JWT when it expires. Set its lifetime and how close to expiration it can be reused:
 ```java
     /** Default JWT token expiration time in seconds */
     privateKeyJwtConfig.setValidity(60);
@@ -84,26 +87,26 @@ Since version 6.3.2, the privateKeyJWT is recreated when expired, and expiration
     privateKeyJwtConfig.setKeyClockSkew(10);
 ```
 
-PrivateKeyJWT expiration mechanism can be disabled by setting :
+To disable this expiration mechanism:
 
 ```java
     privateKeyJwtConfig.setUseExpiration(false);
 ```
 
 
-Notice that you can define a set of client authentication methods instead of just one via the `setSupportedClientAuthenticationMethods` method.
+If your configuration supports several client authentication methods, supply them with `setSupportedClientAuthenticationMethods`.
 
 
 ## 2) State/Nonce
 
-Custom `state` values may be defined in the configuration using the below methods:
+To supply a custom `state` value:
 
 ```java
 config.setWithState(true);
 config.setStateData("custom-state-value");
 ```
 
-The `nonce` for ID tokens can be ignored on refresh. This can be done using:
+If the provider does not return the original `nonce` when refreshing an ID token, you can disable that check for refreshes:
 
 ```java
 config.setUseNonceOnRefresh(false);
@@ -126,7 +129,7 @@ You can also choose the algorithm (matched against the OP metadata) to sign the 
 config.setRequestObjectSigningAlgorithm(JWSAlgorithm.RS256);
 ```
 
-The key used is the one stored in the RP JWKS (`config.getRpJwks`) so it must be defined.
+The request object is signed with the key from the RP JWKS (`config.getRpJwks()`), so configure that key as well as the algorithm.
 
 
 ## 4) Tokens
@@ -143,20 +146,20 @@ By default, the local session expires when the access token does, but this can b
 config.setExpireSessionWithToken(false);
 ```
 
-The additional param `TokenExpirationAdvance` allows you to set the time in seconds, previous to the token expiration, in which the expiration is advanced. By default it is `0` seconds.
+To treat the token as expired a little earlier, set `tokenExpirationAdvance` in seconds. The default is `0`; this example advances expiration by 10 seconds:
 
 ```java
 config.setTokenExpirationAdvance(10);
 ```
 
-When validating the IDToken in the login process, you can set a clock skew:
+When validating an ID token at login, allow for a difference between the provider's clock and your application's clock with:
 
 ```java
 // 1 minute
 config.setMaxClockSkew(60);
 ```
 
-To reinforce security, the `none` algorithm for ID tokens (meaning no signature validation) must be explicitly accepted by using:
+Unsigned ID tokens (`alg=none`) are refused unless you explicitly allow them. The following setting accepts them without signature validation:
 
 ```java
 config.setAllowUnsignedIdTokens(true);
@@ -165,7 +168,7 @@ config.setAllowUnsignedIdTokens(true);
 
 ## 5) Other settings
 
-You can finally set additional parameters by using the `addCustomParam(String key, String value)` method:
+For provider parameters without a dedicated setter, use `addCustomParam(String key, String value)`:
 
 ```java
 // select display mode: page, popup, touch, and wap
@@ -180,19 +183,19 @@ You can disable the call to the user info endpoint using:
 config.setCallUserInfoEndpoint(false);
 ```
 
-For security, the logout requests are validated. This can be disabled using:
+Logout requests are validated by default. The following setting disables that validation:
 
 ```java
 config.setLogoutValidation(false);
 ```
 
-You can enable the PAR mechanism via:
+To use Pushed Authorization Requests (PAR):
 
 ```java
 config.setPushedAuthorizationRequest(true);
 ```
 
-Claims can be mapped via the following configuration (mapping is from source to destination):
+To rename claims, supply a mapping from each source claim to its destination name:
 
 ```java
 config.setMappedClaims(mapping);
@@ -201,6 +204,4 @@ config.setMappedClaims(mapping);
 
 ## 6) Keys rotation
 
-Every time the entity statement expires in federation, the federation keys are reloaded.
-
-Though, the generic RP keys (used for the "Request Object" signing) as well as the ones for the `private_key_jwt` authn method, are only loaded at startup.
+The federation keys are reloaded when the entity statement expires. The generic RP keys used to sign request objects, and the keys used for `private_key_jwt`, are only loaded at startup: changing those files alone does not reload them.

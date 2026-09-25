@@ -1,13 +1,17 @@
 ---
 layout: doc
 title: OpenID4VP / Response validation and verifiers
+seo_title: "OpenID4VP in Java: response validation and verifiers | pac4j"
+description: "Validate OpenID4VP responses in Java with pac4j. Configure SD-JWT VC issuer trust, holder binding, credential status checks and custom verifiers."
 ---
+
+Receiving a wallet response is only the first step. Before creating a user profile, pac4j checks the exchange, asks the credential verifiers to validate the presentations, and checks that the results satisfy the original DCQL query. Here is how to configure that validation in your Java application.
 
 See also:
 
 <p> &nbsp; &#9656; <a href="openid4vp.html">OpenID4VP overview</a></p>
 <p> &nbsp; &#9656; <a href="openid4vp-clients.html">Clients and configuration</a></p>
-<p> &nbsp; &#9656; <a href="openid4vp-advanced.html">Advanced</a></p>
+<p> &nbsp; &#9656; <a href="openid4vp-advanced.html">DCQL queries, user profiles and logging</a></p>
 
 <hr/>
 

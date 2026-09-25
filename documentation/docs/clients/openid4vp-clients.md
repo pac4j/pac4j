@@ -1,13 +1,17 @@
 ---
 layout: doc
 title: OpenID4VP / Clients and configuration
+seo_title: "OpenID4VP Java clients: EUDI wallet and Digital Credentials API | pac4j"
+description: "Configure OpenID4VP clients in Java for wallet URLs, QR codes or the Digital Credentials API. Set signing keys, response modes and EUDI wallet options."
 ---
+
+Choose how your Java application opens the wallet: a URL or QR code with `OpenId4VpClient`, or the browser's Digital Credentials API with `OpenId4VpDcApiClient`. `EudiWalletClient` fixes the settings for the EUDI PID profile; the configuration below explains what each choice requires.
 
 See also:
 
 <p> &nbsp; &#9656; <a href="openid4vp.html">OpenID4VP overview</a></p>
-<p> &nbsp; &#9656; <a href="openid4vp-verifiers.html">Response validation and credential verifiers</a></p>
-<p> &nbsp; &#9656; <a href="openid4vp-advanced.html">Advanced</a></p>
+<p> &nbsp; &#9656; <a href="openid4vp-verifiers.html">Response validation and verifiers</a></p>
+<p> &nbsp; &#9656; <a href="openid4vp-advanced.html">DCQL queries, user profiles and logging</a></p>
 
 <hr/>
 

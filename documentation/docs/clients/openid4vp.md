@@ -1,9 +1,11 @@
 ---
 layout: doc
-title: OpenID for Verifiable Presentations (EUDI wallet, eIDAS 2.0)
+title: OpenID4VP client for Java and EUDI wallet authentication
+seo_title: "OpenID4VP client for Java: EUDI wallet authentication | pac4j"
+description: "Authenticate Java users with OpenID4VP and digital wallets. Configure EUDI wallet clients, DCQL queries and credential verification with pac4j-openid4vp."
 ---
 
-*pac4j* allows you to authenticate users with a digital wallet, using the OpenID for Verifiable Presentations protocol (OpenID4VP).
+`pac4j-openid4vp` provides an **OpenID4VP client for Java**: it allows you to authenticate users with a digital wallet, using the OpenID for Verifiable Presentations protocol.
 Your application acts as a *verifier*: it asks the wallet to present credentials, such as the person identification data of the European Digital Identity wallet (EUDI wallet).
 
 **Requires a wallet compatible with [OpenID4VP 1.0 final](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html).** Earlier drafts using `client_id_scheme` or
@@ -23,7 +25,7 @@ You need to use the following module: `pac4j-openid4vp`.
 </dependency>
 ```
 
-OpenID4VP shares the OAuth vocabulary with OpenID Connect (`client_id`, `nonce`, signed request objects), but the wallet presents credentials directly to the application: there is no token endpoint or user info endpoint, and the module does not depend on `pac4j-oidc`.
+OpenID4VP shares the OAuth vocabulary with [OpenID Connect](openid-connect.html) (`client_id`, `nonce`, signed request objects), but the wallet presents credentials directly to the application: there is no token endpoint or user info endpoint, and the module does not depend on `pac4j-oidc`.
 
 To validate SD-JWT VCs with `SdJwtVcVerifier`, explicitly add the following dependency, which is not included by default:
 
@@ -49,7 +51,7 @@ Configure [trusted issuers and credential validation](openid4vp-verifiers.html) 
 
 ## 3) The EUDI wallet: ARF and HAIP
 
-The EUDI wallet's [Architecture and Reference Framework (ARF)](https://eudi.dev/2.7.3/architecture-and-reference-framework-main/)
+The European Digital Identity wallet (EUDI wallet) is part of the eIDAS 2.0 framework. Its [Architecture and Reference Framework (ARF)](https://eudi.dev/2.7.3/architecture-and-reference-framework-main/)
 uses the [High Assurance Interoperability Profile (HAIP) 1.0](https://openid.net/specs/openid4vc-high-assurance-interoperability-profile-1_0.html)
 to define its OpenID4VP requirements.
 
@@ -69,6 +71,6 @@ a complete EUDI trust or status validation setup: see [Configuring credential ve
 
 ## 4) Usage
 
-- [Clients and configuration](openid4vp-clients.html)
-- [Response validation and credential verifiers](openid4vp-verifiers.html)
-- [Advanced](openid4vp-advanced.html)
+- [OpenID4VP clients and wallet configuration](openid4vp-clients.html)
+- [Response validation and verifiers](openid4vp-verifiers.html)
+- [DCQL queries, user profiles and diagnostic logging](openid4vp-advanced.html)
