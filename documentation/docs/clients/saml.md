@@ -2,14 +2,14 @@
 layout: doc
 title: SAML 2.0 client for Java
 seo_title: "SAML 2.0 client for Java: SSO authentication | pac4j"
-description: "Add SAML SSO to Java applications with pac4j-saml. Configure identity provider metadata, keystores, service provider settings and single logout."
+description: "Use pac4j-saml as your SAML 2.0 client for Java. Set up your service provider with IdP metadata, a keystore and single logout, with a step-by-step tutorial."
 ---
 
-SAML 2.0 provides single sign-on (SSO) through XML assertions exchanged between an identity provider (IdP) and a service provider (SP). In this example, the Java application is the service provider.
+`pac4j-saml` provides a **SAML 2.0 client for Java** applications. Its `SAML2Client` lets your application act as a service provider (SP), connecting it to a SAML identity provider (IdP) through the [pac4j framework integrations](/implementations.html).
+
+SAML 2.0 provides single sign-on (SSO) through XML assertions exchanged between the identity provider and your application. The identity provider authenticates the user; the service provider validates the SAML response to establish who signed in.
 
 **[How to secure a Java application with SAML (using Spring Boot)](/how-to-secure-a-java-application-with-saml.html)** — follow a complete Spring Boot example, then use the reference below for the full configuration.
-
-*pac4j* allows you to login with any SAML identity provider using the SAML v2.0 protocol.
 
 It has been tested with various SAML 2 providers: Okta, testshib.org, CAS SAML2 IdP, Shibboleth v3.4...
 

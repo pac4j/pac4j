@@ -416,7 +416,7 @@ For browser login, add `pac4j-saml` or `pac4j-cas`, replace the `OidcClient` and
 - The [jax-rs-pac4j](https://github.com/pac4j/jax-rs-pac4j) library and its [documentation](https://github.com/pac4j/jax-rs-pac4j/wiki), including the Servlet, Grizzly, CDI and sessionless setups.
 - The [jax-rs-pac4j-demo](https://github.com/pac4j/jax-rs-pac4j-demo) application, and the [release post on Jersey 4 and RESTEasy 7 support](/blog/what_s_new_in_jax_rs_pac4j_v8.html).
 - The [dropwizard-pac4j](https://github.com/pac4j/dropwizard-pac4j) bundle and the [dropwizard-pac4j-demo](https://github.com/pac4j/dropwizard-pac4j-demo) application.
-- The [OpenID Connect reference](/docs/clients/openid-connect.html) for the complete client configuration.
+- The documentation for the [OIDC client for Java](/docs/clients/openid-connect.html) for the complete client configuration.
 - [Direct OIDC authentication](/docs/clients/openid-connect-clients.html#2-direct-clients) and [JWT validation](/docs/authenticators/jwt.html) for the access token case.
 
 **Discover more [pac4j frameworks](/implementations.html) and more [authentication mechanisms](/docs/clients.html)…**

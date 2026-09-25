@@ -187,7 +187,7 @@ So far, we have used CAS to log in through a browser. The same `pac4j-cas` modul
 
 ## Learn more
 
-Read the [CAS reference](/docs/clients/cas.html) for the proxy and REST configurations, the stateless `DirectCasClient` and all the `CasConfiguration` options.
+Read the documentation for the [CAS client for Java](/docs/clients/cas.html) for the proxy and REST configurations, the stateless `DirectCasClient` and all the `CasConfiguration` options.
 
 **Using a different integration?** The [Shiro](/how-to-secure-a-shiro-application-with-cas.html) and [Vert.x](/how-to-secure-a-vertx-application-with-cas.html) guides also use CAS.
 
