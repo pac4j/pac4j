@@ -34,7 +34,7 @@ description: "Explore Java authentication tutorials and articles on OIDC, SAML, 
 {% endfor %}
 </ul>
 
-<p class="text-center"><a class="btn" href="/gettingstarted.html">More guides... <span aria-hidden="true">&rarr;</span></a></p>
+<p class="text-center"><a class="btn" href="/gettingstarted.html">More guides <span aria-hidden="true">&rarr;</span></a></p>
 
 ## Latest articles
 
