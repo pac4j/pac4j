@@ -198,7 +198,7 @@ If the provider rejects the redirect URI, register the full callback URL includi
 
 ## 8) Switching to SAML or CAS
 
-Add the `pac4j-saml` or `pac4j-cas` module, replace the `OidcClient` in `Config` and update the `SecurityFilter` client name. Adapt the `OidcProfile` cast and provider attributes, and register callback/logout URLs for the selected protocol. SAML also needs a keystore and metadata exchange. The protocol-specific setup is described in the [SAML documentation](/docs/clients/saml.html) and the [CAS documentation](/docs/clients/cas.html).
+Add the `pac4j-saml` or `pac4j-cas` module, replace the `OidcClient` in `Config` and update the `SecurityFilter` client name. Adapt the `OidcProfile` type and provider attributes, and register callback/logout URLs for the selected protocol. SAML also needs a keystore and metadata exchange. The protocol-specific setup is described in the [SAML documentation](/docs/clients/saml.html) and the [CAS documentation](/docs/clients/cas.html).
 
 ## 9) Learn more
 
