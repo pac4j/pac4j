@@ -188,6 +188,5 @@ So far, we have used CAS to log in through a browser. The same `pac4j-cas` modul
 
 ## 9) Learn more
 
-Read the documentation for the [CAS client for Java](/docs/clients/cas.html) for the proxy and REST configurations, the stateless `DirectCasClient` and all the `CasConfiguration` options.
-
-**Discover more [pac4j frameworks](/implementations.html) and more [authentication mechanisms](/docs/clients.html)…**
+- Read the documentation for the [CAS client for Java](/docs/clients/cas.html) for the proxy and REST configurations, the stateless `DirectCasClient` and all the `CasConfiguration` options.
+- Discover more [pac4j frameworks](/implementations.html) and more [authentication mechanisms](/docs/clients.html)…

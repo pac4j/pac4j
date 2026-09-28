@@ -419,5 +419,4 @@ For browser login, add `pac4j-saml` or `pac4j-cas`, replace the `OidcClient` and
 - The [dropwizard-pac4j](https://github.com/pac4j/dropwizard-pac4j) bundle and the [dropwizard-pac4j-demo](https://github.com/pac4j/dropwizard-pac4j-demo) application.
 - The documentation for the [OIDC client for Java](/docs/clients/openid-connect.html) for the complete client configuration.
 - [Direct OIDC authentication](/docs/clients/openid-connect-clients.html#2-direct-clients) and [JWT validation](/docs/authenticators/jwt.html) for the access token case.
-
-**Discover more [pac4j frameworks](/implementations.html) and more [authentication mechanisms](/docs/clients.html)…**
+- Discover more [pac4j frameworks](/implementations.html) and more [authentication mechanisms](/docs/clients.html)…

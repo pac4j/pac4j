@@ -8,15 +8,16 @@ description: "Add SAML 2.0 single sign-on to a Javalin application with pac4j: k
 
 In Javalin, we define routes and add handlers around them. So where should SAML authentication go? In a handler that runs before the protected route.
 
-The [javalin-pac4j](https://github.com/pac4j/javalin-pac4j) library provides that `SecurityHandler`, along with a `CallbackHandler` and a `LogoutHandler`. With these three components, our application becomes a **SAML 2.0 service provider**. Users can then sign in through Microsoft Entra ID, Okta, ADFS, Shibboleth, Keycloak or another SAML identity provider.
+For that, the [javalin-pac4j](https://github.com/pac4j/javalin-pac4j) library provides that `SecurityHandler`, along with a `CallbackHandler` and a `LogoutHandler`. With these three components, our application becomes a **SAML 2.0 service provider**. Users can then sign in through Microsoft Entra ID, Okta, ADFS, Shibboleth, Keycloak or another SAML identity provider.
 
-We'll use **Javalin 7 and Java 17**, with the public pac4j test IdP. For your own IdP, you'll need its metadata. The SAML settings are the same as in the [Spring Boot SAML guide](/how-to-secure-a-java-application-with-saml.html); here, we'll focus on the Javalin handlers.
+We'll use **Javalin v7 and Java 17**, with the public pac4j test IdP. For your own IdP, you'll need its metadata. The SAML settings are the same as in any other pac4j implementation, except that here, we'll focus on the Javalin handlers.
 
 You can find more authentication mechanisms in the library's [example application](https://github.com/pac4j/javalin-pac4j/blob/master/src/test/java/org/pac4j/javalin/example/JavalinPac4jExample.java). If you're coming from Spark Java, the [Spark guide](/how-to-secure-a-spark-java-application-with-oidc.html) shows a similar approach with OIDC.
 
+
 ## 1) Add the Maven dependencies
 
-We need two pac4j dependencies alongside Javalin: `javalin-pac4j` for the handlers, and `pac4j-saml` for the protocol support. The SAML module includes OpenSAML.
+We need two pac4j dependencies alongside Javalin: `javalin-pac4j` for the handlers, and `pac4j-saml` for the protocol support. The SAML module relies on the popular OpenSAML library.
 
 ```xml
 <dependency>
@@ -38,7 +39,8 @@ We need two pac4j dependencies alongside Javalin: `javalin-pac4j` for the handle
 </dependency>
 ```
 
-`javalin-pac4j` 8 targets Javalin 7 and pac4j 6; version 7 is the equivalent for Javalin 5.6.
+`javalin-pac4j` v8 targets Javalin v7 and pac4j v6. Version 7 is the equivalent for Javalin v5.6.
+
 
 ## 2) Create the keystore and write the security configuration
 
@@ -78,7 +80,7 @@ public class SecurityConfigFactory implements ConfigFactory {
 
 The configuration describes both sides of the SAML connection: our application's keystore and entity ID, and the IdP's metadata. It also tells pac4j where to write our SP metadata.
 
-The [Spring Boot guide](/how-to-secure-a-java-application-with-saml.html#4-configure-saml-20-authentication) explains these settings in detail. Remember to register the generated `sp-metadata.xml` at your IdP, as described in its [metadata exchange section](/how-to-secure-a-java-application-with-saml.html#5-exchange-metadata-with-your-identity-provider). Our callback URL, including `?client_name=SAML2Client`, is the Assertion Consumer Service URL.
+The [SAML client documentation](/docs/clients/saml.html) explains these settings and SP metadata generation in detail. When using your own IdP, import the generated `metadata/sp-metadata.xml` into its configuration so it recognizes your application. pac4j generates this file when the SAML client is first initialized, for example on the first request to `/protected`. Our callback URL, including `?client_name=SAML2Client`, is the Assertion Consumer Service URL: the address where the IdP sends its authentication response.
 
 ## 3) Wire the handlers into Javalin
 
@@ -96,7 +98,6 @@ import org.pac4j.javalin.CallbackHandler;
 import org.pac4j.javalin.JavalinFrameworkParameters;
 import org.pac4j.javalin.LogoutHandler;
 import org.pac4j.javalin.SecurityHandler;
-import org.pac4j.saml.client.SAML2Client;
 import org.pac4j.saml.profile.SAML2Profile;
 
 public class App {
@@ -125,11 +126,11 @@ public class App {
 
 When an anonymous user requests the protected page, `SecurityHandler` redirects to the IdP and cancels the remaining handlers for that request. An authenticated user can continue to the route. The handler also accepts `authorizers` and `matchers`: for example, `new SecurityHandler(config, "SAML2Client", "admin")` uses a role check declared with `config.addAuthorizer("admin", new RequireAnyRoleAuthorizer("ROLE_ADMIN"))`.
 
-On the way back, `CallbackHandler` validates the signed assertion and saves the profile in the session. It redirects to the originally requested URL, or to the default URL passed as its second argument. The third argument enables session renewal to protect against session fixation. This handler also receives the `LogoutResponse` during single logout.
+On the way back, `CallbackHandler` validates the signed assertion and saves the profile in the session. It redirects to the originally requested URL, or to the default URL passed as its second argument. The third argument enables session renewal to protect against session fixation attacks. This handler also receives the `LogoutResponse` during single logout.
 
 Finally, `LogoutHandler` removes the profile, and `destroySession` invalidates the session.
 
-Javalin runs on Jetty, and pac4j uses the Jetty session through its servlet session store, so nothing has to be configured for the session.
+Javalin runs on Jetty, and pac4j uses the Jetty session through its servlet session store. For an IdP on another site, the browser must also send the session cookie with the SAML callback POST. Javalin's default `SameSite=Lax` cookie does not allow this: use HTTPS with a session cookie configured as `SameSite=None; Secure` to preserve the session across the login flow.
 
 ## 4) Access the authenticated user
 
@@ -173,15 +174,15 @@ pac4j then sends a `LogoutRequest` to the IdP's single logout endpoint, read fro
 
 Start the `App` class from your IDE or with a configured Maven Exec plugin and `mvn compile exec:java -Dexec.mainClass=org.example.App`, and open [http://localhost:8080/protected](http://localhost:8080/protected). You are redirected to the identity provider to sign in, then posted back to the callback with the assertion, and the protected page shows your profile.
 
-If the IdP rejects the request as an unknown service provider, the SP metadata is not registered or the entity ID differs. If a route runs for anonymous users, the `before` path does not match it: Javalin matches `before("/protected")` and `before("/protected/*")` separately, as in the example above.
+If sign-in fails because the IdP does not recognize your application, check that you have imported `metadata/sp-metadata.xml` into the IdP configuration. The application's identifier registered there must exactly match the value passed to `cfg.setServiceProviderEntityId(...)`.
+
+If a page opens without requiring sign-in, check that a `SecurityHandler` covers its URL. In our example, `before("/protected", ...)` protects the `/protected` page, while `before("/protected/*", ...)` protects URLs below it, such as `/protected/account`. Keep both handlers to protect both the page and its subpaths.
 
 ## 7) Switching to OIDC or CAS
 
-Add `pac4j-oidc` or `pac4j-cas`, replace the `SAML2Client` in the `Config` and update the client name in the `SecurityHandler`. Adapt the `SAML2Profile` cast or use `UserProfile`, and register the callback and logout URLs for the chosen protocol. The SAML keystore is no longer needed. The protocol-specific setup is described in the [OIDC guide](/how-to-secure-a-java-application-with-oidc.html) and the [CAS guide](/how-to-secure-a-java-application-with-cas.html).
+Add `pac4j-oidc` or `pac4j-cas`, replace the `SAML2Client` in the `Config` and update the client name in the `SecurityHandler`. Adapt the `SAML2Profile` cast or use `UserProfile`, and register the callback and logout URLs for the chosen protocol. The SAML keystore is no longer needed. The protocol-specific setup is described in the [OIDC guide](/how-to-secure-a-java-application-with-oidc.html) and the [CAS client documentation](/docs/clients/cas.html).
 
 ## 8) Learn more
 
 - The [javalin-pac4j](https://github.com/pac4j/javalin-pac4j) library and its [example application](https://github.com/pac4j/javalin-pac4j/tree/master/src/test/java/org/pac4j/javalin/example), with many authentication mechanisms.
-- The documentation for the [SAML 2.0 client for Java](/docs/clients/saml.html) for bindings, signature algorithms, attribute converters and IdP-specific notes.
-
-**Discover more [pac4j frameworks](/implementations.html) and more [authentication mechanisms](/docs/clients.html)…**
+- Discover more [pac4j frameworks](/implementations.html) and more [authentication mechanisms](/docs/clients.html)…
