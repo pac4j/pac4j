@@ -5,24 +5,29 @@ seo_title: "How to secure a Spark Java client application with OIDC | pac4j"
 description: "Add OpenID Connect (OIDC) login to a Spark Java application with pac4j: a SecurityFilter on a before filter, callback and logout routes, user profile."
 ---
 
-If you have a few Spark Java routes and want to require an OIDC login before users can reach some of them, Spark's `before` filters are a natural place to do this. But you should never do that by hand.
+If you have a few Spark Java routes and want to require an OIDC login before users can reach some of them, Spark's `before` filters are a natural place to do this. But you shouldn't write that check yourself.
 
 The [spark-pac4j](https://github.com/pac4j/spark-pac4j) library gives us a `SecurityFilter` for these checks, a `CallbackRoute` for the return from the remote OIDC provider and a `LogoutRoute` to perform local and/or central logout. We can use them with OpenID Connect, whether your provider is Keycloak, Google, Microsoft Entra ID, Okta or another OIDC server.
 
-We'll use **Spark 2.9 and Java 17**, starting with the public pac4j demo provider. The OIDC configuration is the same as in the [Spring Boot guide](/how-to-secure-a-java-application-with-oidc.html) for example, as it's the promise of the universal pac4j security engine. The [spark-pac4j-demo](https://github.com/pac4j/spark-pac4j-demo) contains a more complete application.
+We'll use **Spark 2.9 and Java 17**, starting with the public pac4j demo provider. The OIDC configuration is the same as in the [Spring Boot guide](/how-to-secure-a-java-application-with-oidc.html): that's the promise of pac4j's framework-agnostic security engine. The [spark-pac4j-demo](https://github.com/pac4j/spark-pac4j-demo) contains a more complete application.
 
 For a Javalin application, see the [Javalin guide](/how-to-secure-a-javalin-application-with-saml.html), which demonstrates a similar route-based integration (but using the SAML protocol).
 
 
-## 1) Get the demo
+## 1) Create the project
 
-```bash
-git clone https://github.com/pac4j/spark-pac4j-demo.git
-cd spark-pac4j-demo
-mvn clean compile exec:java
+Start from an empty Maven project. To run the application with `mvn exec:java`, declare the `App` class written below as the main class of the `exec-maven-plugin`:
+
+```xml
+<plugin>
+    <groupId>org.codehaus.mojo</groupId>
+    <artifactId>exec-maven-plugin</artifactId>
+    <version>3.6.4</version>
+    <configuration>
+        <mainClass>org.example.App</mainClass>
+    </configuration>
+</plugin>
 ```
-
-The application starts on [http://localhost:8080](http://localhost:8080). The sections below adapt the demo into a minimal OIDC setup. Keep its `exec-maven-plugin` configuration, or set `-Dexec.mainClass=org.example.App` when running the `App` class below.
 
 
 ## 2) Add the Maven dependencies
@@ -39,7 +44,7 @@ Add the Spark integration (`spark-pac4j`) and the OpenID Connect module alongsid
 <dependency>
     <groupId>org.pac4j</groupId>
     <artifactId>spark-pac4j</artifactId>
-    <version>6.0.0</version>
+    <version>6.0.1</version>
 </dependency>
 <!-- pac4j support for OpenID Connect -->
 <dependency>
@@ -80,7 +85,7 @@ public class SecurityConfigFactory implements ConfigFactory {
 
 There is nothing Spark-specific in this configuration. The callback URL, with `?client_name=OidcClient` appended by pac4j, is the redirect URI to register at your provider.
 
-One demo setting should certainly be removed when using your own provider: `setAllowUnsignedIdTokens(true)`. It is only here because the public demo server issues unsigned ID tokens.
+One demo setting must be removed when using your own provider: `setAllowUnsignedIdTokens(true)`. It is only here because the public demo server issues unsigned ID tokens.
 
 
 ## 4) Wire the filter and the routes into Spark
@@ -90,11 +95,9 @@ Now let's register the filter and routes. We can do all of this in the main clas
 ```java
 package org.example;
 
-import java.util.List;
+import java.util.Optional;
 import org.pac4j.core.adapter.FrameworkAdapter;
 import org.pac4j.core.config.Config;
-import org.pac4j.core.profile.UserProfile;
-import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.profile.OidcProfile;
 import org.pac4j.sparkjava.CallbackRoute;
 import org.pac4j.sparkjava.LogoutRoute;
@@ -134,9 +137,9 @@ public class App {
 
 `SecurityFilter` runs before our route. If the user is anonymous, it redirects to the provider and halts the request. Otherwise, the route can run. The second argument names the client and the optional `authorizers` and `matchers` arguments let you refine access control. For instance, `new SecurityFilter(config, "OidcClient", "admin")` uses an authorizer declared with `config.addAuthorizer("admin", new RequireAnyRoleAuthorizer("ROLE_ADMIN"))`.
 
-After login, `CallbackRoute` receives the token, exchanges it for an access token and an ID token, validates the ID token, saves the profile in the session and sends the user back to the originally requested URL. Its second argument supplies a default URL (after login), and the third enables session renewal to protect against session fixation attacks. The `POST` route is for the OIDC `form_post` response mode while the default code flow returns by GET.
+After login, `CallbackRoute` receives the authorization code, exchanges it for an access token and an ID token, validates the ID token, saves the profile in the session and sends the user back to the originally requested URL. Its second argument supplies a default URL (after login), and the third enables session renewal to protect against session fixation attacks. The `POST` route is for the OIDC `form_post` response mode while the default code flow returns by GET.
 
-For logout (and with the default configuration), `LogoutRoute` removes the profile (application/local log out). We also use `setDestroySession(true)` to invalidate the session.
+For logout (and with the default configuration), `LogoutRoute` removes the profile (application/local logout). We also use `setDestroySession(true)` to invalidate the session.
 
 Spark runs on Jetty, and pac4j uses the Jetty session through its servlet session store, so nothing has to be configured for the session.
 
@@ -146,29 +149,29 @@ Spark runs on Jetty, and pac4j uses the Jetty session through its servlet sessio
 Add these helper methods to `App`. They build the `ProfileManager` through the factories of the `Config` and display the profile as plain text:
 
 ```java
-private static List<UserProfile> getProfiles(final Request request, final Response response, final Config config) {
+private static Optional<OidcProfile> getProfile(final Request request, final Response response, final Config config) {
     final var parameters = new SparkFrameworkParameters(request, response);
     final var context = config.getWebContextFactory().newContext(parameters);
     final var sessionStore = config.getSessionStoreFactory().newSessionStore(parameters);
-    return config.getProfileManagerFactory().apply(context, sessionStore).getProfiles();
+    return config.getProfileManagerFactory().apply(context, sessionStore).getProfile(OidcProfile.class);
 }
 
 private static String protectedPage(final Request request, final Response response, final Config config) {
-    final var profile = (OidcProfile) getProfiles(request, response, config).get(0);
+    final var profile = getProfile(request, response, config).orElseThrow();
     response.type("text/plain; charset=UTF-8");
     return "Hello " + profile.getDisplayName() + " (" + profile.getEmail() + ")"
         + "\nVisit /logout to sign out.";
 }
 ```
 
-The `OidcProfile` gives us getters for the standard claims, plus `getIdToken()` and `getAccessToken()` for the raw tokens. The claims depend on the requested scopes, which default to `openid profile email` (but this is configurable).
+The `OidcProfile` gives us getters for the standard claims, plus `getIdTokenString()` for the raw ID token and `getAccessToken()` for the access token. The claims depend on the requested scopes, which default to `openid profile email` (but this is configurable).
 
 You can also create the context directly with `new SparkWebContext(request, response)`.
 
 
 ## 6) Logout
 
-The user can be logged out of Spark and still have a session at the identity provider. Our `/logout` route handles the first part, the **local logout**. For central logout as well, a second route can be added (or merged in the first one):
+The user can be logged out of the Spark application and still have a session at the identity provider. Our `/logout` route handles the first part, the **local logout**. For central logout as well, a second route can be added (or merged into the first one):
 
 ```java
 final var centralLogout = new LogoutRoute(config);
@@ -195,7 +198,7 @@ If the provider rejects the redirect URI, register the full callback URL includi
 
 ## 8) Switching to SAML or CAS
 
-Add the `pac4j-saml` or `pac4j-cas` modules, replace the `OidcClient` in `Config` and update the `SecurityFilter` client name. Adapt the `OidcProfile` cast and provider attributes, and register callback/logout URLs for the selected protocol. SAML also needs a keystore and metadata exchange. The protocol-specific setup is described in the [SAML documentation](/docs/clients/saml.html) and the [CAS documentation](/docs/clients/cas.html).
+Add the `pac4j-saml` or `pac4j-cas` module, replace the `OidcClient` in `Config` and update the `SecurityFilter` client name. Adapt the `OidcProfile` cast and provider attributes, and register callback/logout URLs for the selected protocol. SAML also needs a keystore and metadata exchange. The protocol-specific setup is described in the [SAML documentation](/docs/clients/saml.html) and the [CAS documentation](/docs/clients/cas.html).
 
 ## 9) Learn more
 
