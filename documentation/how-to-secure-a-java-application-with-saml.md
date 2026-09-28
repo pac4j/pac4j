@@ -195,13 +195,9 @@ Open [http://localhost:8080/](http://localhost:8080/) and follow **Protected are
 - **Signature validation fails**: the IdP rotated its certificate. Reload the IdP metadata.
 - **The assertion is missing a `Destination`**: some IdPs omit it; pac4j requires it for security but you can relax it with `cfg.setResponseDestinationAttributeMandatory(false)`.
 
-## Learn more
+## 9) Learn more
 
 - The documentation for the [SAML 2.0 client for Java](/docs/clients/saml.html): bindings, signature algorithms, forced and passive authentication, attribute converters and IdP-specific notes.
 - The `SAML2Client` keeps a replay cache between authentications, so define it once as a singleton, which is what the Spring bean above does.
-
-**Using a different integration?** The [Play](/how-to-secure-a-play-application-with-saml.html) and [Javalin](/how-to-secure-a-javalin-application-with-saml.html) guides also use SAML.
-
-For [Jakarta EE](/how-to-secure-a-jakarta-ee-application-with-oidc.html), [Spring Security](/how-to-secure-a-spring-security-application-with-oidc.html), [JAX-RS and Dropwizard](/how-to-secure-a-jax-rs-application-with-oidc.html), [Spark Java](/how-to-secure-a-spark-java-application-with-oidc.html), [Spring WebFlux](/how-to-secure-a-spring-webflux-application-with-oidc.html), [Shiro](/how-to-secure-a-shiro-application-with-cas.html) and [Vert.x](/how-to-secure-a-vertx-application-with-cas.html), follow the integration guide and its final section on switching protocols, using the SAML configuration above.
 
 **Discover more [pac4j frameworks](/implementations.html) and more [authentication mechanisms](/docs/clients.html)…**

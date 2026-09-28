@@ -285,11 +285,11 @@ Open [http://localhost:8080/protected/oidc](http://localhost:8080/protected/oidc
 - **Logged in for pac4j but anonymous for Spring Security**: the bridge is not on the classpath, or a custom `ProfileManagerFactory` overrides its `SpringSecurityProfileManager`.
 - **Nothing happens at all**: the bridge is alone on the classpath. Add a pac4j implementation, it is the one that authenticates.
 
-## Switching to SAML or CAS
+## 8) Switching to SAML or CAS
 
 Add the corresponding `pac4j-saml` or `pac4j-cas` dependency, replace the `OidcClient` in the `Config` bean with a `SAML2Client` or a `CasClient`, and update the client name in the `SecurityFilter` and the `Pac4jEntryPoint`. Adapt the authorization generator to the attributes supplied by that provider, and replace the controller's `OidcProfile` cast with the corresponding profile type or the common `UserProfile` interface. The filter-chain structure and the bridge remain the same; callback and logout registration depend on the protocol. The protocol-specific setup is described in the [SAML guide](/how-to-secure-a-java-application-with-saml.html) and the [CAS guide](/how-to-secure-a-java-application-with-cas.html).
 
-## Learn more
+## 9) Learn more
 
 - The documentation for the [OIDC client for Java](/docs/clients/openid-connect.html) for all the `OidcConfiguration` options.
 - The [spring-security-pac4j](https://github.com/pac4j/spring-security-pac4j) bridge and its [documentation](https://github.com/pac4j/spring-security-pac4j/wiki).

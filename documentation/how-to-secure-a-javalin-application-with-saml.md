@@ -174,11 +174,11 @@ Start the `App` class from your IDE or with a configured Maven Exec plugin and `
 
 If the IdP rejects the request as an unknown service provider, the SP metadata is not registered or the entity ID differs. If a route runs for anonymous users, the `before` path does not match it: Javalin matches `before("/protected")` and `before("/protected/*")` separately, as in the example above.
 
-## Switching to OIDC or CAS
+## 7) Switching to OIDC or CAS
 
 Add `pac4j-oidc` or `pac4j-cas`, replace the `SAML2Client` in the `Config` and update the client name in the `SecurityHandler`. Adapt the `SAML2Profile` cast or use `UserProfile`, and register the callback and logout URLs for the chosen protocol. The SAML keystore is no longer needed. The protocol-specific setup is described in the [OIDC guide](/how-to-secure-a-java-application-with-oidc.html) and the [CAS guide](/how-to-secure-a-java-application-with-cas.html).
 
-## Learn more
+## 8) Learn more
 
 - The [javalin-pac4j](https://github.com/pac4j/javalin-pac4j) library and its [example application](https://github.com/pac4j/javalin-pac4j/tree/master/src/test/java/org/pac4j/javalin/example), with many authentication mechanisms.
 - The documentation for the [SAML 2.0 client for Java](/docs/clients/saml.html) for bindings, signature algorithms, attribute converters and IdP-specific notes.

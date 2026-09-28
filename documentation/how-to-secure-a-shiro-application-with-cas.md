@@ -213,11 +213,11 @@ Open [http://localhost:8080/protected/index.jsp](http://localhost:8080/protected
 - **`roles[ROLE_ADMIN]` denies a CAS user**: no authorization generator sets the role, or the attribute it reads is not released by the service.
 - **Nothing happens at all**: the bridge is alone on the classpath. Add a pac4j implementation, it is the one that authenticates.
 
-## Switching to OIDC or SAML
+## 8) Switching to OIDC or SAML
 
 Add `pac4j-oidc` or `pac4j-saml`, declare the corresponding client in the INI, reference it in `clients.clients` and update the security filter's `clients` property. Keep the bridge and realm, but adapt profile casts, attribute-to-role mappings and callback/logout registration to the provider. The protocol-specific setup is described in the [OIDC guide](/how-to-secure-a-java-application-with-oidc.html) and the [SAML guide](/how-to-secure-a-java-application-with-saml.html). The demo's `shiro.ini` declares all three side by side. A CAS server can also be configured as an OIDC or SAML provider; choose the protocol required by your deployment.
 
-## Learn more
+## 9) Learn more
 
 - The [buji-pac4j](https://github.com/bujiio/buji-pac4j) bridge and its [documentation](https://github.com/bujiio/buji-pac4j/wiki).
 - The [buji-pac4j-demo](https://github.com/pac4j/buji-pac4j-demo) application, with CAS, OIDC, SAML and HTTP basic authentication.

@@ -274,11 +274,11 @@ Open [http://localhost:9000/protected/index.html](http://localhost:9000/protecte
 - **403 on the POST callback**: the `+ nocsrf` modifier is missing on the route.
 - **"Authentication issue instant is too old"**: check the clocks and any positive limit configured with `cfg.setMaximumAuthenticationLifetime(seconds)`. In pac4j 6.5.8, the default is `0`, which disables this authentication-age check; assertion validity timestamps are still checked.
 
-## Switching to OIDC or CAS
+## 10) Switching to OIDC or CAS
 
 Add `pac4j-oidc` or `pac4j-cas` to `build.sbt`, provide the corresponding client in the module and pass it to `Config`. Update `@Secure` and any URL rules, adapt profile casts and attribute mappings, and register the protocol-specific callback and logout URLs. The same session store and controller structure apply; the SAML keystore is no longer needed. The protocol-specific setup is described in the [OIDC guide](/how-to-secure-a-java-application-with-oidc.html) and the [CAS guide](/how-to-secure-a-java-application-with-cas.html).
 
-## Learn more
+## 11) Learn more
 
 - The [play-pac4j](https://github.com/pac4j/play-pac4j) library and its [documentation](https://github.com/pac4j/play-pac4j/wiki), including the `Security` trait for Scala controllers and the Twirl template helper.
 - The [play-pac4j-java-demo](https://github.com/pac4j/play-pac4j-java-demo) and [play-pac4j-scala-demo](https://github.com/pac4j/play-pac4j-scala-demo) applications, with many authentication mechanisms.

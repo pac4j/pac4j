@@ -192,11 +192,11 @@ Deploy the verticle from a `main` method with `vertx.deployVerticle(new ServerVe
 
 If CAS answers "Application Not Authorized to Use CAS", the service is not registered or its pattern does not match the full callback URL. If the login loops or loses its state, the `SessionHandler` is missing or registered after the pac4j handler: it must come first, on the protected route and on the callback.
 
-## Switching to OIDC or SAML
+## 8) Switching to OIDC or SAML
 
 Add `pac4j-oidc` or `pac4j-saml`, replace the `CasClient` and update `SecurityHandlerOptions`. Adapt the profile cast and attribute mapping, register callback/logout URLs, and keep body parsing on the callback for SAML POST responses. The SAML setup also needs a keystore and metadata exchange. The protocol-specific setup is described in the [OIDC guide](/how-to-secure-a-java-application-with-oidc.html) and the [SAML guide](/how-to-secure-a-java-application-with-saml.html). A CAS server can also be configured as an OIDC or SAML provider; choose the protocol required by your deployment.
 
-## Learn more
+## 9) Learn more
 
 - The [vertx-pac4j](https://github.com/pac4j/vertx-pac4j) library and its [documentation](https://github.com/pac4j/vertx-pac4j/wiki), and the [vertx-pac4j-demo](https://github.com/pac4j/vertx-pac4j-demo) application.
 - The documentation for the [CAS client for Java](/docs/clients/cas.html) for proxy tickets, the CAS REST API and all the `CasConfiguration` options.

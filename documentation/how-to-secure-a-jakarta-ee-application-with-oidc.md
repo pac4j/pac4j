@@ -260,11 +260,11 @@ Open [http://localhost:8080/protected/index](http://localhost:8080/protected/ind
 - **The callback loops back to the login page**: the callback URL in the `Config` does not match the URL the browser actually uses, typically behind a reverse proxy. Set the public URL.
 - **No profile in the servlet**: the `SecurityFilter` is not mapped on that URL. The profile is only guaranteed on URLs the filter protects.
 
-## Switching to SAML or CAS
+## 7) Switching to SAML or CAS
 
 Add the corresponding `pac4j-saml` or `pac4j-cas` dependency, replace the `OidcClient` in the `ConfigFactory` with a `SAML2Client` or a `CasClient`, and update the security filter's `clients` parameter. Adapt the `OidcProfile` cast in the servlet to the new profile type, or use the common `UserProfile` interface. The same filter structure applies, with the callback and logout URLs registered for the chosen protocol. The protocol-specific configuration, the SAML keystore and metadata exchange, and the CAS service registration, are described in the [SAML guide](/how-to-secure-a-java-application-with-saml.html) and the [CAS guide](/how-to-secure-a-java-application-with-cas.html).
 
-## Learn more
+## 8) Learn more
 
 - The [jee-pac4j](https://github.com/pac4j/jee-pac4j) library and its [documentation](https://github.com/pac4j/jee-pac4j/wiki) for every filter parameter and the JSF and CDI support.
 - The [jee-pac4j-demo](https://github.com/pac4j/jee-pac4j-demo) web application, with JSP pages and many authentication mechanisms, and the [jee-pac4j-cdi-demo](https://github.com/pac4j/jee-pac4j-cdi-demo) with JSF and CDI.

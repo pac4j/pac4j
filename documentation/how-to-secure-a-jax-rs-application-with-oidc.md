@@ -292,7 +292,7 @@ Open [http://localhost:8080/protected/index](http://localhost:8080/protected/ind
 - **`@Pac4JProfile` is not injected**: the value factory is missing. Register `Pac4JValueFactoryProvider.Binder` on Jersey, or `Pac4JProfileInjectorFactory` on RESTEasy.
 - **401 on the API with a valid token**: the provider rejects the token at the user info endpoint. Check that the token was issued for this provider and carries the `openid` scope.
 
-## Using Dropwizard
+## 9) Using Dropwizard {#using-dropwizard}
 
 What if your application uses Dropwizard? It runs Jersey inside Jetty, so the resource annotations above still apply. The [dropwizard-pac4j](https://github.com/pac4j/dropwizard-pac4j) bundle takes care of step 3: it builds `Config` from a factory named in YAML, registers the servlet and security features and the profile value factory, and enables Jetty sessions.
 
@@ -407,11 +407,11 @@ You can also declare `globalFilters` in the `pac4j` section to protect the whole
 
 For the bearer-token API from step 6, set `sessionEnabled: false` and build the `HeaderClient` in the factory. The [dropwizard-pac4j-demo](https://github.com/pac4j/dropwizard-pac4j-demo) brings these cases together, with views, a REST API and servlets in one application.
 
-## Switching to SAML or CAS
+## 10) Switching to SAML or CAS
 
 For browser login, add `pac4j-saml` or `pac4j-cas`, replace the `OidcClient` and update `@Pac4JSecurity`. Adapt the injected profile type or use `CommonProfile`, and register the protocol-specific callback and logout settings. SAML also needs a keystore and metadata exchange. The bearer-token example is a separate authentication mechanism and is not converted by changing this browser client. The protocol-specific setup is described in the [SAML guide](/how-to-secure-a-java-application-with-saml.html) and the [CAS guide](/how-to-secure-a-java-application-with-cas.html); the demo already includes a CAS login.
 
-## Learn more
+## 11) Learn more
 
 - The [jax-rs-pac4j](https://github.com/pac4j/jax-rs-pac4j) library and its [documentation](https://github.com/pac4j/jax-rs-pac4j/wiki), including the Servlet, Grizzly, CDI and sessionless setups.
 - The [jax-rs-pac4j-demo](https://github.com/pac4j/jax-rs-pac4j-demo) application, and the [release post on Jersey 4 and RESTEasy 7 support](/blog/what_s_new_in_jax_rs_pac4j_v8.html).

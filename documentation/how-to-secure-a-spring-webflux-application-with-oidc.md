@@ -166,13 +166,13 @@ Open [http://localhost:8080/protected/index](http://localhost:8080/protected/ind
 
 If the filter never triggers, check the full request path against the `/protected/` prefix. If the provider rejects the redirect URI, include `?client_name=OidcClient` in its registration. If `/callback` or `/logout` returns 404, check that the component scan registers the library's controllers. If Spring reports duplicate mappings, remove any custom controller left over from the earlier example.
 
-## Switching to SAML or CAS
+## 7) Switching to SAML or CAS
 
 The protocol configuration from the [SAML guide](/how-to-secure-a-java-application-with-saml.html) or [CAS guide](/how-to-secure-a-java-application-with-cas.html) can be reused with this integration. Add the corresponding module, replace the `OidcClient` and update the client name in the filter. Adapt the profile type and attributes, and register the callback and logout URLs at the provider. SAML also needs a keystore and metadata exchange.
 
 The built-in callback accepts GET and POST requests and makes the raw request body available to clients such as SAML. Check the chosen protocol's bindings and single logout requirements, and test them with your provider and session store.
 
-## Learn more
+## 8) Learn more
 
 - The documentation for the [OIDC client for Java](/docs/clients/openid-connect.html) for the complete client configuration.
 - The [spring-webflux-pac4j](https://github.com/pac4j/spring-webflux-pac4j) library and its [documentation](https://github.com/pac4j/spring-webflux-pac4j/wiki).

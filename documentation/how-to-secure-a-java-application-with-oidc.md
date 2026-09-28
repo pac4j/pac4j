@@ -210,14 +210,10 @@ Open [http://localhost:8080/](http://localhost:8080/) and follow **Protected are
 - **The ID token signature fails**: check that discovery points to the intended provider, that its JWKS is reachable and contains the current signing key, and that the expected signing algorithm matches the provider's client configuration. If an explicit algorithm is needed, use `config.setIdTokenSigningAlgorithm(...)` with that configured algorithm; changing it to `ES256` is not a general fix for signature errors.
 - **Empty name or email**: the scopes or the provider's claim mapping do not release them. Check the scopes first, then the client configuration at the provider.
 
-## Learn more
+## 8) Learn more
 
 - The documentation for the [OIDC client for Java](/docs/clients/openid-connect.html): all the `OidcConfiguration` options, the implicit flow, `private_key_jwt` client authentication, nonce and state handling.
 - [Direct OIDC authentication](/docs/clients/openid-connect-clients.html#2-direct-clients) to protect a REST API with the access tokens issued by your provider.
 - [OpenID Federation](/docs/clients/openid-connect-federation.html) when your application belongs to a trust federation.
-
-**Using a different integration?** These guides also use OIDC: [Jakarta EE](/how-to-secure-a-jakarta-ee-application-with-oidc.html), [Spring Security](/how-to-secure-a-spring-security-application-with-oidc.html), [JAX-RS and Dropwizard](/how-to-secure-a-jax-rs-application-with-oidc.html), [Spark Java](/how-to-secure-a-spark-java-application-with-oidc.html) and [Spring WebFlux](/how-to-secure-a-spring-webflux-application-with-oidc.html).
-
-The [Play](/how-to-secure-a-play-application-with-saml.html) and [Javalin](/how-to-secure-a-javalin-application-with-saml.html) guides use SAML; [Shiro](/how-to-secure-a-shiro-application-with-cas.html) and [Vert.x](/how-to-secure-a-vertx-application-with-cas.html) use CAS. Their final sections explain how to switch protocols.
 
 **Discover more [pac4j frameworks](/implementations.html) and more [authentication mechanisms](/docs/clients.html)…**
