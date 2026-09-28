@@ -278,6 +278,8 @@ main ul li { list-style-type: disc; }
 }
 
 /* ---------- Blog index ---------- */
+.blog-home h2 { margin-bottom: .25rem; }
+.blog-home h2 + .blog-index { margin-top: 0; }
 .blog-index {
   list-style: none;
   margin: 1.5rem 0 0;
@@ -292,6 +294,7 @@ main ul li { list-style-type: disc; }
   border-bottom: 1px solid var(--border);
 }
 .blog-index li:first-child { border-top: 1px solid var(--border); }
+.guide-index li { align-items: center; }
 .blog-index time {
   flex: 0 0 9em;
   font-size: .8rem;
