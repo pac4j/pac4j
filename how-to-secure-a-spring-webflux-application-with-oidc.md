@@ -1,7 +1,7 @@
 ---
 layout: guide
-title: How to secure a Spring WebFlux application with OIDC (using pac4j)
-seo_title: "How to secure a Spring WebFlux application with OIDC | pac4j"
+title: How to secure a Spring WebFlux client application with OIDC (using pac4j)
+seo_title: "How to secure a Spring WebFlux client application with OIDC | pac4j"
 description: "Add OpenID Connect login to Spring WebFlux with pac4j: protect routes, handle the OIDC callback, read the user profile and configure logout."
 ---
 

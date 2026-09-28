@@ -1,7 +1,7 @@
 ---
 layout: guide
-title: How to secure a Jakarta EE application with OIDC (using pac4j)
-seo_title: "How to secure a Jakarta EE application with OIDC | pac4j"
+title: How to secure a Jakarta EE client application with OIDC (using pac4j)
+seo_title: "How to secure a Jakarta EE client application with OIDC | pac4j"
 description: "Add OpenID Connect (OIDC) login to a Jakarta EE or servlet application with pac4j: security, callback and logout filters, user profile, SAML and CAS variants."
 ---
 
