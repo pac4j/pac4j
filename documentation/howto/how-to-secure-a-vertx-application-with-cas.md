@@ -201,4 +201,5 @@ Add `pac4j-oidc` or `pac4j-saml`, replace the `CasClient` and update `SecurityHa
 
 - The [vertx-pac4j](https://github.com/pac4j/vertx-pac4j) library and its [documentation](https://github.com/pac4j/vertx-pac4j/wiki), and the [vertx-pac4j-demo](https://github.com/pac4j/vertx-pac4j-demo) application.
 - The documentation for the [CAS client for Java](/docs/clients/cas.html) for proxy tickets, the CAS REST API and all the `CasConfiguration` options.
-- Discover more [pac4j frameworks](/implementations.html) and more [authentication mechanisms](/docs/clients.html)…
+
+**Discover more [pac4j frameworks](/implementations.html) and more [authentication mechanisms](/docs/clients.html)…**
