@@ -7,7 +7,7 @@ description: "Secure Java applications with pac4j: OIDC, SAML and CAS tutorials 
 
 **pac4j is a Java security framework** that provides authentication and authorization for web applications and web services. Secure your application with OpenID Connect (OIDC), CAS, SAML and other authentication mechanisms. Start with one of these Spring Boot examples:
 
-<ul class="blog-index">
+<ul class="blog-index guide-index">
 {% assign protocols = "oidc,cas,saml" | split: "," %}
 {% for protocol in protocols %}
     <li>
@@ -20,7 +20,7 @@ description: "Secure Java applications with pac4j: OIDC, SAML and CAS tutorials 
 
 Choose an integration for your application. The guides below use OIDC, SAML or CAS to explain the framework-specific setup, including bridges for applications that already use Spring Security or Shiro:
 
-<ul class="blog-index">
+<ul class="blog-index guide-index">
     <li>
         <a href="/how-to-secure-a-jakarta-ee-application-with-oidc.html">How to secure a Jakarta EE application with OIDC (using pac4j)</a>
         <img class="guide-logo" src="/img/logo-j2e.png" alt="" width="48" height="40" />
