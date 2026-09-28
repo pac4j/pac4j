@@ -1,7 +1,7 @@
 ---
 layout: guide
-title: How to secure a JAX-RS application with OIDC (using pac4j)
-seo_title: "How to secure a JAX-RS (Jersey, RESTEasy) application with OIDC | pac4j"
+title: How to secure a JAX-RS client application with OIDC (using pac4j)
+seo_title: "How to secure a JAX-RS (Jersey, RESTEasy) client application with OIDC | pac4j"
 description: "Add OpenID Connect (OIDC) to a JAX-RS application with pac4j on Jersey, RESTEasy or Dropwizard: browser login with @Pac4JSecurity, bearer tokens for a REST API."
 ---
 

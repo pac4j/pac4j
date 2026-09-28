@@ -1,7 +1,7 @@
 ---
 layout: guide
-title: How to secure a Spark Java application with OIDC (using pac4j)
-seo_title: "How to secure a Spark Java application with OIDC | pac4j"
+title: How to secure a Spark Java client application with OIDC (using pac4j)
+seo_title: "How to secure a Spark Java client application with OIDC | pac4j"
 description: "Add OpenID Connect (OIDC) login to a Spark Java application with pac4j: a SecurityFilter on a before filter, callback and logout routes, user profile."
 ---
 

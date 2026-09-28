@@ -9,7 +9,7 @@ description: "Use pac4j-saml as your SAML 2.0 client for Java. Set up your servi
 
 SAML 2.0 provides single sign-on (SSO) through XML assertions exchanged between the identity provider and your application. The identity provider authenticates the user; the service provider validates the SAML response to establish who signed in.
 
-**[How to secure a Java application with SAML (using Spring Boot)](/how-to-secure-a-java-application-with-saml.html)** — follow a complete Spring Boot example, then use the reference below for the full configuration.
+**[How to secure a Java client application with SAML (using Spring Boot)](/how-to-secure-a-java-application-with-saml.html)** — follow a complete Spring Boot example, then use the reference below for the full configuration.
 
 It has been tested with various SAML 2 providers: Okta, testshib.org, CAS SAML2 IdP, Shibboleth v3.4...
 

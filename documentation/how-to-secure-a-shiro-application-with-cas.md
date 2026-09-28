@@ -1,7 +1,7 @@
 ---
 layout: guide
-title: How to secure a Shiro application with CAS (using pac4j)
-seo_title: "How to secure an Apache Shiro application with CAS | pac4j"
+title: How to secure a Shiro client application with CAS (using pac4j)
+seo_title: "How to secure an Apache Shiro client application with CAS | pac4j"
 description: "Add CAS single sign-on to an Apache Shiro application: a pac4j implementation authenticates, the buji-pac4j bridge fills the Shiro subject and roles."
 ---
 

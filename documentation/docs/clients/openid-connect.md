@@ -9,7 +9,7 @@ description: "Use pac4j-oidc as your OpenID Connect (OIDC) client for Java. Foll
 
 OpenID Connect adds an identity layer to OAuth 2.0. Your application redirects the user to an identity provider and uses the returned ID token to establish who signed in.
 
-**[How to secure a Java application with OIDC (using Spring Boot)](/how-to-secure-a-java-application-with-oidc.html)** — follow a complete Spring Boot example, then use the reference below for the full configuration.
+**[How to secure a Java client application with OIDC (using Spring Boot)](/how-to-secure-a-java-application-with-oidc.html)** — follow a complete Spring Boot example, then use the reference below for the full configuration.
 
 It has been tested with various OpenID Connect providers: CAS server, Google, AzureAD, Okta, IdentityServer, MitreID, Keycloak...
 

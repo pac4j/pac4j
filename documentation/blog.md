@@ -27,7 +27,7 @@ description: "Explore Java authentication tutorials and articles on OIDC, SAML, 
 {% assign protocols = "oidc,cas,saml" | split: "," %}
 {% for protocol in protocols %}
     <li>
-        <a href="/how-to-secure-a-java-application-with-{{ protocol }}.html">How to secure a Java application with {{ protocol | upcase }} (using Spring Boot)</a>
+        <a href="/how-to-secure-a-java-application-with-{{ protocol }}.html">How to secure a Java client application with {{ protocol | upcase }} (using Spring Boot)</a>
         <span class="tag tag-howto">{{ site.data.blogtags.howto }}</span>
         <span class="tag tag-{{ protocol }}">{{ site.data.blogtags[protocol] }}</span>
     </li>

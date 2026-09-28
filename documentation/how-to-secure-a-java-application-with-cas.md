@@ -1,7 +1,7 @@
 ---
 layout: guide
-title: How to secure a Java application with CAS (using Spring Boot)
-seo_title: "How to secure a Java application with CAS | pac4j"
+title: How to secure a Java client application with CAS (using Spring Boot)
+seo_title: "How to secure a Java client application with CAS | pac4j"
 description: "Add CAS single sign-on to a Java application with pac4j and Spring Boot: Maven setup, CAS login URL, service registration, user attributes and logout."
 ---
 

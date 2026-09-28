@@ -11,7 +11,7 @@ description: "Secure Java applications with pac4j: OIDC, SAML and CAS tutorials 
 {% assign protocols = "oidc,cas,saml" | split: "," %}
 {% for protocol in protocols %}
     <li>
-        <a href="/how-to-secure-a-java-application-with-{{ protocol }}.html">How to secure a Java application with {{ protocol | upcase }} (using Spring Boot)</a>
+        <a href="/how-to-secure-a-java-application-with-{{ protocol }}.html">How to secure a Java client application with {{ protocol | upcase }} (using Spring Boot)</a>
         <img class="guide-logo" src="/img/logo-spring-webmvc.png" alt="" width="48" height="40" />
         <span class="tag tag-{{ protocol }}">{{ site.data.blogtags[protocol] }}</span>
     </li>
@@ -22,47 +22,47 @@ Choose an integration for your application. The guides below use OIDC, SAML or C
 
 <ul class="blog-index guide-index">
     <li>
-        <a href="/how-to-secure-a-jakarta-ee-application-with-oidc.html">How to secure a Jakarta EE application with OIDC (using pac4j)</a>
+        <a href="/how-to-secure-a-jakarta-ee-application-with-oidc.html">How to secure a Jakarta EE client application with OIDC (using pac4j)</a>
         <img class="guide-logo" src="/img/logo-j2e.png" alt="" width="48" height="40" />
         <span class="tag tag-oidc">{{ site.data.blogtags.oidc }}</span>
     </li>
     <li>
-        <a href="/how-to-secure-a-play-application-with-saml.html">How to secure a Play application with SAML (using pac4j)</a>
+        <a href="/how-to-secure-a-play-application-with-saml.html">How to secure a Play client application with SAML (using pac4j)</a>
         <img class="guide-logo" src="/img/logo-play.png" alt="" width="48" height="40" />
         <span class="tag tag-saml">{{ site.data.blogtags.saml }}</span>
     </li>
     <li>
-        <a href="/how-to-secure-a-spring-security-application-with-oidc.html">How to secure a Spring Security application with OIDC (using pac4j)</a>
+        <a href="/how-to-secure-a-spring-security-application-with-oidc.html">How to secure a Spring Security client application with OIDC (using pac4j)</a>
         <img class="guide-logo" src="/img/logo-spring-security.png" alt="" width="48" height="40" />
         <span class="tag tag-oidc">{{ site.data.blogtags.oidc }}</span>
     </li>
     <li>
-        <a href="/how-to-secure-a-shiro-application-with-cas.html">How to secure a Shiro application with CAS (using pac4j)</a>
+        <a href="/how-to-secure-a-shiro-application-with-cas.html">How to secure a Shiro client application with CAS (using pac4j)</a>
         <img class="guide-logo" src="/img/logo-shiro.png" alt="" width="48" height="40" />
         <span class="tag tag-cas">{{ site.data.blogtags.cas }}</span>
     </li>
     <li>
-        <a href="/how-to-secure-a-spring-webflux-application-with-oidc.html">How to secure a Spring WebFlux application with OIDC (using pac4j)</a>
+        <a href="/how-to-secure-a-spring-webflux-application-with-oidc.html">How to secure a Spring WebFlux client application with OIDC (using pac4j)</a>
         <img class="guide-logo" src="/img/logo-spring-webflux.png" alt="" width="48" height="40" />
         <span class="tag tag-oidc">{{ site.data.blogtags.oidc }}</span>
     </li>
     <li>
-        <a href="/how-to-secure-a-jax-rs-application-with-oidc.html">How to secure a JAX-RS application with OIDC (using pac4j)</a>
+        <a href="/how-to-secure-a-jax-rs-application-with-oidc.html">How to secure a JAX-RS client application with OIDC (using pac4j)</a>
         <img class="guide-logo" src="/img/logo-jaxrs.png" alt="" width="48" height="40" />
         <span class="tag tag-oidc">{{ site.data.blogtags.oidc }}</span>
     </li>
     <li>
-        <a href="/how-to-secure-a-vertx-application-with-cas.html">How to secure a Vert.x application with CAS (using pac4j)</a>
+        <a href="/how-to-secure-a-vertx-application-with-cas.html">How to secure a Vert.x client application with CAS (using pac4j)</a>
         <img class="guide-logo" src="/img/logo-vertx.png" alt="" width="48" height="40" />
         <span class="tag tag-cas">{{ site.data.blogtags.cas }}</span>
     </li>
     <li>
-        <a href="/how-to-secure-a-javalin-application-with-saml.html">How to secure a Javalin application with SAML (using pac4j)</a>
+        <a href="/how-to-secure-a-javalin-application-with-saml.html">How to secure a Javalin client application with SAML (using pac4j)</a>
         <img class="guide-logo" src="/img/logo-javalin.png" alt="" width="48" height="40" />
         <span class="tag tag-saml">{{ site.data.blogtags.saml }}</span>
     </li>
     <li>
-        <a href="/how-to-secure-a-spark-java-application-with-oidc.html">How to secure a Spark Java application with OIDC (using pac4j)</a>
+        <a href="/how-to-secure-a-spark-java-application-with-oidc.html">How to secure a Spark Java client application with OIDC (using pac4j)</a>
         <img class="guide-logo" src="/img/logo-spark.png" alt="" width="48" height="40" />
         <span class="tag tag-oidc">{{ site.data.blogtags.oidc }}</span>
     </li>
