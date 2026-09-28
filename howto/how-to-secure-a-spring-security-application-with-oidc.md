@@ -296,5 +296,4 @@ Add the corresponding `pac4j-saml` or `pac4j-cas` dependency, replace the `OidcC
 - The [spring-security-pac4j](https://github.com/pac4j/spring-security-pac4j) bridge and its [documentation](https://github.com/pac4j/spring-security-pac4j/wiki).
 - The three demos: [with the servlet filters](https://github.com/pac4j/spring-security-jee-pac4j-boot-demo), [with Spring MVC](https://github.com/pac4j/spring-security-webmvc-pac4j-boot-demo) and [with Spring WebFlux](https://github.com/pac4j/spring-security-webflux-pac4j-boot-demo).
 - Why you may not need Spring Security at all: [Spring Boot security: choose spring-webmvc-pac4j over Spring Security](/blog/spring-boot-security-choose-spring-webmvc-pac4j.html) and [the REST API follow-up](/blog/spring-webmvc-pac4j-vs-spring-security-round-2-rest-apis.html).
-
-**Discover more [pac4j frameworks](/implementations.html) and more [authentication mechanisms](/docs/clients.html)…**
+- Discover more [pac4j frameworks](/implementations.html) and more [authentication mechanisms](/docs/clients.html)…
