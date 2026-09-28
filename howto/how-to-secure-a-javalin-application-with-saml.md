@@ -185,4 +185,5 @@ Add `pac4j-oidc` or `pac4j-cas`, replace the `SAML2Client` in the `Config` and u
 ## 8) Learn more
 
 - The [javalin-pac4j](https://github.com/pac4j/javalin-pac4j) library and its [example application](https://github.com/pac4j/javalin-pac4j/tree/master/src/test/java/org/pac4j/javalin/example), with many authentication mechanisms.
-- Discover more [pac4j frameworks](/implementations.html) and more [authentication mechanisms](/docs/clients.html)…
+
+**Discover more [pac4j frameworks](/implementations.html) and more [authentication mechanisms](/docs/clients.html)…**
