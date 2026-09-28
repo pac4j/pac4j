@@ -1,4 +1,5 @@
 ---
+permalink: /how-to-secure-a-java-application-with-saml.html
 layout: guide
 title: How to secure a Java client application with SAML (using Spring Boot)
 seo_title: "How to secure a Java client application with SAML | pac4j"

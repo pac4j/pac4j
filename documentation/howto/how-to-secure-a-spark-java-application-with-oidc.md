@@ -1,4 +1,5 @@
 ---
+permalink: /how-to-secure-a-spark-java-application-with-oidc.html
 layout: guide
 title: How to secure a Spark Java client application with OIDC (using pac4j)
 seo_title: "How to secure a Spark Java client application with OIDC | pac4j"
@@ -44,7 +45,7 @@ Add the Spark integration (`spark-pac4j`) and the OpenID Connect module alongsid
 <dependency>
     <groupId>org.pac4j</groupId>
     <artifactId>spark-pac4j</artifactId>
-    <version>6.0.1</version>
+    <version>6.0.2</version>
 </dependency>
 <!-- pac4j support for OpenID Connect -->
 <dependency>

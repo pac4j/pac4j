@@ -1,4 +1,5 @@
 ---
+permalink: /how-to-secure-a-javalin-application-with-saml.html
 layout: guide
 title: How to secure a Javalin client application with SAML (using pac4j)
 seo_title: "How to secure a Javalin client application with SAML | pac4j"
