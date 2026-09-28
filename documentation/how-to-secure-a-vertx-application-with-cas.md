@@ -1,7 +1,7 @@
 ---
 layout: guide
-title: How to secure a Vert.x application with CAS (using pac4j)
-seo_title: "How to secure a Vert.x Web application with CAS | pac4j"
+title: How to secure a Vert.x client application with CAS (using pac4j)
+seo_title: "How to secure a Vert.x Web client application with CAS | pac4j"
 description: "Add CAS single sign-on to a Vert.x Web application with pac4j: session handler, CasClient, a SecurityHandler on a route, callback and logout handlers."
 ---
 

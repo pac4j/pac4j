@@ -1,7 +1,7 @@
 ---
 layout: guide
-title: How to secure a Javalin application with SAML (using pac4j)
-seo_title: "How to secure a Javalin application with SAML | pac4j"
+title: How to secure a Javalin client application with SAML (using pac4j)
+seo_title: "How to secure a Javalin client application with SAML | pac4j"
 description: "Add SAML 2.0 single sign-on to a Javalin application with pac4j: keystore, SAML2Client, a SecurityHandler on a before handler, callback and logout handlers."
 ---
 
