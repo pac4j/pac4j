@@ -1,4 +1,5 @@
 ---
+permalink: /how-to-secure-a-shiro-application-with-cas.html
 layout: guide
 title: How to secure a Shiro client application with CAS (using pac4j)
 seo_title: "How to secure an Apache Shiro client application with CAS | pac4j"

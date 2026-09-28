@@ -1,4 +1,5 @@
 ---
+permalink: /how-to-secure-a-jakarta-ee-application-with-oidc.html
 layout: guide
 title: How to secure a Jakarta EE client application with OIDC (using pac4j)
 seo_title: "How to secure a Jakarta EE client application with OIDC | pac4j"

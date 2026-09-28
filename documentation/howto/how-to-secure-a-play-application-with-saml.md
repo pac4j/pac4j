@@ -1,4 +1,5 @@
 ---
+permalink: /how-to-secure-a-play-application-with-saml.html
 layout: guide
 title: How to secure a Play client application with SAML (using pac4j)
 seo_title: "How to secure a Play Framework client application with SAML | pac4j"
