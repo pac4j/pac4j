@@ -1,4 +1,5 @@
 ---
+permalink: /how-to-secure-a-vertx-application-with-cas.html
 layout: guide
 title: How to secure a Vert.x client application with CAS (using pac4j)
 seo_title: "How to secure a Vert.x Web client application with CAS | pac4j"

@@ -1,4 +1,5 @@
 ---
+permalink: /how-to-secure-a-jax-rs-application-with-oidc.html
 layout: guide
 title: How to secure a JAX-RS client application with OIDC (using pac4j)
 seo_title: "How to secure a JAX-RS (Jersey, RESTEasy) client application with OIDC | pac4j"

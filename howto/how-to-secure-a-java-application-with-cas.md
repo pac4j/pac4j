@@ -1,4 +1,5 @@
 ---
+permalink: /how-to-secure-a-java-application-with-cas.html
 layout: guide
 title: How to secure a Java client application with CAS (using Spring Boot)
 seo_title: "How to secure a Java client application with CAS | pac4j"

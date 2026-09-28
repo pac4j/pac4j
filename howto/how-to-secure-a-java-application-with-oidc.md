@@ -1,4 +1,5 @@
 ---
+permalink: /how-to-secure-a-java-application-with-oidc.html
 layout: guide
 title: How to secure a Java client application with OIDC (using Spring Boot)
 seo_title: "How to secure a Java client application with OIDC | pac4j"
