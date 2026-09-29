@@ -43,7 +43,7 @@ Here are their behaviors and differences:
 | | Direct clients = web services authentication | Indirect clients = UI authentication
 |------|----------------|-----------------
 | [Authentication flows](authentication-flows.html) | 1) Credentials are passed for each HTTP request (to the "[security filter](security-filter.html)") | 1) The originally requested URL is saved in session (by the "security filter")<br />2) The user is redirected to the identity provider (by the "security filter")<br />3) Authentication happens at the identity provider (or locally for the `FormClient` and the `IndirectBasicAuthClient`)<br />4) The user is redirected back to the callback endpoint/URL ("callback endpoint")<br />5) The user is redirected to the originally requested URL (by the "[callback endpoint](callback-endpoint.html)") |
-| How many times does the login process occur? | The authentication happens for every HTTP request (in the "security filter") via the defined [`Authenticator`](/docs/authenticators.html) and `ProfileCreator`.<br />For performance reasons, a cache may be used by wrapping the current `Authenticator` in a `LocalCachingAuthenticator` or the "security filter" can be configured to save the profile in session (`ProfileStorageDecision`) | The authentication happens only once (in the "callback filter") |
+| How many times does the login process occur? | The authentication happens for every HTTP request (in the "security filter") via the defined [`Authenticator`](/docs/authenticators.html) and `ProfileCreator`.<br />For performance reasons, a cache may be used by wrapping the current `Authenticator` in a `LocalCachingAuthenticator` or the client can be configured to save the profile in session (see the [profile options](#4-profile-options)) | The authentication happens only once (in the "callback filter") |
 | Where is the user profile saved by default? | In the HTTP request  (stateless) | In the web session (stateful) |
 | Where are the credentials? | Passed for every HTTP request (processed by the "security filter") | On the callback endpoint returned by the identity provider (and retrieved by the "callback endpoint") |
 | What are the protected URLs? | The URLs of the web service are protected by the "security filter" | The URLs of the web application are protected by the "security filter", but the callback URL is not protected as it is used during the login process when the user is still anonymous |
@@ -134,6 +134,8 @@ Or provide your own `UrlResolver` using the `setUrlResolver` method.
 ## 4) Profile options
 
 You can control if the profile is saved in session or not via the `setSaveProfileInSession` method. By default, it's `true` for indirect clients and `false` for direct clients.
+
+<div class="warning"><i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i> If you save the profile in session for a direct client, the next requests are authenticated by the session cookie, but no CSRF check is performed by default (the <code>csrfCheck</code> authorizer is only applied by default for profiles created by indirect clients). In that case, add the <code>csrfCheck</code> authorizer explicitly on the secured URLs (for example: <code>+csrfCheck</code>).</div>
 
 You can control if the profile is saved in addition to the existing authenticated profile or in replacement via the `setMultiProfile` method (`false` by default).
 

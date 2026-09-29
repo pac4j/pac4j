@@ -41,7 +41,7 @@ A specific client may be chosen among all defined clients for the filter by usin
 
 It's a string of the list of the [authorizer](authorizers.html) names (separated by commas) used to check authorizations. It is an optional parameter.
 
-By default, if the `authorizers` is blank or not defined, the `csrfCheck` authorizer is applied for web applications (at least one `IndirectClient` is defined) but not for web services.
+By default, if the `authorizers` is blank or not defined, the `csrfCheck` authorizer is applied for web applications (at least one `IndirectClient` is defined or the user profile has been created by an `IndirectClient`) but not for web services.
 The `isAuthenticated` authorizer is also applied by default if no `AnonymousClient` is configured.
 
 You can also use the [out-of-the-box authorizers](authorizers.html#-default-authorizer-names), already available without defining them in the security configuration.
