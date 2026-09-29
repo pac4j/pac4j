@@ -216,7 +216,7 @@ Open [http://localhost:8080/protected/index.jsp](http://localhost:8080/protected
 
 ## 8) Switching to OIDC or SAML
 
-Add `pac4j-oidc` or `pac4j-saml`, declare the corresponding client in the INI, reference it in `clients.clients` and update the security filter's `clients` property. Keep the bridge and realm, but adapt profile casts, attribute-to-role mappings and callback/logout registration to the provider. The protocol-specific setup is described in the [OIDC guide](/how-to-secure-a-java-application-with-oidc.html) and the [SAML guide](/how-to-secure-a-java-application-with-saml.html). The demo's `shiro.ini` declares all three side by side. A CAS server can also be configured as an OIDC or SAML provider; choose the protocol required by your deployment.
+Add `pac4j-oidc` or `pac4j-saml`, declare the corresponding client in the INI, reference it in `clients.clients` and update the security filter's `clients` property. Keep the bridge and realm, but adapt profile casts, attribute-to-role mappings and callback/logout registration to the provider. The protocol-specific setup is described in the [OIDC guide](/docs/clients/openid-connect.html) and the [SAML guide](/docs/clients/saml.html). The demo's `shiro.ini` declares all three side by side. A CAS server can also be configured as an OIDC or SAML provider; choose the protocol required by your deployment.
 
 ## 9) Learn more
 

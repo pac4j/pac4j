@@ -410,7 +410,7 @@ For the bearer-token API from step 6, set `sessionEnabled: false` and build the 
 
 ## 10) Switching to SAML or CAS
 
-For browser login, add `pac4j-saml` or `pac4j-cas`, replace the `OidcClient` and update `@Pac4JSecurity`. Adapt the injected profile type or use `CommonProfile`, and register the protocol-specific callback and logout settings. SAML also needs a keystore and metadata exchange. The bearer-token example is a separate authentication mechanism and is not converted by changing this browser client. The protocol-specific setup is described in the [SAML guide](/how-to-secure-a-java-application-with-saml.html) and the [CAS guide](/how-to-secure-a-java-application-with-cas.html); the demo already includes a CAS login.
+For browser login, add `pac4j-saml` or `pac4j-cas`, replace the `OidcClient` and update `@Pac4JSecurity`. Adapt the injected profile type or use `CommonProfile`, and register the protocol-specific callback and logout settings. SAML also needs a keystore and metadata exchange. The bearer-token example is a separate authentication mechanism and is not converted by changing this browser client. The protocol-specific setup is described in the [SAML guide](/docs/clients/saml.html) and the [CAS guide](/docs/clients/cas.html); the demo already includes a CAS login.
 
 ## 11) Learn more
 

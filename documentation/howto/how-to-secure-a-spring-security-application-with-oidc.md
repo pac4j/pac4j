@@ -288,7 +288,7 @@ Open [http://localhost:8080/protected/oidc](http://localhost:8080/protected/oidc
 
 ## 8) Switching to SAML or CAS
 
-Add the corresponding `pac4j-saml` or `pac4j-cas` dependency, replace the `OidcClient` in the `Config` bean with a `SAML2Client` or a `CasClient`, and update the client name in the `SecurityFilter` and the `Pac4jEntryPoint`. Adapt the authorization generator to the attributes supplied by that provider, and replace the controller's `OidcProfile` cast with the corresponding profile type or the common `UserProfile` interface. The filter-chain structure and the bridge remain the same; callback and logout registration depend on the protocol. The protocol-specific setup is described in the [SAML guide](/how-to-secure-a-java-application-with-saml.html) and the [CAS guide](/how-to-secure-a-java-application-with-cas.html).
+Add the corresponding `pac4j-saml` or `pac4j-cas` dependency, replace the `OidcClient` in the `Config` bean with a `SAML2Client` or a `CasClient`, and update the client name in the `SecurityFilter` and the `Pac4jEntryPoint`. Adapt the authorization generator to the attributes supplied by that provider, and replace the controller's `OidcProfile` cast with the corresponding profile type or the common `UserProfile` interface. The filter-chain structure and the bridge remain the same; callback and logout registration depend on the protocol. The protocol-specific setup is described in the [SAML guide](/docs/clients/saml.html) and the [CAS guide](/docs/clients/cas.html).
 
 ## 9) Learn more
 

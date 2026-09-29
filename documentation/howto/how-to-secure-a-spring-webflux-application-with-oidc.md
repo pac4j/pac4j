@@ -169,7 +169,7 @@ If the filter never triggers, check the full request path against the `/protecte
 
 ## 7) Switching to SAML or CAS
 
-The protocol configuration from the [SAML guide](/how-to-secure-a-java-application-with-saml.html) or [CAS guide](/how-to-secure-a-java-application-with-cas.html) can be reused with this integration. Add the corresponding module, replace the `OidcClient` and update the client name in the filter. Adapt the profile type and attributes, and register the callback and logout URLs at the provider. SAML also needs a keystore and metadata exchange.
+The protocol configuration from the [SAML guide](/docs/clients/saml.html) or [CAS guide](/docs/clients/cas.html) can be reused with this integration. Add the corresponding module, replace the `OidcClient` and update the client name in the filter. Adapt the profile type and attributes, and register the callback and logout URLs at the provider. SAML also needs a keystore and metadata exchange.
 
 The built-in callback accepts GET and POST requests and makes the raw request body available to clients such as SAML. Check the chosen protocol's bindings and single logout requirements, and test them with your provider and session store.
 

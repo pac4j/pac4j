@@ -277,7 +277,7 @@ Open [http://localhost:9000/protected/index.html](http://localhost:9000/protecte
 
 ## 10) Switching to OIDC or CAS
 
-Add `pac4j-oidc` or `pac4j-cas` to `build.sbt`, provide the corresponding client in the module and pass it to `Config`. Update `@Secure` and any URL rules, adapt profile casts and attribute mappings, and register the protocol-specific callback and logout URLs. The same session store and controller structure apply; the SAML keystore is no longer needed. The protocol-specific setup is described in the [OIDC guide](/how-to-secure-a-java-application-with-oidc.html) and the [CAS guide](/how-to-secure-a-java-application-with-cas.html).
+Add `pac4j-oidc` or `pac4j-cas` to `build.sbt`, provide the corresponding client in the module and pass it to `Config`. Update `@Secure` and any URL rules, adapt profile casts and attribute mappings, and register the protocol-specific callback and logout URLs. The same session store and controller structure apply; the SAML keystore is no longer needed. The protocol-specific setup is described in the [OIDC guide](/docs/clients/openid-connect.html) and the [CAS guide](/docs/clients/cas.html).
 
 ## 11) Learn more
 
