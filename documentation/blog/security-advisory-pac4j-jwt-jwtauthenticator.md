@@ -19,3 +19,5 @@ To stay safe, you MUST upgrade:
 No additional details will be shared in this post.
 
 This vulnerability was discovered by **CodeAnt AI Security Research Team, part of https://www.codeant.ai/, securityresearch@codeant.ai**.
+
+{% include security_warning.html %}
