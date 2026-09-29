@@ -33,7 +33,7 @@ Start from a Maven web application with `<packaging>war</packaging>` and a Java 
 <dependency>
     <groupId>org.pac4j</groupId>
     <artifactId>pac4j-oidc</artifactId>
-    <version>6.5.8</version>
+    <version>6.5.9</version>
 </dependency>
 <!-- the servlet API, provided by your container -->
 <dependency>

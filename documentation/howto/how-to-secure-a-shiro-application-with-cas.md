@@ -58,7 +58,7 @@ On top of `shiro-web`, you need three pac4j artifacts: the pac4j implementation 
 <dependency>
     <groupId>org.pac4j</groupId>
     <artifactId>pac4j-cas</artifactId>
-    <version>6.5.8</version>
+    <version>6.5.9</version>
 </dependency>
 <!-- the bridge: pushes the pac4j profile into the Shiro subject -->
 <dependency>

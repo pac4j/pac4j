@@ -41,7 +41,7 @@ libraryDependencies += guice
 libraryDependencies += caffeine
 
 val playPac4jVersion = "13.0.3-PLAY3.0"
-val pac4jVersion = "6.5.8"
+val pac4jVersion = "6.5.9"
 
 libraryDependencies ++= Seq(
   "org.pac4j" %% "play-pac4j" % playPac4jVersion,
@@ -273,7 +273,7 @@ Open [http://localhost:9000/protected/index.html](http://localhost:9000/protecte
 - **"Please create a SessionStore and define it in the config"** at startup: `config.setSessionStoreFactory(...)` is missing in the module.
 - **The IdP rejects the request as an unknown service provider**: the SP metadata is not registered, or the entity ID at the IdP differs from `setServiceProviderEntityId`.
 - **403 on the POST callback**: the `+ nocsrf` modifier is missing on the route.
-- **"Authentication issue instant is too old"**: check the clocks and any positive limit configured with `cfg.setMaximumAuthenticationLifetime(seconds)`. In pac4j 6.5.8, the default is `0`, which disables this authentication-age check; assertion validity timestamps are still checked.
+- **"Authentication issue instant is too old"**: check the clocks and any positive limit configured with `cfg.setMaximumAuthenticationLifetime(seconds)`. In pac4j 6.5.9, the default is `0`, which disables this authentication-age check; assertion validity timestamps are still checked.
 
 ## 10) Switching to OIDC or CAS
 
