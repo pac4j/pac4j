@@ -6,19 +6,19 @@ import lombok.ToString;
 import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.http.ajax.DefaultAjaxRequestResolver;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.openid4vp.config.OpenId4VpConfiguration;
 import org.pac4j.openid4vp.credentials.authenticator.OpenId4VpAuthenticator;
 import org.pac4j.openid4vp.credentials.extractor.OpenId4VpCredentialsExtractor;
 import org.pac4j.openid4vp.profile.OpenId4VpProfileDefinition;
-import org.pac4j.openid4vp.profile.creator.OpenId4VpProfileCreator;
-import org.pac4j.openid4vp.request.OpenId4VpRequestObjectBuilder;
+import org.pac4j.openid4vp.profile.ProfileIdResolver;
 import org.pac4j.openid4vp.redirect.OpenId4VpRedirectionActionBuilder;
+import org.pac4j.openid4vp.request.OpenId4VpRequestObjectBuilder;
 
 import static org.pac4j.core.util.CommonHelper.assertNotNull;
-import static org.pac4j.openid4vp.util.OpenId4VpConstants.VP_TRANSACTION_ID;
 import static org.pac4j.core.util.CommonHelper.assertTrue;
+import static org.pac4j.openid4vp.util.OpenId4VpConstants.VP_TRANSACTION_ID;
 
 /**
  * This class is the client to authenticate users against a wallet, using OpenID for Verifiable
@@ -96,13 +96,39 @@ public class OpenId4VpClient extends IndirectClient {
         }
         setRedirectionActionBuilderIfUndefined(new OpenId4VpRedirectionActionBuilder(this));
         setCredentialsExtractorIfUndefined(new OpenId4VpCredentialsExtractor(this));
-        setAuthenticatorIfUndefined(new OpenId4VpAuthenticator(this));
-        setProfileCreatorIfUndefined(new OpenId4VpProfileCreator(this, new OpenId4VpProfileDefinition()));
+        // the authenticator builds the profile, which the default profile creator of the client returns
+        val authenticator = new OpenId4VpAuthenticator(this);
+        authenticator.setProfileDefinition(defaultProfileDefinition());
+        setAuthenticatorIfUndefined(authenticator);
+        if (configuration.getProfileIdResolver() == null) {
+            configuration.setProfileIdResolver(defaultProfileIdResolver());
+        }
+        assertTrue(configuration.getProfileIdResolver() != null, "no profileIdResolver is configured to "
+            + "identify the user: set one, such as ProfileIdResolver.issuerAndClaim with a stable claim requested in the DCQL query");
 
         checkAjaxRequestResolver();
 
         configuration.init(this.getClass().getSimpleName(), forceReinit);
         logger.debug("OpenID4VP client initialized: {}", this);
+    }
+
+    /**
+     * <p>The profile definition of the default authenticator.</p>
+     *
+     * @return a definition of {@code VerifiableCredentialProfile}
+     */
+    protected OpenId4VpProfileDefinition defaultProfileDefinition() {
+        return new OpenId4VpProfileDefinition();
+    }
+
+    /**
+     * <p>The profile identifier resolver used when the configuration has none: the issuer and the {@code sub}
+     * claim of the credential.</p>
+     *
+     * @return the resolver, or null to require one in the configuration
+     */
+    protected ProfileIdResolver defaultProfileIdResolver() {
+        return ProfileIdResolver.issuerAndClaim("sub");
     }
 
     /**

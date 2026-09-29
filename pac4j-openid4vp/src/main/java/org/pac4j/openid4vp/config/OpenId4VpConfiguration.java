@@ -25,6 +25,7 @@ import org.pac4j.core.util.JwkHelper;
 import org.pac4j.openid4vp.transaction.VpTransaction;
 import org.pac4j.openid4vp.transaction.VpTransactionStore;
 import org.pac4j.openid4vp.dcql.DcqlQuery;
+import org.pac4j.openid4vp.profile.ProfileIdResolver;
 import org.pac4j.openid4vp.verifier.CredentialVerifier;
 import org.pac4j.openid4vp.verifier.SdJwtVcVerifier;
 
@@ -101,8 +102,8 @@ public class OpenId4VpConfiguration extends BaseClientConfiguration {
     private DcqlQuery dcqlQuery;
 
     /**
-     * An optional alias for the DCQL query. The ecosystem defines the supported aliases and their meaning;
-     * the wallet must support the chosen alias.
+     * An optional alias for the DCQL query: "Such a scope parameter value MUST be an alias for a well-defined DCQL
+     * query". The ecosystem defines the supported aliases and their meaning; the wallet must support the chosen alias.
      *
      * <p>When non-blank, this value is sent as {@code scope} instead of {@code dcql_query}.
      * {@link #dcqlQuery} must still contain the equivalent query for response validation: configuring a scope
@@ -142,6 +143,14 @@ public class OpenId4VpConfiguration extends BaseClientConfiguration {
         new LinkedHashMap<>(Map.of(CredentialFormat.SD_JWT_VC, new SdJwtVcVerifier()));
 
     /**
+     * Derives the profile identifier from the verified credentials, as the SAML configuration names the attribute
+     * used as identifier. Checked against the DCQL query at initialization. When absent, {@code OpenId4VpClient}
+     * uses {@link ProfileIdResolver#issuerAndClaim(String) issuerAndClaim("sub")}, while {@code EudiWalletClient}
+     * has no default and refuses to initialize, no PID attribute being assumed to be a stable identifier.
+     */
+    private ProfileIdResolver profileIdResolver;
+
+    /**
      * How long a presentation request stays valid. It is stamped on each transaction, sent to the wallet in
      * the request object, and the store drops the transaction on that very date.
      */
@@ -152,6 +161,17 @@ public class OpenId4VpConfiguration extends BaseClientConfiguration {
     private ValueGenerator nonceGenerator = new RandomValueGenerator(32);
 
     private ValueGenerator transactionIdGenerator = new RandomValueGenerator(32);
+
+    /**
+     * Generates the {@code state} sent with every request invoking a wallet by URL, and checked on the response.
+     * It binds the response to the request when no holder binding proof brings the nonce back: "the Verifier MUST
+     * include a state parameter [...] ensure that the value is a cryptographically strong pseudo-random number with
+     * at least 128 bits of entropy". The default draws two random UUIDs, i.e. 244 random bits.
+     *
+     * @see <a href="https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#section-5.3">
+     *     OpenID4VP 1.0, requesting presentations without holder binding proofs</a>
+     */
+    private ValueGenerator stateGenerator = new RandomValueGenerator(64);
 
     /** The custom scheme used to invoke a wallet on the same device. */
     private String walletScheme = "openid4vp://";
@@ -172,6 +192,7 @@ public class OpenId4VpConfiguration extends BaseClientConfiguration {
         assertNotNull("transactionStore", transactionStore);
         assertNotNull("nonceGenerator", nonceGenerator);
         assertNotNull("transactionIdGenerator", transactionIdGenerator);
+        assertNotNull("stateGenerator", stateGenerator);
         assertNotNull("requestUriMethod", requestUriMethod);
         assertNotNull("dcqlQuery", dcqlQuery);
         assertNotNull("credentialVerifiers", credentialVerifiers);
@@ -181,6 +202,10 @@ public class OpenId4VpConfiguration extends BaseClientConfiguration {
         dcqlQuery.getCredentials().forEach(credential -> assertNotNull("credentialVerifier for the format "
             + credential.getFormat().getValue() + " of the credential query " + credential.getId(),
             credentialVerifiers.get(credential.getFormat())));
+        // a mapping which can never find its identifier fails here, not at every login
+        if (profileIdResolver != null) {
+            profileIdResolver.check(dcqlQuery);
+        }
         assertTrue(transactionLifetimeSeconds > 0, "transactionLifetimeSeconds must be greater than zero");
         assertNotNull("verifierInfo", verifierInfo);
         verifierInfo.forEach(VerifierAttestation::check);

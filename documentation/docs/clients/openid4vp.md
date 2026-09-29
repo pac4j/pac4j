@@ -61,7 +61,10 @@ to define its OpenID4VP requirements.
 - **Signing material:** supply the relying party access certificate, its private key and certificate chain through
   `keystore`, or through `jwks` with an `x5c` chain. Follow the target wallet's registration and trust requirements.
 - **Requested data:** configure a DCQL query matching the wallet's credential format and attribute names.
-- **User profile:** returns an `EudiPidProfile`; configure a suitable [profile identifier](openid4vp-advanced.html#2-the-profile-identifier).
+- **User profile:** returns an `EudiPidProfile`. **Choose the claim identifying the user**: the PID defines no `sub` and
+  none of its attributes is assumed to be a stable identifier, so the client refuses to initialize until a
+  [profile identifier](openid4vp-advanced.html#2-the-profile-identifier) resolver is configured, such as
+  `ProfileIdResolver.issuerAndClaim(...)` with a claim requested in the DCQL query.
 
 **Use `OpenId4VpClient` if the wallet requires different settings**, such as `x509_san_dns`, or for credentials other
 than the PID. See [Clients and configuration](openid4vp-clients.html).

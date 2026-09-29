@@ -108,6 +108,8 @@ class DcApiRequestObjectBuilderTests {
         val claims = requestObject.getJWTClaimsSet();
         assertEquals(RESPONSE_TYPE_VP_TOKEN, claims.getStringClaim(RESPONSE_TYPE));
         assertNotNull(claims.getStringClaim(NONCE));
+        // "The Digital Credentials API uses internal mechanisms to maintain the binding": no state
+        assertNull(claims.getClaim(STATE));
         assertNotNull(claims.getJSONObjectClaim(DCQL_QUERY));
         assertNotNull(claims.getJSONObjectClaim(CLIENT_METADATA));
     }

@@ -22,6 +22,9 @@ import org.pac4j.openid4vp.credentials.VerifiablePresentationCredentials;
 import org.pac4j.openid4vp.dcql.CredentialQuery;
 import org.pac4j.openid4vp.dcql.DcqlQuery;
 import org.pac4j.openid4vp.exceptions.OpenId4VpException;
+import org.pac4j.openid4vp.profile.EudiPidProfile;
+import org.pac4j.openid4vp.profile.EudiPidProfileDefinition;
+import org.pac4j.openid4vp.profile.VerifiableCredentialProfile;
 import org.pac4j.openid4vp.transaction.VpTransaction;
 import org.pac4j.openid4vp.verifier.CredentialVerifier;
 import org.pac4j.openid4vp.verifier.VerifiedCredential;
@@ -57,7 +60,8 @@ class OpenId4VpAuthenticatorTests {
         key = new ECKeyGenerator(Curve.P_256).keyID("response-key").algorithm(JWEAlgorithm.ECDH_ES).generate();
         query = new DcqlQuery().addCredential(new CredentialQuery("pid", CredentialFormat.SD_JWT_VC)
             .setVctValues("urn:pid").addClaim("name"));
-        configuration = new OpenId4VpConfiguration().setDcqlQuery(query);
+        configuration = new OpenId4VpConfiguration().setDcqlQuery(query)
+            .setProfileIdResolver(credentials -> "user-" + credentials.getVerifiedCredentials().keySet());
         configuration.addCredentialVerifier(new CredentialVerifier() {
             @Override
             public CredentialFormat getFormat() {
@@ -110,6 +114,31 @@ class OpenId4VpAuthenticatorTests {
     private void clear(final String vpToken) {
         transaction.setResponseMode(ResponseMode.DIRECT_POST).setRawResponse(null).setRawVpToken(vpToken)
             .setResponseState("expected-state");
+    }
+
+    @Test
+    void buildsTheProfileFromAllVerifiedCredentials() throws Exception {
+        encrypted(response());
+        val profile = assertInstanceOf(VerifiableCredentialProfile.class, validate().getUserProfile());
+        // the identifier comes from the resolver of the configuration, the attributes from the verified claims
+        assertEquals("user-[pid]", profile.getId());
+        assertEquals("Alice", profile.getAttribute("name"));
+
+        // the profile definition of the authenticator decides the profile class
+        authenticator.setProfileDefinition(new EudiPidProfileDefinition());
+        assertInstanceOf(EudiPidProfile.class, validate().getUserProfile());
+    }
+
+    @Test
+    void aProfileWhichCannotBeIdentifiedFailsTheValidation() throws Exception {
+        encrypted(response());
+        configuration.setProfileIdResolver(credentials -> " ");
+        val credentials = new VerifiablePresentationCredentials(transaction);
+        assertThrows(OpenId4VpException.class, () -> authenticator.validate(null, credentials));
+        // nothing verified is left behind
+        assertNull(credentials.getUserProfile());
+        assertTrue(credentials.getVerifiedCredentials().isEmpty());
+        assertTrue(credentials.getVpToken().isEmpty());
     }
 
     @Test

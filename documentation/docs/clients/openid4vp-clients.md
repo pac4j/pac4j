@@ -19,10 +19,10 @@ See also:
 
 - [`OpenId4VpClient`](https://github.com/pac4j/pac4j/blob/master/pac4j-openid4vp/src/main/java/org/pac4j/openid4vp/client/OpenId4VpClient.java): the generic verifier, for a wallet invoked by a URL. The redirection is a `openid4vp://` URL: on the same device the browser follows it and the wallet opens; on another device, the application must display it as a QR code: it calls the protected URL via AJAX, and the wallet URL is returned in the `Location` header. The wallet then fetches the request object by HTTP (`request_uri`), or first posts what it supports and gets a request object built for it (`request_uri_method=post`), and posts its answer (`direct_post` or `direct_post.jwt`): all of it on the regular *pac4j* callback URL, without any session. The page waits for the answer and calls back when it has arrived, which turns the received presentation into a `VerifiableCredentialProfile`
 - [`OpenId4VpDcApiClient`](https://github.com/pac4j/pac4j/blob/master/pac4j-openid4vp/src/main/java/org/pac4j/openid4vp/client/OpenId4VpDcApiClient.java): the same verifier over the [Digital Credentials API](https://www.w3.org/TR/digital-credentials/) of the browser, with a `OpenId4VpDcApiConfiguration`. The page never leaves: the client answers the page a JSON `{"request": "<signed request object>"}` which the page passes to `navigator.credentials.get()`, the browser hands it to the wallet with the authenticated origin of the page, and the page posts the answer back (`dc_api` or `dc_api.jwt`). Unlike the URL binding, the wallet never calls the application by itself: every request reaches the application from the browser, with its web session, as any other page request. In return, the request must be signed, and the origins the page runs from must be declared
-- [`EudiWalletClient`](https://github.com/pac4j/pac4j/blob/master/pac4j-openid4vp/src/main/java/org/pac4j/openid4vp/client/EudiWalletClient.java): the `OpenId4VpClient` with the HAIP choices pinned and not configurable: the `x509_hash` prefix, so the certificate loaded from the keystore is the identity of the verifier, the `direct_post.jwt` response mode, and the `EudiPidProfile`. Use it to read the person identification data of an EUDI wallet, the generic client to talk to any other wallet or to another credential.
+- [`EudiWalletClient`](https://github.com/pac4j/pac4j/blob/master/pac4j-openid4vp/src/main/java/org/pac4j/openid4vp/client/EudiWalletClient.java): the `OpenId4VpClient` with the HAIP choices pinned and not configurable: the `x509_hash` prefix, so the certificate loaded from the keystore is the identity of the verifier, the `direct_post.jwt` response mode, and the `EudiPidProfile`, whose identifier claim must be chosen by the application. Use it to read the person identification data of an EUDI wallet, the generic client to talk to any other wallet or to another credential.
 
-The following examples configure the presentation request. For persistent user identification, also request the
-identifier claim required by your profile definition, as described under [The profile identifier](openid4vp-advanced.html#2-the-profile-identifier).
+The following examples configure the presentation request, including the claim identifying the user: a client whose
+DCQL query cannot return that claim refuses to initialize. See [The profile identifier](openid4vp-advanced.html#2-the-profile-identifier).
 
 **Example (EUDI wallet, with the relying party access certificate in a keystore):**
 
@@ -32,9 +32,14 @@ OpenId4VpConfiguration config = new OpenId4VpConfiguration()
         .setKeystorePath("/path/to/access-certificate.p12")
         .setKeystorePassword("...")
         .setKeyStoreAlias("rp"))
-    .setDcqlQuery(EudiPidQuery.sdJwtVc(GIVEN_NAME, AGE_OVER_18));
+    .setDcqlQuery(EudiPidQuery.sdJwtVc(PERSONAL_ADMINISTRATIVE_NUMBER, GIVEN_NAME, AGE_OVER_18))
+    // the PID defines no sub: name the claim identifying the user, here one that the targeted PID provider issues
+    .setProfileIdResolver(ProfileIdResolver.issuerAndClaim(PERSONAL_ADMINISTRATIVE_NUMBER));
 EudiWalletClient client = new EudiWalletClient(config);
 ```
+
+`personal_administrative_number` is optional in the PID and not issued by every provider: check it against the target
+ecosystem, or set a `ProfileIdResolver` (see [The profile identifier](openid4vp-advanced.html#2-the-profile-identifier)).
 
 **Example (any wallet, over the Digital Credentials API, with a DID):**
 
@@ -45,10 +50,12 @@ config.setExpectedOrigins(List.of("https://verifier.example.org"))
     .setClientIdPrefix(ClientIdPrefix.DECENTRALIZED_IDENTIFIER)
     .setJwks(new JwksProperties().setJwksPath("/path/to/verifier.jwks").setKid("verifier-key"))
     .setDcqlQuery(new DcqlQuery()
-        .addCredential(new CredentialQuery("pid", CredentialFormat.SD_JWT_VC)
-            .setVctValues("urn:eudi:pid:1")
+        .addCredential(new CredentialQuery("badge", CredentialFormat.SD_JWT_VC)
+            .setVctValues("https://credentials.example.org/employee-badge")
+            // sub: the claim the default profile definition identifies the user with
+            .addClaim("sub")
             .addClaim("family_name")
-            .addClaim(new ClaimsQuery("age_over_18").withValues(true))));
+            .addClaim(new ClaimsQuery("role").withValues("manager"))));
 OpenId4VpDcApiClient client = new OpenId4VpDcApiClient(config);
 ```
 
@@ -69,9 +76,11 @@ The `OpenId4VpConfiguration` has the following properties, with the HAIP choices
 | `verifierInfo` | empty | Attestations about the verifier (`VerifierAttestation`: a `format`, the `data`, optional `credentialIds`), sent as the `verifier_info` parameter: what a third party says this verifier is entitled to ask, such as the registration certificate of an EUDI relying party, which the wallet may show to the End-User or check the request against. The formats belong to the ecosystem; nothing comes back |
 | `credentialVerifiers` | `SdJwtVcVerifier` | The interchangeable `CredentialVerifier` of each credential format (`SD_JWT_VC` is `dc+sd-jwt`, `MSO_MDOC` is `mso_mdoc`), registered with `addCredentialVerifier(verifier)`. One must be registered for each requested format. The built-in SD-JWT VC verifier requires the optional EUDI dependency and explicit issuer trust configuration; see [Configuring credential verifiers](openid4vp-verifiers.html#2-configuring-credential-verifiers). |
 | `transactionLifetimeSeconds` | `300` | How long a request stays valid: stamped as the `exp` of the request object, and the date at which the pending transaction is dropped from the store |
-| `transactionStore` | `VpTransactionStore` | The `Store` of the pending transactions, keyed by their identifier: the wallet legs carry no session and find the request there. In memory by default; use a shared store (Redis, Hazelcast...) behind several instances |
+| `transactionStore` | `VpTransactionStore` | The `Store` of the pending transactions, keyed by their identifier: the wallet legs carry no session and find the request there. The answer of the wallet is kept apart, under the key `<identifier>#response`, with the same expiration, so that no other leg can overwrite it. In memory by default; use a shared store (Redis, Hazelcast...) behind several instances |
 | `nonceGenerator` | 32 random characters | Generates the `nonce` sent to the wallet, which the presentation must be bound to |
 | `transactionIdGenerator` | 32 random characters | Generates the transaction identifier, visible in the `request_uri` and in the response URI |
+| `profileIdResolver` | `issuerAndClaim("sub")`, none for `EudiWalletClient` | How the user is identified from the verified credentials, see [The profile identifier](openid4vp-advanced.html#2-the-profile-identifier). Checked against `dcqlQuery` at initialization |
+| `stateGenerator` | 64 random characters | Generates the `state` sent with every request invoking a wallet by URL (not over the Digital Credentials API) and checked on the response: it is what binds the response to the request when a presentation comes without holder binding |
 | `requestUriMethod` | `POST` | How the wallet fetches the request object: `GET` as RFC 9101 defines, or `POST` to let it first post its metadata (`wallet_metadata`, what it supports) and a nonce (`wallet_nonce`). The request object then carries the nonce back, and publishes only the credential formats and the response encryption algorithms the wallet declared, the request being refused when it declares none of them. Announced in the wallet URL as `request_uri_method=post`; a wallet which does not support it falls back to a GET, so nothing is lost. Only meaningful for a signed request over the URL binding |
 | `walletScheme` | `openid4vp://` | The custom scheme of the URL invoking a wallet on the same device; a wallet may register another one (`eudi-openid4vp://` for the EUDI reference wallet, `haip://`...) |
 
@@ -81,4 +90,4 @@ The `OpenId4VpDcApiConfiguration` adds one property and closes two: its default 
 |---|---|---|
 | `expectedOrigins` | | The origins (scheme, host and optional port, nothing more) the page calling the API runs from. The browser gives the wallet the actual origin of the page, which checks it is one of them: this is what ties a signed request to your site and defeats its replay from another one |
 
-The clients themselves expose a `requestObjectBuilder` (`OpenId4VpRequestObjectBuilder`, or `DcApiRequestObjectBuilder` over the Digital Credentials API), to be overridden to add parameters to the request object, and the usual `redirectionActionBuilder`, `credentialsExtractor`, `authenticator` and `profileCreator` of an indirect client.
+The clients themselves expose a `requestObjectBuilder` (`OpenId4VpRequestObjectBuilder`, or `DcApiRequestObjectBuilder` over the Digital Credentials API), to be overridden to add parameters to the request object, and the usual `redirectionActionBuilder`, `credentialsExtractor`, `authenticator` and `profileCreator` of an indirect client. The `OpenId4VpAuthenticator` builds the user profile, with its `profileDefinition` (`OpenId4VpProfileDefinition`, or `EudiPidProfileDefinition` for the `EudiWalletClient`); the default profile creator returns it, and a custom one may enrich it.

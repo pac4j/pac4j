@@ -25,7 +25,13 @@ import static org.pac4j.core.util.CommonHelper.assertTrue;
  *
  * <p>The {@code meta} member is defined per format: {@code vct_values} for a SD-JWT VC, {@code doctype_value}
  * for a mobile document, set with {@link #setVctValues(String...)} and {@link #setDoctypeValue(String)}.
- * These type constraints are required for their respective formats and checked at initialization.</p>
+ * These type constraints are required for their respective formats and checked at initialization: {@code vct_values}
+ * is "REQUIRED. A non-empty array of strings", {@code doctype_value} is "REQUIRED. String".</p>
+ *
+ * @see <a href="https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#appendix-B.3.5">
+ *     OpenID4VP 1.0, SD-JWT VC parameter in the meta parameter</a>
+ * @see <a href="https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#appendix-B.2.3">
+ *     OpenID4VP 1.0, mdoc parameter in the meta parameter</a>
  *
  * @see <a href="https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#credential_query">
  *     OpenID4VP 1.0, credential query</a>
@@ -176,6 +182,9 @@ public class CredentialQuery {
         if (claims != null) {
             for (val claim : claims) {
                 claim.check(hasClaimSets);
+                // "If the claims path pointer does not contain exactly two components or one of the components is not a
+                // string then abort processing and return an error"
+                // https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#section-7.2.1
                 if (format == CredentialFormat.MSO_MDOC) {
                     assertTrue(claim.getPath().size() == 2 && claim.getPath().stream().allMatch(String.class::isInstance),
                         "an mdoc claim path must contain a namespace and an element name");

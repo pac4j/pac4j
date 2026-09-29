@@ -19,6 +19,7 @@ import org.bouncycastle.asn1.x509.BasicConstraints;
 import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.KeyUsage;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
+import org.bouncycastle.cert.jcajce.JcaX509ExtensionUtils;
 import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
 import org.bouncycastle.cert.jcajce.JcaX509CRLConverter;
 import org.bouncycastle.cert.jcajce.JcaX509v2CRLBuilder;
@@ -32,11 +33,15 @@ import org.pac4j.openid4vp.config.OpenId4VpConfiguration;
 import org.pac4j.openid4vp.config.ResponseMode;
 import org.pac4j.openid4vp.dcql.CredentialQuery;
 import org.pac4j.openid4vp.dcql.DcqlValidator;
+import org.pac4j.openid4vp.dcql.TrustedAuthority;
 import org.pac4j.openid4vp.exceptions.OpenId4VpException;
 import org.pac4j.openid4vp.transaction.VpTransaction;
+import org.springframework.core.io.FileSystemResource;
 
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.KeyStore;
@@ -50,6 +55,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -146,6 +152,32 @@ class SdJwtVcVerifierTests {
     }
 
     @Test
+    void readsTheOtherTypesTheIssuerSigned() throws Exception {
+        assertTrue(verify(presentation()).getAdditionalTypes().isEmpty());
+        issuerClaims.put("aka_vcts", List.of("urn:example:pid:general"));
+        assertEquals(List.of("urn:example:pid:general"), verify(presentation()).getAdditionalTypes());
+    }
+
+    @Test
+    void rejectsInvalidOrDisclosedOtherTypes() throws Exception {
+        // "MUST be a non-empty array of case-sensitive strings" which "MUST NOT contain the value of the vct claim"
+        for (val invalid : List.<Object>of(List.of(), "urn:example:pid:general", List.of(42), List.of("urn:example:pid"))) {
+            issuerClaims.put("aka_vcts", invalid);
+            val raw = presentation();
+            assertThrows(OpenId4VpException.class, () -> verify(raw));
+        }
+        // and it "MUST NOT be selectively disclosed": a holder could otherwise add a type the issuer never signed
+        issuerClaims.remove("aka_vcts");
+        val typesDisclosure = Base64URL.encode(com.nimbusds.jose.util.JSONArrayUtils.toJSONString(
+            List.of("salt-types", "aka_vcts", List.of("urn:example:pid:general")))).toString();
+        disclosures.add(typesDisclosure);
+        issuerClaims.put("_sd", List.of(hash(disclosures.get(0)), hash(typesDisclosure)));
+        val raw = presentation();
+        assertEquals("the SD-JWT VC aka_vcts claim must not be selectively disclosed",
+            assertThrows(OpenId4VpException.class, () -> verify(raw)).getMessage());
+    }
+
+    @Test
     void reconstructsNestedAndArrayDisclosuresAndOmitsUndisclosedClaims() throws Exception {
         val street = disclose("salt-street", "street", "Main Street");
         val role = disclose("salt-role", "admin");
@@ -190,7 +222,9 @@ class SdJwtVcVerifierTests {
             assertEquals("Alice", result.getClaims().get("given_name"));
             assertFalse(result.getClaims().containsKey("iss"));
             assertTrue(result.isCryptographicHolderBinding());
-            assertTrue(result.getTrustedAuthorities().isEmpty());
+            // a supplied root is a trust anchor: its identifier, the one of its own key, is the one the leaf names
+            assertEquals(Map.of(TrustedAuthority.AKI, List.of(authorityKeyIdentifier(certificates.rootKey()))),
+                result.getTrustedAuthorities());
         }
     }
 
@@ -227,6 +261,34 @@ class SdJwtVcVerifierTests {
     }
 
     @Test
+    void readsTheTrustStoreOnceUntilItsSettingsChange() throws Exception {
+        configureCertificateIssuer();
+        val raw = presentation();
+        val opened = new AtomicInteger();
+        val properties = verifier.getTrustStore();
+        properties.setKeystoreResource(new FileSystemResource(properties.getKeystoreResource().getFile()) {
+            @Override
+            public InputStream getInputStream() throws IOException {
+                opened.incrementAndGet();
+                return super.getInputStream();
+            }
+        });
+        verifier.setTrustStore(properties);
+
+        verify(raw);
+        verify(raw);
+        assertEquals(1, opened.get());
+        // a changed setting reads it again
+        properties.setKeyStoreAlias("root");
+        verify(raw);
+        assertEquals(2, opened.get());
+        // and so does setting it again, to pick up a file replaced on disk
+        verifier.setTrustStore(properties);
+        verify(raw);
+        assertEquals(3, opened.get());
+    }
+
+    @Test
     void rejectsEmptyTrustStoreAndIncorrectPassword() throws Exception {
         configureCertificateIssuer();
         val raw = presentation();
@@ -247,13 +309,42 @@ class SdJwtVcVerifierTests {
     }
 
     @Test
+    void verifiesCertificateIssuerWithAnIssNotAmongTheTrustedIssuers() throws Exception {
+        configureCertificateIssuer();
+        issuerClaims.put("iss", ISSUER);
+        val result = verify(presentation());
+        // "the Issuer of the Verifiable Digital Credential is the subject of the end-entity certificate"
+        assertEquals("CN=Credential Issuer", result.getIssuer());
+        assertEquals(ISSUER, result.getClaims().get("iss"));
+        assertTrue(result.isCryptographicHolderBinding());
+    }
+
+    @Test
     void usesConfiguredIssuerKeysWhenIssAndX5cAreBothPresent() throws Exception {
         configureCertificateIssuer();
         issuerClaims.put("iss", ISSUER);
         val raw = presentation();
-        assertTrue(assertThrows(OpenId4VpException.class, () -> verify(raw)).getMessage().contains("trusted keys"));
         verifier.setTrustedIssuers(Map.of(ISSUER, new SdJwtVcTrustedIssuer(new JWKSet(issuerKey.toPublicJWK()))));
         assertEquals(ISSUER, verify(raw).getIssuer());
+    }
+
+    @Test
+    void neverFallsBackToX5cForAnIssWithConfiguredKeys() throws Exception {
+        // a valid chain in the header cannot switch a configured iss to another verification process
+        configureCertificateIssuer();
+        issuerClaims.put("iss", ISSUER);
+        val otherKey = new ECKeyGenerator(Curve.P_256).keyID("issuer-key").generate();
+        verifier.setTrustedIssuers(Map.of(ISSUER, new SdJwtVcTrustedIssuer(new JWKSet(otherKey.toPublicJWK()))));
+        val raw = presentation();
+        assertThrows(OpenId4VpException.class, () -> verify(raw));
+    }
+
+    @Test
+    void rejectsAnIssWithoutConfiguredKeysNorX5c() throws Exception {
+        issuerClaims.put("iss", "https://untrusted.example");
+        val raw = presentation();
+        val error = assertThrows(OpenId4VpException.class, () -> verify(raw));
+        assertEquals("the SD-JWT VC issuer has no configured trusted keys and no x5c certificate chain", error.getMessage());
     }
 
     @Test
@@ -417,8 +508,45 @@ class SdJwtVcVerifierTests {
             Date.from(now.plusSeconds(notBefore)), Date.from(now.plusSeconds(notAfter)), new X500Name(subject), subjectKey.toPublicKey());
         builder.addExtension(Extension.basicConstraints, true, new BasicConstraints(ca));
         builder.addExtension(Extension.keyUsage, true, new KeyUsage(keyUsage));
+        builder.addExtension(Extension.authorityKeyIdentifier, false,
+            new JcaX509ExtensionUtils().createAuthorityKeyIdentifier(signingKey.toPublicKey()));
         return new JcaX509CertificateConverter().getCertificate(builder.build(
             new JcaContentSignerBuilder("SHA256withECDSA").build(signingKey.toPrivateKey())));
+    }
+
+    private String authorityKeyIdentifier(final ECKey authorityKey) throws Exception {
+        return Base64URL.encode(new JcaX509ExtensionUtils().createAuthorityKeyIdentifier(authorityKey.toPublicKey())
+            .getKeyIdentifierOctets()).toString();
+    }
+
+    @Test
+    void reportsTheAuthorityKeyIdentifiersOfTheValidatedChain() throws Exception {
+        val certificates = configureCertificateIssuer();
+        val result = verify(presentation());
+        // the leaf names the root key: this is what a DCQL query asks for to accept the issuers of a given CA
+        val rootIdentifier = authorityKeyIdentifier(certificates.rootKey());
+        assertEquals(Map.of(TrustedAuthority.AKI, List.of(rootIdentifier)), result.getTrustedAuthorities());
+
+        val query = new CredentialQuery("pid", CredentialFormat.SD_JWT_VC).setVctValues("urn:example:pid")
+            .addTrustedAuthority(new TrustedAuthority(TrustedAuthority.AKI, rootIdentifier));
+        assertDoesNotThrow(() -> new DcqlValidator().validateCredential(query, result));
+        val otherQuery = new CredentialQuery("pid", CredentialFormat.SD_JWT_VC).setVctValues("urn:example:pid")
+            .addTrustedAuthority(new TrustedAuthority(TrustedAuthority.AKI, authorityKeyIdentifier(issuerKey)));
+        assertThrows(OpenId4VpException.class, () -> new DcqlValidator().validateCredential(otherQuery, result));
+    }
+
+    @Test
+    void reportsTheAuthorityKeyIdentifiersOfAnIntermediateChain() throws Exception {
+        val certificates = configureCertificateIssuer();
+        val intermediateKey = new ECKeyGenerator(Curve.P_256).generate();
+        val intermediate = certificate("CN=Intermediate", intermediateKey, "CN=Root", certificates.rootKey(), true,
+            KeyUsage.keyCertSign, -60, 3600);
+        val leaf = certificate("CN=Credential Issuer", issuerKey, "CN=Intermediate", intermediateKey, false,
+            KeyUsage.digitalSignature, -60, 3600);
+        issuerCertificateChain = List.of(Base64.encode(leaf.getEncoded()), Base64.encode(intermediate.getEncoded()));
+        val result = verify(presentation());
+        assertEquals(List.of(authorityKeyIdentifier(intermediateKey), authorityKeyIdentifier(certificates.rootKey())),
+            result.getTrustedAuthorities().get(TrustedAuthority.AKI));
     }
 
     private record TestCertificates(ECKey rootKey, X509Certificate root, X509Certificate leaf) { }

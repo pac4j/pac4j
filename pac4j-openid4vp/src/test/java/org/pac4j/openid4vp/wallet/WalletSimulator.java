@@ -229,7 +229,7 @@ public class WalletSimulator {
         }
         val request = new WalletRequest((String) parameters.get(CLIENT_ID), (String) parameters.get(NONCE),
             (String) parameters.get(RESPONSE_URI), encryptionKey, (Map<String, Object>) parameters.get(DCQL_QUERY),
-            (String) parameters.get(RESPONSE_MODE));
+            (String) parameters.get(RESPONSE_MODE), (String) parameters.get(STATE));
         LOGGER.debug("Wallet simulator    it asks for {} and expects the answer at {}",
             request.getDcqlQuery(), request.getResponseUri());
         LOGGER.debug("Wallet simulator    the answer must be bound to the nonce {} and encrypted to the key {}",
@@ -252,7 +252,12 @@ public class WalletSimulator {
         val serialized = JSONObjectUtils.toJSONString(vpToken);
         LOGGER.debug("Wallet simulator -> posting {} presentation(s) in clear to {}, as asked ({})",
             vpToken.values().stream().mapToInt(List::size).sum(), request.getResponseUri(), request.getResponseMode());
-        return Map.of(VP_TOKEN, serialized);
+        val parameters = new LinkedHashMap<String, String>();
+        parameters.put(VP_TOKEN, serialized);
+        if (request.getState() != null) {
+            parameters.put(STATE, request.getState());
+        }
+        return parameters;
     }
 
     /**
@@ -283,7 +288,8 @@ public class WalletSimulator {
     public String buildResponse(final WalletRequest request, final Map<String, List<String>> vpToken) {
         CommonHelper.assertNotNull("encryptionKey", request.getEncryptionKey());
         try {
-            val claims = new JWTClaimsSet.Builder().claim(VP_TOKEN, vpToken).build();
+            // the state travels inside the encrypted response, with the other response parameters
+            val claims = new JWTClaimsSet.Builder().claim(VP_TOKEN, vpToken).claim(STATE, request.getState()).build();
             val response = new EncryptedJWT(
                 new JWEHeader.Builder(JWEAlgorithm.ECDH_ES, EncryptionMethod.A128GCM)
                     .keyID(request.getEncryptionKey().getKeyID()).build(), claims);

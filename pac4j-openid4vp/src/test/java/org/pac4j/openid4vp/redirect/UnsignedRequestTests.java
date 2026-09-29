@@ -13,6 +13,10 @@ import org.pac4j.openid4vp.client.OpenId4VpClient;
 import org.pac4j.openid4vp.config.ClientIdPrefix;
 import org.pac4j.openid4vp.config.VerifierAttestation;
 import org.pac4j.openid4vp.config.OpenId4VpConfiguration;
+import org.pac4j.openid4vp.config.CredentialFormat;
+import org.pac4j.openid4vp.transaction.VpTransaction;
+import org.pac4j.openid4vp.verifier.CredentialVerifier;
+import org.pac4j.openid4vp.verifier.VerifiedCredential;
 import org.pac4j.test.context.MockWebContext;
 import org.pac4j.test.context.session.MockSessionStore;
 
@@ -124,7 +128,21 @@ class UnsignedRequestTests {
         assertEquals(1, credentialQueries.size());
         assertEquals("pid", credentialQueries.get(0).get("id"));
 
-        // then answers, encrypted, at the response URI
+        // then answers, encrypted, at the response URI, where it is validated at once: no real credential here
+        client.getConfiguration().addCredentialVerifier(new CredentialVerifier() {
+            @Override
+            public CredentialFormat getFormat() {
+                return CredentialFormat.SD_JWT_VC;
+            }
+
+            @Override
+            public VerifiedCredential verify(final String rawCredential, final VpTransaction transaction,
+                                             final OpenId4VpConfiguration configuration) {
+                return new VerifiedCredential().setFormat(getFormat()).setType("urn:eudi:pid:1")
+                    .setCryptographicHolderBinding(true).setIssuer("https://issuer.example.org")
+                    .setClaims(Map.of("sub", "alice", "presentation", rawCredential));
+            }
+        });
         val response = simulator.buildResponse(request, Map.of("pid", List.of("a-presentation")));
         val post = MockWebContext.create()
             .setRequestMethod(HttpConstants.HTTP_METHOD.POST.name())

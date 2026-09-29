@@ -81,11 +81,15 @@ public class ClaimsQuery {
      */
     public void check(final boolean idRequired) {
         assertTrue(path != null && !path.isEmpty(), "a claim query path cannot be empty");
+        // "A claims path pointer MUST be a non-empty array of strings, nulls and non-negative integers"
+        // https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#section-7
         for (val segment : path) {
             assertTrue(segment == null || segment instanceof String || (segment instanceof Integer index && index >= 0),
                 "a claim query path segment must be a string, a non-negative integer or null: " + segment);
         }
         if (values != null) {
+            // values: "A non-empty array of strings, integers or boolean values"
+            // https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#section-6.3
             for (val value : values) {
                 assertTrue(value instanceof String || value instanceof Boolean || value instanceof Integer
                     || value instanceof Long || value instanceof BigInteger,

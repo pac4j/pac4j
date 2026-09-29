@@ -83,4 +83,14 @@ class OpenId4VpRedirectionActionBuilderTests {
         assertTrue(!first.getNonce().equals(second.getNonce()));
         assertTrue(!first.getEncryptionKey().equals(second.getEncryptionKey()));
     }
+
+    @Test
+    void testEachTransactionHasItsOwnState() {
+        val first = openTransaction();
+        val second = openTransaction();
+
+        // at least 128 bits of entropy, in URL safe characters
+        assertTrue(first.getState().matches("[0-9a-f]{64}"));
+        assertNotEquals(first.getState(), second.getState());
+    }
 }

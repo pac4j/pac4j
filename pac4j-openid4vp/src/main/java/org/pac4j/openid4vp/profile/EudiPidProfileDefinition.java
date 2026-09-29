@@ -4,8 +4,11 @@ import org.pac4j.core.profile.converter.Converters;
 
 /**
  * The attributes of the EUDI person identification data.
- * The identifier mapping is inherited from {@link OpenId4VpProfileDefinition}; configure or override
- * it for the identifier provided by the targeted PID ecosystem. No PID attribute is assumed to be a stable identifier.
+ *
+ * <p>No PID attribute is assumed to be a stable identifier: the PID defines no {@code sub}, and the only
+ * candidate, {@link #PERSONAL_ADMINISTRATIVE_NUMBER}, is optional and not issued everywhere. This is why the
+ * {@link org.pac4j.openid4vp.client.EudiWalletClient} has no default
+ * {@link ProfileIdResolver}: the application chooses one.</p>
  *
  * <p>Beware: these identifiers, the mobile document namespace and the SD-JWT VC type in particular, have
  * changed between versions of the architecture and reference framework. Check them against the version

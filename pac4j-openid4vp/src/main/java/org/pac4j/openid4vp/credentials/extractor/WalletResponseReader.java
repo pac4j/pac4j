@@ -77,6 +77,11 @@ public class WalletResponseReader {
         val mode = transaction.getResponseMode() == null ? responseMode : transaction.getResponseMode();
         LOGGER.debug("reading wallet response for transaction {}: expected mode={}, saved mode={}", id, mode,
             transaction.getResponseMode() != null);
+        // a response is a success carrying the vp_token, the same "response parameter containing the JWT" once encrypted,
+        // or an error: mixing them has no meaning, and neither has an empty post
+        // https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#section-8.1
+        // https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#section-8.3.1
+        // https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#section-8.5
         if ((response != null ? 1 : 0) + (vpToken != null ? 1 : 0) + (error != null ? 1 : 0) != 1) {
             LOGGER.debug("wallet response rejected for transaction {}: missing or mixed response parameters", id);
             throw new OpenId4VpException("exactly one of response, vp_token or error must be posted by the wallet");
@@ -101,12 +106,10 @@ public class WalletResponseReader {
             }
             transaction.setRawVpToken(vpToken);
             LOGGER.debug("the wallet posted its response in clear for the transaction: {} ({} characters)", id, vpToken.length());
-        } else if (error != null) {
+        } else {
             transaction.setError(error);
             transaction.setErrorDescription(webContext.getRequestParameter(ERROR_DESCRIPTION).orElse(null));
             LOGGER.warn("{}", refusalMessage(transaction).replace('\r', ' ').replace('\n', ' '));
-        } else {
-            throw new OpenId4VpException("no response, vp_token or error posted by the wallet for the transaction: " + id);
         }
         transaction.setResponseState(webContext.getRequestParameter(STATE).orElse(null));
         transaction.setStatus(VpTransaction.Status.RESPONSE_RECEIVED);

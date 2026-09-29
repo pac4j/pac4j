@@ -49,6 +49,17 @@ class DcqlValidatorTests {
     }
 
     @Test
+    void acceptsATypeTheIssuerSignedInAkaVcts() {
+        // a national PID asked for as the general one: the issuer declared it is also of that type
+        val national = credential(Map.of()).setType("urn:pid:national:1");
+        assertThrows(OpenId4VpException.class, () -> validator.validateCredential(query(), national));
+        national.setAdditionalTypes(List.of("urn:other", "urn:pid"));
+        assertDoesNotThrow(() -> validator.validateCredential(query(), national));
+        national.setAdditionalTypes(List.of("urn:other"));
+        assertThrows(OpenId4VpException.class, () -> validator.validateCredential(query(), national));
+    }
+
+    @Test
     void checksNestedPathsArrayIndicesAndWildcards() {
         val query = query().addClaim("address", "city").addClaim("nationalities", 1)
             .addClaim(new ClaimsQuery("degrees", null, "name").withValues("MSc"));

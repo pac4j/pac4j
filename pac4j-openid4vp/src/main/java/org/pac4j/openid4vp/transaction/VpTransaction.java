@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
+import org.pac4j.core.util.serializer.JavaSerializer;
 import org.pac4j.openid4vp.config.ResponseMode;
 
 import java.io.Serial;
@@ -35,6 +36,8 @@ public class VpTransaction implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 5811913231571905129L;
+
+    private static final JavaSerializer SERIALIZER = new JavaSerializer();
 
     /**
      * The lifecycle of a transaction. A transaction is removed from the store as soon as it is consumed.
@@ -105,5 +108,40 @@ public class VpTransaction implements Serializable {
      */
     public boolean isAnswered() {
         return rawResponse != null || rawVpToken != null || error != null;
+    }
+
+    /**
+     * <p>A copy of this transaction, to read an answer into without touching the stored transaction: an
+     * in-memory store hands out the very instance it holds, and an answer refused at reception must leave no
+     * trace in it.</p>
+     *
+     * @return the copy
+     */
+    public VpTransaction copy() {
+        return (VpTransaction) SERIALIZER.deserializeFromBytes(SERIALIZER.serializeToBytes(this));
+    }
+
+    /**
+     * <p>The answer of the wallet alone, to be stored under its own key: whatever rewrites the transaction
+     * meanwhile, such as a request object served again, cannot erase it. It expires with the transaction.</p>
+     *
+     * @return the answer, as a transaction holding only its identifier, its expiration and the response
+     */
+    public VpTransaction toResponse() {
+        return new VpTransaction().setId(id).setExpiresAt(expiresAt).setStatus(Status.RESPONSE_RECEIVED)
+            .setRawResponse(rawResponse).setRawVpToken(rawVpToken).setResponseState(responseState)
+            .setError(error).setErrorDescription(errorDescription);
+    }
+
+    /**
+     * <p>Take the answer of the wallet back into this transaction, when the browser claims it.</p>
+     *
+     * @param response the answer, as built by {@link #toResponse()}
+     * @return this transaction, answered
+     */
+    public VpTransaction withResponse(final VpTransaction response) {
+        return setStatus(Status.RESPONSE_RECEIVED).setRawResponse(response.getRawResponse())
+            .setRawVpToken(response.getRawVpToken()).setResponseState(response.getResponseState())
+            .setError(response.getError()).setErrorDescription(response.getErrorDescription());
     }
 }

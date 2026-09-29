@@ -77,9 +77,15 @@ public class OpenId4VpRedirectionActionBuilder implements RedirectionActionBuild
             .setCreatedAt(now)
             .setExpiresAt(now.plus(configuration.getTransactionLifetimeSeconds(), ChronoUnit.SECONDS));
         transaction.setEncryptionKey(buildEncryptionKey());
-        LOGGER.debug("transaction {} created for client {}: response mode={}, expires at={}, encryption key generated={}",
-            transaction.getId(), client.getName(), configuration.getResponseMode(), transaction.getExpiresAt(),
-            transaction.getEncryptionKey() != null);
+        // "if at least one Presentation without Holder Binding is requested and unless the Digital Credentials API is
+        // used": sent in every other case too, so that the binding never depends on what the DCQL query asks for
+        // https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#section-5.3
+        if (!configuration.getResponseMode().isOverDcApi()) {
+            transaction.setState(configuration.getStateGenerator().generateValue(ctx));
+        }
+        LOGGER.debug("transaction {} created for client {}: response mode={}, expires at={}, encryption key generated={}, "
+            + "state generated={}", transaction.getId(), client.getName(), configuration.getResponseMode(),
+            transaction.getExpiresAt(), transaction.getEncryptionKey() != null, transaction.getState() != null);
         return transaction;
     }
 

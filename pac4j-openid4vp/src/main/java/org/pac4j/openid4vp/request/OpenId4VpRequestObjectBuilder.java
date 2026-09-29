@@ -128,7 +128,9 @@ public class OpenId4VpRequestObjectBuilder {
         parameters.put(RESPONSE_TYPE, RESPONSE_TYPE_VP_TOKEN);
         parameters.put(RESPONSE_MODE, configuration.getResponseMode().getValue());
         parameters.put(NONCE, transaction.getNonce());
-        // Send either the alias or the query. Both cases use the configured query for response validation.
+        // "Either a dcql_query or a scope parameter representing a DCQL Query MUST be present in the Authorization Request,
+        // but not both" https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#vp_token_request
+        // Both cases use the configured query for response validation.
         if (isNotBlank(configuration.getScope())) {
             parameters.put(SCOPE, configuration.getScope());
         } else {

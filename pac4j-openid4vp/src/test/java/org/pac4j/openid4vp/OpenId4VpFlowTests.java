@@ -17,6 +17,7 @@ import org.pac4j.openid4vp.config.OpenId4VpConfiguration;
 import org.pac4j.openid4vp.credentials.VerifiablePresentationCredentials;
 import org.pac4j.openid4vp.config.CredentialFormat;
 import org.pac4j.openid4vp.config.ResponseMode;
+import org.pac4j.openid4vp.exceptions.OpenId4VpException;
 import org.pac4j.openid4vp.verifier.CredentialVerifier;
 import org.pac4j.openid4vp.verifier.VerifiedCredential;
 import org.pac4j.openid4vp.transaction.VpTransaction;
@@ -29,6 +30,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.pac4j.openid4vp.util.OpenId4VpConstants.RESPONSE;
+import static org.pac4j.openid4vp.util.OpenId4VpConstants.VP_TOKEN;
 import static org.pac4j.openid4vp.util.OpenId4VpConstants.VP_TRANSACTION_ID;
 
 /**
@@ -148,6 +150,33 @@ class OpenId4VpFlowTests {
         val validated = assertInstanceOf(VerifiablePresentationCredentials.class,
             client.validateCredentials(browserCtx, credentials).get());
         assertEquals(Map.of("pid", List.of(PRESENTATION)), validated.getVpToken());
+    }
+
+    @Test
+    void testAResponseWithoutTheStateIsRejected() {
+        // without holder binding, no nonce comes back: only the state binds the posted vp_token to the request
+        configuration.setResponseMode(ResponseMode.DIRECT_POST);
+        configuration.getDcqlQuery().getCredentials().get(0).setRequireCryptographicHolderBinding(false);
+        installTestVerifier();
+        val simulator = new WalletSimulator();
+        val browserCtx = new CallContext(MockWebContext.create(), new MockSessionStore());
+        val walletUrl = assertInstanceOf(FoundAction.class, client.getRedirectionAction(browserCtx).get()).getLocation();
+        val transactionId = simulator.readParameter(simulator.readRequestUri(walletUrl), VP_TRANSACTION_ID);
+
+        val fetch = MockWebContext.create().addRequestParameter(VP_TRANSACTION_ID, transactionId);
+        val served = assertThrows(OkAction.class, () -> client.getCredentials(new CallContext(fetch, new MockSessionStore())));
+        assertNotNull(simulator.readRequestObject(served.getContent()).getState());
+
+        val post = MockWebContext.create()
+            .setRequestMethod(HttpConstants.HTTP_METHOD.POST.name())
+            .addRequestParameter(VP_TRANSACTION_ID, transactionId)
+            .addRequestParameter(VP_TOKEN, "{\"pid\":[\"" + PRESENTATION + "\"]}");
+        // refused as soon as it is posted: the transaction stays open, and the browser gets nothing
+        val error = assertThrows(OpenId4VpException.class,
+            () -> client.getCredentials(new CallContext(post, new MockSessionStore())));
+        assertEquals("the response state does not match the request", error.getMessage());
+        assertTrue(client.getCredentials(browserCtx).isEmpty());
+        assertTrue(configuration.getTransactionStore().get(transactionId).isPresent());
     }
 
     private void installTestVerifier() {

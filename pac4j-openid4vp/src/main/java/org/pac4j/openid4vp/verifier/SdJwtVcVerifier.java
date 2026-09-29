@@ -7,23 +7,30 @@ import com.nimbusds.jose.proc.DefaultJOSEObjectTypeVerifier;
 import com.nimbusds.jose.proc.JWSVerificationKeySelector;
 import com.nimbusds.jose.proc.JWSKeySelector;
 import com.nimbusds.jose.proc.SecurityContext;
+import com.nimbusds.jose.util.Base64;
+import com.nimbusds.jose.util.Base64URL;
 import com.nimbusds.jose.util.JSONObjectUtils;
 import com.nimbusds.jose.util.X509CertUtils;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import com.nimbusds.jwt.proc.DefaultJWTClaimsVerifier;
 import com.nimbusds.jwt.proc.DefaultJWTProcessor;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.bouncycastle.asn1.x509.AuthorityKeyIdentifier;
+import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
 import org.pac4j.core.config.properties.KeystoreProperties;
 import org.pac4j.core.keystore.loading.KeyStoreUtils;
 import org.pac4j.openid4vp.config.CredentialFormat;
 import org.pac4j.openid4vp.config.OpenId4VpConfiguration;
+import org.pac4j.openid4vp.dcql.TrustedAuthority;
 import org.pac4j.openid4vp.exceptions.OpenId4VpException;
 import org.pac4j.openid4vp.transaction.VpTransaction;
+import org.springframework.core.io.Resource;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -39,6 +46,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -55,6 +63,11 @@ import static org.pac4j.openid4vp.util.OpenId4VpConstants.*;
  * with a status claim requires a status checker. No remote metadata, keys or status lists are fetched by this verifier.
  * Certificate revocation checks are enabled by default and use the Java PKIX provider.</p>
  *
+ * <p>The issuer key is resolved in this order: the keys configured for the {@code iss} value in
+ * {@link #trustedIssuers}, then the {@code x5c} chain validated against {@link #trustStore}, with or without
+ * {@code iss}. In the latter case, "the Issuer of the Verifiable Digital Credential is the subject of the
+ * end-entity certificate": the {@code iss} claim is kept as a claim but does not name the issuer.</p>
+ *
  * <p>This class can be constructed without EUDI, so applications replacing it through
  * {@link OpenId4VpConfiguration#addCredentialVerifier(CredentialVerifier)} need not add that dependency.</p>
  *
@@ -67,14 +80,26 @@ import static org.pac4j.openid4vp.util.OpenId4VpConstants.*;
 @Slf4j
 public class SdJwtVcVerifier implements CredentialVerifier {
 
+    private static final String AKA_VCTS = "aka_vcts";
+
     /** Trusted issuer identifiers mapped to keys and verified authority evidence. */
     private Map<String, SdJwtVcTrustedIssuer> trustedIssuers = Map.of();
 
     /**
-     * Truststore for x5c credentials without an iss claim. Only trusted certificate entries are used, optionally
-     * restricted to keyStoreAlias. No private key password or keystore generator is used. Null disables this method.
+     * Truststore for x5c credentials whose iss claim, if any, is not among the {@link #trustedIssuers}. Only trusted
+     * certificate entries are used, optionally restricted to keyStoreAlias. No private key password or keystore
+     * generator is used. Null disables this method.
+     *
+     * <p>Its trust anchors are read at the first certificate validation and kept: they are read again only when its
+     * resource, password, type or alias change, or when {@link #setTrustStore(KeystoreProperties)} is called. A
+     * truststore file replaced on disk under the same settings is thus not picked up until then.</p>
      */
     private KeystoreProperties trustStore;
+
+    /** The trust anchors read from {@link #trustStore}, with the settings they were read with. */
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
+    private volatile LoadedTrustAnchors loadedTrustAnchors;
 
     /** Check certificate revocation using supplied CRLs and the Java provider's configured mechanisms. */
     private boolean certificateRevocationEnabled = true;
@@ -118,6 +143,8 @@ public class SdJwtVcVerifier implements CredentialVerifier {
             val issuerName = jwt.getJWTClaimsSet().getIssuer();
             val issuer = resolveIssuer(jwt, issuerName);
             val processor = new DefaultJWTProcessor<SecurityContext>();
+            // "The Issuer MUST include the typ header parameter in the SD-JWT. The typ value MUST use dc+sd-jwt"
+            // https://www.ietf.org/archive/id/draft-ietf-oauth-sd-jwt-vc-19.html#section-2.2.1
             processor.setJWSTypeVerifier(new DefaultJOSEObjectTypeVerifier<>(new JOSEObjectType("dc+sd-jwt")));
             processor.setJWSKeySelector(issuer.keySelector());
             val expectedClaims = new JWTClaimsSet.Builder();
@@ -129,19 +156,28 @@ public class SdJwtVcVerifier implements CredentialVerifier {
 
             val verified = EudiSdJwtAdapter.verify(rawCredential, processor);
             val claims = verified.getClaims();
+            // vct: "Its value MUST be a case-sensitive string"; iss is among the claims which "MUST NOT be included in
+            // Disclosures and therefore MUST NOT be selectively disclosed", so a disclosure cannot add or change it
+            // https://www.ietf.org/archive/id/draft-ietf-oauth-sd-jwt-vc-19.html#section-2.2.2.1
+            // https://www.ietf.org/archive/id/draft-ietf-oauth-sd-jwt-vc-19.html#section-2.2.2.3
             if (!(claims.get("vct") instanceof String type) || type.isBlank()
                 || !Objects.equals(issuerName, claims.get("iss"))) {
                 throw new OpenId4VpException("the SD-JWT VC must contain a credential type and must not disclose or change its issuer");
             }
+            val additionalTypes = readAdditionalTypes(jwt.getJWTClaimsSet().getClaim(AKA_VCTS), claims.get(AKA_VCTS), type);
             if (verified.getHolderProof() != null) {
                 checkHolderProof(verified.getHolderProof(), transaction);
             }
-            val result = new VerifiedCredential().setFormat(getFormat()).setType(type).setIssuer(issuer.name())
+            val result = new VerifiedCredential().setFormat(getFormat()).setType(type).setAdditionalTypes(additionalTypes)
+                .setIssuer(issuer.name())
                 .setClaims(new LinkedHashMap<>(claims))
                 .setCryptographicHolderBinding(verified.getHolderProof() != null);
             val authorities = new LinkedHashMap<String, List<String>>();
             issuer.trustedAuthorities().forEach((name, values) -> authorities.put(name, List.copyOf(values)));
             result.setTrustedAuthorities(authorities);
+            // status: "The information on how to read the status of the Verifiable Credential", which only the application
+            // can read: without a checker, a credential which may have been revoked is refused
+            // https://www.ietf.org/archive/id/draft-ietf-oauth-sd-jwt-vc-19.html#section-2.2.2.3
             if (claims.containsKey("status")) {
                 if (statusChecker == null) {
                     throw new OpenId4VpException("the SD-JWT VC contains a status claim: configure a statusChecker to validate it");
@@ -164,26 +200,72 @@ public class SdJwtVcVerifier implements CredentialVerifier {
         }
     }
 
-    private ResolvedIssuer resolveIssuer(final SignedJWT jwt, final String issuerName) throws GeneralSecurityException, IOException {
-        if (issuerName == null) {
-            return resolveCertificateIssuer(jwt);
+    /**
+     * Resolve the issuer key: the configured keys of the {@code iss} value, or else the {@code x5c} chain.
+     *
+     * <p>The configured keys of an {@code iss} value always win, whatever the header carries: "A Verifier MUST
+     * ensure that for any given iss value, an attacker cannot influence the type of verification process used".
+     * An {@code iss} value without configured keys is only ever verified through its certificate chain.</p>
+     *
+     * @param jwt the issuer-signed JWT, not verified yet
+     * @param issuerName its {@code iss} claim, or null
+     * @return the issuer and how to select its key
+     * @see <a href="https://www.ietf.org/archive/id/draft-ietf-oauth-sd-jwt-vc-19.html#section-2.5">
+     *     SD-JWT VC draft 19, issuer verification key discovery and validation</a>
+     * @see <a href="https://www.ietf.org/archive/id/draft-ietf-oauth-sd-jwt-vc-19.html#section-7.3">
+     *     SD-JWT VC draft 19, ecosystem-specific public key verification methods</a>
+     */
+    /**
+     * Read the other types the issuer signed the credential as. Its value "MUST be a non-empty array of
+     * case-sensitive strings" and "MUST NOT contain the value of the vct claim"; like vct, it is among the claims
+     * which "MUST NOT be selectively disclosed", so it must be the one of the issuer-signed payload.
+     *
+     * @param signed the aka_vcts of the issuer-signed payload, or null
+     * @param disclosed the aka_vcts of the claims rebuilt from the disclosures, or null
+     * @param type the vct of the credential
+     * @return the additional types, empty when there are none
+     * @see <a href="https://www.ietf.org/archive/id/draft-ietf-oauth-sd-jwt-vc-19.html#section-2.2.2.2">
+     *     SD-JWT VC draft 19, other credential types</a>
+     * @see <a href="https://www.ietf.org/archive/id/draft-ietf-oauth-sd-jwt-vc-19.html#section-2.2.2.3">
+     *     SD-JWT VC draft 19, registered JWT claims</a>
+     */
+    private List<String> readAdditionalTypes(final Object signed, final Object disclosed, final String type) {
+        if (!Objects.equals(signed, disclosed)) {
+            throw new OpenId4VpException("the SD-JWT VC aka_vcts claim must not be selectively disclosed");
         }
-        if (issuerName.isBlank()) {
-            throw new OpenId4VpException("the SD-JWT VC iss claim must not be blank");
+        if (signed == null) {
+            return List.of();
         }
-        val issuer = trustedIssuers == null ? null : trustedIssuers.get(issuerName);
-        if (issuer == null || issuer.getKeys() == null || issuer.getKeys().getKeys().isEmpty()) {
-            throw new OpenId4VpException("the SD-JWT VC issuer has no configured trusted keys");
+        if (!(signed instanceof List<?> values) || values.isEmpty()
+            || values.stream().anyMatch(value -> !(value instanceof String text) || text.isBlank() || text.equals(type))) {
+            throw new OpenId4VpException("the SD-JWT VC aka_vcts claim must be a non-empty array of other types than its vct");
         }
-        return new ResolvedIssuer(issuerName,
-            new JWSVerificationKeySelector<>(issuerAlgorithms, new ImmutableJWKSet<>(issuer.getKeys())), issuer.getTrustedAuthorities());
+        return values.stream().map(String.class::cast).toList();
     }
 
-    private ResolvedIssuer resolveCertificateIssuer(final SignedJWT jwt) throws GeneralSecurityException, IOException {
+    private ResolvedIssuer resolveIssuer(final SignedJWT jwt, final String issuerName) throws GeneralSecurityException, IOException {
+        if (issuerName != null && issuerName.isBlank()) {
+            throw new OpenId4VpException("the SD-JWT VC iss claim must not be blank");
+        }
+        val issuer = issuerName == null || trustedIssuers == null ? null : trustedIssuers.get(issuerName);
+        if (issuer != null) {
+            if (issuer.getKeys() == null || issuer.getKeys().getKeys().isEmpty()) {
+                throw new OpenId4VpException("the SD-JWT VC issuer has no configured trusted keys");
+            }
+            return new ResolvedIssuer(issuerName, new JWSVerificationKeySelector<>(issuerAlgorithms,
+                new ImmutableJWKSet<>(issuer.getKeys())), issuer.getTrustedAuthorities());
+        }
         val encodedChain = jwt.getHeader().getX509CertChain();
         if (encodedChain == null || encodedChain.isEmpty()) {
-            throw new OpenId4VpException("the SD-JWT VC must contain an iss claim or an x5c certificate chain");
+            throw new OpenId4VpException(issuerName == null
+                ? "the SD-JWT VC must contain an iss claim or an x5c certificate chain"
+                : "the SD-JWT VC issuer has no configured trusted keys and no x5c certificate chain");
         }
+        return resolveCertificateIssuer(encodedChain);
+    }
+
+    private ResolvedIssuer resolveCertificateIssuer(final List<Base64> encodedChain)
+        throws GeneralSecurityException, IOException {
         val parameters = buildCertificateValidationParameters();
         val now = new Date();
         parameters.setDate(now);
@@ -201,6 +283,7 @@ public class SdJwtVcVerifier implements CredentialVerifier {
         if (keyUsage != null && !keyUsage[0]) {
             throw new OpenId4VpException("the SD-JWT VC leaf certificate does not permit digital signatures");
         }
+        val presented = List.copyOf(chain);
         // A supplied root is removed only when it is already an explicitly configured trust anchor.
         val last = chain.get(chain.size() - 1);
         if (chain.size() > 1 && parameters.getTrustAnchors().stream().anyMatch(anchor -> last.equals(anchor.getTrustedCert()))) {
@@ -215,33 +298,101 @@ public class SdJwtVcVerifier implements CredentialVerifier {
         // The validated leaf key is authoritative; a kid does not select a different certificate.
         JWSKeySelector<SecurityContext> selector = (header, context) -> issuerAlgorithms.contains(header.getAlgorithm())
             ? List.of(leaf.getPublicKey()) : List.of();
-        return new ResolvedIssuer(subject, selector, Map.of());
+        val authorityKeyIdentifiers = computeAuthorityKeyIdentifiers(presented);
+        return new ResolvedIssuer(subject, selector,
+            authorityKeyIdentifiers.isEmpty() ? Map.of() : Map.of(TrustedAuthority.AKI, authorityKeyIdentifiers));
+    }
+
+    /**
+     * Read the authority key identifiers of the presented chain, once it is validated: every certificate of it is then
+     * either on the validated path or its trust anchor, so no unrelated certificate can bring its own identifier.
+     *
+     * <p>"The raw byte representation of this element MUST match with the AuthorityKeyIdentifier element of an X.509
+     * certificate in the certificate chain present in the Credential", the value being "the KeyIdentifier of the
+     * AuthorityKeyIdentifier [...] encoded as base64url". A certificate identifying its authority by issuer name and
+     * serial number only has no such value.</p>
+     *
+     * @param chain the certificates of the x5c header, leaf first
+     * @return the base64url key identifiers, without duplicates
+     * @throws GeneralSecurityException if a certificate cannot be read
+     * @see <a href="https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#section-6.1.1.1">
+     *     OpenID4VP 1.0, authority key identifier</a>
+     */
+    private List<String> computeAuthorityKeyIdentifiers(final List<X509Certificate> chain) throws GeneralSecurityException {
+        val identifiers = new LinkedHashSet<String>();
+        for (val certificate : chain) {
+            val authority = AuthorityKeyIdentifier.fromExtensions(new JcaX509CertificateHolder(certificate).getExtensions());
+            if (authority != null && authority.getKeyIdentifierOctets() != null) {
+                identifiers.add(Base64URL.encode(authority.getKeyIdentifierOctets()).toString());
+            }
+        }
+        return List.copyOf(identifiers);
+    }
+
+    /**
+     * Set the truststore, whose trust anchors are then read again at the next certificate validation.
+     *
+     * @param trustStore the truststore, or null to disable the certificate validation
+     * @return this verifier
+     */
+    public SdJwtVcVerifier setTrustStore(final KeystoreProperties trustStore) {
+        this.trustStore = trustStore;
+        this.loadedTrustAnchors = null;
+        return this;
     }
 
     private PKIXParameters buildCertificateValidationParameters() throws GeneralSecurityException, IOException {
         if (trustStore == null || trustStore.getKeystoreResource() == null) {
-            throw new OpenId4VpException("the SD-JWT VC uses x5c without iss: configure a trustStore with trusted certificates");
+            throw new OpenId4VpException("the SD-JWT VC issuer is not among the trustedIssuers and uses x5c: "
+                + "configure a trustStore with trusted certificates");
         }
-        final PKIXParameters parameters;
-        try (val input = trustStore.getKeystoreResource().getInputStream()) {
-            val type = Objects.requireNonNullElse(trustStore.getKeyStoreType(), KeyStoreUtils.DEFAULT_KEYSTORE_TYPE);
-            val keyStore = KeyStoreUtils.loadKeyStore(input, trustStore.getKeystorePassword(), type);
-            val alias = trustStore.getKeyStoreAlias();
-            if (alias == null) {
-                parameters = new PKIXParameters(keyStore);
-            } else {
-                if (!keyStore.isCertificateEntry(alias) || !(keyStore.getCertificate(alias) instanceof X509Certificate certificate)) {
-                    throw new OpenId4VpException("the trustStore alias must identify a trusted X.509 certificate entry");
-                }
-                parameters = new PKIXParameters(Set.of(new TrustAnchor(certificate, null)));
-            }
-        }
+        // a new instance for each validation: the date and the certificate stores are set on it
+        val parameters = new PKIXParameters(loadTrustAnchors());
         parameters.setRevocationEnabled(certificateRevocationEnabled);
         if (certificateRevocationLists != null && !certificateRevocationLists.isEmpty()) {
             parameters.addCertStore(CertStore.getInstance("Collection", new CollectionCertStoreParameters(certificateRevocationLists)));
         }
         return parameters;
     }
+
+    private Set<TrustAnchor> loadTrustAnchors() throws GeneralSecurityException, IOException {
+        val settings = new TrustStoreSettings(trustStore.getKeystoreResource(), trustStore.getKeystorePassword(),
+            Objects.requireNonNullElse(trustStore.getKeyStoreType(), KeyStoreUtils.DEFAULT_KEYSTORE_TYPE),
+            trustStore.getKeyStoreAlias());
+        val loaded = loadedTrustAnchors;
+        if (loaded != null && loaded.settings().equals(settings)) {
+            return loaded.anchors();
+        }
+        final Set<TrustAnchor> anchors;
+        try (val input = settings.resource().getInputStream()) {
+            val keyStore = KeyStoreUtils.loadKeyStore(input, settings.password(), settings.type());
+            if (settings.alias() == null) {
+                // only the trusted certificate entries, and at least one of them
+                anchors = Set.copyOf(new PKIXParameters(keyStore).getTrustAnchors());
+            } else {
+                if (!keyStore.isCertificateEntry(settings.alias())
+                    || !(keyStore.getCertificate(settings.alias()) instanceof X509Certificate certificate)) {
+                    throw new OpenId4VpException("the trustStore alias must identify a trusted X.509 certificate entry");
+                }
+                anchors = Set.of(new TrustAnchor(certificate, null));
+            }
+        }
+        loadedTrustAnchors = new LoadedTrustAnchors(settings, anchors);
+        LOGGER.debug("SD-JWT VC truststore loaded: {} trust anchors", anchors.size());
+        return anchors;
+    }
+
+    /** What the trust anchors are read from: they are read again when any of it changes. */
+    private record TrustStoreSettings(Resource resource, String password, String type, String alias) {
+
+        /** {@inheritDoc} */
+        @Override
+        public String toString() {
+            return "TrustStoreSettings(resource=" + resource + ", type=" + type + ", alias=" + alias + ")";
+        }
+    }
+
+    private record LoadedTrustAnchors(TrustStoreSettings settings, Set<TrustAnchor> anchors) { }
 
     private record ResolvedIssuer(String name, JWSKeySelector<SecurityContext> keySelector,
                                   Map<String, List<String>> trustedAuthorities) { }
@@ -277,6 +428,22 @@ public class SdJwtVcVerifier implements CredentialVerifier {
         }
     }
 
+    /**
+     * Check the key binding JWT against the saved request, its signature, typ and sd_hash being verified by EUDI:
+     * "the nonce claim MUST be the value of nonce from the Authorization Request; the aud claim MUST be the value of the
+     * Client Identifier, except for requests over the DC API where it MUST be the Origin prefixed with origin:". Its
+     * iat must be "within an acceptable window": here, between the creation of the transaction and now.
+     *
+     * @param proof the key binding JWT
+     * @param transaction the answered transaction
+     * @throws Exception if the proof cannot be read
+     * @see <a href="https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#appendix-B.3.6">
+     *     OpenID4VP 1.0, SD-JWT VC presentation response</a>
+     * @see <a href="https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#appendix-A.4">
+     *     OpenID4VP 1.0, DC API response</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc9901.html#section-4.3">
+     *     RFC 9901, key binding JWT</a>
+     */
     private void checkHolderProof(final SignedJWT proof, final VpTransaction transaction) throws Exception {
         if (!holderAlgorithms.contains(proof.getHeader().getAlgorithm())) {
             throw new OpenId4VpException("the SD-JWT VC holder proof uses an unsupported signature algorithm");
@@ -287,7 +454,7 @@ public class SdJwtVcVerifier implements CredentialVerifier {
         if (nonce == null || nonce.isBlank() || !nonce.equals(transaction.getNonce()) || !nonce.equals(claims.getStringClaim(NONCE))) {
             throw new OpenId4VpException("the SD-JWT VC holder proof nonce does not match the saved request");
         }
-        // RFC 9901 requires aud to be a string, not a JWT audience array.
+        // aud: "The value MUST be a single string", not a JWT audience array https://www.rfc-editor.org/rfc/rfc9901.html#section-4.3
         // Nimbus normalizes aud to a list in JWTClaimsSet, losing its original JSON type.
         val audience = JSONObjectUtils.parse(proof.getPayload().toString()).get("aud");
         final boolean matches;

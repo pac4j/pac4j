@@ -19,7 +19,22 @@ See also:
 
 **A profile is created only after the complete response passes validation.**
 
-- **pac4j validates the exchange:** transaction expiry, expected response mode, response encryption and `state` when sent.
+With `OpenId4VpClient` and `EudiWalletClient`, the response is validated twice: when the wallet posts it, and again
+when the browser comes back. The response URI is not authenticated, and its transaction identifier is visible in the
+wallet URL, thus in the QR code: a post which does not validate is refused on arrival and leaves the transaction open
+for the wallet's own answer. This goes beyond what
+[OpenID4VP section 14.3.2](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#section-14.3.2) asks.
+Two limits remain with `direct_post`: a wallet `error` cannot be authenticated, so whoever sees the QR code can still
+end the transaction with one; and nothing ties the wallet which answers to the browser which started the flow, so a
+valid presentation made by another wallet for this very request is accepted. This is the session fixation described in
+[OpenID4VP section 14.2](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#section-14.2), which the
+Digital Credentials API avoids.
+
+- **pac4j validates the exchange:** transaction expiry, expected response mode, response encryption and `state`.
+  A fresh `state` is sent with every request invoking a wallet by URL and must come back unchanged: without holder
+  binding, no nonce is returned and the `state` is what binds the response to the request
+  ([OpenID4VP section 5.3](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#section-5.3)).
+  The Digital Credentials API maintains that binding itself and carries no `state`.
   Malformed or conflicting response parameters are rejected.
 - **Credential verifiers validate the presentations:** signatures, issuer trust, holder proofs and credential status.
   Register and configure a verifier for every requested format (see below).
@@ -56,15 +71,18 @@ Applications replacing it with their own implementation do not need EUDI.
 
 Choose how to trust the credential issuer:
 
-- **With `iss`:** configure `trustedIssuers` with its exact identifier and public keys.
-- **Without `iss`, with `x5c`:** configure a `trustStore` containing trusted CA certificates.
+- **By its `iss`:** configure `trustedIssuers` with its exact identifier and public keys.
+- **By its `x5c` chain, with or without `iss`:** configure a `trustStore` containing trusted CA certificates. This is
+  the method the [high assurance profile](https://openid.net/specs/openid4vc-high-assurance-interoperability-profile-1_0.html)
+  mandates: "The SD-JWT VC MUST contain the credential issuer's signing certificate along with a trust chain in the x5c
+  JOSE header parameter".
 
 ```java
 // For credentials with iss:
 var verifier = new SdJwtVcVerifier().setTrustedIssuers(Map.of(
     "https://issuer.example", new SdJwtVcTrustedIssuer(JWKSet.parse(trustedIssuerJwksJson))));
 
-// For credentials with x5c and no iss; both settings can coexist:
+// For credentials with x5c whose iss, if any, is not configured above; both settings can coexist:
 verifier.setTrustStore(new KeystoreProperties()
     .setKeystorePath("classpath:trusted-issuers.p12")
     .setKeyStoreType("PKCS12")
@@ -76,11 +94,20 @@ config.addCredentialVerifier(verifier);
 Use a JKS (default) or PKCS12 truststore with **trusted certificate entries**. An optional `keyStoreAlias`
 restricts trust to one entry. No private key, private-key password or automatic keystore generation is needed.
 Certificates supplied by the wallet are never automatically trusted.
+The trust anchors are read at the first certificate validation and kept: they are read again only when the
+truststore's resource, password, type or alias change, or when `setTrustStore(...)` is called again, which is the
+way to pick up a truststore file replaced on disk.
 
-With `iss`, configured keys verify the signature; `kid` selects a key when present. This mode takes precedence
-over `x5c`. Without `iss`, the verifier validates the leaf-first certificate chain against the truststore,
-checks validity and signing usage, then verifies the JWT with the leaf key. Necessary intermediates must be
-in `x5c`. `VerifiedCredential.issuer` becomes the certificate subject (RFC 2253); no `iss` claim is invented.
+When the `iss` value is configured in `trustedIssuers`, its keys verify the signature; `kid` selects a key when
+present. This mode always takes precedence over `x5c` for that `iss`: "A Verifier MUST ensure that for any given iss
+value, an attacker cannot influence the type of verification process used"
+([SD-JWT VC, section 7.3](https://www.ietf.org/archive/id/draft-ietf-oauth-sd-jwt-vc-19.html#section-7.3)).
+Otherwise, the verifier validates the leaf-first certificate chain against the truststore, checks validity and
+signing usage, then verifies the JWT with the leaf key. Necessary intermediates must be in `x5c`.
+`VerifiedCredential.issuer` becomes the certificate subject (RFC 2253), even when an `iss` claim is present: "the
+Issuer of the Verifiable Digital Credential is the subject of the end-entity certificate"
+([SD-JWT VC, section 2.5](https://www.ietf.org/archive/id/draft-ietf-oauth-sd-jwt-vc-19.html#section-2.5)).
+The `iss` claim is then kept as a claim; no `iss` claim is invented when absent.
 
 Certificate revocation checks are enabled by default. Supply local CRLs with
 `setCertificateRevocationLists(List<X509CRL>)`; unavailable or revoked status causes rejection.
@@ -107,7 +134,11 @@ explicitly sets `require_cryptographic_holder_binding` to false. A present but i
 
 Authority evidence may be configured on `SdJwtVcTrustedIssuer.setTrustedAuthorities(...)` only after establishing the
 corresponding trust relationship; otherwise it remains empty and a DCQL authority requirement cannot be satisfied.
-The certificate mode returns no authority evidence automatically; use a custom verifier if DCQL requires it.
+In certificate mode, once the `x5c` chain is validated against the truststore, the verifier reports the `aki`
+evidence itself: the key identifiers of the `AuthorityKeyIdentifier` extensions of the chain's certificates, in
+base64url, as [OpenID4VP 1.0, section 6.1.1.1](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#section-6.1.1.1)
+defines them. A query asking for `{"type": "aki", "values": ["<root key identifier>"]}` thus accepts the credentials
+issued under that CA. Other authority types (`etsi_tl`, `openid_federation`) are never inferred from a certificate.
 
 #### 2.1.4) Credential status
 
@@ -122,7 +153,7 @@ and the credential's status entry. A credential without a status claim does not 
 pac4j does not automatically download issuer metadata, keys or credential status lists:
 
 - **Issuer keys:** it uses a configured `JWKSet`, or the leaf key of an `x5c` chain validated against configured
-  truststore certificates when `iss` is absent. It does not download JWKS or trust lists. Keep trust configuration current.
+  truststore certificates when `iss` is absent or not configured. It does not download JWKS or trust lists. Keep trust configuration current.
 - **Certificate revocation:** checks use supplied CRLs and the Java provider; CRL/OCSP network access depends on
   its configuration. This is separate from the credential's `status` claim.
 - **Metadata:** it does not discover the issuer's metadata to locate its keys, or retrieve credential type
@@ -147,5 +178,6 @@ Implement `CredentialVerifier` and register it with `config.addCredentialVerifie
 - **Holder binding:** set `VerifiedCredential.cryptographicHolderBinding` to true only after verifying the proof
   against the saved request's nonce and audience.
 - **Trusted authorities:** populate `trustedAuthorities` only from established trust evidence, indexed by DCQL
-  authority type (`aki`, `etsi_tl`, `openid_federation`). A query requiring authorities needs at least one match.
+  authority type (`aki`, `etsi_tl`, `openid_federation`), for instance the `aki` values of a certificate chain once
+  validated. A query requiring authorities needs at least one match.
 - **Claims:** preserve JSON nesting. For mdoc, use namespace maps containing JSON-compatible values.

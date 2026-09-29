@@ -21,6 +21,10 @@ See also:
 Use a `DcqlQuery` object or a JSON string; both are checked at initialization.
 
 - **SD-JWT VC:** use `CredentialFormat.SD_JWT_VC` and `setVctValues(...)` with the allowed credential types.
+  A credential also matches when one of these types is among the `aka_vcts` its issuer signed, such as a national
+  PID declaring the general PID type
+  ([SD-JWT VC, section 2.2.2.2](https://www.ietf.org/archive/id/draft-ietf-oauth-sd-jwt-vc-19.html#section-2.2.2.2)).
+  An inheritance only declared through `extends` in the type metadata is not followed: no metadata is fetched.
 - **mdoc:** use `CredentialFormat.MSO_MDOC` and `setDoctypeValue(...)` with the document type.
 - **Claims:** use `addClaim(...)` for a claim path, or a `ClaimsQuery` with `withValues(...)` to restrict its values.
   An mdoc path contains the namespace followed by the attribute name.
@@ -74,31 +78,53 @@ See [Response validation](openid4vp-verifiers.html#1-response-validation).
 ## 2) The profile identifier
 
 **Request an identifier claim in DCQL if you need to identify a user.** A name or an age predicate alone does not
-provide a persistent user identifier.
+provide a persistent user identifier. Choose an identifier that is **stable, unique within its issuer and never
+reassigned** ([OpenID4VP section 14.4](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#section-14.4)).
 
-The default `OpenId4VpProfileDefinition`:
+The `OpenId4VpAuthenticator` builds the profile once the presentation is validated, as the other pac4j authenticators
+do: the disclosed claims become attributes, and the `profileIdResolver` of the configuration gives the identifier,
+as `attributeAsId` does for SAML.
 
-- Requires **exactly one verified credential**, a non-blank issuer and a disclosed, non-blank string `sub`.
-- Builds the ID as `base64url(issuer) + "." + base64url(sub)`, without padding, to distinguish issuers.
-- **Fails profile creation** if these requirements are not met, including when several credentials are returned.
+**The default, `ProfileIdResolver.issuerAndClaim("sub")`** (for `OpenId4VpClient` and `OpenId4VpDcApiClient`):
 
-Choose an identifier that is **stable, unique within its issuer and never reassigned**
-([OpenID4VP section 14.4](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#section-14.4)).
-To use another top-level claim, request it in DCQL and configure its name:
+- Reads a top-level claim of an SD-JWT VC, `sub` here.
+- **Checks the DCQL query when the client initializes:** at least one SD-JWT VC credential query must be able to
+  return that claim, by listing it in its `claims` or by listing no claims at all (the wallet then returns "only the
+  claims that are mandatory to present", see
+  [OpenID4VP section 6.4.1](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#selecting_claims)).
+  Otherwise the initialization fails, rather than every login.
+- Requires **exactly one verified credential**, a non-blank issuer and a disclosed, non-blank string claim.
+- Builds the ID as `base64url(issuer) + "." + base64url(claim)`, without padding, to distinguish issuers. For a
+  credential validated through its `x5c` chain, the issuer is the subject of the leaf certificate
+  (see [Trusted issuers](openid4vp-verifiers.html#211-trusted-issuers)).
+- **Fails the validation** if these requirements are not met, including when several credentials are returned.
+
+To use another top-level claim, request it in DCQL and name it:
 
 ```java
-OpenId4VpProfileDefinition definition = new OpenId4VpProfileDefinition();
-definition.setProfileId("account_id");
-client.setProfileCreator(new OpenId4VpProfileCreator(client, definition));
+config.setProfileIdResolver(ProfileIdResolver.issuerAndClaim("account_id"));
 ```
 
 `account_id` is an example; use a claim that meets the identity requirements above.
 
-- **Multiple credentials or nested claims (including mdoc):** override `computeProfileId(VerifiablePresentationCredentials)`.
-  You can select a verified credential by its DCQL query identifier and issuer before attributes are merged.
-- **Application-specific mapping:** a custom `ProfileDefinition` or `ProfileFactory` can assign the ID in `newProfile(...)`.
-- **EUDI PID:** `EudiPidProfileDefinition` uses the same default mapping. Configure or override it for your wallet;
-  a PID does not necessarily contain `sub`.
+**EUDI PID:** `EudiWalletClient` has **no default**: the PID defines no `sub`, and no PID attribute is assumed to be a
+stable identifier. It refuses to initialize until a resolver is configured, such as
+`ProfileIdResolver.issuerAndClaim(PERSONAL_ADMINISTRATIVE_NUMBER)` where the PID provider issues that claim.
+
+**Multiple credentials, nested claims (including mdoc) or any other identifier:** implement `ProfileIdResolver`, a
+single method receiving the verified credentials, indexed by DCQL query identifier:
+
+```java
+// an illustrative nested claim: {"account": {"id": "..."}} in the credential answering the "badge" query
+config.setProfileIdResolver(credentials -> {
+    VerifiedCredential badge = credentials.getVerifiedCredentials().get("badge").get(0);
+    return badge.getIssuer() + "|" + ((Map<?, ?>) badge.getClaims().get("account")).get("id");
+});
+```
+
+It checks nothing at initialization by default; override its `check(DcqlQuery)` to verify at startup that the query
+returns what it needs. To enrich the profile afterwards, set a `ProfileCreator` on the client: it receives the
+credentials, whose `getUserProfile()` is the profile built by the authenticator.
 
 ## 3) Diagnostic logging
 
@@ -119,7 +145,7 @@ For example, enable these categories in Logback:
 <logger name="org.pac4j.openid4vp.credentials" level="DEBUG"/>
 <logger name="org.pac4j.openid4vp.dcql" level="DEBUG"/>
 <logger name="org.pac4j.openid4vp.verifier" level="DEBUG"/>
-<logger name="org.pac4j.openid4vp.profile.creator" level="DEBUG"/>
+<logger name="org.pac4j.openid4vp.profile" level="DEBUG"/>
 ```
 
 These logs describe stages and outcomes without dumping wallet URLs, request JWTs, presentations, keys, nonces,
