@@ -180,7 +180,7 @@ If a page opens without requiring sign-in, check that a `SecurityHandler` covers
 
 ## 7) Switching to OIDC or CAS
 
-Add `pac4j-oidc` or `pac4j-cas`, replace the `SAML2Client` in the `Config` and update the client name in the `SecurityHandler`. Adapt the `SAML2Profile` cast or use `UserProfile`, and register the callback and logout URLs for the chosen protocol. The SAML keystore is no longer needed. The protocol-specific setup is described in the [OIDC guide](/how-to-secure-a-java-application-with-oidc.html) and the [CAS client documentation](/docs/clients/cas.html).
+Add `pac4j-oidc` or `pac4j-cas`, replace the `SAML2Client` in the `Config` and update the client name in the `SecurityHandler`. Adapt the `SAML2Profile` cast or use `UserProfile`, and register the callback and logout URLs for the chosen protocol. The SAML keystore is no longer needed. The protocol-specific setup is described in the [OIDC guide](/docs/clients/openid-connect.html) and the [CAS client documentation](/docs/clients/cas.html).
 
 ## 8) Learn more
 
