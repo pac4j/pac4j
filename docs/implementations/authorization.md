@@ -5,7 +5,7 @@ seo_title: "Compare authorization across framework integrations | pac4j"
 description: "Compare how pac4j integrations expose authorization checks across Java web frameworks and their security components."
 ---
 
-[<i class="fa fa-long-arrow-left fa-2x" aria-hidden="true"></i> Categories](./comparison.html)
+<a href="./comparison.html" class="back-link"><span class="back-circle"><i class="fa fa-long-arrow-left" aria-hidden="true"></i></span> Categories</a>
 
 <style>
     table {

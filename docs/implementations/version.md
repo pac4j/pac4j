@@ -5,7 +5,7 @@ seo_title: "Core version compatibility by framework integration | pac4j"
 description: "Find the pac4j core versions used by framework integrations to choose compatible Java authentication and authorization libraries."
 ---
 
-[<i class="fa fa-long-arrow-left fa-2x" aria-hidden="true"></i> Categories](./comparison.html)
+<a href="./comparison.html" class="back-link"><span class="back-circle"><i class="fa fa-long-arrow-left" aria-hidden="true"></i></span> Categories</a>
 
 <style>
     table {

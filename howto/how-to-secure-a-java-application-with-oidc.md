@@ -46,7 +46,7 @@ The [demo's `pom.xml`](https://github.com/pac4j/simple-spring-boot-pac4j-demos/b
 <dependency>
     <groupId>org.pac4j</groupId>
     <artifactId>pac4j-oidc</artifactId>
-    <version>6.5.8</version>
+    <version>6.5.9</version>
 </dependency>
 ```
 

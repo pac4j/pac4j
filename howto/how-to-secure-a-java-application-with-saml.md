@@ -46,7 +46,7 @@ The [demo's `pom.xml`](https://github.com/pac4j/simple-spring-boot-pac4j-demos/b
 <dependency>
     <groupId>org.pac4j</groupId>
     <artifactId>pac4j-saml</artifactId>
-    <version>6.5.8</version>
+    <version>6.5.9</version>
 </dependency>
 ```
 
@@ -172,7 +172,7 @@ pac4j then sends a `LogoutRequest` to the IdP's single logout endpoint, read fro
 cfg.setSpLogoutRequestSigned(true);
 ```
 
-In pac4j 6.5.8, this option is `false` by default: enabling central logout alone does not enable request signing. The HTTP-POST and HTTP-Redirect bindings are supported for these messages; pick the one your IdP expects with `cfg.setSpLogoutRequestBindingType(...)`. SLO only works if the IdP metadata declares a `SingleLogoutService`.
+In pac4j 6.5.9, this option is `false` by default: enabling central logout alone does not enable request signing. The HTTP-POST and HTTP-Redirect bindings are supported for these messages; pick the one your IdP expects with `cfg.setSpLogoutRequestBindingType(...)`. SLO only works if the IdP metadata declares a `SingleLogoutService`.
 
 ## 8) Run the application
 
@@ -192,7 +192,7 @@ Open [http://localhost:8080/](http://localhost:8080/) and follow **Protected are
 **If something goes wrong:**
 
 - **The IdP rejects the request as an unknown service provider**: the SP metadata is not registered, or the entity ID at the IdP differs from `setServiceProviderEntityId`.
-- **"Authentication issue instant is too old"**: check the clocks of both machines and any maximum authentication age configured with `cfg.setMaximumAuthenticationLifetime(seconds)`. In pac4j 6.5.8, the default is `0`, which disables this authentication-age check; an explicit positive value limits the age of the IdP authentication. Assertion validity timestamps are checked separately.
+- **"Authentication issue instant is too old"**: check the clocks of both machines and any maximum authentication age configured with `cfg.setMaximumAuthenticationLifetime(seconds)`. In pac4j 6.5.9, the default is `0`, which disables this authentication-age check; an explicit positive value limits the age of the IdP authentication. Assertion validity timestamps are checked separately.
 - **Signature validation fails**: the IdP rotated its certificate. Reload the IdP metadata.
 - **The assertion is missing a `Destination`**: some IdPs omit it; pac4j requires it for security but you can relax it with `cfg.setResponseDestinationAttributeMandatory(false)`.
 
