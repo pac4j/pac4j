@@ -7,6 +7,7 @@ import org.pac4j.core.adapter.FrameworkAdapter;
 import org.pac4j.core.client.*;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.FrameworkParameters;
+import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.credentials.MockCredentials;
 import org.pac4j.core.exception.TechnicalException;
@@ -184,6 +185,45 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         config.setClients(new Clients(CALLBACK_URL, indirectClient));
         config.addAuthorizer(NAME, (context, store, prof) -> ID.equals(prof.get(0).getId()));
         call();
+        assertEquals(403, action.getCode());
+    }
+
+    private void setupSessionAuthenticatedPost(final String securityClients) {
+        val profile = new CommonProfile();
+        profile.setId(ID);
+        profile.setClientName(NAME);
+        Map<String, CommonProfile> profiles = new LinkedHashMap<>();
+        profiles.put(NAME, profile);
+        sessionStore.set(context, Pac4jConstants.USER_PROFILES, profiles);
+        final IndirectClient indirectClient = new MockIndirectClient(NAME, null, Optional.of(new MockCredentials()), new CommonProfile());
+        final DirectClient directClient = new MockDirectClient(VALUE, Optional.empty(), new CommonProfile());
+        config.setClients(new Clients(CALLBACK_URL, indirectClient, directClient));
+        clients = securityClients;
+        context.setRequestMethod(HttpConstants.HTTP_METHOD.POST.name());
+    }
+
+    @Test
+    public void testSessionAuthenticatedPostWithoutCsrfTokenIsForbidden() {
+        setupSessionAuthenticatedPost(NAME + "," + VALUE);
+        call();
+        assertEquals(0, nbCall);
+        assertEquals(403, action.getCode());
+    }
+
+    @Test
+    public void testSessionAuthenticatedPostWithoutCsrfTokenIsForbiddenEvenWhenForcingDirectClient() {
+        setupSessionAuthenticatedPost(NAME + "," + VALUE);
+        context.addRequestParameter(Pac4jConstants.DEFAULT_FORCE_CLIENT_PARAMETER, VALUE);
+        call();
+        assertEquals(0, nbCall);
+        assertEquals(403, action.getCode());
+    }
+
+    @Test
+    public void testSessionAuthenticatedPostWithoutCsrfTokenIsForbiddenEvenOnDirectClientOnlyUrl() {
+        setupSessionAuthenticatedPost(VALUE);
+        call();
+        assertEquals(0, nbCall);
         assertEquals(403, action.getCode());
     }
 

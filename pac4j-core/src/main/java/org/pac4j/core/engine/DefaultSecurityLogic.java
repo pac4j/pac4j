@@ -9,6 +9,7 @@ import lombok.val;
 import org.pac4j.core.authorization.checker.AuthorizationChecker;
 import org.pac4j.core.authorization.checker.DefaultAuthorizationChecker;
 import org.pac4j.core.client.Client;
+import org.pac4j.core.client.Clients;
 import org.pac4j.core.client.DirectClient;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.finder.ClientFinder;
@@ -27,6 +28,7 @@ import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.HttpActionHelper;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -145,8 +147,9 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
                 // we have profile(s) -> check authorizations; otherwise, redirect to identity provider or 401
                 if (isNotEmpty(profiles)) {
                     LOGGER.debug("authorizers: {}", authorizers);
+                    val authorizationClients = addProfileIndirectClients(configClients, currentClients, profiles);
                     if (authorizationChecker.isAuthorized(webContext, sessionStore, profiles,
-                                                          authorizers, config.getAuthorizers(), currentClients)) {
+                                                          authorizers, config.getAuthorizers(), authorizationClients)) {
                         LOGGER.debug("authenticated and authorized -> grant access");
                         return securityGrantedAccessAdapter.adapt(webContext, sessionStore, profiles);
                     } else {
@@ -187,6 +190,30 @@ public class DefaultSecurityLogic extends AbstractExceptionAwareLogic implements
      */
     protected List<UserProfile> loadProfiles(final CallContext ctx, final ProfileManager manager, final List<Client> clients) {
         return manager.getProfiles();
+    }
+
+    /**
+     * Add to the current clients the indirect clients which created the profiles. These profiles are authenticated
+     * by the session cookie, so the default authorizers must include the CSRF check even if the current clients
+     * are only direct ones (for example when a direct client is forced on the request).
+     *
+     * @param configClients the configured clients
+     * @param currentClients the current clients
+     * @param profiles the profiles
+     * @return the clients to use for the authorization check
+     */
+    protected List<Client> addProfileIndirectClients(final Clients configClients, final List<Client> currentClients,
+                                                     final List<UserProfile> profiles) {
+        val clients = new ArrayList<>(currentClients);
+        for (val profile : profiles) {
+            val clientName = profile.getClientName();
+            if (isNotBlank(clientName)) {
+                configClients.findClient(clientName)
+                    .filter(client -> client instanceof IndirectClient && !clients.contains(client))
+                    .ifPresent(clients::add);
+            }
+        }
+        return clients;
     }
 
     /**
