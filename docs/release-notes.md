@@ -25,6 +25,9 @@ description: "Review pac4j release notes for supported Java lines, including aut
 - Normalize path in `JEEContext.getPath()`
 - `JwtAuthenticator`: reject RSA/EC-only encryption without a signature; warn for other encryption-only configurations
 
+**v6.5.9**:
+- Security fix: always apply the CSRF protection for direct clients after an indirect client authentication
+
 **v6.5.8**:
 - Security fix: the logout redirect URL is rejected if it contains a control character or a space (the browsers strip tabs and new lines before parsing a URL, which allowed an open redirect with `/<TAB>/evil.example.org`)
 
