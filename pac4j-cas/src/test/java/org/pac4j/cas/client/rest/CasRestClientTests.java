@@ -73,14 +73,14 @@ public final class CasRestClientTests implements TestsConstants {
 
     @Test
     public void testRestBasic() {
-        internalTestRestBasic(new CasRestBasicAuthClient(getConfig(), VALUE, NAME), 13);
+        internalTestRestBasic(new CasRestBasicAuthClient(getConfig(), VALUE, NAME), 14);
     }
 
     @Test
     public void testRestBasicWithCas20TicketValidator() {
         val config = getConfig();
         config.setDefaultTicketValidator(new Cas20ServiceTicketValidator(CAS_PREFIX_URL));
-        internalTestRestBasic(new CasRestBasicAuthClient(config, VALUE, NAME), 13);
+        internalTestRestBasic(new CasRestBasicAuthClient(config, VALUE, NAME), 14);
     }
 
     private void internalTestRestBasic(final CasRestBasicAuthClient client, int nbAttributes) {

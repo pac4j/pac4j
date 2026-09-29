@@ -5,6 +5,9 @@ title: Release notes&#58;
 
 ### JDK17:
 
+**v6.5.9**:
+- Security fix: always apply the CSRF protection for direct clients after an indirect client authentication
+
 **v6.5.8**:
 - Security fix: the logout redirect URL is rejected if it contains a control character or a space
 
