@@ -18,3 +18,5 @@ To stay safe, you MUST upgrade:
 No additional details will be shared in this post.
 
 This vulnerability was discovered by **James Love**.
+
+{% include security_warning.html %}

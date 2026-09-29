@@ -26,3 +26,5 @@ To stay safe, you MUST upgrade:
 No additional details will be shared in this post.
 
 These vulnerabilities were discovered by **Bartlomiej Dmitruk, striga.ai**.
+
+{% include security_warning.html %}
