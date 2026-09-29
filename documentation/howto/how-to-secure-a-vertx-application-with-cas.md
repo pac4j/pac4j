@@ -10,9 +10,9 @@ Let's connect a Vert.x Web application to a CAS server. We'll use the [vertx-pac
 
 The CAS server handles the login page and authenticates the user. It can be the [Apereo](https://apereo.github.io/cas/) server already used by your organization, or the public pac4j test server we'll use below.
 
-The example uses **Vert.x 5 and Java 17**. The CAS client is configured just as in the [Spring Boot CAS guide](/how-to-secure-a-java-application-with-cas.html), but there are two Vert.x details to get right: the session must be available before pac4j runs, and blocking authentication work must stay off the event loop.
+The example uses **vertx-pac4j 7.1.0, Vert.x 5 and Java 17**. The CAS client is configured just as in the [Spring Boot CAS guide](/how-to-secure-a-java-application-with-cas.html). The application installs the session handler before pac4j runs; the pac4j handlers take care of moving blocking authentication work off the event loop.
 
-We'll look at both. For a broader example, see the [vertx-pac4j-demo](https://github.com/pac4j/vertx-pac4j-demo). To use your own CAS server, you'll need its login URL.
+For a broader example, see the [vertx-pac4j-demo](https://github.com/pac4j/vertx-pac4j-demo). To use your own CAS server, you'll need its login URL.
 
 ## 1) Get the demo
 
@@ -33,13 +33,13 @@ Alongside Vert.x Web, add the Vert.x integration for the handlers and the CAS mo
 <dependency>
     <groupId>io.vertx</groupId>
     <artifactId>vertx-web</artifactId>
-    <version>5.1.5</version>
+    <version>5.2.0</version>
 </dependency>
 <!-- pac4j integration for Vert.x -->
 <dependency>
     <groupId>org.pac4j</groupId>
     <artifactId>vertx-pac4j</artifactId>
-    <version>7.0.3</version>
+    <version>7.1.0</version>
 </dependency>
 <!-- pac4j support for CAS -->
 <dependency>
@@ -116,11 +116,10 @@ public class ServerVerticle extends AbstractVerticle {
         final var sessionStore = new VertxSessionStore(vertxSessionStore);
 
         final var config = new SecurityConfigFactory().build();
-        config.setSessionStoreFactoryIfUndefined(parameters -> sessionStore);
 
         // the CAS login protects /protected
         final var securityOptions = new SecurityHandlerOptions().setClients("CasClient");
-        router.get("/protected").blockingHandler(new SecurityHandler(vertx, sessionStore, config, securityOptions), false);
+        router.get("/protected").handler(new SecurityHandler(vertx, sessionStore, config, securityOptions));
         router.get("/protected").handler(rc -> protectedPage(rc, sessionStore));
 
         // the CAS server redirects the user here with the service ticket
@@ -143,7 +142,11 @@ public class ServerVerticle extends AbstractVerticle {
 }
 ```
 
-The order matters here. `SessionHandler` must run before pac4j on every route involved in login. `VertxSessionStore` reads and writes that session, and `setSessionStoreFactoryIfUndefined` tells the `Config` to use it. If you run several instances, use a `ClusteredSessionStore` instead of the local one.
+The order matters here. `SessionHandler` must run before pac4j on the protected, callback and logout routes. `VertxSessionStore` reads and writes that session. Since 7.1.0, the `SecurityHandler`, `CallbackHandler` and `LogoutHandler` constructors register their supplied session store in the `Config` when no session-store factory is configured. There is no need to call `config.setSessionStoreFactoryIfUndefined(...)` yourself; an explicitly configured factory is preserved.
+
+Keep `SessionHandler` on routes protected by direct clients too if they should reuse an existing login. Since pac4j 5, security logic checks the profiles in the session before attempting direct authentication. Excluding those routes from the session handler prevents that reuse, even when the browser sends its session cookie.
+
+For several application instances, use a `ClusteredSessionStore` with clustered Vert.x instances. CAS single logout also needs shared ticket-to-session mappings: configure `DefaultSessionLogoutHandler` with a `VertxClusteredMapStore<String, Object>`. Sharing HTTP sessions alone does not share those mappings. The [session stores and clustering guide](https://github.com/pac4j/vertx-pac4j/wiki/Session-stores-and-clustering) shows both parts of the configuration.
 
 On a protected route, `SecurityHandler` redirects anonymous users to CAS without calling `next()`. For authenticated users, it sets the Vert.x user and passes control to our handler. `SecurityHandlerOptions` also accepts `setAuthorizers` and `setMatchers`. For example, `"admin"` can refer to a role check declared with `config.addAuthorizer("admin", new RequireAnyRoleAuthorizer("ROLE_ADMIN"))`.
 
@@ -151,7 +154,7 @@ When CAS sends the browser back, `CallbackHandler` validates the service ticket,
 
 `LogoutHandler` removes the profile. With `setDestroySession(true)`, it destroys the Vert.x session as well.
 
-Notice the `blockingHandler` registration for `SecurityHandler`: this handler calls synchronous pac4j logic directly. The callback and logout handlers already use `executeBlocking` internally. This is how we keep ticket validation and other blocking work off the event loop. Central logout itself redirects the browser to CAS.
+Register all three pac4j handlers with the usual `.handler(...)` method. Since 7.1.0, `SecurityHandler` also runs synchronous pac4j logic through `executeBlocking` internally, then resumes the route on its original Vert.x context. The callback and logout handlers already offload their logic. No `blockingHandler` wrapper is needed. Central logout itself redirects the browser to CAS.
 
 ## 5) Access the authenticated user
 
@@ -186,6 +189,8 @@ router.get("/centralLogout").handler(new LogoutHandler(vertx, sessionStore, cent
 ```
 
 pac4j clears the local profile and redirects the browser to CAS `/logout`. CAS must allow the requested return URL. `setLogoutUrlPattern` validates an optional dynamic `url` parameter; `setDefaultUrl` selects the default return URL.
+
+CAS can also send a back-channel logout notification to `/callback`, without the browser's session cookie. pac4j uses its ticket-to-session mapping to find the session. In 7.1.0, `VertxSessionStore` persists profile removal or session deletion to the underlying store before that operation completes, including for clustered sessions. To destroy the whole session on a CAS notification, configure `setDestroySession(true)` on the `DefaultSessionLogoutHandler`; this is separate from `LogoutHandlerOptions.setDestroySession(true)`, which controls our `/logout` route.
 
 ## 7) Run the application
 
