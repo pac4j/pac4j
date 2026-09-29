@@ -263,7 +263,7 @@ Open [http://localhost:8080/protected/index](http://localhost:8080/protected/ind
 
 ## 7) Switching to SAML or CAS
 
-Add the corresponding `pac4j-saml` or `pac4j-cas` dependency, replace the `OidcClient` in the `ConfigFactory` with a `SAML2Client` or a `CasClient`, and update the security filter's `clients` parameter. Adapt the `OidcProfile` cast in the servlet to the new profile type, or use the common `UserProfile` interface. The same filter structure applies, with the callback and logout URLs registered for the chosen protocol. The protocol-specific configuration, the SAML keystore and metadata exchange, and the CAS service registration, are described in the [SAML guide](/how-to-secure-a-java-application-with-saml.html) and the [CAS guide](/how-to-secure-a-java-application-with-cas.html).
+Add the corresponding `pac4j-saml` or `pac4j-cas` dependency, replace the `OidcClient` in the `ConfigFactory` with a `SAML2Client` or a `CasClient`, and update the security filter's `clients` parameter. Adapt the `OidcProfile` cast in the servlet to the new profile type, or use the common `UserProfile` interface. The same filter structure applies, with the callback and logout URLs registered for the chosen protocol. The protocol-specific configuration, the SAML keystore and metadata exchange, and the CAS service registration, are described in the [SAML guide](/docs/clients/saml.html) and the [CAS guide](/docs/clients/cas.html).
 
 ## 8) Learn more
 
