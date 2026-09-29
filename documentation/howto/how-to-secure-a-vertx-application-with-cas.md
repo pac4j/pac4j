@@ -45,7 +45,7 @@ Alongside Vert.x Web, add the Vert.x integration for the handlers and the CAS mo
 <dependency>
     <groupId>org.pac4j</groupId>
     <artifactId>pac4j-cas</artifactId>
-    <version>6.5.8</version>
+    <version>6.5.9</version>
 </dependency>
 ```
 

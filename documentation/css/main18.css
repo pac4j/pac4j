@@ -218,6 +218,28 @@ main ul li { list-style-type: disc; }
 .nowrap { white-space: nowrap; }
 .text-right { text-align: right; }
 .blog-author { margin-top: 30px; }
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 24px;
+  font-weight: 600;
+}
+.back-link:hover { text-decoration: none; }
+.back-circle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 2px solid var(--blue);
+  border-radius: 50%;
+  background: #e3f0fc;
+  color: var(--blue);
+  transition: background-color .15s, color .15s;
+}
+.back-circle .fa { width: 22px; height: 22px; vertical-align: 0; }
+.back-link:hover .back-circle { background: var(--blue); color: #fff; }
 .centered { text-align: center; }
 .clear { clear: both; }
 .warning { color: #ef6c00; }

@@ -51,7 +51,7 @@ Add the Spark integration (`spark-pac4j`) and the OpenID Connect module alongsid
 <dependency>
     <groupId>org.pac4j</groupId>
     <artifactId>pac4j-oidc</artifactId>
-    <version>6.5.8</version>
+    <version>6.5.9</version>
 </dependency>
 ```
 

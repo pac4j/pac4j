@@ -5,7 +5,7 @@ seo_title: "Compare security logic across Java frameworks | pac4j"
 description: "Compare the default security, callback and logout logic used by pac4j framework integrations."
 ---
 
-[<i class="fa fa-long-arrow-left fa-2x" aria-hidden="true"></i> Categories](./comparison.html)
+<a href="./comparison.html" class="back-link"><span class="back-circle"><i class="fa fa-long-arrow-left" aria-hidden="true"></i></span> Categories</a>
 
 <style>
     table {

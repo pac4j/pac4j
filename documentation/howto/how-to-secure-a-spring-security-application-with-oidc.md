@@ -64,7 +64,7 @@ On top of the Spring Boot web and security starters, you need three pac4j artifa
 <dependency>
     <groupId>org.pac4j</groupId>
     <artifactId>pac4j-oidc</artifactId>
-    <version>6.5.8</version>
+    <version>6.5.9</version>
 </dependency>
 <!-- the bridge: pushes the pac4j profile into the Spring Security context -->
 <dependency>

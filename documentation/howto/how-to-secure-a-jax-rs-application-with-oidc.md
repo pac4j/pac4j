@@ -56,7 +56,7 @@ Pick the `jax-rs-pac4j` module matching your runtime, and add the OpenID Connect
 <dependency>
     <groupId>org.pac4j</groupId>
     <artifactId>pac4j-oidc</artifactId>
-    <version>6.5.8</version>
+    <version>6.5.9</version>
 </dependency>
 ```
 
@@ -203,7 +203,7 @@ An anonymous request is redirected to the provider; after login, the callback se
 
 ## 6) Protect a REST API with the access token
 
-Now let's take the second case: an API caller that already has an access token. For this setup, add `org.pac4j:pac4j-http:6.5.8` for `HeaderClient` and a JSON provider such as `jersey-media-json-jackson`, matching your Jersey version. Replace the stateful registration from step 3 with the configuration below.
+Now let's take the second case: an API caller that already has an access token. For this setup, add `org.pac4j:pac4j-http:6.5.9` for `HeaderClient` and a JSON provider such as `jersey-media-json-jackson`, matching your Jersey version. Replace the stateful registration from step 3 with the configuration below.
 
 The caller sends its **access token** in the `Authorization: Bearer` header. There is no browser redirect and no local session. Our **direct client** checks the token at the OIDC provider's user info endpoint, using the OIDC client's profile creator:
 
@@ -308,7 +308,7 @@ The bundle below targets Dropwizard 5.0.2, which uses Jersey 3. It already bring
 <dependency>
     <groupId>org.pac4j</groupId>
     <artifactId>pac4j-oidc</artifactId>
-    <version>6.5.8</version>
+    <version>6.5.9</version>
 </dependency>
 ```
 

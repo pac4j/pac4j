@@ -5,7 +5,7 @@ seo_title: "Compare security web components across frameworks | pac4j"
 description: "Compare the filters, controllers and endpoints that pac4j integrations provide for security checks, authentication callbacks and logout."
 ---
 
-[<i class="fa fa-long-arrow-left fa-2x" aria-hidden="true"></i> Categories](./comparison.html)
+<a href="./comparison.html" class="back-link"><span class="back-circle"><i class="fa fa-long-arrow-left" aria-hidden="true"></i></span> Categories</a>
 
 <style>
     table {
