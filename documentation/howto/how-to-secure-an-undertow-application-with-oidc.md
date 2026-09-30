@@ -6,16 +6,16 @@ seo_title: "How to secure an Undertow application with OIDC | pac4j"
 description: "Add OpenID Connect (OIDC) login to an Undertow application with pac4j: session attachment handler, OidcClient, a SecurityHandler on a path, callback and logout handlers."
 ---
 
-Let's connect an Undertow application to an OpenID Connect provider. We'll use the [undertow-pac4j](https://github.com/pac4j/undertow-pac4j) library to add three handlers to our `PathHandler`: `SecurityHandler`, `CallbackHandler` and `LogoutHandler`.
+You can connect an Undertow application to an OpenID Connect provider. You just need to use the [undertow-pac4j](https://github.com/pac4j/undertow-pac4j) library to add three handlers to your `PathHandler`: `SecurityHandler`, `CallbackHandler` and `LogoutHandler`.
 
 The OIDC provider handles the login page and authenticates the user. It can be Keycloak, Google, Microsoft Entra ID, Okta or another OIDC server, or the public pac4j demo provider we'll use below.
 
-The example uses **undertow-pac4j v6.1.0, Undertow v2.4 and Java 17**. The OIDC client is configured just as in the [Spring Boot OIDC guide](/how-to-secure-a-java-application-with-oidc.html).
+This example uses **undertow-pac4j v6.1.0, Undertow v2.4 and Java 17**. The OIDC client is configured just as in the [Spring Boot OIDC guide](/how-to-secure-a-java-application-with-oidc.html).
 
 For a more complete example, see the [undertow-pac4j-demo](https://github.com/pac4j/undertow-pac4j-demo).
 
 
-## 1) Create the project
+## 1) Create the Maven project
 
 Start from an empty Maven project with Java 17 or later:
 
@@ -119,9 +119,11 @@ public class SecurityConfigFactory implements ConfigFactory {
 }
 ```
 
-There is nothing Undertow-specific in this configuration. pac4j reads the provider endpoints from the discovery URI. The callback URL, with `?client_name=OidcClient` appended by pac4j, is the redirect URI to register at your provider.
+There is nothing specific to Undertow in this configuration and this is the beauty of pac4j!
 
-One demo setting must be removed when using your own provider: `setAllowUnsignedIdTokens(true)`. It is only here because the public demo server issues unsigned ID tokens.
+pac4j reads the provider metadata (endpoints, algorithms, etc.) from the discovery URI. The callback URL, with `?client_name=OidcClient` appended by pac4j, is the redirect URI to register at your provider.
+
+One demo setting should be removed when using your own provider: `setAllowUnsignedIdTokens(true)`. It is only here because the public demo server issues unsigned ID tokens.
 
 
 ## 4) Wire the handlers and start the server
@@ -183,7 +185,7 @@ Here are the main points in this setup:
 
 - **Session handling:** `SessionAttachmentHandler` must wrap the protected, callback and logout paths: it attaches the Undertow `SessionManager` and `SessionConfig` to each request, and pac4j's `UndertowSessionStore` reads and writes the session through them. Here the session cookie is `JSESSIONID`, marked `HttpOnly`.
 
-- **Default components:** undertow-pac4j registers its own web context, session store, profile manager and HTTP action adapter in the `Config` the first time a handler runs, so there is no need to call `config.setSessionStoreFactory(...)`. An explicitly configured component is preserved.
+- **Default components:** undertow-pac4j provides a `FrameworkAdapterImpl` that pac4j discovers on the classpath. Its `applyDefaultSettingsIfUndefined` method supplies the Undertow-specific web context, session store and profile manager factories, along with the HTTP action adapter, as defaults in the `Config`. Explicitly configured components are preserved.
 
 - **Protected paths:** `SecurityHandler.build` wraps our handler: it redirects anonymous users to the OIDC provider, and for authenticated users, it calls our handler. The other `build` variants also accept authorizers and matchers. For example, `SecurityHandler.build(App::protectedPage, config, "OidcClient", "admin")` can refer to a role check declared with `config.addAuthorizer("admin", new RequireAnyRoleAuthorizer("ROLE_ADMIN"))`.
 
@@ -216,7 +218,7 @@ When pac4j loads the profiles, it registers a `Pac4jAccount` as the authenticate
 
 The `OidcProfile` gives us getters for the standard claims, plus `getIdTokenString()` for the raw ID token and `getAccessToken()` for the access token. The claims depend on the requested scopes, which default to `openid profile email` (but this is configurable).
 
-You can also use the pac4j API: `new UndertowProfileManager(new UndertowWebContext(exchange), new UndertowSessionStore(exchange)).getProfiles()` returns the same list of profiles, even on a path that is not protected.
+You can also directly use the pac4j API: `new UndertowProfileManager(new UndertowWebContext(exchange), new UndertowSessionStore(exchange)).getProfiles()` returns the same list of profiles, even on a path that is not protected.
 
 
 ## 6) Logout
@@ -253,7 +255,7 @@ If the request fails with "No Undertow session manager or session config found i
 
 Add the `pac4j-saml` or `pac4j-cas` module, replace the `OidcClient` in `Config` and update the clients passed to `SecurityHandler.build`. Adapt the `OidcProfile` type and provider attributes, and register callback/logout URLs for the selected protocol. The callback already parses the form body of SAML POST responses and CAS logout requests. SAML also needs a keystore and metadata exchange.
 
-The protocol-specific setup is described in the [SAML documentation](/docs/clients/saml.html) and the [CAS documentation](/docs/clients/cas.html). For a similar handler-based integration with CAS, see the [Vert.x guide](/how-to-secure-a-vertx-application-with-cas.html).
+The protocol-specific setup is described in the [SAML documentation](/docs/clients/saml.html) and the [CAS documentation](/docs/clients/cas.html).
 
 
 ## 9) Learn more
