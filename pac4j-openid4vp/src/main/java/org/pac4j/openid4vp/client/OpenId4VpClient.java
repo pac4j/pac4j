@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.val;
 import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.http.ajax.DefaultAjaxRequestResolver;
 import org.pac4j.core.util.CommonHelper;
@@ -15,9 +16,13 @@ import org.pac4j.openid4vp.profile.OpenId4VpProfileDefinition;
 import org.pac4j.openid4vp.profile.ProfileIdResolver;
 import org.pac4j.openid4vp.redirect.OpenId4VpRedirectionActionBuilder;
 import org.pac4j.openid4vp.request.OpenId4VpRequestObjectBuilder;
+import org.pac4j.openid4vp.transaction.PresentationStatus;
+
+import java.time.Instant;
 
 import static org.pac4j.core.util.CommonHelper.assertNotNull;
 import static org.pac4j.core.util.CommonHelper.assertTrue;
+import static org.pac4j.openid4vp.util.OpenId4VpConstants.SESSION_TRANSACTION_ID;
 import static org.pac4j.openid4vp.util.OpenId4VpConstants.VP_TRANSACTION_ID;
 
 /**
@@ -160,5 +165,29 @@ public class OpenId4VpClient extends IndirectClient {
                 "the addRedirectionUrlAsHeader property of the DefaultAjaxRequestResolver must be true: the wallet URL must be "
                     + "returned to the application and the redirection action builder must run to open the transaction");
         }
+    }
+
+    /**
+     * <p>Where the presentation the browser session waits for stands. The wallet answers on the response URI,
+     * which the browser never sees: a page showing the QR code polls this, through an endpoint of the
+     * application, to know when to come back to the callback.</p>
+     *
+     * @param ctx the context of the browser request, with its session
+     * @return {@link PresentationStatus#RECEIVED} once the wallet answered, {@link PresentationStatus#PENDING}
+     *     before, {@link PresentationStatus#EXPIRED} when the session has no live transaction
+     */
+    public PresentationStatus getPresentationStatus(final CallContext ctx) {
+        init();
+        val transactionId = ctx.sessionStore().get(ctx.webContext(), SESSION_TRANSACTION_ID).map(Object::toString).orElse(null);
+        if (transactionId == null) {
+            return PresentationStatus.EXPIRED;
+        }
+        val store = configuration.getTransactionStore();
+        val transaction = store.get(transactionId).orElse(null);
+        if (transaction == null || transaction.getExpiresAt() == null || !Instant.now().isBefore(transaction.getExpiresAt())) {
+            return PresentationStatus.EXPIRED;
+        }
+        return store.get(OpenId4VpCredentialsExtractor.responseKey(transactionId)).isPresent()
+            ? PresentationStatus.RECEIVED : PresentationStatus.PENDING;
     }
 }

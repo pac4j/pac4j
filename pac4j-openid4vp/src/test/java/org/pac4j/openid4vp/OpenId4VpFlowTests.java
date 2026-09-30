@@ -20,6 +20,7 @@ import org.pac4j.openid4vp.config.ResponseMode;
 import org.pac4j.openid4vp.exceptions.OpenId4VpException;
 import org.pac4j.openid4vp.verifier.CredentialVerifier;
 import org.pac4j.openid4vp.verifier.VerifiedCredential;
+import org.pac4j.openid4vp.transaction.PresentationStatus;
 import org.pac4j.openid4vp.transaction.VpTransaction;
 import org.pac4j.openid4vp.wallet.WalletSimulator;
 import org.pac4j.test.context.MockWebContext;
@@ -77,7 +78,10 @@ class OpenId4VpFlowTests {
         // 1. the browser asks for a protected page and is handed the wallet URL
         val browserContext = MockWebContext.create();
         val browserCtx = new CallContext(browserContext, new MockSessionStore());
+        assertEquals(PresentationStatus.EXPIRED, client.getPresentationStatus(browserCtx));
         val walletUrl = assertInstanceOf(FoundAction.class, client.getRedirectionAction(browserCtx).get()).getLocation();
+        // what a page polls while it shows the QR code
+        assertEquals(PresentationStatus.PENDING, client.getPresentationStatus(browserCtx));
 
         val requestUri = simulator.readRequestUri(walletUrl);
         val transactionId = simulator.readParameter(requestUri, VP_TRANSACTION_ID);
@@ -105,6 +109,7 @@ class OpenId4VpFlowTests {
             .addRequestParameter(VP_TRANSACTION_ID, transactionId)
             .addRequestParameter(RESPONSE, response);
         assertThrows(OkAction.class, () -> client.getCredentials(new CallContext(post, new MockSessionStore())));
+        assertEquals(PresentationStatus.RECEIVED, client.getPresentationStatus(browserCtx));
 
         // 4. the browser comes back: this is the only leg with a session, and the only one making credentials
         val credentials = assertInstanceOf(VerifiablePresentationCredentials.class,
@@ -120,6 +125,7 @@ class OpenId4VpFlowTests {
 
         // and the transaction is consumed
         assertTrue(configuration.getTransactionStore().get(transactionId).isEmpty());
+        assertEquals(PresentationStatus.EXPIRED, client.getPresentationStatus(browserCtx));
         assertTrue(client.getCredentials(browserCtx).isEmpty());
     }
 
@@ -177,6 +183,7 @@ class OpenId4VpFlowTests {
         assertEquals("the response state does not match the request", error.getMessage());
         assertTrue(client.getCredentials(browserCtx).isEmpty());
         assertTrue(configuration.getTransactionStore().get(transactionId).isPresent());
+        assertEquals(PresentationStatus.PENDING, client.getPresentationStatus(browserCtx));
     }
 
     private void installTestVerifier() {
