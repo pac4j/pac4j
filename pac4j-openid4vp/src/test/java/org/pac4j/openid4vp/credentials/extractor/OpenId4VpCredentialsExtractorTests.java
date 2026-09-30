@@ -21,6 +21,7 @@ import org.pac4j.test.context.session.MockSessionStore;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.pac4j.openid4vp.util.OpenId4VpConstants.*;
@@ -41,6 +42,7 @@ class OpenId4VpCredentialsExtractorTests {
     private java.nio.file.Path directory;
 
     private OpenId4VpConfiguration configuration;
+    private OpenId4VpClient client;
     private OpenId4VpCredentialsExtractor extractor;
 
     @BeforeEach
@@ -52,11 +54,12 @@ class OpenId4VpCredentialsExtractorTests {
         configuration = new OpenId4VpConfiguration();
         configuration.setResponseMode(responseMode);
         configuration.setClientId("https://app.example.org/callback");
-        configuration.setDcqlQuery("{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\"}]}");
+        configuration.setDcqlQuery("{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\","
+            + "\"meta\":{\"vct_values\":[\"urn:eudi:pid:1\"]}}]}");
         configuration.setClientIdPrefix(org.pac4j.openid4vp.config.ClientIdPrefix.DECENTRALIZED_IDENTIFIER);
         configuration.setJwks(new JwksProperties().setJwksPath(directory.resolve("keys.jwks").toString()).setKid("key-1"));
 
-        val client = new OpenId4VpClient(configuration);
+        client = new OpenId4VpClient(configuration);
         client.setName("EudiWallet");
         client.setCallbackUrl("https://app.example.org/callback");
         client.init();
@@ -71,6 +74,20 @@ class OpenId4VpCredentialsExtractorTests {
             .setExpiresAt(Instant.now().plus(5, ChronoUnit.MINUTES));
         configuration.getTransactionStore().set(TX_ID, transaction);
         return transaction;
+    }
+
+    /** Let every answer through the validation run at reception: these tests are about where it is kept. */
+    private void acceptAnyAnswer() {
+        client.setAuthenticator((ctx, credentials) -> Optional.of(credentials));
+    }
+
+    private VpTransaction storedAnswer() {
+        return configuration.getTransactionStore().get(OpenId4VpCredentialsExtractor.responseKey(TX_ID)).orElse(null);
+    }
+
+    private void storeAnswer(final String rawResponse) {
+        configuration.getTransactionStore().set(OpenId4VpCredentialsExtractor.responseKey(TX_ID),
+            configuration.getTransactionStore().get(TX_ID).get().copy().setRawResponse(rawResponse).toResponse());
     }
 
     /** A transaction the wallet has fetched the request object of, so that it can answer it. */
@@ -142,6 +159,7 @@ class OpenId4VpCredentialsExtractorTests {
     @Test
     void testWalletPostsItsResponseInClearWhenAsked() {
         val clearExtractor = buildExtractor(ResponseMode.DIRECT_POST);
+        acceptAnyAnswer();
         storeFetchedTransaction();
         val webContext = MockWebContext.create()
             .setRequestMethod(HttpConstants.HTTP_METHOD.POST.name())
@@ -151,10 +169,12 @@ class OpenId4VpCredentialsExtractorTests {
 
         assertThrows(OkAction.class, () -> clearExtractor.extract(ctx));
 
-        val transaction = configuration.getTransactionStore().get(TX_ID).get();
-        assertEquals("{\"pid\":[\"a-presentation\"]}", transaction.getRawVpToken());
-        assertNull(transaction.getRawResponse());
-        assertEquals(VpTransaction.Status.RESPONSE_RECEIVED, transaction.getStatus());
+        val answer = storedAnswer();
+        assertEquals("{\"pid\":[\"a-presentation\"]}", answer.getRawVpToken());
+        assertNull(answer.getRawResponse());
+        assertEquals(VpTransaction.Status.RESPONSE_RECEIVED, answer.getStatus());
+        // the transaction itself is left as it was
+        assertNull(configuration.getTransactionStore().get(TX_ID).get().getRawVpToken());
     }
 
     @Test
@@ -169,6 +189,7 @@ class OpenId4VpCredentialsExtractorTests {
         val e = assertThrows(OpenId4VpException.class, () -> extractor.extract(ctx));
         assertTrue(e.getMessage().startsWith("the wallet answered in clear a request asking for an encrypted response (direct_post.jwt)"));
         assertEquals(VpTransaction.Status.REQUEST_RETRIEVED, configuration.getTransactionStore().get(TX_ID).get().getStatus());
+        assertNull(storedAnswer());
     }
 
     @Test
@@ -180,9 +201,10 @@ class OpenId4VpCredentialsExtractorTests {
             .addRequestParameter(ERROR, "access_denied")
             .addRequestParameter(ERROR_DESCRIPTION, "the End-User did not consent");
         assertThrows(OkAction.class, () -> extractor.extract(new CallContext(webContext, new MockSessionStore())));
-        val transaction = configuration.getTransactionStore().get(TX_ID).get();
-        assertEquals("access_denied", transaction.getError());
-        assertTrue(transaction.isAnswered());
+        // an error is not validated: nothing authenticates it
+        val answer = storedAnswer();
+        assertEquals("access_denied", answer.getError());
+        assertTrue(answer.isAnswered());
 
         // the browser comes back: the refusal surfaces, and the transaction is consumed
         val browser = MockWebContext.create();
@@ -192,10 +214,12 @@ class OpenId4VpCredentialsExtractorTests {
         assertEquals("the wallet refused the presentation of the transaction tx-1: access_denied (the End-User did not consent)",
             e.getMessage());
         assertTrue(configuration.getTransactionStore().get(TX_ID).isEmpty());
+        assertNull(storedAnswer());
     }
 
     @Test
     void testWalletPostsItsResponse() {
+        acceptAnyAnswer();
         storeFetchedTransaction();
         val webContext = MockWebContext.create()
             .setRequestMethod(HttpConstants.HTTP_METHOD.POST.name())
@@ -205,15 +229,54 @@ class OpenId4VpCredentialsExtractorTests {
 
         assertThrows(OkAction.class, () -> extractor.extract(ctx));
 
+        assertEquals(WALLET_RESPONSE, storedAnswer().getRawResponse());
+        assertEquals(VpTransaction.Status.RESPONSE_RECEIVED, storedAnswer().getStatus());
+        assertEquals(VpTransaction.Status.REQUEST_RETRIEVED, configuration.getTransactionStore().get(TX_ID).get().getStatus());
+    }
+
+    @Test
+    void testAnInvalidAnswerIsRefusedAndLeavesTheTransactionOpen() {
+        // whoever saw the QR code can post: an answer which does not validate must not take the wallet's place
+        storeFetchedTransaction();
+        val forged = MockWebContext.create()
+            .setRequestMethod(HttpConstants.HTTP_METHOD.POST.name())
+            .addRequestParameter(VP_TRANSACTION_ID, TX_ID)
+            .addRequestParameter(RESPONSE, WALLET_RESPONSE);
+        assertThrows(OpenId4VpException.class, () -> extractor.extract(new CallContext(forged, new MockSessionStore())));
+        assertNull(storedAnswer());
         val transaction = configuration.getTransactionStore().get(TX_ID).get();
-        assertEquals(WALLET_RESPONSE, transaction.getRawResponse());
-        assertEquals(VpTransaction.Status.RESPONSE_RECEIVED, transaction.getStatus());
+        assertNull(transaction.getRawResponse());
+        assertEquals(VpTransaction.Status.REQUEST_RETRIEVED, transaction.getStatus());
+
+        // the wallet's answer is still taken
+        acceptAnyAnswer();
+        val genuine = MockWebContext.create()
+            .setRequestMethod(HttpConstants.HTTP_METHOD.POST.name())
+            .addRequestParameter(VP_TRANSACTION_ID, TX_ID)
+            .addRequestParameter(RESPONSE, "the.wallet.response");
+        assertThrows(OkAction.class, () -> extractor.extract(new CallContext(genuine, new MockSessionStore())));
+        assertEquals("the.wallet.response", storedAnswer().getRawResponse());
+    }
+
+    @Test
+    void testARequestObjectServedMeanwhileCannotEraseTheAnswer() {
+        // the race: a request object fetch reads the transaction, the wallet's answer is stored, then the fetch
+        // writes back its stale copy of the transaction
+        val stale = storeFetchedTransaction().copy();
+        storeAnswer(WALLET_RESPONSE);
+        configuration.getTransactionStore().set(TX_ID, stale);
+
+        val webContext = MockWebContext.create();
+        val sessionStore = new MockSessionStore();
+        sessionStore.set(webContext, SESSION_TRANSACTION_ID, TX_ID);
+        val credentials = (VerifiablePresentationCredentials) extractor.extract(new CallContext(webContext, sessionStore)).get();
+        assertEquals(WALLET_RESPONSE, credentials.getTransaction().getRawResponse());
     }
 
     @Test
     void testASecondAnswerIsRefused() {
-        val transaction = storeFetchedTransaction();
-        transaction.setRawResponse(WALLET_RESPONSE).setStatus(VpTransaction.Status.RESPONSE_RECEIVED);
+        storeFetchedTransaction();
+        storeAnswer(WALLET_RESPONSE);
         val webContext = MockWebContext.create()
             .setRequestMethod(HttpConstants.HTTP_METHOD.POST.name())
             .addRequestParameter(VP_TRANSACTION_ID, TX_ID)
@@ -223,7 +286,7 @@ class OpenId4VpCredentialsExtractorTests {
         val e = assertThrows(OpenId4VpException.class, () -> extractor.extract(ctx));
         assertEquals("the transaction was already answered: tx-1", e.getMessage());
         // the first answer is the one kept
-        assertEquals(WALLET_RESPONSE, configuration.getTransactionStore().get(TX_ID).get().getRawResponse());
+        assertEquals(WALLET_RESPONSE, storedAnswer().getRawResponse());
     }
 
     @Test
@@ -240,23 +303,25 @@ class OpenId4VpCredentialsExtractorTests {
         val transaction = configuration.getTransactionStore().get(TX_ID).get();
         assertEquals(VpTransaction.Status.CREATED, transaction.getStatus());
         assertFalse(transaction.isAnswered());
+        assertNull(storedAnswer());
     }
 
     @Test
     void testTheRequestObjectIsNotServedOnceAnswered() {
-        storeFetchedTransaction().setRawResponse(WALLET_RESPONSE).setStatus(VpTransaction.Status.RESPONSE_RECEIVED);
+        storeFetchedTransaction();
+        storeAnswer(WALLET_RESPONSE);
         val webContext = MockWebContext.create().addRequestParameter(VP_TRANSACTION_ID, TX_ID);
         val ctx = new CallContext(webContext, new MockSessionStore());
 
         val e = assertThrows(OpenId4VpException.class, () -> extractor.extract(ctx));
         assertEquals("the wallet already answered the transaction: tx-1", e.getMessage());
-        assertEquals(VpTransaction.Status.RESPONSE_RECEIVED, configuration.getTransactionStore().get(TX_ID).get().getStatus());
+        assertEquals(WALLET_RESPONSE, storedAnswer().getRawResponse());
     }
 
     @Test
     void testBrowserComesBackOnceTheWalletAnswered() {
-        val transaction = storeTransaction();
-        transaction.setRawResponse(WALLET_RESPONSE);
+        storeTransaction();
+        storeAnswer(WALLET_RESPONSE);
         val webContext = MockWebContext.create();
         val sessionStore = new MockSessionStore();
         sessionStore.set(webContext, SESSION_TRANSACTION_ID, TX_ID);
@@ -267,6 +332,7 @@ class OpenId4VpCredentialsExtractorTests {
         assertEquals(WALLET_RESPONSE, credentials.getTransaction().getRawResponse());
         // a transaction is used once
         assertTrue(configuration.getTransactionStore().get(TX_ID).isEmpty());
+        assertNull(storedAnswer());
         assertTrue(sessionStore.get(webContext, SESSION_TRANSACTION_ID).isEmpty());
     }
 

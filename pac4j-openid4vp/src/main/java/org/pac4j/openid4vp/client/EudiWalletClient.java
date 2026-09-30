@@ -6,7 +6,8 @@ import org.pac4j.openid4vp.config.ClientIdPrefix;
 import org.pac4j.openid4vp.config.OpenId4VpConfiguration;
 import org.pac4j.openid4vp.config.ResponseMode;
 import org.pac4j.openid4vp.profile.EudiPidProfileDefinition;
-import org.pac4j.openid4vp.profile.creator.OpenId4VpProfileCreator;
+import org.pac4j.openid4vp.profile.OpenId4VpProfileDefinition;
+import org.pac4j.openid4vp.profile.ProfileIdResolver;
 
 /**
  * This class is the client to authenticate users against a European digital identity (EUDI) wallet.
@@ -53,8 +54,25 @@ public class EudiWalletClient extends OpenId4VpClient {
         // is then the hash of the access certificate, computed by the configuration: nothing to type
         configuration.setClientIdPrefix(ClientIdPrefix.X509_HASH);
         configuration.setResponseMode(ResponseMode.DIRECT_POST_JWT);
-        setProfileCreatorIfUndefined(new OpenId4VpProfileCreator(this, new EudiPidProfileDefinition()));
+        logger.debug("applying EUDI wallet settings for client {}: X509_HASH, DIRECT_POST_JWT, PID profile definition", getName());
 
         super.internalInit(forceReinit);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    protected OpenId4VpProfileDefinition defaultProfileDefinition() {
+        return new EudiPidProfileDefinition();
+    }
+
+    /**
+     * <p>No default: no PID attribute is assumed to be a stable identifier, so the application chooses one in the
+     * configuration, or the client refuses to initialize.</p>
+     *
+     * @return null
+     */
+    @Override
+    protected ProfileIdResolver defaultProfileIdResolver() {
+        return null;
     }
 }

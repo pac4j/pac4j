@@ -65,7 +65,10 @@ class DcqlMembers {
 
     /** A path segment: a string, an integer (parsed as a long) or null. */
     Object pathSegment(final Object value) {
-        if (value instanceof Number number) {
+        if (value instanceof Long number) {
+            if (number < 0 || number > Integer.MAX_VALUE) {
+                throw new TechnicalException("a claim path index is outside the supported range");
+            }
             return number.intValue();
         }
         return value;

@@ -32,4 +32,7 @@ public class WalletRequest {
 
     /** How the verifier asked to be answered: posted in clear or encrypted, or through the browser. */
     private final String responseMode;
+
+    /** The state to return with the response, null when the request carries none. */
+    private final String state;
 }

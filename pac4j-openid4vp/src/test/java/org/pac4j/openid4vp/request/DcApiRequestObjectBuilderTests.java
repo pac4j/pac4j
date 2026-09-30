@@ -47,7 +47,7 @@ class DcApiRequestObjectBuilderTests {
         configuration = new OpenId4VpDcApiConfiguration();
         configuration.setClientId("app.example.org")
             .setClientIdPrefix(ClientIdPrefix.DECENTRALIZED_IDENTIFIER)
-            .setDcqlQuery("{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\"}]}")
+            .setDcqlQuery("{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\",\"meta\":{\"vct_values\":[\"urn:eudi:pid:1\"]}}]}")
             .setJwks(new JwksProperties().setJwksPath(directory.resolve("keys.jwks").toString()).setKid("key-1"));
         configuration.setExpectedOrigins(List.of(ORIGIN));
 
@@ -108,6 +108,8 @@ class DcApiRequestObjectBuilderTests {
         val claims = requestObject.getJWTClaimsSet();
         assertEquals(RESPONSE_TYPE_VP_TOKEN, claims.getStringClaim(RESPONSE_TYPE));
         assertNotNull(claims.getStringClaim(NONCE));
+        // "The Digital Credentials API uses internal mechanisms to maintain the binding": no state
+        assertNull(claims.getClaim(STATE));
         assertNotNull(claims.getJSONObjectClaim(DCQL_QUERY));
         assertNotNull(claims.getJSONObjectClaim(CLIENT_METADATA));
     }

@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import lombok.val;
+import lombok.extern.slf4j.Slf4j;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ import static org.pac4j.core.util.CommonHelper.assertTrue;
 @Setter
 @ToString(callSuper = true)
 @Accessors(chain = true)
+@Slf4j
 public class OpenId4VpDcApiConfiguration extends OpenId4VpConfiguration {
 
     /**
@@ -48,6 +50,7 @@ public class OpenId4VpDcApiConfiguration extends OpenId4VpConfiguration {
     @Override
     protected void internalInit(final boolean forceReinit) {
         super.internalInit(forceReinit);
+        LOGGER.debug("checking Digital Credentials API origin configuration");
 
         assertTrue(expectedOrigins != null && !expectedOrigins.isEmpty(),
             "expectedOrigins cannot be empty: a signed request sent over the digital credentials API must tell the wallet "
@@ -65,6 +68,7 @@ public class OpenId4VpDcApiConfiguration extends OpenId4VpConfiguration {
         assertTrue(getClientIdPrefix().isSignedRequest(),
             "the " + getClientIdPrefix().getValue() + " client identifier prefix cannot be used over the digital credentials "
                 + "API: its requests cannot be signed, and this binding hands a signed request object to the browser");
+        LOGGER.debug("Digital Credentials API configuration checked: {} expected origins", expectedOrigins.size());
     }
 
     /** {@inheritDoc} */

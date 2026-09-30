@@ -17,8 +17,10 @@ import org.pac4j.openid4vp.config.OpenId4VpConfiguration;
 import org.pac4j.openid4vp.credentials.VerifiablePresentationCredentials;
 import org.pac4j.openid4vp.config.CredentialFormat;
 import org.pac4j.openid4vp.config.ResponseMode;
+import org.pac4j.openid4vp.exceptions.OpenId4VpException;
 import org.pac4j.openid4vp.verifier.CredentialVerifier;
 import org.pac4j.openid4vp.verifier.VerifiedCredential;
+import org.pac4j.openid4vp.transaction.PresentationStatus;
 import org.pac4j.openid4vp.transaction.VpTransaction;
 import org.pac4j.openid4vp.wallet.WalletSimulator;
 import org.pac4j.test.context.MockWebContext;
@@ -29,6 +31,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.pac4j.openid4vp.util.OpenId4VpConstants.RESPONSE;
+import static org.pac4j.openid4vp.util.OpenId4VpConstants.VP_TOKEN;
 import static org.pac4j.openid4vp.util.OpenId4VpConstants.VP_TRANSACTION_ID;
 
 /**
@@ -58,7 +61,8 @@ class OpenId4VpFlowTests {
             .setJwksPath(directory.resolve("keys.jwks").toString()).setKid("key-1"));
         configuration.setClientId(CALLBACK_URL);
         configuration.setClientIdPrefix(ClientIdPrefix.DECENTRALIZED_IDENTIFIER);
-        configuration.setDcqlQuery("{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\"}]}");
+        configuration.setDcqlQuery("{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\","
+            + "\"meta\":{\"vct_values\":[\"urn:eudi:pid:1\"]}}]}");
 
         client = new OpenId4VpClient(configuration);
         client.setName("EudiWallet");
@@ -68,12 +72,16 @@ class OpenId4VpFlowTests {
 
     @Test
     void testTheWholePresentationFlow() {
+        installTestVerifier();
         val simulator = new WalletSimulator();
 
         // 1. the browser asks for a protected page and is handed the wallet URL
         val browserContext = MockWebContext.create();
         val browserCtx = new CallContext(browserContext, new MockSessionStore());
+        assertEquals(PresentationStatus.EXPIRED, client.getPresentationStatus(browserCtx));
         val walletUrl = assertInstanceOf(FoundAction.class, client.getRedirectionAction(browserCtx).get()).getLocation();
+        // what a page polls while it shows the QR code
+        assertEquals(PresentationStatus.PENDING, client.getPresentationStatus(browserCtx));
 
         val requestUri = simulator.readRequestUri(walletUrl);
         val transactionId = simulator.readParameter(requestUri, VP_TRANSACTION_ID);
@@ -101,6 +109,7 @@ class OpenId4VpFlowTests {
             .addRequestParameter(VP_TRANSACTION_ID, transactionId)
             .addRequestParameter(RESPONSE, response);
         assertThrows(OkAction.class, () -> client.getCredentials(new CallContext(post, new MockSessionStore())));
+        assertEquals(PresentationStatus.RECEIVED, client.getPresentationStatus(browserCtx));
 
         // 4. the browser comes back: this is the only leg with a session, and the only one making credentials
         val credentials = assertInstanceOf(VerifiablePresentationCredentials.class,
@@ -108,28 +117,23 @@ class OpenId4VpFlowTests {
         assertEquals(transactionId, credentials.getTransaction().getId());
         assertEquals(response, credentials.getTransaction().getRawResponse());
         assertEquals(request.getNonce(), credentials.getTransaction().getNonce());
+        val validated = (VerifiablePresentationCredentials) client.validateCredentials(browserCtx, credentials).orElseThrow();
+        assertEquals(PRESENTATION, validated.getVerifiedCredentials().get("pid").get(0).getClaims().get("presentation"));
+        val profile = client.getUserProfile(browserCtx, validated).orElseThrow();
+        assertNotNull(profile.getId());
+        assertEquals(PRESENTATION, profile.getAttribute("presentation"));
 
         // and the transaction is consumed
         assertTrue(configuration.getTransactionStore().get(transactionId).isEmpty());
+        assertEquals(PresentationStatus.EXPIRED, client.getPresentationStatus(browserCtx));
+        assertTrue(client.getCredentials(browserCtx).isEmpty());
     }
 
     @Test
     void testTheWholeFlowInClearUpToTheVpToken() {
         // the same flow with direct_post: the wallet posts its vp_token as it is, and the authenticator reads it
         configuration.setResponseMode(ResponseMode.DIRECT_POST);
-        configuration.getCredentialVerifiers().put(CredentialFormat.SD_JWT_VC, new CredentialVerifier() {
-            @Override
-            public CredentialFormat getFormat() {
-                return CredentialFormat.SD_JWT_VC;
-            }
-
-            @Override
-            public VerifiedCredential verify(final String rawCredential, final VpTransaction transaction,
-                                             final OpenId4VpConfiguration configuration) {
-                // nothing is verified here: the presentation is only expected to reach this point
-                return null;
-            }
-        });
+        installTestVerifier();
         val simulator = new WalletSimulator();
         val browserContext = MockWebContext.create();
         val browserCtx = new CallContext(browserContext, new MockSessionStore());
@@ -152,6 +156,52 @@ class OpenId4VpFlowTests {
         val validated = assertInstanceOf(VerifiablePresentationCredentials.class,
             client.validateCredentials(browserCtx, credentials).get());
         assertEquals(Map.of("pid", List.of(PRESENTATION)), validated.getVpToken());
+    }
+
+    @Test
+    void testAResponseWithoutTheStateIsRejected() {
+        // without holder binding, no nonce comes back: only the state binds the posted vp_token to the request
+        configuration.setResponseMode(ResponseMode.DIRECT_POST);
+        configuration.getDcqlQuery().getCredentials().get(0).setRequireCryptographicHolderBinding(false);
+        installTestVerifier();
+        val simulator = new WalletSimulator();
+        val browserCtx = new CallContext(MockWebContext.create(), new MockSessionStore());
+        val walletUrl = assertInstanceOf(FoundAction.class, client.getRedirectionAction(browserCtx).get()).getLocation();
+        val transactionId = simulator.readParameter(simulator.readRequestUri(walletUrl), VP_TRANSACTION_ID);
+
+        val fetch = MockWebContext.create().addRequestParameter(VP_TRANSACTION_ID, transactionId);
+        val served = assertThrows(OkAction.class, () -> client.getCredentials(new CallContext(fetch, new MockSessionStore())));
+        assertNotNull(simulator.readRequestObject(served.getContent()).getState());
+
+        val post = MockWebContext.create()
+            .setRequestMethod(HttpConstants.HTTP_METHOD.POST.name())
+            .addRequestParameter(VP_TRANSACTION_ID, transactionId)
+            .addRequestParameter(VP_TOKEN, "{\"pid\":[\"" + PRESENTATION + "\"]}");
+        // refused as soon as it is posted: the transaction stays open, and the browser gets nothing
+        val error = assertThrows(OpenId4VpException.class,
+            () -> client.getCredentials(new CallContext(post, new MockSessionStore())));
+        assertEquals("the response state does not match the request", error.getMessage());
+        assertTrue(client.getCredentials(browserCtx).isEmpty());
+        assertTrue(configuration.getTransactionStore().get(transactionId).isPresent());
+        assertEquals(PresentationStatus.PENDING, client.getPresentationStatus(browserCtx));
+    }
+
+    private void installTestVerifier() {
+        configuration.getCredentialVerifiers().put(CredentialFormat.SD_JWT_VC, new CredentialVerifier() {
+            @Override
+            public CredentialFormat getFormat() {
+                return CredentialFormat.SD_JWT_VC;
+            }
+
+            @Override
+            public VerifiedCredential verify(final String rawCredential, final VpTransaction transaction,
+                                             final OpenId4VpConfiguration configuration) {
+                // nothing is verified here: the presentation is only expected to reach this point
+                return new VerifiedCredential().setFormat(getFormat()).setType("urn:eudi:pid:1").setCryptographicHolderBinding(true)
+                    .setIssuer("https://issuer.example.org")
+                    .setClaims(Map.of("sub", "alice", "presentation", rawCredential));
+            }
+        });
     }
 
     @Test

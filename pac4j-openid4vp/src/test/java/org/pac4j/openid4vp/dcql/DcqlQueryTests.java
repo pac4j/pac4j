@@ -46,8 +46,6 @@ class DcqlQueryTests {
             "claims", List.of(Map.of("path", List.of("org.iso.18013.5.1", "family_name")))), credentials.get(1));
         assertEquals(List.of(Map.of("options", List.of(List.of("pid"), List.of("mdl")), "required", true, "purpose", "age check")),
             json.get(DcqlQuery.CREDENTIAL_SETS));
-        // the meta member is always there, "if empty, no specific constraints are placed"
-        assertEquals(Map.of(), new CredentialQuery("x", CredentialFormat.SD_JWT_VC).toJson().get(CredentialQuery.META));
     }
 
     @Test
@@ -79,8 +77,8 @@ class DcqlQueryTests {
     void testTheRulesOfTheSpecificationAreEnforced() {
         // "the same id MUST NOT be present more than once"
         val duplicate = new DcqlQuery()
-            .addCredential(new CredentialQuery("pid", CredentialFormat.SD_JWT_VC))
-            .addCredential(new CredentialQuery("pid", CredentialFormat.MSO_MDOC));
+            .addCredential(new CredentialQuery("pid", CredentialFormat.SD_JWT_VC).setVctValues(PID_VCT))
+            .addCredential(new CredentialQuery("pid", CredentialFormat.MSO_MDOC).setDoctypeValue(PID_DOCTYPE));
         TestsHelper.expectException(duplicate::check, TechnicalException.class, "duplicate credential query identifier: pid");
 
         // "alphanumeric, underscore (_), or hyphen (-) characters"
@@ -90,7 +88,7 @@ class DcqlQueryTests {
 
         // "identifiers which reference elements in credentials"
         val unknownOption = new DcqlQuery()
-            .addCredential(new CredentialQuery("pid", CredentialFormat.SD_JWT_VC))
+            .addCredential(new CredentialQuery("pid", CredentialFormat.SD_JWT_VC).setVctValues(PID_VCT))
             .addCredentialSet(new CredentialSetQuery().addOption("mdl"));
         TestsHelper.expectException(unknownOption::check, TechnicalException.class,
             "unknown credential query identifier in a credential set: mdl");
@@ -98,14 +96,54 @@ class DcqlQueryTests {
         // "id: REQUIRED if claim_sets is present in the Credential Query"
         val claimSetsWithoutIds = new DcqlQuery()
             .addCredential(new CredentialQuery("pid", CredentialFormat.SD_JWT_VC)
+                .setVctValues(PID_VCT)
                 .addClaim("given_name")
                 .setClaimSets(List.of(List.of("given_name"))));
         TestsHelper.expectException(claimSetsWithoutIds::check, TechnicalException.class,
             "a claim identifier is required when the credential query has claim sets: [given_name]");
 
         // a path is never empty
-        val emptyPath = new DcqlQuery().addCredential(new CredentialQuery("pid", CredentialFormat.SD_JWT_VC).addClaim(new ClaimsQuery()));
+        val emptyPath = new DcqlQuery().addCredential(new CredentialQuery("pid", CredentialFormat.SD_JWT_VC)
+            .setVctValues(PID_VCT).addClaim(new ClaimsQuery()));
         TestsHelper.expectException(emptyPath::check, TechnicalException.class, "a claim query path cannot be empty");
+    }
+
+    @Test
+    void testCredentialTypesAreRequiredForBothFormats() {
+        for (val format : CredentialFormat.values()) {
+            val message = format == CredentialFormat.SD_JWT_VC
+                ? "vct_values is required for an SD-JWT VC credential query"
+                : "doctype_value is required for an mdoc credential query";
+            val credential = new CredentialQuery("pid", format);
+            TestsHelper.expectException(credential::check, TechnicalException.class, message);
+            for (val meta : List.of("", ",\"meta\":{}", ",\"meta\":null")) {
+                val parsed = DcqlQuery.parse("{\"credentials\":[{\"id\":\"pid\",\"format\":\"" + format.getValue() + "\"" + meta + "}]}");
+                TestsHelper.expectException(parsed::check, TechnicalException.class, message);
+            }
+        }
+    }
+
+    @Test
+    void testInvalidSdJwtCredentialTypesAreRejected() {
+        val message = "vct_values must be a non-empty array of non-empty strings";
+        for (val value : List.of("\"urn:pid\"", "[]", "[\"\"]", "[\" \" ]", "[42]", "[null]", "null")) {
+            val query = DcqlQuery.parse("{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\","
+                + "\"meta\":{\"vct_values\":" + value + "}}]}");
+            TestsHelper.expectException(query::check, TechnicalException.class, message);
+        }
+        val valid = new CredentialQuery("pid", CredentialFormat.SD_JWT_VC).setVctValues("urn:pid:1", "urn:pid:2");
+        assertDoesNotThrow(valid::check);
+    }
+
+    @Test
+    void testInvalidMdocDocumentTypesAreRejected() {
+        for (val value : List.of("\"\"", "\" \"", "[]", "42", "null")) {
+            val query = DcqlQuery.parse("{\"credentials\":[{\"id\":\"mdl\",\"format\":\"mso_mdoc\","
+                + "\"meta\":{\"doctype_value\":" + value + "}}]}");
+            TestsHelper.expectException(query::check, TechnicalException.class, "doctype_value must be a non-empty string");
+        }
+        val valid = new CredentialQuery("mdl", CredentialFormat.MSO_MDOC).setDoctypeValue(PID_DOCTYPE);
+        assertDoesNotThrow(valid::check);
     }
 
     @Test
