@@ -89,7 +89,7 @@ Inside the `<dependencies>` element, add Undertow, the Undertow integration for 
 </dependency>
 ```
 
-`undertow-pac4j` v6.1 targets Undertow v2 and pac4j v6. It declares `undertow-core` in the `provided` scope, so your application must bring its own Undertow dependency.
+`undertow-pac4j` v6.1 targets Undertow v2.4 and pac4j v6. It declares `undertow-core` in the `provided` scope, so your application must bring its own Undertow dependency.
 
 
 ## 3) Write the security configuration
