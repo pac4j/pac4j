@@ -33,9 +33,11 @@ java -jar target/jax-rs-pac4j-demo-*.jar
 
 It starts on [http://localhost:8080](http://localhost:8080) with form, HTTP Basic and CAS logins. The sections below apply the same structure to OIDC. If using the `org.example.App` class below, update the Maven Shade plugin's main class to match and replace the resource-package registration.
 
+The demo runs on **Jersey 3** (`jersey3-pac4j`). To follow this guide on Jersey 4 from the demo, also switch its Jersey runtime to version 4.0.2 and its `jersey3-pac4j` dependency to `jersey4-pac4j`. Otherwise, keep Jersey 3: the code below is the same.
+
 ## 2) Add the Maven dependencies
 
-Pick the `jax-rs-pac4j` module matching your runtime, and add the OpenID Connect module. All modules share the `org.pac4j` group and version `8.0.0`:
+Pick the `jax-rs-pac4j` module matching your runtime, and add the OpenID Connect module. All modules share the `org.pac4j` group and version `8.1.0`:
 
 | Your runtime | Maven artifact |
 |--------------|----------------|
@@ -50,7 +52,7 @@ Pick the `jax-rs-pac4j` module matching your runtime, and add the OpenID Connect
 <dependency>
     <groupId>org.pac4j</groupId>
     <artifactId>jersey4-pac4j</artifactId>
-    <version>8.0.0</version>
+    <version>8.1.0</version>
 </dependency>
 <!-- pac4j support for OpenID Connect -->
 <dependency>
@@ -303,7 +305,7 @@ The bundle below targets Dropwizard 5.0.2, which uses Jersey 3. It already bring
 <dependency>
     <groupId>org.pac4j</groupId>
     <artifactId>dropwizard-pac4j</artifactId>
-    <version>8.0.1</version>
+    <version>8.1.0</version>
 </dependency>
 <dependency>
     <groupId>org.pac4j</groupId>
@@ -312,13 +314,16 @@ The bundle below targets Dropwizard 5.0.2, which uses Jersey 3. It already bring
 </dependency>
 ```
 
-Move the OIDC configuration of step 3 into a `ConfigFactory`. Use the externally reachable callback URL, including any configured application context path:
+Move the OIDC configuration of step 3 into a `ConfigFactory`. Use the externally reachable callback URL, including any configured application context path.
+
+By default, the bundle considers all JAX-RS requests as AJAX requests: an indirect client like `OidcClient` then returns a 401 error instead of redirecting to the identity provider, which suits REST APIs. For browser login on JAX-RS resources, restore the default pac4j behavior with a `DefaultAjaxRequestResolver`, as described in the [bundle README](https://github.com/pac4j/dropwizard-pac4j#ajax-requests-and-indirect-clients):
 
 ```java
 package org.example.security;
 
 import org.pac4j.core.config.Config;
 import org.pac4j.core.config.ConfigFactory;
+import org.pac4j.core.http.ajax.DefaultAjaxRequestResolver;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
 
@@ -331,7 +336,10 @@ public class SecurityConfigFactory implements ConfigFactory {
             .setClientId("myclient")
             .setSecret("mysecret")
             .setAllowUnsignedIdTokens(true);
-        return new Config("http://localhost:8080/callback", new OidcClient(oidcConfiguration));
+        final var config = new Config("http://localhost:8080/callback", new OidcClient(oidcConfiguration));
+        // redirect the browser to the identity provider instead of returning a 401 error
+        config.getClients().setAjaxRequestResolver(new DefaultAjaxRequestResolver());
+        return config;
     }
 }
 ```
@@ -343,19 +351,21 @@ pac4j:
   configFactory: org.example.security.SecurityConfigFactory
 ```
 
-Expose that section in your configuration class as a `Pac4jFactory` property, and add the bundle to the application:
+Expose that section in your configuration class as a `Pac4jFactory` property, annotated with `@Valid` so that its content is validated, and add the bundle to the application:
 
 ```java
 package org.example;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.core.Configuration;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.pac4j.dropwizard.Pac4jFactory;
 
 public class MyConfiguration extends Configuration {
 
     @NotNull
+    @Valid
     @JsonProperty("pac4j")
     private Pac4jFactory pac4jFactory = new Pac4jFactory();
 
@@ -404,9 +414,9 @@ public class MyApplication extends Application<MyConfiguration> {
 
 Reuse `AuthResource` and `ProtectedResource`, but set `renewSession = true` on both callbacks: Dropwizard uses servlet sessions.
 
-You can also declare `globalFilters` in the `pac4j` section to protect the whole API, or servlet-level filters for the non-Jersey parts of the application. The [bundle README](https://github.com/pac4j/dropwizard-pac4j#configuring-the-bundle) describes these options.
+You can also declare a global filter (`globalFilters`, which accepts only one entry) in the `pac4j` section to protect the whole API, or servlet-level filters for the non-Jersey parts of the application. The [bundle README](https://github.com/pac4j/dropwizard-pac4j#configuring-the-bundle) describes these options.
 
-For the bearer-token API from step 6, set `sessionEnabled: false` and build the `HeaderClient` in the factory. The [dropwizard-pac4j-demo](https://github.com/pac4j/dropwizard-pac4j-demo) brings these cases together, with views, a REST API and servlets in one application.
+For the bearer-token API from step 6, set `sessionEnabled: false`, build the `HeaderClient` in the factory and, as in step 6, disable the session store with `config.setSessionStoreFactory(NoOpSessionStoreFactory.INSTANCE)`. The [dropwizard-pac4j-demo](https://github.com/pac4j/dropwizard-pac4j-demo) protects Dropwizard views with form, HTTP Basic and CAS logins.
 
 ## 10) Switching to SAML or CAS
 
