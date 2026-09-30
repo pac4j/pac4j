@@ -5,19 +5,36 @@ seo_title: "How to contribute code and documentation | pac4j"
 description: "Learn how to contribute features, bug fixes and documentation to pac4j, the Java authentication and authorization framework."
 ---
 
-## 1) New feature/bug fix
+## 1) Discuss substantial changes first
 
-If you want to propose a new feature or a bug fix, you should first discuss it on the [mailing list](../mailing-lists.html) (on the users mailing list or on the dev mailing list if you already have a technical proposal).
+If your change is clear and well-scoped, simply open a pull request.
 
-Then, you should submit a pull request to propose your changes or bug fix.
+For a substantial or complex change (a new feature, a new module, a change of behavior...), discuss it first on the [pac4j-dev](https://groups.google.com/forum/?fromgroups#!forum/pac4j-dev) Google group, so that we agree on the approach before you invest time in it.
 
-Any pull request should come with the appropriate documentation and [tests](tests-strategy.html).
+**Never report a vulnerability through a public pull request**: follow the [security policy](https://github.com/pac4j/pac4j/blob/master/SECURITY.md) instead.
 
-## 2) Documentation
+## 2) Open a pull request
 
-If you need to update the documentation (for a new feature/bug fix), you may need to change:
+- Target the `master` branch. If the change must also be backported to a maintenance branch (like `6.5.x`), open a second pull request against that branch.
+- One pull request per topic.
+- Add a line describing your change for the next version in the [release notes](release-notes.html).
+- Update the documentation for any change visible to users (see below).
 
-- the `README.md` file
+## 3) Build and test
 
-- one or several files in the `documentation` directory: it is published as this website.
-You can browse it locally at [http://localhost:4000](http://localhost:4000) by running: `bundle exec jekyll serve`. Any changes made to the files will be seen immediately.
+The project requires Java 17 and Maven. Before submitting, run:
+
+```shell
+mvn clean verify
+```
+
+It runs Checkstyle, PMD, SpotBugs and the unit tests: the build must pass.
+
+Your code should be easy to read and use Lombok to reduce boilerplate (`@Getter`, `@Setter`, `@Slf4j`, `val`...).
+
+Any change must come with the appropriate [tests](tests-strategy.html): unit test classes are suffixed by `Tests`.
+
+## 4) Documentation
+
+The documentation lives in the `documentation` directory and is published as this website.
+You can browse it locally at [http://localhost:4000](http://localhost:4000) by running `bundle exec jekyll serve` in that directory: changes are visible immediately.
