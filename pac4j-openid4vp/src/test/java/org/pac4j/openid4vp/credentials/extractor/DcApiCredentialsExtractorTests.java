@@ -44,7 +44,7 @@ class DcApiCredentialsExtractorTests {
         configuration.setResponseMode(responseMode);
         configuration.setClientId("did:example:123")
             .setClientIdPrefix(ClientIdPrefix.DECENTRALIZED_IDENTIFIER)
-            .setDcqlQuery("{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\"}]}")
+            .setDcqlQuery("{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\",\"meta\":{\"vct_values\":[\"urn:eudi:pid:1\"]}}]}")
             .setJwks(new JwksProperties().setJwksPath(directory.resolve("keys.jwks").toString()).setKid("key-1"));
         configuration.setExpectedOrigins(List.of("https://app.example.org"));
 

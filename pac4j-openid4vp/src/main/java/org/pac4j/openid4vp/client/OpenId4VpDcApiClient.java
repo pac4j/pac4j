@@ -57,6 +57,7 @@ public class OpenId4VpDcApiClient extends OpenId4VpClient {
         }
         setRedirectionActionBuilderIfUndefined(new DcApiRedirectionActionBuilder(this));
         setCredentialsExtractorIfUndefined(new DcApiCredentialsExtractor(this));
+        logger.debug("configuring the Digital Credentials API binding for client {}", getName());
 
         super.internalInit(forceReinit);
     }

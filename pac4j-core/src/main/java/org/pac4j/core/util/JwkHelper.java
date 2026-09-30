@@ -218,7 +218,7 @@ public class JwkHelper {
     public static JWK loadJwkFromOrCreateKeyStore(final KeystoreProperties keystoreProperties) {
         LOGGER.debug("Loading signingKey from keystore");
         val keystoreGenerator = keystoreProperties.getKeystoreGenerator();
-        if (keystoreGenerator.shouldGenerate()) {
+        if (keystoreGenerator != null && keystoreGenerator.shouldGenerate()) {
             LOGGER.info("Generating keystore for resource: {}", keystoreProperties.getKeystoreResource());
             keystoreGenerator.generate();
         }

@@ -14,8 +14,11 @@ import org.pac4j.core.redirect.RedirectionActionBuilder;
 
 import org.pac4j.openid4vp.config.ClientIdPrefix;
 import org.pac4j.openid4vp.config.OpenId4VpConfiguration;
+import org.pac4j.openid4vp.profile.IssuerAndClaimProfileIdResolver;
+import org.pac4j.openid4vp.profile.ProfileIdResolver;
 import org.pac4j.test.util.TestsHelper;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -43,7 +46,8 @@ class OpenId4VpClientTests {
             .setJwksPath(directory.resolve("keys.jwks").toString()).setKid("key-1"));
         configuration.setClientId("verifier.example.org");
         configuration.setClientIdPrefix(ClientIdPrefix.DECENTRALIZED_IDENTIFIER);
-        configuration.setDcqlQuery("{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\"}]}");
+        configuration.setDcqlQuery("{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\","
+            + "\"meta\":{\"vct_values\":[\"urn:eudi:pid:1\"]}}]}");
         return configuration;
     }
 
@@ -51,6 +55,49 @@ class OpenId4VpClientTests {
         val client = new OpenId4VpClient(validConfiguration());
         client.setCallbackUrl(CALLBACK_URL);
         return client;
+    }
+
+    @Test
+    void testTheProfileIsIdentifiedByTheIssuerAndSubByDefault() throws Exception {
+        val client = validClient();
+        client.init();
+        assertInstanceOf(IssuerAndClaimProfileIdResolver.class, client.getConfiguration().getProfileIdResolver());
+        assertEquals("sub", ((IssuerAndClaimProfileIdResolver) client.getConfiguration().getProfileIdResolver()).getClaim());
+    }
+
+    @Test
+    void testAQueryWhichCannotReturnTheIdentifierFailsAtInitialization() throws Exception {
+        val configuration = validConfiguration();
+        configuration.setDcqlQuery("{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\","
+            + "\"meta\":{\"vct_values\":[\"urn:eudi:pid:1\"]},\"claims\":[{\"path\":[\"given_name\"]}]}]}");
+        val client = new OpenId4VpClient(configuration);
+        client.setCallbackUrl(CALLBACK_URL);
+        TestsHelper.expectException(client::init, TechnicalException.class,
+            "no SD-JWT VC credential query of the DCQL query can return the claim sub used as profile identifier: "
+                + "request it, or configure another profileIdResolver");
+
+        // an identifier which does not come from the query
+        configuration.setProfileIdResolver(credentials -> "user");
+        client.init(true);
+    }
+
+    @Test
+    void testAClientWithoutDefaultResolverRequiresOne() throws Exception {
+        // as the EUDI wallet client does: no PID attribute is assumed to be a stable identifier
+        val configuration = validConfiguration();
+        val client = new OpenId4VpClient(configuration) {
+            @Override
+            protected ProfileIdResolver defaultProfileIdResolver() {
+                return null;
+            }
+        };
+        client.setCallbackUrl(CALLBACK_URL);
+        TestsHelper.expectException(client::init, TechnicalException.class,
+            "no profileIdResolver is configured to identify the user: set one, such as ProfileIdResolver.issuerAndClaim "
+                + "with a stable claim requested in the DCQL query");
+
+        configuration.setProfileIdResolver(ProfileIdResolver.issuerAndClaim("sub"));
+        client.init(true);
     }
 
     @Test

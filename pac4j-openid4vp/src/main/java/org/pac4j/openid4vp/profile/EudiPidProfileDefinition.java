@@ -1,10 +1,14 @@
 package org.pac4j.openid4vp.profile;
 
 import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.core.profile.definition.CommonProfileDefinition;
 
 /**
  * The attributes of the EUDI person identification data.
+ *
+ * <p>No PID attribute is assumed to be a stable identifier: the PID defines no {@code sub}, and the only
+ * candidate, {@link #PERSONAL_ADMINISTRATIVE_NUMBER}, is optional and not issued everywhere. This is why the
+ * {@link org.pac4j.openid4vp.client.EudiWalletClient} has no default
+ * {@link ProfileIdResolver}: the application chooses one.</p>
  *
  * <p>Beware: these identifiers, the mobile document namespace and the SD-JWT VC type in particular, have
  * changed between versions of the architecture and reference framework. Check them against the version
@@ -13,7 +17,7 @@ import org.pac4j.core.profile.definition.CommonProfileDefinition;
  * @author Jerome LELEU
  * @since 6.6.0
  */
-public class EudiPidProfileDefinition extends CommonProfileDefinition {
+public class EudiPidProfileDefinition extends OpenId4VpProfileDefinition {
 
     /** The mobile document type and namespace of the person identification data. */
     public static final String PID_DOCTYPE = "eu.europa.ec.eudi.pid.1";

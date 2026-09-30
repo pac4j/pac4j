@@ -44,12 +44,10 @@ public class DcApiRedirectionActionBuilder extends OpenId4VpRedirectionActionBui
     public Optional<RedirectionAction> getRedirectionAction(final CallContext ctx) {
         val configuration = client.getConfiguration();
         val transaction = createTransaction(ctx);
+        val requestObject = client.getRequestObjectBuilder().build(ctx, transaction);
         configuration.getTransactionStore().set(transaction.getId(), transaction);
         ctx.sessionStore().set(ctx.webContext(), SESSION_TRANSACTION_ID, transaction.getId());
-
-        val requestObject = client.getRequestObjectBuilder().build(ctx, transaction);
         LOGGER.debug("transaction {} opened, handing the request object over to the page", transaction.getId());
-        LOGGER.trace("request object of the transaction {}: {}", transaction.getId(), requestObject);
 
         ctx.webContext().setResponseContentType("application/json");
         return Optional.of(new OkAction(JSONObjectUtils.toJSONString(Map.of(REQUEST, requestObject))));

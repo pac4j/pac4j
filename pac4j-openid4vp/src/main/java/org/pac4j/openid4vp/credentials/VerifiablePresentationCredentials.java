@@ -44,7 +44,7 @@ public class VerifiablePresentationCredentials extends Credentials {
     private Map<String, List<String>> vpToken = new LinkedHashMap<>();
 
     /** The validated credentials, indexed by the identifier of the DCQL credential query they answer. */
-    private Map<String, VerifiedCredential> verifiedCredentials = new LinkedHashMap<>();
+    private Map<String, List<VerifiedCredential>> verifiedCredentials = new LinkedHashMap<>();
 
     /**
      * <p>Build the credentials from the transaction the wallet answered.</p>

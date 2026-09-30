@@ -8,8 +8,10 @@ import org.pac4j.openid4vp.config.CredentialFormat;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.List;
 
 /**
  * One attestation of a presentation, a PID or a mobile driving licence, once validated: a credential in the
@@ -42,8 +44,26 @@ public class VerifiedCredential implements Serializable {
     /** The credential type: the {@code vct} for SD-JWT VC, the doctype for a mobile document. */
     private String type;
 
+    /**
+     * The other types the issuer signed the credential as, the {@code aka_vcts} of a SD-JWT VC: "Holders and Verifiers
+     * can treat the SD-JWT VC as a credential of any of these types". Empty when there are none.
+     *
+     * @see <a href="https://www.ietf.org/archive/id/draft-ietf-oauth-sd-jwt-vc-19.html#section-2.2.2.2">
+     *     SD-JWT VC draft 19, other credential types</a>
+     */
+    private List<String> additionalTypes = new ArrayList<>();
+
     private String issuer;
 
-    /** The claims actually disclosed by the holder. */
+    /** True only after verifying the holder proof against this transaction, including nonce and audience. */
+    private boolean cryptographicHolderBinding;
+
+    /**
+     * Authorities established by the verifier's trust validation, indexed by DCQL authority type.
+     * These are verified evidence (AKIs, trusted list or federation identifiers), never unchecked wallet claims.
+     */
+    private Map<String, List<String>> trustedAuthorities = new LinkedHashMap<>();
+
+    /** The verified claims, retaining JSON nesting or, for mdoc, namespace maps of JSON-compatible values. */
     private Map<String, Object> claims = new LinkedHashMap<>();
 }

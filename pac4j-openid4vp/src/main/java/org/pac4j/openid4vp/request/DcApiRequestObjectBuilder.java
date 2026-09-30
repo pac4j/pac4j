@@ -1,5 +1,6 @@
 package org.pac4j.openid4vp.request;
 
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.openid4vp.client.OpenId4VpClient;
@@ -20,6 +21,7 @@ import static org.pac4j.openid4vp.util.OpenId4VpConstants.EXPECTED_ORIGINS;
  * @author Jerome LELEU
  * @since 6.6.0
  */
+@Slf4j
 public class DcApiRequestObjectBuilder extends OpenId4VpRequestObjectBuilder {
 
     /**
@@ -38,5 +40,7 @@ public class DcApiRequestObjectBuilder extends OpenId4VpRequestObjectBuilder {
         val configuration = (OpenId4VpDcApiConfiguration) client.getConfiguration();
         // the state is not defined over this binding, and a wallet ignores it
         parameters.put(EXPECTED_ORIGINS, configuration.getExpectedOrigins());
+        LOGGER.debug("DC API binding parameters added for transaction {}: {} expected origins", transaction.getId(),
+            configuration.getExpectedOrigins().size());
     }
 }

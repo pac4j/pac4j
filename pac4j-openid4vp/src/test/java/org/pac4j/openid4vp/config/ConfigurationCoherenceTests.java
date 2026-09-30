@@ -27,7 +27,7 @@ class ConfigurationCoherenceTests {
         val configuration = new OpenId4VpConfiguration();
         configuration.setClientId("did:example:123")
             .setClientIdPrefix(ClientIdPrefix.DECENTRALIZED_IDENTIFIER)
-            .setDcqlQuery("{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\"}]}")
+            .setDcqlQuery("{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\",\"meta\":{\"vct_values\":[\"urn:eudi:pid:1\"]}}]}")
             .setJwks(new JwksProperties().setJwksPath(directory.resolve("keys.jwks").toString()).setKid("key-1"));
         return configuration;
     }
@@ -46,7 +46,7 @@ class ConfigurationCoherenceTests {
         val configuration = new OpenId4VpDcApiConfiguration();
         configuration.setClientId("did:example:123")
             .setClientIdPrefix(ClientIdPrefix.DECENTRALIZED_IDENTIFIER)
-            .setDcqlQuery("{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\"}]}")
+            .setDcqlQuery("{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\",\"meta\":{\"vct_values\":[\"urn:eudi:pid:1\"]}}]}")
             .setJwks(new JwksProperties().setJwksPath(directory.resolve("keys.jwks").toString()).setKid("key-1"))
             .setResponseMode(ResponseMode.DIRECT_POST_JWT);
         configuration.setExpectedOrigins(List.of("https://app.example.org"));
@@ -59,7 +59,8 @@ class ConfigurationCoherenceTests {
     void testEveryQueriedFormatNeedsAVerifier() {
         val configuration = valid();
         // a mobile document is asked for, but only the SD-JWT VC verifier is registered
-        configuration.setDcqlQuery("{\"credentials\":[{\"id\":\"mdl\",\"format\":\"mso_mdoc\"}]}");
+        configuration.setDcqlQuery("{\"credentials\":[{\"id\":\"mdl\",\"format\":\"mso_mdoc\","
+            + "\"meta\":{\"doctype_value\":\"org.iso.18013.5.1.mDL\"}}]}");
 
         TestsHelper.expectException(configuration::init, TechnicalException.class,
             "credentialVerifier for the format mso_mdoc of the credential query mdl cannot be null");
@@ -79,15 +80,29 @@ class ConfigurationCoherenceTests {
     }
 
     @Test
-    void testEitherADcqlQueryOrAScopeButNotBoth() {
+    void testMissingCredentialTypesAreRejectedAtInitializationWithOrWithoutScope() {
+        for (val format : CredentialFormat.values()) {
+            for (val scope : List.of("", "com.example.pid_presentation")) {
+                val configuration = valid().setScope(scope)
+                    .setDcqlQuery("{\"credentials\":[{\"id\":\"pid\",\"format\":\"" + format.getValue() + "\"}]}");
+                val message = format == CredentialFormat.SD_JWT_VC
+                    ? "vct_values is required for an SD-JWT VC credential query"
+                    : "doctype_value is required for an mdoc credential query";
+                TestsHelper.expectException(configuration::init, TechnicalException.class, message);
+            }
+        }
+    }
+
+    @Test
+    void testDcqlQueryIsRequiredWithOrWithoutScope() {
         val both = valid().setScope("com.example.pid_presentation");
-        TestsHelper.expectException(both::init, TechnicalException.class, "either dcqlQuery or scope must be defined, but not both");
+        both.init();
 
         val neither = valid().setDcqlQuery((DcqlQuery) null);
-        TestsHelper.expectException(neither::init, TechnicalException.class, "either dcqlQuery or scope must be defined, but not both");
+        TestsHelper.expectException(neither::init, TechnicalException.class, "dcqlQuery cannot be null");
 
         val scopeOnly = valid().setDcqlQuery((DcqlQuery) null).setScope("com.example.pid_presentation");
-        scopeOnly.init();
+        TestsHelper.expectException(scopeOnly::init, TechnicalException.class, "dcqlQuery cannot be null");
     }
 
     @Test
@@ -125,7 +140,7 @@ class ConfigurationCoherenceTests {
         val configuration = new OpenId4VpDcApiConfiguration();
         configuration.setClientId("did:example:123")
             .setClientIdPrefix(ClientIdPrefix.DECENTRALIZED_IDENTIFIER)
-            .setDcqlQuery("{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\"}]}")
+            .setDcqlQuery("{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\",\"meta\":{\"vct_values\":[\"urn:eudi:pid:1\"]}}]}")
             .setJwks(new JwksProperties().setJwksPath(directory.resolve("keys.jwks").toString()).setKid("key-1"));
         // the browser origin never has a path: this value could never match it
         configuration.setExpectedOrigins(List.of("https://app.example.org/login"));
