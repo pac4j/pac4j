@@ -21,6 +21,8 @@ import org.pac4j.openid4vp.verifier.CredentialVerifier;
 import org.pac4j.openid4vp.verifier.VerifiedCredential;
 import org.pac4j.openid4vp.wallet.WalletSimulator;
 import org.pac4j.openid4vp.dcql.DcqlQuery;
+import org.pac4j.openid4vp.dcql.CredentialQuery;
+import org.pac4j.openid4vp.dcql.CredentialSetQuery;
 import org.pac4j.openid4vp.config.VerifierAttestation;
 import org.pac4j.openid4vp.config.OpenId4VpConfiguration;
 import org.pac4j.openid4vp.transaction.VpTransaction;
@@ -164,6 +166,14 @@ class OpenId4VpRequestObjectBuilderTests {
         assertNull(claims.getClaim(VERIFIER_INFO));
     }
 
+    @Test
+    void testMdocAlgorithmsAreAdvertised() throws Exception {
+        val metadata = requestObjectOf(openTransaction()).getJWTClaimsSet().getJSONObjectClaim(CLIENT_METADATA);
+        val formats = (Map<String, Object>) metadata.get(VP_FORMATS_SUPPORTED);
+        assertEquals(Map.of("issuerauth_alg_values", List.of(-7L), "deviceauth_alg_values", List.of(-7L)),
+            formats.get("mso_mdoc"));
+    }
+
     /** A second registered format, so that the narrowing down to what the wallet declares is visible. */
     private void registerAnMdocVerifier() {
         configuration.addCredentialVerifier(new CredentialVerifier() {
@@ -211,12 +221,93 @@ class OpenId4VpRequestObjectBuilderTests {
 
     @Test
     void testAWalletPresentingNoneOfTheVerifiedFormatsIsRefused() {
+        configuration.getCredentialVerifiers().remove(CredentialFormat.MSO_MDOC);
         val transaction = openTransaction()
             .setWalletMetadata("{\"vp_formats_supported\":{\"mso_mdoc\":{}}}");
 
         val e = assertThrows(OpenId4VpException.class, () -> requestObjectOf(transaction));
         assertEquals("the wallet presents none of the credential formats this verifier verifies [dc+sd-jwt], "
             + "but [mso_mdoc]: " + transaction.getId(), e.getMessage());
+    }
+
+    @Test
+    void testAnUnrequestedCommonFormatDoesNotAllowTheRequest() {
+        configuration.setProfileIdResolver(credentials -> "user");
+        configuration.setDcqlQuery(new DcqlQuery().addCredential(mdocQuery()));
+        assertUnsupportedSelection();
+    }
+
+    @Test
+    void testAllCredentialsAreRequiredWithoutCredentialSets() {
+        configuration.getDcqlQuery().addCredential(mdocQuery());
+        assertUnsupportedSelection();
+    }
+
+    @Test
+    void testAScopeAlsoChecksTheRequiredFormats() {
+        configuration.setProfileIdResolver(credentials -> "user");
+        configuration.setScope("com.example.mdl_presentation");
+        configuration.setDcqlQuery(new DcqlQuery().addCredential(mdocQuery()));
+        assertUnsupportedSelection();
+    }
+
+    @Test
+    void testAPartiallySupportedOptionIsRefused() {
+        configuration.getDcqlQuery().addCredential(mdocQuery())
+            .addCredentialSet(new CredentialSetQuery().addOption("pid", "mdl"));
+        assertUnsupportedSelection();
+    }
+
+    @Test
+    void testEveryRequiredCredentialSetMustBeSupported() {
+        configuration.getDcqlQuery().addCredential(mdocQuery())
+            .addCredentialSet(new CredentialSetQuery().addOption("pid"))
+            .addCredentialSet(new CredentialSetQuery().addOption("mdl").setRequired(true));
+        assertUnsupportedSelection();
+    }
+
+    @Test
+    void testASupportedAlternativeAllowsTheRequest() throws Exception {
+        configuration.getDcqlQuery().addCredential(mdocQuery())
+            .addCredentialSet(new CredentialSetQuery().addOption("mdl").addOption("pid"));
+        val transaction = openTransaction().setWalletMetadata(WalletSimulator.WALLET_METADATA_JSON);
+
+        val claims = requestObjectOf(transaction).getJWTClaimsSet();
+        assertEquals(configuration.getDcqlQuery().toJson(), claims.getJSONObjectClaim(DCQL_QUERY));
+        assertEquals(Map.of("dc+sd-jwt", Map.of()), claims.getJSONObjectClaim(CLIENT_METADATA).get(VP_FORMATS_SUPPORTED));
+    }
+
+    @Test
+    void testAnUnsupportedOptionalCredentialSetAllowsTheRequest() throws Exception {
+        configuration.getDcqlQuery().addCredential(mdocQuery())
+            .addCredentialSet(new CredentialSetQuery().addOption("pid"))
+            .addCredentialSet(new CredentialSetQuery().addOption("mdl").setRequired(false));
+        val transaction = openTransaction().setWalletMetadata(WalletSimulator.WALLET_METADATA_JSON);
+
+        assertEquals(configuration.getDcqlQuery().toJson(), requestObjectOf(transaction).getJWTClaimsSet()
+            .getJSONObjectClaim(DCQL_QUERY));
+    }
+
+    @Test
+    void testAbsentWalletFormatsDoNotPreventAnMdocRequest() throws Exception {
+        configuration.setProfileIdResolver(credentials -> "user");
+        configuration.setDcqlQuery(new DcqlQuery().addCredential(mdocQuery()));
+        val transaction = openTransaction();
+        assertNotNull(requestObjectOf(transaction));
+        transaction.setWalletMetadata("{}");
+        assertNotNull(requestObjectOf(transaction));
+    }
+
+    private CredentialQuery mdocQuery() {
+        return new CredentialQuery("mdl", CredentialFormat.MSO_MDOC).setDoctypeValue("org.iso.18013.5.1.mDL");
+    }
+
+    private void assertUnsupportedSelection() {
+        val transaction = openTransaction().setWalletMetadata(WalletSimulator.WALLET_METADATA_JSON);
+        val e = assertThrows(OpenId4VpException.class, () -> requestObjectOf(transaction));
+        assertEquals("the wallet's supported credential formats [dc+sd-jwt] cannot satisfy the required DCQL "
+            + "credential selections: " + transaction.getId(), e.getMessage());
+        assertNull(transaction.getRequestParameters());
     }
 
     @Test

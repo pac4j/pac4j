@@ -8,7 +8,6 @@ import com.nimbusds.jose.proc.JWSVerificationKeySelector;
 import com.nimbusds.jose.proc.JWSKeySelector;
 import com.nimbusds.jose.proc.SecurityContext;
 import com.nimbusds.jose.util.Base64;
-import com.nimbusds.jose.util.Base64URL;
 import com.nimbusds.jose.util.JSONObjectUtils;
 import com.nimbusds.jose.util.X509CertUtils;
 import com.nimbusds.jwt.JWTClaimsSet;
@@ -21,8 +20,6 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import org.bouncycastle.asn1.x509.AuthorityKeyIdentifier;
-import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
 import org.pac4j.core.config.properties.KeystoreProperties;
 import org.pac4j.core.keystore.loading.KeyStoreUtils;
 import org.pac4j.openid4vp.config.CredentialFormat;
@@ -34,9 +31,7 @@ import org.springframework.core.io.Resource;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.security.cert.CertPathValidator;
 import java.security.cert.CertStore;
-import java.security.cert.CertificateFactory;
 import java.security.cert.CollectionCertStoreParameters;
 import java.security.cert.PKIXParameters;
 import java.security.cert.TrustAnchor;
@@ -44,9 +39,7 @@ import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -267,30 +260,16 @@ public class SdJwtVcVerifier implements CredentialVerifier {
     private ResolvedIssuer resolveCertificateIssuer(final List<Base64> encodedChain)
         throws GeneralSecurityException, IOException {
         val parameters = buildCertificateValidationParameters();
-        val now = new Date();
-        parameters.setDate(now);
         val chain = new ArrayList<X509Certificate>();
         for (val encoded : encodedChain) {
             val certificate = X509CertUtils.parse(encoded.decode());
             if (certificate == null) {
                 throw new OpenId4VpException("invalid certificate in the SD-JWT VC x5c header");
             }
-            certificate.checkValidity(now);
             chain.add(certificate);
         }
+        CertificateChainValidator.validate(chain, parameters);
         val leaf = chain.get(0);
-        val keyUsage = leaf.getKeyUsage();
-        if (keyUsage != null && !keyUsage[0]) {
-            throw new OpenId4VpException("the SD-JWT VC leaf certificate does not permit digital signatures");
-        }
-        val presented = List.copyOf(chain);
-        // A supplied root is removed only when it is already an explicitly configured trust anchor.
-        val last = chain.get(chain.size() - 1);
-        if (chain.size() > 1 && parameters.getTrustAnchors().stream().anyMatch(anchor -> last.equals(anchor.getTrustedCert()))) {
-            chain.remove(chain.size() - 1);
-        }
-        val path = CertificateFactory.getInstance("X.509").generateCertPath(chain);
-        CertPathValidator.getInstance("PKIX").validate(path, parameters);
         val subject = leaf.getSubjectX500Principal().getName();
         if (subject.isBlank()) {
             throw new OpenId4VpException("the SD-JWT VC issuer certificate must have a subject");
@@ -298,35 +277,9 @@ public class SdJwtVcVerifier implements CredentialVerifier {
         // The validated leaf key is authoritative; a kid does not select a different certificate.
         JWSKeySelector<SecurityContext> selector = (header, context) -> issuerAlgorithms.contains(header.getAlgorithm())
             ? List.of(leaf.getPublicKey()) : List.of();
-        val authorityKeyIdentifiers = computeAuthorityKeyIdentifiers(presented);
+        val authorityKeyIdentifiers = CertificateChainValidator.authorityKeyIdentifiers(chain);
         return new ResolvedIssuer(subject, selector,
             authorityKeyIdentifiers.isEmpty() ? Map.of() : Map.of(TrustedAuthority.AKI, authorityKeyIdentifiers));
-    }
-
-    /**
-     * Read the authority key identifiers of the presented chain, once it is validated: every certificate of it is then
-     * either on the validated path or its trust anchor, so no unrelated certificate can bring its own identifier.
-     *
-     * <p>"The raw byte representation of this element MUST match with the AuthorityKeyIdentifier element of an X.509
-     * certificate in the certificate chain present in the Credential", the value being "the KeyIdentifier of the
-     * AuthorityKeyIdentifier [...] encoded as base64url". A certificate identifying its authority by issuer name and
-     * serial number only has no such value.</p>
-     *
-     * @param chain the certificates of the x5c header, leaf first
-     * @return the base64url key identifiers, without duplicates
-     * @throws GeneralSecurityException if a certificate cannot be read
-     * @see <a href="https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#section-6.1.1.1">
-     *     OpenID4VP 1.0, authority key identifier</a>
-     */
-    private List<String> computeAuthorityKeyIdentifiers(final List<X509Certificate> chain) throws GeneralSecurityException {
-        val identifiers = new LinkedHashSet<String>();
-        for (val certificate : chain) {
-            val authority = AuthorityKeyIdentifier.fromExtensions(new JcaX509CertificateHolder(certificate).getExtensions());
-            if (authority != null && authority.getKeyIdentifierOctets() != null) {
-                identifiers.add(Base64URL.encode(authority.getKeyIdentifierOctets()).toString());
-            }
-        }
-        return List.copyOf(identifiers);
     }
 
     /**
@@ -363,20 +316,7 @@ public class SdJwtVcVerifier implements CredentialVerifier {
         if (loaded != null && loaded.settings().equals(settings)) {
             return loaded.anchors();
         }
-        final Set<TrustAnchor> anchors;
-        try (val input = settings.resource().getInputStream()) {
-            val keyStore = KeyStoreUtils.loadKeyStore(input, settings.password(), settings.type());
-            if (settings.alias() == null) {
-                // only the trusted certificate entries, and at least one of them
-                anchors = Set.copyOf(new PKIXParameters(keyStore).getTrustAnchors());
-            } else {
-                if (!keyStore.isCertificateEntry(settings.alias())
-                    || !(keyStore.getCertificate(settings.alias()) instanceof X509Certificate certificate)) {
-                    throw new OpenId4VpException("the trustStore alias must identify a trusted X.509 certificate entry");
-                }
-                anchors = Set.of(new TrustAnchor(certificate, null));
-            }
-        }
+        val anchors = CertificateChainValidator.loadTrustAnchors(trustStore);
         loadedTrustAnchors = new LoadedTrustAnchors(settings, anchors);
         LOGGER.debug("SD-JWT VC truststore loaded: {} trust anchors", anchors.size());
         return anchors;

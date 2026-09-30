@@ -48,9 +48,9 @@ Validation uses the saved request, even if the configuration changes afterwards.
 
 Register a `CredentialVerifier` for each credential format requested by your DCQL query using
 `config.addCredentialVerifier(verifier)`. Registration replaces the verifier for that format. The configuration
-provides a `SdJwtVcVerifier` by default, but it accepts no issuer until trusted keys or certificate trust anchors are configured.
+provides `SdJwtVcVerifier` and `MdocVerifier` by default; neither accepts an issuer until trust is configured.
 The same registration mechanism applies to `OpenId4VpClient`, `OpenId4VpDcApiClient` and `EudiWalletClient`.
-For implementation requirements, see [Custom verifiers](#23-custom-verifiers).
+For implementation requirements, see [Custom verifiers](#24-custom-verifiers).
 
 To use `SdJwtVcVerifier`, explicitly add the following EUDI dependency, which is not included by default:
 
@@ -148,7 +148,126 @@ cryptographically verified credential, including its reconstructed claims, and m
 unsupported or cannot be checked. If it uses a status list, it must authenticate that list and check its validity
 and the credential's status entry. A credential without a status claim does not invoke the checker.
 
-### 2.2) Remote resources and application responsibilities
+### 2.2) Built-in mdoc verifier
+
+`MdocVerifier` validates `mso_mdoc` presentations using **walt.id 0.11.0**. The library is optional and is
+published in the **walt.id Maven repository**, outside Maven Central. Add the repository and dependency to your application:
+
+```xml
+<repositories>
+    <repository>
+        <id>waltid-releases</id>
+        <url>https://maven.waltid.dev/releases</url>
+        <snapshots><enabled>false</enabled></snapshots>
+    </repository>
+</repositories>
+
+<dependencies>
+    <dependency>
+        <groupId>id.walt.mdoc-credentials</groupId>
+        <artifactId>waltid-mdoc-credentials-jvm</artifactId>
+        <version>0.11.0</version>
+    </dependency>
+</dependencies>
+```
+
+Keep its transitive dependencies, including COSE and `kotlinx-datetime`. Applications replacing the built-in
+verifier do not need walt.id. Missing or incompatible dependencies produce an `OpenId4VpException` naming the
+artifact and repository. EUDI SD-JWT is needed only when using `SdJwtVcVerifier`.
+
+**Align Kotlin dependencies in your application's `dependencyManagement`, particularly when using both formats.**
+The following combination is tested with Java 17, EUDI SD-JWT 0.20.1 and walt.id 0.11.0:
+
+```xml
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-bom</artifactId>
+            <version>2.2.21</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlinx</groupId>
+            <artifactId>kotlinx-coroutines-bom</artifactId>
+            <version>1.10.2</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlinx</groupId>
+            <artifactId>kotlinx-serialization-bom</artifactId>
+            <version>1.9.0</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlinx</groupId>
+            <artifactId>kotlinx-datetime-jvm</artifactId>
+            <version>0.6.1</version>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+```
+
+Without alignment, dependency order can select walt.id's older Kotlin runtime and cause EUDI to fail with
+`NoClassDefFoundError: kotlin/time/Clock$System`. pac4j manages these versions for its own build; an application's
+other direct dependencies can override the versions selected at runtime. Do not upgrade `kotlinx-datetime` to
+0.7.x without addressing its removal of the `kotlinx.datetime.Instant` API used by walt.id 0.11.0.
+
+#### 2.2.1) Issuer trust and configuration
+
+Configure **issuer CA certificates** in an explicit truststore:
+
+```java
+var verifier = new MdocVerifier().setTrustStore(new KeystoreProperties()
+    .setKeystorePath("classpath:mdoc-issuers.p12")
+    .setKeyStoreType("PKCS12")
+    .setKeystorePassword("changeit"));
+config.addCredentialVerifier(verifier);
+config.setDcqlQuery(EudiPidQuery.mdoc("given_name", "family_name"));
+```
+
+Only trusted certificate entries are used; `keyStoreAlias` optionally selects one. The store is read for each
+validation, so replacing its contents is picked up on the next presentation. The issuer's `x5chain` must validate
+against these anchors. System trust roots are not used. `certificateRevocationEnabled` defaults to `true`;
+`setCertificateRevocationLists(...)` supplies local CRLs, while network CRL/OCSP behavior depends on your Java
+PKIX provider. Disabling revocation is appropriate for synthetic test certificates without revocation information.
+The certificate validation is shared with the SD-JWT verifier and uses Java PKIX rather than walt.id's default trust policy.
+
+The profile's issuer is the validated signing certificate's subject DN. Validated chain AKIs are returned as DCQL
+`aki` authority evidence; no ETSI trust-list membership is inferred. Configure a
+[profile identifier resolver](openid4vp-advanced.html#2-the-profile-identifier) for the namespace-qualified claim
+identifying your user. The name-only query above does not itself provide a suitable stable identifier.
+
+#### 2.2.2) Validation and supported presentations
+
+The verifier checks the issuer signature, document type, MSO validity, **every disclosed attribute digest** and
+the device signature using the public key authenticated by the MSO. It reconstructs the OpenID4VP 1.0 handover
+from the saved request for both URL/QR and DC API clients, including the nonce, full client ID and response URI
+or expected browser origin, and the response encryption key thumbprint when applicable.
+
+- Supports `DeviceSignature` with ES256: COSE algorithm `-7` and P-256 keys for both issuer and device.
+  These capabilities are advertised in `vp_formats_supported`.
+- Requires one document per base64url-encoded `DeviceResponse`. Multiple presentations may still be returned
+  in a `vp_token` array when the DCQL query allows them.
+- Returns issuer-signed claims in namespace maps. Dates use ISO text, byte strings use unpadded base64url,
+  and maps/lists retain their nesting. Map keys must be strings.
+- Rejects `DeviceMAC`, device-signed claims, transaction data and unsupported algorithms.
+- Limits a decoded presentation to 2 MiB by default; adjust `setMaxPresentationSize(...)` for larger portraits.
+
+When an authenticated MSO contains a `status` object, configure
+`setStatusChecker((credential, status) -> { ... })`. The callback receives the verified credential and its
+MSO status map, and must throw if the status cannot be validated or is revoked. Without it, credentials
+containing status are rejected. No status list is fetched automatically.
+
+This is format verification, not a complete EUDI trust-list, certificate-profile or HAIP conformance implementation.
+The integration reuses walt.id for parsing, COSE verification and MSO digest checks; pac4j supplies the transaction
+binding, explicit issuer trust and profile mapping. It invokes the digest check separately for every item because
+walt.id 0.11.0's bulk method returns after the first item.
+
+### 2.3) Remote resources and application responsibilities
 
 pac4j does not automatically download issuer metadata, keys or credential status lists:
 
@@ -168,9 +287,9 @@ a different `CredentialVerifier` that manages retrieval. Obtaining a key from an
 itself establish that the application should trust that issuer.
 
 This is a minimal SD-JWT integration, not a complete EUDI trust-list or HAIP validation implementation.
-No built-in mdoc verifier is provided yet. All format verifiers remain replaceable through `addCredentialVerifier`.
+Both built-in format verifiers remain replaceable through `addCredentialVerifier`.
 
-### 2.3) Custom verifiers
+### 2.4) Custom verifiers
 
 Implement `CredentialVerifier` and register it with `config.addCredentialVerifier(...)`:
 

@@ -39,6 +39,11 @@ To validate SD-JWT VCs with `SdJwtVcVerifier`, explicitly add the following depe
 
 Without this dependency, `SdJwtVcVerifier` throws an `OpenId4VpException` when validating a credential, with a message identifying the dependency to add.
 
+To validate mdocs with `MdocVerifier`, add **walt.id 0.11.0** from its Maven repository,
+[https://maven.waltid.dev/releases](https://maven.waltid.dev/releases). See the
+[mdoc dependency, Kotlin alignment and trust configuration](openid4vp-verifiers.html#22-built-in-mdoc-verifier).
+Both verifiers use optional libraries; add the libraries for the formats your application needs.
+
 ## 2) The protocol, briefly
 
 - **Request:** configure a DCQL query describing the credentials and attributes your application needs.
@@ -69,7 +74,7 @@ to define its OpenID4VP requirements.
 **Use `OpenId4VpClient` if the wallet requires different settings**, such as `x509_san_dns`, or for credentials other
 than the PID. See [Clients and configuration](openid4vp-clients.html).
 
-**SD-JWT VC validation is provided; mdoc requires a custom verifier.** Selecting `EudiWalletClient` does not provide
+**SD-JWT VC and mdoc validation are provided through optional libraries.** Selecting `EudiWalletClient` does not provide
 a complete EUDI trust or status validation setup: see [Configuring credential verifiers](openid4vp-verifiers.html#2-configuring-credential-verifiers).
 
 ## 4) Usage

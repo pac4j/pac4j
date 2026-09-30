@@ -18,7 +18,65 @@
         <kotlin.version>2.2.21</kotlin.version>
     </properties>
 
+    <!-- walt.id publishes the mdoc library outside Maven Central. -->
+    <repositories>
+        <repository>
+            <id>waltid-releases</id>
+            <url>https://maven.waltid.dev/releases</url>
+            <snapshots><enabled>false</enabled></snapshots>
+        </repository>
+    </repositories>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-bom</artifactId>
+                <version>${kotlin.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jetbrains.kotlinx</groupId>
+                <artifactId>kotlinx-coroutines-bom</artifactId>
+                <version>1.10.2</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jetbrains.kotlinx</groupId>
+                <artifactId>kotlinx-serialization-bom</artifactId>
+                <version>1.9.0</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jetbrains.kotlinx</groupId>
+                <artifactId>kotlinx-datetime-jvm</artifactId>
+                <version>0.6.1</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
+        <dependency>
+            <groupId>id.walt.mdoc-credentials</groupId>
+            <artifactId>waltid-mdoc-credentials-jvm</artifactId>
+            <version>0.11.0</version>
+            <optional>true</optional>
+        </dependency>
+        <!-- walt.id declares COSE at runtime, but the Java adapter uses its public key conversion API. -->
+        <dependency>
+            <groupId>com.augustcellars.cose</groupId>
+            <artifactId>cose-java</artifactId>
+            <version>1.1.0</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlinx</groupId>
+            <artifactId>kotlinx-datetime-jvm</artifactId>
+            <optional>true</optional>
+        </dependency>
         <dependency>
             <groupId>eu.europa.ec.eudi</groupId>
             <artifactId>eudi-lib-jvm-sdjwt-kt</artifactId>

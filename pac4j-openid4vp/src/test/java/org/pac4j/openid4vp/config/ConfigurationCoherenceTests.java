@@ -58,7 +58,8 @@ class ConfigurationCoherenceTests {
     @Test
     void testEveryQueriedFormatNeedsAVerifier() {
         val configuration = valid();
-        // a mobile document is asked for, but only the SD-JWT VC verifier is registered
+        configuration.getCredentialVerifiers().remove(CredentialFormat.MSO_MDOC);
+        // a mobile document is asked for, but its verifier was removed
         configuration.setDcqlQuery("{\"credentials\":[{\"id\":\"mdl\",\"format\":\"mso_mdoc\","
             + "\"meta\":{\"doctype_value\":\"org.iso.18013.5.1.mDL\"}}]}");
 
