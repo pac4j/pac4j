@@ -87,7 +87,7 @@ description: "Find the pac4j core versions used by framework integrations to cho
     <tr>
         <td>undertow-pac4j</td>
         <td>6.x</td>
-        <td>Undertow 2.3+</td>
+        <td>Undertow 2.4</td>
         <td>JDK 17+</td>
     </tr>
     <tr>
