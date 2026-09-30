@@ -66,6 +66,11 @@ Choose an integration for your application. The guides below use OIDC, SAML or C
         <img class="guide-logo" src="/img/logo-spark.png" alt="" width="48" height="40" />
         <span class="tag tag-oidc">{{ site.data.blogtags.oidc }}</span>
     </li>
+    <li>
+        <a href="/how-to-secure-an-undertow-application-with-oidc.html">How to secure an Undertow client application with OIDC (using pac4j)</a>
+        <img class="guide-logo" src="/img/logo-undertow.png" alt="" width="48" height="40" />
+        <span class="tag tag-oidc">{{ site.data.blogtags.oidc }}</span>
+    </li>
 </ul>
 
 ## The grand tour
