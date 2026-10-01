@@ -91,7 +91,7 @@ read the [full guide](https://www.pac4j.org/how-to-secure-a-java-application-wit
 | **Spark Java** | [OpenID Connect guide](https://www.pac4j.org/how-to-secure-a-spark-java-application-with-oidc.html) |
 | **Undertow** | [OpenID Connect guide](https://www.pac4j.org/how-to-secure-an-undertow-application-with-oidc.html) |
 | **Apache Shiro** | [CAS guide](https://www.pac4j.org/how-to-secure-a-shiro-application-with-cas.html) |
-| **Jooby** &bull; **Lagom** (archived) &bull; **Akka HTTP** (archived) &bull; **Ratpack** | [Jooby](https://jooby.io/modules/pac4j) &bull; [Lagom](https://github.com/pac4j/lagom-pac4j) &bull; [Akka HTTP](https://github.com/StackVista/akka-http-pac4j) &bull; [Ratpack](https://github.com/pac4j/ratpack-pac4j) |
+| **Jooby** &bull; **http4s** &bull; **Ratpack** &bull; **Lagom** (archived) &bull; **Akka HTTP** (archived) | [Jooby](https://jooby.io/modules/pac4j) &bull; [http4s](https://github.com/pac4j/http4s-pac4j) &bull; [Ratpack](https://github.com/pac4j/ratpack-pac4j) &bull; [Lagom](https://github.com/pac4j/lagom-pac4j) &bull; [Akka HTTP](https://github.com/StackVista/akka-http-pac4j) |
 
 pac4j also powers the authentication delegation of [Apereo CAS](https://apereo.github.io/cas/8.0.x/integration/Delegate-Authentication.html), [Apache Syncope](https://syncope.apache.org) and [Apache Knox](http://knox.apache.org/books/knox-1-6-0/user-guide.html#Pac4j+Provider+-+CAS+/+OAuth+/+SAML+/+OpenID+Connect).
 
