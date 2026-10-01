@@ -63,8 +63,8 @@ description: "Find pac4j integrations for Spring Boot, Jakarta EE, Play, Vert.x,
     <div class="implem"><a target="_blank" href="https://github.com/pac4j/dropwizard-pac4j"><img height="100" src="/img/logo-dropwizard.png" /></a><a href="/how-to-secure-a-jax-rs-application-with-oidc.html#using-dropwizard"><h3>Dropwizard</h3></a></div>
     <div class="implem"><a target="_blank" href="https://github.com/pac4j/javalin-pac4j"><img height="100" src="/img/logo-javalin.png" /></a><a href="/how-to-secure-a-javalin-application-with-saml.html"><h3>Javalin</h3></a></div>
     <div class="implem"><a target="_blank" href="https://github.com/pac4j/undertow-pac4j"><img height="100" src="/img/logo-undertow.png" /></a><a href="/how-to-secure-an-undertow-application-with-oidc.html"><h3>Undertow</h3></a></div>
-    <div class="implem"><a target="_blank" href="https://github.com/pac4j/ratpack-pac4j"><img height="100" src="/img/logo-ratpack.png" /></a><a target="_blank" href="https://github.com/pac4j/ratpack-pac4j"><h3>Ratpack</h3></a></div>
     <div class="implem"><a target="_blank" href="https://github.com/pac4j/http4s-pac4j"><img height="100" src="/img/logo-http4s.png" /></a><a target="_blank" href="https://github.com/pac4j/http4s-pac4j"><h3>http4s</h3></a></div>
+    <div class="implem"><a target="_blank" href="https://github.com/pac4j/ratpack-pac4j"><img height="100" src="/img/logo-ratpack.png" /></a><a target="_blank" href="https://github.com/pac4j/ratpack-pac4j"><h3>Ratpack</h3></a></div>
 </div>
 
 <h2>Products that embed <i>pac4j</i>:</h2>
