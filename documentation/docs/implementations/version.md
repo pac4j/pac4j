@@ -103,12 +103,6 @@ description: "Find the pac4j core versions used by framework integrations to cho
         <td>JDK 17+</td>
     </tr>
     <tr>
-        <td>lagom-pac4j</td>
-        <td>3.x</td>
-        <td>Lagom 1.5 - 1.6</td>
-        <td>JDK 8+</td>
-    </tr>
-    <tr>
         <td>http4s-pac4j</td>
         <td>6.x</td>
         <td>Http4s 0.23+</td>

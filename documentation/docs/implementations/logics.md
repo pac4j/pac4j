@@ -114,12 +114,6 @@ description: "Compare the default security, callback and logout logic used by pa
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultLogoutLogic</code> or configurable</td>
     </tr>
     <tr>
-        <td>lagom-pac4j</td>
-        <td><img src="/img/red_cross.png" /><br />Custom security logic via service composition</td>
-        <td><img src="/img/red_cross.png" /><br />No callback logic</td>
-        <td><img src="/img/red_cross.png" /><br />No logout logic</td>
-    </tr>
-    <tr>
         <td>http4s-pac4j</td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultSecurityLogic</code></td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultCallbackLogic</code></td>

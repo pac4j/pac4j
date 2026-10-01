@@ -146,14 +146,6 @@ description: "Compare the web context and session store implementations used by 
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">JaxRsAjaxRequestResolver</code></td>
     </tr>
     <tr>
-        <td>lagom-pac4j</td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">LagomWebContext</code> (limited immutable implementation)</td>
-        <td><img src="/img/red_cross.png" /><br />No session store support (stateless microservices)</td>
-        <td><img src="/img/red_cross.png" /><br />No HTTP action adapter needed (reactive composition)</td>
-        <td><img src="/img/red_cross.png" /><br />No URL resolution needed (reactive streams)</td>
-        <td><img src="/img/red_cross.png" /><br />No AJAX resolution needed (reactive streams)</td>
-    </tr>
-    <tr>
         <td>http4s-pac4j</td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">Http4sWebContext</code></td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">Http4sCacheSessionStore</code>, <code class="highlighter-rouge">Http4sCookieSessionStore</code> or <code class="highlighter-rouge">Http4sGenericSessionStore</code></td>

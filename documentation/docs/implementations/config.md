@@ -98,11 +98,6 @@ description: "Compare how Java framework integrations define and supply pac4j se
         <td><img src="/img/green_check.png" /><br />using a custom <code class="highlighter-rouge">ConfigFactory</code></td>
     </tr>
     <tr>
-        <td>lagom-pac4j</td>
-        <td><img src="/img/red_cross.png" /></td>
-        <td><img src="/img/green_check.png" /></td>
-    </tr>
-    <tr>
         <td>http4s-pac4j</td>
         <td><img src="/img/red_cross.png" /></td>
         <td><img src="/img/green_check.png" /></td>
