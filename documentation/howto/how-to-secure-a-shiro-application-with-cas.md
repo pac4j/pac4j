@@ -27,19 +27,102 @@ For a new application, a [pac4j implementation alone](/how-to-secure-a-java-appl
 - Apache Shiro 3.x on a Servlet 5 or 6 container: Tomcat 10+, Jetty 11+, or the Jetty Maven plugin used below
 - the **login URL** of a CAS server and the right to register a service on it, or the public pac4j test server used below.
 
-## 1) Get the demo
+## 1) Create the Maven project
 
-The [buji-pac4j-demo](https://github.com/pac4j/buji-pac4j-demo) project is the reference for this guide: Shiro, the pac4j servlet filters and the bridge, configured entirely in `shiro.ini`, with a CAS login among others.
+Create a small web application packaged as a WAR:
 
 ```bash
-git clone https://github.com/pac4j/buji-pac4j-demo.git
-cd buji-pac4j-demo
-mvn clean package jetty:run
+mkdir -p shiro-cas-app/src/main/java/org/example/security shiro-cas-app/src/main/resources
+mkdir -p shiro-cas-app/src/main/webapp/WEB-INF shiro-cas-app/src/main/webapp/protected shiro-cas-app/src/main/webapp/admin
+cd shiro-cas-app
 ```
+
+Create `pom.xml`. Jetty 11 supplies the Jakarta Servlet runtime and serves the JSP pages:
+
+```xml
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.example</groupId>
+    <artifactId>shiro-cas-app</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>war</packaging>
+
+    <properties>
+        <maven.compiler.release>17</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+        <!-- Add the dependencies from section 2 here. -->
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.16.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.5.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>11.0.26</version>
+                <configuration>
+                    <webApp>
+                        <contextPath>/</contextPath>
+                    </webApp>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+```
+
+Create `src/main/webapp/WEB-INF/web.xml` to install the Shiro environment and filter:
+
+```xml
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd"
+         version="5.0">
+    <listener>
+        <listener-class>org.apache.shiro.web.env.EnvironmentLoaderListener</listener-class>
+    </listener>
+    <filter>
+        <filter-name>ShiroFilter</filter-name>
+        <filter-class>org.apache.shiro.web.servlet.ShiroFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>ShiroFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
+</web-app>
+```
+
+Create `src/main/webapp/index.jsp` with links to the resources we'll protect:
+
+```jsp
+<%@ page contentType="text/html; charset=UTF-8" %>
+<a href="/protected/index.jsp">Protected area</a>
+<a href="/admin/index.jsp">Admin area</a>
+<a href="/pac4jLogout">Logout</a>
+```
+
+The [buji-pac4j-demo](https://github.com/pac4j/buji-pac4j-demo) is a more complete reference with several authentication mechanisms.
 
 ## 2) Add the Maven dependencies
 
-On top of `shiro-web`, you need three pac4j artifacts: the pac4j implementation that authenticates, here the `jakartaee-pac4j` servlet filters, the CAS module, and the bridge.
+Inside the `<dependencies>` element, add `shiro-web` and three pac4j artifacts: the pac4j implementation that authenticates, here the `jakartaee-pac4j` servlet filters, the CAS module, and the bridge.
 
 ```xml
 <!-- Apache Shiro for web applications -->
@@ -78,7 +161,7 @@ On the pac4j side, it installs a `ShiroProfileManager`. Saving a profile logs th
 
 ## 3) Configure pac4j in shiro.ini
 
-Everything else is plain Shiro INI. The `config` and `clients` objects come from the bridge; you declare the CAS client, plug it into `clients`, and define the pac4j filters as Shiro filters:
+Create `src/main/resources/shiro.ini`. Everything else is plain Shiro INI. The `config` and `clients` objects come from the bridge; you declare the CAS client, plug it into `clients`, and define the pac4j filters as Shiro filters:
 
 ```ini
 [main]
@@ -126,7 +209,7 @@ The `web.xml` is the standard Shiro one: the `EnvironmentLoaderListener` and the
 
 ## 4) Map the CAS user to Shiro roles
 
-We now have an authenticated user, but where do the Shiro roles come from? `Pac4jRealm` exposes the pac4j profile's roles with their names unchanged. CAS, however, sends **attributes**, not pac4j roles.
+Create `src/main/java/org/example/security/RoleAuthorizationGenerator.java`. We now have an authenticated user, but where do the Shiro roles come from? `Pac4jRealm` exposes the pac4j profile's roles with their names unchanged. CAS, however, sends **attributes**, not pac4j roles.
 
 An **authorization generator** makes the connection. For example, we can derive a role from a `memberOf` attribute released by the CAS service:
 
@@ -168,7 +251,21 @@ Shiro **permissions** work the same way: put a list of permission strings in the
 
 ## 5) Access the authenticated user
 
-We can now read the user through the Shiro API. The subject is authenticated and its primary principal is the CAS principal, usually the username. A `Pac4jPrincipal` in the principal collection gives us the full pac4j profile:
+Create `src/main/webapp/protected/index.jsp` to read the user through the Shiro API, and copy it to `src/main/webapp/admin/index.jsp` to exercise the admin rule:
+
+```jsp
+<%@ page contentType="text/plain; charset=UTF-8" %>
+<%@ page import="org.apache.shiro.SecurityUtils" %>
+<%@ page import="io.buji.pac4j.subject.Pac4jPrincipal" %>
+<%
+    final var subject = SecurityUtils.getSubject();
+    final var principal = subject.getPrincipals().oneByType(Pac4jPrincipal.class);
+    out.println("Shiro principal: " + subject.getPrincipal());
+    out.println("pac4j profile: " + principal.getProfile());
+%>
+```
+
+The plain-text response displays the profile without interpreting its attributes as HTML. We can also read the user in Java code through the Shiro API. The subject is authenticated and its primary principal is the CAS principal, usually the username. A `Pac4jPrincipal` in the principal collection gives us the full pac4j profile:
 
 ```java
 final var subject = SecurityUtils.getSubject();
