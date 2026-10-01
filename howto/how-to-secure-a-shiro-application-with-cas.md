@@ -135,7 +135,7 @@ Inside the `<dependencies>` element, add `shiro-web` and three pac4j artifacts: 
 <dependency>
     <groupId>org.pac4j</groupId>
     <artifactId>jakartaee-pac4j</artifactId>
-    <version>8.0.3</version>
+    <version>8.0.4</version>
 </dependency>
 <!-- pac4j support for CAS -->
 <dependency>
