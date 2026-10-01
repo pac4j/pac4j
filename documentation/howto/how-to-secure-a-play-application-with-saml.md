@@ -10,7 +10,7 @@ In a Play application, we want to protect actions while keeping the usual routes
 
 Here, we'll use SAML 2.0. Our application will act as a **service provider**, delegating login to an IdP such as Microsoft Entra ID, Okta, ADFS, Shibboleth or Keycloak. The same integration also supports the other pac4j authentication mechanisms.
 
-We'll work with **Play 3.0 and Java**. The [play-pac4j-java-demo](https://github.com/pac4j/play-pac4j-java-demo) contains the starting point, along with OIDC, CAS, OAuth, form and JWT examples. There is also a [play-pac4j-scala-demo](https://github.com/pac4j/play-pac4j-scala-demo) for Scala developers.
+We'll work with **Play 3.0 and Java**. We'll create a minimal application; the [play-pac4j-java-demo](https://github.com/pac4j/play-pac4j-java-demo) provides a more complete reference with OIDC, CAS, OAuth, form and JWT examples. There is also a [play-pac4j-scala-demo](https://github.com/pac4j/play-pac4j-scala-demo) for Scala developers.
 
 If you've read the [Spring Boot SAML guide](/how-to-secure-a-java-application-with-saml.html), you'll recognize the protocol configuration. What changes here is the Guice module, the session store and the way we protect actions.
 
@@ -18,17 +18,40 @@ If you've read the [Spring Boot SAML guide](/how-to-secure-a-java-application-wi
 
 - Java 17 or later and sbt
 - Play 3.0, with Scala 2.13 or Scala 3
-- the **metadata** of your identity provider, as a URL or an XML file. The demo uses the public pac4j test IdP.
+- the **metadata** of your identity provider, as a URL or an XML file. The example uses the public pac4j test IdP.
 
-## 1) Get the demo
+## 1) Create the sbt project
+
+Create a minimal Play Java project:
 
 ```bash
-git clone https://github.com/pac4j/play-pac4j-java-demo.git
-cd play-pac4j-java-demo
-sbt run
+mkdir -p play-saml-app/app/controllers play-saml-app/app/modules play-saml-app/conf play-saml-app/project
+cd play-saml-app
 ```
 
-The application starts on [http://localhost:9000](http://localhost:9000). The sections below adapt its SAML setup. Replace the existing security module and matching routes rather than registering duplicate bindings. The protected action below returns plain text; you can replace it with a Twirl view that escapes profile values.
+Create `project/build.properties`:
+
+```properties
+sbt.version=1.12.8
+```
+
+Create `project/plugins.sbt` to enable Play 3:
+
+```scala
+addSbtPlugin("org.playframework" % "sbt-plugin" % "3.0.10")
+```
+
+Create `build.sbt` at the root, then add the dependencies from step 2:
+
+```scala
+name := "play-saml-app"
+version := "1.0-SNAPSHOT"
+scalaVersion := "2.13.18"
+
+lazy val root = (project in file(".")).enablePlugins(PlayJava)
+```
+
+Create an empty `conf/application.conf`. Save the Java classes from the following steps in `app/modules` and `app/controllers`, and the routes in `conf/routes`.
 
 ## 2) Add the sbt dependencies
 
@@ -37,6 +60,8 @@ Add `play-pac4j` and the SAML module to `build.sbt`. The `%%` selects the artifa
 We'll also need Guice for our module and a cache for the session store in step 4.
 
 ```scala
+resolvers += "Shibboleth releases" at "https://build.shibboleth.net/nexus/content/repositories/releases/"
+
 libraryDependencies += guice
 libraryDependencies += caffeine
 
@@ -45,11 +70,12 @@ val pac4jVersion = "6.5.9"
 
 libraryDependencies ++= Seq(
   "org.pac4j" %% "play-pac4j" % playPac4jVersion,
-  "org.pac4j" % "pac4j-saml" % pac4jVersion
+  "org.pac4j" % "pac4j-saml" % pac4jVersion,
+  "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.22.1"
 )
 ```
 
-Keep the dependencies required by pac4j SAML. If adapting the demo's existing exclusions, check its explicit Spring and Jackson dependencies as well. For Play 2.9 or 2.8, use the matching `-PLAY2.9` or `-PLAY2.8` versions listed in the [play-pac4j README](https://github.com/pac4j/play-pac4j#readme).
+OpenSAML is published in the Shibboleth repository, so the resolver above is required. The Scala Jackson module must match the Jackson 2.22.x databind brought by pac4j 6.5.9; Play's default 2.14.x module cannot run with it. Keep the transitive dependencies required by pac4j SAML. For Play 2.9 or 2.8, use the matching `-PLAY2.9` or `-PLAY2.8` versions listed in the [play-pac4j README](https://github.com/pac4j/play-pac4j#readme).
 
 ## 3) Create the service provider keystore
 
@@ -59,7 +85,7 @@ A SAML service provider signs its requests and decrypts the assertions it receiv
 keytool -genkeypair -alias pac4j-demo -keypass pac4j-demo-passwd -storetype JKS -keystore conf/samlKeystore.jks -storepass pac4j-demo-passwd -keyalg RSA -keysize 2048 -validity 3650
 ```
 
-The demo already ships one. See the [keystore section of the Spring Boot guide](/how-to-secure-a-java-application-with-saml.html#3-create-the-service-provider-keystore) for the details.
+See the [keystore section of the Spring Boot guide](/how-to-secure-a-java-application-with-saml.html#3-create-the-service-provider-keystore) for the details.
 
 ## 4) Write the security module
 
@@ -136,7 +162,12 @@ Then enable the module and set the base URL in `conf/application.conf`:
 ```hocon
 play.modules.enabled += "modules.SecurityModule"
 baseUrl = "http://localhost:9000"
+# The IdP posts SAML responses from another site.
+play.http.session.sameSite = "none"
+play.http.session.secure = true
 ```
+
+The session cookie must be sent on the IdP's cross-site POST: use `SameSite=None` with `Secure`, and HTTPS when deploying beyond localhost. See [Play's session settings](https://www.playframework.com/documentation/3.0.x/SettingsSession).
 
 Why do we need a session store? Play has a session cookie, but no server-side session of its own. `PlayCacheSessionStore` keeps the pac4j data in the cache and puts only a session identifier in the cookie. Without a configured store, pac4j fails at startup with an explicit message. You can also use `PlayCookieSessionStore`, which encrypts everything into the cookie and needs no cache.
 
@@ -149,6 +180,7 @@ Finally, `new Config(baseUrl + "/callback", saml2Client)` sets the callback URL.
 Add the callback and logout routes to `conf/routes`, next to the action you want to protect. The `@` prefix tells Play to inject the controllers, so the instances bound in the module are used. The identity provider **posts** the assertion to the callback, so the `POST` route is the one that matters here:
 
 ```
+GET     /                       controllers.Application.index
 GET     /protected/index.html    controllers.Application.protectedIndex(request: Request)
 
 GET     /callback                @org.pac4j.play.CallbackController.callback(request: Request)
@@ -174,12 +206,15 @@ import org.pac4j.core.config.Config;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.play.context.PlayFrameworkParameters;
 import org.pac4j.play.java.Secure;
-import org.pac4j.saml.client.SAML2Client;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 
 public class Application extends Controller {
+
+    public Result index() {
+        return ok("Visit /protected/index.html to sign in, or /logout to sign out.").as("text/plain");
+    }
 
     @Inject
     private Config config;
@@ -206,7 +241,7 @@ pac4j.security.rules = [
 ]
 ```
 
-with a `Filters` class that returns `securityFilter.asJava()` in its list, as the demo does. Both mechanisms can coexist.
+with a `Filters` class that returns `securityFilter.asJava()` in its list, as the [demo does](https://github.com/pac4j/play-pac4j-java-demo). Both mechanisms can coexist.
 
 ## 7) Access the authenticated user
 

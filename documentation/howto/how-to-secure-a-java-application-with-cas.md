@@ -17,18 +17,57 @@ Let's see how to do this with **pac4j and Spring Boot**. We'll use the public pa
 - Java 17 or later and Maven
 - the **login URL** of a CAS server, such as `https://cas.example.com/cas/login`, and the right to register a service on it. The demo uses the public test server.
 
-## 1) Get the Spring Boot demo
+## 1) Create the Maven project
 
-Start with the [CAS demo project](https://github.com/pac4j/simple-spring-boot-pac4j-demos/tree/cas). The three classes we'll look at are already there:
+Create an empty Spring Boot project with Java 17:
 
 ```bash
-git clone --branch cas --single-branch https://github.com/pac4j/simple-spring-boot-pac4j-demos.git
-cd simple-spring-boot-pac4j-demos
+mkdir -p spring-cas-app/src/main/java/org/example
+mkdir -p spring-cas-app/src/main/resources
+cd spring-cas-app
 ```
+
+Create `pom.xml` at the project root. The Spring Boot parent manages the Spring dependencies, and its Maven plugin runs the application:
+
+```xml
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.5.12</version>
+        <relativePath/>
+    </parent>
+    <groupId>org.example</groupId>
+    <artifactId>spring-cas-app</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <java.version>17</java.version>
+    </properties>
+
+    <dependencies>
+        <!-- Add the dependencies from section 2 here. -->
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+```
+
+Save the Java classes below in the `org.example` package so that Spring Boot discovers the configuration and controllers. Put application properties in `src/main/resources/application.properties`.
 
 ## 2) Add the Maven dependencies
 
-The [demo's `pom.xml`](https://github.com/pac4j/simple-spring-boot-pac4j-demos/blob/cas/pom.xml) uses the Spring Boot parent. On top of Spring MVC, you need the pac4j Spring MVC integration and the CAS module:
+Inside the `<dependencies>` element, on top of Spring MVC, you need the pac4j Spring MVC integration and the CAS module:
 
 ```xml
 <!-- Spring Boot web -->
@@ -54,9 +93,20 @@ The [demo's `pom.xml`](https://github.com/pac4j/simple-spring-boot-pac4j-demos/b
 
 ## 3) Configure CAS authentication
 
-The whole security setup fits in one class, [`SecurityConfig`](https://github.com/pac4j/simple-spring-boot-pac4j-demos/blob/cas/src/main/java/org/pac4j/demos/SecurityConfig.java):
+Create `src/main/java/org/example/SecurityConfig.java`:
 
 ```java
+package org.example;
+
+import org.pac4j.core.config.Config;
+import org.pac4j.springframework.config.Pac4jSecurityConfig;
+import org.pac4j.cas.client.CasClient;
+import org.pac4j.cas.config.CasConfiguration;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+
 @Configuration
 public class SecurityConfig extends Pac4jSecurityConfig {
 
@@ -113,24 +163,32 @@ See the [Apereo CAS service management documentation](https://apereo.github.io/c
 
 ## 5) Access the authenticated user
 
-The [application controller](https://github.com/pac4j/simple-spring-boot-pac4j-demos/blob/cas/src/main/java/org/pac4j/demos/Application.java) exposes a public page and a protected page:
+Create `src/main/java/org/example/Application.java` to expose a public page and a protected page:
 
 ```java
-@Autowired
-private ProfileManager profileManager;
+package org.example;
 
-@RequestMapping("/")
-@ResponseBody
-public String index() {
-    return "<h1>Public area</h1><p><a href='/protected/index'>Protected area</a></p>"
-            + "<p><a href='/logout'>Logout</a></p>" + profileManager.getProfiles();
-}
+import org.pac4j.core.profile.ProfileManager;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@RequestMapping("/protected/index")
-@ResponseBody
-public String secure() {
-    return "<h1>Protected area</h1><a href='/'>Home</a><p/>"
-            + "<p><a href='/logout'>Logout</a></p>" + profileManager.getProfiles();
+@RestController
+public class Application {
+
+    @Autowired
+    private ProfileManager profileManager;
+
+    @GetMapping(value = "/", produces = "text/html")
+    public String index() {
+        return "<h1>Public area</h1><p><a href='/protected/index'>Protected area</a></p>"
+            + "<p><a href='/logout'>Logout</a></p>";
+    }
+
+    @GetMapping(value = "/protected/index", produces = "text/plain")
+    public String secure() {
+        return "Protected area\n" + profileManager.getProfiles() + "\nVisit /logout to sign out.";
+    }
 }
 ```
 
@@ -158,9 +216,14 @@ pac4j then redirects the browser to the CAS `/logout` endpoint. The reverse dire
 
 ## 7) Run the application
 
-Start [`SpringBootDemo`](https://github.com/pac4j/simple-spring-boot-pac4j-demos/blob/cas/src/main/java/org/pac4j/demos/SpringBootDemo.java) from your IDE or with `mvn spring-boot:run`:
+Create `src/main/java/org/example/SpringBootDemo.java`:
 
 ```java
+package org.example;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
 @SpringBootApplication
 public class SpringBootDemo {
     public static void main(final String[] args) {
@@ -168,6 +231,8 @@ public class SpringBootDemo {
     }
 }
 ```
+
+Start the application with `mvn spring-boot:run`.
 
 Open [http://localhost:8080/](http://localhost:8080/) and follow **Protected area**. You are redirected to the CAS login page, then sent back to the callback with a service ticket, and the protected page prints your profile.
 
@@ -188,6 +253,7 @@ So far, we have used CAS to log in through a browser. The same `pac4j-cas` modul
 
 ## 9) Learn more
 
+- The [Spring Boot CAS demo](https://github.com/pac4j/simple-spring-boot-pac4j-demos/tree/cas) for a complete reference application.
 - Read the documentation for the [CAS client for Java](/docs/clients/cas.html) for the proxy and REST configurations, the stateless `DirectCasClient` and all the `CasConfiguration` options.
 
 **Discover more [pac4j frameworks](/implementations.html) and more [authentication mechanisms](/docs/clients.html)…**
