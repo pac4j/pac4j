@@ -115,7 +115,7 @@ On top of the Spring Boot web and security starters, you need three pac4j artifa
 <dependency>
     <groupId>org.pac4j</groupId>
     <artifactId>jakartaee-pac4j</artifactId>
-    <version>8.0.3</version>
+    <version>8.0.4</version>
 </dependency>
 <!-- pac4j support for OpenID Connect -->
 <dependency>

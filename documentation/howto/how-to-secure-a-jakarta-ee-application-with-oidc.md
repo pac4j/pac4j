@@ -8,14 +8,14 @@ description: "Add OpenID Connect (OIDC) login to a Jakarta EE or servlet applica
 
 You do not need Spring to add OpenID Connect login to a Java web application. If you already have servlets and a servlet container, we can use those directly.
 
-The [jee-pac4j](https://github.com/pac4j/jee-pac4j) library provides **three filters**: one to protect your pages, one to handle the callback and one for logout. We'll configure them to authenticate users with an OIDC provider such as Keycloak, Google, Microsoft Entra ID or Okta.
+The [jee-pac4j](https://github.com/pac4j/jee-pac4j) library provides **three filters**: one to protect your pages (`SecurityFilter`), one to handle the callback (`CallbackFilter`) and one for logout (`LogoutFilter`). We'll configure them to authenticate users with an OIDC provider such as Keycloak, Google, Microsoft Entra ID or Okta.
 
 The OIDC configuration is the same as in the [Spring Boot guide](/how-to-secure-a-java-application-with-oidc.html). Here, we'll connect it to the servlet container with a configuration class and `web.xml`; CDI is optional. The [jee-pac4j-demo](https://github.com/pac4j/jee-pac4j-demo) goes further, with SAML, CAS, OAuth and form login as well.
 
 **What you need:**
 
 - Java 17 or later and Maven
-- a Servlet 6.0 container, such as Tomcat 10.1 or Jetty 12 with its Jakarta EE 10 environment, to match the Servlet API and `web.xml` below
+- a Servlet 6.0 or later container, such as Tomcat 10.1 or 11, or Jetty 12, to match the Servlet API and `web.xml` below
 - an OpenID Connect provider where you can register an application, or the public demo server used below.
 
 ## 1) Add the Maven dependencies
@@ -27,7 +27,7 @@ Start from a Maven web application with `<packaging>war</packaging>` and a Java 
 <dependency>
     <groupId>org.pac4j</groupId>
     <artifactId>jakartaee-pac4j</artifactId>
-    <version>8.0.3</version>
+    <version>8.0.4</version>
 </dependency>
 <!-- pac4j support for OpenID Connect -->
 <dependency>
@@ -48,7 +48,7 @@ For a legacy `javax.servlet` application, use the `javaee-pac4j` artifact instea
 
 ## 2) Write the security configuration
 
-First, we need a `Config` to hold our authentication client. How do the filters get it? Through a `ConfigFactory`: they instantiate this class at startup and call its `build` method.
+First, we need a `Config` to hold our authentication client. How do the filters get it? As usual in the pac4j world, through a `ConfigFactory`: they instantiate this class at startup and call its `build` method.
 
 ```java
 package org.example.security;
@@ -75,9 +75,9 @@ public class SecurityConfigFactory implements ConfigFactory {
 
 `setDiscoveryURI` gives pac4j the provider's `.well-known/openid-configuration` document. From it, pac4j reads the authorization, token, user info and JWKS endpoints. `setClientId` and `setSecret` are the credentials obtained when registering the application.
 
-The callback is configured by `new Config("http://localhost:8080/callback", ...)`. pac4j appends `?client_name=OidcClient`, so **register that full URL as the redirect URI** at the provider. In production, use the public URL of your application.
+The callback is configured by `new Config("http://localhost:8080/callback", ...)`. pac4j appends `?client_name=OidcClient`, where `OidcClient` is the name of the client (by default, its class name), so **register that full URL as the redirect URI** at the provider. In production, use the public URL of your application.
 
-By default pac4j uses the authorization code flow, with PKCE when the provider supports it. `setAllowUnsignedIdTokens(true)` only exists because the public demo server issues unsigned ID tokens: remove it for a real provider. To register the application at Keycloak, Google or Entra ID, follow the [provider section of the Spring Boot guide](/how-to-secure-a-java-application-with-oidc.html#4-register-the-application-at-your-identity-provider): the Java configuration is the same, only the wiring below differs.
+By default pac4j uses the authorization code flow, with PKCE when the provider supports it (if needed, you can disable PKCE with `setDisablePkce(true)` on the `OidcConfiguration`). `setAllowUnsignedIdTokens(true)` only exists because the public demo server issues unsigned ID tokens: remove it for a real provider. To register the application at Keycloak, Google or Entra ID, follow the [provider section of the Spring Boot guide](/how-to-secure-a-java-application-with-oidc.html#4-register-the-application-at-your-identity-provider): the Java configuration is the same, only the wiring below differs.
 
 ## 3) Declare the filters in web.xml
 
@@ -116,10 +116,6 @@ The integration provides three servlet filters. Declare them in `WEB-INF/web.xml
             <param-name>defaultUrl</param-name>
             <param-value>/</param-value>
         </init-param>
-        <init-param>
-            <param-name>renewSession</param-name>
-            <param-value>true</param-value>
-        </init-param>
     </filter>
     <filter-mapping>
         <filter-name>callbackFilter</filter-name>
@@ -147,15 +143,15 @@ The integration provides three servlet filters. Declare them in `WEB-INF/web.xml
 </web-app>
 ```
 
-Let's follow a request to `/protected/*`. The `SecurityFilter` checks whether the user is authenticated. If not, it redirects the browser to the provider using the client named by `clients`. You can also configure `authorizers`, such as `isAuthenticated` or a role check, and use `matchers` to exclude paths.
+Let's follow a request to `/protected/*`. The `SecurityFilter` checks whether the user is authenticated. If not, it redirects the browser to the provider using the client defined by the `clients` parameter. You can also configure `authorizers`, such as `isAuthenticated` or a role check, and use `matchers` to exclude paths.
 
-After login, the provider sends the browser to `/callback`. The `CallbackFilter` exchanges the authorization code for tokens, validates the ID token and saves the profile in the session. It then redirects to the originally requested page, or to `defaultUrl`. With `renewSession`, the session identifier is renewed to protect against session fixation.
+After login, the provider sends the browser to `/callback`. The `CallbackFilter` exchanges the authorization code for tokens, validates the ID token and saves the profile in the session. It then redirects to the originally requested page, or to `defaultUrl`. By default, the session identifier is also renewed to protect against session fixation (the `renewSession` parameter).
 
 The third filter, `LogoutFilter`, removes the profile when the user logs out. `destroySession` also invalidates the HTTP session.
 
 The `configFactory` parameter builds the configuration once and shares it with the other pac4j filters, so declaring it on one filter is sufficient. You can declare several `SecurityFilter` instances with different clients or authorizers for different URL patterns.
 
-If you prefer Java configuration, you can register the same filters from a `ServletContextListener` with `FilterHelper`. Choose this or the XML declarations above: registering both would run the filters twice.
+If you prefer to define things programmatically, you can register the same filters from a `ServletContextListener` with `FilterHelper`. Choose this or the XML declarations above, not both: the filter names would clash and the application would fail to start.
 
 ```java
 package org.example.security;
@@ -219,7 +215,7 @@ public class ProtectedServlet extends HttpServlet {
 
 The `OidcProfile` exposes the standard claims as getters, provides the mapped profile attributes through `getAttributes()`, and gives access to the raw tokens with `getIdToken()` and `getAccessToken()`. Which claims are present depends on the scopes: the default is `openid profile email`.
 
-In a **CDI application**, the integration can produce a `ProfileManager` and a `WebContext` for injection. This requires a CDI-managed `Config` and injectable HTTP request and response objects; the XML `ConfigFactory` alone does not supply them. Follow the setup in the [jee-pac4j-cdi-demo](https://github.com/pac4j/jee-pac4j-cdi-demo). Inject the `WebContext` interface, rather than `JEEContext`.
+In a **CDI application**, the integration can produce a `ProfileManager`, a `WebContext` and a `SessionStore` for injection. This requires a CDI-managed `Config` and injectable HTTP request and response objects; the XML `ConfigFactory` alone does not supply them. Follow the setup in the [jee-pac4j-cdi-demo](https://github.com/pac4j/jee-pac4j-cdi-demo). Inject the `WebContext` interface, rather than `JEEContext`.
 
 ## 5) Logout
 
@@ -238,7 +234,7 @@ The `/logout` URL mapped above performs the **local logout**. To also end the se
 
 pac4j then redirects the browser to the provider's `end_session_endpoint`, read from the discovery document. Register `http://localhost:8080/` as an allowed post-logout redirect URI at the provider. In production, use your application's public HTTPS URL.
 
-If you accept a dynamic return URL through the logout request's `url` parameter, restrict it with `logoutUrlPattern`. That pattern validates the requested URL; it does not set the return URL itself.
+If you accept a dynamic return URL through the logout request's `url` parameter, restrict it with `logoutUrlPattern`. That pattern validates the requested URL, it does not set the return URL.
 
 ## 6) Run the application
 
@@ -248,9 +244,9 @@ Package the application as a WAR:
 mvn clean package
 ```
 
-Deploy it to your Servlet 6.0 container at the root context on port 8080, matching the URLs above. With Tomcat, deploy the WAR as `ROOT.war`. For a different context path or port, update the callback URL, the registered redirect URI and the logout return URL accordingly. Provide a public home page, such as `src/main/webapp/index.html`, for the default redirect after logout.
+Deploy it to your servlet container at the root context on port 8080, matching the URLs above. With Tomcat, deploy the WAR as `ROOT.war`. For a different context path or port, update the callback URL, the registered redirect URI and the logout return URL accordingly. Provide a public home page, such as `src/main/webapp/index.html`, for the default redirect after logout.
 
-The [jee-pac4j-demo](https://github.com/pac4j/jee-pac4j-demo) also demonstrates running through a configured Jetty Maven plugin. Its plugin configuration, servlet version and example paths belong together; `jetty:run` is not available merely by adding the dependencies above.
+The [jee-pac4j-demo](https://github.com/pac4j/jee-pac4j-demo) can also run with `mvn jetty:run` (as it configures the Jetty Maven plugin in its `pom.xml`).
 
 Open [http://localhost:8080/protected/index](http://localhost:8080/protected/index). You are redirected to the identity provider to sign in, then returned to the protected page, which greets you by name.
 
