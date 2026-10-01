@@ -130,13 +130,6 @@ description: "Compare the filters, controllers and endpoints that pac4j integrat
         <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">LogoutFilter</code> or the <code class="highlighter-rouge">@Pac4JLogout</code> annotation</td>
     </tr>
     <tr>
-        <td>lagom-pac4j</td>
-        <td><img src="/img/green_check.png" /><br />using service call composition with <code class="highlighter-rouge">SecuredService</code> interface</td>
-        <td><img src="/img/green_check.png" /><br />using <code class="highlighter-rouge">authenticate()</code> and <code class="highlighter-rouge">authorize()</code> methods</td>
-        <td><img src="/img/red_cross.png" /><br />No callback endpoints (reactive microservices)</td>
-        <td><img src="/img/red_cross.png" /><br />No logout endpoints (reactive microservices)</td>
-    </tr>
-    <tr>
         <td>http4s-pac4j</td>
         <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">SecurityFilterMiddleware</code></td>
         <td><img src="/img/red_cross.png" /></td>

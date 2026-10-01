@@ -130,13 +130,6 @@ description: "Compare user profile management in pac4j integrations to understan
         <td><img src="/img/green_check.png" /><br />via <code class="highlighter-rouge">Pac4JSecurityContext.getProfiles()</code></td>
     </tr>
     <tr>
-        <td>lagom-pac4j</td>
-        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">CommonProfile</code> passed via service composition</td>
-        <td><img src="/img/red_cross.png" /></td>
-        <td><img src="/img/green_check.png" /><br />via service call parameters</td>
-        <td><img src="/img/red_cross.png" /></td>
-    </tr>
-    <tr>
         <td>http4s-pac4j</td>
         <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">ProfileManager</code></td>
         <td><img src="/img/red_cross.png" /></td>

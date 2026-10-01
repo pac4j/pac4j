@@ -82,10 +82,6 @@ description: "Compare how pac4j integrations expose authorization checks across 
         <td><img src="/img/green_check.png" /><br />using the <code class="highlighter-rouge">@Pac4JSecurity(authorizers = ...)</code> annotation or the <code class="highlighter-rouge">SecurityContext.isUserInRole()</code> method</td>
     </tr>
     <tr>
-        <td>lagom-pac4j</td>
-        <td><img src="/img/green_check.png" /><br />using <code class="highlighter-rouge">authorize()</code> service composition methods</td>
-    </tr>
-    <tr>
         <td>http4s-pac4j</td>
         <td><img src="/img/red_cross.png" /></td>
     </tr>

@@ -67,18 +67,18 @@ description: "Find pac4j integrations for Spring Boot, Jakarta EE, Play, Vert.x,
     <div class="implem"><a target="_blank" href="https://github.com/pac4j/http4s-pac4j"><img height="100" src="/img/logo-http4s.png" /></a><a target="_blank" href="https://github.com/pac4j/http4s-pac4j"><h3>http4s</h3></a></div>
 </div>
 
-<h2>Also available, on an older <i>pac4j</i> line:</h2>
-
-<div class="implem-block">
-    <div class="implem"><a target="_blank" href="https://github.com/pac4j/lagom-pac4j"><img height="100" src="/img/logo-lagom.png" /></a><a target="_blank" href="https://github.com/pac4j/lagom-pac4j"><h3>Lagom<br /><small>(pac4j 3.x)</small></h3></a></div>
-    <div class="implem"><a target="_blank" href="https://github.com/pippo-java/pippo/tree/master/pippo-security-parent/pippo-pac4j"><img height="100" src="/img/logo-pippo.png" /></a><a target="_blank" href="https://github.com/pippo-java/pippo/tree/master/pippo-security-parent/pippo-pac4j"><h3>Pippo<br /><small>(pac4j 2.x)</small></h3></a></div>
-    <div class="implem"><a target="_blank" href="https://github.com/StackVista/akka-http-pac4j"><img height="100" src="/img/logo-akkahttp.png" /></a><a target="_blank" href="https://github.com/StackVista/akka-http-pac4j"><h3>Akka HTTP<br /><small>(pac4j 5.x, archived)</small></h3></a></div>
-</div>
-
 <h2>Products that embed <i>pac4j</i>:</h2>
 
 <div class="implem-block">
     <div class="implem"><a target="_blank" href="https://apereo.github.io/cas/7.3.x/integration/Delegate-Authentication.html"><img height="100" src="/img/logo-cas.png" /></a><a target="_blank" href="https://apereo.github.io/cas/7.3.x/integration/Delegate-Authentication.html"><h3>CAS server</h3></a></div>
     <div class="implem"><a target="_blank" href="https://syncope.apache.org"><img height="100" src="/img/logo-syncope.png" /></a><a target="_blank" href="https://syncope.apache.org"><h3>Syncope</h3></a></div>
     <div class="implem"><a target="_blank" href="https://knox.apache.org/books/knox-2-1-0/user-guide.html#Pac4j+Provider+-+CAS+/+OAuth+/+SAML+/+OpenID+Connect"><img height="100" src="/img/logo-knox.png" /></a><a target="_blank" href="https://knox.apache.org/books/knox-2-1-0/user-guide.html#Pac4j+Provider+-+CAS+/+OAuth+/+SAML+/+OpenID+Connect"><h3>Knox</h3></a></div>
+</div>
+
+<h2>Also available, on an older <i>pac4j</i> line:</h2>
+
+<div class="implem-block">
+    <div class="implem"><a target="_blank" href="https://github.com/pac4j/lagom-pac4j"><img height="100" src="/img/logo-lagom.png" /></a><a target="_blank" href="https://github.com/pac4j/lagom-pac4j"><h3>Lagom<br /><small>(pac4j 3.x, archived)</small></h3></a></div>
+    <div class="implem"><a target="_blank" href="https://github.com/pippo-java/pippo/tree/master/pippo-security-parent/pippo-pac4j"><img height="100" src="/img/logo-pippo.png" /></a><a target="_blank" href="https://github.com/pippo-java/pippo/tree/master/pippo-security-parent/pippo-pac4j"><h3>Pippo<br /><small>(pac4j 2.x)</small></h3></a></div>
+    <div class="implem"><a target="_blank" href="https://github.com/StackVista/akka-http-pac4j"><img height="100" src="/img/logo-akkahttp.png" /></a><a target="_blank" href="https://github.com/StackVista/akka-http-pac4j"><h3>Akka HTTP<br /><small>(pac4j 5.x, archived)</small></h3></a></div>
 </div>
