@@ -79,6 +79,6 @@ description: "Find pac4j integrations for Spring Boot, Jakarta EE, Play, Vert.x,
 
 <div class="implem-block">
     <div class="implem"><a target="_blank" href="https://github.com/pac4j/lagom-pac4j"><img height="100" src="/img/logo-lagom.png" /></a><a target="_blank" href="https://github.com/pac4j/lagom-pac4j"><h3>Lagom<br /><small>(pac4j 3.x, archived)</small></h3></a></div>
-    <div class="implem"><a target="_blank" href="https://github.com/pippo-java/pippo/tree/master/pippo-security-parent/pippo-pac4j"><img height="100" src="/img/logo-pippo.png" /></a><a target="_blank" href="https://github.com/pippo-java/pippo/tree/master/pippo-security-parent/pippo-pac4j"><h3>Pippo<br /><small>(pac4j 2.x)</small></h3></a></div>
+    <div class="implem"><a target="_blank" href="https://github.com/pippo-java/pippo/tree/master/pippo-security-parent/pippo-pac4j"><img height="100" src="/img/logo-pippo.png" /></a><a target="_blank" href="https://github.com/pippo-java/pippo/tree/master/pippo-security-parent/pippo-pac4j"><h3>Pippo<br /><small>(pac4j 2.x, inactive)</small></h3></a></div>
     <div class="implem"><a target="_blank" href="https://github.com/StackVista/akka-http-pac4j"><img height="100" src="/img/logo-akkahttp.png" /></a><a target="_blank" href="https://github.com/StackVista/akka-http-pac4j"><h3>Akka HTTP<br /><small>(pac4j 5.x, archived)</small></h3></a></div>
 </div>
