@@ -4,7 +4,6 @@ title: OpenID Federation with pac4j and CAS
 author: Jérôme LELEU
 date: October 2026
 tags: [tuto, cas]
-draft: true
 seo_title: "OpenID Federation with CAS as provider and trust anchor | pac4j"
 description: "Set up OpenID Federation using a pac4j Java application and CAS servers as the OpenID Provider and trust anchor."
 ---
