@@ -89,7 +89,7 @@
         <commons-text.version>1.15.0</commons-text.version>
 		<guava.version>33.7.2-jre</guava.version>
 		<nimbus-jose-jwt.version>10.10</nimbus-jose-jwt.version>
-        <eudi-sdjwt.version>0.20.1</eudi-sdjwt.version>
+        <eudi-sdjwt.version>0.20.2</eudi-sdjwt.version>
 		<spring.version>7.0.9</spring.version>
 		<spring.security.version>7.1.1</spring.security.version>
         <bouncycastle.version>1.86</bouncycastle.version>
