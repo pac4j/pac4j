@@ -8,6 +8,7 @@ import com.nimbusds.jose.Payload;
 import com.nimbusds.jose.crypto.ECDSASigner;
 import com.nimbusds.jose.jwk.Curve;
 import com.nimbusds.jose.jwk.ECKey;
+import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.gen.ECKeyGenerator;
 import com.nimbusds.jose.util.Base64URL;
@@ -27,7 +28,10 @@ import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.pac4j.core.config.properties.JwksProperties;
 import org.pac4j.core.config.properties.KeystoreProperties;
+import org.pac4j.core.config.properties.ResourceProperties;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.openid4vp.config.CredentialFormat;
 import org.pac4j.openid4vp.config.OpenId4VpConfiguration;
 import org.pac4j.openid4vp.config.ResponseMode;
@@ -36,6 +40,10 @@ import org.pac4j.openid4vp.dcql.DcqlValidator;
 import org.pac4j.openid4vp.dcql.TrustedAuthority;
 import org.pac4j.openid4vp.exceptions.OpenId4VpException;
 import org.pac4j.openid4vp.transaction.VpTransaction;
+import org.pac4j.openid4vp.verifier.trust.CertificateTrustedIssuer;
+import org.pac4j.openid4vp.verifier.trust.KeysTrustedIssuer;
+import org.pac4j.openid4vp.verifier.trust.TrustedIssuer;
+import org.pac4j.openid4vp.verifier.trust.TrustedIssuers;
 import org.springframework.core.io.FileSystemResource;
 
 import java.math.BigInteger;
@@ -46,6 +54,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.KeyStore;
 import java.security.MessageDigest;
+import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -72,6 +81,7 @@ class SdJwtVcVerifierTests {
     private ECKey issuerKey;
     private ECKey holderKey;
     private SdJwtVcVerifier verifier;
+    private CertificateTrustedIssuer certificateIssuers;
     private VpTransaction transaction;
     private Map<String, Object> issuerClaims;
     private List<String> disclosures;
@@ -85,8 +95,8 @@ class SdJwtVcVerifierTests {
     void setUp() throws Exception {
         issuerKey = new ECKeyGenerator(Curve.P_256).keyID("issuer-key").generate();
         holderKey = new ECKeyGenerator(Curve.P_256).generate();
-        verifier = new SdJwtVcVerifier().setTrustedIssuers(Map.of(ISSUER,
-            new SdJwtVcTrustedIssuer(new JWKSet(issuerKey.toPublicJWK()))
+        verifier = new SdJwtVcVerifier().setTrustedIssuers(new TrustedIssuers(
+            new KeysTrustedIssuer(ISSUER, new JWKSet(issuerKey.toPublicJWK()))
                 .setTrustedAuthorities(Map.of("etsi_tl", List.of("https://trusted-list.example")))));
         transaction = new VpTransaction().setId("transaction").setNonce("nonce")
             .setCreatedAt(Instant.now().minusSeconds(5)).setExpiresAt(Instant.now().plusSeconds(300))
@@ -194,7 +204,7 @@ class SdJwtVcVerifierTests {
     @Test
     void rejectsMissingIssuerBeforeTrustedKeyLookup() throws Exception {
         issuerClaims.remove("iss");
-        verifier.setTrustedIssuers(Map.of());
+        verifier = new SdJwtVcVerifier();
         val raw = presentation();
         val error = assertThrows(OpenId4VpException.class, () -> verify(raw));
         assertEquals("the SD-JWT VC must contain an iss claim or an x5c certificate chain", error.getMessage());
@@ -237,7 +247,7 @@ class SdJwtVcVerifierTests {
             if ("JKS".equals(type)) {
                 properties.setKeyStoreType(null);
             }
-            verifier.setTrustStore(properties);
+            certificateIssuers.setTrustStore(properties);
             assertEquals("CN=Credential Issuer", verify(raw).getIssuer());
         }
     }
@@ -246,17 +256,17 @@ class SdJwtVcVerifierTests {
     void restrictsTrustToConfiguredCertificateAlias() throws Exception {
         val certificates = configureCertificateIssuer();
         val raw = presentation();
-        verifier.getTrustStore().setKeyStoreAlias("root");
+        certificateIssuers.getTrustStore().setKeyStoreAlias("root");
         assertTrue(verify(raw).isCryptographicHolderBinding());
-        verifier.getTrustStore().setKeyStoreAlias("missing");
+        certificateIssuers.getTrustStore().setKeyStoreAlias("missing");
         assertThrows(OpenId4VpException.class, () -> verify(raw));
         val keyStore = KeyStore.getInstance("PKCS12");
         keyStore.load(null, null);
         keyStore.setKeyEntry("private-key", certificates.rootKey().toPrivateKey(), "secret".toCharArray(),
             new X509Certificate[] {certificates.root()});
-        verifier.setTrustStore(saveTrustStore(keyStore));
+        certificateIssuers.setTrustStore(saveTrustStore(keyStore));
         assertThrows(OpenId4VpException.class, () -> verify(raw));
-        verifier.getTrustStore().setKeyStoreAlias("private-key");
+        certificateIssuers.getTrustStore().setKeyStoreAlias("private-key");
         assertThrows(OpenId4VpException.class, () -> verify(raw));
     }
 
@@ -265,15 +275,15 @@ class SdJwtVcVerifierTests {
         configureCertificateIssuer();
         val raw = presentation();
         val opened = new AtomicInteger();
-        val properties = verifier.getTrustStore();
-        properties.setKeystoreResource(new FileSystemResource(properties.getKeystoreResource().getFile()) {
+        val properties = certificateIssuers.getTrustStore();
+        properties.setResource(new FileSystemResource(properties.getResource().getFile()) {
             @Override
             public InputStream getInputStream() throws IOException {
                 opened.incrementAndGet();
                 return super.getInputStream();
             }
         });
-        verifier.setTrustStore(properties);
+        certificateIssuers.setTrustStore(properties);
 
         verify(raw);
         verify(raw);
@@ -283,20 +293,49 @@ class SdJwtVcVerifierTests {
         verify(raw);
         assertEquals(2, opened.get());
         // and so does setting it again, to pick up a file replaced on disk
-        verifier.setTrustStore(properties);
+        certificateIssuers.setTrustStore(properties);
         verify(raw);
         assertEquals(3, opened.get());
+    }
+
+    @Test
+    void readsTheCertificateRevocationListsOnceUntilTheyAreSetAgain() throws Exception {
+        val certificates = configureCertificateIssuer();
+        val builder = new JcaX509v2CRLBuilder(certificates.root(), Date.from(Instant.now().minusSeconds(60)));
+        builder.setNextUpdate(Date.from(Instant.now().plusSeconds(3600)));
+        val crl = crlResource(new JcaX509CRLConverter().getCRL(builder.build(
+            new JcaContentSignerBuilder("SHA256withECDSA").build(certificates.rootKey().toPrivateKey()))));
+        val opened = new AtomicInteger();
+        crl.setResource(new FileSystemResource(crl.getResource().getFile()) {
+            @Override
+            public InputStream getInputStream() throws IOException {
+                opened.incrementAndGet();
+                return super.getInputStream();
+            }
+        });
+        certificateIssuers.setCertificateRevocationEnabled(true).setCertificateRevocationLists(List.of(crl));
+        val raw = presentation();
+
+        verify(raw);
+        verify(raw);
+        assertEquals(1, opened.get());
+        certificateIssuers.setCertificateRevocationLists(List.of(crl));
+        verify(raw);
+        assertEquals(2, opened.get());
+
+        certificateIssuers.setCertificateRevocationLists(List.of(new ResourceProperties()));
+        assertThrows(OpenId4VpException.class, () -> verify(raw));
     }
 
     @Test
     void rejectsEmptyTrustStoreAndIncorrectPassword() throws Exception {
         configureCertificateIssuer();
         val raw = presentation();
-        verifier.getTrustStore().setKeystorePassword("incorrect");
+        certificateIssuers.getTrustStore().setKeystorePassword("incorrect");
         assertThrows(OpenId4VpException.class, () -> verify(raw));
         val empty = KeyStore.getInstance("PKCS12");
         empty.load(null, null);
-        verifier.setTrustStore(saveTrustStore(empty));
+        certificateIssuers.setTrustStore(saveTrustStore(empty));
         assertThrows(OpenId4VpException.class, () -> verify(raw));
     }
 
@@ -324,7 +363,8 @@ class SdJwtVcVerifierTests {
         configureCertificateIssuer();
         issuerClaims.put("iss", ISSUER);
         val raw = presentation();
-        verifier.setTrustedIssuers(Map.of(ISSUER, new SdJwtVcTrustedIssuer(new JWKSet(issuerKey.toPublicJWK()))));
+        // added after the certificates, consulted before them
+        verifier.getTrustedIssuers().add(new KeysTrustedIssuer(ISSUER, new JWKSet(issuerKey.toPublicJWK())));
         assertEquals(ISSUER, verify(raw).getIssuer());
     }
 
@@ -334,7 +374,7 @@ class SdJwtVcVerifierTests {
         configureCertificateIssuer();
         issuerClaims.put("iss", ISSUER);
         val otherKey = new ECKeyGenerator(Curve.P_256).keyID("issuer-key").generate();
-        verifier.setTrustedIssuers(Map.of(ISSUER, new SdJwtVcTrustedIssuer(new JWKSet(otherKey.toPublicJWK()))));
+        verifier.getTrustedIssuers().add(new KeysTrustedIssuer(ISSUER, new JWKSet(otherKey.toPublicJWK())));
         val raw = presentation();
         assertThrows(OpenId4VpException.class, () -> verify(raw));
     }
@@ -350,10 +390,10 @@ class SdJwtVcVerifierTests {
     @Test
     void rejectsCertificateIssuerWithoutConfiguredTrust() throws Exception {
         configureCertificateIssuer();
-        verifier.setTrustStore(null);
+        verifier = new SdJwtVcVerifier();
         val raw = presentation();
         val error = assertThrows(OpenId4VpException.class, () -> verify(raw));
-        assertTrue(error.getMessage().contains("trustStore"));
+        assertTrue(error.getMessage().contains("not trusted"));
     }
 
     @Test
@@ -362,7 +402,7 @@ class SdJwtVcVerifierTests {
         val otherKey = new ECKeyGenerator(Curve.P_256).generate();
         val otherRoot = certificate("CN=Other Root", otherKey, "CN=Other Root", otherKey, true,
             KeyUsage.keyCertSign, -60, 3600);
-        verifier.setTrustStore(trustStore("PKCS12", otherRoot));
+        certificateIssuers.setTrustStore(trustStore("PKCS12", otherRoot));
         issuerCertificateChain = List.of(Base64.encode(certificates.leaf().getEncoded()), Base64.encode(certificates.root().getEncoded()));
         val raw = presentation();
         assertThrows(OpenId4VpException.class, () -> verify(raw));
@@ -453,7 +493,7 @@ class SdJwtVcVerifierTests {
     @Test
     void honorsCertificateRevocationPolicy() throws Exception {
         val certificates = configureCertificateIssuer();
-        verifier.setCertificateRevocationEnabled(true);
+        certificateIssuers.setCertificateRevocationEnabled(true);
         val raw = presentation();
         assertThrows(OpenId4VpException.class, () -> verify(raw));
         for (val revoked : List.of(false, true)) {
@@ -464,7 +504,7 @@ class SdJwtVcVerifierTests {
             }
             val crl = new JcaX509CRLConverter().getCRL(builder.build(
                 new JcaContentSignerBuilder("SHA256withECDSA").build(certificates.rootKey().toPrivateKey())));
-            verifier.setCertificateRevocationLists(List.of(crl));
+            certificateIssuers.setCertificateRevocationLists(List.of(crlResource(crl)));
             if (revoked) {
                 assertThrows(OpenId4VpException.class, () -> verify(raw));
             } else {
@@ -475,14 +515,21 @@ class SdJwtVcVerifierTests {
 
     private TestCertificates configureCertificateIssuer() throws Exception {
         issuerClaims.remove("iss");
-        verifier.setTrustedIssuers(Map.of());
+        verifier = new SdJwtVcVerifier();
         val rootKey = new ECKeyGenerator(Curve.P_256).generate();
         val root = certificate("CN=Root", rootKey, "CN=Root", rootKey, true, KeyUsage.keyCertSign | KeyUsage.cRLSign, -60, 3600);
         val leaf = certificate("CN=Credential Issuer", issuerKey, "CN=Root", rootKey, false, KeyUsage.digitalSignature, -60, 3600);
         // These generated fixtures have no revocation information; the revocation test supplies a local CRL explicitly.
-        verifier.setTrustStore(trustStore("PKCS12", root)).setCertificateRevocationEnabled(false);
+        certificateIssuers = new CertificateTrustedIssuer(trustStore("PKCS12", root)).setCertificateRevocationEnabled(false);
+        verifier.getTrustedIssuers().add(certificateIssuers);
         issuerCertificateChain = List.of(Base64.encode(leaf.getEncoded()));
         return new TestCertificates(rootKey, root, leaf);
+    }
+
+    private ResourceProperties crlResource(final X509CRL crl) throws Exception {
+        val path = Files.createTempFile(directory, "crl-", ".crl");
+        Files.write(path, crl.getEncoded());
+        return new ResourceProperties().setResourcePath(path.toString());
     }
 
     private KeystoreProperties trustStore(final String type, final X509Certificate root) throws Exception {
@@ -497,7 +544,7 @@ class SdJwtVcVerifierTests {
         try (val output = Files.newOutputStream(path)) {
             keyStore.store(output, "changeit".toCharArray());
         }
-        return new KeystoreProperties().setKeystorePath(path.toString()).setKeyStoreType(keyStore.getType())
+        return new KeystoreProperties().setResourcePath(path.toString()).setKeyStoreType(keyStore.getType())
             .setKeystorePassword("changeit");
     }
 
@@ -549,6 +596,100 @@ class SdJwtVcVerifierTests {
             result.getTrustedAuthorities().get(TrustedAuthority.AKI));
     }
 
+    @Test
+    void consultsTheNextTruststoreForAChainTheFirstDoesNotKnow() throws Exception {
+        configureCertificateIssuer();
+        val otherKey = new ECKeyGenerator(Curve.P_256).generate();
+        val otherRoot = certificate("CN=Other Root", otherKey, "CN=Other Root", otherKey, true,
+            KeyUsage.keyCertSign, -60, 3600);
+        verifier = new SdJwtVcVerifier().setTrustedIssuers(new TrustedIssuers(
+            new CertificateTrustedIssuer(trustStore("PKCS12", otherRoot)).setCertificateRevocationEnabled(false),
+            certificateIssuers));
+        assertEquals("CN=Credential Issuer", verify(presentation()).getIssuer());
+    }
+
+    @Test
+    void neverConsultsTheNextTruststoreOnceAChainIsRejected() throws Exception {
+        val certificates = configureCertificateIssuer();
+        val builder = new JcaX509v2CRLBuilder(certificates.root(), Date.from(Instant.now().minusSeconds(60)));
+        builder.setNextUpdate(Date.from(Instant.now().plusSeconds(3600)));
+        builder.addCRLEntry(certificates.leaf().getSerialNumber(), Date.from(Instant.now().minusSeconds(30)), 1);
+        val crl = new JcaX509CRLConverter().getCRL(builder.build(
+            new JcaContentSignerBuilder("SHA256withECDSA").build(certificates.rootKey().toPrivateKey())));
+        // the same root, revoking the leaf: the first truststore knows the chain and rejects it
+        verifier = new SdJwtVcVerifier().setTrustedIssuers(new TrustedIssuers(
+            new CertificateTrustedIssuer(trustStore("PKCS12", certificates.root()))
+                .setCertificateRevocationLists(List.of(crlResource(crl))),
+            certificateIssuers));
+        val raw = presentation();
+        assertThrows(OpenId4VpException.class, () -> verify(raw));
+    }
+
+    @Test
+    void addsTrustedIssuersOneByOne() throws Exception {
+        val shared = new TrustedIssuers();
+        verifier = new SdJwtVcVerifier().setTrustedIssuers(shared)
+            .addTrustedIssuer(new KeysTrustedIssuer(ISSUER, new JWKSet(issuerKey.toPublicJWK())));
+        // added to the shared trusted issuers, and the setters of the format still chain
+        assertEquals(1, shared.getIssuers().size());
+        assertEquals(10, new SdJwtVcVerifier().addTrustedIssuer(shared.getIssuers().get(0)).setClockSkewSeconds(10)
+            .getClockSkewSeconds());
+        assertEquals(ISSUER, verify(presentation()).getIssuer());
+    }
+
+    @Test
+    void rejectsAKidMatchingNoConfiguredKey() throws Exception {
+        verifier = new SdJwtVcVerifier().setTrustedIssuers(new TrustedIssuers(new KeysTrustedIssuer(ISSUER,
+            new JWKSet(new ECKey.Builder(issuerKey.toPublicJWK()).keyID("other-key").build()))));
+        val raw = presentation();
+        assertThrows(OpenId4VpException.class, () -> verify(raw));
+    }
+
+    @Test
+    void loadsTheTrustedIssuerKeysFromAJwksResource() throws Exception {
+        val otherKey = new ECKeyGenerator(Curve.P_256).keyID("other-key").generate();
+        val path = Files.createTempFile(directory, "issuer-", ".jwks");
+        // a JWKS holding private parts: only the public ones are kept
+        Files.writeString(path, new JWKSet(List.of(otherKey, issuerKey)).toString(false));
+        val raw = presentation();
+
+        verifier = new SdJwtVcVerifier()
+            .setTrustedIssuers(new TrustedIssuers(new KeysTrustedIssuer(ISSUER, new JwksProperties().setResourcePath(path.toString()))));
+        assertEquals(ISSUER, verify(raw).getIssuer());
+        assertTrue(((KeysTrustedIssuer) verifier.getTrustedIssuers().getIssuers().get(0)).getKeys().getKeys().stream()
+            .noneMatch(JWK::isPrivate));
+
+        // a kid keeps only that key
+        verifier = new SdJwtVcVerifier().setTrustedIssuers(new TrustedIssuers(
+            new KeysTrustedIssuer(ISSUER, new JwksProperties().setResourcePath(path.toString()).setKid("other-key"))));
+        assertThrows(OpenId4VpException.class, () -> verify(raw));
+        assertThrows(TechnicalException.class, () -> new KeysTrustedIssuer(ISSUER,
+            new JwksProperties().setResourcePath(path.toString()).setKid("missing")));
+    }
+
+    @Test
+    void rejectsAMissingOrUndefinedJwksResource() {
+        val missing = directory.resolve("missing.jwks").toString();
+        assertThrows(TechnicalException.class, () -> new KeysTrustedIssuer(ISSUER, new JwksProperties().setResourcePath(missing)));
+        assertFalse(Files.exists(directory.resolve("missing.jwks")));
+        assertThrows(TechnicalException.class, () -> new KeysTrustedIssuer(ISSUER, new JwksProperties()));
+        assertThrows(TechnicalException.class, () -> new KeysTrustedIssuer(ISSUER, (JwksProperties) null));
+    }
+
+    @Test
+    void validatesTheTrustedIssuersConfiguration() {
+        assertThrows(TechnicalException.class, () -> new KeysTrustedIssuer(" ", new JWKSet(issuerKey.toPublicJWK())));
+        assertThrows(TechnicalException.class, () -> new KeysTrustedIssuer(ISSUER, new JWKSet()));
+        assertThrows(TechnicalException.class, () -> new CertificateTrustedIssuer(null));
+        assertThrows(TechnicalException.class, () -> new TrustedIssuers().add(null));
+        assertThrows(TechnicalException.class, () -> new TrustedIssuers((TrustedIssuer) null));
+        assertThrows(TechnicalException.class, () -> new SdJwtVcVerifier().addTrustedIssuer(null));
+        assertThrows(TechnicalException.class, () -> new SdJwtVcVerifier().setTrustedIssuers(null).addTrustedIssuer(
+            new KeysTrustedIssuer(ISSUER, new JWKSet(issuerKey.toPublicJWK()))));
+        // only the public part of the configured keys is kept
+        assertFalse(new KeysTrustedIssuer(ISSUER, new JWKSet(issuerKey)).getKeys().getKeys().get(0).isPrivate());
+    }
+
     private record TestCertificates(ECKey rootKey, X509Certificate root, X509Certificate leaf) { }
 
     @Test
@@ -560,7 +701,7 @@ class SdJwtVcVerifierTests {
 
     @Test
     void rejectsUnconfiguredTrust() throws Exception {
-        verifier.setTrustedIssuers(Map.of());
+        verifier = new SdJwtVcVerifier();
         val raw = presentation();
         assertThrows(OpenId4VpException.class, () -> verify(raw));
     }

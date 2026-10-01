@@ -97,7 +97,7 @@ public class SAML2ConfigurationTests {
     @Test
     public void verifyRequiredSettingsArePresent() {
         var configurationWithoutKeystore = newValidConfiguration();
-        configurationWithoutKeystore.getKeystore().setKeystoreResource(null);
+        configurationWithoutKeystore.getKeystore().setResource(null);
         var keystoreException = assertThrows(SAMLException.class, configurationWithoutKeystore::init);
         assertEquals("SAML2Configuration is missing required settings: keystore resource/path.", keystoreException.getMessage());
 

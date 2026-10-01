@@ -5,18 +5,16 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import org.pac4j.core.config.properties.KeystoreProperties;
 import org.pac4j.openid4vp.config.CredentialFormat;
 import org.pac4j.openid4vp.config.OpenId4VpConfiguration;
 import org.pac4j.openid4vp.exceptions.OpenId4VpException;
 import org.pac4j.openid4vp.transaction.VpTransaction;
+import org.pac4j.openid4vp.verifier.trust.IssuerEvidence;
+import org.pac4j.openid4vp.verifier.trust.ResolvedIssuer;
+import org.pac4j.openid4vp.verifier.trust.TrustedIssuers;
+import org.pac4j.openid4vp.verifier.trust.TrustedIssuer;
+import org.pac4j.openid4vp.verifier.trust.CertificateTrustedIssuer;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.security.cert.CertStore;
-import java.security.cert.CollectionCertStoreParameters;
-import java.security.cert.PKIXParameters;
-import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
 import java.time.Instant;
 import java.util.List;
@@ -30,8 +28,9 @@ import java.util.function.BiConsumer;
  * redirect and DC API handovers. DeviceMAC, device-signed claims and transaction data are not supported.
  * Each presentation must contain exactly one document. Only disclosed issuer-signed attributes are returned.</p>
  *
- * <p>No issuer is trusted by default. Certificate validation uses Java PKIX and explicit truststore anchors,
- * not the system roots or walt.id's certificate policy. Revocation checking is enabled by default.</p>
+ * <p>No issuer is trusted by default: add {@link CertificateTrustedIssuer} for the IACA roots, a mobile document
+ * being identified by its {@code x5chain} only; definitions by identifier are ignored. Certificate validation uses
+ * Java PKIX and explicit trust anchors, not the system roots or walt.id's certificate policy.</p>
  *
  * @author Jerome LELEU
  * @since 6.6.0
@@ -40,15 +39,7 @@ import java.util.function.BiConsumer;
 @Setter
 @Accessors(chain = true)
 @Slf4j
-public class MdocVerifier implements CredentialVerifier {
-
-    /** Trusted certificate entries only; read for each verification, optionally restricted to keyStoreAlias. */
-    private KeystoreProperties trustStore;
-
-    /** Check certificate revocation using the Java provider and optional local CRLs. */
-    private boolean certificateRevocationEnabled = true;
-
-    private List<X509CRL> certificateRevocationLists = List.of();
+public class MdocVerifier extends AbstractCredentialVerifier {
 
     /**
      * Checks the authenticated MSO status object, when present. Must throw if invalid or unavailable.
@@ -58,6 +49,20 @@ public class MdocVerifier implements CredentialVerifier {
 
     /** Maximum decoded presentation size, including images, in bytes. */
     private int maxPresentationSize = 2 * 1024 * 1024;
+
+    /** {@inheritDoc} */
+    @Override
+    public MdocVerifier setTrustedIssuers(final TrustedIssuers trustedIssuers) {
+        super.setTrustedIssuers(trustedIssuers);
+        return this;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public MdocVerifier addTrustedIssuer(final TrustedIssuer issuer) {
+        super.addTrustedIssuer(issuer);
+        return this;
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -103,12 +108,8 @@ public class MdocVerifier implements CredentialVerifier {
         }
     }
 
-    void validateIssuer(final List<X509Certificate> chain) throws GeneralSecurityException, IOException {
-        val parameters = new PKIXParameters(CertificateChainValidator.loadTrustAnchors(trustStore));
-        parameters.setRevocationEnabled(certificateRevocationEnabled);
-        if (certificateRevocationLists != null && !certificateRevocationLists.isEmpty()) {
-            parameters.addCertStore(CertStore.getInstance("Collection", new CollectionCertStoreParameters(certificateRevocationLists)));
-        }
-        CertificateChainValidator.validate(chain, parameters);
+    ResolvedIssuer resolveIssuer(final List<X509Certificate> chain) {
+        return resolveIssuer(new IssuerEvidence(null, null, chain))
+            .orElseThrow(() -> new OpenId4VpException("the mdoc issuer is not trusted: its x5chain leads to no trusted certificate"));
     }
 }

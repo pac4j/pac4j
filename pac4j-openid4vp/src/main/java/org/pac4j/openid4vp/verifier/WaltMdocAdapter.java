@@ -6,6 +6,7 @@ import kotlin.Unit;
 import id.walt.mdoc.mso.MSO;
 import COSE.AlgorithmID;
 import COSE.OneKey;
+import com.nimbusds.jose.jwk.AsymmetricJWK;
 import com.nimbusds.jose.jwk.Curve;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.util.Base64URL;
@@ -21,9 +22,9 @@ import id.walt.mdoc.mdocauth.DeviceAuthentication;
 import lombok.experimental.UtilityClass;
 import lombok.val;
 import org.pac4j.openid4vp.config.CredentialFormat;
-import org.pac4j.openid4vp.dcql.TrustedAuthority;
 import org.pac4j.openid4vp.exceptions.OpenId4VpException;
 import org.pac4j.openid4vp.transaction.VpTransaction;
+import org.pac4j.openid4vp.verifier.trust.ResolvedIssuer;
 
 import java.io.ByteArrayInputStream;
 import java.security.MessageDigest;
@@ -69,11 +70,8 @@ class WaltMdocAdapter {
         require(document.getErrors() == null, "mdoc contains document errors");
         val auth = Objects.requireNonNull(document.getIssuerSigned().getIssuerAuth(), "mdoc has no issuer authentication");
         checkSignature(auth);
-        val chain = readChain(auth);
-        verifier.validateIssuer(chain);
-        val issuer = chain.get(0);
-        val issuerProvider = provider(issuer.getPublicKey());
-        require(document.verifySignature(issuerProvider, "key"), "invalid mdoc issuer signature");
+        val issuer = verifier.resolveIssuer(readChain(auth));
+        require(verifyIssuerSignature(document, issuer), "invalid mdoc issuer signature");
         val payload = Objects.requireNonNull(auth.getPayload(), "mdoc issuer signature must contain the MSO");
         val msoBytes = EncodedCBORElement.Companion.fromEncodedCBORElementData(payload).getValue();
         CBORObject.DecodeFromBytes(msoBytes);
@@ -85,12 +83,9 @@ class WaltMdocAdapter {
         val request = JSONObjectUtils.parse(transaction.getRequestParameters());
         require(!request.containsKey("transaction_data"), "mdoc transaction data is not supported");
         verifyHolder(document, transaction, request);
-        val name = issuer.getSubjectX500Principal().getName();
-        require(!name.isBlank(), "the mdoc issuer certificate must have a subject");
-        val authorities = CertificateChainValidator.authorityKeyIdentifiers(chain);
         val result = new VerifiedCredential().setFormat(CredentialFormat.MSO_MDOC).setType(document.getDocType().getValue())
-            .setIssuer(name).setClaims(claims).setCryptographicHolderBinding(true)
-            .setTrustedAuthorities(authorities.isEmpty() ? Map.of() : Map.of(TrustedAuthority.AKI, authorities));
+            .setIssuer(issuer.name()).setClaims(claims).setCryptographicHolderBinding(true)
+            .setTrustedAuthorities(new LinkedHashMap<>(issuer.trustedAuthorities()));
         final MapElement signedMso = DataElement.Companion.fromCBOR(msoBytes);
         val status = signedMso.getValue().get(new MapKey("status"));
         if (status != null) {
@@ -99,6 +94,15 @@ class WaltMdocAdapter {
             verifier.getStatusChecker().accept(result, jsonMap((MapElement) status));
         }
         return result;
+    }
+
+    private boolean verifyIssuerSignature(final MDoc document, final ResolvedIssuer issuer) throws Exception {
+        for (val key : issuer.keys()) {
+            if (key instanceof AsymmetricJWK asymmetric && document.verifySignature(provider(asymmetric.toPublicKey()), "key")) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private List<X509Certificate> readChain(final COSESign1 signature) throws Exception {

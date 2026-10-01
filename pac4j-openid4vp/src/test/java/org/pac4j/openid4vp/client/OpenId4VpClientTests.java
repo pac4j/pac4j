@@ -43,7 +43,7 @@ class OpenId4VpClientTests {
         val configuration = new OpenId4VpConfiguration();
         // no JWKS at that path yet: an ES256 key is created and saved there
         configuration.setJwks(new JwksProperties()
-            .setJwksPath(directory.resolve("keys.jwks").toString()).setKid("key-1"));
+            .setResourcePath(directory.resolve("keys.jwks").toString()).setKid("key-1"));
         configuration.setClientId("verifier.example.org");
         configuration.setClientIdPrefix(ClientIdPrefix.DECENTRALIZED_IDENTIFIER);
         configuration.setDcqlQuery("{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\","

@@ -25,6 +25,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import com.nimbusds.jose.jwk.Curve;
+import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.gen.ECKeyGenerator;
 import com.nimbusds.jose.util.JSONObjectUtils;
 import id.walt.mdoc.cose.COSESign1;
@@ -32,11 +33,15 @@ import id.walt.mdoc.issuersigned.IssuerSigned;
 import id.walt.mdoc.devicesigned.DeviceSigned;
 import id.walt.mdoc.devicesigned.DeviceAuth;
 import org.pac4j.core.config.properties.KeystoreProperties;
+import org.pac4j.core.config.properties.ResourceProperties;
 import org.pac4j.openid4vp.config.OpenId4VpConfiguration;
 import org.pac4j.openid4vp.config.CredentialFormat;
 import org.pac4j.openid4vp.config.ResponseMode;
 import org.pac4j.openid4vp.transaction.VpTransaction;
 import org.pac4j.openid4vp.exceptions.OpenId4VpException;
+import org.pac4j.openid4vp.verifier.trust.CertificateTrustedIssuer;
+import org.pac4j.openid4vp.verifier.trust.KeysTrustedIssuer;
+import org.pac4j.openid4vp.verifier.trust.TrustedIssuers;
 import org.bouncycastle.cert.jcajce.JcaX509ExtensionUtils;
 import org.bouncycastle.cert.jcajce.JcaX509v2CRLBuilder;
 import org.bouncycastle.cert.jcajce.JcaX509CRLConverter;
@@ -48,6 +53,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import java.math.BigInteger;
 import java.security.*;
+import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
 import java.security.spec.ECGenParameterSpec;
 import java.time.Instant;
@@ -65,6 +71,7 @@ class MdocVerifierTests {
     private X509Certificate root, leaf;
     private SimpleCOSECryptoProvider signer;
     private MdocVerifier verifier;
+    private CertificateTrustedIssuer certificateIssuers;
     private VpTransaction transaction;
     @TempDir
     Path directory;
@@ -81,12 +88,19 @@ class MdocVerifierTests {
             new COSECryptoProviderKeyInfo("issuer", AlgorithmID.ECDSA_256, issuer.getPublic(), issuer.getPrivate(),
                 List.of(leaf), List.of(root)),
             new COSECryptoProviderKeyInfo("device", AlgorithmID.ECDSA_256, holder.getPublic(), holder.getPrivate(), List.of(), List.of())));
-        verifier = new MdocVerifier().setTrustStore(trustStore(root)).setCertificateRevocationEnabled(false);
+        certificateIssuers = new CertificateTrustedIssuer(trustStore(root)).setCertificateRevocationEnabled(false);
+        verifier = new MdocVerifier().setTrustedIssuers(new TrustedIssuers(certificateIssuers));
         transaction = new VpTransaction().setId("mdoc-test").setNonce("nonce").setResponseMode(ResponseMode.DIRECT_POST)
             .setCreatedAt(Instant.now().minusSeconds(5)).setExpiresAt(Instant.now().plusSeconds(300));
         saveRequest("x509_san_dns:verifier.example", "nonce", "https://verifier.example/response");
         MapElement publicKey = DataElement.Companion.fromCBOR(new OneKey(holder.getPublic(), null).AsCBOR().EncodeToBytes());
         deviceKey = new DeviceKeyInfo(publicKey, null, null);
+    }
+
+    private ResourceProperties crlResource(final X509CRL crl) throws Exception {
+        val path = Files.createTempFile(directory, "crl-", ".crl");
+        Files.write(path, crl.getEncoded());
+        return new ResourceProperties().setResourcePath(path.toString());
     }
 
     private KeystoreProperties trustStore(X509Certificate certificate) throws Exception {
@@ -97,7 +111,7 @@ class MdocVerifierTests {
         try (val output = Files.newOutputStream(path)) {
             store.store(output, "changeit".toCharArray());
         }
-        return new KeystoreProperties().setKeystorePath(path.toString()).setKeyStoreType("PKCS12").setKeystorePassword("changeit");
+        return new KeystoreProperties().setResourcePath(path.toString()).setKeyStoreType("PKCS12").setKeystorePassword("changeit");
     }
 
     private void saveRequest(String clientId, String nonce, String responseUri) {
@@ -262,11 +276,27 @@ class MdocVerifierTests {
     @Test
     void rejectsMissingAndUntrustedAnchors() throws Exception {
         val raw = encode(presentation(false));
-        verifier.setTrustStore(null);
+        verifier = new MdocVerifier();
         assertThrows(OpenId4VpException.class, () -> verify(raw));
         val other = keyPair();
-        verifier.setTrustStore(trustStore(certificate(other.getPublic(), other.getPrivate(), "CN=Other", "CN=Other", true)));
+        verifier.getTrustedIssuers().add(new CertificateTrustedIssuer(
+            trustStore(certificate(other.getPublic(), other.getPrivate(), "CN=Other", "CN=Other", true)))
+            .setCertificateRevocationEnabled(false));
         assertThrows(OpenId4VpException.class, () -> verify(raw));
+        // the same truststores, the right one second: the first does not know the chain
+        verifier.getTrustedIssuers().add(certificateIssuers);
+        assertDoesNotThrow(() -> verify(raw));
+    }
+
+    @Test
+    void ignoresIssuersTrustedByIdentifier() throws Exception {
+        // a mobile document names its issuer only by its certificate chain: the same trusted issuers can be shared
+        // with a SD-JWT VC verifier
+        val shared = new TrustedIssuers(certificateIssuers, new KeysTrustedIssuer("https://issuer.example",
+            new JWKSet(new ECKeyGenerator(Curve.P_256).generate().toPublicJWK())));
+        verifier = new MdocVerifier().setTrustedIssuers(shared);
+        assertDoesNotThrow(() -> verify(encode(presentation(false))));
+        assertEquals(2, new SdJwtVcVerifier().setTrustedIssuers(shared).getTrustedIssuers().getIssuers().size());
     }
 
     @Test
@@ -275,12 +305,12 @@ class MdocVerifierTests {
         val crl = new JcaX509v2CRLBuilder(root.getSubjectX500Principal(), Date.from(now.minusSeconds(60)));
         crl.setNextUpdate(Date.from(now.plusSeconds(600)));
         val raw = encode(presentation(false));
-        verifier.setCertificateRevocationEnabled(true).setCertificateRevocationLists(List.of(
-            new JcaX509CRLConverter().getCRL(crl.build(new JcaContentSignerBuilder("SHA256withECDSA").build(rootKeys.getPrivate())))));
+        certificateIssuers.setCertificateRevocationEnabled(true).setCertificateRevocationLists(List.of(crlResource(
+            new JcaX509CRLConverter().getCRL(crl.build(new JcaContentSignerBuilder("SHA256withECDSA").build(rootKeys.getPrivate()))))));
         assertDoesNotThrow(() -> verify(raw));
         crl.addCRLEntry(leaf.getSerialNumber(), Date.from(now.minusSeconds(30)), 1);
-        verifier.setCertificateRevocationLists(List.of(new JcaX509CRLConverter().getCRL(
-            crl.build(new JcaContentSignerBuilder("SHA256withECDSA").build(rootKeys.getPrivate())))));
+        certificateIssuers.setCertificateRevocationLists(List.of(crlResource(new JcaX509CRLConverter().getCRL(
+            crl.build(new JcaContentSignerBuilder("SHA256withECDSA").build(rootKeys.getPrivate()))))));
         assertThrows(OpenId4VpException.class, () -> verify(raw));
     }
 

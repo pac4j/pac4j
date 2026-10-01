@@ -48,7 +48,7 @@ For `private_key_jwt`, the client signs a JWT with its private key. Older config
 oidcConfiguration.setClientAuthenticationMethod(ClientAuthenticationMethod.PRIVATE_KEY_JWT);
 
 val jwksProperties = new JwksProperties();
-jwksProperties.setJwksPath("classpath:/static/op/keystore.jwks");
+jwksProperties.setResourcePath("classpath:/static/op/keystore.jwks");
 jwksProperties.setKid("cas-qGcosGMN");
 val signingKey = JwkHelper.loadJwkFromOrCreateJwks(jwksProperties);
 
@@ -63,7 +63,7 @@ The newer component loads its signing key from a JWKS, which can be created on t
 ```java
 config.setClientAuthenticationMethod(ClientAuthenticationMethod.PRIVATE_KEY_JWT);
 val privateKeyJwtConfig = new PrivateKeyJwtClientAuthnMethodConfig(new JwksProperties());
-privateKeyJwtConfig.getJwks().setJwksPath("file:./metadata/clientauthprivatekeyjwt.jwks");
+privateKeyJwtConfig.getJwks().setResourcePath("file:./metadata/clientauthprivatekeyjwt.jwks");
 privateKeyJwtConfig.getJwks().setKid("myprivatekeyjwt");
 config.setPrivateKeyJWTClientAuthnMethodConfig(privateKeyJwtConfig);
 ```
@@ -72,7 +72,7 @@ You can also reuse the relying party (RP) JWKS if that is where you keep the app
 
 ```java
 val rpJwks = config.getRpJwks();
-rpJwks.setJwksPath("file:./metadata/rpjwks.jwks");
+rpJwks.setResourcePath("file:./metadata/rpjwks.jwks");
 rpJwks.setKid("defaultjwks0326");
 config.setClientAuthenticationMethod(ClientAuthenticationMethod.PRIVATE_KEY_JWT);
 val privateKeyJwtConfig = new PrivateKeyJwtClientAuthnMethodConfig(rpJwks);

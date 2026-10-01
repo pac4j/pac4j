@@ -72,7 +72,7 @@ These are the available prefixes:
 - the `file:` prefix or no prefix at all creates a `FileSystemResource` component.
 
 Or you can even use the empty constructor and the appropriate setters:
-- the `setKeystoreResource`, `setKeystoreResourceFilepath`, `setKeystoreResourceClasspath`, `setKeystoreResourceUrl` or `setKeystorePath` methods to define the keystore
+- the `getKeystore().setResourcePath(...)` or `getKeystore().setResource(...)` methods to define the keystore
 - the `setKeystorePassword` method to define the keystore password
 - the `setPrivateKeyPassword` method to set the private password of the keystore
 - the `setIdentityProviderMetadataResource`, `setIdentityProviderMetadataResourceFilepath`, `setIdentityProviderMetadataResourceClasspath`, `setIdentityProviderMetadataResourceUrl` or `setIdentityProviderMetadataPath` methods to define the identity provider metadata.

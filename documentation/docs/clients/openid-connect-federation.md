@@ -36,7 +36,7 @@ The federation endpoint publishes a signed entity configuration for your applica
 - either via a keystore (like for the SAML protocol):
 
 ```java
-oidcConfig.getFederation().getKeystore().setKeystorePath("file:./metadata/oidcfede.keystore");
+oidcConfig.getFederation().getKeystore().setResourcePath("file:./metadata/oidcfede.keystore");
 oidcConfig.getFederation().getKeystore().setKeystorePassword("changeit");
 oidcConfig.getFederation().getKeystore().setPrivateKeyPassword("changeit");
 ```
@@ -46,7 +46,7 @@ oidcConfig.getFederation().getKeystore().setPrivateKeyPassword("changeit");
 - or via a JWKS:
 
 ```java
-oidcConfig.getFederation().getJwks().setJwksPath("file:./metadata/oidcfede.jwks");
+oidcConfig.getFederation().getJwks().setResourcePath("file:./metadata/oidcfede.jwks");
 oidcConfig.getFederation().getJwks().setKid("mykeyoidcfede26");
 ```
 
@@ -115,7 +115,7 @@ federation.setTargetOp("http://localhost:8080/op");
 
 val trust = new OidcTrustAnchorProperties();
 trust.setIssuer("http://localhost:8081/ta");
-trust.setJwksUrl("http://localhost:8081/ta/jwks.json"); // optional
+trust.setJwksPath("http://localhost:8081/ta/jwks.json"); // optional
 federation.getTrustAnchors().add(trust);
 ```
 

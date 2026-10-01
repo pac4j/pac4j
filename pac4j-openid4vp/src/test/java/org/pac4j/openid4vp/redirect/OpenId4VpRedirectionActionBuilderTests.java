@@ -43,7 +43,7 @@ class OpenId4VpRedirectionActionBuilderTests {
     void setUp() throws Exception {
         configuration = new OpenId4VpConfiguration();
         configuration.setJwks(new JwksProperties()
-            .setJwksPath(directory.resolve("keys.jwks").toString()).setKid("key-1"));
+            .setResourcePath(directory.resolve("keys.jwks").toString()).setKid("key-1"));
         configuration.setClientId(CLIENT);
         configuration.setClientIdPrefix(ClientIdPrefix.DECENTRALIZED_IDENTIFIER);
         configuration.setDcqlQuery(DCQL);

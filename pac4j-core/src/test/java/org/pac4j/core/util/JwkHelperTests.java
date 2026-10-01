@@ -46,7 +46,7 @@ public final class JwkHelperTests {
         Files.deleteIfExists(jwksPath);
 
         val jwksProperties = new JwksProperties();
-        jwksProperties.setJwksPath(jwksPath.toString());
+        jwksProperties.setResourcePath(jwksPath.toString());
         jwksProperties.setKid("generated-kid");
 
         val signingJwk = JwkHelper.loadJwkFromOrCreateJwks(jwksProperties);
@@ -75,7 +75,7 @@ public final class JwkHelperTests {
         Files.writeString(jwksPath, jwkSet.toString(false));
 
         val jwksProperties = new JwksProperties();
-        jwksProperties.setJwksPath(jwksPath.toString());
+        jwksProperties.setResourcePath(jwksPath.toString());
         jwksProperties.setKid("kid-2");
 
         val signingJwk = JwkHelper.loadJwkFromOrCreateJwks(jwksProperties);
@@ -289,7 +289,7 @@ public final class JwkHelperTests {
     @Test
     public void testResolveTheSigningKeyFromTheJwks(@TempDir final java.nio.file.Path directory) {
         val jwks = new JwksProperties()
-            .setJwksResource(new FileSystemResource(directory.resolve("keys.jwks").toFile()));
+            .setResource(new FileSystemResource(directory.resolve("keys.jwks").toFile()));
 
         val key = JwkHelper.resolveSigningKey(jwks, null, JWSAlgorithm.ES256);
 

@@ -252,7 +252,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
         this.keystore.setCertificatePrefix("saml-signing-cert");
         this.keystore.setKeyStoreAlias(keyStoreAlias);
         this.keystore.setKeyStoreType(keyStoreType);
-        this.keystore.setKeystoreResource(keystoreResource);
+        this.keystore.setResource(keystoreResource);
         this.keystore.setKeystorePassword(keystorePassword);
         this.keystore.setPrivateKeyPassword(privateKeyPassword);
         if (identityProviderMetadataResource instanceof UrlResource urlResource) {
@@ -300,7 +300,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
 
         var keystoreGenerator = keystore.getKeystoreGenerator();
         if (keystoreGenerator == null) {
-            if (this.keystore.getKeystoreResource() instanceof UrlResource) {
+            if (this.keystore.getResource() instanceof UrlResource) {
                 keystoreGenerator = new SAML2HttpUrlKeystoreGenerator(this);
             } else {
                 keystoreGenerator = new SAML2FileSystemKeystoreGenerator(this);
@@ -308,7 +308,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
             this.keystore.setKeystoreGenerator(keystoreGenerator);
         }
         if (keystoreGenerator.shouldGenerate()) {
-            LOGGER.info("Generating keystore one for/via: {}", keystore.getKeystoreResource());
+            LOGGER.info("Generating keystore one for/via: {}", keystore.getResource());
             keystoreGenerator.generate();
         }
 
@@ -317,7 +317,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
 
     private void validateRequiredSettings() {
         val missingSettings = new ArrayList<String>();
-        if (keystore.getKeystoreResource() == null) {
+        if (keystore.getResource() == null) {
             missingSettings.add("keystore resource/path");
         }
         if (StringUtils.isBlank(keystore.getKeystorePassword())) {
@@ -406,19 +406,19 @@ public class SAML2Configuration extends BaseClientConfiguration {
     }
 
     /**
-     * @deprecated use getKeystore().getKeystoreResource() instead of getKeystoreResource()
+     * @deprecated use getKeystore().getResource() instead of getKeystoreResource()
      */
     @Deprecated
     public Resource getKeystoreResource() {
-        return keystore.getKeystoreResource();
+        return keystore.getResource();
     }
 
     /**
-     * @deprecated use getKeystore().setKeystoreResource(resource) instead of setKeystoreResource(resource)
+     * @deprecated use getKeystore().setResource(resource) instead of setKeystoreResource(resource)
      */
     @Deprecated
     public void setKeystoreResource(final Resource resource) {
-        keystore.setKeystoreResource(resource);
+        keystore.setResource(resource);
     }
 
     /**
@@ -566,7 +566,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
     }
 
     /**
-     * @deprecated use getKeystore().setKeystoreResourceFilepath(path) instead of setKeystoreResourceFilepath(path)
+     * @deprecated use getKeystore().setResourcePath(path) instead of setKeystoreResourceFilepath(path)
      */
     @Deprecated
     public void setKeystoreResourceFilepath(final String path) {
@@ -574,7 +574,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
     }
 
     /**
-     * @deprecated use getKeystore().setKeystoreResourceClasspath(path) instead of setKeystoreResourceClasspath(path)
+     * @deprecated use getKeystore().setResourcePath("classpath:" + path) instead of setKeystoreResourceClasspath(path)
      */
     @Deprecated
     public void setKeystoreResourceClasspath(final String path) {
@@ -582,7 +582,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
     }
 
     /**
-     * @deprecated use getKeystore().setKeystoreResourceUrl(url) instead of setKeystoreResourceUrl(url)
+     * @deprecated use getKeystore().setResourcePath(url) instead of setKeystoreResourceUrl(url)
      */
     @Deprecated
     public void setKeystoreResourceUrl(final String url) {
@@ -590,11 +590,11 @@ public class SAML2Configuration extends BaseClientConfiguration {
     }
 
     /**
-     * @deprecated use getKeystore().setKeystorePath(path) instead of setKeystorePath(path)
+     * @deprecated use getKeystore().setResourcePath(path) instead of setKeystorePath(path)
      */
     @Deprecated
     public void setKeystorePath(final String path) {
-        keystore.setKeystorePath(path);
+        keystore.setResourcePath(path);
     }
 
     private void initSignatureSigningConfiguration() {

@@ -22,6 +22,7 @@ description: "Review pac4j release notes for supported Java lines, including aut
   - the new `resolveSigningKey` method reads the signing key from a JWKS, or from a keystore when the JWKS is not defined, the logic the OpenID federation used to hold
   - the new `generateKey` method creates a signature key for a given algorithm, and `loadJwkFromOrCreateJwks` takes an optional algorithm for the key it creates when none exists yet, the default staying RSA-2048
 - Added the OpenID4VP protocol support via the new `pac4j-openid4vp` module and the `EudiWalletClient`, `OpenId4VpClient` and `OpenId4VpDcApiClient` clients (+ `OpenId4VpConfiguration` and `OpenId4VpDcApiConfiguration` configurations)
+- Added the `ResourceProperties` to define a resource by its path (`new ResourceProperties(path)`); the `KeystoreProperties` and `JwksProperties` now extend it: use `getResource()`, `setResource(...)` and `setResourcePath(...)`, the `getKeystoreResource()`, `setKeystoreResource(...)`, `setKeystorePath(...)`, `getJwksResource()`, `setJwksResource(...)` and `setJwksPath(...)` methods being deprecated
 - Normalize path in `JEEContext.getPath()`
 - `JwtAuthenticator`: reject RSA/EC-only encryption without a signature; warn for other encryption-only configurations
 

@@ -3,7 +3,6 @@ package org.pac4j.core.config.properties;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.pac4j.core.resource.SpringResourceHelper;
 import org.pac4j.core.util.CommonHelper;
 import org.springframework.core.io.Resource;
 
@@ -16,30 +15,57 @@ import org.springframework.core.io.Resource;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class JwksProperties {
-
-    private Resource jwksResource;
+public class JwksProperties extends ResourceProperties {
 
     private String kid;
 
-    public JwksProperties setJwksResource(final Resource jwksResource) {
-        CommonHelper.assertNotNull("jwksResource", jwksResource);
-        this.jwksResource = jwksResource;
+    /** {@inheritDoc} */
+    @Override
+    public JwksProperties setResource(final Resource resource) {
+        super.setResource(resource);
+        return this;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public JwksProperties setResourcePath(final String path) {
+        super.setResourcePath(path);
         return this;
     }
 
     /**
-     * <p>setJwksPath.</p>
+     * <p>The JWKS resource.</p>
      *
-     * @param path a {@link String} object
-     * @return the properties
+     * @return the resource
+     * @deprecated use {@link #getResource()}
      */
-    public JwksProperties setJwksPath(final String path) {
-        this.jwksResource = SpringResourceHelper.buildResourceFromPath(path);
-        return this;
+    @Deprecated
+    public Resource getJwksResource() {
+        return getResource();
     }
 
-    public boolean isDefined() {
-        return jwksResource != null;
+    /**
+     * <p>Set the JWKS resource.</p>
+     *
+     * @param jwksResource the resource
+     * @return the properties
+     * @deprecated use {@link #setResource(Resource)}
+     */
+    @Deprecated
+    public JwksProperties setJwksResource(final Resource jwksResource) {
+        CommonHelper.assertNotNull("jwksResource", jwksResource);
+        return setResource(jwksResource);
+    }
+
+    /**
+     * <p>Set the JWKS resource from its path.</p>
+     *
+     * @param path the path
+     * @return the properties
+     * @deprecated use {@link #setResourcePath(String)}
+     */
+    @Deprecated
+    public JwksProperties setJwksPath(final String path) {
+        return setResourcePath(path);
     }
 }

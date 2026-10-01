@@ -117,7 +117,7 @@ public class OidcRedirectionActionBuilderTests implements TestsConstants {
         val jwksPath = Files.createTempDirectory("oidc-redirection-action-builder-tests").resolve(kid + ".jwks");
         Files.deleteIfExists(jwksPath);
         val rpJwks = new JwksProperties();
-        rpJwks.setJwksPath(jwksPath.toString());
+        rpJwks.setResourcePath(jwksPath.toString());
         rpJwks.setKid(kid);
         return rpJwks;
     }
