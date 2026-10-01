@@ -28,18 +28,70 @@ If you are starting from scratch, a [pac4j implementation alone](/how-to-secure-
 - Spring Boot 3.x, which brings Spring Security 6
 - an OpenID Connect provider where you can register an application, or the public demo server used below.
 
-## 1) Get the demo
+## 1) Create the Maven project
 
-The [spring-security-jee-pac4j-boot-demo](https://github.com/pac4j/spring-security-jee-pac4j-boot-demo) project demonstrates Spring Boot, Spring Security, the pac4j servlet filters and the bridge. It includes several authentication mechanisms; the steps below adapt it to OIDC.
+Create an empty Spring Boot project with Java 17:
 
 ```bash
-git clone https://github.com/pac4j/spring-security-jee-pac4j-boot-demo.git
-cd spring-security-jee-pac4j-boot-demo
+mkdir -p spring-security-oidc-app/src/main/java/org/pac4j/demo/spring
+mkdir -p spring-security-oidc-app/src/main/resources
+cd spring-security-oidc-app
 ```
 
-Replace the demo's `Pac4jConfig` and `SecurityConfig` with the configurations below, and add `ProtectedController` in the same package as the application class. Update existing Maven dependency versions rather than declaring the same artifact twice.
+Create `pom.xml` at the project root. The Spring Boot parent manages the Spring dependencies, and its Maven plugin runs the application:
 
-Two sibling demos cover the other combinations: [spring-security-webmvc-pac4j-boot-demo](https://github.com/pac4j/spring-security-webmvc-pac4j-boot-demo) with the Spring MVC interceptors instead of the servlet filters, and [spring-security-webflux-pac4j-boot-demo](https://github.com/pac4j/spring-security-webflux-pac4j-boot-demo) for reactive applications.
+```xml
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.5.12</version>
+        <relativePath/>
+    </parent>
+    <groupId>org.example</groupId>
+    <artifactId>spring-security-oidc-app</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <java.version>17</java.version>
+    </properties>
+
+    <dependencies>
+        <!-- Add the dependencies from section 2 here. -->
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+```
+
+Save the Java classes below in the `org.pac4j.demo.spring` package so that Spring Boot discovers the configuration and controllers. Put application properties in `src/main/resources/application.properties`.
+
+Create `src/main/java/org/pac4j/demo/spring/SpringBootApp.java`:
+
+```java
+package org.pac4j.demo.spring;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class SpringBootApp {
+
+    public static void main(final String[] args) {
+        SpringApplication.run(SpringBootApp.class, args);
+    }
+}
+```
 
 ## 2) Add the Maven dependencies
 
@@ -53,6 +105,11 @@ On top of the Spring Boot web and security starters, you need three pac4j artifa
 <dependency>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-security</artifactId>
+</dependency>
+<!-- logging bridge for Spring Framework 6 -->
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-jcl</artifactId>
 </dependency>
 <!-- the pac4j implementation: security, callback and logout filters -->
 <dependency>
@@ -74,13 +131,15 @@ On top of the Spring Boot web and security starters, you need three pac4j artifa
 </dependency>
 ```
 
+The explicit `spring-jcl` dependency supplies the logging bridge required by Spring Framework 6 when pac4j brings `spring-core` transitively. The Spring Boot parent keeps its version aligned with the rest of Spring.
+
 The bridge needs an implementation such as `jakartaee-pac4j`, `spring-webmvc-pac4j` or `spring-webflux-pac4j` to produce a profile. It has no configuration of its own: pac4j detects it on the classpath and installs a `SpringSecurityProfileManager`.
 
 Each time a profile is saved or removed, this manager updates the Spring Security context. The bridge version used here, 10.0.0, targets pac4j 6 and Spring Security 6.
 
 ## 3) Configure pac4j
 
-Let's declare our `Config` as a Spring bean. The OIDC client configuration is familiar, but we'll add an **authorization generator**: it turns trusted profile attributes into the roles our application expects.
+Create `src/main/java/org/pac4j/demo/spring/Pac4jConfig.java` to declare our `Config` as a Spring bean. The OIDC client configuration is familiar, but we'll add an **authorization generator**: it turns trusted profile attributes into the roles our application expects.
 
 ```java
 package org.pac4j.demo.spring;
@@ -130,6 +189,8 @@ The callback URL, with the `?client_name=OidcClient` suffix pac4j appends, is th
 ## 4) Put the pac4j filters in the Spring Security chain
 
 The pac4j filters run **inside** the Spring Security filter chains, one chain per URL pattern, so that the session and the security context are shared:
+
+Save the filter-chain configuration in `src/main/java/org/pac4j/demo/spring/SecurityConfig.java`:
 
 ```java
 package org.pac4j.demo.spring;
@@ -222,7 +283,7 @@ Using Spring MVC interceptors instead of servlet filters? Follow the [webmvc bri
 
 ## 5) Access the authenticated user
 
-After login, let's read the Spring Security context. Its `Authentication` is a `Pac4jAuthenticationToken`: the name is the user identifier, the authorities are the pac4j roles and the principal is the profile itself.
+Create `src/main/java/org/pac4j/demo/spring/ProtectedController.java` to read the Spring Security context after login. Its `Authentication` is a `Pac4jAuthenticationToken`: the name is the user identifier, the authorities are the pac4j roles and the principal is the profile itself.
 
 ```java
 package org.pac4j.demo.spring;
@@ -276,7 +337,7 @@ For providers that support OIDC logout, pac4j redirects the browser to the `end_
 mvn spring-boot:run
 ```
 
-Open [http://localhost:8080/protected/oidc](http://localhost:8080/protected/oidc): you are redirected to the identity provider, then back to the page, where both the Spring Security context and the pac4j profile show the same user. Then try the demo's [admin page](http://localhost:8080/admin/index.html): it returns 403 unless the provider supplies the `administrators` group expected by the authorization generator.
+Open [http://localhost:8080/protected/oidc](http://localhost:8080/protected/oidc): you are redirected to the identity provider, then back to the page, where both the Spring Security context and the pac4j profile show the same user. To try the `/admin/**` role rule, add an admin endpoint to your controller. It returns 403 unless the provider supplies the `administrators` group expected by the authorization generator.
 
 **If something goes wrong:**
 

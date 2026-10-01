@@ -8,36 +8,86 @@ description: "Add OpenID Connect (OIDC) to a JAX-RS application with pac4j on Je
 
 Before adding OIDC to a JAX-RS application, let's distinguish two cases. A browser visits a protected page and needs to be redirected to a login form. An API caller, on the other hand, already has an **access token** and sends it with the request. The application must handle these differently.
 
-The [jax-rs-pac4j](https://github.com/pac4j/jax-rs-pac4j) library supports both. It connects pac4j clients to your resource methods through annotations, on Jersey or RESTEasy (JAX-RS is now called Jakarta REST).
+The [jax-rs-pac4j](https://github.com/pac4j/jax-rs-pac4j) library (like **pac4j**) supports both. It protects resources with pac4j clients through annotations, on Jersey or RESTEasy (JAX-RS is now called Jakarta REST).
 
-We'll start with browser login on **Jersey 4**, then protect a REST API with bearer tokens. We'll also see what changes for Jersey 3, RESTEasy and **Dropwizard**, whose pac4j bundle handles registration for us.
+We'll start with browser login on **Jersey 4**, using an [indirect client](/docs/clients.html#1-direct-vs-indirect-clients): `OidcClient` redirects the browser to the identity provider and completes the login on the callback endpoint. Then we'll protect a REST API with bearer tokens. We'll also see what changes for Jersey 3, RESTEasy and **Dropwizard**, whose pac4j bundle handles registration for us.
 
-The [jax-rs-pac4j-demo](https://github.com/pac4j/jax-rs-pac4j-demo) provides a browser-login example. If you've followed the [Spring Boot guide](/how-to-secure-a-java-application-with-oidc.html), the OIDC client configuration will be familiar; here, we'll connect it to JAX-RS.
+We'll create a small application from scratch.
 
 **What you need:**
 
 - Java 17 or later and Maven
 - a Jakarta REST runtime: Jersey 3 or 4, RESTEasy 6 or 7, standalone on Grizzly or inside a servlet container, or Dropwizard 5
-- an OpenID Connect provider where you can register an application, or the public demo server used below.
+- an OpenID Connect provider where you can register an application, or the public demo server used below (`https://www.casserverpac4j.dev`).
 
-## 1) Get the demo
 
-The demo runs Jersey on an embedded Grizzly server, without any container:
+## 1) Create the Maven project
+
+Create the directories for our application and its resources:
 
 ```bash
-git clone https://github.com/pac4j/jax-rs-pac4j-demo.git
-cd jax-rs-pac4j-demo
-mvn clean package
-java -jar target/jax-rs-pac4j-demo-*.jar
+mkdir -p jaxrs-oidc-app/src/main/java/org/example/resources
+cd jaxrs-oidc-app
 ```
 
-It starts on [http://localhost:8080](http://localhost:8080) with form, HTTP Basic and CAS logins. The sections below apply the same structure to OIDC. If using the `org.example.App` class below, update the Maven Shade plugin's main class to match and replace the resource-package registration.
+Create a `pom.xml` at the project root. It targets Java 17, aligns the Jersey dependencies with a BOM and runs `org.example.App` with the Maven exec plugin:
 
-The demo runs on **Jersey 3** (`jersey3-pac4j`). To follow this guide on Jersey 4 from the demo, also switch its Jersey runtime to version 4.0.2 and its `jersey3-pac4j` dependency to `jersey4-pac4j`. Otherwise, keep Jersey 3: the code below is the same.
+```xml
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.example</groupId>
+    <artifactId>jaxrs-oidc-app</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <maven.compiler.release>17</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <jersey.version>4.0.2</jersey.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.glassfish.jersey</groupId>
+                <artifactId>jersey-bom</artifactId>
+                <version>${jersey.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <!-- Add the dependencies from section 2 here. -->
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.16.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.6.4</version>
+                <configuration>
+                    <mainClass>org.example.App</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+```
+
+For Jersey 3, use `jersey.version` v**3.1.12** and `jersey3-pac4j` in step 2. The Java code below is the same.
 
 ## 2) Add the Maven dependencies
 
-Pick the `jax-rs-pac4j` module matching your runtime, and add the OpenID Connect module. All modules share the `org.pac4j` group and version `8.1.0`:
+Pick the `jax-rs-pac4j` module matching your runtime, and add the OpenID Connect module. The integration modules has the `org.pac4j` *groupId* and its version is **8.1.0** (it is based on pac4j v**6.5.9** as well):
 
 | Your runtime | Maven artifact |
 |--------------|----------------|
@@ -47,7 +97,23 @@ Pick the `jax-rs-pac4j` module matching your runtime, and add the OpenID Connect
 | RESTEasy 7.0 | `resteasy7-pac4j` |
 {:.striped}
 
+Add these dependencies inside the `<dependencies>` element of your `pom.xml`:
+
 ```xml
+<!-- Jersey runtime and dependency injection -->
+<dependency>
+    <groupId>org.glassfish.jersey.core</groupId>
+    <artifactId>jersey-server</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.glassfish.jersey.inject</groupId>
+    <artifactId>jersey-hk2</artifactId>
+</dependency>
+<!-- embedded HTTP server -->
+<dependency>
+    <groupId>org.glassfish.jersey.containers</groupId>
+    <artifactId>jersey-container-grizzly2-http</artifactId>
+</dependency>
 <!-- pac4j integration for Jersey 4 -->
 <dependency>
     <groupId>org.pac4j</groupId>
@@ -62,13 +128,16 @@ Pick the `jax-rs-pac4j` module matching your runtime, and add the OpenID Connect
 </dependency>
 ```
 
-Your application or server supplies the Jersey or RESTEasy runtime itself (Jersey 4.0.2 for this example): for the standalone setup of this guide, that is `jersey-server`, `jersey-hk2` and `jersey-container-grizzly2-http`. The [dependency guide](https://github.com/pac4j/jax-rs-pac4j/wiki/Dependencies) lists the tested combinations.
+The pac4j integration declares the runtime in `provided` scope, so our standalone application supplies it explicitly above. The [dependency guide](https://github.com/pac4j/jax-rs-pac4j/wiki/Dependencies) lists the tested combinations.
 
 ## 3) Configure pac4j and register the features
 
-First, build the `Config` with our OIDC client. We then need to tell JAX-RS three things: how pac4j should access requests and sessions, how to process its security annotations, and how to inject profiles into resource methods.
+First, build the `Config` with our OIDC client. We then need to tell JAX-RS three things:
+- how pac4j should access requests and sessions
+- how to process its security annotations
+- how to inject profiles into resource methods.
 
-These are the runtime feature, security feature and value factory registered below:
+Create `src/main/java/org/example/App.java`. It registers the runtime feature, security feature and profile value factory:
 
 ```java
 package org.example;
@@ -77,10 +146,6 @@ import java.net.URI;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.pac4j.core.config.Config;
-import org.pac4j.jax.rs.annotations.Pac4JCallback;
-import org.pac4j.jax.rs.annotations.Pac4JLogout;
-import org.pac4j.jax.rs.annotations.Pac4JProfile;
-import org.pac4j.jax.rs.annotations.Pac4JSecurity;
 import org.pac4j.jax.rs.features.Pac4JSecurityFeature;
 import org.pac4j.jax.rs.grizzly.features.Pac4JGrizzlyFeature;
 import org.pac4j.jax.rs.jersey.features.Pac4JValueFactoryProvider;
@@ -89,7 +154,7 @@ import org.pac4j.oidc.config.OidcConfiguration;
 
 public class App {
 
-    public static void main(final String[] args) {
+    public static void main(final String[] args) throws InterruptedException {
         final var baseUrl = "http://localhost:8080";
 
         // configuration of the authentication via the OpenID Connect protocol
@@ -108,6 +173,7 @@ public class App {
 
         final var server = GrizzlyHttpServerFactory.createHttpServer(URI.create(baseUrl + "/"), application);
         Runtime.getRuntime().addShutdownHook(new Thread(server::shutdownNow));
+        Thread.currentThread().join();
     }
 }
 ```
@@ -124,7 +190,7 @@ The profile injection is runtime-specific too: `Pac4JValueFactoryProvider.Binder
 
 ## 4) Declare the callback and logout endpoints
 
-The callback and logout look like ordinary resource methods with annotations. Their bodies never run, though: the pac4j filter processes the request and responds before JAX-RS reaches them.
+Create `src/main/java/org/example/resources/AuthResource.java`. The callback and logout look like ordinary resource methods with annotations. Their bodies never run, though: the pac4j filter processes the request and responds before JAX-RS reaches them.
 
 ```java
 package org.example.resources;
@@ -148,14 +214,14 @@ public class AuthResource {
 
     @GET
     @Path("callback")
-    @Pac4JCallback(defaultUrl = "/", renewSession = false)
+    @Pac4JCallback(defaultUrl = "/", renewSession = true)
     public void callback() {
         // handled by pac4j
     }
 
     @POST
     @Path("callback")
-    @Pac4JCallback(defaultUrl = "/", renewSession = false)
+    @Pac4JCallback(defaultUrl = "/", renewSession = true)
     public void callbackPost() {
         // handled by pac4j, for the form_post response mode
     }
@@ -169,11 +235,11 @@ public class AuthResource {
 }
 ```
 
-This Grizzly example follows the demo with `renewSession = false`, so it does not rotate the session identifier after login. For deployment, use a servlet-backed runtime with `renewSession = true`, or validate session renewal with your Grizzly version before enabling it. Session renewal protects against session fixation.
+Keep `renewSession = true`: pac4j rotates the session identifier after login to protect against session fixation. Version 8.1.0 fixes session renewal and preservation of session attributes on Grizzly, so there is no need to disable it for this setup.
 
 ## 5) Protect a resource and read the profile
 
-Annotate the resource method, or the whole class, with `@Pac4JSecurity` and name the client. Add a `@Pac4JProfile` parameter to receive the authenticated user:
+Create `src/main/java/org/example/resources/ProtectedResource.java`. Annotate the resource method, or the whole class, with `@Pac4JSecurity` and name the client. Add a `@Pac4JProfile` parameter to receive the authenticated user:
 
 ```java
 package org.example.resources;
@@ -184,7 +250,6 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import org.pac4j.jax.rs.annotations.Pac4JProfile;
 import org.pac4j.jax.rs.annotations.Pac4JSecurity;
-import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.profile.OidcProfile;
 
 @Path("/protected")
@@ -201,13 +266,43 @@ public class ProtectedResource {
 }
 ```
 
-An anonymous request is redirected to the provider; after login, the callback sends the user back to the requested URL and the method runs with the profile. `@Pac4JSecurity` also accepts `authorizers`, for example a role check declared in the `Config`, and `matchers`. The parameter can be typed as any `CommonProfile` subclass, as `Optional<CommonProfile>` when the resource also serves anonymous users, or you can ask for the whole `@Pac4JProfileManager ProfileManager`.
+When a user who has not signed in opens `/protected/index`, pac4j redirects their browser to the identity provider. After login, the provider returns the browser to `/callback`. pac4j validates the login, saves the user profile in the session and redirects the browser back to `/protected/index`.
+
+pac4j then calls `index(...)` and supplies the authenticated user's `OidcProfile` through the `@Pac4JProfile` parameter. The two annotations have different jobs: `@Pac4JSecurity` protects the endpoint, while `@Pac4JProfile` gives the method access to the user's information.
+
+You can extend `@Pac4JSecurity` with `authorizers` to check permissions, such as a required role, or with `matchers` to decide when security applies. These refer to authorizers and matchers configured in your `Config`.
+
+There are other ways to access the profile, depending on what the method needs:
+
+- `@Pac4JProfile CommonProfile profile` gives access to fields shared across authentication mechanisms, such as the user ID.
+- `@Pac4JProfile Optional<CommonProfile> profile` can be empty when the endpoint's security configuration allows anonymous access. Using `Optional` alone does not allow anonymous access.
+- `@Pac4JProfileManager ProfileManager profileManager` gives access to the profile manager, for example to retrieve all profiles associated with the request.
 
 ## 6) Protect a REST API with the access token
 
-Now let's take the second case: an API caller that already has an access token. For this setup, add `org.pac4j:pac4j-http:6.5.9` for `HeaderClient` and a JSON provider such as `jersey-media-json-jackson`, matching your Jersey version. Replace the stateful registration from step 3 with the configuration below.
+This step is an alternative to browser login. Let's take the second case: an API caller that already has an access token. For this setup, add `org.pac4j:pac4j-http:6.5.9` for `HeaderClient` and a JSON provider such as `jersey-media-json-jackson`, matching your Jersey version. Also add this BOM inside `<dependencyManagement><dependencies>` to align the Jackson dependencies of Jersey and pac4j:
 
-The caller sends its **access token** in the `Authorization: Bearer` header. There is no browser redirect and no local session. Our **direct client** checks the token at the OIDC provider's user info endpoint, using the OIDC client's profile creator:
+```xml
+<dependency>
+    <groupId>com.fasterxml.jackson</groupId>
+    <artifactId>jackson-bom</artifactId>
+    <version>2.22.1</version>
+    <type>pom</type>
+    <scope>import</scope>
+</dependency>
+```
+
+Replace the stateful registration from step 3 with the configuration below.
+
+Here we use a [direct client](/docs/clients.html#1-direct-vs-indirect-clients), `HeaderClient`: the caller sends its **access token** in the `Authorization: Bearer` header, and authentication happens on that request. There is no browser redirect and no local session. `HeaderClient` checks the token at the OIDC provider's user info endpoint, using the OIDC client's profile creator.
+
+In `App.java`, keep the OIDC configuration and server startup, replace the `Config` and `ResourceConfig` declarations, and add these imports:
+
+```java
+import org.pac4j.http.client.direct.HeaderClient;
+import org.pac4j.jax.rs.features.Pac4JJaxRsFeature;
+import org.pac4j.jax.rs.pac4j.NoOpSessionStoreFactory;
+```
 
 ```java
 final var oidcClient = new OidcClient(oidcConfiguration);
@@ -224,6 +319,8 @@ final var application = new ResourceConfig()
     .register(new Pac4JValueFactoryProvider.Binder())
     .packages("org.example.api");
 ```
+
+Create `src/main/java/org/example/api/MeResource.java`:
 
 ```java
 package org.example.api;
@@ -254,10 +351,10 @@ public class MeResource {
 ```
 
 ```bash
-curl -H "Authorization: Bearer eyJhbGciOi..." http://localhost:8080/api/me
+curl -H "Authorization: Bearer $ACCESS_TOKEN" http://localhost:8080/api/me
 ```
 
-This checks credentials on every request. The provider must expose UserInfo and accept the access token there. We have identified the user, but **we still need to enforce our API's audience, scopes and application-specific permissions**. Configure these checks for your provider and API.
+Restart the application, then set `ACCESS_TOKEN` to a real access token issued by your provider before running the command above. This checks credentials on every request. The provider must expose UserInfo and accept the access token there. We have identified the user, but **we still need to enforce our API's audience, scopes and application-specific permissions**. Configure these checks for your provider and API.
 
 If the provider issues **JWT access tokens**, you can also validate them locally. Replace the profile creator with a `JwtAuthenticator` from `pac4j-jwt`, configured with the provider's JWKS and the expected issuer, audience and token lifetime checks.
 
@@ -282,11 +379,10 @@ The stateless API has no local session to destroy. Stopping token use on the cli
 ## 8) Run the application
 
 ```bash
-mvn clean package
-java -jar target/*.jar
+mvn compile exec:java
 ```
 
-Open [http://localhost:8080/protected/index](http://localhost:8080/protected/index). You are redirected to the identity provider to sign in, then returned to the resource, which greets you by name.
+For the browser configuration from steps 3–5, open [http://localhost:8080/protected/index](http://localhost:8080/protected/index). You are redirected to the identity provider to sign in, then returned to the resource, which greets you by name.
 
 **If something goes wrong:**
 
@@ -299,9 +395,15 @@ Open [http://localhost:8080/protected/index](http://localhost:8080/protected/ind
 
 What if your application uses Dropwizard? It runs Jersey inside Jetty, so the resource annotations above still apply. The [dropwizard-pac4j](https://github.com/pac4j/dropwizard-pac4j) bundle takes care of step 3: it builds `Config` from a factory named in YAML, registers the servlet and security features and the profile value factory, and enables Jetty sessions.
 
-The bundle below targets Dropwizard 5.0.2, which uses Jersey 3. It already brings `jersey3-pac4j`, so you do not need to add that dependency yourself:
+Create a separate `dropwizard-oidc-app` project with `src/main/java/org/example/resources` and `src/main/java/org/example/security`. Reuse the Maven skeleton from step 1, change its artifact ID to `dropwizard-oidc-app` and the exec plugin's main class to `org.example.MyApplication`.
+
+Replace the Jersey BOM with `io.dropwizard:dropwizard-bom:5.0.2` (also with `type` set to `pom` and `scope` to `import`), and replace the dependencies from step 2 with these:
 
 ```xml
+<dependency>
+    <groupId>io.dropwizard</groupId>
+    <artifactId>dropwizard-core</artifactId>
+</dependency>
 <dependency>
     <groupId>org.pac4j</groupId>
     <artifactId>dropwizard-pac4j</artifactId>
@@ -314,7 +416,9 @@ The bundle below targets Dropwizard 5.0.2, which uses Jersey 3. It already bring
 </dependency>
 ```
 
-Move the OIDC configuration of step 3 into a `ConfigFactory`. Use the externally reachable callback URL, including any configured application context path.
+Dropwizard 5 uses Jersey 3. The **dropwizard-pac4j 8.1.0** bundle already brings **jersey3-pac4j 8.1.0**; keep the Jersey 4 dependencies out of this project. It also uses pac4j 6.5.9 and jakartaee-pac4j 8.0.3.
+
+Create `src/main/java/org/example/security/SecurityConfigFactory.java` and move the OIDC configuration of step 3 into this `ConfigFactory`. Use the externally reachable callback URL, including any configured application context path.
 
 By default, the bundle considers all JAX-RS requests as AJAX requests: an indirect client like `OidcClient` then returns a 401 error instead of redirecting to the identity provider, which suits REST APIs. For browser login on JAX-RS resources, restore the default pac4j behavior with a `DefaultAjaxRequestResolver`, as described in the [bundle README](https://github.com/pac4j/dropwizard-pac4j#ajax-requests-and-indirect-clients):
 
@@ -344,7 +448,7 @@ public class SecurityConfigFactory implements ConfigFactory {
 }
 ```
 
-Reference it in the YAML configuration, under a `pac4j` section:
+Create `config.yml` at the project root and reference the factory under a `pac4j` section:
 
 ```yaml
 pac4j:
@@ -412,7 +516,15 @@ public class MyApplication extends Application<MyConfiguration> {
 }
 ```
 
-Reuse `AuthResource` and `ProtectedResource`, but set `renewSession = true` on both callbacks: Dropwizard uses servlet sessions.
+Save the configuration and application classes as `src/main/java/org/example/MyConfiguration.java` and `src/main/java/org/example/MyApplication.java`. Copy `AuthResource` and `ProtectedResource` from steps 4 and 5 into the resource directory. Their callbacks already enable session renewal; Dropwizard uses servlet sessions.
+
+Start this application with its YAML configuration:
+
+```bash
+mvn compile exec:java -Dexec.args="server config.yml"
+```
+
+Open [http://localhost:8080/protected/index](http://localhost:8080/protected/index) to follow the same browser login flow.
 
 You can also declare a global filter (`globalFilters`, which accepts only one entry) in the `pac4j` section to protect the whole API, or servlet-level filters for the non-Jersey parts of the application. The [bundle README](https://github.com/pac4j/dropwizard-pac4j#configuring-the-bundle) describes these options.
 
@@ -420,7 +532,7 @@ For the bearer-token API from step 6, set `sessionEnabled: false`, build the `He
 
 ## 10) Switching to SAML or CAS
 
-For browser login, add `pac4j-saml` or `pac4j-cas`, replace the `OidcClient` and update `@Pac4JSecurity`. Adapt the injected profile type or use `CommonProfile`, and register the protocol-specific callback and logout settings. SAML also needs a keystore and metadata exchange. The bearer-token example is a separate authentication mechanism and is not converted by changing this browser client. The protocol-specific setup is described in the [SAML guide](/docs/clients/saml.html) and the [CAS guide](/docs/clients/cas.html); the demo already includes a CAS login.
+For browser login, add `pac4j-saml` or `pac4j-cas`, replace the `OidcClient` and update `@Pac4JSecurity`. Adapt the injected profile type or use `CommonProfile`, and register the protocol-specific callback and logout settings. SAML also needs a keystore and metadata exchange. The bearer-token example is a separate authentication mechanism and is not converted by changing this browser client. The protocol-specific setup is described in the [SAML guide](/docs/clients/saml.html) and the [CAS guide](/docs/clients/cas.html).
 
 ## 11) Learn more
 

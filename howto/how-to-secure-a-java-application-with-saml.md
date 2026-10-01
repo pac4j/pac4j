@@ -15,20 +15,59 @@ We'll make our application a SAML service provider with **pac4j and Spring Boot*
 **What you need:**
 
 - Java 17 or later and Maven
-- the **metadata** of your IdP, as a URL or an XML file. Every IdP publishes it; ask your identity team if you do not know where it is. The demo uses the metadata URL of the public test IdP.
+- the **metadata** of your IdP, as a URL or an XML file. Every IdP publishes it; ask your identity team if you do not know where it is. The example uses the metadata URL of the public test IdP.
 
-## 1) Get the Spring Boot demo
+## 1) Create the Maven project
 
-The [SAML demo project](https://github.com/pac4j/simple-spring-boot-pac4j-demos/tree/saml2) contains the classes shown in this guide, a ready-made keystore and a `metadata` directory:
+Create an empty Spring Boot project with Java 17:
 
 ```bash
-git clone --branch saml2 --single-branch https://github.com/pac4j/simple-spring-boot-pac4j-demos.git
-cd simple-spring-boot-pac4j-demos
+mkdir -p spring-saml-app/src/main/java/org/example
+mkdir -p spring-saml-app/src/main/resources
+cd spring-saml-app
 ```
+
+Create `pom.xml` at the project root. The Spring Boot parent manages the Spring dependencies, and its Maven plugin runs the application:
+
+```xml
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.5.12</version>
+        <relativePath/>
+    </parent>
+    <groupId>org.example</groupId>
+    <artifactId>spring-saml-app</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <java.version>17</java.version>
+    </properties>
+
+    <dependencies>
+        <!-- Add the dependencies from section 2 here. -->
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+```
+
+Save the Java classes below in the `org.example` package so that Spring Boot discovers the configuration and controllers. Put application properties in `src/main/resources/application.properties`.
 
 ## 2) Add the Maven dependencies
 
-The [demo's `pom.xml`](https://github.com/pac4j/simple-spring-boot-pac4j-demos/blob/saml2/pom.xml) uses the Spring Boot parent. On top of Spring MVC, you need the pac4j Spring MVC integration and the SAML module, which embeds the OpenSAML library:
+Inside the `<dependencies>` element, on top of Spring MVC, you need the pac4j Spring MVC integration and the SAML module, which embeds the OpenSAML library:
 
 ```xml
 <!-- Spring Boot web -->
@@ -55,16 +94,27 @@ The [demo's `pom.xml`](https://github.com/pac4j/simple-spring-boot-pac4j-demos/b
 Our service provider needs a key pair to sign requests and decrypt encrypted assertions. Let's create a Java keystore with `keytool`:
 
 ```bash
-keytool -genkeypair -alias pac4j-demo -keypass pac4j-demo-passwd -keystore samlKeystore.jks -storepass pac4j-demo-passwd -keyalg RSA -keysize 2048 -validity 3650
+keytool -genkeypair -alias pac4j-demo -keypass pac4j-demo-passwd -storetype JKS -keystore src/main/resources/samlKeystore.jks -storepass pac4j-demo-passwd -keyalg RSA -keysize 2048 -validity 3650
 ```
 
-Put the file in `src/main/resources`. The demo already ships one. If the keystore path you configure does not exist and is writable, pac4j generates the keystore and its key pair for you at first use.
+Create a `metadata` directory at the project root for the generated SP metadata (`mkdir -p metadata`). If the keystore path you configure does not exist and is writable, pac4j generates the keystore and its key pair for you at first use.
 
 ## 4) Configure SAML 2.0 authentication
 
-The whole security setup fits in one class, [`SecurityConfig`](https://github.com/pac4j/simple-spring-boot-pac4j-demos/blob/saml2/src/main/java/org/pac4j/demos/SecurityConfig.java):
+Create `src/main/java/org/example/SecurityConfig.java`:
 
 ```java
+package org.example;
+
+import org.pac4j.core.config.Config;
+import org.pac4j.springframework.config.Pac4jSecurityConfig;
+import org.pac4j.saml.client.SAML2Client;
+import org.pac4j.saml.config.SAML2Configuration;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+
 @Configuration
 public class SecurityConfig extends Pac4jSecurityConfig {
 
@@ -100,6 +150,15 @@ Our application also needs an identity of its own. `setServiceProviderEntityId` 
 
 Finally, `Pac4jSecurityConfig` registers `/callback` and `/logout`, and `addSecurity(registry, "SAML2Client")` protects `/protected/**`. In SAML terms, the callback is our **Assertion Consumer Service** (ACS).
 
+The IdP returns the assertion by a cross-site POST. Configure the session cookie in `src/main/resources/application.properties` so that the browser sends it on the callback:
+
+```properties
+server.servlet.session.cookie.same-site=none
+server.servlet.session.cookie.secure=true
+```
+
+Use HTTPS when deploying beyond localhost: `SameSite=None` requires a secure cookie.
+
 ## 5) Exchange metadata with your identity provider
 
 We have given pac4j the IdP metadata, but we are only halfway there: **the IdP must also know our application**.
@@ -115,24 +174,32 @@ If the IdP metadata is not reachable over HTTP from your application, download i
 
 ## 6) Access the authenticated user
 
-The [application controller](https://github.com/pac4j/simple-spring-boot-pac4j-demos/blob/saml2/src/main/java/org/pac4j/demos/Application.java) exposes a public page and a protected page:
+Create `src/main/java/org/example/Application.java` to expose a public page and a protected page:
 
 ```java
-@Autowired
-private ProfileManager profileManager;
+package org.example;
 
-@RequestMapping("/")
-@ResponseBody
-public String index() {
-    return "<h1>Public area</h1><p><a href='/protected/index'>Protected area</a></p>"
-            + "<p><a href='/logout'>Logout</a></p>" + profileManager.getProfiles();
-}
+import org.pac4j.core.profile.ProfileManager;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@RequestMapping("/protected/index")
-@ResponseBody
-public String secure() {
-    return "<h1>Protected area</h1><a href='/'>Home</a><p/>"
-            + "<p><a href='/logout'>Logout</a></p>" + profileManager.getProfiles();
+@RestController
+public class Application {
+
+    @Autowired
+    private ProfileManager profileManager;
+
+    @GetMapping(value = "/", produces = "text/html")
+    public String index() {
+        return "<h1>Public area</h1><p><a href='/protected/index'>Protected area</a></p>"
+            + "<p><a href='/logout'>Logout</a></p>";
+    }
+
+    @GetMapping(value = "/protected/index", produces = "text/plain")
+    public String secure() {
+        return "Protected area\n" + profileManager.getProfiles() + "\nVisit /logout to sign out.";
+    }
 }
 ```
 
@@ -176,9 +243,14 @@ In pac4j 6.5.9, this option is `false` by default: enabling central logout alone
 
 ## 8) Run the application
 
-Start [`SpringBootDemo`](https://github.com/pac4j/simple-spring-boot-pac4j-demos/blob/saml2/src/main/java/org/pac4j/demos/SpringBootDemo.java) from your IDE or with `mvn spring-boot:run`:
+Create `src/main/java/org/example/SpringBootDemo.java`:
 
 ```java
+package org.example;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
 @SpringBootApplication
 public class SpringBootDemo {
     public static void main(final String[] args) {
@@ -186,6 +258,8 @@ public class SpringBootDemo {
     }
 }
 ```
+
+Start the application with `mvn spring-boot:run`.
 
 Open [http://localhost:8080/](http://localhost:8080/) and follow **Protected area**. You are redirected to the IdP to sign in, then posted back to the callback URL with the assertion, and the protected page prints your profile.
 
@@ -198,6 +272,7 @@ Open [http://localhost:8080/](http://localhost:8080/) and follow **Protected are
 
 ## 9) Learn more
 
+- The [Spring Boot SAML demo](https://github.com/pac4j/simple-spring-boot-pac4j-demos/tree/saml2) for a complete reference application.
 - The documentation for the [SAML 2.0 client for Java](/docs/clients/saml.html): bindings, signature algorithms, forced and passive authentication, attribute converters and IdP-specific notes.
 - The `SAML2Client` keeps a replay cache between authentications, so define it once as a singleton, which is what the Spring bean above does.
 
