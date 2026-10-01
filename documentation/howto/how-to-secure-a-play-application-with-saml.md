@@ -3,21 +3,21 @@ permalink: /how-to-secure-a-play-application-with-saml.html
 layout: guide
 title: How to secure a Play client application with SAML (using pac4j)
 seo_title: "How to secure a Play Framework client application with SAML | pac4j"
-description: "Add SAML 2.0 single sign-on to a Play Framework Java application with pac4j: sbt dependencies, keystore, Guice module, routes, @Secure actions and logout."
+description: "Add SAML 2.0 single sign-on to a Play 3 Framework Java application with pac4j: sbt dependencies, keystore, Guice module, routes, @Secure actions and logout."
 ---
 
 In a Play application, we want to protect actions while keeping the usual routes and controllers. The [play-pac4j](https://github.com/pac4j/play-pac4j) library lets us do that with a `@Secure` annotation, a `CallbackController` and a `LogoutController`.
 
 Here, we'll use SAML 2.0. Our application will act as a **service provider**, delegating login to an IdP such as Microsoft Entra ID, Okta, ADFS, Shibboleth or Keycloak. The same integration also supports the other pac4j authentication mechanisms.
 
-We'll work with **Play 3.0 and Java**. We'll create a minimal application; the [play-pac4j-java-demo](https://github.com/pac4j/play-pac4j-java-demo) provides a more complete reference with OIDC, CAS, OAuth, form and JWT examples. There is also a [play-pac4j-scala-demo](https://github.com/pac4j/play-pac4j-scala-demo) for Scala developers.
+We'll work with **play-pac4j v14**, designed for **Play 3 and Scala 3**, and write our application in **Java**. We'll create a minimal application; the [play-pac4j-java-demo](https://github.com/pac4j/play-pac4j-java-demo) provides a more complete reference with OIDC, CAS, OAuth, form and JWT examples. There is also a [play-pac4j-scala-demo](https://github.com/pac4j/play-pac4j-scala-demo) for Scala developers.
 
 If you've read the [Spring Boot SAML guide](/how-to-secure-a-java-application-with-saml.html), you'll recognize the protocol configuration. What changes here is the Guice module, the session store and the way we protect actions.
 
 **What you need:**
 
 - Java 17 or later and sbt
-- Play 3.0, with Scala 2.13 or Scala 3
+- Play 3.0 with Scala 3.9 or later, even for a Java application
 - the **metadata** of your identity provider, as a URL or an XML file. The example uses the public pac4j test IdP.
 
 ## 1) Create the sbt project
@@ -32,13 +32,13 @@ cd play-saml-app
 Create `project/build.properties`:
 
 ```properties
-sbt.version=1.12.8
+sbt.version=1.12.10
 ```
 
 Create `project/plugins.sbt` to enable Play 3:
 
 ```scala
-addSbtPlugin("org.playframework" % "sbt-plugin" % "3.0.10")
+addSbtPlugin("org.playframework" % "sbt-plugin" % "3.0.12")
 ```
 
 Create `build.sbt` at the root, then add the dependencies from step 2:
@@ -46,16 +46,18 @@ Create `build.sbt` at the root, then add the dependencies from step 2:
 ```scala
 name := "play-saml-app"
 version := "1.0-SNAPSHOT"
-scalaVersion := "2.13.18"
+scalaVersion := "3.9.0"
 
 lazy val root = (project in file(".")).enablePlugins(PlayJava)
 ```
+
+play-pac4j v14 is built with Scala 3.9 LTS, so the Scala version must be set to 3.9 or later, even if our code is only Java: sbt uses it to pick the Scala artifacts of Play and play-pac4j.
 
 Create an empty `conf/application.conf`. Save the Java classes from the following steps in `app/modules` and `app/controllers`, and the routes in `conf/routes`.
 
 ## 2) Add the sbt dependencies
 
-Add `play-pac4j` and the SAML module to `build.sbt`. The `%%` selects the artifact for your Scala version: the library is built for Scala 2.13 and 3. The version suffix matters too: `13.0.3-PLAY3.0` is for Play 3.0.
+Add `play-pac4j` and the SAML module to `build.sbt`. The `%%` appends the Scala version to the artifact name: with Scala 3, it resolves `play-pac4j_3`, the only artifact published by v14.
 
 We'll also need Guice for our module and a cache for the session store in step 4.
 
@@ -65,7 +67,7 @@ resolvers += "Shibboleth releases" at "https://build.shibboleth.net/nexus/conten
 libraryDependencies += guice
 libraryDependencies += caffeine
 
-val playPac4jVersion = "13.0.3-PLAY3.0"
+val playPac4jVersion = "14.0.0"
 val pac4jVersion = "6.5.9"
 
 libraryDependencies ++= Seq(
@@ -75,7 +77,7 @@ libraryDependencies ++= Seq(
 )
 ```
 
-OpenSAML is published in the Shibboleth repository, so the resolver above is required. The Scala Jackson module must match the Jackson 2.22.x databind brought by pac4j 6.5.9; Play's default 2.14.x module cannot run with it. Keep the transitive dependencies required by pac4j SAML. For Play 2.9 or 2.8, use the matching `-PLAY2.9` or `-PLAY2.8` versions listed in the [play-pac4j README](https://github.com/pac4j/play-pac4j#readme).
+OpenSAML is published in the Shibboleth repository, so the resolver above is required. The Scala Jackson module must match the Jackson 2.22.x databind brought by pac4j 6.5.9; Play's default 2.14.x module cannot run with it. Keep the transitive dependencies required by pac4j SAML. play-pac4j v14 only supports Play 3 and Scala 3: for Scala 2.13, stay on `13.0.x-PLAY3.0`, and for Play 2.9 or 2.8 on the `-PLAY2.9` or `-PLAY2.8` versions listed in the [play-pac4j README](https://github.com/pac4j/play-pac4j#readme).
 
 ## 3) Create the service provider keystore
 
@@ -169,7 +171,7 @@ play.http.session.secure = true
 
 The session cookie must be sent on the IdP's cross-site POST: use `SameSite=None` with `Secure`, and HTTPS when deploying beyond localhost. See [Play's session settings](https://www.playframework.com/documentation/3.0.x/SettingsSession).
 
-Why do we need a session store? Play has a session cookie, but no server-side session of its own. `PlayCacheSessionStore` keeps the pac4j data in the cache and puts only a session identifier in the cookie. Without a configured store, pac4j fails at startup with an explicit message. You can also use `PlayCookieSessionStore`, which encrypts everything into the cookie and needs no cache.
+Why do we need a session store? Play has a session cookie, but no server-side session of its own. `PlayCacheSessionStore` keeps the pac4j data in the cache and puts only a session identifier in the cookie. Without a configured store, pac4j fails at startup with an explicit message. You can also use `PlayCookieSessionStore`, which encrypts everything into the cookie and needs no cache. Let Play inject it: its encryption key is then derived from `play.http.secret.key`, which must be stable and shared by all the nodes of your application.
 
 The `SAML2Configuration` describes our keystore, the IdP metadata, our entity ID and the output path for our SP metadata. These are the same settings explained in the [Spring Boot guide](/how-to-secure-a-java-application-with-saml.html#4-configure-saml-20-authentication).
 
