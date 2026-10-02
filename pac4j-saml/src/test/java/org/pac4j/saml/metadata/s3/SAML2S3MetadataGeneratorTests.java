@@ -43,7 +43,7 @@ public class SAML2S3MetadataGeneratorTests implements TestsConstants {
         configuration.setPrivateKeyPassword("pac4j");
         configuration.setSignMetadata(true);
         configuration.setServiceProviderEntityId(ENTITY_ID);
-        configuration.setIdentityProviderMetadataResource(new ClassPathResource("idp-metadata.xml"));
+        configuration.getIdentityProviderMetadata().setResource(new ClassPathResource("idp-metadata.xml"));
         configuration.setMetadataGenerator(metadataGenerator);
         configuration.init();
     }

@@ -36,7 +36,7 @@ The federation endpoint publishes a signed entity configuration for your applica
 - either via a keystore (like for the SAML protocol):
 
 ```java
-oidcConfig.getFederation().getKeystore().setResourcePath("file:./metadata/oidcfede.keystore");
+oidcConfig.getFederation().getKeystore().setPath("file:./metadata/oidcfede.keystore");
 oidcConfig.getFederation().getKeystore().setKeystorePassword("changeit");
 oidcConfig.getFederation().getKeystore().setPrivateKeyPassword("changeit");
 ```
@@ -46,7 +46,7 @@ oidcConfig.getFederation().getKeystore().setPrivateKeyPassword("changeit");
 - or via a JWKS:
 
 ```java
-oidcConfig.getFederation().getJwks().setResourcePath("file:./metadata/oidcfede.jwks");
+oidcConfig.getFederation().getJwks().setPath("file:./metadata/oidcfede.jwks");
 oidcConfig.getFederation().getJwks().setKid("mykeyoidcfede26");
 ```
 
@@ -68,7 +68,7 @@ Available properties are:
 - `clientRegistrationTypes` (`List<String>`, default: `["explicit", "automatic"]`): RP registration modes accepted by pac4j for federation registration.
 - `clientName` (`String`, optional): value of the `client_name` RP metadata claim.
 - `contacts` (`List<String>`, default: empty list): value of the `contacts` RP metadata claim when at least one contact is provided.
-- `trustAnchors` (`List<OidcTrustAnchorProperties>`, default: empty list): trust anchors used to resolve trust chains (`issuer` and optional `jwksResource` for each anchor).
+- `trustAnchors` (`List<OidcTrustAnchorProperties>`, default: empty list): trust anchors used to resolve trust chains (`issuer` and optional `jwks` for each anchor).
 - `targetOp` (`String`): OP entity identifier to resolve via federation. When set, federation mode is used instead of discovery URI resolution.
 - `sendTrustChain` (`boolean`, default: `false`): when enabled, sends the RP trust chain upfront in authorization requests.
 - `secretExportFile` (`String`): the file where to save a received secret during an explicit registration.
@@ -115,7 +115,7 @@ federation.setTargetOp("http://localhost:8080/op");
 
 val trust = new OidcTrustAnchorProperties();
 trust.setIssuer("http://localhost:8081/ta");
-trust.setJwksPath("http://localhost:8081/ta/jwks.json"); // optional
+trust.getJwks().setPath("http://localhost:8081/ta/jwks.json"); // optional
 federation.getTrustAnchors().add(trust);
 ```
 

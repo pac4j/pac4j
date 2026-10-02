@@ -19,6 +19,22 @@ public class JwksProperties extends ResourceProperties {
 
     private String kid;
 
+    /**
+     * <p>Properties without JWKS yet.</p>
+     */
+    public JwksProperties() {
+        // the resource is set later
+    }
+
+    /**
+     * <p>Properties of the JWKS at a path.</p>
+     *
+     * @param path the path: {@code classpath:}, {@code file:}, {@code http(s)://} or a plain file path
+     */
+    public JwksProperties(final String path) {
+        super(path);
+    }
+
     /** {@inheritDoc} */
     @Override
     public JwksProperties setResource(final Resource resource) {
@@ -28,8 +44,8 @@ public class JwksProperties extends ResourceProperties {
 
     /** {@inheritDoc} */
     @Override
-    public JwksProperties setResourcePath(final String path) {
-        super.setResourcePath(path);
+    public JwksProperties setPath(final String path) {
+        super.setPath(path);
         return this;
     }
 
@@ -37,7 +53,7 @@ public class JwksProperties extends ResourceProperties {
      * <p>The JWKS resource.</p>
      *
      * @return the resource
-     * @deprecated use {@link #getResource()}
+     * @deprecated use {@code getResource()}
      */
     @Deprecated
     public Resource getJwksResource() {
@@ -62,10 +78,10 @@ public class JwksProperties extends ResourceProperties {
      *
      * @param path the path
      * @return the properties
-     * @deprecated use {@link #setResourcePath(String)}
+     * @deprecated use {@link #setPath(String)}
      */
     @Deprecated
     public JwksProperties setJwksPath(final String path) {
-        return setResourcePath(path);
+        return setPath(path);
     }
 }

@@ -52,7 +52,7 @@ public class SAML2IdentityProviderMetadataResolverTest {
     @BeforeEach
     public void setUp() {
         var configuration = new SAML2Configuration();
-        configuration.setIdentityProviderMetadataResource(new ClassPathResource("idp-metadata.xml"));
+        configuration.getIdentityProviderMetadata().setResource(new ClassPathResource("idp-metadata.xml"));
         metadataResolver = new SAML2IdentityProviderMetadataResolver(configuration);
     }
 
@@ -75,7 +75,7 @@ public class SAML2IdentityProviderMetadataResolverTest {
     @Test
     public void resolveMetadataOverUrlWithHostnameVerifier() throws Exception {
         var configuration = new SAML2Configuration();
-        configuration.setIdentityProviderMetadataResource(new UrlResource("https://www.pac4j.org"));
+        configuration.getIdentityProviderMetadata().setResource(new UrlResource("https://www.pac4j.org"));
         configuration.setHostnameVerifier((s, sslSession) -> true);
         configuration.setSslSocketFactory(disabledSslContext().getSocketFactory());
         metadataResolver = new SAML2IdentityProviderMetadataResolver(configuration);
@@ -89,7 +89,7 @@ public class SAML2IdentityProviderMetadataResolverTest {
     @Test
     public void resolveMetadataOverUrl() throws Exception {
         var configuration = new SAML2Configuration();
-        configuration.setIdentityProviderMetadataResource(new UrlResource("https://sso.union.edu/idp/shibboleth"));
+        configuration.getIdentityProviderMetadata().setResource(new UrlResource("https://sso.union.edu/idp/shibboleth"));
         metadataResolver = new SAML2IdentityProviderMetadataResolver(configuration);
 
         var resolver = metadataResolver.resolve();
@@ -108,7 +108,7 @@ public class SAML2IdentityProviderMetadataResolverTest {
     @Test
     public void resolveMetadataFromByteArray() throws Exception {
         var configuration = new SAML2Configuration();
-        configuration.setIdentityProviderMetadataResource(
+        configuration.getIdentityProviderMetadata().setResource(
                 new ByteArrayResource(new ClassPathResource("idp-metadata.xml").getInputStream().readAllBytes()));
         metadataResolver = new SAML2IdentityProviderMetadataResolver(configuration);
 
@@ -126,7 +126,7 @@ public class SAML2IdentityProviderMetadataResolverTest {
         configuration.setHostnameVerifier((s, sslSession) -> true);
         //var resource = new SAML2UrlResource(new URL("https://md.incommon.org/InCommon/InCommon-metadata-idp-only.xml"), configuration);
         var resource = new SAML2UrlResource(new URL("https://www.casserverpac4j.dev/idp/metadata"), configuration);
-        configuration.setIdentityProviderMetadataResource(resource);
+        configuration.getIdentityProviderMetadata().setResource(resource);
         metadataResolver = new SAML2IdentityProviderMetadataResolver(configuration);
         var resolver = metadataResolver.resolve();
         assertNotNull(resolver);
@@ -135,7 +135,7 @@ public class SAML2IdentityProviderMetadataResolverTest {
     @Test
     public void resolveExpiringMetadata() {
         var configuration = new SAML2Configuration();
-        configuration.setIdentityProviderMetadataResource(new ClassPathResource("expired-idp-metadata.xml"));
+        configuration.getIdentityProviderMetadata().setResource(new ClassPathResource("expired-idp-metadata.xml"));
         metadataResolver = new SAML2IdentityProviderMetadataResolver(configuration);
         metadataResolver.init();
         assertNull(metadataResolver.getEntityDescriptorElement());

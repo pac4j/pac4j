@@ -43,6 +43,22 @@ public class KeystoreProperties extends ResourceProperties {
 
     private KeystoreGenerator keystoreGenerator;
 
+    /**
+     * <p>Properties without keystore yet.</p>
+     */
+    public KeystoreProperties() {
+        // the resource is set later
+    }
+
+    /**
+     * <p>Properties of the keystore at a path.</p>
+     *
+     * @param path the path: {@code classpath:}, {@code file:}, {@code http(s)://} or a plain file path
+     */
+    public KeystoreProperties(final String path) {
+        super(path);
+    }
+
     /** {@inheritDoc} */
     @Override
     public KeystoreProperties setResource(final Resource resource) {
@@ -52,8 +68,8 @@ public class KeystoreProperties extends ResourceProperties {
 
     /** {@inheritDoc} */
     @Override
-    public KeystoreProperties setResourcePath(final String path) {
-        super.setResourcePath(path);
+    public KeystoreProperties setPath(final String path) {
+        super.setPath(path);
         return this;
     }
 
@@ -61,7 +77,7 @@ public class KeystoreProperties extends ResourceProperties {
      * <p>The keystore resource.</p>
      *
      * @return the resource
-     * @deprecated use {@link #getResource()}
+     * @deprecated use {@code getResource()}
      */
     @Deprecated
     public Resource getKeystoreResource() {
@@ -85,11 +101,11 @@ public class KeystoreProperties extends ResourceProperties {
      *
      * @param path the path
      * @return the properties
-     * @deprecated use {@link #setResourcePath(String)}
+     * @deprecated use {@link #setPath(String)}
      */
     @Deprecated
     public KeystoreProperties setKeystorePath(final String path) {
-        return setResourcePath(path);
+        return setPath(path);
     }
 
     @Deprecated
@@ -104,6 +120,6 @@ public class KeystoreProperties extends ResourceProperties {
 
     @Deprecated
     public void setKeystoreResourceUrl(final String url) {
-        setResourcePath(url);
+        setPath(url);
     }
 }

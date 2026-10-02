@@ -53,8 +53,8 @@ public class SAML2LogoutValidatorTests {
     private static SAML2Configuration getSaml2Configuration() {
         val config = new SAML2Configuration();
         config.setForceKeystoreGeneration(true);
-        config.setIdentityProviderMetadataResource(new ClassPathResource("idp-metadata.xml"));
-        config.setServiceProviderMetadataResource(new FileSystemResource("target/out.xml"));
+        config.getIdentityProviderMetadata().setResource(new ClassPathResource("idp-metadata.xml"));
+        config.getServiceProviderMetadata().setResource(new FileSystemResource("target/out.xml"));
         config.setForceServiceProviderMetadataGeneration(true);
         config.setKeystorePath("target/keystore.jks");
         config.setKeystorePassword("pac4j");

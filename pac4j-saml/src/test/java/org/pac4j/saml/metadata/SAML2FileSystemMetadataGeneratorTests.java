@@ -27,11 +27,12 @@ public class SAML2FileSystemMetadataGeneratorTests {
         configuration.setKeystorePassword("pac4j");
         configuration.setPrivateKeyPassword("pac4j");
         configuration.setSignMetadata(true);
-        configuration.setServiceProviderMetadataResource(new FileSystemResource("target/out.xml"));
-        configuration.setIdentityProviderMetadataResource(new ClassPathResource("idp-metadata.xml"));
+        configuration.getServiceProviderMetadata().setResource(new FileSystemResource("target/out.xml"));
+        configuration.getIdentityProviderMetadata().setResource(new ClassPathResource("idp-metadata.xml"));
         configuration.init();
 
-        SAML2MetadataGenerator metadataGenerator = new SAML2FileSystemMetadataGenerator(configuration.getServiceProviderMetadataResource());
+        SAML2MetadataGenerator metadataGenerator =
+            new SAML2FileSystemMetadataGenerator(configuration.getServiceProviderMetadata().getResource());
         val entity = metadataGenerator.buildEntityDescriptor();
         assertNotNull(entity);
         val metadata = metadataGenerator.getMetadata(entity);

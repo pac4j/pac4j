@@ -100,7 +100,7 @@ class MdocVerifierTests {
     private ResourceProperties crlResource(final X509CRL crl) throws Exception {
         val path = Files.createTempFile(directory, "crl-", ".crl");
         Files.write(path, crl.getEncoded());
-        return new ResourceProperties().setResourcePath(path.toString());
+        return new ResourceProperties().setPath(path.toString());
     }
 
     private KeystoreProperties trustStore(X509Certificate certificate) throws Exception {
@@ -111,7 +111,7 @@ class MdocVerifierTests {
         try (val output = Files.newOutputStream(path)) {
             store.store(output, "changeit".toCharArray());
         }
-        return new KeystoreProperties().setResourcePath(path.toString()).setKeyStoreType("PKCS12").setKeystorePassword("changeit");
+        return new KeystoreProperties(path.toString()).setKeyStoreType("PKCS12").setKeystorePassword("changeit");
     }
 
     private void saveRequest(String clientId, String nonce, String responseUri) {

@@ -44,7 +44,7 @@ public abstract class AbstractSAML2ClientTests implements TestsConstants {
         cfg.setServiceProviderEntityId("urn:mace:saml:pac4j.org");
         cfg.setForceServiceProviderMetadataGeneration(true);
         cfg.setForceKeystoreGeneration(true);
-        cfg.setServiceProviderMetadataResource(new FileSystemResource(new File("target", "sp-metadata.xml").getAbsolutePath()));
+        cfg.getServiceProviderMetadata().setResource(new FileSystemResource(new File("target", "sp-metadata.xml").getAbsolutePath()));
         cfg.setSamlMessageStoreFactory(new HttpSessionStoreFactory());
         cfg.setAuthnRequestSubjectNameId("user@example.org");
         cfg.setAuthnRequestSubjectNameIdFormat(NameID.EMAIL);

@@ -529,7 +529,7 @@ class SdJwtVcVerifierTests {
     private ResourceProperties crlResource(final X509CRL crl) throws Exception {
         val path = Files.createTempFile(directory, "crl-", ".crl");
         Files.write(path, crl.getEncoded());
-        return new ResourceProperties().setResourcePath(path.toString());
+        return new ResourceProperties().setPath(path.toString());
     }
 
     private KeystoreProperties trustStore(final String type, final X509Certificate root) throws Exception {
@@ -544,7 +544,7 @@ class SdJwtVcVerifierTests {
         try (val output = Files.newOutputStream(path)) {
             keyStore.store(output, "changeit".toCharArray());
         }
-        return new KeystoreProperties().setResourcePath(path.toString()).setKeyStoreType(keyStore.getType())
+        return new KeystoreProperties(path.toString()).setKeyStoreType(keyStore.getType())
             .setKeystorePassword("changeit");
     }
 
@@ -654,23 +654,23 @@ class SdJwtVcVerifierTests {
         val raw = presentation();
 
         verifier = new SdJwtVcVerifier()
-            .setTrustedIssuers(new TrustedIssuers(new KeysTrustedIssuer(ISSUER, new JwksProperties().setResourcePath(path.toString()))));
+            .setTrustedIssuers(new TrustedIssuers(new KeysTrustedIssuer(ISSUER, new JwksProperties(path.toString()))));
         assertEquals(ISSUER, verify(raw).getIssuer());
         assertTrue(((KeysTrustedIssuer) verifier.getTrustedIssuers().getIssuers().get(0)).getKeys().getKeys().stream()
             .noneMatch(JWK::isPrivate));
 
         // a kid keeps only that key
         verifier = new SdJwtVcVerifier().setTrustedIssuers(new TrustedIssuers(
-            new KeysTrustedIssuer(ISSUER, new JwksProperties().setResourcePath(path.toString()).setKid("other-key"))));
+            new KeysTrustedIssuer(ISSUER, new JwksProperties(path.toString()).setKid("other-key"))));
         assertThrows(OpenId4VpException.class, () -> verify(raw));
         assertThrows(TechnicalException.class, () -> new KeysTrustedIssuer(ISSUER,
-            new JwksProperties().setResourcePath(path.toString()).setKid("missing")));
+            new JwksProperties(path.toString()).setKid("missing")));
     }
 
     @Test
     void rejectsAMissingOrUndefinedJwksResource() {
         val missing = directory.resolve("missing.jwks").toString();
-        assertThrows(TechnicalException.class, () -> new KeysTrustedIssuer(ISSUER, new JwksProperties().setResourcePath(missing)));
+        assertThrows(TechnicalException.class, () -> new KeysTrustedIssuer(ISSUER, new JwksProperties(missing)));
         assertFalse(Files.exists(directory.resolve("missing.jwks")));
         assertThrows(TechnicalException.class, () -> new KeysTrustedIssuer(ISSUER, new JwksProperties()));
         assertThrows(TechnicalException.class, () -> new KeysTrustedIssuer(ISSUER, (JwksProperties) null));

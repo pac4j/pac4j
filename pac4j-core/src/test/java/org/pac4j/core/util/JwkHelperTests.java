@@ -46,7 +46,7 @@ public final class JwkHelperTests {
         Files.deleteIfExists(jwksPath);
 
         val jwksProperties = new JwksProperties();
-        jwksProperties.setResourcePath(jwksPath.toString());
+        jwksProperties.setPath(jwksPath.toString());
         jwksProperties.setKid("generated-kid");
 
         val signingJwk = JwkHelper.loadJwkFromOrCreateJwks(jwksProperties);
@@ -75,7 +75,7 @@ public final class JwkHelperTests {
         Files.writeString(jwksPath, jwkSet.toString(false));
 
         val jwksProperties = new JwksProperties();
-        jwksProperties.setResourcePath(jwksPath.toString());
+        jwksProperties.setPath(jwksPath.toString());
         jwksProperties.setKid("kid-2");
 
         val signingJwk = JwkHelper.loadJwkFromOrCreateJwks(jwksProperties);

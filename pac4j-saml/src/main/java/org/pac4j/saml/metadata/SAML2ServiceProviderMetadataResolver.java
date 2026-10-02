@@ -28,7 +28,7 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
     protected MetadataResolver prepareServiceProviderMetadata() {
         try {
             val metadataGenerator = configuration.toMetadataGenerator();
-            val resource = configuration.getServiceProviderMetadataResource();
+            val resource = configuration.getServiceProviderMetadata().getResource();
 
             if (resource == null || !resource.exists() || configuration.isForceServiceProviderMetadataGeneration()) {
                 val entity = metadataGenerator.buildEntityDescriptor();

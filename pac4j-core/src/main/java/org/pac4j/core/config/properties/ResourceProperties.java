@@ -2,6 +2,7 @@ package org.pac4j.core.config.properties;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.pac4j.core.resource.SpringResourceHelper;
 import org.springframework.core.io.Resource;
@@ -16,6 +17,7 @@ import org.springframework.core.io.Resource;
  */
 @Getter
 @Setter
+@ToString
 @Accessors(chain = true)
 public class ResourceProperties {
 
@@ -54,7 +56,7 @@ public class ResourceProperties {
      * @param path the path: {@code classpath:}, {@code file:}, {@code http(s)://} or a plain file path
      * @return the properties
      */
-    public ResourceProperties setResourcePath(final String path) {
+    public ResourceProperties setPath(final String path) {
         this.resource = SpringResourceHelper.buildResourceFromPath(path);
         return this;
     }

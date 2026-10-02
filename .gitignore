@@ -37,3 +37,5 @@ krb5.conf
 documentation/.jekyll-cache/
 dependency-reduced-pom.xml
 .vscode
+
+/plans/

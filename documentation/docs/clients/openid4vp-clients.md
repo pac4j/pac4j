@@ -28,8 +28,7 @@ DCQL query cannot return that claim refuses to initialize. See [The profile iden
 
 ```java
 OpenId4VpConfiguration config = new OpenId4VpConfiguration()
-    .setKeystore(new KeystoreProperties()
-        .setResourcePath("/path/to/access-certificate.p12")
+    .setKeystore(new KeystoreProperties("/path/to/access-certificate.p12")
         .setKeystorePassword("...")
         .setKeyStoreAlias("rp"))
     .setDcqlQuery(EudiPidQuery.sdJwtVc(PERSONAL_ADMINISTRATIVE_NUMBER, GIVEN_NAME, AGE_OVER_18))
@@ -48,7 +47,7 @@ OpenId4VpDcApiConfiguration config = new OpenId4VpDcApiConfiguration();
 config.setExpectedOrigins(List.of("https://verifier.example.org"))
     .setClientId("did:web:verifier.example.org")
     .setClientIdPrefix(ClientIdPrefix.DECENTRALIZED_IDENTIFIER)
-    .setJwks(new JwksProperties().setResourcePath("/path/to/verifier.jwks").setKid("verifier-key"))
+    .setJwks(new JwksProperties("/path/to/verifier.jwks").setKid("verifier-key"))
     .setDcqlQuery(new DcqlQuery()
         .addCredential(new CredentialQuery("badge", CredentialFormat.SD_JWT_VC)
             .setVctValues("https://credentials.example.org/employee-badge")

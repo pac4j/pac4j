@@ -98,12 +98,11 @@ verifiers with `setTrustedIssuers(...)`: each one ignores the definitions which 
 
 ```java
 var trustedIssuers = new TrustedIssuers(
-    new CertificateTrustedIssuer(new KeystoreProperties()
-            .setResourcePath("classpath:pid-providers.p12")
+    new CertificateTrustedIssuer(new KeystoreProperties("classpath:pid-providers.p12")
             .setKeyStoreType("PKCS12")
             .setKeystorePassword("changeit"))
         .setCertificateRevocationLists(List.of(new ResourceProperties("classpath:pid-providers.crl"))),
-    new KeysTrustedIssuer("https://issuer.example", new JwksProperties().setResourcePath("classpath:partner.jwks")));
+    new KeysTrustedIssuer("https://issuer.example", new JwksProperties("classpath:partner.jwks")));
 
 config.addCredentialVerifier(new SdJwtVcVerifier().setTrustedIssuers(trustedIssuers));
 config.addCredentialVerifier(new MdocVerifier().setTrustedIssuers(trustedIssuers));

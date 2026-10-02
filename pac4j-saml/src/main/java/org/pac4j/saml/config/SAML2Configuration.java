@@ -16,10 +16,12 @@ import org.opensaml.xmlsec.config.impl.DefaultSecurityConfigurationBootstrap;
 import org.opensaml.xmlsec.signature.support.SignatureConstants;
 import org.pac4j.core.client.config.BaseClientConfiguration;
 import org.pac4j.core.config.properties.KeystoreProperties;
+import org.pac4j.core.config.properties.ResourceProperties;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.keystore.generation.KeystoreGenerator;
 import org.pac4j.core.profile.converter.AttributeConverter;
 import org.pac4j.core.resource.SpringResourceHelper;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.saml.crypto.CredentialProvider;
 import org.pac4j.saml.crypto.KeyStoreCredentialProvider;
@@ -58,7 +60,7 @@ import java.util.function.Supplier;
 @Getter
 @Setter
 @Accessors(chain = true)
-@ToString(of = {"serviceProviderEntityId", "serviceProviderMetadataResource", "identityProviderMetadataResource"})
+@ToString(of = {"serviceProviderEntityId", "serviceProviderMetadata", "identityProviderMetadata"})
 @With
 @AllArgsConstructor
 @NoArgsConstructor
@@ -68,6 +70,10 @@ public class SAML2Configuration extends BaseClientConfiguration {
      * Constant <code>DEFAULT_PROVIDER_NAME="pac4j-saml"</code>
      */
     protected static final String DEFAULT_PROVIDER_NAME = "pac4j-saml";
+
+    private static final String DEFAULT_CERTIFICATE_PREFIX = "saml-signing-cert";
+
+    private static final Period DEFAULT_CERTIFICATE_EXPIRATION_PERIOD = Period.ofYears(20);
 
     private final List<SAML2ScopingIdentityProvider> scopingIdentityProviders = new ArrayList<>();
 
@@ -89,10 +95,10 @@ public class SAML2Configuration extends BaseClientConfiguration {
 
     private String assertionConsumerServiceUrl;
 
-    private KeystoreProperties keystore = new KeystoreProperties().setCertificatePrefix("saml-signing-cert")
-        .setCertificateExpirationPeriod(Period.ofYears(20));
+    private KeystoreProperties keystore = new KeystoreProperties().setCertificatePrefix(DEFAULT_CERTIFICATE_PREFIX)
+        .setCertificateExpirationPeriod(DEFAULT_CERTIFICATE_EXPIRATION_PERIOD);
 
-    private Resource identityProviderMetadataResource;
+    private ResourceProperties identityProviderMetadata = new ResourceProperties();
 
     private String identityProviderEntityId;
 
@@ -130,7 +136,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
 
     private boolean signMetadata;
 
-    private Resource serviceProviderMetadataResource;
+    private ResourceProperties serviceProviderMetadata = new ResourceProperties();
 
     private boolean forceServiceProviderMetadataGeneration;
 
@@ -208,16 +214,52 @@ public class SAML2Configuration extends BaseClientConfiguration {
     /**
      * <p>Constructor for SAML2Configuration.</p>
      *
+     * @param keystore                 the keystore properties
+     * @param identityProviderMetadata the identity provider metadata properties
+     */
+    public SAML2Configuration(final KeystoreProperties keystore, final ResourceProperties identityProviderMetadata) {
+        this(keystore, identityProviderMetadata, null, null, DEFAULT_PROVIDER_NAME, null, null);
+    }
+
+    protected SAML2Configuration(final KeystoreProperties keystore, final ResourceProperties identityProviderMetadata,
+                                 final String identityProviderEntityId, final String serviceProviderEntityId,
+                                 final String providerName, final Supplier<List<XSAny>> authnRequestExtensions,
+                                 final String attributeAsId) {
+        CommonHelper.assertNotNull("keystore", keystore);
+        CommonHelper.assertNotNull("identityProviderMetadata", identityProviderMetadata);
+        if (keystore.getCertificatePrefix() == null) {
+            keystore.setCertificatePrefix(DEFAULT_CERTIFICATE_PREFIX);
+        }
+        if (keystore.getCertificateExpirationPeriod() == null) {
+            keystore.setCertificateExpirationPeriod(DEFAULT_CERTIFICATE_EXPIRATION_PERIOD);
+        }
+        this.keystore = keystore;
+        if (identityProviderMetadata.getResource() instanceof UrlResource urlResource) {
+            identityProviderMetadata.setResource(new SAML2UrlResource(urlResource.getURL(), this));
+        }
+        this.identityProviderMetadata = identityProviderMetadata;
+        this.identityProviderEntityId = identityProviderEntityId;
+        this.serviceProviderEntityId = serviceProviderEntityId;
+        this.providerName = providerName;
+        this.authnRequestExtensions = authnRequestExtensions;
+        this.attributeAsId = attributeAsId;
+    }
+
+    /**
+     * <p>Constructor for SAML2Configuration.</p>
+     *
      * @param keystorePath                 a {@link String} object
      * @param keystorePassword             a {@link String} object
      * @param privateKeyPassword           a {@link String} object
      * @param identityProviderMetadataPath a {@link String} object
+     * @deprecated use {@link #SAML2Configuration(KeystoreProperties, ResourceProperties)}
      */
+    @Deprecated
     public SAML2Configuration(final String keystorePath, final String keystorePassword, final String privateKeyPassword,
                               final String identityProviderMetadataPath) {
-        this(null, null, SpringResourceHelper.buildResourceFromPath(keystorePath), keystorePassword, privateKeyPassword,
-            SpringResourceHelper.buildResourceFromPath(identityProviderMetadataPath), null, null,
-            DEFAULT_PROVIDER_NAME, null, null);
+        this(new KeystoreProperties(keystorePath).setKeystorePassword(keystorePassword)
+                .setPrivateKeyPassword(privateKeyPassword),
+            new ResourceProperties().setPath(identityProviderMetadataPath));
     }
 
     /**
@@ -227,14 +269,18 @@ public class SAML2Configuration extends BaseClientConfiguration {
      * @param keystorePassword                 a {@link String} object
      * @param privateKeyPassword               a {@link String} object
      * @param identityProviderMetadataResource a {@link Resource} object
+     * @deprecated use {@link #SAML2Configuration(KeystoreProperties, ResourceProperties)}
      */
+    @Deprecated
     public SAML2Configuration(final Resource keystoreResource, final String keystorePassword, final String privateKeyPassword,
                               final Resource identityProviderMetadataResource) {
-        this(null, null, keystoreResource, keystorePassword, privateKeyPassword,
-            identityProviderMetadataResource, null, null,
-            DEFAULT_PROVIDER_NAME, null, null);
+        this(keystoreResource, null, null, keystorePassword, privateKeyPassword, identityProviderMetadataResource);
     }
 
+    /**
+     * @deprecated use {@link #SAML2Configuration(KeystoreProperties, ResourceProperties)}
+     */
+    @Deprecated
     public SAML2Configuration(final Resource keystoreResource, final String keyStoreAlias,
                               final String keyStoreType, final String keystorePassword, final String privateKeyPassword,
                               final Resource identityProviderMetadataResource) {
@@ -243,28 +289,20 @@ public class SAML2Configuration extends BaseClientConfiguration {
             null, DEFAULT_PROVIDER_NAME, null, null);
     }
 
+    /**
+     * @deprecated use {@link #SAML2Configuration(KeystoreProperties, ResourceProperties, String, String, String, Supplier, String)}
+     */
+    @Deprecated
     protected SAML2Configuration(final String keyStoreAlias, final String keyStoreType,
                                  final Resource keystoreResource, final String keystorePassword,
                                  final String privateKeyPassword, final Resource identityProviderMetadataResource,
                                  final String identityProviderEntityId, final String serviceProviderEntityId,
                                  final String providerName, final Supplier<List<XSAny>> authnRequestExtensions,
                                  final String attributeAsId) {
-        this.keystore.setCertificatePrefix("saml-signing-cert");
-        this.keystore.setKeyStoreAlias(keyStoreAlias);
-        this.keystore.setKeyStoreType(keyStoreType);
-        this.keystore.setResource(keystoreResource);
-        this.keystore.setKeystorePassword(keystorePassword);
-        this.keystore.setPrivateKeyPassword(privateKeyPassword);
-        if (identityProviderMetadataResource instanceof UrlResource urlResource) {
-            this.identityProviderMetadataResource = new SAML2UrlResource(urlResource.getURL(), this);
-        } else {
-            this.identityProviderMetadataResource = identityProviderMetadataResource;
-        }
-        this.identityProviderEntityId = identityProviderEntityId;
-        this.serviceProviderEntityId = serviceProviderEntityId;
-        this.providerName = providerName;
-        this.authnRequestExtensions = authnRequestExtensions;
-        this.attributeAsId = attributeAsId;
+        this(new KeystoreProperties().setKeyStoreAlias(keyStoreAlias).setKeyStoreType(keyStoreType).setResource(keystoreResource)
+                .setKeystorePassword(keystorePassword).setPrivateKeyPassword(privateKeyPassword),
+            new ResourceProperties().setResource(identityProviderMetadataResource), identityProviderEntityId,
+            serviceProviderEntityId, providerName, authnRequestExtensions, attributeAsId);
     }
 
     /**
@@ -326,7 +364,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
         if (StringUtils.isBlank(keystore.getPrivateKeyPassword())) {
             missingSettings.add("private key password");
         }
-        if (identityProviderMetadataResource == null) {
+        if (!identityProviderMetadata.isDefined()) {
             missingSettings.add("identity provider metadata resource/path");
         }
         if (!missingSettings.isEmpty()) {
@@ -346,62 +384,91 @@ public class SAML2Configuration extends BaseClientConfiguration {
     }
 
     /**
-     * <p>setIdentityProviderMetadataResourceFilepath.</p>
-     *
-     * @param path a {@link String} object
+     * @deprecated use getIdentityProviderMetadata().getResource() instead of getIdentityProviderMetadataResource()
      */
+    @Deprecated
+    public Resource getIdentityProviderMetadataResource() {
+        return identityProviderMetadata.getResource();
+    }
+
+    /**
+     * @deprecated use getIdentityProviderMetadata().setResource(resource) instead of setIdentityProviderMetadataResource(resource)
+     */
+    @Deprecated
+    public SAML2Configuration setIdentityProviderMetadataResource(final Resource resource) {
+        identityProviderMetadata.setResource(resource);
+        return this;
+    }
+
+    /**
+     * @deprecated use getIdentityProviderMetadata().setPath(path) instead of setIdentityProviderMetadataResourceFilepath(path)
+     */
+    @Deprecated
     public SAML2Configuration setIdentityProviderMetadataResourceFilepath(final String path) {
-        this.identityProviderMetadataResource = new FileSystemResource(path);
+        identityProviderMetadata.setResource(new FileSystemResource(path));
         return this;
     }
 
     /**
-     * <p>setIdentityProviderMetadataResourceClasspath.</p>
-     *
-     * @param path a {@link String} object
+     * @deprecated use getIdentityProviderMetadata().setPath("classpath:" + path)
+     * instead of setIdentityProviderMetadataResourceClasspath(path)
      */
+    @Deprecated
     public SAML2Configuration setIdentityProviderMetadataResourceClasspath(final String path) {
-        this.identityProviderMetadataResource = new ClassPathResource(path);
+        identityProviderMetadata.setResource(new ClassPathResource(path));
         return this;
     }
 
     /**
-     * <p>setIdentityProviderMetadataResourceUrl.</p>
-     *
-     * @param url a {@link String} object
+     * @deprecated use getIdentityProviderMetadata().setPath(url) instead of setIdentityProviderMetadataResourceUrl(url)
      */
+    @Deprecated
     public SAML2Configuration setIdentityProviderMetadataResourceUrl(final String url) {
-        this.identityProviderMetadataResource = SpringResourceHelper.newUrlResource(url);
+        identityProviderMetadata.setResource(SpringResourceHelper.newUrlResource(url));
         return this;
     }
 
     /**
-     * <p>setIdentityProviderMetadataPath.</p>
-     *
-     * @param path a {@link String} object
+     * @deprecated use getIdentityProviderMetadata().setPath(path) instead of setIdentityProviderMetadataPath(path)
      */
+    @Deprecated
     public SAML2Configuration setIdentityProviderMetadataPath(final String path) {
-        this.identityProviderMetadataResource = SpringResourceHelper.buildResourceFromPath(path);
+        identityProviderMetadata.setPath(path);
         return this;
     }
 
     /**
-     * <p>setServiceProviderMetadataResourceFilepath.</p>
-     *
-     * @param path a {@link String} object
+     * @deprecated use getServiceProviderMetadata().getResource() instead of getServiceProviderMetadataResource()
      */
+    @Deprecated
+    public Resource getServiceProviderMetadataResource() {
+        return serviceProviderMetadata.getResource();
+    }
+
+    /**
+     * @deprecated use getServiceProviderMetadata().setResource(resource) instead of setServiceProviderMetadataResource(resource)
+     */
+    @Deprecated
+    public SAML2Configuration setServiceProviderMetadataResource(final Resource resource) {
+        serviceProviderMetadata.setResource(resource);
+        return this;
+    }
+
+    /**
+     * @deprecated use getServiceProviderMetadata().setPath(path) instead of setServiceProviderMetadataResourceFilepath(path)
+     */
+    @Deprecated
     public SAML2Configuration setServiceProviderMetadataResourceFilepath(final String path) {
-        this.serviceProviderMetadataResource = new FileSystemResource(path);
+        serviceProviderMetadata.setResource(new FileSystemResource(path));
         return this;
     }
 
     /**
-     * <p>setServiceProviderMetadataPath.</p>
-     *
-     * @param path a {@link String} object
+     * @deprecated use getServiceProviderMetadata().setPath(path) instead of setServiceProviderMetadataPath(path)
      */
+    @Deprecated
     public SAML2Configuration setServiceProviderMetadataPath(final String path) {
-        this.serviceProviderMetadataResource = SpringResourceHelper.buildResourceFromPath(path);
+        serviceProviderMetadata.setPath(path);
         return this;
     }
 
@@ -566,7 +633,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
     }
 
     /**
-     * @deprecated use getKeystore().setResourcePath(path) instead of setKeystoreResourceFilepath(path)
+     * @deprecated use getKeystore().setPath(path) instead of setKeystoreResourceFilepath(path)
      */
     @Deprecated
     public void setKeystoreResourceFilepath(final String path) {
@@ -574,7 +641,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
     }
 
     /**
-     * @deprecated use getKeystore().setResourcePath("classpath:" + path) instead of setKeystoreResourceClasspath(path)
+     * @deprecated use getKeystore().setPath("classpath:" + path) instead of setKeystoreResourceClasspath(path)
      */
     @Deprecated
     public void setKeystoreResourceClasspath(final String path) {
@@ -582,7 +649,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
     }
 
     /**
-     * @deprecated use getKeystore().setResourcePath(url) instead of setKeystoreResourceUrl(url)
+     * @deprecated use getKeystore().setPath(url) instead of setKeystoreResourceUrl(url)
      */
     @Deprecated
     public void setKeystoreResourceUrl(final String url) {
@@ -590,11 +657,11 @@ public class SAML2Configuration extends BaseClientConfiguration {
     }
 
     /**
-     * @deprecated use getKeystore().setResourcePath(path) instead of setKeystorePath(path)
+     * @deprecated use getKeystore().setPath(path) instead of setKeystorePath(path)
      */
     @Deprecated
     public void setKeystorePath(final String path) {
-        keystore.setResourcePath(path);
+        keystore.setPath(path);
     }
 
     private void initSignatureSigningConfiguration() {
@@ -720,9 +787,10 @@ public class SAML2Configuration extends BaseClientConfiguration {
                 .map(ServiceLoader.Provider::get)
                 .orElseGet(() -> {
                     try {
-                        return serviceProviderMetadataResource instanceof UrlResource
-                            ? new SAML2HttpUrlMetadataGenerator(serviceProviderMetadataResource.getURL(), getHttpClient())
-                            : new SAML2FileSystemMetadataGenerator(serviceProviderMetadataResource);
+                        val resource = serviceProviderMetadata.getResource();
+                        return resource instanceof UrlResource
+                            ? new SAML2HttpUrlMetadataGenerator(resource.getURL(), getHttpClient())
+                            : new SAML2FileSystemMetadataGenerator(resource);
                     } catch (final Exception e) {
                         throw new TechnicalException(e);
                     }
