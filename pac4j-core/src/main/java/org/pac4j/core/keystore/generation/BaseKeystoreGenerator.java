@@ -91,7 +91,7 @@ public abstract class BaseKeystoreGenerator implements KeystoreGenerator {
 
             store(ks, certificate, signingKey);
             logger.info("Created keystore {} with key alias {}",
-                keystore.getKeystoreResource(),
+                keystore.getResource(),
                 ks.aliases().nextElement());
         } catch (final Exception e) {
             throw new TechnicalException("Could not create keystore", e);

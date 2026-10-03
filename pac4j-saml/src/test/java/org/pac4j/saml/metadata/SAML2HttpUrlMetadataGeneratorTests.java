@@ -39,8 +39,8 @@ public class SAML2HttpUrlMetadataGeneratorTests {
         configuration.setPrivateKeyPassword("pac4j");
         configuration.setSignMetadata(true);
         configuration.setServiceProviderEntityId("urn:mace:saml:pac4j.org");
-        configuration.setServiceProviderMetadataResource(new UrlResource("http://localhost:8088/saml"));
-        configuration.setIdentityProviderMetadataResource(new ClassPathResource("idp-metadata.xml"));
+        configuration.getServiceProviderMetadata().setResource(new UrlResource("http://localhost:8088/saml"));
+        configuration.getIdentityProviderMetadata().setResource(new ClassPathResource("idp-metadata.xml"));
         configuration.init();
         return configuration;
     }

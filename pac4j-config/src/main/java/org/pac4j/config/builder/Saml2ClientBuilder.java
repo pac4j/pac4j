@@ -3,6 +3,8 @@ package org.pac4j.config.builder;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.Client;
+import org.pac4j.core.config.properties.KeystoreProperties;
+import org.pac4j.core.config.properties.ResourceProperties;
 import org.pac4j.saml.client.SAML2Client;
 import org.pac4j.saml.config.SAML2Configuration;
 
@@ -50,8 +52,9 @@ public class Saml2ClientBuilder extends AbstractBuilder {
                 val destinationBindingType = getProperty(SAML_AUTHN_REQUEST_BINDING_TYPE, i);
                 val keystoreAlias = getProperty(SAML_KEYSTORE_ALIAS, i);
 
-                val cfg = new SAML2Configuration(keystorePath, keystorePassword,
-                        privateKeyPassword, identityProviderMetadataPath);
+                val cfg = new SAML2Configuration(new KeystoreProperties(keystorePath)
+                        .setKeystorePassword(keystorePassword).setPrivateKeyPassword(privateKeyPassword),
+                        new ResourceProperties(identityProviderMetadataPath));
                 if (StringUtils.isNotBlank(maximumAuthenticationLifetime)) {
                     cfg.setMaximumAuthenticationLifetime(Integer.parseInt(maximumAuthenticationLifetime));
                 }
@@ -59,7 +62,7 @@ public class Saml2ClientBuilder extends AbstractBuilder {
                     cfg.setServiceProviderEntityId(serviceProviderEntityId);
                 }
                 if (StringUtils.isNotBlank(serviceProviderMetadataPath)) {
-                    cfg.setServiceProviderMetadataPath(serviceProviderMetadataPath);
+                    cfg.getServiceProviderMetadata().setPath(serviceProviderMetadataPath);
                 }
                 if (StringUtils.isNotBlank(destinationBindingType)) {
                     cfg.setAuthnRequestBindingType(destinationBindingType);

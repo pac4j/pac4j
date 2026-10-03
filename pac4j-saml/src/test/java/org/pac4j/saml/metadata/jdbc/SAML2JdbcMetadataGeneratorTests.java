@@ -52,7 +52,7 @@ public class SAML2JdbcMetadataGeneratorTests implements TestsConstants {
         configuration.setSignMetadata(true);
         configuration.setServiceProviderEntityId(ENTITY_ID);
         configuration.setMetadataGenerator(this.jdbcMetadataGenerator);
-        configuration.setIdentityProviderMetadataResource(new ClassPathResource("idp-metadata.xml"));
+        configuration.getIdentityProviderMetadata().setResource(new ClassPathResource("idp-metadata.xml"));
         configuration.init();
 
         var metadataGenerator = configuration.toMetadataGenerator();

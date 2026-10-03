@@ -66,7 +66,7 @@ public class JwkHelper {
         if (jwks != null && jwks.isDefined()) {
             return loadJwkFromOrCreateJwks(jwks, createdKeyAlgorithm);
         }
-        if (keystore != null && keystore.getKeystoreResource() != null) {
+        if (keystore != null && keystore.getResource() != null) {
             return loadJwkFromOrCreateKeyStore(keystore);
         }
         throw new TechnicalException("A JWKS or a keystore is mandatory to get the signing key");
@@ -95,7 +95,7 @@ public class JwkHelper {
      */
     public static JWK loadJwkFromOrCreateJwks(final JwksProperties jwksProperties, final JWSAlgorithm createdKeyAlgorithm) {
         LOGGER.debug("Loading signingKey from JWKS");
-        val jwksResource = jwksProperties.getJwksResource();
+        val jwksResource = jwksProperties.getResource();
         val kid = jwksProperties.getKid();
         if (!jwksResource.exists()) {
             if (!jwksResource.isFile()) {
@@ -219,7 +219,7 @@ public class JwkHelper {
         LOGGER.debug("Loading signingKey from keystore");
         val keystoreGenerator = keystoreProperties.getKeystoreGenerator();
         if (keystoreGenerator != null && keystoreGenerator.shouldGenerate()) {
-            LOGGER.info("Generating keystore for resource: {}", keystoreProperties.getKeystoreResource());
+            LOGGER.info("Generating keystore for resource: {}", keystoreProperties.getResource());
             keystoreGenerator.generate();
         }
         val keyStoreAndAlias = KeyStoreUtils.retrieveKeyStoreAndAlias(keystoreProperties);

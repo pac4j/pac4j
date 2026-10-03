@@ -96,7 +96,7 @@ as `attributeAsId` does for SAML.
 - Requires **exactly one verified credential**, a non-blank issuer and a disclosed, non-blank string claim.
 - Builds the ID as `base64url(issuer) + "." + base64url(claim)`, without padding, to distinguish issuers. For a
   credential validated through its `x5c` chain, the issuer is the subject of the leaf certificate
-  (see [Trusted issuers](openid4vp-verifiers.html#211-trusted-issuers)).
+  (see [Trusted issuers](openid4vp-verifiers.html#3-trusted-issuers)).
 - **Fails the validation** if these requirements are not met, including when several credentials are returned.
 
 To use another top-level claim, request it in DCQL and name it:

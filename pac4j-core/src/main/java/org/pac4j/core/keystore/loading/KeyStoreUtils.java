@@ -26,7 +26,7 @@ public final class KeyStoreUtils {
         CommonHelper.assertNotBlank("privateKeyPassword", properties.getPrivateKeyPassword());
 
         val generator = properties.getKeystoreGenerator();
-        try (var inputStream = generator != null ? generator.retrieve() : properties.getKeystoreResource().getInputStream()) {
+        try (var inputStream = generator != null ? generator.retrieve() : properties.getResource().getInputStream()) {
             val keyStoreType = properties.getKeyStoreType() == null
                 ? DEFAULT_KEYSTORE_TYPE
                 : properties.getKeyStoreType();

@@ -66,7 +66,7 @@ public class SAML2MongoMetadataGeneratorTests implements TestsConstants {
         configuration.setSignMetadata(true);
         configuration.setServiceProviderEntityId(ENTITY_ID);
         configuration.setMetadataGenerator(this.mongoMetadataGenerator);
-        configuration.setIdentityProviderMetadataResource(new ClassPathResource("idp-metadata.xml"));
+        configuration.getIdentityProviderMetadata().setResource(new ClassPathResource("idp-metadata.xml"));
         configuration.init();
 
         var metadataGenerator = configuration.toMetadataGenerator();
