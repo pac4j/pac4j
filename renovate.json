@@ -2,5 +2,12 @@
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
     "extends": [
         "local>pac4j/renovate-config"
+    ],
+    "packageRules": [
+        {
+            "description": "walt.id >= 0.13.0 depends on org.cose:cose-java:1.1.1-WALT-SNAPSHOT, which is not released",
+            "matchPackageNames": ["id.walt.mdoc-credentials:waltid-mdoc-credentials-jvm"],
+            "allowedVersions": "<0.13.0"
+        }
     ]
 }
