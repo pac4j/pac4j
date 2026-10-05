@@ -43,8 +43,8 @@ public class SAML2ServiceProviderMetadataResolverTest {
         config.setForceKeystoreGeneration(true);
         config.setForceServiceProviderMetadataGeneration(forceServiceProviderMetadataGeneration);
         config.setServiceProviderEntityId("urn:mace:saml:pac4j.org");
-        config.setServiceProviderMetadataResource(serviceProviderMetadataResource);
-        config.setIdentityProviderMetadataResource(new ClassPathResource("idp-metadata.xml"));
+        config.getServiceProviderMetadata().setResource(serviceProviderMetadataResource);
+        config.getIdentityProviderMetadata().setResource(new ClassPathResource("idp-metadata.xml"));
         var attribute =
             new SAML2ServiceProviderRequestedAttribute("urn:oid:1.3.6.1.4.1.5923.1.1.1.6", "eduPersonPrincipalName");
         attribute.setServiceLang("fr");

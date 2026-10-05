@@ -3,6 +3,8 @@ package org.pac4j.saml.run;
 import lombok.val;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.config.properties.KeystoreProperties;
+import org.pac4j.core.config.properties.ResourceProperties;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.test.context.MockWebContext;
 import org.pac4j.core.profile.CommonProfile;
@@ -11,7 +13,6 @@ import org.pac4j.test.run.RunClient;
 import org.pac4j.saml.client.SAML2Client;
 import org.pac4j.saml.config.SAML2Configuration;
 import org.pac4j.saml.profile.SAML2Profile;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 
 import java.io.File;
@@ -42,11 +43,12 @@ public class RunTestshib extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        val cfg = new SAML2Configuration(new ClassPathResource("samlKeystore.jks"),
-                "pac4j-demo-passwd", "pac4j-demo-passwd", new ClassPathResource("testshib-providers.xml"));
+        val cfg = new SAML2Configuration(new KeystoreProperties("classpath:samlKeystore.jks")
+                .setKeystorePassword("pac4j-demo-passwd").setPrivateKeyPassword("pac4j-demo-passwd"),
+            new ResourceProperties("classpath:testshib-providers.xml"));
         cfg.setMaximumAuthenticationLifetime(3600);
         cfg.setServiceProviderEntityId("urn:mace:saml:pac4j.org");
-        cfg.setServiceProviderMetadataResource(new FileSystemResource(new File("target", "test-sp-metadata.xml").getAbsolutePath()));
+        cfg.getServiceProviderMetadata().setResource(new FileSystemResource(new File("target", "test-sp-metadata.xml").getAbsolutePath()));
         cfg.setAuthnRequestBindingType(SAMLConstants.SAML2_REDIRECT_BINDING_URI);
         val client = new SAML2Client(cfg);
         client.setCallbackUrl(PAC4J_URL);

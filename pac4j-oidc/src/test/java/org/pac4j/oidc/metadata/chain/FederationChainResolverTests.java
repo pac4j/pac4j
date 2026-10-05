@@ -14,6 +14,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.mockito.Mockito;
+import org.pac4j.core.config.properties.JwksProperties;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.exceptions.OidcConfigurationException;
 import org.pac4j.oidc.exceptions.OidcException;
@@ -71,7 +72,7 @@ public final class FederationChainResolverTests {
         val trustAnchorJwksFile = tmp.resolve("trust-anchor.jwks");
         Files.writeString(trustAnchorJwksFile, trustAnchorJwks.toString(false));
         configuration.getFederation().setTrustAnchors(List.of(
-            new OidcTrustAnchorProperties(TRUST_ANCHOR_ISSUER, trustAnchorJwksFile.toString())));
+            new OidcTrustAnchorProperties(TRUST_ANCHOR_ISSUER, new JwksProperties(trustAnchorJwksFile.toString()))));
 
         resolver = new FederationChainResolver();
     }

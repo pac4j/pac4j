@@ -27,17 +27,9 @@ You need to use the following module: `pac4j-openid4vp`.
 
 OpenID4VP shares the OAuth vocabulary with [OpenID Connect](openid-connect.html) (`client_id`, `nonce`, signed request objects), but the wallet presents credentials directly to the application: there is no token endpoint or user info endpoint, and the module does not depend on `pac4j-oidc`.
 
-To validate SD-JWT VCs with `SdJwtVcVerifier`, explicitly add the following dependency, which is not included by default:
-
-```xml
-<dependency>
-    <groupId>eu.europa.ec.eudi</groupId>
-    <artifactId>eudi-lib-jvm-sdjwt-kt</artifactId>
-    <version>0.20.1</version>
-</dependency>
-```
-
-Without this dependency, `SdJwtVcVerifier` throws an `OpenId4VpException` when validating a credential, with a message identifying the dependency to add.
+Each credential verifier also needs an optional library, not included by default: add the one of the verifier you use,
+as described for the [SD-JWT VC verifier](openid4vp-sd-jwt-vc-verifier.html#1-dependencies) and the
+[mdoc verifier](openid4vp-mdoc-verifier.html#1-dependencies).
 
 ## 2) The protocol, briefly
 
@@ -69,11 +61,13 @@ to define its OpenID4VP requirements.
 **Use `OpenId4VpClient` if the wallet requires different settings**, such as `x509_san_dns`, or for credentials other
 than the PID. See [Clients and configuration](openid4vp-clients.html).
 
-**SD-JWT VC validation is provided; mdoc requires a custom verifier.** Selecting `EudiWalletClient` does not provide
+**SD-JWT VC and mdoc validation are provided through optional libraries.** Selecting `EudiWalletClient` does not provide
 a complete EUDI trust or status validation setup: see [Configuring credential verifiers](openid4vp-verifiers.html#2-configuring-credential-verifiers).
 
 ## 4) Usage
 
 - [OpenID4VP clients and wallet configuration](openid4vp-clients.html)
 - [Response validation and verifiers](openid4vp-verifiers.html)
+  - [SD-JWT VC verifier](openid4vp-sd-jwt-vc-verifier.html)
+  - [mdoc verifier](openid4vp-mdoc-verifier.html)
 - [DCQL queries, user profiles and diagnostic logging](openid4vp-advanced.html)

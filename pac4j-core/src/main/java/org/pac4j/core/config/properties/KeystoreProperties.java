@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.pac4j.core.keystore.generation.KeystoreGenerator;
-import org.pac4j.core.resource.SpringResourceHelper;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -20,9 +19,7 @@ import java.time.Period;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class KeystoreProperties {
-
-    private Resource keystoreResource;
+public class KeystoreProperties extends ResourceProperties {
 
     private String keystorePassword;
 
@@ -46,29 +43,83 @@ public class KeystoreProperties {
 
     private KeystoreGenerator keystoreGenerator;
 
+    /**
+     * <p>Properties without keystore yet.</p>
+     */
+    public KeystoreProperties() {
+        // the resource is set later
+    }
+
+    /**
+     * <p>Properties of the keystore at a path.</p>
+     *
+     * @param path the path: {@code classpath:}, {@code file:}, {@code http(s)://} or a plain file path
+     */
+    public KeystoreProperties(final String path) {
+        super(path);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public KeystoreProperties setResource(final Resource resource) {
+        super.setResource(resource);
+        return this;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public KeystoreProperties setPath(final String path) {
+        super.setPath(path);
+        return this;
+    }
+
+    /**
+     * <p>The keystore resource.</p>
+     *
+     * @return the resource
+     * @deprecated use {@code getResource()}
+     */
+    @Deprecated
+    public Resource getKeystoreResource() {
+        return getResource();
+    }
+
+    /**
+     * <p>Set the keystore resource.</p>
+     *
+     * @param resource the resource
+     * @return the properties
+     * @deprecated use {@link #setResource(Resource)}
+     */
+    @Deprecated
+    public KeystoreProperties setKeystoreResource(final Resource resource) {
+        return setResource(resource);
+    }
+
+    /**
+     * <p>Set the keystore resource from its path.</p>
+     *
+     * @param path the path
+     * @return the properties
+     * @deprecated use {@link #setPath(String)}
+     */
+    @Deprecated
+    public KeystoreProperties setKeystorePath(final String path) {
+        return setPath(path);
+    }
+
     @Deprecated
     public void setKeystoreResourceFilepath(final String path) {
-        this.keystoreResource = new FileSystemResource(path);
+        setResource(new FileSystemResource(path));
     }
 
     @Deprecated
     public void setKeystoreResourceClasspath(final String path) {
-        this.keystoreResource = new ClassPathResource(path);
+        setResource(new ClassPathResource(path));
     }
 
     @Deprecated
     public void setKeystoreResourceUrl(final String url) {
-        this.keystoreResource = SpringResourceHelper.buildResourceFromPath(url);
-    }
-
-    /**
-     * <p>setKeystorePath.</p>
-     *
-     * @param path a {@link String} object
-     * @return the properties
-     */
-    public KeystoreProperties setKeystorePath(final String path) {
-        this.keystoreResource = SpringResourceHelper.buildResourceFromPath(path);
-        return this;
+        setPath(url);
     }
 }

@@ -66,7 +66,7 @@ public class FileSystemKeystoreGenerator extends BaseKeystoreGenerator {
     @Override
     public boolean shouldGenerate() {
         validate();
-        val keystoreFile = keystore.getKeystoreResource();
+        val keystoreFile = keystore.getResource();
         return keystoreFile != null && !keystoreFile.exists() || super.shouldGenerate();
     }
 
@@ -74,12 +74,12 @@ public class FileSystemKeystoreGenerator extends BaseKeystoreGenerator {
     @Override
     public InputStream retrieve() throws Exception {
         validate();
-        logger.debug("Retrieving keystore from {}", keystore.getKeystoreResource());
-        return keystore.getKeystoreResource().getInputStream();
+        logger.debug("Retrieving keystore from {}", keystore.getResource());
+        return keystore.getResource().getInputStream();
     }
 
     private void validate() {
-        CommonHelper.assertNotNull("keystoreResource", keystore.getKeystoreResource());
+        CommonHelper.assertNotNull("keystoreResource", keystore.getResource());
         CommonHelper.assertNotBlank("keystorePassword", keystore.getKeystorePassword());
         CommonHelper.assertNotBlank("certificatePrefix", keystore.getCertificatePrefix());
     }
@@ -90,7 +90,7 @@ public class FileSystemKeystoreGenerator extends BaseKeystoreGenerator {
                          final PrivateKey privateKey) throws Exception {
         validate();
 
-        val keystoreFile = keystore.getKeystoreResource().getFile();
+        val keystoreFile = keystore.getResource().getFile();
         val parentFile = keystoreFile.getParentFile();
         if (parentFile != null && !parentFile.exists() && !parentFile.mkdirs()) {
             logger.warn("Could not construct the directory structure for keystore: {}", keystoreFile.getCanonicalPath());
@@ -125,14 +125,14 @@ public class FileSystemKeystoreGenerator extends BaseKeystoreGenerator {
     }
 
     private File getSigningBinaryCertificatePath() throws IOException {
-        return new File(keystore.getKeystoreResource().getFile().getParentFile(), getNormalizedCertificateName() + ".crt");
+        return new File(keystore.getResource().getFile().getParentFile(), getNormalizedCertificateName() + ".crt");
     }
 
     private File getSigningBase64CertificatePath() throws IOException {
-        return new File(keystore.getKeystoreResource().getFile().getParentFile(), getNormalizedCertificateName() + ".pem");
+        return new File(keystore.getResource().getFile().getParentFile(), getNormalizedCertificateName() + ".pem");
     }
 
     private File getSigningKeyFile() throws IOException {
-        return new File(keystore.getKeystoreResource().getFile().getParentFile(), getNormalizedCertificateName() + ".key");
+        return new File(keystore.getResource().getFile().getParentFile(), getNormalizedCertificateName() + ".key");
     }
 }

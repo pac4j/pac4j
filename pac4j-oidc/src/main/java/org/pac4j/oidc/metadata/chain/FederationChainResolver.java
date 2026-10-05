@@ -143,9 +143,9 @@ public class FederationChainResolver {
         for (val trustAnchor : trustAnchors) {
             val entity = new EntityID(trustAnchor.getIssuer());
             JWKSet jwks = null;
-            val jwkResource = trustAnchor.getJwksResource();
-            if (jwkResource != null) {
-                try (val in = SpringResourceHelper.getResourceInputStream(jwkResource, null,
+            val trustAnchorJwks = trustAnchor.getJwks();
+            if (trustAnchorJwks != null && trustAnchorJwks.isDefined()) {
+                try (val in = SpringResourceHelper.getResourceInputStream(trustAnchorJwks.getResource(), null,
                     configuration.getSslSocketFactory(), configuration.getHostnameVerifier(),
                     configuration.getConnectTimeout(), configuration.getReadTimeout())) {
                     jwks = JWKSet.load(in);

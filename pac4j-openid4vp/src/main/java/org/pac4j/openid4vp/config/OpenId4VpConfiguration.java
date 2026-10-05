@@ -28,6 +28,7 @@ import org.pac4j.openid4vp.dcql.DcqlQuery;
 import org.pac4j.openid4vp.profile.ProfileIdResolver;
 import org.pac4j.openid4vp.verifier.CredentialVerifier;
 import org.pac4j.openid4vp.verifier.SdJwtVcVerifier;
+import org.pac4j.openid4vp.verifier.MdocVerifier;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -136,11 +137,17 @@ public class OpenId4VpConfiguration extends BaseClientConfiguration {
     private JWK requestObjectSigningKey;
 
     /**
-     * The verifiers, by credential format: one for each format the DCQL query asks for, the SD-JWT VC one
+     * The verifiers, by credential format: one for each format the DCQL query asks for, SD-JWT VC and mdoc
      * being registered by default. Their formats are the ones published to the wallet as supported.
      */
-    private Map<CredentialFormat, CredentialVerifier> credentialVerifiers =
-        new LinkedHashMap<>(Map.of(CredentialFormat.SD_JWT_VC, new SdJwtVcVerifier()));
+    private Map<CredentialFormat, CredentialVerifier> credentialVerifiers = defaultCredentialVerifiers();
+
+    private static Map<CredentialFormat, CredentialVerifier> defaultCredentialVerifiers() {
+        val verifiers = new LinkedHashMap<CredentialFormat, CredentialVerifier>();
+        verifiers.put(CredentialFormat.SD_JWT_VC, new SdJwtVcVerifier());
+        verifiers.put(CredentialFormat.MSO_MDOC, new MdocVerifier());
+        return verifiers;
+    }
 
     /**
      * Derives the profile identifier from the verified credentials, as the SAML configuration names the attribute

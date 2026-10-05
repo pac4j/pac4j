@@ -28,8 +28,7 @@ DCQL query cannot return that claim refuses to initialize. See [The profile iden
 
 ```java
 OpenId4VpConfiguration config = new OpenId4VpConfiguration()
-    .setKeystore(new KeystoreProperties()
-        .setKeystorePath("/path/to/access-certificate.p12")
+    .setKeystore(new KeystoreProperties("/path/to/access-certificate.p12")
         .setKeystorePassword("...")
         .setKeyStoreAlias("rp"))
     .setDcqlQuery(EudiPidQuery.sdJwtVc(PERSONAL_ADMINISTRATIVE_NUMBER, GIVEN_NAME, AGE_OVER_18))
@@ -48,7 +47,7 @@ OpenId4VpDcApiConfiguration config = new OpenId4VpDcApiConfiguration();
 config.setExpectedOrigins(List.of("https://verifier.example.org"))
     .setClientId("did:web:verifier.example.org")
     .setClientIdPrefix(ClientIdPrefix.DECENTRALIZED_IDENTIFIER)
-    .setJwks(new JwksProperties().setJwksPath("/path/to/verifier.jwks").setKid("verifier-key"))
+    .setJwks(new JwksProperties("/path/to/verifier.jwks").setKid("verifier-key"))
     .setDcqlQuery(new DcqlQuery()
         .addCredential(new CredentialQuery("badge", CredentialFormat.SD_JWT_VC)
             .setVctValues("https://credentials.example.org/employee-badge")
@@ -74,14 +73,14 @@ The `OpenId4VpConfiguration` has the following properties, with the HAIP choices
 | `dcqlQuery` | | Required, including when `scope` is configured. Always used for response validation, and sent to the wallet only when `scope` is absent or blank. The [DCQL query](openid4vp-advanced.html#1-the-query), the only query language of OpenID4VP 1.0: which credentials, of which format, with which claims. A `DcqlQuery` built programmatically (`CredentialQuery`, `ClaimsQuery`, `TrustedAuthority`, `CredentialSetQuery`, with `EudiPidQuery` for the person identification data), or its JSON given as plain text to `setDcqlQuery(String)`. Checked at initialization against the rules of the specification: unique identifiers, sets referencing existing credentials, claim identifiers where claim sets need them |
 | `scope` | | An alias for a DCQL query, sent instead of it: which aliases exist, and which query each stands for, is defined by an ecosystem, not by the specification, and a wallet may support none. Optional: when non-blank, only this alias is sent to the wallet. `dcqlQuery` must still be configured with the equivalent query to validate the response |
 | `verifierInfo` | empty | Attestations about the verifier (`VerifierAttestation`: a `format`, the `data`, optional `credentialIds`), sent as the `verifier_info` parameter: what a third party says this verifier is entitled to ask, such as the registration certificate of an EUDI relying party, which the wallet may show to the End-User or check the request against. The formats belong to the ecosystem; nothing comes back |
-| `credentialVerifiers` | `SdJwtVcVerifier` | The interchangeable `CredentialVerifier` of each credential format (`SD_JWT_VC` is `dc+sd-jwt`, `MSO_MDOC` is `mso_mdoc`), registered with `addCredentialVerifier(verifier)`. One must be registered for each requested format. The built-in SD-JWT VC verifier requires the optional EUDI dependency and explicit issuer trust configuration; see [Configuring credential verifiers](openid4vp-verifiers.html#2-configuring-credential-verifiers). |
+| `credentialVerifiers` | `SdJwtVcVerifier`, `MdocVerifier` | The interchangeable `CredentialVerifier` of each credential format (`SD_JWT_VC` is `dc+sd-jwt`, `MSO_MDOC` is `mso_mdoc`), registered with `addCredentialVerifier(verifier)`. One must be registered for each requested format. The built-in verifiers require an optional library and an explicit issuer trust configuration; see [Configuring credential verifiers](openid4vp-verifiers.html#2-configuring-credential-verifiers). |
 | `transactionLifetimeSeconds` | `300` | How long a request stays valid: stamped as the `exp` of the request object, and the date at which the pending transaction is dropped from the store |
 | `transactionStore` | `VpTransactionStore` | The `Store` of the pending transactions, keyed by their identifier: the wallet legs carry no session and find the request there. The answer of the wallet is kept apart, under the key `<identifier>#response`, with the same expiration, so that no other leg can overwrite it. In memory by default; use a shared store (Redis, Hazelcast...) behind several instances |
 | `nonceGenerator` | 32 random characters | Generates the `nonce` sent to the wallet, which the presentation must be bound to |
 | `transactionIdGenerator` | 32 random characters | Generates the transaction identifier, visible in the `request_uri` and in the response URI |
 | `profileIdResolver` | `issuerAndClaim("sub")`, none for `EudiWalletClient` | How the user is identified from the verified credentials, see [The profile identifier](openid4vp-advanced.html#2-the-profile-identifier). Checked against `dcqlQuery` at initialization |
 | `stateGenerator` | 64 random characters | Generates the `state` sent with every request invoking a wallet by URL (not over the Digital Credentials API) and checked on the response: it is what binds the response to the request when a presentation comes without holder binding |
-| `requestUriMethod` | `POST` | How the wallet fetches the request object: `GET` as RFC 9101 defines, or `POST` to let it first post its metadata (`wallet_metadata`, what it supports) and a nonce (`wallet_nonce`). The request object then carries the nonce back, and publishes only the credential formats and the response encryption algorithms the wallet declared, the request being refused when it declares none of them. Announced in the wallet URL as `request_uri_method=post`; a wallet which does not support it falls back to a GET, so nothing is lost. Only meaningful for a signed request over the URL binding |
+| `requestUriMethod` | `POST` | How the wallet fetches the request object: `GET` as RFC 9101 defines, or `POST` to let it first post its metadata (`wallet_metadata`, what it supports) and a nonce (`wallet_nonce`). The request object then carries the nonce back, and publishes only the credential formats and the response encryption algorithms the wallet declared, the request being refused when no common encryption algorithm or credential format remains, or when the common formats cannot satisfy the required DCQL credential selections (including alternatives and optional sets). This format check also applies when a `scope` represents the query; it cannot determine whether the wallet actually holds the requested credentials. Announced in the wallet URL as `request_uri_method=post`; a wallet which does not support it falls back to a GET, so nothing is lost. Only meaningful for a signed request over the URL binding |
 | `walletScheme` | `openid4vp://` | The custom scheme of the URL invoking a wallet on the same device; a wallet may register another one (`eudi-openid4vp://` for the EUDI reference wallet, `haip://`...) |
 
 The `OpenId4VpDcApiConfiguration` adds one property and closes two: its default response mode is `DC_API_JWT`, only `DC_API` and `DC_API_JWT` are accepted, and the `REDIRECT_URI` prefix is refused since this binding hands the browser a signed request.

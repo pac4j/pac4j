@@ -41,41 +41,34 @@ Alternatively, you can also let pac4j create the keystore for you. If the keysto
 Then, you must define a [`SAML2Configuration`](https://github.com/pac4j/pac4j/blob/master/pac4j-saml/src/main/java/org/pac4j/saml/config/SAML2Configuration.java):
 
 ```java
-SAML2Configuration cfg = new SAML2Configuration(new ClassPathResource("samlKeystore.jks"),
-        "pac4j-demo-passwd",
-        "pac4j-demo-passwd",
-        new ClassPathResource("testshib-providers.xml"));
+SAML2Configuration cfg = new SAML2Configuration(
+    new KeystoreProperties("classpath:samlKeystore.jks")
+        .setKeystorePassword("pac4j-demo-passwd")
+        .setPrivateKeyPassword("pac4j-demo-passwd"),
+    new ResourceProperties("classpath:testshib-providers.xml"));
 ```
 
-The first parameter (`keystoreResource`) is the keystore defined as a Spring resource using:
-- the `org.springframework.core.io.FileSystemResource` class for disk files
-- the `org.springframework.core.io.ClassPathResource` class for classpath files
-- the `org.springframework.core.io.UrlResource` class for URLs.
+The first parameter is the keystore, defined by a `KeystoreProperties`:
+- its constructor (`new KeystoreProperties(path)`) or its `setPath(...)` or `setResource(...)` methods define where the keystore is
+- its `setKeystorePassword(...)` method defines the value of the `-storepass` option for the keystore generation while its `setPrivateKeyPassword(...)` method defines the value of the `-keypass` option
+- its `setKeyStoreAlias(...)` and `setKeyStoreType(...)` methods optionally define the alias and the type of the keystore.
 
-The second parameter (`keystorePassword`) is the value of the `-storepass` option for the keystore generation while the third parameter (`privateKeyPassword`) is the value of the `-keypass` option.
+The second parameter is your IdP metadata, defined by a `ResourceProperties` (`new ResourceProperties(path)` or `new ResourceProperties().setResource(...)`).
 
-The fourth parameter (`identityProviderMetadataResource`) should point to your IdP metadata, assuming you can use the same kind of definition as for the keystore.
-
-Or you can also use the "prefix mechanism" to define the `Resource`:
-
-```java
-SAML2Configuration cfg = new SAML2Configuration("resource:samlKeystore.jks",
-    "pac4j-demo-passwd",
-    "pac4j-demo-passwd",
-    "resource:testshib-providers.xml");
-```
-
-These are the available prefixes:
+The path uses a prefix to define the Spring `Resource`:
 
 - the `resource:` or the `classpath:` prefixes create a `ClassPathResource` component
 - the `http:` or the `https:` prefixes create a `UrlResource` component
 - the `file:` prefix or no prefix at all creates a `FileSystemResource` component.
 
-Or you can even use the empty constructor and the appropriate setters:
-- the `setKeystoreResource`, `setKeystoreResourceFilepath`, `setKeystoreResourceClasspath`, `setKeystoreResourceUrl` or `setKeystorePath` methods to define the keystore
-- the `setKeystorePassword` method to define the keystore password
-- the `setPrivateKeyPassword` method to set the private password of the keystore
-- the `setIdentityProviderMetadataResource`, `setIdentityProviderMetadataResourceFilepath`, `setIdentityProviderMetadataResourceClasspath`, `setIdentityProviderMetadataResourceUrl` or `setIdentityProviderMetadataPath` methods to define the identity provider metadata.
+Or you can directly define the `Resource` with the `setResource(...)` method:
+- the `org.springframework.core.io.FileSystemResource` class for disk files
+- the `org.springframework.core.io.ClassPathResource` class for classpath files
+- the `org.springframework.core.io.UrlResource` class for URLs.
+
+Or you can even use the empty constructor and the appropriate getters:
+- the `getKeystore()` method to define the keystore
+- the `getIdentityProviderMetadata().setPath(...)` or `getIdentityProviderMetadata().setResource(...)` methods to define the identity provider metadata.
 
 Finally, you need to declare the `SAML2Client` based on the previous configuration:
 
@@ -231,9 +224,8 @@ httpClient.setSocketTimeout(Duration.ofSeconds(1));
 
 final SAML2Configuration config = new SAML2Configuration();
 config.setHttpClient(httpClient.build());
-config.setKeystoreResourceUrl("http://localhost:8081/keystore");
-config.setServiceProviderMetadataResource(
-    new FileUrlResource(new URL("http://localhost:8081/saml")));
+config.getKeystore().setPath("http://localhost:8081/keystore");
+config.getServiceProviderMetadata().setPath("http://localhost:8081/saml");
 
 // Other Stuff...
 
@@ -397,13 +389,13 @@ SimpleSAMLphp is a commonly used IdP. To integrate PAC4J with SimpleSAMLphp use 
 #### DemoConfigFactory.java
 
 ```java
-final SAML2Configuration cfg = new SAML2Configuration("resource:samlKeystore.jks",
- "pac4j-demo-passwd",
- "pac4j-demo-passwd",
- "resource:idp-metadata.xml"); //the id-metadata.xml contains IdP metadata, you will have to create this
+final SAML2Configuration cfg = new SAML2Configuration(
+ new KeystoreProperties("resource:samlKeystore.jks")
+  .setKeystorePassword("pac4j-demo-passwd").setPrivateKeyPassword("pac4j-demo-passwd"),
+ new ResourceProperties("resource:idp-metadata.xml")); //the id-metadata.xml contains IdP metadata, you will have to create this
  cfg.setMaximumAuthenticationLifetime(3600);
  cfg.setServiceProviderEntityId("test.pac4j"); //the entityId of you client (the SP), you will usualy change this
- cfg.setServiceProviderMetadataPath(new File("sp-metadata.xml").getAbsolutePath()); //the metadata of the SP, no changes required usually
+ cfg.getServiceProviderMetadata().setPath(new File("sp-metadata.xml").getAbsolutePath()); //the metadata of the SP, no changes required usually
  final SAML2Client saml2Client = new SAML2Client(cfg);
 ```
 

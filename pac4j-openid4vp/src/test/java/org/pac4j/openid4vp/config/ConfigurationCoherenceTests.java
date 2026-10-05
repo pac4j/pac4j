@@ -28,7 +28,7 @@ class ConfigurationCoherenceTests {
         configuration.setClientId("did:example:123")
             .setClientIdPrefix(ClientIdPrefix.DECENTRALIZED_IDENTIFIER)
             .setDcqlQuery("{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\",\"meta\":{\"vct_values\":[\"urn:eudi:pid:1\"]}}]}")
-            .setJwks(new JwksProperties().setJwksPath(directory.resolve("keys.jwks").toString()).setKid("key-1"));
+            .setJwks(new JwksProperties(directory.resolve("keys.jwks").toString()).setKid("key-1"));
         return configuration;
     }
 
@@ -47,7 +47,7 @@ class ConfigurationCoherenceTests {
         configuration.setClientId("did:example:123")
             .setClientIdPrefix(ClientIdPrefix.DECENTRALIZED_IDENTIFIER)
             .setDcqlQuery("{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\",\"meta\":{\"vct_values\":[\"urn:eudi:pid:1\"]}}]}")
-            .setJwks(new JwksProperties().setJwksPath(directory.resolve("keys.jwks").toString()).setKid("key-1"))
+            .setJwks(new JwksProperties(directory.resolve("keys.jwks").toString()).setKid("key-1"))
             .setResponseMode(ResponseMode.DIRECT_POST_JWT);
         configuration.setExpectedOrigins(List.of("https://app.example.org"));
 
@@ -58,7 +58,8 @@ class ConfigurationCoherenceTests {
     @Test
     void testEveryQueriedFormatNeedsAVerifier() {
         val configuration = valid();
-        // a mobile document is asked for, but only the SD-JWT VC verifier is registered
+        configuration.getCredentialVerifiers().remove(CredentialFormat.MSO_MDOC);
+        // a mobile document is asked for, but its verifier was removed
         configuration.setDcqlQuery("{\"credentials\":[{\"id\":\"mdl\",\"format\":\"mso_mdoc\","
             + "\"meta\":{\"doctype_value\":\"org.iso.18013.5.1.mDL\"}}]}");
 
@@ -141,7 +142,7 @@ class ConfigurationCoherenceTests {
         configuration.setClientId("did:example:123")
             .setClientIdPrefix(ClientIdPrefix.DECENTRALIZED_IDENTIFIER)
             .setDcqlQuery("{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\",\"meta\":{\"vct_values\":[\"urn:eudi:pid:1\"]}}]}")
-            .setJwks(new JwksProperties().setJwksPath(directory.resolve("keys.jwks").toString()).setKid("key-1"));
+            .setJwks(new JwksProperties(directory.resolve("keys.jwks").toString()).setKid("key-1"));
         // the browser origin never has a path: this value could never match it
         configuration.setExpectedOrigins(List.of("https://app.example.org/login"));
 

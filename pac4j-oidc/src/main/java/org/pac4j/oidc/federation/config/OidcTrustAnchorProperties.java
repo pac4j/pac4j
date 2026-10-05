@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.pac4j.core.resource.SpringResourceHelper;
+import org.pac4j.core.config.properties.JwksProperties;
 import org.pac4j.core.util.CommonHelper;
 import org.springframework.core.io.Resource;
 
@@ -24,21 +24,51 @@ public class OidcTrustAnchorProperties {
 
     private String issuer;
 
-    private Resource jwksResource;
+    private JwksProperties jwks = new JwksProperties();
 
+    /**
+     * @deprecated use {@code OidcTrustAnchorProperties(String, JwksProperties)}
+     */
+    @Deprecated
+    public OidcTrustAnchorProperties(final String issuer, final Resource jwksResource) {
+        setIssuer(issuer);
+        setJwksResource(jwksResource);
+    }
+
+    /**
+     * @deprecated use {@code OidcTrustAnchorProperties(String, JwksProperties)}
+     */
+    @Deprecated
     public OidcTrustAnchorProperties(final String issuer, final String jwksResourcePath) {
         setIssuer(issuer);
         setJwksPath(jwksResourcePath);
     }
 
+    /**
+     * @deprecated use getJwks().getResource() instead of getJwksResource()
+     */
+    @Deprecated
+    public Resource getJwksResource() {
+        return jwks.getResource();
+    }
+
+    /**
+     * @deprecated use getJwks().setResource(resource) instead of setJwksResource(resource)
+     */
+    @Deprecated
     public OidcTrustAnchorProperties setJwksResource(final Resource jwksResource) {
         CommonHelper.assertNotNull("jwksResource", jwksResource);
-        this.jwksResource = jwksResource;
+        jwks.setResource(jwksResource);
         return this;
     }
 
+    /**
+     * @deprecated use getJwks().setPath(path) instead of setJwksPath(path)
+     */
+    @Deprecated
     public OidcTrustAnchorProperties setJwksPath(final String path) {
         CommonHelper.assertNotBlank("path", path);
-        return setJwksResource(SpringResourceHelper.buildResourceFromPath(path));
+        jwks.setPath(path);
+        return this;
     }
 }

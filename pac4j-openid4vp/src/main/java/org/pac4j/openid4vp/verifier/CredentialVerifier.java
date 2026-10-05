@@ -1,5 +1,7 @@
 package org.pac4j.openid4vp.verifier;
 
+import java.util.Map;
+
 import org.pac4j.openid4vp.config.CredentialFormat;
 import org.pac4j.openid4vp.config.OpenId4VpConfiguration;
 import org.pac4j.openid4vp.transaction.VpTransaction;
@@ -26,6 +28,15 @@ public interface CredentialVerifier {
      * @return a {@link CredentialFormat} object
      */
     CredentialFormat getFormat();
+
+    /**
+     * Format-specific capabilities published in {@code vp_formats_supported}.
+     *
+     * @return the supported algorithms or other format metadata
+     */
+    default Map<String, Object> getFormatMetadata() {
+        return Map.of();
+    }
 
     /**
      * <p>Validate one raw credential and return its disclosed claims.</p>

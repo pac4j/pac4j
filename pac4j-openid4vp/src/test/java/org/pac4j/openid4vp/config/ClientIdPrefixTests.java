@@ -80,8 +80,7 @@ class ClientIdPrefixTests {
     private KeystoreProperties keystore(final String encoded) throws Exception {
         val file = directory.resolve("rp.p12");
         Files.write(file, Base64.getDecoder().decode(encoded));
-        return new KeystoreProperties()
-            .setKeystorePath(file.toString())
+        return new KeystoreProperties(file.toString())
             .setKeystorePassword("changeit")
             .setPrivateKeyPassword("changeit")
             .setKeyStoreAlias("rp")
@@ -155,7 +154,7 @@ class ClientIdPrefixTests {
         val configuration = configuration(ClientIdPrefix.DECENTRALIZED_IDENTIFIER);
         configuration.setClientId("did:example:123");
         // a key created without any identifier: the wallet could not find it in the DID document
-        configuration.setJwks(new JwksProperties().setJwksPath(directory.resolve("keys.jwks").toString()));
+        configuration.setJwks(new JwksProperties(directory.resolve("keys.jwks").toString()));
 
         TestsHelper.expectException(configuration::init, TechnicalException.class,
             "the signing key must carry a key identifier for the decentralized_identifier client identifier prefix: "
@@ -166,7 +165,7 @@ class ClientIdPrefixTests {
     void testADecentralizedIdentifierWithAKeyIdentifier() {
         val configuration = configuration(ClientIdPrefix.DECENTRALIZED_IDENTIFIER);
         configuration.setClientId("did:example:123");
-        configuration.setJwks(new JwksProperties().setJwksPath(directory.resolve("keys.jwks").toString()).setKid("key-1"));
+        configuration.setJwks(new JwksProperties(directory.resolve("keys.jwks").toString()).setKid("key-1"));
         configuration.init();
 
         assertEquals("key-1", configuration.getRequestObjectSigningKey().getKeyID());

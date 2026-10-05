@@ -11,6 +11,8 @@ import org.pac4j.core.util.JwkHelper;
 import org.pac4j.openid4vp.client.OpenId4VpClient;
 import org.pac4j.openid4vp.config.CredentialFormat;
 import org.pac4j.openid4vp.config.VerifierAttestation;
+import org.pac4j.openid4vp.dcql.CredentialQuery;
+import org.pac4j.openid4vp.dcql.DcqlValidator;
 import org.pac4j.openid4vp.exceptions.OpenId4VpException;
 import org.pac4j.openid4vp.transaction.VpTransaction;
 
@@ -19,6 +21,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.pac4j.core.util.CommonHelper.isNotBlank;
 import static org.pac4j.openid4vp.util.OpenId4VpConstants.*;
@@ -178,7 +181,8 @@ public class OpenId4VpRequestObjectBuilder {
      *
      * <p>A wallet which posted its own metadata to the request URI is answered what it can honour: the
      * formats and the encryption algorithms are narrowed down to those it declared, and the request is
-     * refused when nothing is left, rather than sent to fail.</p>
+     * refused when nothing is left or the common formats cannot satisfy the required DCQL credential
+     * selections. This checks format compatibility, not whether the wallet holds the requested credentials.</p>
      *
      * @param transaction the transaction being answered
      * @return the client metadata
@@ -200,7 +204,11 @@ public class OpenId4VpRequestObjectBuilder {
         }
 
         val formats = new LinkedHashMap<String, Object>();
-        computeFormats(walletMetadata, transaction).forEach(format -> formats.put(format, Map.of()));
+        computeFormats(walletMetadata, transaction).forEach(format -> {
+            val verifier = client.getConfiguration().getCredentialVerifiers().values().stream()
+                .filter(candidate -> candidate.getFormat().getValue().equals(format)).findFirst().orElseThrow();
+            formats.put(format, verifier.getFormatMetadata());
+        });
         metadata.put(VP_FORMATS_SUPPORTED, formats);
         LOGGER.debug("client metadata built for transaction {}: formats={}, response encryption methods={}",
             transaction.getId(), formats.keySet(), metadata.get(ENCRYPTED_RESPONSE_ENC_VALUES_SUPPORTED));
@@ -263,7 +271,8 @@ public class OpenId4VpRequestObjectBuilder {
 
     /**
      * <p>The credential formats to publish: those a verifier is registered for, narrowed down to those the
-     * wallet declared in its {@code vp_formats_supported} when it did.</p>
+     * wallet declared in its {@code vp_formats_supported} when it did. The common formats must allow
+     * all required DCQL selections, respecting alternatives and optional credential sets.</p>
      *
      * @param walletMetadata the metadata the wallet posted, empty when it posted none
      * @param transaction the transaction being answered
@@ -289,6 +298,16 @@ public class OpenId4VpRequestObjectBuilder {
             LOGGER.debug("request rejected for transaction {}: no common credential format", transaction.getId());
             throw new OpenId4VpException("the wallet presents none of the credential formats this verifier verifies "
                 + verifiedFormats + ", but " + walletFormats.keySet() + ": " + transaction.getId());
+        }
+        val query = client.getConfiguration().getDcqlQuery();
+        val supportedIds = query.getCredentials().stream()
+            .filter(credential -> formats.contains(credential.getFormat().getValue()))
+            .map(CredentialQuery::getId).collect(Collectors.toSet());
+        try {
+            new DcqlValidator().validateSelection(query, supportedIds);
+        } catch (final OpenId4VpException e) {
+            throw new OpenId4VpException("the wallet's supported credential formats " + walletFormats.keySet()
+                + " cannot satisfy the required DCQL credential selections: " + transaction.getId(), e);
         }
         return formats;
     }
