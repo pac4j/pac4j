@@ -35,7 +35,8 @@ jobs:
               run: mvn -B clean install
 
     deploy:
-        if: startsWith(github.ref, 'refs/heads/')
+        # releases are published locally with the maven-release-plugin: skip its release commit
+        if: startsWith(github.ref, 'refs/heads/') && !startsWith(github.event.head_commit.message, '[maven-release-plugin] prepare release')
         runs-on: ubuntu-latest
         needs: [build]
         steps:
