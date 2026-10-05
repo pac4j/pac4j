@@ -27,8 +27,8 @@ public class SAML2InMemoryMetadataGeneratorTests {
         configuration.setPrivateKeyPassword("pac4j");
         configuration.setSignMetadata(true);
         configuration.setMetadataGenerator(new SAML2InMemoryMetadataGenerator());
-        configuration.setServiceProviderMetadataResource(new FileSystemResource("target/out.xml"));
-        configuration.setIdentityProviderMetadataResource(new ClassPathResource("idp-metadata.xml"));
+        configuration.getServiceProviderMetadata().setResource(new FileSystemResource("target/out.xml"));
+        configuration.getIdentityProviderMetadata().setResource(new ClassPathResource("idp-metadata.xml"));
         configuration.init();
 
         var metadataGenerator = configuration.getMetadataGenerator();

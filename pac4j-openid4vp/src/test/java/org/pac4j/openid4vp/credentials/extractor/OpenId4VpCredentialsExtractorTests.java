@@ -57,7 +57,7 @@ class OpenId4VpCredentialsExtractorTests {
         configuration.setDcqlQuery("{\"credentials\":[{\"id\":\"pid\",\"format\":\"dc+sd-jwt\","
             + "\"meta\":{\"vct_values\":[\"urn:eudi:pid:1\"]}}]}");
         configuration.setClientIdPrefix(org.pac4j.openid4vp.config.ClientIdPrefix.DECENTRALIZED_IDENTIFIER);
-        configuration.setJwks(new JwksProperties().setJwksPath(directory.resolve("keys.jwks").toString()).setKid("key-1"));
+        configuration.setJwks(new JwksProperties(directory.resolve("keys.jwks").toString()).setKid("key-1"));
 
         client = new OpenId4VpClient(configuration);
         client.setName("EudiWallet");

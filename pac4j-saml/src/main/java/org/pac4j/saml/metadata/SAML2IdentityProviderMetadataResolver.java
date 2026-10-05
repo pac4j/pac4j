@@ -64,7 +64,7 @@ public class SAML2IdentityProviderMetadataResolver extends SpringResourceLoader<
     private final SAML2Configuration configuration;
 
     public SAML2IdentityProviderMetadataResolver(final SAML2Configuration configuration) {
-        super(configuration.getIdentityProviderMetadataResource());
+        super(configuration.getIdentityProviderMetadata().getResource());
         if (configuration.getSslSocketFactory() != null) {
             setSslSocketFactory(configuration.getSslSocketFactory());
         }
@@ -94,7 +94,7 @@ public class SAML2IdentityProviderMetadataResolver extends SpringResourceLoader<
     }
 
     protected DOMMetadataResolver initializeMetadataResolver() {
-        if (configuration.getIdentityProviderMetadataResource() instanceof UrlResource urlResource) {
+        if (configuration.getIdentityProviderMetadata().getResource() instanceof UrlResource urlResource) {
             var fileUrl = urlResource.getURL().toString();
             HttpURLConnection conn = null;
             try {
@@ -123,7 +123,7 @@ public class SAML2IdentityProviderMetadataResolver extends SpringResourceLoader<
             }
         }
 
-        return loadMetadataFromResource(configuration.getIdentityProviderMetadataResource());
+        return loadMetadataFromResource(configuration.getIdentityProviderMetadata().getResource());
     }
 
     private DOMMetadataResolver downloadMetadata(final long contentLength, final String url) {

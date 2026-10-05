@@ -77,7 +77,7 @@ public class SAML2DefaultResponseValidatorTests {
         cfg.setForceKeystoreGeneration(true);
         cfg.setWantsAssertionsSigned(wantsAssertionsSigned);
         cfg.setWantsResponsesSigned(wantsResponsesSigned);
-        cfg.setServiceProviderMetadataResource(new FileSystemResource(new File("target", "sp-metadata.xml").getAbsolutePath()));
+        cfg.getServiceProviderMetadata().setResource(new FileSystemResource(new File("target", "sp-metadata.xml").getAbsolutePath()));
         return cfg;
     }
 

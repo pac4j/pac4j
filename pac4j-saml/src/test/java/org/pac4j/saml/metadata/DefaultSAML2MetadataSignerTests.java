@@ -39,8 +39,8 @@ public class DefaultSAML2MetadataSignerTests {
         configuration.setKeystorePassword("pac4j");
         configuration.setPrivateKeyPassword("pac4j");
         configuration.setSignMetadata(true);
-        configuration.setServiceProviderMetadataResource(new FileSystemResource("target/out.xml"));
-        configuration.setIdentityProviderMetadataResource(new ClassPathResource("idp-metadata.xml"));
+        configuration.getServiceProviderMetadata().setResource(new FileSystemResource("target/out.xml"));
+        configuration.getIdentityProviderMetadata().setResource(new ClassPathResource("idp-metadata.xml"));
         configuration.setMetadataSigner(new DefaultSAML2MetadataSigner(configuration));
         configuration.init();
 
