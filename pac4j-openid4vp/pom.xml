@@ -62,7 +62,7 @@
         <dependency>
             <groupId>id.walt.mdoc-credentials</groupId>
             <artifactId>waltid-mdoc-credentials-jvm</artifactId>
-            <version>0.11.0</version>
+            <version>0.23.1</version>
             <optional>true</optional>
         </dependency>
         <!-- walt.id declares COSE at runtime, but the Java adapter uses its public key conversion API. -->
