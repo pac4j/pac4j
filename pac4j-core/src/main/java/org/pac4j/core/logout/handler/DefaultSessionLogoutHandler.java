@@ -10,7 +10,7 @@ import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.profile.factory.ProfileManagerFactory;
-import org.pac4j.core.store.GuavaStore;
+import org.pac4j.core.store.ConcurrentMapStore;
 import org.pac4j.core.store.Store;
 
 import java.util.Optional;
@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class DefaultSessionLogoutHandler implements SessionLogoutHandler {
 
-    private Store<String, Object> store = new GuavaStore<>(10000, 30, TimeUnit.MINUTES);
+    private Store<String, Object> store = new ConcurrentMapStore<>(30, TimeUnit.MINUTES);
 
     private boolean destroySession;
 
