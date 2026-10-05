@@ -17,6 +17,7 @@ description: "Review pac4j release notes for supported Java lines, including aut
 - OIDC's login hints can be provided dynamically as a `login_hint` request attribute
 - Only empty credentials or a `CredentialsException` (from the `CredentialsExtractor` or the `Authenticator`) now block further authentication attempts of an indirect client: any other exception allows a retry.
 - Added the `ConcurrentMapStore`, a `Store` expiring its entries (without any additional dependency), and the `AbstractConcurrentMapStore` for the values carrying their own expiration date
+- The `DefaultSessionLogoutHandler` now uses a `ConcurrentMapStore` by default (30 minutes, no maximum size) instead of a `GuavaStore`: the `pac4j-core` module no longer needs Guava, unless a `GuavaStore` is configured
 - Updated the `JwkHelper`:
   - `buildSignedJwt` can now publish in the `x5c` header the certificate chain the signing key carries, for the protocols binding the identity of the signer to a certificate rather than to a key
   - the new `resolveSigningKey` method reads the signing key from a JWKS, or from a keystore when the JWKS is not defined, the logic the OpenID federation used to hold

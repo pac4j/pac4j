@@ -1,7 +1,6 @@
 package org.pac4j.core.profile;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.common.collect.Streams;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,6 +19,7 @@ import java.io.Serial;
 import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * This class is the user profile retrieved from a provider after successful authentication: it's an identifier (string) and attributes
@@ -159,7 +159,7 @@ public class BasicUserProfile implements UserProfile, Externalizable {
 
     private static <T> Collection<T> mergeCollectionAttributes(final Collection<T> existingCollection, final Collection<T> newCollection)
     {
-        return Streams.concat(existingCollection.stream(), newCollection.stream()).distinct().collect(Collectors.toList());
+        return Stream.concat(existingCollection.stream(), newCollection.stream()).distinct().collect(Collectors.toList());
     }
 
     @Override
