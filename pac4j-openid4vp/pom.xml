@@ -15,7 +15,7 @@
         including the European Digital Identity (EUDI) wallet profile.</description>
 
     <properties>
-        <kotlin.version>2.2.21</kotlin.version>
+        <kotlin.version>2.4.20</kotlin.version>
     </properties>
 
     <!-- walt.id publishes the mdoc library outside Maven Central. -->
@@ -109,7 +109,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.6.1</version>
+                <version>3.6.2</version>
                 <executions>
                     <execution>
                         <id>add-kotlin-source</id>
