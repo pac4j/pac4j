@@ -99,7 +99,7 @@ public class DirectCasClient extends DirectClient {
                 // redirect to the login page
                 val redirectionUrl = CasRedirectionActionBuilder.constructRedirectUrl(loginUrl, CasConfiguration.SERVICE_PARAMETER,
                     callbackUrl, configuration.isRenew(), false, null);
-                logger.debug("redirectionUrl: {}", redirectionUrl);
+                CasConfiguration.PROTOCOL_MESSAGES.sent(CasConfiguration.BROWSER, "login URL: " + redirectionUrl);
                 throw HttpActionHelper.buildRedirectUrlAction(webContext, redirectionUrl);
             }
 

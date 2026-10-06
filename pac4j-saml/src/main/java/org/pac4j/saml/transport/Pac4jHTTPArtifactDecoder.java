@@ -168,7 +168,7 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
 
         super.decode();
 
-        SAML2Utils.logProtocolMessage((XMLObject) getMessageContext().getMessage());
+        SAML2Utils.logReceivedProtocolMessage((XMLObject) getMessageContext().getMessage());
 
         LOGGER.debug("Successfully decoded message from WebContext.");
     }

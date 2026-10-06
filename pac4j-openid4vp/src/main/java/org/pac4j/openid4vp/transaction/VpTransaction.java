@@ -4,12 +4,16 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.serializer.JavaSerializer;
 import org.pac4j.openid4vp.config.ResponseMode;
+import org.pac4j.openid4vp.verifier.VerifiedCredential;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A pending presentation request.
@@ -30,7 +34,7 @@ import java.time.Instant;
  */
 @Getter
 @Setter
-@ToString(exclude = {"encryptionKey", "rawResponse"})
+@ToString(exclude = {"encryptionKey", "rawResponse", "validatedVpToken", "verifiedCredentials", "userProfile"})
 @Accessors(chain = true)
 public class VpTransaction implements Serializable {
 
@@ -102,6 +106,27 @@ public class VpTransaction implements Serializable {
     private String responseCode;
 
     /**
+     * The presentations of the answer, as read when it was validated at its reception: with the verified credentials and
+     * the user profile, what the browser takes as is, so that nothing is verified twice.
+     */
+    private Map<String, List<String>> validatedVpToken;
+
+    /** The credentials verified at the reception of the answer, indexed by the identifier of their DCQL credential query. */
+    private Map<String, List<VerifiedCredential>> verifiedCredentials;
+
+    /** The user profile built at the reception of the answer. */
+    private UserProfile userProfile;
+
+    /**
+     * <p>Whether the answer was validated at its reception.</p>
+     *
+     * @return a boolean
+     */
+    public boolean isValidated() {
+        return verifiedCredentials != null && userProfile != null;
+    }
+
+    /**
      * <p>Whether the wallet answered, with presentations or with an error.</p>
      *
      * @return a boolean
@@ -130,7 +155,8 @@ public class VpTransaction implements Serializable {
     public VpTransaction toResponse() {
         return new VpTransaction().setId(id).setExpiresAt(expiresAt).setStatus(Status.RESPONSE_RECEIVED)
             .setRawResponse(rawResponse).setRawVpToken(rawVpToken).setResponseState(responseState)
-            .setError(error).setErrorDescription(errorDescription);
+            .setError(error).setErrorDescription(errorDescription)
+            .setValidatedVpToken(validatedVpToken).setVerifiedCredentials(verifiedCredentials).setUserProfile(userProfile);
     }
 
     /**
@@ -142,6 +168,8 @@ public class VpTransaction implements Serializable {
     public VpTransaction withResponse(final VpTransaction response) {
         return setStatus(Status.RESPONSE_RECEIVED).setRawResponse(response.getRawResponse())
             .setRawVpToken(response.getRawVpToken()).setResponseState(response.getResponseState())
-            .setError(response.getError()).setErrorDescription(response.getErrorDescription());
+            .setError(response.getError()).setErrorDescription(response.getErrorDescription())
+            .setValidatedVpToken(response.getValidatedVpToken()).setVerifiedCredentials(response.getVerifiedCredentials())
+            .setUserProfile(response.getUserProfile());
     }
 }

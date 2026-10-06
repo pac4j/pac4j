@@ -46,7 +46,9 @@ public abstract class AbstractCasRestClient extends DirectClient {
             val endpointURL = new URL(configuration.computeFinalRestUrl(context));
             val deleteURL = new URL(endpointURL, endpointURL.getPath() + "/" + profile.getTicketGrantingTicketId());
             connection = HttpUtils.openDeleteConnection(deleteURL);
+            CasConfiguration.PROTOCOL_MESSAGES.sent(CasConfiguration.CAS_SERVER, "DELETE " + deleteURL);
             val responseCode = connection.getResponseCode();
+            CasConfiguration.PROTOCOL_MESSAGES.received(CasConfiguration.CAS_SERVER, String.valueOf(responseCode));
             if (responseCode != HttpConstants.OK) {
                 throw new TechnicalException("TGT delete request for `" + profile + "` failed: " +
                         HttpUtils.buildHttpErrorMessage(connection));
@@ -74,6 +76,7 @@ public abstract class AbstractCasRestClient extends DirectClient {
 
             connection = HttpUtils.openPostConnection(ticketURL);
             val payload = HttpUtils.encodeQueryParam("service", serviceURL);
+            CasConfiguration.PROTOCOL_MESSAGES.sent(CasConfiguration.CAS_SERVER, "POST " + ticketURL + " service=" + serviceURL);
 
             val out = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(), StandardCharsets.UTF_8));
             out.write(payload);
@@ -82,9 +85,12 @@ public abstract class AbstractCasRestClient extends DirectClient {
             val responseCode = connection.getResponseCode();
             if (responseCode == HttpConstants.OK) {
                 try (var in = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
-                    return new TokenCredentials(in.readLine());
+                    val serviceTicket = in.readLine();
+                    CasConfiguration.PROTOCOL_MESSAGES.received(CasConfiguration.CAS_SERVER, responseCode + " " + serviceTicket);
+                    return new TokenCredentials(serviceTicket);
                 }
             }
+            CasConfiguration.PROTOCOL_MESSAGES.received(CasConfiguration.CAS_SERVER, String.valueOf(responseCode));
             throw new TechnicalException("Service ticket request for `" + profile + "` failed: " +
                     HttpUtils.buildHttpErrorMessage(connection));
         } catch (final IOException e) {

@@ -16,6 +16,7 @@ import com.nimbusds.openid.connect.sdk.Nonce;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.pac4j.core.context.CallContext;
+import org.pac4j.oidc.util.OidcProtocolMessages;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
@@ -144,27 +145,13 @@ public class OidcRedirectionActionBuilder extends InitializableObject implements
                 }
             }
             val builtClaims = claims.build();
-            if (LOGGER.isDebugEnabled()) {
-                val map = builtClaims.getClaims();
-                if (LOGGER.isTraceEnabled()) {
-                    LOGGER.debug("Request Object claims: {}", map.entrySet());
-                } else {
-                    LOGGER.debug("Request Object claim names: {}", map.keySet());
-                }
-            }
             val request = JwkHelper.buildSignedJwt(builtClaims, signingKey, signingAlg, "oauth-authz-req+jwt");
             newParams.put("request", request);
         } else {
             newParams.putAll(params.requestObject());
         }
-        if (LOGGER.isTraceEnabled()) {
-            LOGGER.debug("Authz parameters: {}", newParams.entrySet());
-        } else {
-            LOGGER.debug("Authz parameter names: {}", newParams.keySet());
-        }
-
         val location = buildAuthenticationRequestUrl(newParams);
-        LOGGER.debug("Authentication request URL: {}", location);
+        OidcProtocolMessages.sentToBrowser("authentication request URL: " + location);
 
         return Optional.of(HttpActionHelper.buildRedirectUrlAction(webContext, location));
     }
@@ -246,12 +233,6 @@ public class OidcRedirectionActionBuilder extends InitializableObject implements
                 }
             }
             try {
-                LOGGER.debug("Sending PAR request to: {}", parUrl);
-                if (LOGGER.isTraceEnabled()) {
-                    LOGGER.debug("PAR parameters: {}", multiParams.entrySet());
-                } else {
-                    LOGGER.debug("PAR parameter names: {}", multiParams.keySet());
-                }
                 val authzRequest = AuthorizationRequest.parse(multiParams);
                 val clientAuth = config.getOpMetadataResolver().getClientAuthenticationPAREndpoint();
                 val parRequest = new PushedAuthorizationRequest(
@@ -261,13 +242,14 @@ public class OidcRedirectionActionBuilder extends InitializableObject implements
                 );
                 val request = parRequest.toHTTPRequest();
                 config.configureHttpRequest(request);
+                OidcProtocolMessages.sent(request);
                 val response = request.send();
+                OidcProtocolMessages.received(response);
                 val parResponse = PushedAuthorizationResponse.parse(response);
 
                 if (parResponse.indicatesSuccess()) {
                     val successResponse = parResponse.toSuccessResponse();
                     val requestUri = successResponse.getRequestURI();
-                    LOGGER.debug("Received PAR response: {}", requestUri);
 
                     newParams = new HashMap<>();
                     newParams.put(CLIENT_ID, params.get(CLIENT_ID));

@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.context.CallContext;
+import org.pac4j.oidc.util.OidcProtocolMessages;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.SessionKeyCredentials;
@@ -71,6 +72,7 @@ public class OidcCredentialsExtractor implements CredentialsExtractor {
 
         // back-channel logout
         if (logoutToken.isPresent()) {
+            OidcProtocolMessages.received(OidcProtocolMessages.OPENID_PROVIDER, webContext);
             try {
                 val jwt = JWTParser.parse(logoutToken.get());
                 if (jwt instanceof EncryptedJWT) {
@@ -109,12 +111,14 @@ public class OidcCredentialsExtractor implements CredentialsExtractor {
 
         // front channel logout
         } else if (sid.isPresent()) {
+            OidcProtocolMessages.received(OidcProtocolMessages.BROWSER, webContext);
             val sessionId = sid.get();
             LOGGER.debug("Handling front-channel logout for sessionId: {}", sessionId);
             return Optional.of(new SessionKeyCredentials(LogoutType.FRONT, sessionId));
 
         // authentication
         } else {
+            OidcProtocolMessages.received(OidcProtocolMessages.BROWSER, webContext);
             val computedCallbackUrl = client.computeFinalCallbackUrl(webContext);
             val parameters = retrieveParameters(webContext);
             AuthenticationResponse response;
@@ -152,7 +156,6 @@ public class OidcCredentialsExtractor implements CredentialsExtractor {
                     throw new OidcMissingStateParameterException("Missing state parameter");
                 }
 
-                LOGGER.debug("Request state: {}/response state: {}", requestState, responseState);
                 if (!requestState.equals(responseState)) {
                     throw new OidcStateMismatchException(
                         "State parameter is different from the one sent in authentication request.");

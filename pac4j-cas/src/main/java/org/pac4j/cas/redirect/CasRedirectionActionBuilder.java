@@ -1,6 +1,5 @@
 package org.pac4j.cas.redirect;
 
-import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apereo.cas.client.Protocol;
 import org.pac4j.cas.client.CasClient;
@@ -20,7 +19,6 @@ import java.util.Optional;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-@Slf4j
 public class CasRedirectionActionBuilder implements RedirectionActionBuilder {
 
     protected CasConfiguration configuration;
@@ -54,7 +52,7 @@ public class CasRedirectionActionBuilder implements RedirectionActionBuilder {
             || webContext.getRequestAttribute(ATTRIBUTE_PASSIVE).isPresent();
         val redirectionUrl = constructRedirectUrl(computeLoginUrl, getServiceParameter(),
                 computedCallbackUrl, renew, gateway, configuration.getMethod());
-        LOGGER.debug("redirectionUrl: {}", redirectionUrl);
+        CasConfiguration.PROTOCOL_MESSAGES.sent(CasConfiguration.BROWSER, "login URL: " + redirectionUrl);
         return Optional.of(HttpActionHelper.buildRedirectUrlAction(webContext, redirectionUrl));
     }
 

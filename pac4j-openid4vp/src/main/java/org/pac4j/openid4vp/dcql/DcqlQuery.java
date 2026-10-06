@@ -6,7 +6,6 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import lombok.val;
-import lombok.extern.slf4j.Slf4j;
 import org.pac4j.core.exception.TechnicalException;
 
 import java.text.ParseException;
@@ -36,7 +35,6 @@ import static org.pac4j.core.util.CommonHelper.assertTrue;
 @Setter
 @ToString
 @Accessors(chain = true)
-@Slf4j
 public class DcqlQuery {
 
     /** JSON member names. */
@@ -86,7 +84,6 @@ public class DcqlQuery {
      * referencing existing credentials.</p>
      */
     public void check() {
-        LOGGER.debug("checking DCQL query structure");
         assertTrue(credentials != null && !credentials.isEmpty(), "credentials cannot be empty");
         val ids = new HashSet<String>();
         for (val credential : credentials) {

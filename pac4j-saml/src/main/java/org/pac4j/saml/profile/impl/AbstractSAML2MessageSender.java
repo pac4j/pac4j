@@ -88,7 +88,7 @@ public abstract class AbstractSAML2MessageSender<T extends SAMLObject> implement
             encoder.encode();
 
             storeMessage(context, request);
-            SAML2Utils.logProtocolMessage(request);
+            SAML2Utils.logSentProtocolMessage(request);
         } catch (final MessageEncodingException e) {
             throw new SAMLException("Error encoding saml message", e);
         } catch (final ComponentInitializationException e) {

@@ -147,7 +147,7 @@ Inside the `<dependencies>` element, add `shiro-web` and three pac4j artifacts: 
 <dependency>
     <groupId>io.buji</groupId>
     <artifactId>buji-pac4j</artifactId>
-    <version>10.0.0</version>
+    <version>10.0.1</version>
 </dependency>
 ```
 
@@ -247,7 +247,7 @@ casClient.authorizationGenerator = $roleGenerator
 
 Replace `adminGroup` with the exact group value released by your CAS server. Group membership must be controlled by administrators; a substring check could grant access to a different group with a similar name.
 
-Shiro **permissions** work the same way: put a list of permission strings in the profile attribute named by `Pac4jRealm.SHIRO_PERMISSIONS`, and `subject.isPermitted(...)` sees them.
+Shiro **permissions** work the same way: put the permission strings, or Shiro `Permission` objects, in the profile attribute named by `Pac4jRealm.SHIRO_PERMISSIONS`, as a collection, an array or a single value, and `subject.isPermitted(...)` sees them. With a Shiro cache manager, the realm caches the roles and permissions per login and clears them when pac4j renews the profiles.
 
 ## 5) Access the authenticated user
 
@@ -279,7 +279,7 @@ profile.getAttribute("email");
 profile.getAttributes();                 // everything the release policy allowed
 ```
 
-An empty attribute map can mean the release policy of the service is too restrictive, or the server still uses the CAS 2.0 protocol. To use another attribute as the principal name, set `pac4jRealm.principalNameAttribute = email` in the `[main]` section.
+An empty attribute map can mean the release policy of the service is too restrictive, or the server still uses the CAS 2.0 protocol. To use another attribute as the principal name, set `pac4jRealm.principalNameAttribute = email` in the `[main]` section; a user without that attribute keeps the CAS principal as name.
 
 ## 6) Logout
 

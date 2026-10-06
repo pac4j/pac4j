@@ -193,7 +193,6 @@ public class OpenId4VpConfiguration extends BaseClientConfiguration {
     /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
-        LOGGER.debug("checking OpenID4VP configuration: client ID prefix={}, response mode={}", clientIdPrefix, responseMode);
         assertNotNull("clientIdPrefix", clientIdPrefix);
         assertNotNull("responseMode", responseMode);
         assertNotNull("transactionStore", transactionStore);

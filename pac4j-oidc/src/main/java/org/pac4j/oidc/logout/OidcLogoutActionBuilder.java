@@ -4,6 +4,7 @@ import com.nimbusds.openid.connect.sdk.LogoutRequest;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.context.CallContext;
+import org.pac4j.oidc.util.OidcProtocolMessages;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.exception.http.ForbiddenAction;
 import org.pac4j.core.exception.http.RedirectionAction;
@@ -67,7 +68,9 @@ public class OidcLogoutActionBuilder implements LogoutActionBuilder {
                     throw new ForbiddenAction();
                 }
 
-                return Optional.of(HttpActionHelper.buildRedirectUrlAction(webContext, logoutRequest.toURI().toString()));
+                val endSessionUrl = logoutRequest.toURI().toString();
+                OidcProtocolMessages.sentToBrowser("logout URL: " + endSessionUrl);
+                return Optional.of(HttpActionHelper.buildRedirectUrlAction(webContext, endSessionUrl));
             } catch (final URISyntaxException e) {
                 throw new OidcException(e);
             }

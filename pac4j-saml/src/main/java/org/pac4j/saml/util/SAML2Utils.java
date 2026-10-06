@@ -13,6 +13,7 @@ import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.ProtocolMessageLogger;
 import org.pac4j.saml.metadata.SAML2MetadataResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +22,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * SAML2 utilities.
@@ -31,8 +33,13 @@ import java.util.List;
 @Slf4j
 public final class SAML2Utils implements HttpConstants {
 
-    /** SLF4J logger. */
-    private static final Logger protocolMessageLog = LoggerFactory.getLogger("PROTOCOL_MESSAGE");
+    /** The messages exchanged with the identity provider, on the {@code PROTOCOL_MESSAGE.SAML} logger. */
+    public static final ProtocolMessageLogger PROTOCOL_MESSAGES = new ProtocolMessageLogger("SAML");
+
+    /** The other party: the identity provider. */
+    public static final String IDENTITY_PROVIDER = "identity provider";
+
+    private static final Logger protocolMessageLog = LoggerFactory.getLogger(ProtocolMessageLogger.ROOT_LOGGER + ".SAML");
 
     /**
      * Private constructor, to prevent instantiation of this utility class.
@@ -136,18 +143,46 @@ public final class SAML2Utils implements HttpConstants {
     }
 
     /**
+     * <p>Log a message sent to the identity provider.</p>
+     *
+     * @param object the message
+     */
+    public static void logSentProtocolMessage(final XMLObject object) {
+        if (PROTOCOL_MESSAGES.isEnabled()) {
+            toXml(object).ifPresent(xml -> PROTOCOL_MESSAGES.sent(IDENTITY_PROVIDER, xml));
+        }
+    }
+
+    /**
+     * <p>Log a message received from the identity provider.</p>
+     *
+     * @param object the message
+     */
+    public static void logReceivedProtocolMessage(final XMLObject object) {
+        if (PROTOCOL_MESSAGES.isEnabled()) {
+            toXml(object).ifPresent(xml -> PROTOCOL_MESSAGES.received(IDENTITY_PROVIDER, xml));
+        }
+    }
+
+    /**
      * <p>logProtocolMessage.</p>
      *
      * @param object a {@link XMLObject} object
+     * @deprecated use {@link #logSentProtocolMessage(XMLObject)} or {@link #logReceivedProtocolMessage(XMLObject)}
      */
+    @Deprecated
     public static void logProtocolMessage(final XMLObject object) {
         if (protocolMessageLog.isDebugEnabled()) {
-            try {
-                val requestXml = SerializeSupport.nodeToString(XMLObjectSupport.marshall(object));
-                protocolMessageLog.debug(requestXml);
-            } catch (final MarshallingException e) {
-                LOGGER.error(e.getMessage(), e);
-            }
+            toXml(object).ifPresent(protocolMessageLog::debug);
+        }
+    }
+
+    private static Optional<String> toXml(final XMLObject object) {
+        try {
+            return Optional.of(SerializeSupport.nodeToString(XMLObjectSupport.marshall(object)));
+        } catch (final MarshallingException e) {
+            LOGGER.error(e.getMessage(), e);
+            return Optional.empty();
         }
     }
 }

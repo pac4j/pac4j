@@ -1,12 +1,12 @@
 package org.pac4j.openid4vp.redirect;
 
 import com.nimbusds.jose.util.JSONObjectUtils;
-import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.exception.http.OkAction;
 import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.openid4vp.client.OpenId4VpClient;
+import org.pac4j.openid4vp.util.OpenId4VpLogs;
 
 import java.util.Map;
 import java.util.Optional;
@@ -27,7 +27,6 @@ import static org.pac4j.openid4vp.util.OpenId4VpConstants.SESSION_TRANSACTION_ID
  * @author Jerome LELEU
  * @since 6.6.0
  */
-@Slf4j
 public class DcApiRedirectionActionBuilder extends OpenId4VpRedirectionActionBuilder {
 
     /**
@@ -47,9 +46,11 @@ public class DcApiRedirectionActionBuilder extends OpenId4VpRedirectionActionBui
         val requestObject = client.getRequestObjectBuilder().build(ctx, transaction);
         configuration.getTransactionStore().set(transaction.getId(), transaction);
         ctx.sessionStore().set(ctx.webContext(), SESSION_TRANSACTION_ID, transaction.getId());
-        LOGGER.debug("transaction {} opened, handing the request object over to the page", transaction.getId());
+        OpenId4VpLogs.transition(transaction.getId(), OpenId4VpLogs.NONE, transaction.getStatus(), describe(transaction));
 
+        val content = JSONObjectUtils.toJSONString(Map.of(REQUEST, requestObject));
+        OpenId4VpLogs.sent(transaction.getId(), OpenId4VpLogs.PAGE, "200 " + content);
         ctx.webContext().setResponseContentType("application/json");
-        return Optional.of(new OkAction(JSONObjectUtils.toJSONString(Map.of(REQUEST, requestObject))));
+        return Optional.of(new OkAction(content));
     }
 }

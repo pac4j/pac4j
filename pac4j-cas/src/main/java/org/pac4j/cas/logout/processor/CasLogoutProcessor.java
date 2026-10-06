@@ -1,6 +1,5 @@
 package org.pac4j.cas.logout.processor;
 
-import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.pac4j.cas.config.CasConfiguration;
@@ -26,7 +25,6 @@ import static org.pac4j.core.util.CommonHelper.assertTrue;
  * @author Jerome LELEU
  * @since 6.0.0
  */
-@Slf4j
 public class CasLogoutProcessor implements LogoutProcessor {
 
     protected CasConfiguration configuration;
@@ -56,15 +54,13 @@ public class CasLogoutProcessor implements LogoutProcessor {
             if (StringUtils.isNotBlank(sessionKey) && sessionLogoutHandler != null) {
                 sessionLogoutHandler.destroySession(ctx, sessionKey);
             }
-            LOGGER.debug("back logout: no content returned");
+            CasConfiguration.PROTOCOL_MESSAGES.sent(CasConfiguration.CAS_SERVER, "204");
             return NoContentAction.INSTANCE;
         } else {
             if (StringUtils.isNotBlank(sessionKey) && sessionLogoutHandler != null) {
                 sessionLogoutHandler.destroySession(ctx, sessionKey);
             }
-            val action = getFinalActionForFrontChannelLogout(ctx.webContext());
-            LOGGER.debug("front logout, returning: {}", action);
-            return action;
+            return getFinalActionForFrontChannelLogout(ctx.webContext());
         }
     }
 
@@ -88,9 +84,10 @@ public class CasLogoutProcessor implements LogoutProcessor {
             buffer.append("=");
             buffer.append(CommonHelper.urlEncode(relayStateValue.get()));
             val redirectUrl = buffer.toString();
-            LOGGER.debug("Redirection url to the CAS server: {}", redirectUrl);
+            CasConfiguration.PROTOCOL_MESSAGES.sent(CasConfiguration.BROWSER, "logout URL: " + redirectUrl);
             return HttpActionHelper.buildRedirectUrlAction(context, redirectUrl);
         } else {
+            CasConfiguration.PROTOCOL_MESSAGES.sent(CasConfiguration.BROWSER, "200");
             return new OkAction(Pac4jConstants.EMPTY_STRING);
         }
     }

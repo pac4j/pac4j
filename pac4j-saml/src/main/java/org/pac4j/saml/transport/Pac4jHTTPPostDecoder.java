@@ -47,7 +47,7 @@ public class Pac4jHTTPPostDecoder extends AbstractPac4jDecoder {
             SAMLBindingSupport.setRelayState(messageContext.getMessageContext(), relayState);
             val base64DecodedMessage = this.getBase64DecodedMessage();
             val xmlObject = this.unmarshallMessage(new ByteArrayInputStream(base64DecodedMessage));
-            SAML2Utils.logProtocolMessage(xmlObject);
+            SAML2Utils.logReceivedProtocolMessage(xmlObject);
             final SAMLObject inboundMessage;
             if (xmlObject instanceof Envelope soapMessage) {
                 messageContext.getSOAP11Context().setEnvelope(soapMessage);

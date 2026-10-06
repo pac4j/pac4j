@@ -54,12 +54,13 @@ public class CasCredentialsExtractor implements CredentialsExtractor {
 
         // like the SingleSignOutFilter from the Apereo CAS client:
         if (isTokenRequest(webContext)) {
+            CasConfiguration.PROTOCOL_MESSAGES.received(null, CasConfiguration.BROWSER, webContext);
             val ticket = getArtifactParameter(webContext).get();
             credentials = new TokenCredentials(ticket);
 
         } else if (isBackLogoutRequest(webContext)) {
             val logoutMessage = webContext.getRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER).get();
-            LOGGER.trace("Logout request:\n{}", logoutMessage);
+            CasConfiguration.PROTOCOL_MESSAGES.received(CasConfiguration.CAS_SERVER, "back-channel logout request: " + logoutMessage);
 
             val ticket = XmlUtils.getTextForElement(logoutMessage, CasConfiguration.SESSION_INDEX_TAG);
             credentials = new SessionKeyCredentials(LogoutType.BACK, ticket);
@@ -67,13 +68,12 @@ public class CasCredentialsExtractor implements CredentialsExtractor {
         } else if (isFrontLogoutRequest(webContext)) {
             val logoutMessage = uncompressLogoutMessage(
                 webContext.getRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER).get());
-            LOGGER.trace("Logout request:\n{}", logoutMessage);
+            CasConfiguration.PROTOCOL_MESSAGES.received(CasConfiguration.BROWSER, "front-channel logout request: " + logoutMessage);
 
             val ticket = XmlUtils.getTextForElement(logoutMessage, CasConfiguration.SESSION_INDEX_TAG);
             credentials = new SessionKeyCredentials(LogoutType.FRONT, ticket);
         }
 
-        LOGGER.debug("extracted credentials: {}", credentials);
         return Optional.ofNullable(credentials);
     }
 

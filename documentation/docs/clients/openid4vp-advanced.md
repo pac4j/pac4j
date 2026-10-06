@@ -126,29 +126,19 @@ It checks nothing at initialization by default; override its `check(DcqlQuery)` 
 returns what it needs. To enrich the profile afterwards, set a `ProfileCreator` on the client: it receives the
 credentials, whose `getUserProfile()` is the profile built by the authenticator.
 
-## 3) Diagnostic logging
+## 3) Logging
 
-DEBUG logs follow transaction creation, request construction and capability negotiation, wallet response reception,
-transaction consumption, decryption, credential verification, DCQL checks and profile creation.
-Transaction identifiers link these stages; credential query identifiers identify the presentations being checked.
-Rejections report the failing stage and, for common protocol checks, the reason. Custom verifier failures are logged
-by exception type without copying their potentially sensitive messages.
-Wallet error responses are logged at WARN on receipt, including their error code and optional description,
-without waiting for the browser callback.
+The messages exchanged with the browser, the wallet and the page calling the digital credentials API are logged raw on
+the `PROTOCOL_MESSAGE.OPENID4VP` logger, the changes of status of each transaction on the
+`org.pac4j.openid4vp.transaction` logger, and the processing outcomes on the `org.pac4j.openid4vp` loggers, all at DEBUG
+level:
 
-For example, enable these categories in Logback:
-
-```xml
-<logger name="org.pac4j.openid4vp.config" level="DEBUG"/>
-<logger name="org.pac4j.openid4vp.redirect" level="DEBUG"/>
-<logger name="org.pac4j.openid4vp.request" level="DEBUG"/>
-<logger name="org.pac4j.openid4vp.credentials" level="DEBUG"/>
-<logger name="org.pac4j.openid4vp.dcql" level="DEBUG"/>
-<logger name="org.pac4j.openid4vp.verifier" level="DEBUG"/>
-<logger name="org.pac4j.openid4vp.profile" level="DEBUG"/>
+```properties
+logging.level.PROTOCOL_MESSAGE.OPENID4VP=DEBUG
+logging.level.org.pac4j.openid4vp=DEBUG
 ```
 
-These logs describe stages and outcomes without dumping wallet URLs, request JWTs, presentations, keys, nonces,
-state values or disclosed claim values. Client and profile-definition classes also inherit DEBUG logs from pac4j-core
-which can include credentials, profiles or converted attribute values. Enabling DEBUG for the entire module or
-framework also enables those inherited logs; the categories above allow tracing the protocol without enabling them.
+The `PROTOCOL_MESSAGE.OPENID4VP` logger is a child of `PROTOCOL_MESSAGE`, which enables the messages of all protocols at
+once. Messages are logged as they travel: an encrypted response stays encrypted, but a response in clear (`direct_post`
+or `dc_api`) holds the personal data the End-User disclosed. Enable these logs to diagnose, not permanently in
+production. The claims of the request objects and the decrypted responses are only logged at TRACE level.
