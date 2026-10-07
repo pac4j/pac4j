@@ -51,7 +51,7 @@ description: "Find the pac4j core versions used by framework integrations to cho
     <tr>
         <td>spring-security-pac4j</td>
         <td>6.x</td>
-        <td>Spring Security 6.x</td>
+        <td>Spring Security 7.x<br /><small>(6.x with spring-security-pac4j 10.x)</small></td>
         <td>JDK 17+</td>
     </tr>
     <tr>
