@@ -89,6 +89,14 @@ public class SpringResourceLoaderTests implements TestsConstants {
         assertEquals("0", loader.getLoaded());
     }
 
+    @Test
+    @SuppressWarnings("deprecation")
+    public void testTheDeprecatedDelayIsIgnoredWithoutFailing() {
+        val loader = new MockSpringResourceLoader();
+        assertDoesNotThrow(() -> loader.setMinimumDelayBetweenChangeDetectionInMilliseconds(1_000));
+        assertEquals(60_000, loader.getMinimumDelayBetweenChangeDetectionInMilliseconds());
+    }
+
     @Getter
     private static class MockSpringResourceLoader extends SpringResourceLoader<String> {
 

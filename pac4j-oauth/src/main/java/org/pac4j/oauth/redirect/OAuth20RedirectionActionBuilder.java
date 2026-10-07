@@ -14,6 +14,7 @@ import org.pac4j.core.util.Announcement;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.oauth.config.OAuth20Configuration;
+import org.pac4j.oauth.util.OAuthProtocolMessages;
 
 import java.util.Optional;
 
@@ -65,7 +66,7 @@ public class OAuth20RedirectionActionBuilder implements RedirectionActionBuilder
             val service = (OAuth20Service) this.configuration.buildService(webContext, client);
             val authorizationUrl = new AuthorizationUrlBuilder(service)
                 .state(state).additionalParams(this.configuration.getCustomParams()).build();
-            LOGGER.debug("authorizationUrl: {}", authorizationUrl);
+            OAuthProtocolMessages.sentToBrowser("authorization URL: " + authorizationUrl);
             return Optional.of(HttpActionHelper.buildRedirectUrlAction(webContext, authorizationUrl));
 
         } catch (final OAuthException e) {

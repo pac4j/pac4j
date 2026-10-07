@@ -4,15 +4,13 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import net.shibboleth.shared.component.ComponentInitializationException;
 import net.shibboleth.shared.resolver.ResolverException;
-import net.shibboleth.shared.xml.SerializeSupport;
 import org.opensaml.core.xml.XMLObject;
-import org.opensaml.core.xml.io.MarshallingException;
-import org.opensaml.core.xml.util.XMLObjectSupport;
 import org.opensaml.saml.metadata.resolver.ChainingMetadataResolver;
 import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.ProtocolMessages;
 import org.pac4j.saml.metadata.SAML2MetadataResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,8 +29,7 @@ import java.util.List;
 @Slf4j
 public final class SAML2Utils implements HttpConstants {
 
-    /** SLF4J logger. */
-    private static final Logger protocolMessageLog = LoggerFactory.getLogger("PROTOCOL_MESSAGE");
+    private static final Logger protocolMessageLog = LoggerFactory.getLogger(ProtocolMessages.ROOT_LOGGER + ".SAML");
 
     /**
      * Private constructor, to prevent instantiation of this utility class.
@@ -139,15 +136,12 @@ public final class SAML2Utils implements HttpConstants {
      * <p>logProtocolMessage.</p>
      *
      * @param object a {@link XMLObject} object
+     * @deprecated use {@link SAML2ProtocolMessages#sent(XMLObject)} or {@link SAML2ProtocolMessages#received(XMLObject)}
      */
+    @Deprecated
     public static void logProtocolMessage(final XMLObject object) {
         if (protocolMessageLog.isDebugEnabled()) {
-            try {
-                val requestXml = SerializeSupport.nodeToString(XMLObjectSupport.marshall(object));
-                protocolMessageLog.debug(requestXml);
-            } catch (final MarshallingException e) {
-                LOGGER.error(e.getMessage(), e);
-            }
+            SAML2ProtocolMessages.toXml(object).ifPresent(protocolMessageLog::debug);
         }
     }
 }

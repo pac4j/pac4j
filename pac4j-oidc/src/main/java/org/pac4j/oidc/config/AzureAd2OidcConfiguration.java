@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.util.HttpUtils;
 import org.pac4j.oidc.metadata.AzureAdOpMetadataResolver;
 import org.pac4j.oidc.metadata.OidcOpMetadataResolver;
+import org.pac4j.oidc.util.OidcConstants;
 
 /**
  * Microsoft Azure AD v2 OpenID Connect configuration.
@@ -94,7 +95,7 @@ public class AzureAd2OidcConfiguration extends OidcConfiguration {
             scope = "openid profile email";
         }
         val payload = HttpUtils.encodeQueryParam("client_id",this.getClientId())
-            + "&" + HttpUtils.encodeQueryParam("client_secret",this.getSecret())
+            + "&" + HttpUtils.encodeQueryParam(OidcConstants.CLIENT_SECRET, this.getSecret())
             + "&" + HttpUtils.encodeQueryParam("grant_type","refresh_token")
             + "&" + HttpUtils.encodeQueryParam("refresh_token",refreshToken)
             + "&" + HttpUtils.encodeQueryParam("tenant", this.getTenant())

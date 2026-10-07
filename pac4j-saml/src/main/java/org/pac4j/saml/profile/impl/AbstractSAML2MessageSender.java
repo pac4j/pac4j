@@ -25,7 +25,7 @@ import org.pac4j.saml.profile.api.SAML2MessageSender;
 import org.pac4j.saml.transport.Pac4jHTTPPostEncoder;
 import org.pac4j.saml.transport.Pac4jHTTPPostSimpleSignEncoder;
 import org.pac4j.saml.transport.Pac4jHTTPRedirectDeflateEncoder;
-import org.pac4j.saml.util.SAML2Utils;
+import org.pac4j.saml.util.SAML2ProtocolMessages;
 import org.pac4j.saml.util.VelocityEngineFactory;
 
 /**
@@ -88,7 +88,7 @@ public abstract class AbstractSAML2MessageSender<T extends SAMLObject> implement
             encoder.encode();
 
             storeMessage(context, request);
-            SAML2Utils.logProtocolMessage(request);
+            SAML2ProtocolMessages.sent(request);
         } catch (final MessageEncodingException e) {
             throw new SAMLException("Error encoding saml message", e);
         } catch (final ComponentInitializationException e) {

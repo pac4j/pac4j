@@ -39,15 +39,11 @@ public class OAuth10Authenticator extends OAuthAuthenticator {
         val tokenRequest = oAuth10Credentials.getRequestToken();
         val token = oAuth10Credentials.getToken();
         val verifier = oAuth10Credentials.getVerifier();
-        logger.debug("tokenRequest: {}", tokenRequest);
-        logger.debug("token: {}", token);
-        logger.debug("verifier: {}", verifier);
         if (tokenRequest == null) {
             val message = "Token request expired";
             throw new OAuthCredentialsException(message);
         }
         val savedToken = tokenRequest.getToken();
-        logger.debug("savedToken: {}", savedToken);
         if (savedToken == null || !savedToken.equals(token)) {
             val message = "Token received: " + token + " is different from saved token: " + savedToken;
             throw new OAuthCredentialsException(message);
@@ -58,7 +54,6 @@ public class OAuth10Authenticator extends OAuthAuthenticator {
         } catch (final IOException | InterruptedException | ExecutionException e) {
             throw new HttpCommunicationException("Error getting token:" + e.getMessage());
         }
-        logger.debug("accessToken: {}", accessToken);
         oAuth10Credentials.setAccessToken(accessToken);
     }
 }

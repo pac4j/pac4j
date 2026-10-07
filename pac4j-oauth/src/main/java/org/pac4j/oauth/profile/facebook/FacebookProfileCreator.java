@@ -69,16 +69,13 @@ public class FacebookProfileCreator extends OAuth20ProfileCreator {
             }
             val t1 = System.currentTimeMillis();
             logger.debug("Request took: " + (t1 - t0) + " ms for: " + url);
-            logger.debug("response code: {} / response body: {}", code, body);
             if (code == 200) {
-                logger.debug("Retrieve extended token from  {}", body);
                 final OAuth2AccessToken extendedAccessToken;
                 try {
                     extendedAccessToken = ((DefaultApi20) configuration.getApi()).getAccessTokenExtractor().extract(response);
                 } catch (IOException | OAuthException ex) {
                     throw new HttpCommunicationException("Error extracting token: " + ex.getMessage());
                 }
-                logger.debug("Extended token: {}", extendedAccessToken);
                 addTokenToProfile(profile, extendedAccessToken);
             } else {
                 logger.error("Cannot get extended token: {} / {}", code, body);

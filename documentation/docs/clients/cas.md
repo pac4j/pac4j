@@ -178,3 +178,17 @@ Indeed, with the `CasRestProfile`, you'll be able to:
 - request service tickets: `TokenCredentials tokenCredentials = casRestClient.requestServiceTicket(serviceUrl, casRestProfile, context)`
 - validate them: `CasProfile casProfile = casRestClient.validateServiceTicket(serviceUrl, tokenCredentials, context)`
 - or destroy the previous authentication: `casRestClient.destroyTicketGrantingTicket(casRestProfile, context)`.
+
+
+## 4) Logging
+
+The messages exchanged with the browser and the CAS server are logged raw on the `PROTOCOL_MESSAGE.CAS` logger, at DEBUG
+level. The ticket validation is performed by the Apereo CAS client, which logs it on its own loggers:
+
+```properties
+logging.level.PROTOCOL_MESSAGE.CAS=DEBUG
+logging.level.org.apereo.cas.client.validation=DEBUG
+```
+
+The `PROTOCOL_MESSAGE.CAS` logger is a child of `PROTOCOL_MESSAGE`, which enables the messages of all protocols at once.
+Messages are logged as they travel, tickets included: enable these logs to diagnose, not permanently in production.

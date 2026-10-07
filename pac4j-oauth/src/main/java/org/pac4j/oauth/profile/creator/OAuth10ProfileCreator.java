@@ -51,7 +51,7 @@ public class OAuth10ProfileCreator extends OAuthProfileCreator {
         val accessToken = (OAuth1AccessToken) tok;
         if (profile != null) {
             val token = accessToken.getToken();
-            logger.debug("add access_token: {} to profile", token);
+            logger.debug("add access_token to profile");
             profile.setAccessToken(token);
             profile.setAccessSecret(accessToken.getTokenSecret());
         }

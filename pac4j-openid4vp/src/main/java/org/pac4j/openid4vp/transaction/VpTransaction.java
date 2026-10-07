@@ -4,12 +4,18 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
+import lombok.extern.slf4j.Slf4j;
+import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.util.ProtocolMessages;
 import org.pac4j.core.util.serializer.JavaSerializer;
 import org.pac4j.openid4vp.config.ResponseMode;
+import org.pac4j.openid4vp.verifier.VerifiedCredential;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A pending presentation request.
@@ -28,9 +34,10 @@ import java.time.Instant;
  * @author Jerome LELEU
  * @since 6.6.0
  */
+@Slf4j
 @Getter
 @Setter
-@ToString(exclude = {"encryptionKey", "rawResponse"})
+@ToString(exclude = {"encryptionKey", "rawResponse", "validatedVpToken", "verifiedCredentials", "userProfile"})
 @Accessors(chain = true)
 public class VpTransaction implements Serializable {
 
@@ -38,6 +45,12 @@ public class VpTransaction implements Serializable {
     private static final long serialVersionUID = 5811913231571905129L;
 
     private static final JavaSerializer SERIALIZER = new JavaSerializer();
+
+    /** The status of a transaction before it exists, for the logs. */
+    public static final String NONE = "-";
+
+    /** The status of a transaction the browser came back for, removed from the store, for the logs. */
+    public static final String CONSUMED = "CONSUMED";
 
     /**
      * The lifecycle of a transaction. A transaction is removed from the store as soon as it is consumed.
@@ -102,6 +115,27 @@ public class VpTransaction implements Serializable {
     private String responseCode;
 
     /**
+     * The presentations of the answer, as read when it was validated at its reception: with the verified credentials and
+     * the user profile, what the browser takes as is, so that nothing is verified twice.
+     */
+    private Map<String, List<String>> validatedVpToken;
+
+    /** The credentials verified at the reception of the answer, indexed by the identifier of their DCQL credential query. */
+    private Map<String, List<VerifiedCredential>> verifiedCredentials;
+
+    /** The user profile built at the reception of the answer. */
+    private UserProfile userProfile;
+
+    /**
+     * <p>Whether the answer was validated at its reception.</p>
+     *
+     * @return a boolean
+     */
+    public boolean isValidated() {
+        return verifiedCredentials != null && userProfile != null;
+    }
+
+    /**
      * <p>Whether the wallet answered, with presentations or with an error.</p>
      *
      * @return a boolean
@@ -130,7 +164,8 @@ public class VpTransaction implements Serializable {
     public VpTransaction toResponse() {
         return new VpTransaction().setId(id).setExpiresAt(expiresAt).setStatus(Status.RESPONSE_RECEIVED)
             .setRawResponse(rawResponse).setRawVpToken(rawVpToken).setResponseState(responseState)
-            .setError(error).setErrorDescription(errorDescription);
+            .setError(error).setErrorDescription(errorDescription)
+            .setValidatedVpToken(validatedVpToken).setVerifiedCredentials(verifiedCredentials).setUserProfile(userProfile);
     }
 
     /**
@@ -142,6 +177,23 @@ public class VpTransaction implements Serializable {
     public VpTransaction withResponse(final VpTransaction response) {
         return setStatus(Status.RESPONSE_RECEIVED).setRawResponse(response.getRawResponse())
             .setRawVpToken(response.getRawVpToken()).setResponseState(response.getResponseState())
-            .setError(response.getError()).setErrorDescription(response.getErrorDescription());
+            .setError(response.getError()).setErrorDescription(response.getErrorDescription())
+            .setValidatedVpToken(response.getValidatedVpToken()).setVerifiedCredentials(response.getVerifiedCredentials())
+            .setUserProfile(response.getUserProfile());
+    }
+
+    /**
+     * <p>Log a change of status of a transaction, at debug level, as {@code transaction <id>: <from> -> <to>}.</p>
+     *
+     * @param transactionId the identifier of the transaction
+     * @param from the former status, {@link #NONE} for a new transaction
+     * @param to the new status, {@link #CONSUMED} for a transaction removed from the store
+     * @param detail what caused it, or null
+     */
+    public static void logTransition(final String transactionId, final Object from, final Object to, final String detail) {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("transaction {}: {} -> {}{}", ProtocolMessages.oneLine(transactionId), from, to,
+                detail == null ? "" : " (" + ProtocolMessages.oneLine(detail) + ")");
+        }
     }
 }

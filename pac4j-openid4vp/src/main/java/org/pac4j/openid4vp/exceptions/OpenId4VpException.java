@@ -42,4 +42,21 @@ public class OpenId4VpException extends TechnicalException {
     public OpenId4VpException(final String message, final Throwable t) {
         super(message, t);
     }
+
+    /**
+     * <p>The reasons of a failure: its message, followed by the messages of its causes, a verifier wrapping the
+     * failure of the library it relies on.</p>
+     *
+     * @param e the failure
+     * @return the reasons
+     */
+    public static String reasons(final Throwable e) {
+        final var reasons = new StringBuilder(String.valueOf(e.getMessage()));
+        var cause = e.getCause();
+        while (cause != null && cause != e) {
+            reasons.append(" <- ").append(cause.getMessage());
+            cause = cause.getCause() == cause ? null : cause.getCause();
+        }
+        return reasons.toString();
+    }
 }

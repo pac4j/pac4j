@@ -9,6 +9,8 @@ import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.openid4vp.client.OpenId4VpClient;
 import org.pac4j.openid4vp.credentials.VerifiablePresentationCredentials;
 import org.pac4j.openid4vp.exceptions.OpenId4VpException;
+import org.pac4j.openid4vp.transaction.VpTransaction;
+import org.pac4j.openid4vp.util.OpenId4VpProtocolMessages;
 
 import java.util.Optional;
 
@@ -45,6 +47,7 @@ public class DcApiCredentialsExtractor implements CredentialsExtractor {
             LOGGER.debug("the page brings back no answer for the transaction: {}", transactionId);
             return Optional.empty();
         }
+        OpenId4VpProtocolMessages.received(transactionId, OpenId4VpProtocolMessages.PAGE, webContext);
         val store = client.getConfiguration().getTransactionStore();
         val transaction = store.get(transactionId).orElse(null);
         if (transaction == null) {
@@ -53,15 +56,16 @@ public class DcApiCredentialsExtractor implements CredentialsExtractor {
             return Optional.empty();
         }
 
+        val previousStatus = transaction.getStatus();
         WalletResponseReader.read(webContext, transaction, client.getConfiguration().getResponseMode());
         // a transaction is used once
         store.remove(transactionId);
         sessionStore.set(webContext, SESSION_TRANSACTION_ID, null);
-        LOGGER.debug("DC API transaction {} consumed and removed from the store and browser session", transactionId);
+        VpTransaction.logTransition(transactionId, previousStatus, VpTransaction.CONSUMED, transaction.getError() != null
+            ? "the page brought back the error " + transaction.getError() : "the page brought back the answer");
         if (transaction.getError() != null) {
             throw new OpenId4VpException(WalletResponseReader.refusalMessage(transaction));
         }
-        LOGGER.debug("the page brings back the answer of the transaction: {}", transactionId);
         return Optional.of(new VerifiablePresentationCredentials(transaction));
     }
 }

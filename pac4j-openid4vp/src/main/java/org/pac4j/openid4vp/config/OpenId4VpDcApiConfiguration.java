@@ -50,7 +50,6 @@ public class OpenId4VpDcApiConfiguration extends OpenId4VpConfiguration {
     @Override
     protected void internalInit(final boolean forceReinit) {
         super.internalInit(forceReinit);
-        LOGGER.debug("checking Digital Credentials API origin configuration");
 
         assertTrue(expectedOrigins != null && !expectedOrigins.isEmpty(),
             "expectedOrigins cannot be empty: a signed request sent over the digital credentials API must tell the wallet "

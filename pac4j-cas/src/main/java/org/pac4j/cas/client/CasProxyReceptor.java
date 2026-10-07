@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.val;
+import org.pac4j.cas.util.CasProtocolMessages;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.OkAction;
@@ -49,21 +50,22 @@ public final class CasProxyReceptor extends IndirectClient {
             -> { throw new TechnicalException("Not supported by the CAS proxy receptor"); });
         setCredentialsExtractorIfUndefined(ctx -> {
             val webContext = ctx.webContext();
+            CasProtocolMessages.received(CasProtocolMessages.CAS_SERVER, webContext);
             // like CommonUtils.readAndRespondToProxyReceptorRequest in CAS client
             val proxyGrantingTicketIou = webContext.getRequestParameter(PARAM_PROXY_GRANTING_TICKET_IOU);
-            logger.debug("proxyGrantingTicketIou: {}", proxyGrantingTicketIou);
             val proxyGrantingTicket = webContext.getRequestParameter(PARAM_PROXY_GRANTING_TICKET);
-            logger.debug("proxyGrantingTicket: {}", proxyGrantingTicket);
 
             if (proxyGrantingTicket.isEmpty() || proxyGrantingTicketIou.isEmpty()) {
                 logger.warn("Missing proxyGrantingTicket or proxyGrantingTicketIou -> returns ok");
+                CasProtocolMessages.sent(CasProtocolMessages.CAS_SERVER, "200");
                 throw new OkAction(Pac4jConstants.EMPTY_STRING);
             }
 
             this.store.set(proxyGrantingTicketIou.get(), proxyGrantingTicket.get());
 
-            logger.debug("Found pgtIou and pgtId for CAS proxy receptor -> returns ok");
-            throw new OkAction("<?xml version=\"1.0\"?>\n<casClient:proxySuccess xmlns:casClient=\"http://www.yale.edu/tp/casClient\" />");
+            val proxySuccess = "<?xml version=\"1.0\"?>\n<casClient:proxySuccess xmlns:casClient=\"http://www.yale.edu/tp/casClient\" />";
+            CasProtocolMessages.sent(CasProtocolMessages.CAS_SERVER, "200 " + proxySuccess);
+            throw new OkAction(proxySuccess);
         });
         setAuthenticatorIfUndefined((ctx, credentials)
             -> { throw new TechnicalException("Not supported by the CAS proxy receptor"); });

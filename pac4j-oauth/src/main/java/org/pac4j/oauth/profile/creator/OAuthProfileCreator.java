@@ -91,7 +91,6 @@ abstract class OAuthProfileCreator implements ProfileCreator {
         val profileUrl = profileDefinition.getProfileUrl(accessToken, configuration);
         val service = this.configuration.buildService(context, client);
         val body = sendRequestForData(service, accessToken, profileUrl, profileDefinition.getProfileVerb());
-        logger.info("UserProfile: " + body);
         if (body == null) {
             throw new HttpCommunicationException("No data found for accessToken: " + accessToken);
         }
@@ -110,7 +109,6 @@ abstract class OAuthProfileCreator implements ProfileCreator {
      * @return the user data response
      */
     protected String sendRequestForData(final OAuthService service, final Token accessToken, final String dataUrl, Verb verb) {
-        logger.debug("accessToken: {} / dataUrl: {}", accessToken, dataUrl);
         val t0 = System.currentTimeMillis();
         val request = createOAuthRequest(dataUrl, verb);
         signRequest(service, accessToken, request);
@@ -125,7 +123,6 @@ abstract class OAuthProfileCreator implements ProfileCreator {
         }
         val t1 = System.currentTimeMillis();
         logger.debug("Request took: " + (t1 - t0) + " ms for: " + dataUrl);
-        logger.debug("response code: {} / response body: {}", code, body);
         if (code != 200) {
             throw new HttpCommunicationException(code, body);
         }

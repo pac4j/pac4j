@@ -551,3 +551,16 @@ It requires:
 </dependency>
 ```
 2. to pass an `HazelcastInstance` object to constructor
+
+
+## 10) Logging
+
+The SAML messages exchanged with the identity provider are logged raw on the `PROTOCOL_MESSAGE.SAML` logger, at DEBUG
+level:
+
+```properties
+logging.level.PROTOCOL_MESSAGE.SAML=DEBUG
+```
+
+The `PROTOCOL_MESSAGE.SAML` logger is a child of `PROTOCOL_MESSAGE`, which enables the messages of all protocols at once.
+Messages are logged as they travel, assertions included: enable these logs to diagnose, not permanently in production.

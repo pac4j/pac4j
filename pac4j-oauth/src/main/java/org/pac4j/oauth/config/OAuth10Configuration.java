@@ -7,6 +7,7 @@ import lombok.With;
 import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.oauth.util.OAuthProtocolMessages;
 
 /**
  * The OAuh 1.0 configuration.
@@ -36,7 +37,8 @@ public class OAuth10Configuration extends OAuthConfiguration {
         val finalCallbackUrl = client.computeFinalCallbackUrl(context);
 
         return ((DefaultApi10a) api)
-            .createService(this.key, this.secret, finalCallbackUrl, this.scope, null, null, this.httpClientConfig, null);
+            .createService(this.key, this.secret, finalCallbackUrl, this.scope, null, null, this.httpClientConfig,
+                OAuthProtocolMessages.httpClient(this.httpClientConfig));
     }
 
     /**

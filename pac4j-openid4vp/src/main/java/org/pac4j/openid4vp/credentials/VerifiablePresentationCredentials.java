@@ -19,7 +19,8 @@ import java.util.Map;
  *
  * <p>As extracted, they only hold the transaction the wallet answered, raw response included. The
  * authenticator decrypts that response, fills {@link #vpToken}, then fills {@link #verifiedCredentials}
- * once every presentation has been validated by the verifier of its format.</p>
+ * once every presentation has been validated by the verifier of its format. When the response was already
+ * validated as the wallet posted it, the authenticator takes that result from the transaction instead.</p>
  *
  * <p>The transaction is carried along because the key binding proof is bound to its nonce and to the
  * verifier identity, neither of which can be found in the credential itself.</p>
