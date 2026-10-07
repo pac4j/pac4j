@@ -9,6 +9,7 @@ import org.pac4j.cas.authorization.DefaultCasAuthorizationGenerator;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.credentials.authenticator.CasAuthenticator;
 import org.pac4j.cas.redirect.CasRedirectionActionBuilder;
+import org.pac4j.cas.util.CasProtocolMessages;
 import org.pac4j.core.client.DirectClient;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.credentials.Credentials;
@@ -21,6 +22,7 @@ import org.pac4j.core.http.callback.NoParameterCallbackUrlResolver;
 import org.pac4j.core.http.url.DefaultUrlResolver;
 import org.pac4j.core.http.url.UrlResolver;
 import org.pac4j.core.util.HttpActionHelper;
+import org.pac4j.core.util.ProtocolMessages;
 
 import java.util.Optional;
 
@@ -99,7 +101,7 @@ public class DirectCasClient extends DirectClient {
                 // redirect to the login page
                 val redirectionUrl = CasRedirectionActionBuilder.constructRedirectUrl(loginUrl, CasConfiguration.SERVICE_PARAMETER,
                     callbackUrl, configuration.isRenew(), false, null);
-                CasConfiguration.PROTOCOL_MESSAGES.sent(CasConfiguration.BROWSER, "login URL: " + redirectionUrl);
+                CasProtocolMessages.sent(ProtocolMessages.BROWSER, "login URL: " + redirectionUrl);
                 throw HttpActionHelper.buildRedirectUrlAction(webContext, redirectionUrl);
             }
 

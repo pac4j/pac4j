@@ -5,11 +5,13 @@ import org.apereo.cas.client.Protocol;
 import org.pac4j.cas.client.CasClient;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.config.CasProtocol;
+import org.pac4j.cas.util.CasProtocolMessages;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.HttpActionHelper;
+import org.pac4j.core.util.ProtocolMessages;
 
 import java.util.Optional;
 
@@ -52,7 +54,7 @@ public class CasRedirectionActionBuilder implements RedirectionActionBuilder {
             || webContext.getRequestAttribute(ATTRIBUTE_PASSIVE).isPresent();
         val redirectionUrl = constructRedirectUrl(computeLoginUrl, getServiceParameter(),
                 computedCallbackUrl, renew, gateway, configuration.getMethod());
-        CasConfiguration.PROTOCOL_MESSAGES.sent(CasConfiguration.BROWSER, "login URL: " + redirectionUrl);
+        CasProtocolMessages.sent(ProtocolMessages.BROWSER, "login URL: " + redirectionUrl);
         return Optional.of(HttpActionHelper.buildRedirectUrlAction(webContext, redirectionUrl));
     }
 

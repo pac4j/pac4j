@@ -11,11 +11,12 @@ import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.exception.http.BadRequestAction;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.OkAction;
+import org.pac4j.core.util.ProtocolMessages;
 import org.pac4j.openid4vp.client.OpenId4VpClient;
 import org.pac4j.openid4vp.credentials.VerifiablePresentationCredentials;
 import org.pac4j.openid4vp.exceptions.OpenId4VpException;
 import org.pac4j.openid4vp.transaction.VpTransaction;
-import org.pac4j.openid4vp.util.OpenId4VpLogs;
+import org.pac4j.openid4vp.util.OpenId4VpProtocolMessages;
 
 import java.text.ParseException;
 import java.util.Optional;
@@ -66,12 +67,12 @@ public class OpenId4VpCredentialsExtractor implements CredentialsExtractor {
 
         // the wallet posts its response: encrypted, in clear, or an error
         if (post && WalletResponseReader.carriesAnswer(webContext)) {
-            OpenId4VpLogs.received(transactionId, OpenId4VpLogs.WALLET, webContext);
+            OpenId4VpProtocolMessages.received(transactionId, OpenId4VpProtocolMessages.WALLET, webContext);
             throw answerWallet(transactionId, () -> acceptWalletResponse(ctx, transactionId));
         }
         // the wallet fetches the signed request object, having posted its capabilities first or not
         if (transactionId != null) {
-            OpenId4VpLogs.received(transactionId, OpenId4VpLogs.WALLET, webContext);
+            OpenId4VpProtocolMessages.received(transactionId, OpenId4VpProtocolMessages.WALLET, webContext);
             throw answerWallet(transactionId, () -> serveRequestObject(ctx, transactionId, post));
         }
         // the browser comes back: this is the only branch with a session
@@ -98,9 +99,9 @@ public class OpenId4VpCredentialsExtractor implements CredentialsExtractor {
         try {
             return leg.get();
         } catch (final OpenId4VpException e) {
-            LOGGER.warn("wallet request refused for transaction {}: {}", OpenId4VpLogs.oneLine(transactionId),
-                OpenId4VpLogs.oneLine(OpenId4VpLogs.reasons(e)));
-            OpenId4VpLogs.sent(transactionId, OpenId4VpLogs.WALLET, "400");
+            LOGGER.warn("wallet request refused for transaction {}: {}", ProtocolMessages.oneLine(transactionId),
+                ProtocolMessages.oneLine(OpenId4VpException.reasons(e)));
+            OpenId4VpProtocolMessages.sent(transactionId, OpenId4VpProtocolMessages.WALLET, "400");
             val action = new BadRequestAction();
             action.initCause(e);
             return action;
@@ -133,10 +134,10 @@ public class OpenId4VpCredentialsExtractor implements CredentialsExtractor {
         transaction.setStatus(VpTransaction.Status.REQUEST_RETRIEVED);
         // only the transaction is rewritten: an answer posted meanwhile lives under its own key
         client.getConfiguration().getTransactionStore().set(transactionId, transaction);
-        OpenId4VpLogs.transition(transactionId, previousStatus, transaction.getStatus(), post
+        VpTransaction.logTransition(transactionId, previousStatus, transaction.getStatus(), post
             ? "POST to the request URI, wallet metadata " + (transaction.getWalletMetadata() != null ? "received" : "absent")
             : "GET of the request URI");
-        OpenId4VpLogs.sent(transactionId, OpenId4VpLogs.WALLET, "200 " + requestObject);
+        OpenId4VpProtocolMessages.sent(transactionId, OpenId4VpProtocolMessages.WALLET, "200 " + requestObject);
         ctx.webContext().setResponseContentType(REQUEST_OBJECT_CONTENT_TYPE);
         return new OkAction(requestObject);
     }
@@ -187,13 +188,13 @@ public class OpenId4VpCredentialsExtractor implements CredentialsExtractor {
                 .setUserProfile(validated.getUserProfile());
         }
         client.getConfiguration().getTransactionStore().set(responseKey(transactionId), transaction.toResponse());
-        OpenId4VpLogs.transition(transactionId, previousStatus, transaction.getStatus(), transaction.getError() != null
+        VpTransaction.logTransition(transactionId, previousStatus, transaction.getStatus(), transaction.getError() != null
             ? "error " + transaction.getError() : "presentation validated");
         // "it MUST respond with an HTTP status code of 200 with Content-Type of application/json and a JSON object in the
         // response body"; without a redirect_uri in it, "the Wallet is not required to perform any further steps"
         // https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#section-8.2
         ctx.webContext().setResponseContentType("application/json");
-        OpenId4VpLogs.sent(transactionId, OpenId4VpLogs.WALLET, "200 {}");
+        OpenId4VpProtocolMessages.sent(transactionId, OpenId4VpProtocolMessages.WALLET, "200 {}");
         return new OkAction("{}");
     }
 
@@ -291,7 +292,7 @@ public class OpenId4VpCredentialsExtractor implements CredentialsExtractor {
         store.remove(responseKey(transactionId));
         store.remove(transactionId);
         sessionStore.set(webContext, SESSION_TRANSACTION_ID, null);
-        OpenId4VpLogs.transition(transactionId, transaction.getStatus(), OpenId4VpLogs.CONSUMED, "the browser came back");
+        VpTransaction.logTransition(transactionId, transaction.getStatus(), VpTransaction.CONSUMED, "the browser came back");
         if (transaction.getError() != null) {
             throw new OpenId4VpException(WalletResponseReader.refusalMessage(transaction));
         }

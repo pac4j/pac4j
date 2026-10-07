@@ -3,6 +3,7 @@ package org.pac4j.cas.logout.processor;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.pac4j.cas.config.CasConfiguration;
+import org.pac4j.cas.util.CasProtocolMessages;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
@@ -16,6 +17,7 @@ import org.pac4j.core.logout.processor.LogoutProcessor;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.core.util.Pac4jConstants;
+import org.pac4j.core.util.ProtocolMessages;
 
 import static org.pac4j.core.util.CommonHelper.assertTrue;
 
@@ -54,7 +56,7 @@ public class CasLogoutProcessor implements LogoutProcessor {
             if (StringUtils.isNotBlank(sessionKey) && sessionLogoutHandler != null) {
                 sessionLogoutHandler.destroySession(ctx, sessionKey);
             }
-            CasConfiguration.PROTOCOL_MESSAGES.sent(CasConfiguration.CAS_SERVER, "204");
+            CasProtocolMessages.sent(CasProtocolMessages.CAS_SERVER, "204");
             return NoContentAction.INSTANCE;
         } else {
             if (StringUtils.isNotBlank(sessionKey) && sessionLogoutHandler != null) {
@@ -84,10 +86,10 @@ public class CasLogoutProcessor implements LogoutProcessor {
             buffer.append("=");
             buffer.append(CommonHelper.urlEncode(relayStateValue.get()));
             val redirectUrl = buffer.toString();
-            CasConfiguration.PROTOCOL_MESSAGES.sent(CasConfiguration.BROWSER, "logout URL: " + redirectUrl);
+            CasProtocolMessages.sent(ProtocolMessages.BROWSER, "logout URL: " + redirectUrl);
             return HttpActionHelper.buildRedirectUrlAction(context, redirectUrl);
         } else {
-            CasConfiguration.PROTOCOL_MESSAGES.sent(CasConfiguration.BROWSER, "200");
+            CasProtocolMessages.sent(ProtocolMessages.BROWSER, "200");
             return new OkAction(Pac4jConstants.EMPTY_STRING);
         }
     }

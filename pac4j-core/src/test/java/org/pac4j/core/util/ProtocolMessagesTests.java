@@ -16,14 +16,14 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Tests {@link ProtocolMessageLogger}.
+ * Tests {@link ProtocolMessages}.
  *
  * @author Jerome LELEU
  * @since 6.6.0
  */
-final class ProtocolMessageLoggerTests {
+final class ProtocolMessagesTests {
 
-    private final ProtocolMessageLogger messages = new ProtocolMessageLogger("TEST");
+    private final ProtocolMessages messages = new ProtocolMessages("TEST");
 
     private final ListAppender<ILoggingEvent> appender = new ListAppender<>();
 
@@ -63,7 +63,7 @@ final class ProtocolMessageLoggerTests {
         val line = appender.list.get(0).getFormattedMessage();
         assertTrue(line.startsWith("<<< CAS server POST "));
         assertTrue(line.contains("username=jdoe"));
-        assertTrue(line.contains("password=" + ProtocolMessageLogger.MASK));
+        assertTrue(line.contains("password=" + ProtocolMessages.MASK));
         assertFalse(line.contains("secret"));
     }
 
@@ -87,15 +87,26 @@ final class ProtocolMessageLoggerTests {
     @Test
     void masksTheGivenParametersOfAForm() {
         assertEquals("grant_type=authorization_code&client_secret=*****&code=abc",
-            ProtocolMessageLogger.maskForm("grant_type=authorization_code&client_secret=s3cr3t&code=abc", "client_secret"));
-        assertEquals("a=1&b", ProtocolMessageLogger.maskForm("a=1&b", "c"));
-        assertNull(ProtocolMessageLogger.maskForm(null, "c"));
-        assertEquals("", ProtocolMessageLogger.maskForm("", "c"));
+            ProtocolMessages.maskForm("grant_type=authorization_code&client_secret=s3cr3t&code=abc", "client_secret"));
+        assertEquals("a=1&b", ProtocolMessages.maskForm("a=1&b", "c"));
+        assertNull(ProtocolMessages.maskForm(null, "c"));
+        assertEquals("", ProtocolMessages.maskForm("", "c"));
+    }
+
+    @Test
+    void masksTheGivenParametersOfAUrl() {
+        val url = "https://graph.facebook.com/oauth/access_token?client_id=1&client_secret=";
+        assertEquals(url + "*****&grant_type=fb_exchange_token",
+            ProtocolMessages.maskUrl(url + "s3cr3t&grant_type=fb_exchange_token", "client_secret"));
+        assertEquals("https://example.org/cb?code=abc#state=x",
+            ProtocolMessages.maskUrl("https://example.org/cb?code=abc#state=x", "client_secret"));
+        assertEquals("https://example.org/cb", ProtocolMessages.maskUrl("https://example.org/cb", "client_secret"));
+        assertNull(ProtocolMessages.maskUrl(null, "client_secret"));
     }
 
     @Test
     void writesParametersAsAForm() {
-        assertEquals("username=jdoe&password=*****", ProtocolMessageLogger.formParameters(
+        assertEquals("username=jdoe&password=*****", ProtocolMessages.formParameters(
             List.of(new String[] {"username", "jdoe"}, new String[] {"password", "secret"}), "password"));
     }
 }

@@ -4,8 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.val;
+import org.pac4j.cas.util.CasProtocolMessages;
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.OkAction;
 import org.pac4j.core.store.GuavaStore;
@@ -50,21 +50,21 @@ public final class CasProxyReceptor extends IndirectClient {
             -> { throw new TechnicalException("Not supported by the CAS proxy receptor"); });
         setCredentialsExtractorIfUndefined(ctx -> {
             val webContext = ctx.webContext();
-            CasConfiguration.PROTOCOL_MESSAGES.received(null, CasConfiguration.CAS_SERVER, webContext);
+            CasProtocolMessages.received(CasProtocolMessages.CAS_SERVER, webContext);
             // like CommonUtils.readAndRespondToProxyReceptorRequest in CAS client
             val proxyGrantingTicketIou = webContext.getRequestParameter(PARAM_PROXY_GRANTING_TICKET_IOU);
             val proxyGrantingTicket = webContext.getRequestParameter(PARAM_PROXY_GRANTING_TICKET);
 
             if (proxyGrantingTicket.isEmpty() || proxyGrantingTicketIou.isEmpty()) {
                 logger.warn("Missing proxyGrantingTicket or proxyGrantingTicketIou -> returns ok");
-                CasConfiguration.PROTOCOL_MESSAGES.sent(CasConfiguration.CAS_SERVER, "200");
+                CasProtocolMessages.sent(CasProtocolMessages.CAS_SERVER, "200");
                 throw new OkAction(Pac4jConstants.EMPTY_STRING);
             }
 
             this.store.set(proxyGrantingTicketIou.get(), proxyGrantingTicket.get());
 
             val proxySuccess = "<?xml version=\"1.0\"?>\n<casClient:proxySuccess xmlns:casClient=\"http://www.yale.edu/tp/casClient\" />";
-            CasConfiguration.PROTOCOL_MESSAGES.sent(CasConfiguration.CAS_SERVER, "200 " + proxySuccess);
+            CasProtocolMessages.sent(CasProtocolMessages.CAS_SERVER, "200 " + proxySuccess);
             throw new OkAction(proxySuccess);
         });
         setAuthenticatorIfUndefined((ctx, credentials)

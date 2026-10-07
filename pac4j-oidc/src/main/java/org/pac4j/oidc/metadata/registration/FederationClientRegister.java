@@ -31,6 +31,7 @@ import org.pac4j.core.util.FileHelper;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.credentials.clientauth.DefaultClientAuthenticationBuilder;
 import org.pac4j.oidc.exceptions.OidcException;
+import org.pac4j.oidc.util.OidcConstants;
 
 /**
  * Handles OpenID Federation client registration logic for OP in federation.
@@ -123,7 +124,7 @@ public class FederationClientRegister {
                     logSeparator();
                     LOGGER.warn("/!\\ Explicit registration of the client '{}' returns id: [{}]. This information won't be repeated. "
                         + "You MUST add this value to your configuration before the next application startup!", entityId, clientId);
-                    val clientSecret = orp.path("client_secret").asText();
+                    val clientSecret = orp.path(OidcConstants.CLIENT_SECRET).asText();
                     if (StringUtils.isNotBlank(clientSecret)) {
                         val secretExportFile = configuration.getFederation().getSecretExportFile();
                         if (isBlank(secretExportFile)) {

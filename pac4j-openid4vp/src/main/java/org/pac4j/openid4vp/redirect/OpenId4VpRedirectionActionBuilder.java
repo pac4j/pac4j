@@ -14,11 +14,12 @@ import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.ProtocolMessages;
 import org.pac4j.openid4vp.client.OpenId4VpClient;
 import org.pac4j.openid4vp.config.RequestUriMethod;
 import org.pac4j.openid4vp.exceptions.OpenId4VpException;
 import org.pac4j.openid4vp.transaction.VpTransaction;
-import org.pac4j.openid4vp.util.OpenId4VpLogs;
+import org.pac4j.openid4vp.util.OpenId4VpProtocolMessages;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -57,8 +58,8 @@ public class OpenId4VpRedirectionActionBuilder implements RedirectionActionBuild
         val url = computeWalletUrl(ctx, transaction);
         configuration.getTransactionStore().set(transaction.getId(), transaction);
         ctx.sessionStore().set(ctx.webContext(), SESSION_TRANSACTION_ID, transaction.getId());
-        OpenId4VpLogs.transition(transaction.getId(), OpenId4VpLogs.NONE, transaction.getStatus(), describe(transaction));
-        OpenId4VpLogs.sent(transaction.getId(), OpenId4VpLogs.BROWSER, "wallet URL: " + url);
+        VpTransaction.logTransition(transaction.getId(), VpTransaction.NONE, transaction.getStatus(), describe(transaction));
+        OpenId4VpProtocolMessages.sent(transaction.getId(), ProtocolMessages.BROWSER, "wallet URL: " + url);
         return Optional.of(new FoundAction(url));
     }
 

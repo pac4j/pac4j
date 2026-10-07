@@ -14,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.context.CallContext;
-import org.pac4j.oidc.util.OidcProtocolMessages;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.SessionKeyCredentials;
@@ -25,11 +24,13 @@ import org.pac4j.core.logout.LogoutType;
 import org.pac4j.core.util.Announcement;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
+import org.pac4j.core.util.ProtocolMessages;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.credentials.OidcCredentials;
 import org.pac4j.oidc.exceptions.*;
 import org.pac4j.oidc.redirect.OidcRedirectionActionBuilder;
+import org.pac4j.oidc.util.OidcProtocolMessages;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -111,14 +112,14 @@ public class OidcCredentialsExtractor implements CredentialsExtractor {
 
         // front channel logout
         } else if (sid.isPresent()) {
-            OidcProtocolMessages.received(OidcProtocolMessages.BROWSER, webContext);
+            OidcProtocolMessages.received(ProtocolMessages.BROWSER, webContext);
             val sessionId = sid.get();
             LOGGER.debug("Handling front-channel logout for sessionId: {}", sessionId);
             return Optional.of(new SessionKeyCredentials(LogoutType.FRONT, sessionId));
 
         // authentication
         } else {
-            OidcProtocolMessages.received(OidcProtocolMessages.BROWSER, webContext);
+            OidcProtocolMessages.received(ProtocolMessages.BROWSER, webContext);
             val computedCallbackUrl = client.computeFinalCallbackUrl(webContext);
             val parameters = retrieveParameters(webContext);
             AuthenticationResponse response;

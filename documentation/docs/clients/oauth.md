@@ -113,3 +113,17 @@ By default, many clients are available to login with many identity providers:
 FacebookClient facebookClient = new FacebookClient("145278422258960", "be21409ba8f39b5dae2a7de525484da8");
 TwitterClient twitterClient = new TwitterClient("CoxUiYwQOSFDReZYdjigBA", "2kAzunH5Btc4gRSaMr7D7MkyoJ5u1VzbOOzE8rBofs");
 ```
+
+
+## 3) Logging
+
+The messages exchanged with the browser and the OAuth server are logged raw on the `PROTOCOL_MESSAGE.OAUTH` logger, at
+DEBUG level: the authorization URL, the callback request, the token and profile requests sent by ScribeJava and their
+responses. The client secret is masked, and the `Authorization` header is not logged:
+
+```properties
+logging.level.PROTOCOL_MESSAGE.OAUTH=DEBUG
+```
+
+The `PROTOCOL_MESSAGE.OAUTH` logger is a child of `PROTOCOL_MESSAGE`, which enables the messages of all protocols at once.
+Messages are logged as they travel, tokens included: enable these logs to diagnose, not permanently in production.

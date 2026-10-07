@@ -4,7 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
+import lombok.extern.slf4j.Slf4j;
 import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.util.ProtocolMessages;
 import org.pac4j.core.util.serializer.JavaSerializer;
 import org.pac4j.openid4vp.config.ResponseMode;
 import org.pac4j.openid4vp.verifier.VerifiedCredential;
@@ -32,6 +34,7 @@ import java.util.Map;
  * @author Jerome LELEU
  * @since 6.6.0
  */
+@Slf4j
 @Getter
 @Setter
 @ToString(exclude = {"encryptionKey", "rawResponse", "validatedVpToken", "verifiedCredentials", "userProfile"})
@@ -42,6 +45,12 @@ public class VpTransaction implements Serializable {
     private static final long serialVersionUID = 5811913231571905129L;
 
     private static final JavaSerializer SERIALIZER = new JavaSerializer();
+
+    /** The status of a transaction before it exists, for the logs. */
+    public static final String NONE = "-";
+
+    /** The status of a transaction the browser came back for, removed from the store, for the logs. */
+    public static final String CONSUMED = "CONSUMED";
 
     /**
      * The lifecycle of a transaction. A transaction is removed from the store as soon as it is consumed.
@@ -171,5 +180,20 @@ public class VpTransaction implements Serializable {
             .setError(response.getError()).setErrorDescription(response.getErrorDescription())
             .setValidatedVpToken(response.getValidatedVpToken()).setVerifiedCredentials(response.getVerifiedCredentials())
             .setUserProfile(response.getUserProfile());
+    }
+
+    /**
+     * <p>Log a change of status of a transaction, at debug level, as {@code transaction <id>: <from> -> <to>}.</p>
+     *
+     * @param transactionId the identifier of the transaction
+     * @param from the former status, {@link #NONE} for a new transaction
+     * @param to the new status, {@link #CONSUMED} for a transaction removed from the store
+     * @param detail what caused it, or null
+     */
+    public static void logTransition(final String transactionId, final Object from, final Object to, final String detail) {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("transaction {}: {} -> {}{}", ProtocolMessages.oneLine(transactionId), from, to,
+                detail == null ? "" : " (" + ProtocolMessages.oneLine(detail) + ")");
+        }
     }
 }

@@ -49,7 +49,7 @@ import org.opensaml.soap.client.SOAPClient;
 import org.opensaml.soap.common.SOAPException;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.saml.util.SAML2Utils;
+import org.pac4j.saml.util.SAML2ProtocolMessages;
 
 import javax.xml.namespace.QName;
 import java.time.Instant;
@@ -168,7 +168,7 @@ public class Pac4jHTTPArtifactDecoder extends AbstractMessageDecoder implements 
 
         super.decode();
 
-        SAML2Utils.logReceivedProtocolMessage((XMLObject) getMessageContext().getMessage());
+        SAML2ProtocolMessages.received((XMLObject) getMessageContext().getMessage());
 
         LOGGER.debug("Successfully decoded message from WebContext.");
     }

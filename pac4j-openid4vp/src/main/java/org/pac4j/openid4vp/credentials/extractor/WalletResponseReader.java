@@ -4,10 +4,10 @@ import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.util.ProtocolMessages;
 import org.pac4j.openid4vp.config.ResponseMode;
 import org.pac4j.openid4vp.exceptions.OpenId4VpException;
 import org.pac4j.openid4vp.transaction.VpTransaction;
-import org.pac4j.openid4vp.util.OpenId4VpLogs;
 
 import static org.pac4j.openid4vp.util.OpenId4VpConstants.*;
 
@@ -102,7 +102,7 @@ public class WalletResponseReader {
         } else {
             transaction.setError(error);
             transaction.setErrorDescription(webContext.getRequestParameter(ERROR_DESCRIPTION).orElse(null));
-            LOGGER.warn("{}", OpenId4VpLogs.oneLine(refusalMessage(transaction)));
+            LOGGER.warn("{}", ProtocolMessages.oneLine(refusalMessage(transaction)));
         }
         transaction.setResponseState(webContext.getRequestParameter(STATE).orElse(null));
         transaction.setStatus(VpTransaction.Status.RESPONSE_RECEIVED);

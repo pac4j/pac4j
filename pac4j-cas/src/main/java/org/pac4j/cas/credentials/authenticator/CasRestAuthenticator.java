@@ -4,8 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.pac4j.cas.config.CasConfiguration;
-import org.pac4j.core.util.ProtocolMessageLogger;
 import org.pac4j.cas.profile.CasRestProfile;
+import org.pac4j.cas.util.CasProtocolMessages;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
@@ -17,6 +17,7 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.HttpUtils;
 import org.pac4j.core.util.Pac4jConstants;
+import org.pac4j.core.util.ProtocolMessages;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -73,15 +74,15 @@ public class CasRestAuthenticator implements Authenticator {
             connection = HttpUtils.openPostConnection(new URL(restUrl), headers);
             val payload = HttpUtils.encodeQueryParam(Pac4jConstants.USERNAME, username)
                     + "&" + HttpUtils.encodeQueryParam(Pac4jConstants.PASSWORD, password);
-            CasConfiguration.PROTOCOL_MESSAGES.sent(CasConfiguration.CAS_SERVER, "POST " + restUrl + " "
-                + ProtocolMessageLogger.formParameters(List.of(new String[] {Pac4jConstants.USERNAME, username},
+            CasProtocolMessages.sent(CasProtocolMessages.CAS_SERVER, "POST " + restUrl + " "
+                + ProtocolMessages.formParameters(List.of(new String[] {Pac4jConstants.USERNAME, username},
                     new String[] {Pac4jConstants.PASSWORD, password}), Pac4jConstants.PASSWORD));
 
             HttpUtils.postBody(connection, payload);
 
             val locationHeader = connection.getHeaderField("location");
             val responseCode = connection.getResponseCode();
-            CasConfiguration.PROTOCOL_MESSAGES.received(CasConfiguration.CAS_SERVER, responseCode + " location: " + locationHeader);
+            CasProtocolMessages.received(CasProtocolMessages.CAS_SERVER, responseCode + " location: " + locationHeader);
             if (locationHeader != null && responseCode == HttpConstants.CREATED) {
                 return locationHeader.substring(locationHeader.lastIndexOf("/") + 1);
             }

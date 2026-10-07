@@ -13,9 +13,12 @@ import java.util.stream.Collectors;
  * Logs the messages of a protocol as they travel, on the {@code PROTOCOL_MESSAGE.<protocol>} logger, at debug level.
  *
  * <p>Each line gives the direction, {@code >>>} for a message sent and {@code <<<} for a message received, then the
- * other party (the browser, the identity provider...) and the message itself, raw. It may start with what links the
+ * other party ({@link #BROWSER}, the identity provider...) and the message itself, raw. It may start with what links the
  * messages of a same exchange, such as a transaction identifier. Being children of the {@code PROTOCOL_MESSAGE} logger,
  * the loggers of all protocols are enabled at once through it, or one at a time.</p>
+ *
+ * <p>Each protocol has its own {@code <Protocol>ProtocolMessages} class, holding its logger, its other parties and the
+ * secrets it masks.</p>
  *
  * <p>The messages are logged as they travel, so with the tokens and the personal data they carry: these logs are meant
  * to diagnose, not to be enabled permanently in production. Only the secrets of the application itself, which never
@@ -24,7 +27,7 @@ import java.util.stream.Collectors;
  * @author Jerome LELEU
  * @since 6.6.0
  */
-public class ProtocolMessageLogger {
+public class ProtocolMessages {
 
     /** The parent logger of all protocols. */
     public static final String ROOT_LOGGER = "PROTOCOL_MESSAGE";
@@ -32,14 +35,17 @@ public class ProtocolMessageLogger {
     /** What replaces a masked value. */
     public static final String MASK = "*****";
 
+    /** The other party of every protocol: the browser of the user. */
+    public static final String BROWSER = "browser";
+
     private final Logger logger;
 
     /**
-     * <p>Constructor for ProtocolMessageLogger.</p>
+     * <p>Constructor for ProtocolMessages.</p>
      *
      * @param protocol the name of the protocol, which ends the name of the logger
      */
-    public ProtocolMessageLogger(final String protocol) {
+    public ProtocolMessages(final String protocol) {
         this.logger = LoggerFactory.getLogger(ROOT_LOGGER + "." + protocol);
     }
 
@@ -148,6 +154,27 @@ public class ProtocolMessageLogger {
             val name = equals < 0 ? pair : pair.substring(0, equals);
             return masked.contains(name) ? name + "=" + MASK : pair;
         }).collect(Collectors.joining("&"));
+    }
+
+    /**
+     * <p>Mask some parameters of the query string of a URL.</p>
+     *
+     * @param url the URL
+     * @param maskedParameters the names of the parameters whose values are masked
+     * @return the URL, some values of its query string being masked
+     */
+    public static String maskUrl(final String url, final String... maskedParameters) {
+        if (url == null) {
+            return null;
+        }
+        val question = url.indexOf('?');
+        if (question < 0) {
+            return url;
+        }
+        val query = url.substring(question + 1);
+        val sharp = query.indexOf('#');
+        return sharp < 0 ? url.substring(0, question + 1) + maskForm(query, maskedParameters)
+            : url.substring(0, question + 1) + maskForm(query.substring(0, sharp), maskedParameters) + query.substring(sharp);
     }
 
     /**

@@ -6,6 +6,7 @@ import org.apereo.cas.client.Protocol;
 import org.apereo.cas.client.util.XmlUtils;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.config.CasProtocol;
+import org.pac4j.cas.util.CasProtocolMessages;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
@@ -17,6 +18,7 @@ import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.logout.LogoutType;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.ProtocolMessages;
 
 import java.util.Base64;
 import java.util.Optional;
@@ -54,13 +56,13 @@ public class CasCredentialsExtractor implements CredentialsExtractor {
 
         // like the SingleSignOutFilter from the Apereo CAS client:
         if (isTokenRequest(webContext)) {
-            CasConfiguration.PROTOCOL_MESSAGES.received(null, CasConfiguration.BROWSER, webContext);
+            CasProtocolMessages.received(ProtocolMessages.BROWSER, webContext);
             val ticket = getArtifactParameter(webContext).get();
             credentials = new TokenCredentials(ticket);
 
         } else if (isBackLogoutRequest(webContext)) {
             val logoutMessage = webContext.getRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER).get();
-            CasConfiguration.PROTOCOL_MESSAGES.received(CasConfiguration.CAS_SERVER, "back-channel logout request: " + logoutMessage);
+            CasProtocolMessages.received(CasProtocolMessages.CAS_SERVER, "back-channel logout request: " + logoutMessage);
 
             val ticket = XmlUtils.getTextForElement(logoutMessage, CasConfiguration.SESSION_INDEX_TAG);
             credentials = new SessionKeyCredentials(LogoutType.BACK, ticket);
@@ -68,7 +70,7 @@ public class CasCredentialsExtractor implements CredentialsExtractor {
         } else if (isFrontLogoutRequest(webContext)) {
             val logoutMessage = uncompressLogoutMessage(
                 webContext.getRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER).get());
-            CasConfiguration.PROTOCOL_MESSAGES.received(CasConfiguration.BROWSER, "front-channel logout request: " + logoutMessage);
+            CasProtocolMessages.received(ProtocolMessages.BROWSER, "front-channel logout request: " + logoutMessage);
 
             val ticket = XmlUtils.getTextForElement(logoutMessage, CasConfiguration.SESSION_INDEX_TAG);
             credentials = new SessionKeyCredentials(LogoutType.FRONT, ticket);

@@ -4,7 +4,7 @@ import com.nimbusds.oauth2.sdk.http.HTTPRequest;
 import com.nimbusds.oauth2.sdk.http.HTTPResponse;
 import lombok.experimental.UtilityClass;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.util.ProtocolMessageLogger;
+import org.pac4j.core.util.ProtocolMessages;
 
 /**
  * The messages exchanged with the browser and the OpenID provider, logged raw on the {@code PROTOCOL_MESSAGE.OIDC} logger,
@@ -20,15 +20,12 @@ import org.pac4j.core.util.ProtocolMessageLogger;
 public class OidcProtocolMessages {
 
     /** The logger of the messages exchanged. */
-    public static final ProtocolMessageLogger LOGGER = new ProtocolMessageLogger("OIDC");
-
-    /** The other party: the browser of the user. */
-    public static final String BROWSER = "browser";
+    public static final ProtocolMessages LOGGER = new ProtocolMessages("OIDC");
 
     /** The other party: the OpenID provider. */
     public static final String OPENID_PROVIDER = "OpenID provider";
 
-    private static final String[] SECRETS = {"client_secret", "client_assertion"};
+    private static final String[] SECRETS = {OidcConstants.CLIENT_SECRET, OidcConstants.CLIENT_ASSERTION};
 
     /**
      * <p>Log a message sent to the browser.</p>
@@ -36,7 +33,7 @@ public class OidcProtocolMessages {
      * @param message the message
      */
     public void sentToBrowser(final String message) {
-        LOGGER.sent(BROWSER, message);
+        LOGGER.sent(ProtocolMessages.BROWSER, message);
     }
 
     /**
@@ -58,7 +55,7 @@ public class OidcProtocolMessages {
         if (LOGGER.isEnabled()) {
             final var body = request.getBody();
             LOGGER.sent(OPENID_PROVIDER, request.getMethod() + " " + request.getURL()
-                + (body == null || body.isEmpty() ? "" : " " + ProtocolMessageLogger.maskForm(body, SECRETS)));
+                + (body == null || body.isEmpty() ? "" : " " + ProtocolMessages.maskForm(body, SECRETS)));
         }
     }
 

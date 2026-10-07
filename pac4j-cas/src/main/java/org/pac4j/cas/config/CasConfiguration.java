@@ -7,7 +7,6 @@ import org.apereo.cas.client.ssl.HttpURLConnectionFactory;
 import org.apereo.cas.client.util.PrivateKeyUtils;
 import org.apereo.cas.client.validation.*;
 import org.pac4j.cas.client.CasProxyReceptor;
-import org.pac4j.core.util.ProtocolMessageLogger;
 import org.pac4j.cas.store.ProxyGrantingTicketStore;
 import org.pac4j.core.client.config.BaseClientConfiguration;
 import org.pac4j.core.context.WebContext;
@@ -38,15 +37,6 @@ import java.util.*;
 @With
 @AllArgsConstructor
 public class CasConfiguration extends BaseClientConfiguration {
-
-    /** The messages exchanged with the browser and the CAS server, on the {@code PROTOCOL_MESSAGE.CAS} logger. */
-    public static final ProtocolMessageLogger PROTOCOL_MESSAGES = new ProtocolMessageLogger("CAS");
-
-    /** The other party: the browser of the user. */
-    public static final String BROWSER = "browser";
-
-    /** The other party: the CAS server. */
-    public static final String CAS_SERVER = "CAS server";
 
     /** Constant <code>TICKET_PARAMETER="ticket"</code> */
     public static final String TICKET_PARAMETER = "ticket";

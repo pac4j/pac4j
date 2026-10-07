@@ -57,7 +57,6 @@ public class OAuth20CredentialsExtractor extends OAuthCredentialsExtractor {
         val codeParameter = context.getRequestParameter(OAuth20Configuration.OAUTH_CODE);
         if (codeParameter.isPresent()) {
             val code = OAuthEncoder.decode(codeParameter.get());
-            logger.debug("code: {}", code);
             return Optional.of(new OAuth20Credentials(code));
         } else {
             logger.debug("No credential found");

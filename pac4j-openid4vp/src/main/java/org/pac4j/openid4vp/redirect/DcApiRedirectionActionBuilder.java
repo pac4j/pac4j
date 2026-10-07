@@ -6,7 +6,8 @@ import org.pac4j.core.context.CallContext;
 import org.pac4j.core.exception.http.OkAction;
 import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.openid4vp.client.OpenId4VpClient;
-import org.pac4j.openid4vp.util.OpenId4VpLogs;
+import org.pac4j.openid4vp.transaction.VpTransaction;
+import org.pac4j.openid4vp.util.OpenId4VpProtocolMessages;
 
 import java.util.Map;
 import java.util.Optional;
@@ -46,10 +47,10 @@ public class DcApiRedirectionActionBuilder extends OpenId4VpRedirectionActionBui
         val requestObject = client.getRequestObjectBuilder().build(ctx, transaction);
         configuration.getTransactionStore().set(transaction.getId(), transaction);
         ctx.sessionStore().set(ctx.webContext(), SESSION_TRANSACTION_ID, transaction.getId());
-        OpenId4VpLogs.transition(transaction.getId(), OpenId4VpLogs.NONE, transaction.getStatus(), describe(transaction));
+        VpTransaction.logTransition(transaction.getId(), VpTransaction.NONE, transaction.getStatus(), describe(transaction));
 
         val content = JSONObjectUtils.toJSONString(Map.of(REQUEST, requestObject));
-        OpenId4VpLogs.sent(transaction.getId(), OpenId4VpLogs.PAGE, "200 " + content);
+        OpenId4VpProtocolMessages.sent(transaction.getId(), OpenId4VpProtocolMessages.PAGE, "200 " + content);
         ctx.webContext().setResponseContentType("application/json");
         return Optional.of(new OkAction(content));
     }
