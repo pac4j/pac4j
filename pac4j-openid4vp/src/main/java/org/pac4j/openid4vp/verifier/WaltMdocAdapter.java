@@ -134,7 +134,7 @@ class WaltMdocAdapter {
         namespaces.forEach((namespace, items) -> {
             val values = new LinkedHashMap<String, Object>();
             val digestIds = new HashSet<Number>();
-            // walt.id 0.11.0 MSO.verifySignedItems returns after its first item: invoke it once per item.
+            // walt.id 0.12.0 MSO.verifySignedItems returns after its first item: invoke it once per item.
             for (val item : items) {
                 CBORObject.DecodeFromBytes(item.getValue());
                 require(mso.verifySignedItems(namespace, List.of(item)), "invalid mdoc attribute digest");
