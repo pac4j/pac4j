@@ -22,7 +22,7 @@ See also:
 
 ### 1.1) walt.id
 
-The verifier relies on **walt.id 0.11.0**, which is optional and published in the **walt.id Maven repository**,
+The verifier relies on **walt.id 0.12.0**, which is optional and published in the **walt.id Maven repository**,
 outside Maven Central:
 
 ```xml
@@ -38,7 +38,7 @@ outside Maven Central:
     <dependency>
         <groupId>id.walt.mdoc-credentials</groupId>
         <artifactId>waltid-mdoc-credentials-jvm</artifactId>
-        <version>0.11.0</version>
+        <version>0.12.0</version>
     </dependency>
 </dependencies>
 ```
@@ -51,7 +51,7 @@ outside Maven Central:
 
 **Align the Kotlin dependencies in your application's `dependencyManagement`, especially when you also use the
 [SD-JWT VC verifier](openid4vp-sd-jwt-vc-verifier.html).** This combination is tested with Java 17, EUDI SD-JWT 0.20.1
-and walt.id 0.11.0:
+and walt.id 0.12.0:
 
 ```xml
 <dependencyManagement>
@@ -59,7 +59,7 @@ and walt.id 0.11.0:
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-bom</artifactId>
-            <version>2.2.21</version>
+            <version>2.4.20</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
@@ -89,7 +89,7 @@ and walt.id 0.11.0:
 - **Without alignment**, dependency order can select walt.id's older Kotlin runtime and make EUDI fail with
   `NoClassDefFoundError: kotlin/time/Clock$System`. pac4j manages these versions for its own build, but your
   application's other direct dependencies can override the versions selected at runtime.
-- **Do not upgrade `kotlinx-datetime` to 0.7.x**: it removes the `kotlinx.datetime.Instant` API used by walt.id 0.11.0.
+- **Do not upgrade `kotlinx-datetime` to 0.7.x**: it removes the `kotlinx.datetime.Instant` API used by walt.id 0.12.0.
 
 ## 2) Quick start
 
@@ -191,4 +191,4 @@ Without a checker, credentials containing a status are rejected.
 This is format verification, not a complete EUDI trust-list, certificate-profile or HAIP conformance implementation.
 walt.id provides the parsing, the COSE verification and the MSO digest checks; pac4j supplies the transaction binding,
 the issuer trust and the profile mapping. The digest check is invoked separately for every item, because walt.id
-0.11.0's bulk method returns after the first item.
+0.12.0's bulk method returns after the first item.

@@ -98,8 +98,8 @@ public class MdocVerifier extends AbstractCredentialVerifier {
             return result;
         } catch (final ClassNotFoundException | LinkageError e) {
             throw new OpenId4VpException("mdoc verification requires the optional dependency "
-                + "id.walt.mdoc-credentials:waltid-mdoc-credentials-jvm:0.11.0 from https://maven.waltid.dev/releases "
-                + "and compatible transitive dependencies (Kotlin 2.2.21 when used with EUDI SD-JWT)", e);
+                + "id.walt.mdoc-credentials:waltid-mdoc-credentials-jvm:0.12.0 from https://maven.waltid.dev/releases "
+                + "and compatible transitive dependencies (Kotlin 2.4.20 when used with EUDI SD-JWT)", e);
         } catch (final OpenId4VpException e) {
             throw e;
         } catch (final Exception e) {
