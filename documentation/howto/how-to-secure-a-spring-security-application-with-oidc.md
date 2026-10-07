@@ -25,7 +25,7 @@ If you are starting from scratch, a [pac4j implementation alone](/how-to-secure-
 **What you need:**
 
 - Java 17 or later and Maven
-- Spring Boot 3.x, which brings Spring Security 6
+- Spring Boot 4.x, which brings Spring Security 7 (for Spring Boot 3.x and Spring Security 6, use the 10.x bridge)
 - an OpenID Connect provider where you can register an application, or the public demo server used below.
 
 ## 1) Create the Maven project
@@ -48,7 +48,7 @@ Create `pom.xml` at the project root. The Spring Boot parent manages the Spring 
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.12</version>
+        <version>4.1.1</version>
         <relativePath/>
     </parent>
     <groupId>org.example</groupId>
@@ -95,21 +95,16 @@ public class SpringBootApp {
 
 ## 2) Add the Maven dependencies
 
-On top of the Spring Boot web and security starters, you need three pac4j artifacts: the pac4j implementation that authenticates, here the `jakartaee-pac4j` servlet filters, the OpenID Connect module, and the bridge.
+On top of the Spring Boot Web MVC and security starters, you need three pac4j artifacts: the pac4j implementation that authenticates, here the `jakartaee-pac4j` servlet filters, the OpenID Connect module, and the bridge.
 
 ```xml
 <dependency>
     <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-web</artifactId>
+    <artifactId>spring-boot-starter-webmvc</artifactId>
 </dependency>
 <dependency>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-security</artifactId>
-</dependency>
-<!-- logging bridge for Spring Framework 6 -->
-<dependency>
-    <groupId>org.springframework</groupId>
-    <artifactId>spring-jcl</artifactId>
 </dependency>
 <!-- the pac4j implementation: security, callback and logout filters -->
 <dependency>
@@ -127,15 +122,15 @@ On top of the Spring Boot web and security starters, you need three pac4j artifa
 <dependency>
     <groupId>org.pac4j</groupId>
     <artifactId>spring-security-pac4j</artifactId>
-    <version>10.0.0</version>
+    <version>11.0.0</version>
 </dependency>
 ```
 
-The explicit `spring-jcl` dependency supplies the logging bridge required by Spring Framework 6 when pac4j brings `spring-core` transitively. The Spring Boot parent keeps its version aligned with the rest of Spring.
+Spring Boot 4 splits the former `spring-boot-starter-web` into `spring-boot-starter-webmvc` and `spring-boot-starter-webflux`. The `spring-jcl` logging bridge that Spring Framework 6 required is gone: Spring Framework 7 uses Apache Commons Logging directly, and Spring Boot routes it to SLF4J, so no extra logging dependency is needed.
 
 The bridge needs an implementation such as `jakartaee-pac4j`, `spring-webmvc-pac4j` or `spring-webflux-pac4j` to produce a profile. It has no configuration of its own: pac4j detects it on the classpath and installs a `SpringSecurityProfileManager`.
 
-Each time a profile is saved or removed, this manager updates the Spring Security context. The bridge version used here, 10.0.0, targets pac4j 6 and Spring Security 6.
+Each time a profile is saved or removed, this manager updates the Spring Security context. The bridge version used here, 11.0.0, targets pac4j 6 and Spring Security 7, hence Spring Boot 4. With Spring Boot 3 and Spring Security 6, stay on the 10.x bridge: the configuration below is the same.
 
 ## 3) Configure pac4j
 
@@ -355,7 +350,7 @@ Add the corresponding `pac4j-saml` or `pac4j-cas` dependency, replace the `OidcC
 
 - The documentation for the [OIDC client for Java](/docs/clients/openid-connect.html) for all the `OidcConfiguration` options.
 - The [spring-security-pac4j](https://github.com/pac4j/spring-security-pac4j) bridge and its [documentation](https://github.com/pac4j/spring-security-pac4j/wiki).
-- The three demos: [with the servlet filters](https://github.com/pac4j/spring-security-jee-pac4j-boot-demo), [with Spring MVC](https://github.com/pac4j/spring-security-webmvc-pac4j-boot-demo) and [with Spring WebFlux](https://github.com/pac4j/spring-security-webflux-pac4j-boot-demo).
+- The three demos, all on Spring Boot 4 and Spring Security 7: [with the servlet filters](https://github.com/pac4j/spring-security-jee-pac4j-boot-demo), [with Spring MVC](https://github.com/pac4j/spring-security-webmvc-pac4j-boot-demo) and [with Spring WebFlux](https://github.com/pac4j/spring-security-webflux-pac4j-boot-demo).
 - Why you may not need Spring Security at all: [Spring Boot security: choose spring-webmvc-pac4j over Spring Security](/blog/spring-boot-security-choose-spring-webmvc-pac4j.html) and [the REST API follow-up](/blog/spring-webmvc-pac4j-vs-spring-security-round-2-rest-apis.html).
 
 **Discover more [pac4j frameworks](/implementations.html) and more [authentication mechanisms](/docs/clients.html)…**
