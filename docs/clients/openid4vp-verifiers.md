@@ -38,13 +38,11 @@ The Digital Credentials API maintains that binding itself and carries no `state`
 
 **With a wallet invoked by URL** (`OpenId4VpClient`, `EudiWalletClient`), the response URI is not authenticated and
 its transaction identifier is visible in the wallet URL, thus in the QR code. The response is therefore validated
-**twice**:
-
-1. **when the wallet posts it** to the response URI, without any session: a post which does not validate is refused
-   and leaves the transaction open for the wallet's own answer (beyond what
-   [section 14.3.2](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#section-14.3.2) asks);
-2. **when the user's browser calls the callback URL** to claim it, once the page knows the response has arrived: its
-   web session identifies the transaction, and the stored response is validated again before the profile is built.
+**when the wallet posts it**, without any session: a post which does not validate is refused with a `400` and leaves
+the transaction open for the wallet's own answer (beyond what
+[section 14.3.2](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#section-14.3.2) asks). The
+result of this validation is stored with the response: when the user's browser calls the callback URL to claim it,
+its web session identifies the transaction and the profile built at reception is used as is.
 
 Two limits remain, which the Digital Credentials API avoids:
 
