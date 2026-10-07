@@ -51,8 +51,8 @@ public class CronofyService extends OAuth20Service {
         final OAuthRequest request = new OAuthRequest(api.getAccessTokenVerb(), api.getAccessTokenEndpoint());
 
         final Map<String, String> map = new HashMap<>();
-        map.put("client_id", getApiKey());
-        map.put("client_secret", getApiSecret());
+        map.put(OAuthConstants.CLIENT_ID, getApiKey());
+        map.put(OAuthConstants.CLIENT_SECRET, getApiSecret());
         map.put(OAuthConstants.GRANT_TYPE, OAuthConstants.AUTHORIZATION_CODE);
         map.put(OAuthConstants.CODE, params.getCode());
         map.put(OAuthConstants.REDIRECT_URI, getCallback());

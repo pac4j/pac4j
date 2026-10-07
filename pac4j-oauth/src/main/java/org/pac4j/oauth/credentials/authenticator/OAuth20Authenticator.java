@@ -37,14 +37,12 @@ public class OAuth20Authenticator extends OAuthAuthenticator {
         var oAuth20Credentials = (OAuth20Credentials) credentials;
         // no request token saved in context and no token (OAuth v2.0)
         val code = oAuth20Credentials.getCode();
-        logger.debug("code: {}", code);
         final OAuth2AccessToken accessToken;
         try {
             accessToken = ((OAuth20Service) this.configuration.buildService(context, client)).getAccessToken(code);
         } catch (final IOException | InterruptedException | ExecutionException e) {
             throw new HttpCommunicationException("Error getting token:" + e.getMessage());
         }
-        logger.debug("accessToken: {}", accessToken);
         oAuth20Credentials.setAccessToken(OAuth20Credentials.OAuth20AccessToken.from(accessToken));
     }
 }

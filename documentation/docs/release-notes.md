@@ -13,6 +13,7 @@ description: "Review pac4j release notes for supported Java lines, including aut
 - Rework the `SpringResourceLoader` behavior to improve the OIDC/SAML metadata loading resilience:
   - retry every 2 seconds before anything has been loaded
   - retry every 60 seconds after the first loading and return the old data in case of error
+  - the `minimumDelayBetweenChangeDetectionInMilliseconds` property is deprecated and ignored (with a warning)
 - Fix OpenID federation forced signing of the auth request object for explicitly registered clients when it is not mandatory
 - OIDC's login hints can be provided dynamically as a `login_hint` request attribute
 - Only empty credentials or a `CredentialsException` (from the `CredentialsExtractor` or the `Authenticator`) now block further authentication attempts of an indirect client: any other exception allows a retry.
@@ -26,6 +27,7 @@ description: "Review pac4j release notes for supported Java lines, including aut
 - Added the `ResourceProperties` to define a resource by its path (`new ResourceProperties(path)`); the `KeystoreProperties` and `JwksProperties` now extend it (`new KeystoreProperties(path)`, `new JwksProperties(path)`): use `getResource()`, `setResource(...)` and `setPath(...)`, the `getKeystoreResource()`, `setKeystoreResource(...)`, `setKeystorePath(...)`, `getJwksResource()`, `setJwksResource(...)` and `setJwksPath(...)` methods being deprecated
 - The SAML identity and service provider metadata are now defined by `ResourceProperties`: use `getIdentityProviderMetadata()` and `getServiceProviderMetadata()`, the `SAML2Configuration` constructors and methods based on a `Resource` or a path for the keystore or the metadata being deprecated in favor of the `SAML2Configuration(KeystoreProperties, ResourceProperties)` constructor
 - The JWKS of an OpenID federation trust anchor is now defined by `JwksProperties`: use `getJwks()` and the `OidcTrustAnchorProperties(String, JwksProperties)` constructor, the `getJwksResource()`, `setJwksResource(...)` and `setJwksPath(...)` methods and the other constructors being deprecated
+- The messages exchanged by the SAML, CAS, OAuth, OpenID Connect and OpenID4VP supports are logged raw on the `PROTOCOL_MESSAGE.SAML`, `PROTOCOL_MESSAGE.CAS`, `PROTOCOL_MESSAGE.OAUTH`, `PROTOCOL_MESSAGE.OIDC` and `PROTOCOL_MESSAGE.OPENID4VP` loggers (all children of the `PROTOCOL_MESSAGE` logger), at DEBUG level, one line per message with its direction, the secrets of the application being masked (see the `ProtocolMessages` class and the `SAML2ProtocolMessages`, `CasProtocolMessages`, `OAuthProtocolMessages`, `OidcProtocolMessages` and `OpenId4VpProtocolMessages` classes): they are no longer logged on the loggers of the SAML, CAS, OAuth and OIDC classes, and `SAML2Utils.logProtocolMessage` is deprecated
 - Normalize path in `JEEContext.getPath()`
 - `JwtAuthenticator`: reject RSA/EC-only encryption without a signature; warn for other encryption-only configurations
 

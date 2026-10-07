@@ -5,6 +5,7 @@ import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.profile.CasRestProfile;
+import org.pac4j.cas.util.CasProtocolMessages;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
@@ -16,11 +17,13 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.HttpUtils;
 import org.pac4j.core.util.Pac4jConstants;
+import org.pac4j.core.util.ProtocolMessages;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 
 import static org.pac4j.core.context.HttpConstants.APPLICATION_FORM_ENCODED_HEADER_VALUE;
@@ -67,14 +70,19 @@ public class CasRestAuthenticator implements Authenticator {
             val headers = new HashMap<String, String>();
             headers.put(CONTENT_TYPE_HEADER, APPLICATION_FORM_ENCODED_HEADER_VALUE);
 
-            connection = HttpUtils.openPostConnection(new URL(this.configuration.computeFinalRestUrl(context)), headers);
+            val restUrl = this.configuration.computeFinalRestUrl(context);
+            connection = HttpUtils.openPostConnection(new URL(restUrl), headers);
             val payload = HttpUtils.encodeQueryParam(Pac4jConstants.USERNAME, username)
                     + "&" + HttpUtils.encodeQueryParam(Pac4jConstants.PASSWORD, password);
+            CasProtocolMessages.sent(CasProtocolMessages.CAS_SERVER, "POST " + restUrl + " "
+                + ProtocolMessages.formParameters(List.of(new String[] {Pac4jConstants.USERNAME, username},
+                    new String[] {Pac4jConstants.PASSWORD, password}), Pac4jConstants.PASSWORD));
 
             HttpUtils.postBody(connection, payload);
 
             val locationHeader = connection.getHeaderField("location");
             val responseCode = connection.getResponseCode();
+            CasProtocolMessages.received(CasProtocolMessages.CAS_SERVER, responseCode + " location: " + locationHeader);
             if (locationHeader != null && responseCode == HttpConstants.CREATED) {
                 return locationHeader.substring(locationHeader.lastIndexOf("/") + 1);
             }

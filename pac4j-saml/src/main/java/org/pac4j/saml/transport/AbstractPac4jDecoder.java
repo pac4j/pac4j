@@ -85,14 +85,11 @@ public abstract class AbstractPac4jDecoder extends AbstractMessageDecoder {
                 + "a logoutRequest parameter or a body content");
         } else {
             if (encodedMessage.get().contains("<")) {
-                LOGGER.trace("Raw SAML message:\n{}", encodedMessage);
                 return encodedMessage.get().getBytes(StandardCharsets.UTF_8);
             } else {
 
                 try {
-                    val decodedBytes = Base64Support.decode(encodedMessage.get());
-                    LOGGER.trace("Decoded SAML message:\n{}", new String(decodedBytes, StandardCharsets.UTF_8));
-                    return decodedBytes;
+                    return Base64Support.decode(encodedMessage.get());
                 } catch (final Exception e) {
                     throw new MessageDecodingException(e);
                 }

@@ -206,7 +206,6 @@ public class Pac4jHTTPPostEncoder extends AbstractMessageEncoder {
         val domMessage = marshallMessage(outboundMessage);
 
         val messageXML = SerializeSupport.nodeToString(domMessage);
-        LOGGER.trace("Output XML message: {}", messageXML);
         final String encodedMessage;
         try {
             encodedMessage = Base64Support.encode(messageXML.getBytes(StandardCharsets.UTF_8), Base64Support.UNCHUNKED);

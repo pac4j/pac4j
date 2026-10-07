@@ -33,8 +33,6 @@ public class DcqlValidator {
      * @param credential the verified credential
      */
     public void validateCredential(final CredentialQuery query, final VerifiedCredential credential) {
-        LOGGER.debug("checking DCQL constraints for query {}: format={}, holder binding required={}", query.getId(), query.getFormat(),
-            !Boolean.FALSE.equals(query.getRequireCryptographicHolderBinding()));
         if (credential == null || credential.getFormat() != query.getFormat() || credential.getClaims() == null) {
             throw failure(query, "missing credential or incorrect format");
         }
@@ -73,7 +71,6 @@ public class DcqlValidator {
             }
         }
         validateClaims(query, credential);
-        LOGGER.debug("DCQL credential constraints satisfied for query {}", query.getId());
     }
 
     /**
@@ -91,7 +88,6 @@ public class DcqlValidator {
         }
         val matches = new HashSet<String>();
         val hasSets = query.getClaimSets() != null && !query.getClaimSets().isEmpty();
-        LOGGER.debug("checking {} claim queries for query {}: claim alternatives={}", query.getClaims().size(), query.getId(), hasSets);
         for (val claim : query.getClaims()) {
             if (matchesClaim(claim, credential.getClaims(), credential.getFormat())) {
                 matches.add(claim.getId());
@@ -186,26 +182,20 @@ public class DcqlValidator {
      *     OpenID4VP 1.0, selecting credentials</a>
      */
     public void validateSelection(final DcqlQuery query, final Set<String> returnedIds) {
-        LOGGER.debug("checking DCQL selection: {} returned query identifiers out of {} requested", returnedIds.size(),
-            query.getCredentials().size());
         if (query.getCredentialSets() == null || query.getCredentialSets().isEmpty()) {
             if (query.getCredentials().stream().anyMatch(credential -> !returnedIds.contains(credential.getId()))) {
-                LOGGER.debug("DCQL selection rejected: a required credential query is missing");
                 throw new OpenId4VpException("the presentation is missing a required credential query");
             }
         } else {
             for (val set : query.getCredentialSets()) {
                 if (!Boolean.FALSE.equals(set.getRequired()) && set.getOptions().stream().noneMatch(returnedIds::containsAll)) {
-                    LOGGER.debug("DCQL selection rejected: no complete option for a required credential set");
                     throw new OpenId4VpException("the presentation does not satisfy a required credential set");
                 }
             }
         }
-        LOGGER.debug("DCQL credential selection satisfied");
     }
 
     private OpenId4VpException failure(final CredentialQuery query, final String reason) {
-        LOGGER.debug("DCQL credential rejected for query {}: {}", query.getId(), reason);
         return new OpenId4VpException("the presentation for " + query.getId() + " does not satisfy DCQL: " + reason);
     }
 }

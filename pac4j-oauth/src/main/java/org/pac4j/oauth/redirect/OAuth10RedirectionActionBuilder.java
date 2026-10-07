@@ -3,7 +3,6 @@ package org.pac4j.oauth.redirect;
 import com.github.scribejava.core.exceptions.OAuthException;
 import com.github.scribejava.core.model.OAuth1RequestToken;
 import com.github.scribejava.core.oauth.OAuth10aService;
-import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.CallContext;
@@ -14,6 +13,7 @@ import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.HttpActionHelper;
 import org.pac4j.oauth.config.OAuth10Configuration;
+import org.pac4j.oauth.util.OAuthProtocolMessages;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -25,7 +25,6 @@ import java.util.concurrent.ExecutionException;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-@Slf4j
 public class OAuth10RedirectionActionBuilder implements RedirectionActionBuilder {
 
     protected OAuth10Configuration configuration;
@@ -59,11 +58,10 @@ public class OAuth10RedirectionActionBuilder implements RedirectionActionBuilder
             } catch (final IOException | InterruptedException | ExecutionException e) {
                 throw new HttpCommunicationException("Error getting token: " + e.getMessage());
             }
-            LOGGER.debug("requestToken: {}", requestToken);
             // save requestToken in user session
             ctx.sessionStore().set(webContext, configuration.getRequestTokenSessionAttributeName(client.getName()), requestToken);
             val authorizationUrl = service.getAuthorizationUrl(requestToken);
-            LOGGER.debug("authorizationUrl: {}", authorizationUrl);
+            OAuthProtocolMessages.sentToBrowser("authorization URL: " + authorizationUrl);
             return Optional.of(HttpActionHelper.buildRedirectUrlAction(webContext, authorizationUrl));
 
         } catch (final OAuthException e) {

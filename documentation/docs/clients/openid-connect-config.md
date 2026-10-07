@@ -205,3 +205,16 @@ config.setMappedClaims(mapping);
 ## 6) Keys rotation
 
 The federation keys are reloaded when the entity statement expires. The generic RP keys used to sign request objects, and the keys used for `private_key_jwt`, are only loaded at startup: changing those files alone does not reload them.
+
+
+## 7) Logging
+
+The messages exchanged with the browser and the OpenID provider are logged raw on the `PROTOCOL_MESSAGE.OIDC` logger, at
+DEBUG level. The client secret and the client assertion are masked, and the `Authorization` header is not logged:
+
+```properties
+logging.level.PROTOCOL_MESSAGE.OIDC=DEBUG
+```
+
+The `PROTOCOL_MESSAGE.OIDC` logger is a child of `PROTOCOL_MESSAGE`, which enables the messages of all protocols at once.
+Messages are logged as they travel, tokens included: enable these logs to diagnose, not permanently in production.

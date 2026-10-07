@@ -12,6 +12,7 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.config.OAuthConfiguration;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
+import org.pac4j.oauth.util.OAuthProtocolMessages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,6 +49,7 @@ abstract class OAuthCredentialsExtractor implements CredentialsExtractor {
     @Override
     public Optional<Credentials> extract(final CallContext ctx) {
         val webContext = ctx.webContext();
+        OAuthProtocolMessages.receivedFromBrowser(webContext);
 
         val hasBeenCancelled = (Boolean) configuration.getHasBeenCancelledFactory().apply(webContext);
         // check if the authentication has been cancelled

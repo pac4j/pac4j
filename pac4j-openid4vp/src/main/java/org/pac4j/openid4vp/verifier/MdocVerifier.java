@@ -93,7 +93,6 @@ public class MdocVerifier extends AbstractCredentialVerifier {
                 || rawCredential.length() > 4L * ((maxPresentationSize + 2L) / 3)) {
                 throw new OpenId4VpException("invalid or oversized mdoc presentation");
             }
-            LOGGER.debug("verifying mdoc for transaction {}", transaction.getId());
             val result = WaltMdocAdapter.verify(rawCredential, transaction, this);
             LOGGER.debug("mdoc verified for transaction {}", transaction.getId());
             return result;

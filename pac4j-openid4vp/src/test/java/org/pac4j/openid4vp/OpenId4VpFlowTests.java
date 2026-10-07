@@ -8,6 +8,7 @@ import org.pac4j.core.config.properties.JwksProperties;
 
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
+import org.pac4j.core.exception.http.BadRequestAction;
 import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.exception.http.OkAction;
 
@@ -17,7 +18,6 @@ import org.pac4j.openid4vp.config.OpenId4VpConfiguration;
 import org.pac4j.openid4vp.credentials.VerifiablePresentationCredentials;
 import org.pac4j.openid4vp.config.CredentialFormat;
 import org.pac4j.openid4vp.config.ResponseMode;
-import org.pac4j.openid4vp.exceptions.OpenId4VpException;
 import org.pac4j.openid4vp.verifier.CredentialVerifier;
 import org.pac4j.openid4vp.verifier.VerifiedCredential;
 import org.pac4j.openid4vp.transaction.PresentationStatus;
@@ -28,6 +28,7 @@ import org.pac4j.test.context.session.MockSessionStore;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.pac4j.openid4vp.util.OpenId4VpConstants.RESPONSE;
@@ -126,6 +127,8 @@ class OpenId4VpFlowTests {
         assertTrue(configuration.getTransactionStore().get(transactionId).isEmpty());
         assertEquals(PresentationStatus.EXPIRED, client.getPresentationStatus(browserCtx));
         assertTrue(client.getCredentials(browserCtx).isEmpty());
+        // the presentation was verified once, when the wallet posted it: the browser took the result
+        assertEquals(1, verifications.get());
     }
 
     @Test
@@ -176,14 +179,16 @@ class OpenId4VpFlowTests {
             .setRequestMethod(HttpConstants.HTTP_METHOD.POST.name())
             .addRequestParameter(VP_TRANSACTION_ID, transactionId)
             .addRequestParameter(VP_TOKEN, "{\"pid\":[\"" + PRESENTATION + "\"]}");
-        // refused as soon as it is posted: the transaction stays open, and the browser gets nothing
-        val error = assertThrows(OpenId4VpException.class,
+        // refused as soon as it is posted, with a 400: the transaction stays open, and the browser gets nothing
+        val refused = assertThrows(BadRequestAction.class,
             () -> client.getCredentials(new CallContext(post, new MockSessionStore())));
-        assertEquals("the response state does not match the request", error.getMessage());
+        assertEquals("the response state does not match the request", refused.getCause().getMessage());
         assertTrue(client.getCredentials(browserCtx).isEmpty());
         assertTrue(configuration.getTransactionStore().get(transactionId).isPresent());
         assertEquals(PresentationStatus.PENDING, client.getPresentationStatus(browserCtx));
     }
+
+    private final AtomicInteger verifications = new AtomicInteger();
 
     private void installTestVerifier() {
         configuration.getCredentialVerifiers().put(CredentialFormat.SD_JWT_VC, new CredentialVerifier() {
@@ -196,6 +201,7 @@ class OpenId4VpFlowTests {
             public VerifiedCredential verify(final String rawCredential, final VpTransaction transaction,
                                              final OpenId4VpConfiguration configuration) {
                 // nothing is verified here: the presentation is only expected to reach this point
+                verifications.incrementAndGet();
                 return new VerifiedCredential().setFormat(getFormat()).setType("urn:eudi:pid:1").setCryptographicHolderBinding(true)
                     .setIssuer("https://issuer.example.org")
                     .setClaims(Map.of("sub", "alice", "presentation", rawCredential));

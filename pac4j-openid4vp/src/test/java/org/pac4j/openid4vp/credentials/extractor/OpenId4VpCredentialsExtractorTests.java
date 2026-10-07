@@ -4,8 +4,10 @@ import com.nimbusds.jwt.SignedJWT;
 import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
+import org.pac4j.core.exception.http.BadRequestAction;
 import org.pac4j.core.exception.http.OkAction;
 import org.pac4j.openid4vp.client.OpenId4VpClient;
 import org.pac4j.openid4vp.config.OpenId4VpConfiguration;
@@ -152,7 +154,7 @@ class OpenId4VpCredentialsExtractorTests {
             .addRequestParameter(WALLET_METADATA, "not-json");
         val ctx = new CallContext(webContext, new MockSessionStore());
 
-        val e = assertThrows(OpenId4VpException.class, () -> extractor.extract(ctx));
+        val e = assertRefused(() -> extractor.extract(ctx));
         assertTrue(e.getMessage().startsWith("the wallet metadata is not a JSON object"));
     }
 
@@ -186,7 +188,7 @@ class OpenId4VpCredentialsExtractorTests {
             .addRequestParameter(VP_TOKEN, "{\"pid\":[\"a-presentation\"]}");
         val ctx = new CallContext(webContext, new MockSessionStore());
 
-        val e = assertThrows(OpenId4VpException.class, () -> extractor.extract(ctx));
+        val e = assertRefused(() -> extractor.extract(ctx));
         assertTrue(e.getMessage().startsWith("the wallet answered in clear a request asking for an encrypted response (direct_post.jwt)"));
         assertEquals(VpTransaction.Status.REQUEST_RETRIEVED, configuration.getTransactionStore().get(TX_ID).get().getStatus());
         assertNull(storedAnswer());
@@ -242,7 +244,7 @@ class OpenId4VpCredentialsExtractorTests {
             .setRequestMethod(HttpConstants.HTTP_METHOD.POST.name())
             .addRequestParameter(VP_TRANSACTION_ID, TX_ID)
             .addRequestParameter(RESPONSE, WALLET_RESPONSE);
-        assertThrows(OpenId4VpException.class, () -> extractor.extract(new CallContext(forged, new MockSessionStore())));
+        assertRefused(() -> extractor.extract(new CallContext(forged, new MockSessionStore())));
         assertNull(storedAnswer());
         val transaction = configuration.getTransactionStore().get(TX_ID).get();
         assertNull(transaction.getRawResponse());
@@ -283,7 +285,7 @@ class OpenId4VpCredentialsExtractorTests {
             .addRequestParameter(RESPONSE, "another.encrypted.response");
         val ctx = new CallContext(webContext, new MockSessionStore());
 
-        val e = assertThrows(OpenId4VpException.class, () -> extractor.extract(ctx));
+        val e = assertRefused(() -> extractor.extract(ctx));
         assertEquals("the transaction was already answered: tx-1", e.getMessage());
         // the first answer is the one kept
         assertEquals(WALLET_RESPONSE, storedAnswer().getRawResponse());
@@ -298,7 +300,7 @@ class OpenId4VpCredentialsExtractorTests {
             .addRequestParameter(RESPONSE, WALLET_RESPONSE);
         val ctx = new CallContext(webContext, new MockSessionStore());
 
-        val e = assertThrows(OpenId4VpException.class, () -> extractor.extract(ctx));
+        val e = assertRefused(() -> extractor.extract(ctx));
         assertEquals("the wallet never fetched the request object of the transaction: tx-1", e.getMessage());
         val transaction = configuration.getTransactionStore().get(TX_ID).get();
         assertEquals(VpTransaction.Status.CREATED, transaction.getStatus());
@@ -313,7 +315,7 @@ class OpenId4VpCredentialsExtractorTests {
         val webContext = MockWebContext.create().addRequestParameter(VP_TRANSACTION_ID, TX_ID);
         val ctx = new CallContext(webContext, new MockSessionStore());
 
-        val e = assertThrows(OpenId4VpException.class, () -> extractor.extract(ctx));
+        val e = assertRefused(() -> extractor.extract(ctx));
         assertEquals("the wallet already answered the transaction: tx-1", e.getMessage());
         assertEquals(WALLET_RESPONSE, storedAnswer().getRawResponse());
     }
@@ -356,6 +358,13 @@ class OpenId4VpCredentialsExtractorTests {
     void testUnknownTransaction() {
         val webContext = MockWebContext.create().addRequestParameter(VP_TRANSACTION_ID, "unknown");
         val ctx = new CallContext(webContext, new MockSessionStore());
-        assertThrows(OpenId4VpException.class, () -> extractor.extract(ctx));
+        assertRefused(() -> extractor.extract(ctx));
+    }
+
+    /** A request of the wallet refused with a 400, the reason being kept as its cause. */
+    private static Throwable assertRefused(final Executable call) {
+        val action = assertThrows(BadRequestAction.class, call);
+        assertEquals(400, action.getCode());
+        return assertInstanceOf(OpenId4VpException.class, action.getCause());
     }
 }

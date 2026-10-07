@@ -53,7 +53,7 @@ public class OAuth20ProfileCreator extends OAuthProfileCreator {
         if (profile != null) {
             val oauth2Token = (OAuth2AccessToken) token;
             val accessToken = oauth2Token.getAccessToken();
-            logger.debug("add access_token: {} to profile", accessToken);
+            logger.debug("add access_token to profile");
             ((OAuth20Profile) profile).setAccessToken(accessToken);
             ((OAuth20Profile) profile).setRefreshToken(oauth2Token.getRefreshToken());
         }

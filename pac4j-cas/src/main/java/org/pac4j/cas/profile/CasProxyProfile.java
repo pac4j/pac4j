@@ -3,6 +3,7 @@ package org.pac4j.cas.profile;
 import lombok.EqualsAndHashCode;
 import lombok.val;
 import org.apereo.cas.client.authentication.AttributePrincipal;
+import org.pac4j.cas.util.CasProtocolMessages;
 
 import java.io.Serial;
 
@@ -42,9 +43,9 @@ public class CasProxyProfile extends CasProfile {
      */
     public String getProxyTicketFor(final String service) {
         if (this.attributePrincipal != null) {
-            logger.debug("Requesting PT from principal: {} and for service: {}", attributePrincipal, service);
+            CasProtocolMessages.sent(CasProtocolMessages.CAS_SERVER, "proxy ticket request for the service: " + service);
             val pt = this.attributePrincipal.getProxyTicketFor(service);
-            logger.debug("Get PT: {}", pt);
+            CasProtocolMessages.received(CasProtocolMessages.CAS_SERVER, "proxy ticket: " + pt);
             return pt;
         }
         return null;

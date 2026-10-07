@@ -15,6 +15,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.generator.RandomValueGenerator;
 import org.pac4j.core.util.generator.ValueGenerator;
+import org.pac4j.oauth.util.OAuthProtocolMessages;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -59,7 +60,7 @@ public class OAuth20Configuration extends OAuthConfiguration {
         val finalCallbackUrl = client.computeFinalCallbackUrl(context);
 
         return ((DefaultApi20) api).createService(this.key, this.secret, finalCallbackUrl, this.scope,
-            this.responseType, null, null, this.httpClientConfig, null);
+            this.responseType, null, null, this.httpClientConfig, OAuthProtocolMessages.httpClient(this.httpClientConfig));
     }
 
     /**

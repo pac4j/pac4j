@@ -3,6 +3,7 @@ package org.pac4j.core.resource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.pac4j.core.util.Announcement;
 import org.pac4j.core.util.InitializableObject;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -24,6 +25,9 @@ public abstract class SpringResourceLoader<M> extends InitializableObject {
     private static final long NO_LAST_MODIFIED = -1;
     private static final long RETRY_DELAY_BEFORE_FIRST_LOAD = 2_000;
     private static final long RETRY_DELAY_AFTER_FIRST_LOAD = 60_000;
+    private static final Announcement ANNOUNCE_DELAY_IGNORED = new Announcement("7.0.0",
+        "the `minimumDelayBetweenChangeDetectionInMilliseconds` property of the `SpringResourceLoader` will be removed: it is "
+            + "ignored since 6.6.0, the resource being checked every 2 seconds until it is loaded, then every 60 seconds", false);
 
     private final Lock lock = new ReentrantLock();
     private final AtomicBoolean byteArrayHasChanged = new AtomicBoolean(true);
@@ -118,13 +122,26 @@ public abstract class SpringResourceLoader<M> extends InitializableObject {
         return lastModified.get();
     }
 
+    /**
+     * <p>The delay between two checks for changes, once the resource is loaded.</p>
+     *
+     * @return the delay, in milliseconds
+     * @deprecated the delay is no longer configurable
+     */
     @Deprecated
     public long getMinimumDelayBetweenChangeDetectionInMilliseconds() {
-        throw new UnsupportedOperationException("Cannot get minimumDelayBetweenChangeDetectionInMilliseconds for SpringResourceLoader");
+        ANNOUNCE_DELAY_IGNORED.announce();
+        return RETRY_DELAY_AFTER_FIRST_LOAD;
     }
 
+    /**
+     * <p>Ignored: the delay between two checks for changes is no longer configurable.</p>
+     *
+     * @param minimumDelayBetweenChangeDetectionInMilliseconds the delay, in milliseconds
+     * @deprecated the delay is no longer configurable
+     */
     @Deprecated
     public void setMinimumDelayBetweenChangeDetectionInMilliseconds(long minimumDelayBetweenChangeDetectionInMilliseconds) {
-        throw new UnsupportedOperationException("Cannot set minimumDelayBetweenChangeDetectionInMilliseconds for SpringResourceLoader");
+        ANNOUNCE_DELAY_IGNORED.announce();
     }
 }

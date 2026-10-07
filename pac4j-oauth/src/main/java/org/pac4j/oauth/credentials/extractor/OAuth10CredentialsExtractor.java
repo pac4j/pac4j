@@ -40,10 +40,8 @@ public class OAuth10CredentialsExtractor extends OAuthCredentialsExtractor {
             val tokenSession = (OAuth1RequestToken) sessionStore
                     .get(context, ((OAuth10Configuration) configuration)
                     .getRequestTokenSessionAttributeName(client.getName())).orElse(null);
-            logger.debug("tokenRequest: {}", tokenSession);
             val token = OAuthEncoder.decode(tokenParameter.get());
             val verifier = OAuthEncoder.decode(verifierParameter.get());
-            logger.debug("token: {} / verifier: {}", token, verifier);
             return Optional.of(new OAuth10Credentials(tokenSession, token, verifier));
         } else {
             logger.debug("No credential found");

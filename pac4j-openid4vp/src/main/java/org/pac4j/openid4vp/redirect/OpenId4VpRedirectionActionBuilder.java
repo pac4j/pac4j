@@ -8,17 +8,18 @@ import com.nimbusds.jose.jwk.gen.ECKeyGenerator;
 import com.nimbusds.jose.util.JSONArrayUtils;
 import com.nimbusds.jose.util.JSONObjectUtils;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.redirect.RedirectionActionBuilder;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.ProtocolMessages;
 import org.pac4j.openid4vp.client.OpenId4VpClient;
 import org.pac4j.openid4vp.config.RequestUriMethod;
 import org.pac4j.openid4vp.exceptions.OpenId4VpException;
 import org.pac4j.openid4vp.transaction.VpTransaction;
+import org.pac4j.openid4vp.util.OpenId4VpProtocolMessages;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -45,7 +46,6 @@ import static org.pac4j.openid4vp.util.OpenId4VpConstants.*;
  * @since 6.6.0
  */
 @RequiredArgsConstructor
-@Slf4j
 public class OpenId4VpRedirectionActionBuilder implements RedirectionActionBuilder {
 
     protected final OpenId4VpClient client;
@@ -58,8 +58,20 @@ public class OpenId4VpRedirectionActionBuilder implements RedirectionActionBuild
         val url = computeWalletUrl(ctx, transaction);
         configuration.getTransactionStore().set(transaction.getId(), transaction);
         ctx.sessionStore().set(ctx.webContext(), SESSION_TRANSACTION_ID, transaction.getId());
-        LOGGER.debug("transaction {} saved and associated with the browser session; handing over the wallet URL", transaction.getId());
+        VpTransaction.logTransition(transaction.getId(), VpTransaction.NONE, transaction.getStatus(), describe(transaction));
+        OpenId4VpProtocolMessages.sent(transaction.getId(), ProtocolMessages.BROWSER, "wallet URL: " + url);
         return Optional.of(new FoundAction(url));
+    }
+
+    /**
+     * <p>Describe a new transaction for the logs.</p>
+     *
+     * @param transaction the transaction
+     * @return its description
+     */
+    protected String describe(final VpTransaction transaction) {
+        return "client " + client.getName() + ", response mode " + client.getConfiguration().getResponseMode().getValue()
+            + ", expires at " + transaction.getExpiresAt();
     }
 
     /**
@@ -83,9 +95,6 @@ public class OpenId4VpRedirectionActionBuilder implements RedirectionActionBuild
         if (!configuration.getResponseMode().isOverDcApi()) {
             transaction.setState(configuration.getStateGenerator().generateValue(ctx));
         }
-        LOGGER.debug("transaction {} created for client {}: response mode={}, expires at={}, encryption key generated={}, "
-            + "state generated={}", transaction.getId(), client.getName(), configuration.getResponseMode(),
-            transaction.getExpiresAt(), transaction.getEncryptionKey() != null, transaction.getState() != null);
         return transaction;
     }
 
@@ -130,8 +139,6 @@ public class OpenId4VpRedirectionActionBuilder implements RedirectionActionBuild
     protected String computeWalletUrl(final CallContext ctx, final VpTransaction transaction) {
         val configuration = client.getConfiguration();
         if (configuration.getClientIdPrefix().isSignedRequest()) {
-            LOGGER.debug("building wallet URL for transaction {}: signed request by reference, request URI method={}",
-                transaction.getId(), configuration.getRequestUriMethod());
             var url = CommonHelper.addParameter(configuration.getWalletScheme(), CLIENT_ID, configuration.computeClientId());
             url = CommonHelper.addParameter(url, REQUEST_URI, client.computeRequestUri(ctx.webContext(), transaction.getId()));
             if (configuration.getRequestUriMethod() == RequestUriMethod.POST) {
@@ -142,7 +149,6 @@ public class OpenId4VpRedirectionActionBuilder implements RedirectionActionBuild
             }
             return url;
         }
-        LOGGER.debug("building wallet URL for transaction {}: unsigned request by value", transaction.getId());
         return computeUnsignedWalletUrl(ctx, transaction);
     }
 

@@ -8,6 +8,7 @@ import com.nimbusds.openid.connect.sdk.OIDCTokenResponseParser;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.pac4j.core.context.CallContext;
+import org.pac4j.oidc.util.OidcProtocolMessages;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.oidc.client.OidcClient;
@@ -111,8 +112,9 @@ public class OidcAuthenticator implements Authenticator {
         val tokenHttpRequest = request.toHTTPRequest();
         configuration.configureHttpRequest(tokenHttpRequest);
 
+        OidcProtocolMessages.sent(tokenHttpRequest);
         val httpResponse = tokenHttpRequest.send();
-        LOGGER.debug("Token response: status={}, content={}", httpResponse.getStatusCode(), httpResponse.getBody());
+        OidcProtocolMessages.received(httpResponse);
 
         val response = OIDCTokenResponseParser.parse(httpResponse);
         if (response instanceof TokenErrorResponse tokenErrorResponse) {

@@ -52,16 +52,13 @@ public class IssuerAndClaimProfileIdResolver implements ProfileIdResolver {
     @Override
     public String resolve(final VerifiablePresentationCredentials credentials) {
         val verified = credentials.getVerifiedCredentials().values().stream().flatMap(Collection::stream).toList();
-        LOGGER.debug("mapping profile identifier: {} verified credentials, subject claim={}", verified.size(), claim);
         if (verified.size() != 1) {
-            LOGGER.debug("profile identifier mapping rejected: exactly one verified credential is required");
             throw new OpenId4VpException("the issuer and claim profile identifier requires exactly one verified credential");
         }
         val credential = verified.get(0);
         val issuer = credential.getIssuer();
         val subject = credential.getClaims().get(claim);
         if (isBlank(issuer) || !(subject instanceof String subjectId) || isBlank(subjectId)) {
-            LOGGER.debug("profile identifier mapping rejected: issuer or subject claim missing, blank or invalid");
             throw new OpenId4VpException("the profile identifier requires an issuer and a non-blank string claim: " + claim);
         }
         val encoder = Base64.getUrlEncoder().withoutPadding();
