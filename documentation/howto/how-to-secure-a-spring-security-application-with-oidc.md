@@ -6,9 +6,9 @@ seo_title: "How to secure a Spring Security client application with OIDC | pac4j
 description: "Add OpenID Connect (OIDC) login to a Spring Security application: configure pac4j servlet filters, map roles and access the Spring Security context."
 ---
 
-You already have Spring Security in your application, with `hasRole` rules, `@PreAuthorize` on services and code reading `SecurityContextHolder`. You want to use pac4j for OpenID Connect login, while keeping that authorization code.
+If you already have Spring Security in your application, with `hasRole` rules, `@PreAuthorize` on services and code reading `SecurityContextHolder` and you want to add an OpenID Connect login, while keeping that authorization code, you can use pac4j for that.
 
-The provider might be Keycloak, Microsoft Entra ID, Okta or a CAS server. Once pac4j has authenticated the user, we need to make that user available to Spring Security.
+Whatever the provider (Keycloak, Microsoft Entra ID, Okta, a CAS server, etc.), once pac4j has authenticated the user, it can make that user available to Spring Security.
 
 The [spring-security-pac4j](https://github.com/pac4j/spring-security-pac4j) bridge does this. **It transfers the pac4j profile into the Spring Security context; it does not perform authentication itself.** Adding the bridge alone will not give you an OIDC login.
 
@@ -25,8 +25,9 @@ If you are starting from scratch, a [pac4j implementation alone](/how-to-secure-
 **What you need:**
 
 - Java 17 or later and Maven
-- Spring Boot 4.x, which brings Spring Security 7; Spring Boot 3.x with Spring Security 6 works too, with the same bridge
+- Spring Boot v4.x, which brings Spring Security v7, or Spring Boot v3.x with Spring Security v6: the bridge supports both
 - an OpenID Connect provider where you can register an application, or the public demo server used below.
+
 
 ## 1) Create the Maven project
 
@@ -38,7 +39,7 @@ mkdir -p spring-security-oidc-app/src/main/resources
 cd spring-security-oidc-app
 ```
 
-Create `pom.xml` at the project root. The Spring Boot parent manages the Spring dependencies, and its Maven plugin runs the application:
+Create a `pom.xml` file at the project root. The Spring Boot parent manages the Spring dependencies, and its Maven plugin runs the application:
 
 ```xml
 <project xmlns="http://maven.apache.org/POM/4.0.0"
@@ -93,6 +94,7 @@ public class SpringBootApp {
 }
 ```
 
+
 ## 2) Add the Maven dependencies
 
 On top of the Spring Boot Web MVC and security starters, you need three pac4j artifacts: the pac4j implementation that authenticates, here the `jakartaee-pac4j` servlet filters, the OpenID Connect module, and the bridge.
@@ -126,11 +128,12 @@ On top of the Spring Boot Web MVC and security starters, you need three pac4j ar
 </dependency>
 ```
 
-Spring Boot 4 splits the former `spring-boot-starter-web` into `spring-boot-starter-webmvc` and `spring-boot-starter-webflux`. The `spring-jcl` logging bridge that Spring Framework 6 required is gone: Spring Framework 7 uses Apache Commons Logging directly, and Spring Boot routes it to SLF4J, so no extra logging dependency is needed.
+Spring Boot v4 splits the former `spring-boot-starter-web` into `spring-boot-starter-webmvc` and `spring-boot-starter-webflux`. With Spring Boot v3.x, use `spring-boot-starter-web` instead: the other dependencies are the same. No logging dependency is needed in either case: Spring Framework v6 brings its `spring-jcl` bridge transitively, and Spring Framework v7 uses Apache Commons Logging directly, routed to SLF4J by Spring Boot.
 
 The bridge needs an implementation such as `jakartaee-pac4j`, `spring-webmvc-pac4j` or `spring-webflux-pac4j` to produce a profile. It has no configuration of its own: pac4j detects it on the classpath and installs a `SpringSecurityProfileManager`.
 
-Each time a profile is saved or removed, this manager updates the Spring Security context. The bridge version used here, 10.1.0, targets pac4j 6 and works with Spring Security 6 and 7: the Spring Boot parent, 3.x or 4.x, decides which Spring Security version is used. The configuration below is the same in both cases.
+Each time a profile is saved or removed, this manager updates the Spring Security context. The bridge version used here, v10.1.0, targets pac4j v6 and works with Spring Security v6 and v7: the Spring Boot parent, v3.x or v4.x, decides which Spring Security version is used. The configuration below is the same in both cases.
+
 
 ## 3) Configure pac4j
 
@@ -177,13 +180,14 @@ public class Pac4jConfig {
 
 The bridge keeps role names unchanged when creating `GrantedAuthority` instances. So if your code checks `hasRole("ADMIN")`, the profile needs `ROLE_ADMIN`, including the prefix.
 
-In this example, only a user whose `groups` attribute contains `administrators` receives that role. The provider must release this claim, and trusted administrators must control group membership. Adapt the mapping to the actual claim structure: Keycloak realm roles, for example, use a different one. Without the expected group, our user only gets `ROLE_USER`.
+In this example, only a user whose `groups` attribute contains `administrators` receives that role. The provider must release this claim, and trusted administrators must control group membership. Adapt the mapping to the claims your provider actually releases: Keycloak, for example, puts realm roles in a `realm_access` claim holding a `roles` list, not in a flat `groups` claim. Without the expected group, our user only gets `ROLE_USER`.
 
 The callback URL, with the `?client_name=OidcClient` suffix pac4j appends, is the redirect URI to register at the provider. `setAllowUnsignedIdTokens(true)` only exists for the public demo server: remove it for a real provider. To register the application at Keycloak, Google or Entra ID, see the [provider section of the Spring Boot guide](/how-to-secure-a-java-application-with-oidc.html#4-register-the-application-at-your-identity-provider).
 
+
 ## 4) Put the pac4j filters in the Spring Security chain
 
-The pac4j filters run **inside** the Spring Security filter chains, one chain per URL pattern, so that the session and the security context are shared:
+The pac4j filters run **inside** the Spring Security filter chains, one chain per URL pattern, so that the session and the security context are shared.
 
 Save the filter-chain configuration in `src/main/java/org/pac4j/demo/spring/SecurityConfig.java`:
 
@@ -276,6 +280,7 @@ The default chain handles the remaining URLs. It protects `/admin/**` with `hasR
 
 Using Spring MVC interceptors instead of servlet filters? Follow the [webmvc bridge demo](https://github.com/pac4j/spring-security-webmvc-pac4j-boot-demo). Interceptors run after Spring Security's servlet filters, so its chains must allow requests to reach the pac4j interceptors where required. Switching the dependency alone is not sufficient.
 
+
 ## 5) Access the authenticated user
 
 Create `src/main/java/org/pac4j/demo/spring/ProtectedController.java` to read the Spring Security context after login. Its `Authentication` is a `Pac4jAuthenticationToken`: the name is the user identifier, the authorities are the pac4j roles and the principal is the profile itself.
@@ -313,9 +318,10 @@ public void deleteAccount(final String accountId) {
 
 You can also inject the principal with `@AuthenticationPrincipal OidcProfile profile` in a controller method, or use the pac4j `ProfileManager` when you need the list of profiles.
 
+
 ## 6) Logout
 
-Use `/pac4jLogout`, as configured above, to log out. Through the bridge, this clears both the pac4j profile and the Spring Security context; `destroySession` also invalidates the HTTP session. Calling Spring Security's `/logout` does not run the same pac4j logout flow.
+Use the `/pac4jLogout` URL, as configured above, to log out. Through the bridge, this clears both the pac4j profile and the Spring Security context (`destroySession` also invalidates the HTTP session). Calling Spring Security's `/logout` only clears the Spring Security context, not the pac4j profile.
 
 To also end the session at the provider, enable central logout on the filter:
 
@@ -350,7 +356,7 @@ Add the corresponding `pac4j-saml` or `pac4j-cas` dependency, replace the `OidcC
 
 - The documentation for the [OIDC client for Java](/docs/clients/openid-connect.html) for all the `OidcConfiguration` options.
 - The [spring-security-pac4j](https://github.com/pac4j/spring-security-pac4j) bridge and its [documentation](https://github.com/pac4j/spring-security-pac4j/wiki).
-- The three demos, all on Spring Boot 4 and Spring Security 7: [with the servlet filters](https://github.com/pac4j/spring-security-jee-pac4j-boot-demo), [with Spring MVC](https://github.com/pac4j/spring-security-webmvc-pac4j-boot-demo) and [with Spring WebFlux](https://github.com/pac4j/spring-security-webflux-pac4j-boot-demo).
+- The three demos, all on Spring Boot v4 and Spring Security v7: [with the servlet filters](https://github.com/pac4j/spring-security-jee-pac4j-boot-demo), [with Spring MVC](https://github.com/pac4j/spring-security-webmvc-pac4j-boot-demo) and [with Spring WebFlux](https://github.com/pac4j/spring-security-webflux-pac4j-boot-demo).
 - Why you may not need Spring Security at all: [Spring Boot security: choose spring-webmvc-pac4j over Spring Security](/blog/spring-boot-security-choose-spring-webmvc-pac4j.html) and [the REST API follow-up](/blog/spring-webmvc-pac4j-vs-spring-security-round-2-rest-apis.html).
 
 **Discover more [pac4j frameworks](/implementations.html) and more [authentication mechanisms](/docs/clients.html)…**
