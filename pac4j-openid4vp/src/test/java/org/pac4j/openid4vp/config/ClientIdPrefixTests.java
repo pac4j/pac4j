@@ -63,6 +63,39 @@ class ClientIdPrefixTests {
         + "Bh4EAHIAcDAjBgkqhkiG9w0BCRUxFgQUXktk9NUL7+be2Ksspaxh1uq/zAMwMTAhMAkGBSsOAwIaBQAEFAkysqMK/+IQVU+DYwjK"
         + "XaWeFIIcBAieQpBaQBeAvwICCAA=";
 
+    /**
+     * A leaf issued by an intermediate authority, itself issued by a self-signed root: three certificates,
+     * leaf first, in the keystore entry.
+     */
+    private static final String INTERMEDIATE_KEYSTORE =
+        "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"
+        + "8GU+joC3QwICCAA=";
+
     @TempDir
     private Path directory;
 
@@ -137,6 +170,23 @@ class ClientIdPrefixTests {
         val leaf = com.nimbusds.jose.util.X509CertUtils.parse(published.get(0).decode());
         assertEquals("CN=verifier.example.org", leaf.getSubjectX500Principal().getName());
         assertEquals("CN=Test CA", leaf.getIssuerX500Principal().getName());
+    }
+
+    @Test
+    void testTheIntermediateAuthorityStaysInTheChain() throws Exception {
+        val configuration = configuration(ClientIdPrefix.X509_HASH);
+        configuration.setKeystore(keystore(INTERMEDIATE_KEYSTORE));
+        configuration.init();
+
+        // the wallet needs the intermediate to build the chain up to its anchor: leaf then intermediate, root dropped
+        val published = configuration.getRequestObjectSigningKey().getX509CertChain();
+        assertEquals(2, published.size());
+        val leaf = com.nimbusds.jose.util.X509CertUtils.parse(published.get(0).decode());
+        val intermediate = com.nimbusds.jose.util.X509CertUtils.parse(published.get(1).decode());
+        assertEquals("CN=verifier.example.org", leaf.getSubjectX500Principal().getName());
+        assertEquals("CN=Test Intermediate CA", leaf.getIssuerX500Principal().getName());
+        assertEquals("CN=Test Intermediate CA", intermediate.getSubjectX500Principal().getName());
+        assertEquals("CN=Test CA", intermediate.getIssuerX500Principal().getName());
     }
 
     @Test
