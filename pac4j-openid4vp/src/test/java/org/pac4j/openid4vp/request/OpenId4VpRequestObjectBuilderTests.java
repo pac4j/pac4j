@@ -103,6 +103,8 @@ class OpenId4VpRequestObjectBuilderTests {
         val claims = requestObjectOf(transaction).getJWTClaimsSet();
 
         assertEquals(ClientIdPrefix.DECENTRALIZED_IDENTIFIER.getValue() + ":" + CLIENT, claims.getStringClaim(CLIENT_ID));
+        // no issuer by default: redundant with client_id, and a wallet must ignore it anyway
+        assertNull(claims.getIssuer());
         assertEquals(RESPONSE_TYPE_VP_TOKEN, claims.getStringClaim(RESPONSE_TYPE));
         assertEquals("direct_post.jwt", claims.getStringClaim(RESPONSE_MODE));
         assertEquals(transaction.getNonce(), claims.getStringClaim(NONCE));
@@ -116,6 +118,14 @@ class OpenId4VpRequestObjectBuilderTests {
         // the required credential type is sent in meta
         assertEquals(List.of(Map.of("id", "pid", "format", "dc+sd-jwt", "meta", Map.of("vct_values", List.of("urn:eudi:pid:1")))),
             claims.getJSONObjectClaim(DCQL_QUERY).get("credentials"));
+    }
+
+    @Test
+    void testTheIssuerIsSentAsConfigured() throws Exception {
+        // a wallet which still reads the iss claim gets exactly what was configured for it, here the bare DID
+        configuration.setRequestObjectIssuer(CLIENT);
+        val claims = requestObjectOf(openTransaction()).getJWTClaimsSet();
+        assertEquals(CLIENT, claims.getIssuer());
     }
 
     @Test
