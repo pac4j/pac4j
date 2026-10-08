@@ -6,6 +6,7 @@ import com.nimbusds.jose.crypto.*;
 import com.nimbusds.jose.jwk.*;
 import com.nimbusds.jose.jwk.gen.ECKeyGenerator;
 import com.nimbusds.jose.jwk.gen.RSAKeyGenerator;
+import com.nimbusds.jose.util.Base64;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +24,11 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.security.KeyPair;
 import java.security.KeyStoreException;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateEncodingException;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Helper for JWK.
@@ -226,10 +231,38 @@ public class JwkHelper {
         val keyStore = keyStoreAndAlias.getLeft();
         val alias = keyStoreAndAlias.getRight();
         try {
-            return JWK.load(keyStore, alias, keystoreProperties.getPrivateKeyPassword().toCharArray());
-        } catch (final KeyStoreException | JOSEException e) {
+            val key = JWK.load(keyStore, alias, keystoreProperties.getPrivateKeyPassword().toCharArray());
+            return withCertificateChain(key, keyStore.getCertificateChain(alias));
+        } catch (final KeyStoreException | JOSEException | CertificateEncodingException e) {
             throw new TechnicalException(e);
         }
+    }
+
+    /**
+     * The key with the whole certificate chain of its keystore entry: Nimbus only keeps the certificate of the
+     * alias, so any intermediate authority the keystore holds would be lost, and a verifier publishing the key in
+     * a {@code x5c} header would leave the other party unable to build the chain up to its trust anchor.
+     *
+     * @param key the key as Nimbus loaded it
+     * @param chain the certificate chain of the keystore entry, leaf first, possibly null or reduced to the leaf
+     * @return the key, with the chain when it holds more than the leaf
+     * @throws CertificateEncodingException if a certificate cannot be encoded
+     */
+    private static JWK withCertificateChain(final JWK key, final Certificate[] chain) throws CertificateEncodingException {
+        if (chain == null || chain.length < 2) {
+            return key;
+        }
+        final List<Base64> encoded = new ArrayList<>();
+        for (val certificate : chain) {
+            encoded.add(Base64.encode(certificate.getEncoded()));
+        }
+        if (key instanceof ECKey ecKey) {
+            return new ECKey.Builder(ecKey).x509CertChain(encoded).build();
+        }
+        if (key instanceof RSAKey rsaKey) {
+            return new RSAKey.Builder(rsaKey).x509CertChain(encoded).build();
+        }
+        return key;
     }
 
     /**
