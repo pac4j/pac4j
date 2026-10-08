@@ -25,7 +25,7 @@ If you are starting from scratch, a [pac4j implementation alone](/how-to-secure-
 **What you need:**
 
 - Java 17 or later and Maven
-- Spring Boot 4.x, which brings Spring Security 7 (for Spring Boot 3.x and Spring Security 6, use the 10.x bridge)
+- Spring Boot 4.x, which brings Spring Security 7; Spring Boot 3.x with Spring Security 6 works too, with the same bridge
 - an OpenID Connect provider where you can register an application, or the public demo server used below.
 
 ## 1) Create the Maven project
@@ -122,7 +122,7 @@ On top of the Spring Boot Web MVC and security starters, you need three pac4j ar
 <dependency>
     <groupId>org.pac4j</groupId>
     <artifactId>spring-security-pac4j</artifactId>
-    <version>11.0.0</version>
+    <version>10.1.0</version>
 </dependency>
 ```
 
@@ -130,7 +130,7 @@ Spring Boot 4 splits the former `spring-boot-starter-web` into `spring-boot-star
 
 The bridge needs an implementation such as `jakartaee-pac4j`, `spring-webmvc-pac4j` or `spring-webflux-pac4j` to produce a profile. It has no configuration of its own: pac4j detects it on the classpath and installs a `SpringSecurityProfileManager`.
 
-Each time a profile is saved or removed, this manager updates the Spring Security context. The bridge version used here, 11.0.0, targets pac4j 6 and Spring Security 7, hence Spring Boot 4. With Spring Boot 3 and Spring Security 6, stay on the 10.x bridge: the configuration below is the same.
+Each time a profile is saved or removed, this manager updates the Spring Security context. The bridge version used here, 10.1.0, targets pac4j 6 and works with Spring Security 6 and 7: the Spring Boot parent, 3.x or 4.x, decides which Spring Security version is used. The configuration below is the same in both cases.
 
 ## 3) Configure pac4j
 
