@@ -122,6 +122,19 @@ public class OpenId4VpConfiguration extends BaseClientConfiguration {
      */
     private List<VerifierAttestation> verifierInfo = new ArrayList<>();
 
+    /**
+     * The {@code iss} claim of the signed request object, sent as is. None by default: "The client_id claim is
+     * required as defined below and would be redundant with a possible iss claim in the Request Object which is
+     * commonly used in JAR. To avoid breaking existing JAR implementations, the iss claim MAY be present in the
+     * Request Object. However, if it is present, the Wallet MUST ignore it." Set it for a wallet which still reads
+     * it, with the value that wallet expects: the client identifier, or the bare DID with the
+     * {@code decentralized_identifier} prefix.
+     *
+     * @see <a href="https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#section-5">
+     *     OpenID4VP 1.0, Authorization Request</a>
+     */
+    private String requestObjectIssuer;
+
     /** Where the signing key comes from: a JWKS, or a keystore when it is not defined. */
     private JwksProperties jwks = new JwksProperties();
 

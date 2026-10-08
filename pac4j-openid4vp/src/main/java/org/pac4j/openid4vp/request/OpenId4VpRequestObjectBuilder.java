@@ -100,9 +100,13 @@ public class OpenId4VpRequestObjectBuilder {
             // https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#request_uri_method_post
             builder.claim(WALLET_NONCE, transaction.getWalletNonce());
         }
-        // the claims a request object carries on top of the protocol parameters
+        // the claims a request object carries on top of the protocol parameters; no issuer unless configured,
+        // "if it is present, the Wallet MUST ignore it"
+        // https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#section-5
+        if (isNotBlank(client.getConfiguration().getRequestObjectIssuer())) {
+            builder.issuer(client.getConfiguration().getRequestObjectIssuer());
+        }
         return builder
-            .issuer(client.getConfiguration().computeClientId())
             .audience(REQUEST_OBJECT_AUDIENCE)
             .issueTime(Date.from(transaction.getCreatedAt()))
             .expirationTime(Date.from(transaction.getExpiresAt()));
