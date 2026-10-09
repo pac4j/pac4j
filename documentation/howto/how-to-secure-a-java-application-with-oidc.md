@@ -37,7 +37,7 @@ Create `pom.xml` at the project root. The Spring Boot parent manages the Spring 
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.12</version>
+        <version>4.1.1</version>
         <relativePath/>
     </parent>
     <groupId>org.example</groupId>
