@@ -14,8 +14,9 @@ We'll make our application a SAML service provider with **pac4j and Spring Boot*
 
 **What you need:**
 
-- Java 17 or later and Maven
+- Java 17+ and Maven
 - the **metadata** of your IdP, as a URL or an XML file. Every IdP publishes it; ask your identity team if you do not know where it is. The example uses the metadata URL of the public test IdP.
+
 
 ## 1) Create the Maven project
 
@@ -27,7 +28,7 @@ mkdir -p spring-saml-app/src/main/resources
 cd spring-saml-app
 ```
 
-Create `pom.xml` at the project root. The Spring Boot parent manages the Spring dependencies, and its Maven plugin runs the application:
+Create a `pom.xml` file at the project root. The Spring Boot parent manages the Spring dependencies, and its Maven plugin runs the application:
 
 ```xml
 <project xmlns="http://maven.apache.org/POM/4.0.0"
@@ -63,11 +64,12 @@ Create `pom.xml` at the project root. The Spring Boot parent manages the Spring 
 </project>
 ```
 
-Save the Java classes below in the `org.example` package so that Spring Boot discovers the configuration and controllers. Put application properties in `src/main/resources/application.properties`.
+Save the Java classes below in the `org.example` package so that Spring Boot discovers the configuration and controllers. Put the application settings in `src/main/resources/application.yml`.
+
 
 ## 2) Add the Maven dependencies
 
-Inside the `<dependencies>` element, on top of Spring MVC, you need the pac4j Spring MVC integration and the SAML module, which embeds the OpenSAML library:
+Inside the `<dependencies>` element, on top of Spring MVC, you need the pac4j Spring MVC integration and the SAML module:
 
 ```xml
 <!-- Spring Boot web -->
@@ -79,7 +81,7 @@ Inside the `<dependencies>` element, on top of Spring MVC, you need the pac4j Sp
 <dependency>
     <groupId>org.pac4j</groupId>
     <artifactId>spring-webmvc-pac4j</artifactId>
-    <version>8.0.3</version>
+    <version>8.0.4</version>
 </dependency>
 <!-- pac4j support for SAML2 -->
 <dependency>
@@ -88,6 +90,9 @@ Inside the `<dependencies>` element, on top of Spring MVC, you need the pac4j Sp
     <version>6.5.9</version>
 </dependency>
 ```
+
+`pac4j-saml` is built on [OpenSAML](https://shibboleth.atlassian.net/wiki/spaces/OSAML/overview), the reference SAML library in the Java world, which it brings in transitively.
+
 
 ## 3) Create the service provider keystore
 
@@ -98,6 +103,7 @@ keytool -genkeypair -alias pac4j-demo -keypass pac4j-demo-passwd -storetype JKS 
 ```
 
 Create a `metadata` directory at the project root for the generated SP metadata (`mkdir -p metadata`). If the keystore path you configure does not exist and is writable, pac4j generates the keystore and its key pair for you at first use.
+
 
 ## 4) Configure SAML 2.0 authentication
 
@@ -150,14 +156,19 @@ Our application also needs an identity of its own. `setServiceProviderEntityId` 
 
 Finally, `Pac4jSecurityConfig` registers `/callback` and `/logout`, and `addSecurity(registry, "SAML2Client")` protects `/protected/**`. In SAML terms, the callback is our **Assertion Consumer Service** (ACS).
 
-The IdP returns the assertion by a cross-site POST. Configure the session cookie in `src/main/resources/application.properties` so that the browser sends it on the callback:
+The IdP returns the assertion by a cross-site POST. Configure the session cookie in `src/main/resources/application.yml` so that the browser sends it on the callback:
 
-```properties
-server.servlet.session.cookie.same-site=none
-server.servlet.session.cookie.secure=true
+```yaml
+server:
+  servlet:
+    session:
+      cookie:
+        same-site: none
+        secure: true
 ```
 
 Use HTTPS when deploying beyond localhost: `SameSite=None` requires a secure cookie.
+
 
 ## 5) Exchange metadata with your identity provider
 
@@ -171,6 +182,7 @@ When the `SAML2Client` initializes, pac4j generates the SP metadata into `metada
 You can also get the same XML programmatically with `client.getServiceProviderMetadataResolver().getMetadata()`, for instance to serve it from an endpoint.
 
 If the IdP metadata is not reachable over HTTP from your application, download it once and load it from the classpath with `cfg.setIdentityProviderMetadataPath("classpath:idp-metadata.xml")`.
+
 
 ## 6) Access the authenticated user
 
@@ -222,15 +234,18 @@ cfg.setMappedAttributes(Map.of("urn:oid:0.9.2342.19200300.100.1.3", "email"));
 
 The IdP decides which attributes it releases: if a value is missing, the attribute release rule for your SP at the IdP is the place to look.
 
+
 ## 7) Single logout
 
 The `/logout` link removes the local profile. But the user can still have a session at the IdP and in other applications.
 
-SAML defines **single logout** (SLO) for this: our application asks the IdP to end its session and notify the other applications. Enable it in `application.properties`:
+SAML defines **single logout** (SLO) for this: our application asks the IdP to end its session and notify the other applications. Enable it in `application.yml`:
 
-```properties
-pac4j.logout.centralLogout=true
-pac4j.logout.defaultUrl=/
+```yaml
+pac4j:
+  logout:
+    centralLogout: true
+    defaultUrl: /
 ```
 
 pac4j then sends a `LogoutRequest` to the IdP's single logout endpoint, read from the IdP metadata, and processes the `LogoutResponse` on the callback URL. To sign outgoing logout requests, add this setting to the `SAML2Configuration` in step 4 before creating the client:
@@ -240,6 +255,7 @@ cfg.setSpLogoutRequestSigned(true);
 ```
 
 In pac4j 6.5.9, this option is `false` by default: enabling central logout alone does not enable request signing. The HTTP-POST and HTTP-Redirect bindings are supported for these messages; pick the one your IdP expects with `cfg.setSpLogoutRequestBindingType(...)`. SLO only works if the IdP metadata declares a `SingleLogoutService`.
+
 
 ## 8) Run the application
 
@@ -269,6 +285,7 @@ Open [http://localhost:8080/](http://localhost:8080/) and follow **Protected are
 - **"Authentication issue instant is too old"**: check the clocks of both machines and any maximum authentication age configured with `cfg.setMaximumAuthenticationLifetime(seconds)`. In pac4j 6.5.9, the default is `0`, which disables this authentication-age check; an explicit positive value limits the age of the IdP authentication. Assertion validity timestamps are checked separately.
 - **Signature validation fails**: the IdP rotated its certificate. Reload the IdP metadata.
 - **The assertion is missing a `Destination`**: some IdPs omit it; pac4j requires it for security but you can relax it with `cfg.setResponseDestinationAttributeMandatory(false)`.
+
 
 ## 9) Learn more
 

@@ -14,8 +14,9 @@ Let's put this into practice with **pac4j and Spring Boot**. We'll start with th
 
 **What you need:**
 
-- Java 17 or later and Maven
+- Java 17+ and Maven
 - an OpenID Connect provider where you can register an application, or the public demo server used below.
+
 
 ## 1) Create the Maven project
 
@@ -27,7 +28,7 @@ mkdir -p spring-oidc-app/src/main/resources
 cd spring-oidc-app
 ```
 
-Create `pom.xml` at the project root. The Spring Boot parent manages the Spring dependencies, and its Maven plugin runs the application:
+Create a `pom.xml` file at the project root. The Spring Boot parent manages the Spring dependencies, and its Maven plugin runs the application:
 
 ```xml
 <project xmlns="http://maven.apache.org/POM/4.0.0"
@@ -63,7 +64,8 @@ Create `pom.xml` at the project root. The Spring Boot parent manages the Spring 
 </project>
 ```
 
-Save the Java classes below in the `org.example` package so that Spring Boot discovers the configuration and controllers. Put application properties in `src/main/resources/application.properties`.
+Save the Java classes below in the `org.example` package so that Spring Boot discovers the configuration and controllers. Put the application settings in `src/main/resources/application.yml`.
+
 
 ## 2) Add the Maven dependencies
 
@@ -79,7 +81,7 @@ Inside the `<dependencies>` element, on top of Spring MVC, you need two pac4j ar
 <dependency>
     <groupId>org.pac4j</groupId>
     <artifactId>spring-webmvc-pac4j</artifactId>
-    <version>8.0.3</version>
+    <version>8.0.4</version>
 </dependency>
 <!-- pac4j support for OpenID Connect -->
 <dependency>
@@ -89,7 +91,8 @@ Inside the `<dependencies>` element, on top of Spring MVC, you need two pac4j ar
 </dependency>
 ```
 
-Why two dependencies? `pac4j-oidc` handles the protocol, while `spring-webmvc-pac4j` connects it to Spring MVC. The `OidcClient` itself knows nothing about Spring: you can use it with Jakarta EE, Play, Vert.x, JAX-RS and the other [pac4j integrations](/implementations.html).
+Why two dependencies? `pac4j-oidc` handles the protocol, built on the [Nimbus OAuth 2.0 / OpenID Connect SDK](https://connect2id.com/products/nimbus-oauth-openid-connect-sdk), while `spring-webmvc-pac4j` connects it to Spring MVC. The `OidcClient` itself knows nothing about Spring: you can use it with Jakarta EE, Play, Vert.x, JAX-RS and the other [pac4j integrations](/implementations.html).
+
 
 ## 3) Configure OpenID Connect (OIDC) authentication
 
@@ -136,7 +139,7 @@ There are two things to configure here: the OIDC client and the URLs of our appl
 
 For the client, `setDiscoveryURI` points to the provider's `.well-known/openid-configuration` document. pac4j reads the authorization, token, user info and JWKS endpoints from it. So you do not have to configure each endpoint yourself. `setClientId` and `setSecret` are the credentials you receive when registering the application at the provider.
 
-On the application side, `Pac4jSecurityConfig` registers `/callback` and `/logout`. The callback URL comes from `new Config(baseUri + "/callback", ...)`, and pac4j appends `?client_name=OidcClient` to it. **This full URL is the redirect URI to register at the provider.**
+On the application side, `Pac4jSecurityConfig` registers `/callback` and `/logout`. The callback URL comes from `new Config(baseUri + "/callback", ...)`, and pac4j appends `?client_name=OidcClient` to it. **This full URL is the redirect URI to register at your provider.**
 
 Finally, `addSecurity(registry, "OidcClient")` protects `/protected/**`. An anonymous user requesting one of these pages is redirected to the provider to log in.
 
@@ -144,11 +147,12 @@ By default, pac4j uses the **authorization code flow** and adds **PKCE** when th
 
 You may wonder why the example allows unsigned ID tokens. This is only because the public demo server issues them. **Remove `setAllowUnsignedIdTokens(true)` for a real provider**, so pac4j verifies the ID token signature against the provider's JWKS.
 
+
 ## 4) Register the application at your identity provider
 
 Every provider needs the same three things: an application (or "client") with a **redirect URI** of `http://localhost:8080/callback?client_name=OidcClient`, and the resulting client ID and secret. What changes is where the discovery document lives, and pac4j ships dedicated clients for the common providers.
 
-**Keycloak**: create a confidential client in your realm and set its "Valid redirect URIs". The `KeycloakOidcConfiguration` builds the discovery URL from the server base URL and the realm name:
+**- For Keycloak**: create a confidential client in your realm and set its "Valid redirect URIs". The `KeycloakOidcConfiguration` builds the discovery URL from the server base URL and the realm name:
 
 ```java
 final var config = new KeycloakOidcConfiguration()
@@ -159,7 +163,7 @@ config.setSecret("mysecret");
 return new Config(baseUri + "/callback", new KeycloakOidcClient(config));
 ```
 
-**Google**: create an "OAuth client ID" of type "Web application" in the Google Cloud console and add the redirect URI to "Authorized redirect URIs". The `GoogleOidcClient` already knows Google's discovery URL:
+**- For Google**: create an "OAuth client ID" of type "Web application" in the Google Cloud console and add the redirect URI to "Authorized redirect URIs". The `GoogleOidcClient` already knows Google's discovery URL:
 
 ```java
 final var config = new OidcConfiguration()
@@ -168,7 +172,7 @@ final var config = new OidcConfiguration()
 return new Config(baseUri + "/callback", new GoogleOidcClient(config));
 ```
 
-**Microsoft Entra ID (Azure AD)**: register an application in the Entra portal, add the redirect URI under "Web" platform and create a client secret. The `AzureAd2Client` takes the tenant identifier:
+**- For Microsoft Entra ID (Azure AD)**: register an application in the Entra portal, add the redirect URI under "Web" platform and create a client secret. The `AzureAd2Client` takes the tenant identifier:
 
 ```java
 final var config = new AzureAd2OidcConfiguration("38c46e5a-21f0-46e5-940d-3ca06fd1a330");
@@ -186,6 +190,7 @@ addSecurity(registry, "KeycloakOidcClient").addPathPatterns("/protected/**");
 ```
 
 Use `GoogleOidcClient` or `AzureAd2Client` in both places for the corresponding provider.
+
 
 ## 5) Access the authenticated user
 
@@ -232,20 +237,24 @@ profile.getAccessToken();   // to call the provider's APIs
 
 Which claims are present depends on the **scopes** you request. The default is `openid profile email`; add more with `config.setScope("openid profile email phone")`.
 
+
 ## 6) Logout
 
 The `/logout` link removes the profile from the application's session. This is the **local logout**: the user may still be logged in at the provider.
 
-To end that session as well, enable central logout in `application.properties`:
+To end that session as well, enable central logout in `application.yml`:
 
-```properties
-pac4j.logout.centralLogout=true
-pac4j.logout.defaultUrl=http://localhost:8080/
+```yaml
+pac4j:
+  logout:
+    centralLogout: true
+    defaultUrl: http://localhost:8080/
 ```
 
 For providers supporting OIDC logout, pac4j redirects the browser to the `end_session_endpoint` from the discovery document and supplies the absolute default URL as `post_logout_redirect_uri`. Register `http://localhost:8080/` as an allowed post-logout redirect URI at the provider. A relative default URL such as `/` works for local logout but is not passed to the provider as a return URL.
 
 If your provider supports OIDC logout but does not publish its endpoint, set it explicitly with `config.setLogoutUrl(...)`. Logout support and registration requirements vary by provider; the dedicated `GoogleOidcClient` uses its own logout action rather than this discovery-based flow.
+
 
 ## 7) Run the application
 
@@ -275,6 +284,7 @@ Open [http://localhost:8080/](http://localhost:8080/) and follow **Protected are
 - **"invalid_client"** on the token request: wrong client secret, or the client is public at the provider while pac4j sends a secret.
 - **The ID token signature fails**: check that discovery points to the intended provider, that its JWKS is reachable and contains the current signing key, and that the expected signing algorithm matches the provider's client configuration. If an explicit algorithm is needed, use `config.setIdTokenSigningAlgorithm(...)` with that configured algorithm; changing it to `ES256` is not a general fix for signature errors.
 - **Empty name or email**: the scopes or the provider's claim mapping do not release them. Check the scopes first, then the client configuration at the provider.
+
 
 ## 8) Learn more
 
