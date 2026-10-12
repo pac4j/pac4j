@@ -49,10 +49,12 @@ OpenID4VP 1.0 was finalized in 2025, and wallet implementations are still evolvi
 A very good one is the **Paradym wallet** by [Animo](https://animo.id), available for Android and iOS, and its [playground](https://playground.paradym.id/) which plays both the issuer and the verifier:
 
 1. install the Paradym wallet on your phone
-2. open [playground.paradym.id](https://playground.paradym.id/) and, on the **Issuance** page, issue the demo cards to your wallet: the PID as mdoc is the one this post uses
-3. keep the **Trust Info** page of the playground at hand: it shows the certificate of the playground issuer, which your application must trust.
+2. open [playground.paradym.id](https://playground.paradym.id/) on your computer and, on the **Issuance** page, choose **PID mDoc**, the card this post uses: the page shows a QR code, scan it with the Paradym wallet, accept the offer, and the card appears in the wallet
+3. keep the **Trust Information** page of the playground at hand: it shows the certificate of the playground issuer, which your application must trust.
 
 The cards are Erika Mustermann's, a fictitious Dutch citizen, and the mdoc PID carries, among other attributes, a `personal_administrative_number`: a stable identifier, which the profile below relies on.
+
+Issue the card from this playground and no other: a PID issued elsewhere, by the older [playground.animo.id](https://playground.animo.id/) for instance, is signed by another certificate and the truststore of section 7 refuses it. If the wallet already holds PID cards from another source, delete them, or at least pick the right one when the wallet asks which card to present.
 
 <!-- screenshot: the Issuance page of the playground, and the mdoc PID in the Paradym wallet -->
 
@@ -93,7 +95,7 @@ The `pom.xml`. The mdoc verification relies on the [walt.id](https://walt.id) li
         <version>4.0.4</version>
         <relativePath/>
     </parent>
-    <groupId>org.example</groupId>
+    <groupId>org.pac4j.demo</groupId>
     <artifactId>wallet-another-device</artifactId>
     <version>1.0-SNAPSHOT</version>
 
@@ -188,7 +190,7 @@ public class WalletApplication {
 
 ## 7) Keys and trust
 
-Two keystores go in the `metadata` directory, the same as in the first post.
+Two keystores go in the `metadata` directory, the same as in the first post. Run the `keytool` commands below from the root of the project, next to the `pom.xml`: the paths are relative to it, like the ones in the configuration.
 
 **The verifier key.** `EudiWalletClient` signs requests and identifies the verifier by its certificate hash (`x509_hash`). Production EUDI deployments use a *relying party access certificate* issued by the ecosystem. This demo uses a self-signed certificate with an EC P-256 key, accepted by the tested Paradym wallet; self-signed verifier certificates are outside the HAIP requirements:
 
@@ -198,7 +200,7 @@ keytool -genkeypair -alias rp -keyalg EC -groupname secp256r1 -sigalg SHA256with
   -keystore metadata/verifier.p12 -storetype PKCS12 -storepass changeit
 ```
 
-**The issuers you trust.** No credential is accepted unless its issuer is trusted, and pac4j trusts nobody by default. For an mdoc, the trust anchor is the *issuing authority certificate authority* (IACA) of the PID provider. Copy the *Issuer Certificate* from the [Trust Info](https://playground.paradym.id/info) page of the playground into a `paradym-issuer.pem` file, and import it into a truststore:
+**The issuers you trust.** No credential is accepted unless its issuer is trusted, and pac4j trusts nobody by default. For an mdoc, the trust anchor is the *issuing authority certificate authority* (IACA) of the PID provider. Copy the *Issuer Certificate* from the [Trust Information](https://playground.paradym.id/info) page of the playground into a `paradym-issuer.pem` file, and import it into a truststore:
 
 ```bash
 keytool -importcert -alias paradym -file paradym-issuer.pem -noprompt \
@@ -221,6 +223,8 @@ import org.pac4j.openid4vp.dcql.EudiPidQuery;
 import org.pac4j.openid4vp.verifier.MdocVerifier;
 import org.pac4j.openid4vp.verifier.trust.CertificateTrustedIssuer;
 import org.pac4j.springframework.config.Pac4jSecurityConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -235,6 +239,8 @@ import static org.pac4j.openid4vp.profile.EudiPidProfileDefinition.PID_DOCTYPE;
 
 @Configuration
 public class SecurityConfig extends Pac4jSecurityConfig {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SecurityConfig.class);
 
     @Value("${app.base-url}")
     private String baseUrl;
@@ -256,7 +262,10 @@ public class SecurityConfig extends Pac4jSecurityConfig {
             .setKeystorePassword("changeit"));
         // certificate revocation checking is disabled to simplify this demo; keep it enabled in production
         issuers.setCertificateRevocationEnabled(false);
-        configuration.addCredentialVerifier(new MdocVerifier().addTrustedIssuer(issuers));
+        // the playground PID references a status list: this demo logs the reference and accepts the document,
+        // a real status checker must retrieve the list, verify it and check the entry of the document
+        configuration.addCredentialVerifier(new MdocVerifier().addTrustedIssuer(issuers)
+            .setStatusChecker((credential, status) -> LOGGER.info("document status not checked: {}", status)));
 
         // the profile identifier: the issuer and the administrative number, read in the namespace of the PID
         configuration.setProfileIdResolver(credentials -> {
@@ -283,7 +292,7 @@ Compared to the first post, two things change:
 
 The rest is the same: `EudiWalletClient` pins the HAIP choices, `x509_hash` and `direct_post.jwt`, and the callback URL serves both the wallet and the browser.
 
-These settings do not constitute complete HAIP conformance validation. This example also assumes a demo document without an MSO `status` object. The playground's [Trust Info](https://playground.paradym.id/info) describes status lists: if the current document carries status information, configure `MdocVerifier.setStatusChecker(...)` to authenticate the status list and check the document's entry. Without it, pac4j rejects the document. See [credential status](/docs/clients/openid4vp-mdoc-verifier.html#7-credential-status). Disabling certificate revocation does not bypass this check.
+These settings do not constitute complete HAIP conformance validation. The playground PID also carries a `status` object in its MSO, a reference to an [OAuth Token Status List](https://datatracker.ietf.org/doc/draft-ietf-oauth-status-list/): the list where the issuer marks the documents it has revoked or suspended. pac4j refuses a document carrying a status unless a *status checker* is configured, because only the application can decide how to read the list, and it never fetches it on its own. The checker of this demo receives the status object as a map, only logs it and accepts the document, so revocation is not checked here. A real checker retrieves the status list token, verifies its signature with the same trust as the document and checks the entry at the index of the document: that deserves a post of its own. See [credential status](/docs/clients/openid4vp-mdoc-verifier.html#7-credential-status). Disabling certificate revocation does not bypass this check.
 
 
 ## 9) The DCQL query
@@ -337,6 +346,8 @@ In this flow, the wallet is on the phone rather than the computer running the br
 - the protected page itself, as before
 - a `/status` endpoint, which reports the transaction state for the browser session: `PENDING`, `RECEIVED` or `EXPIRED`, from `client.getPresentationStatus(...)`. `RECEIVED` includes a wallet error response; the callback then reports that error
 - the page with the QR code and its script, which polls the `/status` endpoint every second until the wallet has answered.
+
+The three live in a single Spring MVC controller, `WalletController`, to create next to the two previous classes:
 
 ```java
 package org.pac4j.demo.wallet;
@@ -561,7 +572,7 @@ A few things to know before going further:
 
 - **The profile identifier** in this demo combines the document signer certificate's subject, `C=NL,CN=credo dcs` in these traces, with the administrative number. For persistent accounts, your PID provider must guarantee that the combination is stable, unique and never reassigned. Certificate subjects can change or be shared, and not every PID provider issues an administrative number. Choose an identifier policy appropriate to your trusted provider.
 - **A refusal was silent** with the tested Paradym wallet: when the user declined or had no matching card, nothing was posted, and the page waited until the transaction expired after five minutes. Wallets that post an error let pac4j report it at the callback.
-- **Certificate revocation** is disabled in this demo. In production, keep it enabled and supply current CRLs or configure the Java PKIX provider to retrieve revocation data. This setting does not disable credential status checking: credentials carrying status information still need a status checker.
+- **Certificate revocation** is disabled in this demo. In production, keep it enabled and supply current CRLs or configure the Java PKIX provider to retrieve revocation data. This setting does not disable credential status checking: credentials carrying status information still need a status checker, and the one of this demo only logs the status reference, as seen in section 8.
 - The device MAC of ISO 18013-5, transaction data, the `verifier_attestation` and `openid_federation` prefixes, and the automatic retrieval of status lists are not supported yet.
 
 This integration is introduced in **pac4j v6.6.0**. The full documentation starts at [OpenID for Verifiable Presentations](/docs/clients/openid4vp.html), and the [first post](/blog/openid4vp_in_action_same_device.html) covers the same flow on a single device, with an SD-JWT VC PID.

@@ -393,7 +393,9 @@ class SdJwtVcVerifierTests {
         verifier = new SdJwtVcVerifier();
         val raw = presentation();
         val error = assertThrows(OpenId4VpException.class, () -> verify(raw));
-        assertTrue(error.getMessage().contains("not trusted"));
+        // the authority to add to a truststore is named
+        assertEquals("the SD-JWT VC issuer is not trusted: its iss has no configured keys and its x5c chain, issued by CN=Root, "
+            + "leads to no trusted certificate", error.getMessage());
     }
 
     @Test

@@ -108,7 +108,8 @@ public class MdocVerifier extends AbstractCredentialVerifier {
     }
 
     ResolvedIssuer resolveIssuer(final List<X509Certificate> chain) {
-        return resolveIssuer(new IssuerEvidence(null, null, chain))
-            .orElseThrow(() -> new OpenId4VpException("the mdoc issuer is not trusted: its x5chain leads to no trusted certificate"));
+        val evidence = new IssuerEvidence(null, null, chain);
+        return resolveIssuer(evidence).orElseThrow(() -> new OpenId4VpException("the mdoc issuer is not trusted: its x5chain, issued by "
+            + evidence.chainIssuer() + ", leads to no trusted certificate"));
     }
 }

@@ -804,3 +804,51 @@ main:has(.not-found) .container {
   }
   #home .ai-notice .icon { font-size: 1.35rem; margin-top: 2px; }
 }
+
+/* ---------- Copy button on code blocks ---------- */
+.code-copy-wrap { position: relative; }
+.code-copy {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 7px;
+  font: 500 .72rem var(--font);
+  color: var(--muted);
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: color .15s, border-color .15s;
+}
+.code-copy svg { width: 14px; height: 14px; }
+.code-copy:hover { color: var(--blue); border-color: var(--blue); }
+.code-copy.copied { color: #2e7d32; border-color: #2e7d32; }
+
+/* ---------- Screenshot sequences ---------- */
+.screens {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 1.5rem 0;
+}
+.screens img {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 200px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+.screens-arrow {
+  flex: none;
+  font-size: 1.8rem;
+  color: var(--muted);
+}
+@media (max-width: 640px) {
+  .screens { flex-wrap: wrap; }
+  .screens img { flex-basis: calc(50% - 5px); max-width: none; }
+  .screens-arrow { display: none; }
+}

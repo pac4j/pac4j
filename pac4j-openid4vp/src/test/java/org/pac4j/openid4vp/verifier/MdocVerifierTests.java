@@ -282,7 +282,10 @@ class MdocVerifierTests {
         verifier.getTrustedIssuers().add(new CertificateTrustedIssuer(
             trustStore(certificate(other.getPublic(), other.getPrivate(), "CN=Other", "CN=Other", true)))
             .setCertificateRevocationEnabled(false));
-        assertThrows(OpenId4VpException.class, () -> verify(raw));
+        val error = assertThrows(OpenId4VpException.class, () -> verify(raw));
+        // the authority to add to a truststore is named
+        assertEquals("the mdoc issuer is not trusted: its x5chain, issued by CN=Compatibility Root, leads to no trusted certificate",
+            error.getMessage());
         // the same truststores, the right one second: the first does not know the chain
         verifier.getTrustedIssuers().add(certificateIssuers);
         assertDoesNotThrow(() -> verify(raw));
