@@ -52,7 +52,7 @@ A very good one is the **Paradym wallet** by [Animo](https://animo.id), availabl
 2. open [playground.paradym.id](https://playground.paradym.id/) on your computer and, on the **Issuance** page, choose **PID mDoc**, the card this post uses: the page shows a QR code, scan it with the Paradym wallet, accept the offer, and the card appears in the wallet
 3. keep the **Trust Information** page of the playground at hand: it shows the certificate of the playground issuer, which your application must trust.
 
-The cards are Erika Mustermann's, a fictitious Dutch citizen, and the mdoc PID carries, among other attributes, a `personal_administrative_number`: a stable identifier, which the profile below relies on.
+The cards are Emma Charlotte van der Berg's, a fictitious Dutch citizen, and the mdoc PID carries, among other attributes, a `personal_administrative_number`: a stable identifier, which the profile below relies on.
 
 Issue the card from this playground and no other: a PID issued elsewhere, by the older [playground.animo.id](https://playground.animo.id/) for instance, is signed by another certificate and the truststore of section 7 refuses it. If the wallet already holds PID cards from another source, delete them, or at least pick the right one when the wallet asks which card to present.
 
@@ -262,7 +262,7 @@ public class SecurityConfig extends Pac4jSecurityConfig {
             .setKeystorePassword("changeit"));
         // certificate revocation checking is disabled to simplify this demo; keep it enabled in production
         issuers.setCertificateRevocationEnabled(false);
-        // the playground PID references a status list: this demo logs the reference and accepts the document,
+        // an mdoc may reference a status list: this demo logs the reference and accepts the document,
         // a real status checker must retrieve the list, verify it and check the entry of the document
         configuration.addCredentialVerifier(new MdocVerifier().addTrustedIssuer(issuers)
             .setStatusChecker((credential, status) -> LOGGER.info("document status not checked: {}", status)));
@@ -292,7 +292,7 @@ Compared to the first post, two things change:
 
 The rest is the same: `EudiWalletClient` pins the HAIP choices, `x509_hash` and `direct_post.jwt`, and the callback URL serves both the wallet and the browser.
 
-These settings do not constitute complete HAIP conformance validation. The playground PID also carries a `status` object in its MSO, a reference to an [OAuth Token Status List](https://datatracker.ietf.org/doc/draft-ietf-oauth-status-list/): the list where the issuer marks the documents it has revoked or suspended. pac4j refuses a document carrying a status unless a *status checker* is configured, because only the application can decide how to read the list, and it never fetches it on its own. The checker of this demo receives the status object as a map, only logs it and accepts the document, so revocation is not checked here. A real checker retrieves the status list token, verifies its signature with the same trust as the document and checks the entry at the index of the document: that deserves a post of its own. See [credential status](/docs/clients/openid4vp-mdoc-verifier.html#7-credential-status). Disabling certificate revocation does not bypass this check.
+These settings do not constitute complete HAIP conformance validation. An mdoc may carry a `status` object in its MSO, a reference to an [OAuth Token Status List](https://datatracker.ietf.org/doc/draft-ietf-oauth-status-list/): the list where the issuer marks the documents it has revoked or suspended. pac4j refuses a document carrying a status unless a *status checker* is configured, because only the application can decide how to read the list, and it never fetches it on its own. The mdoc PID of the playground carries none today, unlike its SD-JWT VC PID, but the checker stays configured so that a document with a status is logged rather than refused: it receives the status object as a map, only logs it and accepts the document, so revocation is not checked here. A real checker retrieves the status list token, verifies its signature with the same trust as the document and checks the entry at the index of the document: that deserves a post of its own. See [credential status](/docs/clients/openid4vp-mdoc-verifier.html#7-credential-status). Disabling certificate revocation does not bypass this check.
 
 
 ## 9) The DCQL query
@@ -473,23 +473,31 @@ mvn spring-boot:run
 
 Open the ngrok URL in the browser of your computer: the QR code appears at once.
 
+The whole flow in six screens, the computer at both ends and the phone in between: the page with the QR code, the warning about the unverified verifier, the request to review, the PIN code, the success screen, and the protected page back on the computer. The steps below detail what happens behind each one.
+
+<div class="screens screens-flow">
+  <img class="screens-wide" alt="The page with the QR code, on the computer" src="/img/blog/2026_wallet/qrcode.png" />
+  <span class="screens-arrow" aria-hidden="true">&rarr;</span>
+  <img alt="Paradym: organization not verified" src="/img/blog/2026_wallet/organization.jpg" />
+  <span class="screens-arrow" aria-hidden="true">&rarr;</span>
+  <img alt="Paradym: review the request, the three attributes of the PID" src="/img/blog/2026_wallet/mdocrequest.jpg" />
+  <span class="screens-arrow" aria-hidden="true">&rarr;</span>
+  <img alt="Paradym: enter the PIN code" src="/img/blog/2026_wallet/pincode.jpg" />
+  <span class="screens-arrow" aria-hidden="true">&rarr;</span>
+  <img alt="Paradym: success, the information has been shared" src="/img/blog/2026_wallet/success.jpg" />
+  <span class="screens-arrow" aria-hidden="true">&rarr;</span>
+  <img class="screens-wide" alt="The protected page with the profile, on the computer" src="/img/blog/2026_wallet/webpostlogin.png" />
+</div>
+
 **1. The page asks for the protected page, as data.** pac4j finds no profile, creates a *transaction* and answers the `openid4vp://` URL in the `Location` header of a 401. The page draws it as a QR code and starts polling the `/status` endpoint every second.
 
-<!-- screenshot: the page with the QR code -->
-
-**2. The phone scans the QR code.** The Paradym wallet reads the URL, which only carries the identifier of the verifier and a `request_uri`: it calls it, on the callback URL of your application, and receives the signed request object, with the DCQL query and the public key to encrypt its response.
+**2. The phone scans the QR code.** The Paradym wallet (opened and unlocked beforehand: the scan does not work from a cold start) reads the URL, which only carries the identifier of the verifier and a `request_uri`: it calls it, on the callback URL of your application, and receives the signed request object, with the DCQL query and the public key to encrypt its response.
 
 **3. The user consents.** The wallet shows who is asking, the hash of your certificate for now, and what is asked: the PID, given name, family name and administrative number. The user picks the mdoc card and confirms with their PIN.
 
-<!-- screenshot: Paradym, the consent screen with the three attributes -->
-
 **4. The wallet posts its response.** An encrypted JWT, containing the mdoc device response, posted on the callback URL. pac4j decrypts, verifies and keeps the result for the browser session which started the transaction. The wallet shows that the sharing succeeded.
 
-<!-- screenshot: Paradym, the success screen -->
-
-**5. The page continues on its own.** The next poll returns `received`: the page goes to the callback URL, pac4j retrieves the profile already validated when the wallet posted its response, stores it in the session and redirects to the page requested at step 1: the protected page shows Erika Mustermann, with the three claims under the `eu.europa.ec.eudi.pid.1` attribute and an identifier made of the issuer and the administrative number.
-
-<!-- screenshot: the protected page with the profile -->
+**5. The page continues on its own.** The next poll returns `received`: the page goes to the callback URL, pac4j retrieves the profile already validated when the wallet posted its response, stores it in the session and redirects to the page requested at step 1: the protected page shows Emma Charlotte van der Berg, with the three claims under the `eu.europa.ec.eudi.pid.1` attribute and an identifier made of the issuer and the administrative number.
 
 Nothing to do on the computer between the scan and the result: the whole exchange happened between the phone and the application.
 
@@ -498,43 +506,48 @@ Nothing to do on the computer between the scan and the result: the whole exchang
 
 The two loggers enabled in `application.properties` give two views of the flow. The `PROTOCOL_MESSAGE.OPENID4VP` logger prints the messages themselves, as they were sent or received, without any interpretation: one line per message, starting with `>>>` when the application sent it, `<<<` when it received it, followed by the other party, the browser or the wallet. The `org.pac4j.openid4vp` logger tells what pac4j did with them: the transaction created, the request object built, the response decrypted and verified, the profile built. Here is the flow above, shortened.
 
-Step 1: a transaction is created, expiring five minutes later, and the wallet URL is handed to the page. Note the `request_uri` on the callback URL, and the identifier of the verifier:
+Step 1: a transaction is created, expiring five minutes later, and the wallet URL is handed to the page in a 401, since the request came as AJAX. Note the `request_uri` on the callback URL, and the identifier of the verifier, the hash of its certificate:
 
 ```
-VpTransaction : transaction 94d5a6…: - -> CREATED (client EudiWalletClient, response mode direct_post.jwt, expires at …)
-PROTOCOL_MESSAGE.OPENID4VP : [tx 94d5a6…] >>> browser wallet URL: openid4vp://?client_id=x509_hash%3ALBzQXfZdbZmj-QFQwHjLPhjCeM5AEJTbJ-_FDWifBRI&request_uri=https%3A%2F%2Fabcd-1234.ngrok-free.dev%2Fcallback%3Fclient_name%3DEudiWalletClient%26vp_tx%3D94d5a6…&request_uri_method=post
-OpenId4VpClient : AJAX request detected -> returning UnauthorizedAction(super=HttpAction(code=401), content=) for https://abcd-1234.ngrok-free.dev/protected/index
+EudiWalletClient : applying EUDI wallet settings for client EudiWalletClient: X509_HASH, DIRECT_POST_JWT, PID profile definition
+OpenId4VpConfiguration : OpenID4VP configuration checked: 1 credential queries, verifier formats=[SD_JWT_VC, MSO_MDOC], signed requests=true
+VpTransaction : transaction c7e29a…: - -> CREATED (client EudiWalletClient, response mode direct_post.jwt, expires at 2026-10-12T14:26:08Z)
+PROTOCOL_MESSAGE.OPENID4VP : [tx c7e29a…] >>> browser wallet URL: openid4vp://?client_id=x509_hash%3AE3bEQjnx15zqNwvnVfbxz2GO6SAZXNG6BfdjrZsWvQc&request_uri=https%3A%2F%2Fabcd-1234.ngrok-free.dev%2Fcallback%3Fclient_name%3DEudiWalletClient%26vp_tx%3Dc7e29a…&request_uri_method=post
+EudiWalletClient : AJAX request detected -> returning UnauthorizedAction(super=HttpAction(code=401), content=) for https://abcd-1234.ngrok-free.dev/protected/index
 ```
+
+The first two lines appear once, at the first request: the client initializes lazily. The configuration comes with a default verifier per format; section 8 replaced the mdoc one with the trusted issuers and the SD-JWT VC one stays, hence the two formats listed.
 
 Step 2: the wallet fetches the request object, which is built for it and signed:
 
 ```
-PROTOCOL_MESSAGE.OPENID4VP : [tx 94d5a6…] <<< wallet GET vp_tx=94d5a6…
-OpenId4VpRequestObjectBuilder : client metadata built for transaction 94d5a6…: formats=[mso_mdoc], response encryption methods=[A128GCM, A256GCM]
-OpenId4VpRequestObjectBuilder : request object signed for transaction 94d5a6… with ES256
-VpTransaction : transaction 94d5a6…: CREATED -> REQUEST_RETRIEVED (GET of the request URI)
-PROTOCOL_MESSAGE.OPENID4VP : [tx 94d5a6…] >>> wallet 200 eyJ4NWMiOlsiTUlJQjdE…
+PROTOCOL_MESSAGE.OPENID4VP : [tx c7e29a…] <<< wallet GET client_name=EudiWalletClient&vp_tx=c7e29a…
+OpenId4VpRequestObjectBuilder : client metadata built for transaction c7e29a…: formats=[dc+sd-jwt, mso_mdoc], response encryption methods=[A128GCM, A256GCM]
+OpenId4VpRequestObjectBuilder : request object signed for transaction c7e29a… with ES256
+VpTransaction : transaction c7e29a…: CREATED -> REQUEST_RETRIEVED (GET of the request URI)
+PROTOCOL_MESSAGE.OPENID4VP : [tx c7e29a…] >>> wallet 200 eyJ4NWMiOlsiTUlJQmNq…
 ```
 
 These demo traces show a GET even though the wallet URL advertises `request_uri_method=post`. pac4j accepts both methods; a wallet following the advertised method uses POST and can include its metadata and a wallet nonce.
 
-The request object is a JWT whose header carries your certificate (`x5c`) and whose payload is the request. Decoded, its payload reads:
+The request object is a JWT whose header carries your certificate (`x5c`, with the `rp` alias as `kid`) and whose payload is the request. Decoded, its payload reads:
 
 ```json
 {
-  "client_id": "x509_hash:LBzQXfZdbZmj-QFQwHjLPhjCeM5AEJTbJ-_FDWifBRI",
+  "client_id": "x509_hash:E3bEQjnx15zqNwvnVfbxz2GO6SAZXNG6BfdjrZsWvQc",
   "response_type": "vp_token",
   "response_mode": "direct_post.jwt",
-  "response_uri": "https://abcd-1234.ngrok-free.dev/callback?client_name=EudiWalletClient&vp_tx=94d5a6…",
-  "nonce": "fa43378424f1426e9b241c92261a575c",
-  "state": "60c58a7619da4e7ea3c52bec41b09740…",
+  "response_uri": "https://abcd-1234.ngrok-free.dev/callback?client_name=EudiWalletClient&vp_tx=c7e29a…",
+  "nonce": "fb89b405c7ca40689912b460acd0e756",
+  "state": "206a039fe14d4d1f9a3fa0c50f8ff207…",
   "dcql_query": { "credentials": [ { "id": "pid", "format": "mso_mdoc", "meta": { "doctype_value": "eu.europa.ec.eudi.pid.1" },
                   "claims": [ { "path": ["eu.europa.ec.eudi.pid.1", "given_name"] }, { "path": ["eu.europa.ec.eudi.pid.1", "family_name"] },
                               { "path": ["eu.europa.ec.eudi.pid.1", "personal_administrative_number"] } ] } ] },
-  "client_metadata": { "jwks": { "keys": [ { "kty": "EC", "use": "enc", "crv": "P-256", "alg": "ECDH-ES", "x": "…", "y": "…" } ] },
+  "client_metadata": { "jwks": { "keys": [ { "kty": "EC", "use": "enc", "crv": "P-256", "alg": "ECDH-ES", "kid": "3885759a…", "x": "…", "y": "…" } ] },
                        "encrypted_response_enc_values_supported": ["A128GCM", "A256GCM"],
-                       "vp_formats_supported": { "mso_mdoc": { "issuerauth_alg_values": [-7], "deviceauth_alg_values": [-7] } } },
-  "aud": "https://self-issued.me/v2", "iat": 1791455140, "exp": 1791455440
+                       "vp_formats_supported": { "dc+sd-jwt": { "sd-jwt_alg_values": ["ES256"], "kb-jwt_alg_values": ["ES256"] },
+                                                 "mso_mdoc": { "issuerauth_alg_values": [-7], "deviceauth_alg_values": [-7] } } },
+  "aud": "https://self-issued.me/v2", "iat": 1791814868, "exp": 1791815168
 }
 ```
 
@@ -543,25 +556,31 @@ The device signature binds the mdoc to this request through a *session transcrip
 Step 4: the wallet posts its response, a JWE encrypted with the ephemeral key published in the request. pac4j decrypts it, verifies the mdoc and builds the profile; the claims come grouped by namespace:
 
 ```
-PROTOCOL_MESSAGE.OPENID4VP : [tx 94d5a6…] <<< wallet POST vp_tx=94d5a6…&response=eyJraWQiOiI5MzVhNzdlNy…
-OpenId4VpAuthenticator : response decrypted and authentication tag verified for transaction 94d5a6…: alg=ECDH-ES, enc=A128GCM, members=[vp_token, state]
+PROTOCOL_MESSAGE.OPENID4VP : [tx c7e29a…] <<< wallet POST client_name=EudiWalletClient&vp_tx=c7e29a…&response=eyJraWQiOiIzODg1NzU5YS…
+OpenId4VpAuthenticator : response decrypted and authentication tag verified for transaction c7e29a…: alg=ECDH-ES, enc=A128GCM, members=[vp_token, state]
 CertificateTrustedIssuer : issuer truststore loaded: 1 trust anchors
-MdocVerifier : mdoc verified for transaction 94d5a6…
-OpenId4VpAuthenticator : presentation 1/1 verified for transaction 94d5a6…, query pid: format=MSO_MDOC, verifier=MdocVerifier
-OpenId4VpAuthenticator : wallet response validated for transaction 94d5a6…: 1 credential queries answered
-VerifiableCredentialProfile : adding => key: eu.europa.ec.eudi.pid.1 / value: {given_name=Erika, family_name=Mustermann, personal_administrative_number=123456782} / class java.util.LinkedHashMap
-OpenId4VpAuthenticator : profile built for transaction 94d5a6…: profile class=EudiPidProfile
-VpTransaction : transaction 94d5a6…: REQUEST_RETRIEVED -> RESPONSE_RECEIVED (presentation validated)
-PROTOCOL_MESSAGE.OPENID4VP : [tx 94d5a6…] >>> wallet 200 {}
+CertificateTrustedIssuer : certificate revocation lists loaded: 0
+MdocVerifier : mdoc verified for transaction c7e29a…
+OpenId4VpAuthenticator : presentation 1/1 verified for transaction c7e29a…, query pid: format=MSO_MDOC, verifier=MdocVerifier
+OpenId4VpAuthenticator : wallet response validated for transaction c7e29a…: 1 credential queries answered
+EudiPidProfile : adding => key: eu.europa.ec.eudi.pid.1 / value: {given_name=Emma Charlotte, family_name=van der Berg, personal_administrative_number=ADM2023080012345} / class java.util.LinkedHashMap
+OpenId4VpAuthenticator : profile built for transaction c7e29a…: profile class=EudiPidProfile, definition=EudiPidProfileDefinition
+VpTransaction : transaction c7e29a…: REQUEST_RETRIEVED -> RESPONSE_RECEIVED (presentation validated)
+PROTOCOL_MESSAGE.OPENID4VP : [tx c7e29a…] >>> wallet 200 {}
 ```
 
-Step 5: the page polled, saw `received`, and came back to the callback URL: the validated profile is picked up, nothing is verified twice, and the identifier is the one of the resolver:
+Unlike the SD-JWT VC of the first post, the document comes with the three requested elements and nothing else: an mdoc discloses element by element, and the issuer signs nothing outside the namespaces. The status checker of section 8 was not called either: the mdoc PID of the playground carries no status in its MSO.
+
+Step 5: the page polled, saw `received`, and came back to the callback URL: the validated profile is picked up, nothing is verified twice, and the identifier is the one of the resolver, the subject of the document signer certificate and the administrative number:
 
 ```
-VpTransaction : transaction 94d5a6…: RESPONSE_RECEIVED -> CONSUMED (the browser came back)
-OpenId4VpAuthenticator : transaction 94d5a6…: reusing the profile validated when the wallet posted its response, nothing is verified again
-OpenId4VpClient : profile: Optional[EudiPidProfile(id=C=NL,CN=credo dcs|123456782, attributes={eu.europa.ec.eudi.pid.1={given_name=Erika, family_name=Mustermann, personal_administrative_number=123456782}}, …)]
+VpTransaction : transaction c7e29a…: RESPONSE_RECEIVED -> CONSUMED (the browser came back)
+OpenId4VpAuthenticator : transaction c7e29a…: reusing the profile validated when the wallet posted its response, nothing is verified again
+EudiWalletClient : credentials: VerifiablePresentationCredentials(… verifiedCredentials={pid=[VerifiedCredential(format=MSO_MDOC, type=eu.europa.ec.eudi.pid.1, issuer=C=NL,CN=Paradym Playground, cryptographicHolderBinding=true, trustedAuthorities={aki=[IyNQbCkBG38NdbXBZT0C3rElbng]}, claims={eu.europa.ec.eudi.pid.1={given_name=Emma Charlotte, family_name=van der Berg, personal_administrative_number=ADM2023080012345}})]})
+EudiWalletClient : profile: Optional[EudiPidProfile(id=C=NL,CN=Paradym Playground|ADM2023080012345, attributes={eu.europa.ec.eudi.pid.1={given_name=Emma Charlotte, family_name=van der Berg, personal_administrative_number=ADM2023080012345}}, …)]
 ```
+
+The credentials line also shows what pac4j established about the document: its issuer, the holder binding, and the *authority key identifier* of the certificate chain, the one a `trusted_authorities` constraint of the DCQL query would be checked against.
 
 Note that the logs show the credentials as they travel, tokens included: enable them to diagnose, not permanently in production.
 
@@ -570,9 +589,9 @@ Note that the logs show the credentials as they travel, tokens included: enable 
 
 A few things to know before going further:
 
-- **The profile identifier** in this demo combines the document signer certificate's subject, `C=NL,CN=credo dcs` in these traces, with the administrative number. For persistent accounts, your PID provider must guarantee that the combination is stable, unique and never reassigned. Certificate subjects can change or be shared, and not every PID provider issues an administrative number. Choose an identifier policy appropriate to your trusted provider.
+- **The profile identifier** in this demo combines the document signer certificate's subject, `C=NL,CN=Paradym Playground` in these traces, with the administrative number. For persistent accounts, your PID provider must guarantee that the combination is stable, unique and never reassigned. Certificate subjects can change or be shared, and not every PID provider issues an administrative number. Choose an identifier policy appropriate to your trusted provider.
 - **A refusal was silent** with the tested Paradym wallet: when the user declined or had no matching card, nothing was posted, and the page waited until the transaction expired after five minutes. Wallets that post an error let pac4j report it at the callback.
 - **Certificate revocation** is disabled in this demo. In production, keep it enabled and supply current CRLs or configure the Java PKIX provider to retrieve revocation data. This setting does not disable credential status checking: credentials carrying status information still need a status checker, and the one of this demo only logs the status reference, as seen in section 8.
 - The device MAC of ISO 18013-5, transaction data, the `verifier_attestation` and `openid_federation` prefixes, and the automatic retrieval of status lists are not supported yet.
 
-This integration is introduced in **pac4j v6.6.0**. The full documentation starts at [OpenID for Verifiable Presentations](/docs/clients/openid4vp.html), and the [first post](/blog/openid4vp_in_action_same_device.html) covers the same flow on a single device, with an SD-JWT VC PID.
+This integration is introduced in **pac4j v6.6.0**. The full documentation starts at [OpenID for Verifiable Presentations](/docs/clients/openid4vp.html), and the [first post](/blog/openid4vp_in_action_same_device.html) covers the same flow but on a single device, with an SD-JWT VC PID.

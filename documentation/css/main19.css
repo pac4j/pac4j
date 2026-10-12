@@ -852,3 +852,9 @@ main:has(.not-found) .container {
   .screens img { flex-basis: calc(50% - 5px); max-width: none; }
   .screens-arrow { display: none; }
 }
+.screens-flow { flex-wrap: wrap; }
+.screens-flow img { flex: none; height: 260px; width: auto; max-width: none; }
+@media (max-width: 640px) {
+  .screens-flow img { height: auto; max-width: calc(50% - 5px); }
+  .screens-flow img.screens-wide { max-width: 100%; }
+}

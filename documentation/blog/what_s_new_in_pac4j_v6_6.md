@@ -86,7 +86,7 @@ Two credential formats are supported, each one through an optional library you a
 - **SD-JWT VC**, credentials based on selective disclosure JWTs, verified with the EUDI SD-JWT library: issuer signature, disclosures, validity and key binding (nonce, audience, time window)
 - **mdoc** (ISO/IEC 18013-5), the format used for mobile driving licences, verified with the walt.id library: issuer authentication, digests, validity and device signature.
 
-No issuer is trusted until you configure it: by a certificate chain (`CertificateTrustedIssuer`, with your truststore and its revocation lists) or by keys (`KeysTrustedIssuer`, an issuer and its JWKS). A credential carrying status information is rejected unless you configure a status checker.
+No issuer is trusted until you configure it: by a certificate chain (`CertificateTrustedIssuer`, with your truststore and its revocation lists) or by keys (`KeysTrustedIssuer`, an issuer and its JWKS). When a chain leads nowhere, the error names the authority to add to your truststore. A credential carrying status information, the Token Status List reference of an EUDI PID for instance, is rejected unless you configure a status checker: pac4j never fetches a status list on its own.
 
 On the verifier side, four client identifier prefixes are supported (`x509_hash`, `x509_san_dns`, `decentralized_identifier` and `redirect_uri` for unsigned requests), as well as the negotiation with the wallet (`request_uri_method=post`) and the verifier attestations (`verifier_info`).
 
@@ -94,7 +94,7 @@ On the verifier side, four client identifier prefixes are supported (`x509_hash`
 
 Some parts of the specification are still on the roadmap: transaction data, redirection back to the browser at the end of a same-device flow, the `verifier_attestation` and `openid_federation` prefixes, and other credential formats. The module does not provide complete EUDI trust-list or HAIP conformance validation.
 
-We are currently testing the module against real wallets: please do the same and send us your feedback!
+The module has been tested against the [Paradym wallet](https://paradym.id/) and its playground, on the same device and by QR code, with SD-JWT VC and mdoc PIDs. Please test it against your own wallets and send us your feedback!
 
 The full documentation starts here: [OpenID for Verifiable Presentations](/docs/clients/openid4vp.html).
 
@@ -149,7 +149,8 @@ JWKs became first-class citizens with v6.4. In v6.6, the `JwkHelper` grows to se
 - `resolveSigningKey`: get the signing key from a JWKS if it is defined, or from a keystore otherwise, using the logic previously held by the OpenID federation support
 - `generateKey`: create a signature key for a given algorithm (an EC P-256 key for ES256, for example)
 - `loadJwkFromOrCreateJwks` now takes the algorithm of the key it creates when none exists yet, the default staying RSA-2048
-- `buildSignedJwt` can publish the certificate chain of the key in the `x5c` header.
+- `buildSignedJwt` can publish the certificate chain of the key in the `x5c` header
+- a key loaded from a keystore now carries the whole certificate chain of its entry, intermediate authorities included, instead of the certificate of the alias alone.
 
 ```java
 final var key = JwkHelper.resolveSigningKey(config.getJwks(), config.getKeystore(), JWSAlgorithm.ES256);
