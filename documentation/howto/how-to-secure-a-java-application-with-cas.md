@@ -14,8 +14,9 @@ Let's see how to do this with **pac4j and Spring Boot**. We'll use the public pa
 
 **What you need:**
 
-- Java 17 or later and Maven
+- Java 17+ and Maven
 - the **login URL** of a CAS server, such as `https://cas.example.com/cas/login`, and the right to register a service on it. The demo uses the public test server.
+
 
 ## 1) Create the Maven project
 
@@ -27,7 +28,7 @@ mkdir -p spring-cas-app/src/main/resources
 cd spring-cas-app
 ```
 
-Create `pom.xml` at the project root. The Spring Boot parent manages the Spring dependencies, and its Maven plugin runs the application:
+Create a `pom.xml` file at the project root. The Spring Boot parent manages the Spring dependencies, and its Maven plugin runs the application:
 
 ```xml
 <project xmlns="http://maven.apache.org/POM/4.0.0"
@@ -65,6 +66,7 @@ Create `pom.xml` at the project root. The Spring Boot parent manages the Spring 
 
 Save the Java classes below in the `org.example` package so that Spring Boot discovers the configuration and controllers. Put application properties in `src/main/resources/application.properties`.
 
+
 ## 2) Add the Maven dependencies
 
 Inside the `<dependencies>` element, on top of Spring MVC, you need the pac4j Spring MVC integration and the CAS module:
@@ -79,7 +81,7 @@ Inside the `<dependencies>` element, on top of Spring MVC, you need the pac4j Sp
 <dependency>
     <groupId>org.pac4j</groupId>
     <artifactId>spring-webmvc-pac4j</artifactId>
-    <version>8.0.3</version>
+    <version>8.0.4</version>
 </dependency>
 <!-- pac4j support for CAS -->
 <dependency>
@@ -89,7 +91,8 @@ Inside the `<dependencies>` element, on top of Spring MVC, you need the pac4j Sp
 </dependency>
 ```
 
-`pac4j-cas` is a full CAS client: it speaks the CAS protocol versions 1.0, 2.0 and 3.0, and also supports proxy tickets and the CAS REST API, covered at the end of this guide.
+`pac4j-cas` is a full CAS client (based on the official Apereo CAS client): it speaks the CAS protocol versions 1.0, 2.0 and 3.0, and also supports proxy tickets and the CAS REST API, covered at the end of this guide.
+
 
 ## 3) Configure CAS authentication
 
@@ -138,9 +141,10 @@ We then protect `/protected/**` with `addSecurity(registry, "CasClient")`. When 
 
 pac4j uses the **CAS 3.0 protocol** by default, which returns the user attributes with the validation response. Switch with `config.setProtocol(CasProtocol.CAS20)` for an older server. Two other options are worth knowing: `setRenew(true)` forces the user to re-enter credentials even with an active SSO session, and `setGateway(true)` returns silently when the user is not logged in instead of showing the login page.
 
+
 ## 4) Register the service on the CAS server
 
-A CAS server only issues tickets for services it knows. In the CAS **service registry**, declare a service whose `serviceId` pattern matches the callback URL. With the JSON service registry of Apereo CAS 7, the definition looks like this:
+A CAS server only issues tickets for services it knows. In the CAS **service registry**, declare a service whose `serviceId` pattern matches the callback URL. With the JSON service registry of Apereo CAS v6+, the definition looks like this:
 
 ```json
 {
@@ -160,6 +164,7 @@ There are two settings to pay attention to:
 - **`attributeReleasePolicy`** decides which user attributes your application receives. `ReturnAllAttributeReleasePolicy` is fine for a demo; production services usually list the allowed attributes with `ReturnAllowedAttributeReleasePolicy`.
 
 See the [Apereo CAS service management documentation](https://apereo.github.io/cas/7.3.x/services/Service-Management.html) for the other registries (database, LDAP, Git...) and options.
+
 
 ## 5) Access the authenticated user
 
@@ -203,6 +208,7 @@ profile.getAttributes();         // everything the release policy allowed
 
 No attributes in the profile? Check what the service is allowed to receive. The release policy may filter them out, or the server may still use CAS 2.0, which does not carry attributes.
 
+
 ## 6) Logout
 
 Logging out of the application and logging out of CAS are two different operations. The `/logout` link removes the local profile. To also end the SSO session on the CAS server, enable central logout in `application.properties`:
@@ -213,6 +219,7 @@ pac4j.logout.defaultUrl=/
 ```
 
 pac4j then redirects the browser to the CAS `/logout` endpoint. The reverse direction works too: when the user logs out from CAS or from another application, the CAS server notifies every service that received a ticket during the session, and the `CasClient` processes these single logout requests to destroy the local session.
+
 
 ## 7) Run the application
 
@@ -234,14 +241,15 @@ public class SpringBootDemo {
 
 Start the application with `mvn spring-boot:run`.
 
-Open [http://localhost:8080/](http://localhost:8080/) and follow **Protected area**. You are redirected to the CAS login page, then sent back to the callback with a service ticket, and the protected page prints your profile.
+Open [http://localhost:8080/](http://localhost:8080/) and click on the **Protected area** link. You are redirected to the CAS login page, then sent back to the callback with a service ticket, and the protected page prints your profile.
 
 **If something goes wrong:**
 
 - **"Application Not Authorized to Use CAS"**: the service is not registered, or the `serviceId` pattern does not match the full callback URL.
-- **Ticket validation fails after the redirect**: the validation URL derived from the login URL is not reachable from your server. Set `setPrefixUrl` explicitly.
+- **Ticket validation fails after the redirection**: the validation URL derived from the login URL is not reachable from your server. Set `setPrefixUrl` explicitly.
 - **The login page shows again and again**: the server and the application disagree on the service URL, typically because of a reverse proxy. Set `app.base-url` to the public URL of the application.
 - **No attributes in the profile**: see the release policy and the protocol version in step 5.
+
 
 ## 8) Beyond the login page
 
@@ -249,7 +257,7 @@ So far, we have used CAS to log in through a browser. The same `pac4j-cas` modul
 
 - **Proxy tickets**: a web application authenticated by CAS calls a web service on behalf of the user. Configure a `CasProxyReceptor` on the caller and protect the web service with a `DirectCasProxyClient`.
 - **CAS REST API**: a mobile or standalone application sends the user credentials to your web service, which validates them against the CAS REST protocol with a `CasRestFormClient` or a `CasRestBasicAuthClient`.
-- **CAS as an OpenID Connect or SAML provider**: a modern CAS server can also speak these protocols. In that case use the pac4j [OIDC](/how-to-secure-a-java-application-with-oidc.html) or [SAML](/how-to-secure-a-java-application-with-saml.html) support instead of the CAS protocol.
+
 
 ## 9) Learn more
 
