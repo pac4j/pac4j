@@ -150,7 +150,8 @@ public class CertificateTrustedIssuer implements TrustedIssuer {
             val top = path.get(path.size() - 1);
             if (anchors.stream().noneMatch(anchor -> anchor.getTrustedCert() != null
                 && anchor.getTrustedCert().getSubjectX500Principal().equals(top.getIssuerX500Principal()))) {
-                LOGGER.debug("issuer certificate chain not issued by a trust anchor of this truststore");
+                LOGGER.debug("issuer certificate chain issued by {}: not a trust anchor of this truststore",
+                    top.getIssuerX500Principal().getName());
                 return Optional.empty();
             }
             validate(certificates, path, anchors);
