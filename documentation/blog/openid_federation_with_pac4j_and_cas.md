@@ -534,7 +534,7 @@ For the OP (CAS server), we do something similar and call the URL: `http://local
 With the RP, OP and TA started, we call `http://localhost:8081` in the browser:
 
 <div class="text-center">
-  <img alt="pac4j home page" src="/img/blog/2026_10/pac4j_before.png" />
+  <img alt="pac4j home page" src="/img/blog/2026_10/pac4j_before.png" width="239" height="200" />
 </div>
 
 Then, we click on the "Protected area" link.
@@ -542,19 +542,19 @@ Then, we click on the "Protected area" link.
 On the CAS server login page, we use the pre-defined user: `casuser` / `Mellon` to log in:
 
 <div class="text-center">
-  <img alt="CAS login page" src="/img/blog/2026_10/cas_login.jpg" />
+  <img alt="CAS login page" src="/img/blog/2026_10/cas_login.jpg" width="550" height="408" />
 </div>
 
 and we validate the authorizations:
 
 <div class="text-center">
-  <img alt="CAS authorization page" src="/img/blog/2026_10/cas_authorize.jpg" />
+  <img alt="CAS authorization page" src="/img/blog/2026_10/cas_authorize.jpg" width="550" height="409" />
 </div>
 
 And it works:
 
 <div class="text-center">
-  <img alt="pac4j authenticated page" src="/img/blog/2026_10/pac4j_after.jpg" />
+  <img alt="pac4j authenticated page" src="/img/blog/2026_10/pac4j_after.jpg" width="500" height="291" />
 </div>
 
 We are finally logged in to the pac4j application thanks to the OpenID Federation protocol and the two CAS server nodes.
