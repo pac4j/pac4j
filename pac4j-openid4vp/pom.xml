@@ -53,7 +53,7 @@
             <dependency>
                 <groupId>org.jetbrains.kotlinx</groupId>
                 <artifactId>kotlinx-datetime-jvm</artifactId>
-                <version>0.6.1</version>
+                <version>0.8.0-0.6.x-compat</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
