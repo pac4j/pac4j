@@ -25,4 +25,17 @@ public record IssuerEvidence(String identifier, String keyId, List<X509Certifica
     public IssuerEvidence {
         certificateChain = certificateChain == null ? List.of() : List.copyOf(certificateChain);
     }
+
+    /**
+     * <p>Name the authority a truststore must hold for the chain to validate: the issuer of its last certificate,
+     * the certificate itself when self-signed.</p>
+     *
+     * @return the issuer name of the last certificate of the chain, or null without a chain
+     */
+    public String chainIssuer() {
+        if (certificateChain.isEmpty()) {
+            return null;
+        }
+        return certificateChain.get(certificateChain.size() - 1).getIssuerX500Principal().getName();
+    }
 }

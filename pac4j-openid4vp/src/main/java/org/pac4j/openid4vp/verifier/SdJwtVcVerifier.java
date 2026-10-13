@@ -263,7 +263,8 @@ public class SdJwtVcVerifier extends AbstractCredentialVerifier {
         val evidence = new IssuerEvidence(issuerName, jwt.getHeader().getKeyID(), chain);
         return resolveIssuer(evidence).orElseThrow(() -> new OpenId4VpException(chain.isEmpty()
             ? "the SD-JWT VC issuer has no configured trusted keys and no x5c certificate chain"
-            : "the SD-JWT VC issuer is not trusted: its iss has no configured keys and its x5c chain leads to no trusted certificate"));
+            : "the SD-JWT VC issuer is not trusted: its iss has no configured keys and its x5c chain, issued by "
+                + evidence.chainIssuer() + ", leads to no trusted certificate"));
     }
 
     /**
