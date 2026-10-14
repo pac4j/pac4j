@@ -11,7 +11,7 @@ description: "Secure Java applications with pac4j: OIDC, SAML and CAS tutorials 
 {% assign protocols = "oidc,cas,saml" | split: "," %}
 {% for protocol in protocols %}
     <li>
-        <a href="/how-to-secure-a-java-application-with-{{ protocol }}.html">How to secure a Java client application with {{ protocol | upcase }} (using Spring Boot)</a>
+        <a href="/how-to-secure-a-java-application-with-{{ protocol }}.html">{% if protocol == 'oidc' %}How to Secure a Spring Boot Application with OpenID Connect and pac4j{% else %}How to secure a Java client application with {{ protocol | upcase }} (using Spring Boot){% endif %}</a>
         <img class="guide-logo" src="/img/logo-spring-webmvc.png" alt="" width="48" height="40" />
         <span class="tag tag-{{ protocol }}">{{ site.data.blogtags[protocol] }}</span>
     </li>
