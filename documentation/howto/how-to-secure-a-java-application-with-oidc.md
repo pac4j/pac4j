@@ -1,8 +1,8 @@
 ---
 permalink: /how-to-secure-a-java-application-with-oidc.html
 layout: guide
-title: How to secure a Java client application with OIDC (using Spring Boot)
-seo_title: "How to secure a Java client application with OIDC | pac4j"
+title: How to Secure a Spring Boot Application with OpenID Connect and pac4j
+seo_title: "How to Secure a Spring Boot Application with OpenID Connect and pac4j"
 description: "Add OpenID Connect (OIDC) login to a Java application with pac4j and Spring Boot: Maven setup, Keycloak, Google or Azure AD, user profile and logout."
 ---
 
