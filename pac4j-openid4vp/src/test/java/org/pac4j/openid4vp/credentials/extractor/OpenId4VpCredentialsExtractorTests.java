@@ -1,6 +1,7 @@
 package org.pac4j.openid4vp.credentials.extractor;
 
 import com.nimbusds.jwt.SignedJWT;
+import com.nimbusds.jose.util.JSONObjectUtils;
 import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -234,6 +235,44 @@ class OpenId4VpCredentialsExtractorTests {
         assertEquals(WALLET_RESPONSE, storedAnswer().getRawResponse());
         assertEquals(VpTransaction.Status.RESPONSE_RECEIVED, storedAnswer().getStatus());
         assertEquals(VpTransaction.Status.REQUEST_RETRIEVED, configuration.getTransactionStore().get(TX_ID).get().getStatus());
+    }
+
+    @Test
+    void testWalletResponseContainsTheCallbackRedirectUri() throws Exception {
+        acceptAnyAnswer();
+        storeFetchedTransaction().setBrowserCallbackUrl("https://app.example.org/callback?client_name=EudiWallet");
+        val post = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.POST.name())
+            .addRequestParameter(VP_TRANSACTION_ID, TX_ID).addRequestParameter(RESPONSE, WALLET_RESPONSE);
+        val action = assertThrows(OkAction.class,
+            () -> extractor.extract(new CallContext(post, new MockSessionStore())));
+        val responseCode = storedAnswer().getResponseCode();
+        assertTrue(responseCode.matches("[0-9a-f]{64}"));
+        assertEquals("https://app.example.org/callback?client_name=EudiWallet&response_code=" + responseCode,
+            JSONObjectUtils.parse(action.getContent()).get(REDIRECT_URI));
+
+        val browser = MockWebContext.create();
+        val session = new MockSessionStore();
+        session.set(browser, SESSION_TRANSACTION_ID, TX_ID);
+        val ctx = new CallContext(browser, session);
+        assertThrows(OpenId4VpException.class, () -> extractor.extract(ctx));
+        browser.addRequestParameter(RESPONSE_CODE, "wrong-code");
+        assertThrows(OpenId4VpException.class, () -> extractor.extract(ctx));
+        assertNotNull(storedAnswer());
+        browser.addRequestParameter(RESPONSE_CODE, responseCode);
+        assertTrue(extractor.extract(ctx).isPresent());
+        assertNull(storedAnswer());
+    }
+
+    @Test
+    void testWalletResponseWithoutRedirectUriRemainsEmpty() {
+        acceptAnyAnswer();
+        storeFetchedTransaction();
+        val post = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.POST.name())
+            .addRequestParameter(VP_TRANSACTION_ID, TX_ID).addRequestParameter(RESPONSE, WALLET_RESPONSE);
+        val action = assertThrows(OkAction.class,
+            () -> extractor.extract(new CallContext(post, new MockSessionStore())));
+        assertEquals("{}", action.getContent());
+        assertNull(storedAnswer().getResponseCode());
     }
 
     @Test

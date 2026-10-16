@@ -197,6 +197,14 @@ public class OpenId4VpConfiguration extends BaseClientConfiguration {
     private String walletScheme = "openid4vp://";
 
     /**
+     * Return the pac4j callback URL as {@code redirect_uri} in the response to the wallet's POST, so that
+     * it opens the browser again on the same device. Disabled by default. The callback URL is captured
+     * before invoking the wallet and returned with a fresh {@code response_code}. The callback verifies
+     * the code, completes authentication and restores the saved request automatically.
+     */
+    private boolean useRedirectUri;
+
+    /**
      * How the wallet fetches the request object. Announced in the wallet URL when the request is signed,
      * meaningless otherwise: an unsigned request has no request URI, and the digital credentials API hands
      * the request object over directly.

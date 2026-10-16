@@ -42,6 +42,8 @@ public interface OpenId4VpConstants {
     String VP_TOKEN = "vp_token";
     String RESPONSE = "response";
     String RESPONSE_CODE = "response_code";
+    /** The browser return URL in the JSON response to the wallet's POST. */
+    String REDIRECT_URI = "redirect_uri";
     /** The error response parameters, RFC 6749 as OpenID4VP clarifies them. */
     String ERROR = "error";
     String ERROR_DESCRIPTION = "error_description";

@@ -70,6 +70,9 @@ public class VpTransaction implements Serializable {
 
     private String state;
 
+    /** The browser callback URL, captured before invoking the wallet when redirects are enabled. */
+    private String browserCallbackUrl;
+
     /** The authorization parameters actually sent, kept as JSON for response validation and holder binding. */
     private String requestParameters;
 
@@ -164,6 +167,7 @@ public class VpTransaction implements Serializable {
     public VpTransaction toResponse() {
         return new VpTransaction().setId(id).setExpiresAt(expiresAt).setStatus(Status.RESPONSE_RECEIVED)
             .setRawResponse(rawResponse).setRawVpToken(rawVpToken).setResponseState(responseState)
+            .setResponseCode(responseCode)
             .setError(error).setErrorDescription(errorDescription)
             .setValidatedVpToken(validatedVpToken).setVerifiedCredentials(verifiedCredentials).setUserProfile(userProfile);
     }
@@ -177,6 +181,7 @@ public class VpTransaction implements Serializable {
     public VpTransaction withResponse(final VpTransaction response) {
         return setStatus(Status.RESPONSE_RECEIVED).setRawResponse(response.getRawResponse())
             .setRawVpToken(response.getRawVpToken()).setResponseState(response.getResponseState())
+            .setResponseCode(response.getResponseCode())
             .setError(response.getError()).setErrorDescription(response.getErrorDescription())
             .setValidatedVpToken(response.getValidatedVpToken()).setVerifiedCredentials(response.getVerifiedCredentials())
             .setUserProfile(response.getUserProfile());

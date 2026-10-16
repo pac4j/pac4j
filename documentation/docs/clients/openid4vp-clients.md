@@ -17,7 +17,7 @@ See also:
 
 ## 1) Clients
 
-- [`OpenId4VpClient`](https://github.com/pac4j/pac4j/blob/master/pac4j-openid4vp/src/main/java/org/pac4j/openid4vp/client/OpenId4VpClient.java): the generic verifier, for a wallet invoked by a URL. The redirection is a `openid4vp://` URL: on the same device the browser follows it and the wallet opens; on another device, the application must display it as a QR code: it calls the protected URL via AJAX, and the wallet URL is returned in the `Location` header. The wallet then fetches the request object by HTTP (`request_uri`), or first posts what it supports and gets a request object built for it (`request_uri_method=post`), and posts its answer (`direct_post` or `direct_post.jwt`): all of it on the regular *pac4j* callback URL, without any session. The page waits for the answer and calls back when it has arrived, which turns the received presentation into a `VerifiableCredentialProfile`: to know when, it polls an endpoint of the application returning `client.getPresentationStatus(ctx)`, which is `PENDING`, `RECEIVED` or `EXPIRED` for the transaction of the browser session
+- [`OpenId4VpClient`](https://github.com/pac4j/pac4j/blob/master/pac4j-openid4vp/src/main/java/org/pac4j/openid4vp/client/OpenId4VpClient.java): the generic verifier, for a wallet invoked by a URL. The redirection is a `openid4vp://` URL: on the same device the browser follows it and the wallet opens; on another device, the application must display it as a QR code: it calls the protected URL via AJAX, and the wallet URL is returned in the `Location` header. The wallet then fetches the request object by HTTP (`request_uri`), or first posts what it supports and gets a request object built for it (`request_uri_method=post`), and posts its answer (`direct_post` or `direct_post.jwt`): all of it on the regular *pac4j* callback URL, without any session. On the same device, `setUseRedirectUri(true)` makes the wallet return the original browser to the pac4j callback, which completes authentication and restores the saved request. For a QR code on another device, leave the option at its default `false`: the computer page can poll `client.getPresentationStatus(ctx)` (`PENDING`, `RECEIVED` or `EXPIRED`) and continue to the callback when the wallet has answered. See [Returning to the application](#3-returning-to-the-application)
 - [`OpenId4VpDcApiClient`](https://github.com/pac4j/pac4j/blob/master/pac4j-openid4vp/src/main/java/org/pac4j/openid4vp/client/OpenId4VpDcApiClient.java): the same verifier over the [Digital Credentials API](https://www.w3.org/TR/digital-credentials/) of the browser, with a `OpenId4VpDcApiConfiguration`. The page never leaves: the client answers the page a JSON `{"request": "<signed request object>"}` which the page passes to `navigator.credentials.get()`, the browser hands it to the wallet with the authenticated origin of the page, and the page posts the answer back (`dc_api` or `dc_api.jwt`). Unlike the URL binding, the wallet never calls the application by itself: every request reaches the application from the browser, with its web session, as any other page request. In return, the request must be signed, and the origins the page runs from must be declared
 - [`EudiWalletClient`](https://github.com/pac4j/pac4j/blob/master/pac4j-openid4vp/src/main/java/org/pac4j/openid4vp/client/EudiWalletClient.java): the `OpenId4VpClient` with the HAIP choices pinned and not configurable: the `x509_hash` prefix, so the certificate loaded from the keystore is the identity of the verifier, the `direct_post.jwt` response mode, and the `EudiPidProfile`, whose identifier claim must be chosen by the application. Use it to read the person identification data of an EUDI wallet, the generic client to talk to any other wallet or to another credential.
 
@@ -82,6 +82,7 @@ The `OpenId4VpConfiguration` has the following properties, with the HAIP choices
 | `profileIdResolver` | `issuerAndClaim("sub")`, none for `EudiWalletClient` | How the user is identified from the verified credentials, see [The profile identifier](openid4vp-advanced.html#2-the-profile-identifier). Checked against `dcqlQuery` at initialization |
 | `stateGenerator` | 64 random characters | Generates the `state` sent with every request invoking a wallet by URL (not over the Digital Credentials API) and checked on the response: it is what binds the response to the request when a presentation comes without holder binding |
 | `requestUriMethod` | `POST` | How the wallet fetches the request object: `GET` as RFC 9101 defines, or `POST` to let it first post its metadata (`wallet_metadata`, what it supports) and a nonce (`wallet_nonce`). The request object then carries the nonce back, and publishes only the credential formats and the response encryption algorithms the wallet declared, the request being refused when no common encryption algorithm or credential format remains, or when the common formats cannot satisfy the required DCQL credential selections (including alternatives and optional sets). This format check also applies when a `scope` represents the query; it cannot determine whether the wallet actually holds the requested credentials. Announced in the wallet URL as `request_uri_method=post`; a wallet which does not support it falls back to a GET, so nothing is lost. Only meaningful for a signed request over the URL binding |
+| `useRedirectUri` | `false` | Set `setUseRedirectUri(true)` for an automatic same-device browser return. Before invoking the wallet, the pac4j callback URL is captured in the transaction. After the wallet posts its answer, the JSON response contains this callback URL as `redirect_uri`, with a fresh `response_code` parameter. The wallet opens it in the browser, and pac4j checks the code, completes authentication and redirects to the saved request URL (or the callback default URL if no request was saved). The application does not need to relay the code. Does not apply to the Digital Credentials API |
 | `walletScheme` | `openid4vp://` | The custom scheme of the URL invoking a wallet on the same device; a wallet may register another one (`eudi-openid4vp://` for the EUDI reference wallet, `haip://`...) |
 
 The `OpenId4VpDcApiConfiguration` adds one property and closes two: its default response mode is `DC_API_JWT`, only `DC_API` and `DC_API_JWT` are accepted, and the `REDIRECT_URI` prefix is refused since this binding hands the browser a signed request.
@@ -91,3 +92,39 @@ The `OpenId4VpDcApiConfiguration` adds one property and closes two: its default 
 | `expectedOrigins` | | The origins (scheme, host and optional port, nothing more) the page calling the API runs from. The browser gives the wallet the actual origin of the page, which checks it is one of them: this is what ties a signed request to your site and defeats its replay from another one |
 
 The clients themselves expose a `requestObjectBuilder` (`OpenId4VpRequestObjectBuilder`, or `DcApiRequestObjectBuilder` over the Digital Credentials API), to be overridden to add parameters to the request object, and the usual `redirectionActionBuilder`, `credentialsExtractor`, `authenticator` and `profileCreator` of an indirect client. The `OpenId4VpAuthenticator` builds the user profile, with its `profileDefinition` (`OpenId4VpProfileDefinition`, or `EudiPidProfileDefinition` for the `EudiWalletClient`); the default profile creator returns it, and a custom one may enrich it.
+
+
+## 3) Returning to the application
+
+For a wallet opened on the **same device**, enable the return on your existing configuration:
+
+```java
+configuration.setUseRedirectUri(true);
+```
+
+This option is available to both `OpenId4VpClient` and `EudiWalletClient`, and defaults to `false`.
+
+1. Before invoking the wallet, pac4j captures its final callback URL in the transaction, including the client name
+   parameter or path chosen by the callback URL resolver.
+2. After the wallet posts a valid presentation (or a wallet error), pac4j answers with HTTP 200 and a JSON object
+   containing `redirect_uri`: that callback URL plus a fresh random `response_code`.
+3. The wallet opens the URL in the browser. The callback finds the pending transaction through the browser session,
+   checks the code and, for a successful presentation, saves the already validated profile in the session.
+4. The callback consumes the transaction and restores the saved request. If no request was saved, it uses its
+   configured default URL. The final application URL does not receive the `response_code`.
+
+The application does not need a manual return link or code to relay the `response_code`. The wallet must return to
+**the original browser with its session cookie**; another browser or an isolated webview cannot claim that session's
+presentation using the code alone. Start the flow in the device's **default browser, using its regular profile**
+(avoid private browsing and embedded browsers): the wallet may open the return URL in the default browser even
+when authentication started in a different one. The return must use the same browser and profile throughout.
+
+The `redirect_uri` is a member of the **JSON response to the wallet's POST**, as defined in
+[OpenID4VP section 8.2](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#section-8.2).
+It is not an authorization request parameter: the request still carries `response_uri`, where the wallet posts the
+presentation. The browser return URL carries no `vp_tx`; that identifier is read from the session.
+
+For a **QR code on another device**, keep `useRedirectUri` at `false`: the original browser is on the computer,
+while a wallet redirect would open a browser on the phone. The computer page can poll for completion and continue to
+the callback itself.
+The Digital Credentials API keeps the browser in the exchange and does not use this option.

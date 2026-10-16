@@ -50,8 +50,9 @@ outside Maven Central:
 ### 1.2) Kotlin alignment
 
 **Align the Kotlin dependencies in your application's `dependencyManagement`, especially when you also use the
-[SD-JWT VC verifier](openid4vp-sd-jwt-vc-verifier.html).** This combination is tested with Java 17, EUDI SD-JWT 0.20.1
-and walt.id 0.12.0:
+[SD-JWT VC verifier](openid4vp-sd-jwt-vc-verifier.html).** The versions below match `pac4j-openid4vp`: Kotlin 2.4.21,
+Coroutines 1.11.0, Serialization 1.11.1-waltid-20260811 and Datetime 0.8.0-0.6.x-compat.
+The Serialization variant also requires the walt.id repository declared above:
 
 ```xml
 <dependencyManagement>
@@ -59,28 +60,28 @@ and walt.id 0.12.0:
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-bom</artifactId>
-            <version>2.4.20</version>
+            <version>2.4.21</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlinx</groupId>
             <artifactId>kotlinx-coroutines-bom</artifactId>
-            <version>1.10.2</version>
+            <version>1.11.0</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlinx</groupId>
             <artifactId>kotlinx-serialization-bom</artifactId>
-            <version>1.9.0</version>
+            <version>1.11.1-waltid-20260811</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlinx</groupId>
             <artifactId>kotlinx-datetime-jvm</artifactId>
-            <version>0.6.1</version>
+            <version>0.8.0-0.6.x-compat</version>
         </dependency>
     </dependencies>
 </dependencyManagement>
@@ -89,7 +90,15 @@ and walt.id 0.12.0:
 - **Without alignment**, dependency order can select walt.id's older Kotlin runtime and make EUDI fail with
   `NoClassDefFoundError: kotlin/time/Clock$System`. pac4j manages these versions for its own build, but your
   application's other direct dependencies can override the versions selected at runtime.
-- **Do not upgrade `kotlinx-datetime` to 0.7.x**: it removes the `kotlinx.datetime.Instant` API used by walt.id 0.12.0.
+- **Coroutines:** the current SD-JWT adapter calls `BuildersKt.runBlockingK$default`, available in `1.11.0`
+  but absent in `1.10.2`. Spring Boot 4.0.8 defaults to `1.10.2`; when using its starter parent, set
+  `<kotlin-coroutines.version>1.11.0</kotlin-coroutines.version>` in your application properties.
+- **Datetime:** use `0.8.0-0.6.x-compat`, the compatibility artifact used by pac4j. Plain 0.7.x and newer
+  versions without that compatibility API remove `kotlinx.datetime.Instant`, which walt.id 0.12.0 still uses.
+- **Spring Boot:** its starter parent also manages Kotlin and Serialization. Override `kotlin.version` with
+  `2.4.21` and `kotlin-serialization.version` with `1.11.1-waltid-20260811`, in addition to the Coroutines
+  property above. The [demo POM](/blog/openid4vp_in_action_another_device.html#6-create-the-spring-boot-project)
+  shows the complete setup, including alignment of the pac4j modules and shared Java libraries.
 
 ## 2) Quick start
 

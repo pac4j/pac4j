@@ -8,6 +8,8 @@ import org.pac4j.core.config.properties.JwksProperties;
 
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.exception.http.FoundAction;
+import org.pac4j.core.exception.http.OkAction;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.openid4vp.client.OpenId4VpClient;
 import org.pac4j.openid4vp.config.ClientIdPrefix;
 import org.pac4j.openid4vp.config.OpenId4VpConfiguration;
@@ -63,6 +65,41 @@ class OpenId4VpRedirectionActionBuilderTests {
 
         val transactionId = ctx.sessionStore().get(ctx.webContext(), SESSION_TRANSACTION_ID).get().toString();
         return configuration.getTransactionStore().get(transactionId).get();
+    }
+
+    @Test
+    void testBrowserCallbackUrlIsAbsentByDefault() {
+        assertFalse(configuration.isUseRedirectUri());
+        assertNull(openTransactionWithSavedRequest("https://app.example.org/protected").getBrowserCallbackUrl());
+    }
+
+    @Test
+    void testBrowserCallbackUrlIsCapturedWhenRedirectsAreEnabled() {
+        configuration.setUseRedirectUri(true);
+        val url = "https://app.example.org/protected?language=fr&view=details";
+        assertBrowserCallbackUrl(openTransactionWithSavedRequest(url).copy());
+    }
+
+    @Test
+    void testBrowserCallbackUrlDoesNotRequireASavedUrl() {
+        configuration.setUseRedirectUri(true);
+        assertBrowserCallbackUrl(openTransactionWithSavedRequest(null));
+        assertBrowserCallbackUrl(openTransactionWithSavedRequest(new OkAction("<form></form>")));
+        assertBrowserCallbackUrl(openTransactionWithSavedRequest(" "));
+    }
+
+    private void assertBrowserCallbackUrl(final VpTransaction transaction) {
+        assertEquals(client.computeFinalCallbackUrl(MockWebContext.create()), transaction.getBrowserCallbackUrl());
+        assertFalse(transaction.getBrowserCallbackUrl().contains(VP_TRANSACTION_ID));
+    }
+
+    private VpTransaction openTransactionWithSavedRequest(final Object savedRequest) {
+        val ctx = new CallContext(MockWebContext.create(), new MockSessionStore());
+        ctx.sessionStore().set(ctx.webContext(), Pac4jConstants.REQUESTED_URL, savedRequest);
+        client.getRedirectionAction(ctx);
+        assertEquals(savedRequest, ctx.sessionStore().get(ctx.webContext(), Pac4jConstants.REQUESTED_URL).orElse(null));
+        val transactionId = (String) ctx.sessionStore().get(ctx.webContext(), SESSION_TRANSACTION_ID).orElseThrow();
+        return configuration.getTransactionStore().get(transactionId).orElseThrow();
     }
 
     @Test

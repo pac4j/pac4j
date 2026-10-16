@@ -141,4 +141,6 @@ logging.level.org.pac4j.openid4vp=DEBUG
 The `PROTOCOL_MESSAGE.OPENID4VP` logger is a child of `PROTOCOL_MESSAGE`, which enables the messages of all protocols at
 once. Messages are logged as they travel: an encrypted response stays encrypted, but a response in clear (`direct_post`
 or `dc_api`) holds the personal data the End-User disclosed. Enable these logs to diagnose, not permanently in
-production. The claims of the request objects and the decrypted responses are only logged at TRACE level.
+production. With `useRedirectUri=true`, the JSON response to the wallet also logs the callback URL and its
+`response_code`; treat that code as a temporary secret. The claims of the request objects and the decrypted responses
+are only logged at TRACE level.
