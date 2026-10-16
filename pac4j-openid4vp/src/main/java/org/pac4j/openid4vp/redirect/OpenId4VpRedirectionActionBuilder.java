@@ -94,6 +94,9 @@ public class OpenId4VpRedirectionActionBuilder implements RedirectionActionBuild
         // https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#section-5.3
         if (!configuration.getResponseMode().isOverDcApi()) {
             transaction.setState(configuration.getStateGenerator().generateValue(ctx));
+            if (configuration.isUseRedirectUri()) {
+                transaction.setBrowserCallbackUrl(client.computeFinalCallbackUrl(ctx.webContext()));
+            }
         }
         return transaction;
     }

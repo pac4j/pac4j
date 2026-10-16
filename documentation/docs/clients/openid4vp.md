@@ -36,6 +36,10 @@ as described for the [SD-JWT VC verifier](openid4vp-sd-jwt-vc-verifier.html#1-de
 - **Request:** configure a DCQL query describing the credentials and attributes your application needs.
 - **Consent:** the wallet asks the user to approve sharing them.
 - **Validation:** pac4j and the configured credential verifiers validate the response before creating a user profile.
+- **Browser return:** on the same device, `setUseRedirectUri(true)` makes the wallet return to the pac4j callback,
+  which checks the return code, completes authentication and restores the saved request. The option defaults to
+  `false`. Start in the device's default browser and keep the same browser profile for the wallet return;
+  see [Returning to the application](openid4vp-clients.html#3-returning-to-the-application).
 
 Choose a [client](openid4vp-clients.html) for a wallet opened by **URL or QR code**, or through the browser's
 **Digital Credentials API**. Requests are signed and responses encrypted by default.

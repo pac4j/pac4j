@@ -11,7 +11,9 @@ import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.exception.http.BadRequestAction;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.core.exception.http.OkAction;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.ProtocolMessages;
+import org.pac4j.core.util.generator.RandomValueGenerator;
 import org.pac4j.openid4vp.client.OpenId4VpClient;
 import org.pac4j.openid4vp.credentials.VerifiablePresentationCredentials;
 import org.pac4j.openid4vp.exceptions.OpenId4VpException;
@@ -19,6 +21,7 @@ import org.pac4j.openid4vp.transaction.VpTransaction;
 import org.pac4j.openid4vp.util.OpenId4VpProtocolMessages;
 
 import java.text.ParseException;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -187,6 +190,13 @@ public class OpenId4VpCredentialsExtractor implements CredentialsExtractor {
             transaction.setValidatedVpToken(validated.getVpToken()).setVerifiedCredentials(validated.getVerifiedCredentials())
                 .setUserProfile(validated.getUserProfile());
         }
+        var content = "{}";
+        if (transaction.getBrowserCallbackUrl() != null) {
+            // OpenID4VP 1.0 section 8.2 requires a fresh random value known only to the redirect receiver.
+            transaction.setResponseCode(new RandomValueGenerator(64).generateValue(ctx));
+            val redirectUri = CommonHelper.addParameter(transaction.getBrowserCallbackUrl(), RESPONSE_CODE, transaction.getResponseCode());
+            content = JSONObjectUtils.toJSONString(Map.of(REDIRECT_URI, redirectUri));
+        }
         client.getConfiguration().getTransactionStore().set(responseKey(transactionId), transaction.toResponse());
         VpTransaction.logTransition(transactionId, previousStatus, transaction.getStatus(), transaction.getError() != null
             ? "error " + transaction.getError() : "presentation validated");
@@ -194,8 +204,8 @@ public class OpenId4VpCredentialsExtractor implements CredentialsExtractor {
         // response body"; without a redirect_uri in it, "the Wallet is not required to perform any further steps"
         // https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#section-8.2
         ctx.webContext().setResponseContentType("application/json");
-        OpenId4VpProtocolMessages.sent(transactionId, OpenId4VpProtocolMessages.WALLET, "200 {}");
-        return new OkAction("{}");
+        OpenId4VpProtocolMessages.sent(transactionId, OpenId4VpProtocolMessages.WALLET, "200 " + content);
+        return new OkAction(content);
     }
 
     /**
@@ -286,6 +296,10 @@ public class OpenId4VpCredentialsExtractor implements CredentialsExtractor {
         if (response == null) {
             LOGGER.debug("the wallet has not answered the transaction yet: {}", transactionId);
             return Optional.empty();
+        }
+        val code = response.getResponseCode();
+        if (code != null && !code.equals(webContext.getRequestParameter(RESPONSE_CODE).orElse(null))) {
+            throw new OpenId4VpException("missing or invalid response_code for the transaction: " + transactionId);
         }
         transaction.withResponse(response);
         // a transaction is used once

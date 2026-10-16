@@ -1,6 +1,15 @@
 package org.pac4j.openid4vp;
 
 import lombok.val;
+import com.nimbusds.jose.util.JSONObjectUtils;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.pac4j.core.util.Pac4jConstants;
+import org.pac4j.core.config.Config;
+import org.pac4j.core.engine.DefaultCallbackLogic;
+import org.pac4j.core.exception.http.WithLocationAction;
+import org.pac4j.core.profile.ProfileManager;
+import org.pac4j.core.profile.factory.ProfileManagerFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -16,6 +25,8 @@ import org.pac4j.openid4vp.client.OpenId4VpClient;
 import org.pac4j.openid4vp.config.ClientIdPrefix;
 import org.pac4j.openid4vp.config.OpenId4VpConfiguration;
 import org.pac4j.openid4vp.credentials.VerifiablePresentationCredentials;
+import org.pac4j.openid4vp.credentials.extractor.OpenId4VpCredentialsExtractor;
+import org.pac4j.openid4vp.exceptions.OpenId4VpException;
 import org.pac4j.openid4vp.config.CredentialFormat;
 import org.pac4j.openid4vp.config.ResponseMode;
 import org.pac4j.openid4vp.verifier.CredentialVerifier;
@@ -31,9 +42,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.pac4j.openid4vp.util.OpenId4VpConstants.RESPONSE;
-import static org.pac4j.openid4vp.util.OpenId4VpConstants.VP_TOKEN;
-import static org.pac4j.openid4vp.util.OpenId4VpConstants.VP_TRANSACTION_ID;
+import static org.pac4j.openid4vp.util.OpenId4VpConstants.*;
 
 /**
  * Drives a whole presentation, the three legs in a row: the browser leaves, the wallet fetches the request
@@ -70,14 +79,19 @@ class OpenId4VpFlowTests {
     }
 
 
-    @Test
-    void testTheWholePresentationFlow() {
+    @ParameterizedTest
+    @CsvSource({"false, true", "true, true", "true, false"})
+    void testTheWholePresentationFlow(final boolean useRedirectUri, final boolean saveRequest) throws Exception {
+        configuration.setUseRedirectUri(useRedirectUri);
         installTestVerifier();
         val simulator = new WalletSimulator();
 
         // 1. the browser asks for a protected page and is handed the wallet URL
         val browserContext = MockWebContext.create();
         val browserCtx = new CallContext(browserContext, new MockSessionStore());
+        if (saveRequest) {
+            browserCtx.sessionStore().set(browserContext, Pac4jConstants.REQUESTED_URL, "https://app.example.org/protected");
+        }
         assertEquals(PresentationStatus.EXPIRED, client.getPresentationStatus(browserCtx));
         val walletUrl = assertInstanceOf(FoundAction.class, client.getRedirectionAction(browserCtx).get()).getLocation();
         // what a page polls while it shows the QR code
@@ -108,20 +122,32 @@ class OpenId4VpFlowTests {
             .setRequestMethod(HttpConstants.HTTP_METHOD.POST.name())
             .addRequestParameter(VP_TRANSACTION_ID, transactionId)
             .addRequestParameter(RESPONSE, response);
-        assertThrows(OkAction.class, () -> client.getCredentials(new CallContext(post, new MockSessionStore())));
+        val accepted = assertThrows(OkAction.class, () -> client.getCredentials(new CallContext(post, new MockSessionStore())));
+        if (useRedirectUri) {
+            val redirectUri = (String) JSONObjectUtils.parse(accepted.getContent()).get("redirect_uri");
+            assertEquals(client.computeFinalCallbackUrl(browserContext),
+                redirectUri.substring(0, redirectUri.lastIndexOf("&response_code=")));
+            assertNull(simulator.readParameter(redirectUri, VP_TRANSACTION_ID));
+            browserContext.addRequestParameter("client_name", simulator.readParameter(redirectUri, "client_name"));
+            browserContext.addRequestParameter("response_code", simulator.readParameter(redirectUri, "response_code"));
+        } else {
+            assertEquals("{}", accepted.getContent());
+        }
         assertEquals(PresentationStatus.RECEIVED, client.getPresentationStatus(browserCtx));
 
-        // 4. the browser comes back: this is the only leg with a session, and the only one making credentials
-        val credentials = assertInstanceOf(VerifiablePresentationCredentials.class,
-            client.getCredentials(browserCtx).get());
-        assertEquals(transactionId, credentials.getTransaction().getId());
-        assertEquals(response, credentials.getTransaction().getRawResponse());
-        assertEquals(request.getNonce(), credentials.getTransaction().getNonce());
-        val validated = (VerifiablePresentationCredentials) client.validateCredentials(browserCtx, credentials).orElseThrow();
-        assertEquals(PRESENTATION, validated.getVerifiedCredentials().get("pid").get(0).getClaims().get("presentation"));
-        val profile = client.getUserProfile(browserCtx, validated).orElseThrow();
+        // 4. follow the wallet redirect to the regular callback: it saves the profile and restores the saved URL
+        val config = new Config(client);
+        config.setWebContextFactory(parameters -> browserContext);
+        config.setSessionStoreFactory(parameters -> browserCtx.sessionStore());
+        config.setProfileManagerFactory(ProfileManagerFactory.DEFAULT);
+        config.setHttpActionAdapter((action, context) -> action);
+        val result = new DefaultCallbackLogic().perform(config, "/", true, null, null);
+        assertEquals(saveRequest ? "https://app.example.org/protected" : "/",
+            assertInstanceOf(WithLocationAction.class, result).getLocation());
+        val profile = new ProfileManager(browserContext, browserCtx.sessionStore()).getProfile().orElseThrow();
         assertNotNull(profile.getId());
         assertEquals(PRESENTATION, profile.getAttribute("presentation"));
+        assertTrue(browserCtx.sessionStore().get(browserContext, Pac4jConstants.REQUESTED_URL).isEmpty());
 
         // and the transaction is consumed
         assertTrue(configuration.getTransactionStore().get(transactionId).isEmpty());
@@ -129,6 +155,98 @@ class OpenId4VpFlowTests {
         assertTrue(client.getCredentials(browserCtx).isEmpty());
         // the presentation was verified once, when the wallet posted it: the browser took the result
         assertEquals(1, verifications.get());
+    }
+
+    @Test
+    void testResponseCodeCannotAuthenticateAnotherSession() throws Exception {
+        configuration.setUseRedirectUri(true);
+        installTestVerifier();
+        val ownerBrowser = MockWebContext.create();
+        val owner = new CallContext(ownerBrowser, new MockSessionStore());
+        val ownerCode = openAnsweredTransaction(owner);
+        val ownerId = (String) owner.sessionStore().get(owner.webContext(), SESSION_TRANSACTION_ID).orElseThrow();
+
+        // A copied return URL in a session which did not start a transaction cannot authenticate anyone.
+        val emptyBrowser = MockWebContext.create().addRequestParameter(RESPONSE_CODE, ownerCode);
+        val emptySession = new MockSessionStore();
+        performCallback(new CallContext(emptyBrowser, emptySession));
+        assertTrue(new ProfileManager(emptyBrowser, emptySession).getProfile().isEmpty());
+        assertTrue(configuration.getTransactionStore().get(OpenId4VpCredentialsExtractor.responseKey(ownerId)).isPresent());
+
+        // Even a session with its own answered transaction cannot claim the owner's response using that code.
+        val otherBrowser = MockWebContext.create();
+        val other = new CallContext(otherBrowser, new MockSessionStore());
+        val otherCode = openAnsweredTransaction(other);
+        val otherId = (String) other.sessionStore().get(otherBrowser, SESSION_TRANSACTION_ID).orElseThrow();
+        otherBrowser.addRequestParameter(RESPONSE_CODE, ownerCode);
+        assertThrows(OpenId4VpException.class, () -> performCallback(other));
+        assertTrue(new ProfileManager(otherBrowser, other.sessionStore()).getProfile().isEmpty());
+        assertTrue(configuration.getTransactionStore().get(OpenId4VpCredentialsExtractor.responseKey(ownerId)).isPresent());
+        assertTrue(configuration.getTransactionStore().get(OpenId4VpCredentialsExtractor.responseKey(otherId)).isPresent());
+
+        // Neither response was consumed by the failed attempt: each session still accepts only its own code.
+        ownerBrowser.addRequestParameter(RESPONSE_CODE, ownerCode);
+        performCallback(owner);
+        assertTrue(new ProfileManager(owner.webContext(), owner.sessionStore()).getProfile().isPresent());
+        otherBrowser.addRequestParameter(RESPONSE_CODE, otherCode);
+        performCallback(other);
+        assertTrue(new ProfileManager(otherBrowser, other.sessionStore()).getProfile().isPresent());
+    }
+
+    @Test
+    void testResponseCodeCannotBeReusedAfterTheCallback() throws Exception {
+        configuration.setUseRedirectUri(true);
+        installTestVerifier();
+        val browser = MockWebContext.create();
+        val ctx = new CallContext(browser, new MockSessionStore());
+        val responseCode = openAnsweredTransaction(ctx);
+        val transactionId = (String) ctx.sessionStore().get(browser, SESSION_TRANSACTION_ID).orElseThrow();
+        ctx.sessionStore().set(browser, Pac4jConstants.REQUESTED_URL, "https://app.example.org/protected");
+        browser.addRequestParameter(RESPONSE_CODE, responseCode);
+
+        val first = performCallback(ctx);
+        assertEquals("https://app.example.org/protected", assertInstanceOf(WithLocationAction.class, first).getLocation());
+        val profiles = new ProfileManager(browser, ctx.sessionStore());
+        assertTrue(profiles.getProfile().isPresent());
+        assertTrue(configuration.getTransactionStore().get(transactionId).isEmpty());
+        assertTrue(configuration.getTransactionStore().get(OpenId4VpCredentialsExtractor.responseKey(transactionId)).isEmpty());
+        assertTrue(ctx.sessionStore().get(browser, SESSION_TRANSACTION_ID).isEmpty());
+
+        // Remove the authenticated profile so a replay cannot be mistaken for an already authenticated session.
+        profiles.removeProfiles();
+        val replay = performCallback(ctx);
+        assertEquals("/", assertInstanceOf(WithLocationAction.class, replay).getLocation());
+        assertTrue(profiles.getProfile().isEmpty());
+        assertTrue(client.getCredentials(ctx).isEmpty());
+        assertEquals(1, verifications.get());
+    }
+
+    private String openAnsweredTransaction(final CallContext browser) throws Exception {
+        val simulator = new WalletSimulator();
+        val walletUrl = assertInstanceOf(FoundAction.class, client.getRedirectionAction(browser).orElseThrow()).getLocation();
+        val transactionId = simulator.readParameter(simulator.readRequestUri(walletUrl), VP_TRANSACTION_ID);
+        val fetch = MockWebContext.create().addRequestParameter(VP_TRANSACTION_ID, transactionId);
+        val served = assertThrows(OkAction.class,
+            () -> client.getCredentials(new CallContext(fetch, new MockSessionStore())));
+        val request = simulator.readRequestObject(served.getContent());
+        val post = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.POST.name())
+            .addRequestParameter(VP_TRANSACTION_ID, transactionId)
+            .addRequestParameter(RESPONSE, simulator.buildResponse(request, Map.of("pid", List.of(PRESENTATION))));
+        val accepted = assertThrows(OkAction.class,
+            () -> client.getCredentials(new CallContext(post, new MockSessionStore())));
+        val redirectUri = (String) JSONObjectUtils.parse(accepted.getContent()).get("redirect_uri");
+        val responseCode = simulator.readParameter(redirectUri, RESPONSE_CODE);
+        assertNotNull(responseCode);
+        return responseCode;
+    }
+
+    private Object performCallback(final CallContext ctx) {
+        val config = new Config(client);
+        config.setWebContextFactory(parameters -> ctx.webContext());
+        config.setSessionStoreFactory(parameters -> ctx.sessionStore());
+        config.setProfileManagerFactory(ProfileManagerFactory.DEFAULT);
+        config.setHttpActionAdapter((action, context) -> action);
+        return new DefaultCallbackLogic().perform(config, "/", true, null, null);
     }
 
     @Test
