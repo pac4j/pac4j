@@ -92,7 +92,7 @@ The `pom.xml`:
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.0.4</version>
+        <version>4.0.8</version>
         <relativePath/>
     </parent>
     <groupId>org.pac4j.demo</groupId>
@@ -101,8 +101,44 @@ The `pom.xml`:
 
     <properties>
         <java.version>17</java.version>
-        <kotlin.version>2.4.20</kotlin.version>
+        <pac4j.version>6.6.0</pac4j.version>
+        <kotlin.version>2.4.21</kotlin.version>
+        <kotlin-coroutines.version>1.11.0</kotlin-coroutines.version>
+        <kotlin-serialization.version>1.11.1-waltid-20260811</kotlin-serialization.version>
+        <jackson-2-bom.version>2.22.3</jackson-2-bom.version>
+        <commons-lang3.version>3.21.0</commons-lang3.version>
+        <slf4j.version>2.0.20</slf4j.version>
+        <commons-logging.version>1.3.5</commons-logging.version>
+        <jspecify.version>1.0.0</jspecify.version>
     </properties>
+
+    <!-- the Kotlin Serialization variant used by pac4j is published by walt.id -->
+    <repositories>
+        <repository>
+            <id>waltid-releases</id>
+            <url>https://maven.waltid.dev/releases</url>
+            <snapshots><enabled>false</enabled></snapshots>
+        </repository>
+    </repositories>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- align pac4j-core and shared dependencies with pac4j-openid4vp -->
+            <dependency>
+                <groupId>org.pac4j</groupId>
+                <artifactId>pac4j-parent</artifactId>
+                <version>${pac4j.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!-- spring-webmvc-pac4j otherwise pulls an older Jakarta EE adapter -->
+            <dependency>
+                <groupId>org.pac4j</groupId>
+                <artifactId>pac4j-jakartaee</artifactId>
+                <version>${pac4j.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
@@ -113,19 +149,19 @@ The `pom.xml`:
         <dependency>
             <groupId>org.pac4j</groupId>
             <artifactId>spring-webmvc-pac4j</artifactId>
-            <version>8.0.3</version>
+            <version>8.0.4</version>
         </dependency>
         <!-- the OpenID4VP support: the application is a verifier -->
         <dependency>
             <groupId>org.pac4j</groupId>
             <artifactId>pac4j-openid4vp</artifactId>
-            <version>6.6.0</version>
+            <version>${pac4j.version}</version>
         </dependency>
         <!-- the SD-JWT VC verification, an optional library of pac4j -->
         <dependency>
             <groupId>eu.europa.ec.eudi</groupId>
             <artifactId>eudi-lib-jvm-sdjwt-kt</artifactId>
-            <version>0.20.1</version>
+            <version>0.20.2</version>
         </dependency>
     </dependencies>
 
@@ -140,7 +176,13 @@ The `pom.xml`:
 </project>
 ```
 
-SD-JWT VC verification relies on the [EUDI SD-JWT library](https://github.com/eu-digital-identity-wallet/eudi-lib-jvm-sdjwt-kt), which pac4j declares as optional: applications verifying this format add it; applications verifying mdoc only do not need it. The `kotlin.version` property aligns Spring Boot's managed Kotlin runtime with the version used by pac4j's adapter.
+SD-JWT VC verification relies on the [EUDI SD-JWT library](https://github.com/eu-digital-identity-wallet/eudi-lib-jvm-sdjwt-kt), which pac4j declares as optional. This example uses version `0.20.2`, matching pac4j. The imported `pac4j-parent` dependency management aligns `pac4j-core` and shared libraries. The explicit management entry for `pac4j-jakartaee` also aligns the adapter pulled in by `spring-webmvc-pac4j`; setting a `pac4j.version` property alone would not override that adapter's transitive version.
+
+The runtime versions match pac4j's build: Kotlin `2.4.21`, Coroutines `1.11.0` and Serialization `1.11.1-waltid-20260811`. The Serialization variant is published in the walt.id repository, required here even though this demo does not use mdoc. Spring Boot 4.0.8 supplies Spring Framework 7.0.9, matching pac4j; the properties also align Jackson 2, Commons Lang, SLF4J, Commons Logging and JSpecify. Jackson 3 remains managed by Boot for its own web stack.
+
+Boot's default Kotlin dependencies would otherwise override pac4j's versions. In particular, Coroutines 1.10.2 lacks `BuildersKt.runBlockingK$default`, called by the current pac4j adapter, and causes a `NoSuchMethodError` when the wallet posts its response.
+
+To check the resolved versions, run `mvn dependency:tree`. For this unreleased pac4j version, install the current snapshot locally and run Maven with `-Dpac4j.version=6.6.0-SNAPSHOT`; keep all pac4j modules on the same version.
 
 The `src/main/resources/application.properties` file holds the base URL and enables the logs we will read at the end:
 
@@ -233,7 +275,9 @@ public class SecurityConfig extends Pac4jSecurityConfig {
                 .setKeyStoreAlias("rp")
                 .setKeystorePassword("changeit")
                 .setPrivateKeyPassword("changeit"))
-            .setDcqlQuery(EudiPidQuery.sdJwtVc(GIVEN_NAME, FAMILY_NAME));
+            .setDcqlQuery(EudiPidQuery.sdJwtVc(GIVEN_NAME, FAMILY_NAME))
+            // Mandatory when using the same browser
+            .setUseRedirectUri(true);
 
         // the response: an SD-JWT VC is accepted if its certificate chain ends in the truststore
         final var issuers = new CertificateTrustedIssuer(new KeystoreProperties("./metadata/pid-issuers.p12")
@@ -268,6 +312,7 @@ A few configuration details:
 - `SdJwtVcVerifier` verifies the expected format. With this trust configuration, the wallet's `x5c` certificate chain must lead to a certificate in your truststore, in addition to passing the signature, validity, disclosure and holder-binding checks.
 - The profile identifier is yours to choose: `EudiWalletClient` has no default and refuses to initialize until you configure a resolver. If the PID provider issues a stable, unique and non-reassigned `personal_administrative_number`, request it in DCQL and use `ProfileIdResolver.issuerAndClaim(PERSONAL_ADMINISTRATIVE_NUMBER)`. That claim is not guaranteed for every PID, and this demo does not ask for it, hence the random identifier: it identifies a login, not a persistent user account.
 - The callback URL is the regular pac4j one, and the wallet uses it too: it fetches the request object there and posts its response there, without any browser session.
+- `setUseRedirectUri(true)` enables the automatic return to the browser. After accepting the wallet response, pac4j returns its callback URL as `redirect_uri`, with a fresh `response_code`. The wallet opens that URL in the browser; pac4j checks the code against the transaction of the browser session, saves the profile and redirects to the protected page originally requested. The option defaults to `false`; this same-device example enables it explicitly.
 
 The playground PID carries a `status` claim, a reference to an [OAuth Token Status List](https://datatracker.ietf.org/doc/draft-ietf-oauth-status-list/): the list where the issuer marks the credentials it has revoked or suspended. pac4j refuses a credential carrying a status unless a *status checker* is configured, because only the application can decide how to read the list, and it never fetches it on its own. The checker of this demo only logs the reference and accepts the credential, so revocation is not checked here. A real checker retrieves the status list token, verifies its signature with the same trust as the credential and checks the entry at the index of the credential: that deserves a post of its own. See [credential status](/docs/clients/openid4vp-sd-jwt-vc-verifier.html#7-credential-status). Disabling certificate revocation does not bypass this check.
 
@@ -337,8 +382,9 @@ public class WalletController {
     @ResponseBody
     public String index() {
         return "<h1>Home</h1>"
-            + "<p><a href='/protected/index'>1. Open the protected page: the wallet opens</a></p>"
-            + "<p><a href='/callback/EudiWalletClient'>2. I have presented my PID in the wallet</a></p>";
+            + "<p>Start in your phone's default browser, using its regular profile (not private browsing). "
+            + "The wallet must return to the same browser and profile to complete authentication.</p>"
+            + "<p><a href='/protected/index'>Open the protected page: the wallet opens</a></p>";
     }
 
     @GetMapping("/protected/index")
@@ -350,7 +396,7 @@ public class WalletController {
 }
 ```
 
-The second link of the home page is the only unusual thing: on the same device, once the wallet has answered, the user has to come back to the browser and tell the application so. The callback URL does exactly that, we come back to it below.
+The home page needs only the link which starts authentication. The callback is handled by pac4j: with `setUseRedirectUri(true)`, the wallet returns the browser there automatically, then pac4j restores the original request. No second link, polling script or application code relaying the `response_code` is needed.
 
 Run the application, with ngrok running next to it:
 
@@ -361,11 +407,15 @@ mvn spring-boot:run
 
 ## 11) The flow, step by step
 
-Everything happens on the phone. **First open the Paradym wallet and unlock it**, then leave it in the background: the flow fails if the wallet is not already running when the browser hands it the `openid4vp://` link. Then open the ngrok URL **in the browser of the phone** and click the first link of the home page: `1. Open the protected page: the wallet opens`.
+Everything happens on the phone. **First open the Paradym wallet and unlock it**, then leave it in the background: the flow fails if the wallet is not already running when the browser hands it the `openid4vp://` link. Then open the ngrok URL **in the phone's default browser, using its regular profile (not private browsing)** and click the link on the home page: `Open the protected page: the wallet opens`.
 
-The wallet side of the flow, in four screens: the request to review, the warning about the unverified verifier, the PIN code, and the success screen. The steps below detail what happens behind each one.
+The wallet may open the return URL in the phone's default browser. Starting in another browser, a private browsing session or an embedded browser can therefore lose the original session: the callback cannot complete authentication and the demo returns to the home page. Use the same browser and profile throughout the flow.
+
+The six screens below show the home page where login starts, the request to review, the warning about the unverified verifier, the PIN code, the wallet success screen and the return to the protected page in the browser, where the profile is displayed. The steps below follow the exchange through to that final page.
 
 <div class="screens">
+  <img alt="The application home page: open the protected page to start the wallet login" src="/img/blog/2026_wallet/mobilebeforelogin.jpg" />
+  <span class="screens-arrow" aria-hidden="true">&rarr;</span>
   <img alt="Paradym: review the request" src="/img/blog/2026_wallet/sdjwtvc_request.jpg" />
   <span class="screens-arrow" aria-hidden="true">&rarr;</span>
   <img alt="Paradym: organization not verified" src="/img/blog/2026_wallet/organization.jpg" />
@@ -373,6 +423,8 @@ The wallet side of the flow, in four screens: the request to review, the warning
   <img alt="Paradym: enter the PIN code" src="/img/blog/2026_wallet/pincode.jpg" />
   <span class="screens-arrow" aria-hidden="true">&rarr;</span>
   <img alt="Paradym: success, the information has been shared" src="/img/blog/2026_wallet/success.jpg" />
+  <span class="screens-arrow" aria-hidden="true">&rarr;</span>
+  <img alt="Back in the application: the protected page displays Emma Charlotte van der Berg's profile after the automatic wallet return" src="/img/blog/2026_wallet/mobilepostlogin.jpg" />
 </div>
 
 **1. The browser asks for the protected page.** pac4j finds no profile, creates a *transaction* and redirects to an `openid4vp://` URL. The browser hands this scheme to the operating system, which opens the wallet.
@@ -381,18 +433,16 @@ The wallet side of the flow, in four screens: the request to review, the warning
 
 **3. The user consents.** The wallet shows who is asking, the hash of your certificate for now, and what is asked: the PID, given name and family name. The user picks the card and confirms with their PIN.
 
-**4. The wallet posts its response.** An encrypted JWT, containing the SD-JWT VC with the two disclosures and a key binding JWT proving the wallet holds the key of the credential, posted on the callback URL. pac4j decrypts, verifies and keeps the result for the browser session which started the transaction. The wallet shows that the sharing succeeded.
+**4. The wallet posts its response.** An encrypted JWT, containing the SD-JWT VC with the two disclosures and a key binding JWT proving the wallet holds the key of the credential, posted on the callback URL. pac4j decrypts, verifies and keeps the result for the browser session which started the transaction. Its HTTP 200 JSON response contains a `redirect_uri` pointing to `/callback/EudiWalletClient?response_code=...`. This is the browser return URL, not the `response_uri` where the wallet just posted the presentation.
 
-**5. Back to the browser.** Automatic return is not implemented by pac4j yet. Switch back to the browser and click the second link of the home page: `2. I have presented my PID in the wallet`, the callback URL. pac4j retrieves the profile already validated when the wallet posted its response, stores it in the session and redirects to the page requested at step 1: the protected page shows Emma Charlotte van der Berg.
+**5. The browser returns automatically.** The wallet opens the `redirect_uri` in the default browser. Because the flow started in that browser and profile, its session cookie accompanies the callback. pac4j checks the `response_code` against that session's pending transaction, retrieves the profile already validated at step 4, consumes the transaction and stores the profile in the session. It then redirects to `/protected/index`, the URL saved at step 1: the protected page shows Emma Charlotte van der Berg. The code is handled entirely by pac4j and is not carried to the final protected URL.
 
-<!-- screenshot: the protected page with the profile -->
-
-OpenID4VP has a mechanism for the wallet to redirect the browser at the end of a same-device flow (`redirect_uri` with a `response_code`), which pac4j does not support yet: it is on the roadmap of the module. In the meantime, a link is enough, or the small polling script of the second post, which works on the same device too.
+The `response_code` is a fresh random value required by [OpenID4VP section 8.2](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#section-8.2). The callback requires both this code and the session which started the transaction; a missing or wrong code is refused, another session cannot claim the presentation, and a completed transaction cannot be consumed again. Keep the return in the original browser: a different browser or an isolated webview does not have its session cookie. The [second post](/blog/openid4vp_in_action_another_device.html) uses polling instead, because the wallet is on the phone while the browser waiting for the answer is on the computer.
 
 
 ## 12) What the logs say
 
-The two loggers enabled in `application.properties` give two views of the flow. The `PROTOCOL_MESSAGE.OPENID4VP` logger prints the messages themselves, as they were sent or received, without any interpretation: one line per message, starting with `>>>` when the application sent it, `<<<` when it received it, followed by the other party, the browser or the wallet. The `org.pac4j.openid4vp` logger tells what pac4j did with them: the transaction created, the request object built, the response decrypted and verified, the profile built. Here is the flow above, shortened.
+The two loggers enabled in `application.properties` give two views of the flow. The `PROTOCOL_MESSAGE.OPENID4VP` logger prints the messages themselves, as they were sent or received, without any interpretation: one line per message, starting with `>>>` when the application sent it, `<<<` when it received it, followed by the other party, the browser or the wallet. The `org.pac4j.openid4vp` logger tells what pac4j did with them: the transaction created, the request object built, the response decrypted and verified, the profile built. The excerpts below are abbreviated; the final JSON response and browser return illustrate the new `setUseRedirectUri(true)` configuration.
 
 The redirection, step 1: a transaction is created, expiring five minutes later, and the browser is sent to the wallet URL. Note the `request_uri`, on the callback URL with the client name in its path, and the identifier of the verifier, the hash of its certificate:
 
@@ -455,26 +505,26 @@ EudiPidProfile : adding => key: family_name / value: van der Berg / class java.l
 EudiPidProfile : adding => key: given_name / value: Emma Charlotte / class java.lang.String
 OpenId4VpAuthenticator : profile built for transaction 51fef2…: profile class=EudiPidProfile, definition=EudiPidProfileDefinition
 VpTransaction : transaction 51fef2…: REQUEST_RETRIEVED -> RESPONSE_RECEIVED (presentation validated)
-PROTOCOL_MESSAGE.OPENID4VP : [tx 51fef2…] >>> wallet 200 {}
+PROTOCOL_MESSAGE.OPENID4VP : [tx 51fef2…] >>> wallet 200 {"redirect_uri":"https://abcd-1234.ngrok-free.dev/callback/EudiWalletClient?response_code=8c731e…"}
 ```
 
 The profile gets more than the two requested claims: the issuer also signs, outside any disclosure, the `vct`, the issuing country and authority, the validity dates, the holder key (`cnf`) and the status reference, and the wallet cannot withhold them. The two names are the only disclosed claims.
 
-Step 5: the browser comes back to the callback URL, the validated profile is picked up, nothing is verified twice:
+Step 5: the wallet opens the returned callback URL in the browser. pac4j checks the `response_code` using the transaction identifier held in the browser session; the return URL carries no `vp_tx`. It then picks up the validated profile, without verifying it twice, and the regular callback redirects to the saved `/protected/index` URL:
 
 ```
 VpTransaction : transaction 51fef2…: RESPONSE_RECEIVED -> CONSUMED (the browser came back)
 OpenId4VpAuthenticator : transaction 51fef2…: reusing the profile validated when the wallet posted its response, nothing is verified again
 ```
 
-Note that the logs show the credentials as they travel, tokens included: enable them to diagnose, not permanently in production.
+Note that the logs show the credentials as they travel, tokens and the return `response_code` included: enable them to diagnose, not permanently in production.
 
 
 ## 13) Limitations and what comes next
 
 A few things to know before going further:
 
-- **The return to the browser** on the same device is manual, as seen in step 5. The `redirect_uri` mechanism of OpenID4VP is on the roadmap.
+- **The return needs the original browser session.** `setUseRedirectUri(true)` implements the OpenID4VP redirect, but the wallet must open it in the browser that started the login. Opening another browser or an isolated webview does not transfer that session.
 - **A refusal was silent** with the tested Paradym wallet: when the user declined or had no matching card, nothing was posted, and the transaction expired after five minutes. Wallets that post an error let pac4j report it to the browser.
 - **Certificate revocation** is disabled in this demo. In production, keep it enabled and supply current CRLs or configure the Java PKIX provider to retrieve revocation data. This setting does not disable credential status checking: credentials carrying status information still need a status checker, and the one of this demo only logs the status reference, as seen in section 8.
 - Transaction data, the `verifier_attestation` and `openid_federation` prefixes, and the automatic retrieval of status lists are not supported yet.

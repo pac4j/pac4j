@@ -92,7 +92,7 @@ The `pom.xml`. The mdoc verification relies on the [walt.id](https://walt.id) li
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.0.4</version>
+        <version>4.0.8</version>
         <relativePath/>
     </parent>
     <groupId>org.pac4j.demo</groupId>
@@ -101,10 +101,18 @@ The `pom.xml`. The mdoc verification relies on the [walt.id](https://walt.id) li
 
     <properties>
         <java.version>17</java.version>
-        <kotlin.version>2.4.20</kotlin.version>
+        <pac4j.version>6.6.0</pac4j.version>
+        <kotlin.version>2.4.21</kotlin.version>
+        <kotlin-coroutines.version>1.11.0</kotlin-coroutines.version>
+        <kotlin-serialization.version>1.11.1-waltid-20260811</kotlin-serialization.version>
+        <jackson-2-bom.version>2.22.3</jackson-2-bom.version>
+        <commons-lang3.version>3.21.0</commons-lang3.version>
+        <slf4j.version>2.0.20</slf4j.version>
+        <commons-logging.version>1.3.5</commons-logging.version>
+        <jspecify.version>1.0.0</jspecify.version>
     </properties>
 
-    <!-- walt.id publishes the mdoc library outside Maven Central -->
+    <!-- walt.id publishes the mdoc library and Kotlin Serialization variant outside Maven Central -->
     <repositories>
         <repository>
             <id>waltid-releases</id>
@@ -115,11 +123,25 @@ The `pom.xml`. The mdoc verification relies on the [walt.id](https://walt.id) li
 
     <dependencyManagement>
         <dependencies>
-            <!-- keep the datetime API used by walt.id 0.12.0 -->
+            <!-- align pac4j-core and shared dependencies with pac4j-openid4vp -->
+            <dependency>
+                <groupId>org.pac4j</groupId>
+                <artifactId>pac4j-parent</artifactId>
+                <version>${pac4j.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!-- spring-webmvc-pac4j otherwise pulls an older Jakarta EE adapter -->
+            <dependency>
+                <groupId>org.pac4j</groupId>
+                <artifactId>pac4j-jakartaee</artifactId>
+                <version>${pac4j.version}</version>
+            </dependency>
+            <!-- retain walt.id's legacy datetime API using the compatibility artifact used by pac4j -->
             <dependency>
                 <groupId>org.jetbrains.kotlinx</groupId>
                 <artifactId>kotlinx-datetime-jvm</artifactId>
-                <version>0.6.1</version>
+                <version>0.8.0-0.6.x-compat</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -133,13 +155,13 @@ The `pom.xml`. The mdoc verification relies on the [walt.id](https://walt.id) li
         <dependency>
             <groupId>org.pac4j</groupId>
             <artifactId>spring-webmvc-pac4j</artifactId>
-            <version>8.0.3</version>
+            <version>8.0.4</version>
         </dependency>
         <!-- the OpenID4VP support: the application is a verifier -->
         <dependency>
             <groupId>org.pac4j</groupId>
             <artifactId>pac4j-openid4vp</artifactId>
-            <version>6.6.0</version>
+            <version>${pac4j.version}</version>
         </dependency>
         <!-- the mdoc verification, an optional library of pac4j -->
         <dependency>
@@ -160,7 +182,11 @@ The `pom.xml`. The mdoc verification relies on the [walt.id](https://walt.id) li
 </project>
 ```
 
-The walt.id library is written in Kotlin. pac4j manages Kotlin versions for its own build; applications must align their runtime dependencies too. This POM pins Kotlin to `2.4.20` and `kotlinx-datetime-jvm` to `0.6.1`; Spring Boot 4.0.4 already manages the matching coroutines (`1.10.2`) and serialization (`1.9.0`) versions. See [Kotlin alignment](/docs/clients/openid4vp-mdoc-verifier.html#12-kotlin-alignment), especially if you also verify SD-JWT VC credentials. Do not upgrade `kotlinx-datetime` to `0.7.x`, which removes APIs used by walt.id 0.12.0.
+The walt.id library is written in Kotlin. This POM matches pac4j's runtime versions: Kotlin `2.4.21`, Coroutines `1.11.0`, Serialization `1.11.1-waltid-20260811` and Datetime `0.8.0-0.6.x-compat`. The Serialization variant comes from the walt.id repository; the Datetime compatibility artifact preserves the legacy API used by walt.id 0.12.0. Do not replace it with a version which removes that API. See [Kotlin alignment](/docs/clients/openid4vp-mdoc-verifier.html#12-kotlin-alignment), especially when verifying both SD-JWT VC and mdoc credentials.
+
+The imported `pac4j-parent` dependency management aligns `pac4j-core` and shared libraries; the explicit `pac4j-jakartaee` entry aligns the adapter pulled in by `spring-webmvc-pac4j` with `pac4j-openid4vp`. Spring Boot 4.0.8 supplies Spring Framework 7.0.9, matching pac4j; the properties align Jackson 2, Commons Lang, SLF4J, Commons Logging and JSpecify too. Jackson 3 remains managed by Boot for its own web stack. Letting Boot select its older Kotlin dependencies can cause runtime linkage failures even if the demo compiles.
+
+Check the resolved versions with `mvn dependency:tree`. While pac4j 6.6.0 is unreleased, install the current snapshot locally and run Maven with `-Dpac4j.version=6.6.0-SNAPSHOT`; keep all pac4j modules on the same version.
 
 The `src/main/resources/application.properties` file holds the base URL and enables the logs we will read at the end:
 
@@ -254,7 +280,11 @@ public class SecurityConfig extends Pac4jSecurityConfig {
                 .setKeyStoreAlias("rp")
                 .setKeystorePassword("changeit")
                 .setPrivateKeyPassword("changeit"))
-            .setDcqlQuery(EudiPidQuery.mdoc(GIVEN_NAME, FAMILY_NAME, PERSONAL_ADMINISTRATIVE_NUMBER));
+            .setDcqlQuery(EudiPidQuery.mdoc(GIVEN_NAME, FAMILY_NAME, PERSONAL_ADMINISTRATIVE_NUMBER))
+            // No redirection is needed at the end of the process as the wallet is not on the same device.
+            // Therefore, setUseRedirectUri is set to false, although this is unnecessary as it is the default value.
+            // This is for demonstration purposes only.
+            .setUseRedirectUri(false);
 
         // the response: an mdoc is accepted if its certificate chain ends in the truststore
         final var issuers = new CertificateTrustedIssuer(new KeystoreProperties("./metadata/pid-issuers.p12")
@@ -285,8 +315,9 @@ public class SecurityConfig extends Pac4jSecurityConfig {
 }
 ```
 
-Compared to the first post, two things change:
+Compared to the first post, three things change:
 
+- `useRedirectUri` stays `false`, its default. In the first post it is `true`, so the wallet returns the phone's browser to the pac4j callback. Here the authenticated session belongs to the computer: redirecting the phone would not bring its session cookie along. The computer page polls for the response and continues to the callback itself, without a `response_code`.
 - The verifier is `MdocVerifier`, which checks the issuer authentication of the document, its digests, its validity, the signature of the device and the binding of the response to the request, and the chain of the document signer up to your truststore.
 - The claims of an mdoc are grouped by **namespace**: for the PID, the namespace is its document type, `eu.europa.ec.eudi.pid.1`. The profile identifier reads the administrative number in that namespace, and the profile exposes an attribute named after the namespace, holding the three claims. `ProfileIdResolver.issuerAndClaim(...)` only reads the top-level claims of an SD-JWT VC, hence the small resolver above.
 
@@ -495,7 +526,7 @@ The whole flow in six screens, the computer at both ends and the phone in betwee
 
 **3. The user consents.** The wallet shows who is asking, the hash of your certificate for now, and what is asked: the PID, given name, family name and administrative number. The user picks the mdoc card and confirms with their PIN.
 
-**4. The wallet posts its response.** An encrypted JWT, containing the mdoc device response, posted on the callback URL. pac4j decrypts, verifies and keeps the result for the browser session which started the transaction. The wallet shows that the sharing succeeded.
+**4. The wallet posts its response.** An encrypted JWT, containing the mdoc device response, posted on the callback URL. pac4j decrypts, verifies and keeps the result for the browser session which started the transaction. With `useRedirectUri=false`, it answers HTTP 200 with `{}`: the wallet shows that the sharing succeeded, while the computer page continues waiting for its next poll. There is no browser redirect on the phone.
 
 **5. The page continues on its own.** The next poll returns `received`: the page goes to the callback URL, pac4j retrieves the profile already validated when the wallet posted its response, stores it in the session and redirects to the page requested at step 1: the protected page shows Emma Charlotte van der Berg, with the three claims under the `eu.europa.ec.eudi.pid.1` attribute and an identifier made of the issuer and the administrative number.
 

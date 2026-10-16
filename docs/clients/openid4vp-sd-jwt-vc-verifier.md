@@ -26,15 +26,34 @@ The verifier relies on the EUDI SD-JWT library, which is **not included by defau
 <dependency>
     <groupId>eu.europa.ec.eudi</groupId>
     <artifactId>eudi-lib-jvm-sdjwt-kt</artifactId>
-    <version>0.20.1</version>
+    <version>0.20.2</version>
 </dependency>
 ```
 
 Without it, `SdJwtVcVerifier` throws an `OpenId4VpException` when validating a credential, with a message identifying
 the dependency to add. Applications replacing it with their own `CredentialVerifier` do not need EUDI.
 
-If you also use the [mdoc verifier](openid4vp-mdoc-verifier.html), align the Kotlin dependencies as explained in
-[Kotlin alignment](openid4vp-mdoc-verifier.html#12-kotlin-alignment).
+The EUDI version above matches pac4j's build. Its adapter also requires **Coroutines 1.11.0**. With the
+Spring Boot 4.0.8 starter parent, align all three managed Kotlin runtime families:
+
+```xml
+<properties>
+    <kotlin.version>2.4.21</kotlin.version>
+    <kotlin-coroutines.version>1.11.0</kotlin-coroutines.version>
+    <kotlin-serialization.version>1.11.1-waltid-20260811</kotlin-serialization.version>
+</properties>
+```
+
+The Serialization variant is published in the walt.id repository, so declare that repository even when you only
+verify SD-JWT VC credentials; see the [complete same-device demo POM](/blog/openid4vp_in_action_same_device.html#6-create-the-spring-boot-project).
+That POM also aligns the pac4j modules and the Java dependencies managed by Boot.
+
+A `NoSuchMethodError` mentioning `BuildersKt.runBlockingK$default` means an older Coroutines runtime was selected.
+Check the resolved versions with `mvn dependency:tree`.
+
+Without Spring Boot, or when also using the [mdoc verifier](openid4vp-mdoc-verifier.html), import the Kotlin,
+Coroutines and Serialization BOMs shown in [Kotlin alignment](openid4vp-mdoc-verifier.html#12-kotlin-alignment).
+The Datetime compatibility dependency is needed for mdoc.
 
 ## 2) Quick start
 

@@ -40,7 +40,7 @@ With eIDAS 2.0, EU member states must offer European Digital Identity wallets (E
 - `OpenId4VpClient`: an OpenID4VP 1.0 wallet, with configurable protocol settings
 - `OpenId4VpDcApiClient`: the wallet is reached through the **Digital Credentials API** of the browser, no QR code, no redirection.
 
-With the first two clients, the wallet is invoked by a link on the same device, or by a QR code from a desktop browser. With a QR code, the page can poll pac4j for the wallet's response and continue automatically; on the same device, the user returns to the browser once the wallet is done, with automatic redirection on the roadmap.
+With the first two clients, the wallet is invoked by a link on the same device, or by a QR code from a desktop browser. On the same device, enable `setUseRedirectUri(true)`: after the wallet posts its response, pac4j returns a `redirect_uri` pointing to its callback with a fresh `response_code`. The wallet opens the browser there, and pac4j checks the code and the original session, completes authentication and redirects to the saved request URL. No manual return link or code relay is needed in the application. For a QR code on another device, leave this option at its default `false`: the computer page polls pac4j for the wallet's response and continues to the callback itself. See the [same-device](/blog/openid4vp_in_action_same_device.html) and [cross-device](/blog/openid4vp_in_action_another_device.html) walkthroughs.
 
 ```java
 final var config = new OpenId4VpConfiguration()
@@ -49,7 +49,8 @@ final var config = new OpenId4VpConfiguration()
         .setKeyStoreAlias("rp")
         .setKeystorePassword("changeit")
         .setPrivateKeyPassword("changeit"))
-    .setDcqlQuery(EudiPidQuery.sdJwtVc(GIVEN_NAME, FAMILY_NAME, PERSONAL_ADMINISTRATIVE_NUMBER));
+    .setDcqlQuery(EudiPidQuery.sdJwtVc(GIVEN_NAME, FAMILY_NAME, PERSONAL_ADMINISTRATIVE_NUMBER))
+    .setUseRedirectUri(true); // same-device browser return; leave false for a QR code on another device
 config.addCredentialVerifier(new SdJwtVcVerifier()
     .addTrustedIssuer(new CertificateTrustedIssuer(new KeystoreProperties("classpath:pid-providers.p12")
             .setKeyStoreType("PKCS12")
@@ -92,7 +93,7 @@ On the verifier side, four client identifier prefixes are supported (`x509_hash`
 
 ### d) Not complete yet, but already solid
 
-Some parts of the specification are still on the roadmap: transaction data, redirection back to the browser at the end of a same-device flow, the `verifier_attestation` and `openid_federation` prefixes, and other credential formats. The module does not provide complete EUDI trust-list or HAIP conformance validation.
+Some parts of the specification are still on the roadmap: transaction data, the `verifier_attestation` and `openid_federation` prefixes, and other credential formats. The module does not provide complete EUDI trust-list or HAIP conformance validation.
 
 The module has been tested against the [Paradym wallet](https://paradym.id/) and its playground, on the same device and by QR code, with SD-JWT VC and mdoc PIDs. Please test it against your own wallets and send us your feedback!
 

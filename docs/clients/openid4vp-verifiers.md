@@ -44,12 +44,22 @@ the transaction open for the wallet's own answer (beyond what
 result of this validation is stored with the response: when the user's browser calls the callback URL to claim it,
 its web session identifies the transaction and the profile built at reception is used as is.
 
-Two limits remain, which the Digital Credentials API avoids:
+**With `setUseRedirectUri(true)`**, the wallet is also given a fresh `response_code` in the callback URL returned
+as `redirect_uri`. The browser must present that code in the session which started the transaction before the
+callback can consume the response and save the profile. A missing or incorrect code is refused; a code from another
+session cannot claim its presentation, and a transaction already consumed cannot be used again. The callback then
+restores the saved request automatically. See [Returning to the application](openid4vp-clients.html#3-returning-to-the-application).
+
+For the URL binding, keep these limits in mind:
 
 - **Wallet errors:** an `error` cannot be authenticated, so whoever sees the QR code can end the transaction with one.
-- **Session fixation:** nothing ties the wallet which answers to the browser which started the flow, so a valid
-  presentation made by another wallet for this very request is accepted
+- **Session fixation without a wallet redirect:** with `useRedirectUri=false` (the default, used for cross-device
+  polling), the browser does not prove that it received the wallet return. A valid presentation made by another
+  wallet for this very request can be accepted
   ([section 14.2](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#section-14.2)).
+  The same-device redirect adds that return check through the `response_code` and the original browser session;
+  it does not replace credential verification or the application's session protections. The Digital Credentials
+  API binds the exchange through the browser itself.
 
 ## 2) Configuring credential verifiers
 
