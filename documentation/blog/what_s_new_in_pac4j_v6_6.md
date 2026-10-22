@@ -2,9 +2,8 @@
 layout: blog
 title: What's new in pac4j v6.6?
 author: Jérôme LELEU
-date: November 2026
+date: October 22, 2026
 tags: [rel]
-draft: true
 seo_title: "pac4j 6.6: OpenID4VP, resource loading, properties and protocol logs | pac4j"
 description: "Discover pac4j 6.6: the new OpenID4VP support for digital wallets, more resilient SAML/OIDC metadata loading, ResourceProperties, JWK helpers and unified protocol logging."
 ---
@@ -40,7 +39,7 @@ With eIDAS 2.0, EU member states must offer European Digital Identity wallets (E
 - `OpenId4VpClient`: an OpenID4VP 1.0 wallet, with configurable protocol settings
 - `OpenId4VpDcApiClient`: the wallet is reached through the **Digital Credentials API** of the browser, no QR code, no redirection.
 
-With the first two clients, the wallet is invoked by a link on the same device, or by a QR code from a desktop browser. On the same device, enable `setUseRedirectUri(true)`: after the wallet posts its response, pac4j returns a `redirect_uri` pointing to its callback with a fresh `response_code`. The wallet opens the browser there, and pac4j checks the code and the original session, completes authentication and redirects to the saved request URL. No manual return link or code relay is needed in the application. For a QR code on another device, leave this option at its default `false`: the computer page polls pac4j for the wallet's response and continues to the callback itself. See the [same-device](/blog/openid4vp_in_action_same_device.html) and [cross-device](/blog/openid4vp_in_action_another_device.html) walkthroughs.
+With the first two clients, the wallet is invoked by a link on the same device, or by a QR code from a desktop browser. On the same device, enable `setUseRedirectUri(true)`: after the wallet posts its response, pac4j returns a `redirect_uri` pointing to its callback with a fresh `response_code`. The wallet opens the browser there, and pac4j checks the code and the original session, completes authentication and redirects to the saved request URL. No manual return link or code relay is needed in the application. For a QR code on another device, leave this option at its default `false`: the computer page polls pac4j for the wallet's response and continues to the callback itself.
 
 ```java
 final var config = new OpenId4VpConfiguration()
