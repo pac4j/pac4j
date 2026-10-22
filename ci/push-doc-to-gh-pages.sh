@@ -1,17 +1,19 @@
 #!/bin/bash
 
+set -euo pipefail
+
 echo -e "Starting with project documentation...\n"
 
 echo -e "Copying project documentation over to $HOME/docs-latest...\n"
-cp -R documentation $HOME/docs-latest
+cp -R documentation "$HOME/docs-latest"
 
 echo -e "Finished with project documentation...\n"
 
-cd $HOME
+cd "$HOME"
 git config --global user.email "actions@github.com"
 git config --global user.name "Github Actions"
 echo -e "Cloning the gh-pages branch...\n"
-git clone --depth 1 --quiet --branch=gh-pages https://${GH_TOKEN}@github.com/pac4j/pac4j gh-pages > /dev/null
+git clone --depth 1 --quiet --branch=gh-pages "https://${GH_TOKEN}@github.com/pac4j/pac4j" gh-pages > /dev/null
 
 cd gh-pages
 
@@ -34,25 +36,31 @@ if [ "$GITHUB_REF" == "refs/heads/master" ]; then
         gettingstarted.html implementations.html 'how-to-secure-a-*.md'
 
     echo -e "Copying new docs from $HOME/docs-latest over to gh-pages...\n"
-    cp -Rf $HOME/docs-latest/* .
+    cp -Rf "$HOME/docs-latest/"* .
     echo -e "Copied project documentation...\n"
 
 else
 
     echo -e "Removing previous documentation from $BRANCH...\n"
-    git rm -rf ./"$BRANCH" > /dev/null
+    git rm -rf --ignore-unmatch ./"$BRANCH" > /dev/null
 
     echo -e "Creating $BRANCH directory...\n"
     test -d "./$BRANCH" || mkdir -m777 -v "./$BRANCH"
 
     echo -e "Copying new docs from $HOME/docs-latest over to $BRANCH...\n"
-    cp -Rf $HOME/docs-latest/* "./$BRANCH"
+    cp -Rf "$HOME/docs-latest/"* "./$BRANCH"
     echo -e "Copied project documentation...\n"
 
 fi
 
 echo -e "Adding changes to the git index...\n"
 git add -f . > /dev/null
+
+staged_changes=$(git diff --cached --name-only)
+if [ -z "$staged_changes" ]; then
+    echo -e "No documentation changes to publish.\n"
+    exit 0
+fi
 
 echo -e "Committing changes...\n"
 git commit -m "Published doc from $BRANCH to [gh-pages]. Build ${GITHUB_RUN_ID}-${GITHUB_RUN_NUMBER} " > /dev/null
@@ -61,5 +69,3 @@ echo -e "Pushing upstream to origin...\n"
 git push -fq origin gh-pages > /dev/null
 
 echo -e "Successfully published documentation to [gh-pages] branch.\n"
-
-echo $?
