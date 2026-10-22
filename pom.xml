@@ -91,7 +91,7 @@
 		<nimbus-jose-jwt.version>10.10</nimbus-jose-jwt.version>
         <eudi-sdjwt.version>0.20.2</eudi-sdjwt.version>
 		<spring.version>7.0.9</spring.version>
-		<spring.security.version>7.1.1</spring.security.version>
+		<spring.security.version>7.1.2</spring.security.version>
         <bouncycastle.version>1.86</bouncycastle.version>
 		<shiro.version>3.0.1</shiro.version>
         <jbcrypt.version>0.4.3</jbcrypt.version>
