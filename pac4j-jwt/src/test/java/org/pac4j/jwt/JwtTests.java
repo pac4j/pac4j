@@ -316,6 +316,18 @@ public final class JwtTests implements TestsConstants {
     }
 
     @Test
+    public void testSignedJwtNotYetValid() {
+        val signatureConfiguration = new SecretSignatureConfiguration(MAC_SECRET);
+        val generator = new JwtGenerator(signatureConfiguration);
+        Map<String, Object> claims = new HashMap<>();
+        claims.put(JwtClaims.SUBJECT, ID);
+        claims.put(JwtClaims.NOT_BEFORE, tomorrow());
+        val token = generator.generate(claims);
+        val authenticator = new JwtAuthenticator(signatureConfiguration);
+        assertNull(authenticator.validateToken(token));
+    }
+
+    @Test
     public void testPlainJwtNoSubject() {
         val generator = new JwtGenerator();
         val token = generator.generate(new HashMap<>());
