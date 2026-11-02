@@ -2,9 +2,8 @@
 layout: blog
 title: "EUDI wallets with OpenID4VP in action (1/2): on the same device"
 author: Jérôme LELEU
-date: November 2026
+date: November 2, 2026
 tags: [guide]
-draft: true
 seo_title: "OpenID4VP in action with pac4j (1/2): EUDI wallet login on the same device | pac4j"
 description: "Authenticate a user with an EUDI-style digital wallet on their phone: a Spring Boot application, pac4j, an SD-JWT VC PID and the Paradym demo wallet, step by step, with the protocol logs."
 ---
