@@ -73,7 +73,7 @@ public class Saml2ClientBuilder extends AbstractBuilder {
 
                 val acceptedSkew = getProperty(SAML_ACCEPTED_SKEW, i);
                 if (StringUtils.isNotBlank(acceptedSkew)) {
-                    cfg.setAcceptedSkew(Long.parseLong(acceptedSkew));
+                    cfg.setClockSkewSeconds(Long.parseLong(acceptedSkew));
                 }
 
                 val assertionConsumerServiceIndex = getProperty(SAML_ASSERTION_CONSUMER_SERVICE_INDEX, i);

@@ -121,6 +121,13 @@ Once you have an authenticated web session on the Identity Provider, usually it 
 client.setMaximumAuthenticationLifetime(600);
 ```
 
+To account for a clock difference between the Service Provider and the Identity Provider, the SAML client accepts a clock skew of 300 seconds by default when checking the dates of the response and assertions. You can change it with the `clockSkewSeconds` parameter (the former `acceptedSkew` getter and setter are deprecated):
+
+```java
+// clock skew in seconds
+cfg.setClockSkewSeconds(120);
+```
+
 By default, the entity ID of your application (the Service Provider) will be equal to the [callback URL](../clients.html#3-the-callback-url).
 But you can force your own entity ID with the `serviceProviderEntityId` parameter:
 

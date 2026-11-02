@@ -189,7 +189,7 @@ public class SAML2Client extends IndirectClient {
             this.logoutValidator = new SAML2LogoutValidator(this.signatureTrustEngineProvider,
                 this.decrypter, findSessionLogoutHandler(),
                 this.replayCache, this.configuration.getUriComparator());
-            this.logoutValidator.setAcceptedSkew(this.configuration.getAcceptedSkew());
+            this.logoutValidator.setClockSkewSeconds(this.configuration.getClockSkewSeconds());
             this.logoutValidator.setPartialLogoutTreatedAsSuccess(this.configuration.isPartialLogoutTreatedAsSuccess());
         }
     }
@@ -203,7 +203,7 @@ public class SAML2Client extends IndirectClient {
                 this.replayCache,
                 this.configuration,
                 findSessionLogoutHandler());
-            this.authnResponseValidator.setAcceptedSkew(this.configuration.getAcceptedSkew());
+            this.authnResponseValidator.setClockSkewSeconds(this.configuration.getClockSkewSeconds());
         }
     }
 

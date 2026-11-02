@@ -22,9 +22,17 @@ public interface SAML2ResponseValidator {
     Credentials validate(SAML2MessageContext context);
 
     /**
-     * <p>setAcceptedSkew.</p>
+     * Define the accepted clock skew (in seconds) between the SP and the IdP.
      *
-     * @param acceptedSkew a long
+     * @param clockSkewSeconds the clock skew in seconds
      */
-    void setAcceptedSkew(long acceptedSkew);
+    void setClockSkewSeconds(long clockSkewSeconds);
+
+    /**
+     * @deprecated use {@link #setClockSkewSeconds(long)}
+     */
+    @Deprecated
+    default void setAcceptedSkew(final long acceptedSkew) {
+        setClockSkewSeconds(acceptedSkew);
+    }
 }

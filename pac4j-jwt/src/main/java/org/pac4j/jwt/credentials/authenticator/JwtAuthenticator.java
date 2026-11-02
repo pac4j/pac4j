@@ -74,6 +74,11 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
 
     private Date expirationTime;
 
+    /**
+     * The clock skew (in seconds) accepted when checking the expiration ({@code exp}) and not before ({@code nbf}) dates.
+     */
+    private long clockSkewSeconds = 60;
+
     private ValueGenerator identifierGenerator;
 
     /**
@@ -326,10 +331,11 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
             }
         }
 
+        // RFC 7519 §4.1.4 and §4.1.5: a small leeway may be provided to account for clock skew
+        val now = new Date();
         val expTime = claimSet.getExpirationTime();
         if (expTime != null) {
-            val now = new Date();
-            if (expTime.before(now)) {
+            if (expTime.before(new Date(now.getTime() - clockSkewSeconds * 1000))) {
                 LOGGER.warn("The JWT is expired: no profile is built");
                 return;
             }
@@ -340,7 +346,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
         }
 
         val nbfTime = claimSet.getNotBeforeTime();
-        if (nbfTime != null && nbfTime.after(new Date())) {
+        if (nbfTime != null && nbfTime.after(new Date(now.getTime() + clockSkewSeconds * 1000))) {
             LOGGER.warn("The JWT is not yet valid: no profile is built");
             return;
         }
