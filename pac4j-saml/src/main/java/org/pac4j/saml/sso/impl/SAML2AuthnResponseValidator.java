@@ -508,7 +508,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
         }
 
         val now = Instant.now();
-        val expired = data.getNotOnOrAfter().plusSeconds(acceptedSkew).isBefore(now);
+        val expired = data.getNotOnOrAfter().plusSeconds(clockSkewSeconds).isBefore(now);
 
         if (expired) {
             logger.debug("SubjectConfirmationData notOnOrAfter is too old");
@@ -559,7 +559,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
             return;
         }
 
-        val expires = Instant.ofEpochMilli(data.getNotOnOrAfter().toEpochMilli() + acceptedSkew * 1000);
+        val expires = Instant.ofEpochMilli(data.getNotOnOrAfter().toEpochMilli() + clockSkewSeconds * 1000);
         if (!replayCache.get().check(getClass().getName(), assertion.getID(), expires)) {
             throw new SAMLReplayException("Rejecting replayed assertion ID '" + assertion.getID() + "'");
         }
@@ -581,14 +581,14 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
 
         val now = Instant.now();
         if (conditions.getNotBefore() != null) {
-            val expired = conditions.getNotBefore().minusSeconds(acceptedSkew).isAfter(now);
+            val expired = conditions.getNotBefore().minusSeconds(clockSkewSeconds).isAfter(now);
             if (expired) {
                 throw new SAMLAssertionConditionException("Assertion condition notBefore is not valid");
             }
         }
 
         if (conditions.getNotOnOrAfter() != null) {
-            val expired = conditions.getNotOnOrAfter().plusSeconds(acceptedSkew).isBefore(now);
+            val expired = conditions.getNotOnOrAfter().plusSeconds(clockSkewSeconds).isBefore(now);
             if (expired) {
                 throw new SAMLAssertionConditionException("Assertion condition notOnOrAfter is not valid");
             }

@@ -59,7 +59,7 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
     protected final ReplayCacheProvider replayCache;
 
     /* maximum skew in seconds between SP and IDP clocks */
-    protected long acceptedSkew = 120;
+    protected long clockSkewSeconds = 120;
 
     /**
      * <p>Constructor for AbstractSAML2ResponseValidator.</p>
@@ -215,8 +215,8 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
      */
     protected boolean isDateValid(final Instant issueInstant, final long interval) {
         val now = Instant.now();
-        val before = now.plusSeconds(acceptedSkew);
-        val after = now.minusSeconds(acceptedSkew + interval);
+        val before = now.plusSeconds(clockSkewSeconds);
+        val after = now.minusSeconds(clockSkewSeconds + interval);
 
         val isDateValid = issueInstant.isBefore(before) && issueInstant.isAfter(after);
         if (!isDateValid) {
@@ -277,7 +277,7 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
 
         try {
             val messageReplayHandler = new MessageReplaySecurityHandler();
-            messageReplayHandler.setExpires(Duration.ofMillis(acceptedSkew * 1000));
+            messageReplayHandler.setExpires(Duration.ofMillis(clockSkewSeconds * 1000));
             messageReplayHandler.setReplayCache(replayCache.get());
             messageReplayHandler.initialize();
             messageReplayHandler.invoke(context.getMessageContext());
@@ -335,7 +335,7 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
 
     /** {@inheritDoc} */
     @Override
-    public final void setAcceptedSkew(final long acceptedSkew) {
-        this.acceptedSkew = acceptedSkew;
+    public final void setClockSkewSeconds(final long clockSkewSeconds) {
+        this.clockSkewSeconds = clockSkewSeconds;
     }
 }

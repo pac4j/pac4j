@@ -328,6 +328,45 @@ public final class JwtTests implements TestsConstants {
     }
 
     @Test
+    public void testSignedJwtAlreadyValid() {
+        val signatureConfiguration = new SecretSignatureConfiguration(MAC_SECRET);
+        val generator = new JwtGenerator(signatureConfiguration);
+        Map<String, Object> claims = new HashMap<>();
+        claims.put(JwtClaims.SUBJECT, ID);
+        claims.put(JwtClaims.NOT_BEFORE, yesterday());
+        val token = generator.generate(claims);
+        val authenticator = new JwtAuthenticator(signatureConfiguration);
+        assertNotNull(authenticator.validateToken(token));
+    }
+
+    @Test
+    public void testSignedJwtNotYetValidWithinSkew() {
+        val signatureConfiguration = new SecretSignatureConfiguration(MAC_SECRET);
+        val generator = new JwtGenerator(signatureConfiguration);
+        Map<String, Object> claims = new HashMap<>();
+        claims.put(JwtClaims.SUBJECT, ID);
+        claims.put(JwtClaims.NOT_BEFORE, inSeconds(30));
+        val token = generator.generate(claims);
+        val authenticator = new JwtAuthenticator(signatureConfiguration);
+        assertNotNull(authenticator.validateToken(token));
+        authenticator.setClockSkewSeconds(0);
+        assertNull(authenticator.validateToken(token));
+    }
+
+    @Test
+    public void testPlainJwtExpiredWithinSkew() {
+        val generator = new JwtGenerator();
+        Map<String, Object> claims = new HashMap<>();
+        claims.put(JwtClaims.SUBJECT, ID);
+        claims.put(JwtClaims.EXPIRATION_TIME, inSeconds(-30));
+        val token = generator.generate(claims);
+        var authenticator = new JwtAuthenticator();
+        assertNotNull(authenticator.validateToken(token));
+        authenticator.setClockSkewSeconds(0);
+        assertNull(authenticator.validateToken(token));
+    }
+
+    @Test
     public void testPlainJwtNoSubject() {
         val generator = new JwtGenerator();
         val token = generator.generate(new HashMap<>());
@@ -408,6 +447,10 @@ public final class JwtTests implements TestsConstants {
         val claims2 = jwtAuthenticator.validateTokenAndGetClaims(token);
         assertEquals(VALUE, claims2.get(JwtClaims.SUBJECT));
         assertEquals(tomorrow.getTime() / 1000, ((Date) claims2.get(JwtClaims.EXPIRATION_TIME)).getTime() / 1000);
+    }
+
+    private Date inSeconds(final int seconds) {
+        return new Date(new Date().getTime() + seconds * 1000L);
     }
 
     private Date tomorrow() {

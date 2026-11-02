@@ -106,7 +106,7 @@ public class SAML2Configuration extends BaseClientConfiguration {
 
     private long maximumAuthenticationLifetime;
 
-    private long acceptedSkew = 300;
+    private long clockSkewSeconds = 300;
 
     private boolean forceAuth = false;
 
@@ -371,6 +371,31 @@ public class SAML2Configuration extends BaseClientConfiguration {
             throw new SAMLException("SAML2Configuration is missing required settings: "
                 + String.join(", ", missingSettings) + '.');
         }
+    }
+
+    /**
+     * @deprecated use getClockSkewSeconds() instead of getAcceptedSkew()
+     */
+    @Deprecated
+    public long getAcceptedSkew() {
+        return clockSkewSeconds;
+    }
+
+    /**
+     * @deprecated use setClockSkewSeconds(clockSkewSeconds) instead of setAcceptedSkew(acceptedSkew)
+     */
+    @Deprecated
+    public SAML2Configuration setAcceptedSkew(final long acceptedSkew) {
+        this.clockSkewSeconds = acceptedSkew;
+        return this;
+    }
+
+    /**
+     * @deprecated use withClockSkewSeconds(clockSkewSeconds) instead of withAcceptedSkew(acceptedSkew)
+     */
+    @Deprecated
+    public SAML2Configuration withAcceptedSkew(final long acceptedSkew) {
+        return withClockSkewSeconds(acceptedSkew);
     }
 
     @Deprecated

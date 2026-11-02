@@ -204,7 +204,7 @@ public class DefaultSOAPPipelineFactory implements HttpClientMessagePipelineFact
      */
     protected MessageHandler buildMessageLifetimeSecurityHandler() throws ComponentInitializationException {
         val lifetimeHandler = new MessageLifetimeSecurityHandler();
-        lifetimeHandler.setClockSkew(Duration.ofMillis(configuration.getAcceptedSkew() * 1000));
+        lifetimeHandler.setClockSkew(Duration.ofMillis(configuration.getClockSkewSeconds() * 1000));
         lifetimeHandler.initialize();
         return lifetimeHandler;
     }
@@ -229,7 +229,7 @@ public class DefaultSOAPPipelineFactory implements HttpClientMessagePipelineFact
      */
     protected MessageHandler buildMessageReplaySecurityHandler() throws ComponentInitializationException {
         val messageReplayHandler = new MessageReplaySecurityHandler();
-        messageReplayHandler.setExpires(Duration.ofMillis(configuration.getAcceptedSkew() * 1000));
+        messageReplayHandler.setExpires(Duration.ofMillis(configuration.getClockSkewSeconds() * 1000));
         messageReplayHandler.setReplayCache(replayCache.get());
         messageReplayHandler.initialize();
         return messageReplayHandler;
