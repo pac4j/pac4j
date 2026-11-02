@@ -339,6 +339,12 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
             }
         }
 
+        val nbfTime = claimSet.getNotBeforeTime();
+        if (nbfTime != null && nbfTime.after(new Date())) {
+            LOGGER.warn("The JWT is not yet valid: no profile is built");
+            return;
+        }
+
         val attributes = new HashMap<>(claimSet.getClaims());
         attributes.remove(JwtClaims.SUBJECT);
 

@@ -7,6 +7,9 @@ description: "Review pac4j release notes for supported Java lines, including aut
 
 ### JDK17:
 
+**v6.6.1**:
+- The `JwtAuthenticator` now rejects a JWT whose `nbf` (not before) date is in the future
+
 **v6.6.0**:
 - Moved most test components from the `org.pac4j.test` package of the `pac4j-core` module into the new `pac4j-test` module (only `MockWebContext`, `MockSessionStore`, `TestsConstants` and `TestsHelper` remain in `pac4j-core`)
 - Update dependencies. Especially Spring v7: although the project is built against this version, you may use older versions of Spring
