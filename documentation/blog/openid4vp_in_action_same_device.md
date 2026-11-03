@@ -36,7 +36,7 @@ And several ways to identify the verifier, several ways to reach the wallet, sev
 
 pac4j has one security model for every protocol: a `Client` starts the authentication, a *callback* receives the answer, a `UserProfile` ends up in the session. CAS, SAML, OpenID Connect, OAuth all fit in it, and a digital wallet does too.
 
-The new `pac4j-openid4vp` module, which arrives with pac4j v6.6.0, adds the `EudiWalletClient`: you give it a DCQL query, a keystore and the issuers you trust, and it handles the signed request, the encrypted response, credential verification and the user profile. If you have already used pac4j, the integration will look familiar.
+The new `pac4j-openid4vp` module, introduced in pac4j v6.6.0, adds the `EudiWalletClient`: you give it a DCQL query, a keystore and the issuers you trust, and it handles the signed request, the encrypted response, credential verification and the user profile. If you have already used pac4j, the integration will look familiar.
 
 This first post walks through a complete example on the same device: the user is on their phone, clicks a link, the wallet opens, and an **SD-JWT VC** PID comes back. The [second post](/blog/openid4vp_in_action_another_device.html) does the same on another device, with a QR code and an **mdoc** PID.
 
@@ -101,22 +101,13 @@ The `pom.xml`:
         <pac4j.version>6.6.0</pac4j.version>
         <kotlin.version>2.4.21</kotlin.version>
         <kotlin-coroutines.version>1.11.0</kotlin-coroutines.version>
-        <kotlin-serialization.version>1.11.1-waltid-20260811</kotlin-serialization.version>
+        <kotlin-serialization.version>1.12.0</kotlin-serialization.version>
         <jackson-2-bom.version>2.22.3</jackson-2-bom.version>
         <commons-lang3.version>3.21.0</commons-lang3.version>
         <slf4j.version>2.0.20</slf4j.version>
         <commons-logging.version>1.3.5</commons-logging.version>
         <jspecify.version>1.0.0</jspecify.version>
     </properties>
-
-    <!-- the Kotlin Serialization variant used by pac4j is published by walt.id -->
-    <repositories>
-        <repository>
-            <id>waltid-releases</id>
-            <url>https://maven.waltid.dev/releases</url>
-            <snapshots><enabled>false</enabled></snapshots>
-        </repository>
-    </repositories>
 
     <dependencyManagement>
         <dependencies>
@@ -175,11 +166,11 @@ The `pom.xml`:
 
 SD-JWT VC verification relies on the [EUDI SD-JWT library](https://github.com/eu-digital-identity-wallet/eudi-lib-jvm-sdjwt-kt), which pac4j declares as optional. This example uses version `0.20.2`, matching pac4j. The imported `pac4j-parent` dependency management aligns `pac4j-core` and shared libraries. The explicit management entry for `pac4j-jakartaee` also aligns the adapter pulled in by `spring-webmvc-pac4j`; setting a `pac4j.version` property alone would not override that adapter's transitive version.
 
-The runtime versions match pac4j's build: Kotlin `2.4.21`, Coroutines `1.11.0` and Serialization `1.11.1-waltid-20260811`. The Serialization variant is published in the walt.id repository, required here even though this demo does not use mdoc. Spring Boot 4.0.8 supplies Spring Framework 7.0.9, matching pac4j; the properties also align Jackson 2, Commons Lang, SLF4J, Commons Logging and JSpecify. Jackson 3 remains managed by Boot for its own web stack.
+The runtime versions match pac4j's build: Kotlin `2.4.21`, Coroutines `1.11.0` and Serialization `1.12.0`. Serialization `1.12.0` is available from Maven Central; the same-device demo does not need the walt.id repository. Spring Boot 4.0.8 supplies Spring Framework 7.0.9, matching pac4j; the properties also align Jackson 2, Commons Lang, SLF4J, Commons Logging and JSpecify. Jackson 3 remains managed by Boot for its own web stack.
 
 Boot's default Kotlin dependencies would otherwise override pac4j's versions. In particular, Coroutines 1.10.2 lacks `BuildersKt.runBlockingK$default`, called by the current pac4j adapter, and causes a `NoSuchMethodError` when the wallet posts its response.
 
-To check the resolved versions, run `mvn dependency:tree`. For this unreleased pac4j version, install the current snapshot locally and run Maven with `-Dpac4j.version=6.6.0-SNAPSHOT`; keep all pac4j modules on the same version.
+Use the released pac4j `6.6.0` dependencies declared above; no local snapshot installation is needed. Check the resolved versions with `mvn dependency:tree` and keep all pac4j modules on the same version.
 
 The `src/main/resources/application.properties` file holds the base URL and enables the logs we will read at the end:
 
