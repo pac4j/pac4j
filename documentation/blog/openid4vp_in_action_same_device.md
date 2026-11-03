@@ -55,8 +55,6 @@ The cards are Emma Charlotte van der Berg's, a fictitious Dutch citizen: given n
 
 Issue the card from this playground and no other: a PID issued elsewhere, by the older [playground.animo.id](https://playground.animo.id/) for instance, is signed by another certificate and the truststore of section 7 refuses it. If the wallet already holds PID cards from another source, delete them, or at least pick the right one when the wallet asks which card to present.
 
-<!-- screenshot: the Issuance page of the playground, and the cards in the Paradym wallet -->
-
 
 ## 5) ngrok: a real URL for the wallet
 

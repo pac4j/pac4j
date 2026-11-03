@@ -2,7 +2,7 @@
 layout: blog
 title: "EUDI wallets with OpenID4VP in action (2/2): on another device"
 author: Jérôme LELEU
-date: November 3, 202
+date: November 3, 2026
 tags: [guide]
 seo_title: "OpenID4VP in action with pac4j (2/2): EUDI wallet login by QR code, with an mdoc PID | pac4j"
 description: "Authenticate a user on a computer with the EUDI-style wallet of their phone: a Spring Boot application, pac4j, a QR code, an mdoc PID and the Paradym demo wallet, step by step, with the protocol logs."
@@ -54,8 +54,6 @@ A very good one is the **Paradym wallet** by [Animo](https://animo.id), availabl
 The cards are Emma Charlotte van der Berg's, a fictitious Dutch citizen, and the mdoc PID carries, among other attributes, a `personal_administrative_number`: a stable identifier, which the profile below relies on.
 
 Issue the card from this playground and no other: a PID issued elsewhere, by the older [playground.animo.id](https://playground.animo.id/) for instance, is signed by another certificate and the truststore of section 7 refuses it. If the wallet already holds PID cards from another source, delete them, or at least pick the right one when the wallet asks which card to present.
-
-<!-- screenshot: the Issuance page of the playground, and the mdoc PID in the Paradym wallet -->
 
 
 ## 5) ngrok: a real URL for the wallet
