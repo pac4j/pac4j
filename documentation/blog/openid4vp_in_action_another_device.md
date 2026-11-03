@@ -2,9 +2,8 @@
 layout: blog
 title: "EUDI wallets with OpenID4VP in action (2/2): on another device"
 author: Jérôme LELEU
-date: November 2026
+date: November 3, 202
 tags: [guide]
-draft: true
 seo_title: "OpenID4VP in action with pac4j (2/2): EUDI wallet login by QR code, with an mdoc PID | pac4j"
 description: "Authenticate a user on a computer with the EUDI-style wallet of their phone: a Spring Boot application, pac4j, a QR code, an mdoc PID and the Paradym demo wallet, step by step, with the protocol logs."
 ---
