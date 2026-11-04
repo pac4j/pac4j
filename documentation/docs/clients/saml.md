@@ -550,6 +550,17 @@ For more information, see [https://docs.oracle.com/javase/tutorial/ext/basics/sp
 ## 9) SAML message store
 
 A Message Store is an abstraction used by pac4j to track ongoing requests and incoming responses.
+None is defined by default (`EmptyStoreFactory`).
+
+When one is defined (`cfg.setSamlMessageStoreFactory(new HttpSessionStoreFactory())`), the `InResponseTo` of the response and of its bearer subject confirmation must match the authentication request sent.
+
+Responses which do not answer any request (IdP-initiated SSO) are accepted by default, which exposes to login CSRF. To reject them (a message store is required):
+
+```java
+cfg.setAllowUnsolicitedResponses(false);
+```
+
+This protects from login CSRF only with the `HttpSessionStore`, which binds the request to the session of the user: the `HazelcastSAMLMessageStore` is shared by all users, so a response obtained by an attacker for their own request is still accepted in the browser of another user.
 
 ### HttpSessionStore
 

@@ -6,9 +6,11 @@ import org.junit.jupiter.api.Test;
 import org.opensaml.core.xml.util.XMLObjectSupport;
 import org.opensaml.saml.common.messaging.context.SAMLPeerEntityContext;
 import org.opensaml.saml.saml2.core.AuthnContext;
+import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.opensaml.saml.saml2.core.Response;
 import org.opensaml.saml.saml2.core.SubjectConfirmation;
 import org.opensaml.saml.saml2.encryption.Decrypter;
+import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.saml.saml2.metadata.Endpoint;
 import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
 import org.opensaml.security.SecurityException;
@@ -23,6 +25,7 @@ import org.pac4j.saml.credentials.SAML2AuthenticationCredentials;
 import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
 import org.pac4j.saml.exceptions.*;
 import org.pac4j.saml.replay.InMemoryReplayCacheProvider;
+import org.pac4j.saml.store.SAMLMessageStore;
 import org.pac4j.saml.util.Configuration;
 import org.pac4j.saml.util.ExcludingParametersURIComparator;
 import org.pac4j.test.context.MockWebContext;
@@ -35,6 +38,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -215,6 +219,109 @@ public class SAML2DefaultResponseValidatorTests {
         samlEndpointContext.setEndpoint(endpoint);
 
         assertThrows(SAMLAuthnContextClassRefException.class, () -> validator.validate(context));
+    }
+
+    private static final String REQUEST_ID = "_5815d22eaf804954b84ce1418f16edad3018926";
+
+    private static SAML2MessageContext buildInResponseToContext(final SAML2Configuration saml2Configuration, final Response response) {
+        val context = new SAML2MessageContext(new CallContext(MockWebContext.create(), new MockSessionStore()));
+        context.setSaml2Configuration(saml2Configuration);
+        context.getMessageContext().setMessage(response);
+        context.getSAMLSelfEntityContext().setEntityId("https://auth.izslt.it");
+        val roleDescriptor = mock(SPSSODescriptor.class);
+        when(roleDescriptor.getWantAssertionsSigned()).thenReturn(false);
+        context.getSAMLSelfMetadataContext().setRoleDescriptor(roleDescriptor);
+        val endpoint = mock(AssertionConsumerService.class);
+        when(endpoint.getLocation()).thenReturn("https://auth.izslt.it/cas/login?client_name=idptest");
+        context.getSAMLEndpointContext().setEndpoint(endpoint);
+        return context;
+    }
+
+    private static SAMLMessageStore storeWithRequest() {
+        val request = mock(AuthnRequest.class);
+        when(request.getID()).thenReturn(REQUEST_ID);
+        val store = mock(SAMLMessageStore.class);
+        when(store.get(REQUEST_ID)).thenReturn(Optional.of(request));
+        return store;
+    }
+
+    private static Response getUnsignedResponse(final String outerInResponseTo, final String subjectInResponseTo) throws Exception {
+        val response = getResponse();
+        response.setSignature(null);
+        response.setInResponseTo(outerInResponseTo);
+        val assertion = response.getAssertions().get(0);
+        assertion.setSignature(null);
+        assertion.getSubject().getSubjectConfirmations().get(0).getSubjectConfirmationData().setInResponseTo(subjectInResponseTo);
+        return response;
+    }
+
+    private static SAML2Configuration getInResponseToConfiguration() {
+        val saml2Configuration = getSaml2Configuration(false, false);
+        saml2Configuration.setUriComparator(new ExcludingParametersURIComparator());
+        saml2Configuration.setAllSignatureValidationDisabled(true);
+        saml2Configuration.setNameIdAttribute("email");
+        return saml2Configuration;
+    }
+
+    @Test
+    public void testSolicitedResponse() throws Exception {
+        val saml2Configuration = getInResponseToConfiguration();
+        val context = buildInResponseToContext(saml2Configuration, getUnsignedResponse(REQUEST_ID, REQUEST_ID));
+        context.setSamlMessageStore(storeWithRequest());
+
+        assertNotNull(createResponseValidatorWithSigningValidationOf(saml2Configuration).validate(context));
+        assertEquals(REQUEST_ID, context.getInResponseToRequest().getID());
+    }
+
+    @Test
+    public void testSubjectConfirmationInResponseToMismatch() throws Exception {
+        val saml2Configuration = getInResponseToConfiguration();
+        val context = buildInResponseToContext(saml2Configuration, getUnsignedResponse(REQUEST_ID, "_otherRequest"));
+        context.setSamlMessageStore(storeWithRequest());
+
+        val validator = createResponseValidatorWithSigningValidationOf(saml2Configuration);
+        assertThrows(SAMLSubjectConfirmationException.class, () -> validator.validate(context));
+    }
+
+    @Test
+    public void testNoResponseInResponseToAndUnknownSubjectConfirmationInResponseTo() throws Exception {
+        val saml2Configuration = getInResponseToConfiguration();
+        val context = buildInResponseToContext(saml2Configuration, getUnsignedResponse(null, "_otherRequest"));
+        context.setSamlMessageStore(storeWithRequest());
+
+        val validator = createResponseValidatorWithSigningValidationOf(saml2Configuration);
+        assertThrows(SAMLSubjectConfirmationException.class, () -> validator.validate(context));
+    }
+
+    @Test
+    public void testNoResponseInResponseToAndKnownSubjectConfirmationInResponseTo() throws Exception {
+        val saml2Configuration = getInResponseToConfiguration();
+        val context = buildInResponseToContext(saml2Configuration, getUnsignedResponse(null, REQUEST_ID));
+        context.setSamlMessageStore(storeWithRequest());
+
+        assertNotNull(createResponseValidatorWithSigningValidationOf(saml2Configuration).validate(context));
+        assertEquals(REQUEST_ID, context.getInResponseToRequest().getID());
+    }
+
+    @Test
+    public void testUnsolicitedResponseAllowedByDefault() throws Exception {
+        val saml2Configuration = getInResponseToConfiguration();
+        val context = buildInResponseToContext(saml2Configuration, getUnsignedResponse(null, null));
+        context.setSamlMessageStore(storeWithRequest());
+
+        assertNotNull(createResponseValidatorWithSigningValidationOf(saml2Configuration).validate(context));
+        assertNull(context.getInResponseToRequest());
+    }
+
+    @Test
+    public void testUnsolicitedResponseRejected() throws Exception {
+        val saml2Configuration = getInResponseToConfiguration();
+        saml2Configuration.setAllowUnsolicitedResponses(false);
+        val context = buildInResponseToContext(saml2Configuration, getUnsignedResponse(null, null));
+        context.setSamlMessageStore(storeWithRequest());
+
+        val validator = createResponseValidatorWithSigningValidationOf(saml2Configuration);
+        assertThrows(SAMLInResponseToMismatchException.class, () -> validator.validate(context));
     }
 
     @Test
