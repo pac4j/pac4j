@@ -12,6 +12,11 @@ description: "Review pac4j release notes for supported Java lines, including aut
 - The `JwtAuthenticator` now accepts a clock skew (`clockSkewSeconds`, 60 seconds by default) when checking the `exp` and `nbf` dates
 - The SAML `acceptedSkew` property is renamed `clockSkewSeconds` in the `SAML2Configuration` and the `SAML2ResponseValidator`: the `getAcceptedSkew()`, `setAcceptedSkew(...)` and `withAcceptedSkew(...)` methods are deprecated
 - The custom SAML response validators must implement `setClockSkewSeconds(...)` and use the protected `clockSkewSeconds` field (formerly `acceptedSkew`)
+- SAML: the signature of the logout requests/responses received with the HTTP-Redirect binding (in the URL) is now checked
+- SAML: a warning is logged when an unsigned `LogoutRequest` is accepted thanks to its `SessionIndex` (this tolerance may be removed in a future version)
+- SAML: with a message store, the `InResponseTo` of the bearer subject confirmation is now checked against the authentication request sent
+- SAML: the new `allowUnsolicitedResponses` property (`true` by default) of the `SAML2Configuration` allows to reject the unsolicited responses (it requires a message store)
+- SAML: when an assertion has several `AudienceRestriction`, the SP entity ID must now be in each of them
 
 **v6.6.0**:
 - Moved most test components from the `org.pac4j.test` package of the `pac4j-core` module into the new `pac4j-test` module (only `MockWebContext`, `MockSessionStore`, `TestsConstants` and `TestsHelper` remain in `pac4j-core`)

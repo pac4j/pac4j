@@ -341,6 +341,19 @@ The `SAML2Client` can participate in the central logout and send a logout reques
 The binding of this request is controlled by the `spLogoutRequestBindingType` property and
 the request can be signed using the `spLogoutRequestSigned` property of the `SAML2Configuration`.
 
+The IdP can also send a logout request to the `SAML2Client` (on its callback URL) to end the user session in the application.
+This `LogoutRequest` is validated this way:
+
+- if it is signed, the signature is checked against the IdP certificate of the IdP metadata, and the request is rejected if the signature is invalid.
+  With the HTTP-POST and SOAP bindings, the signature is in the XML message. With the HTTP-Redirect binding, it is in the `Signature` and `SigAlg` parameters of the URL (supported since v6.6.1)
+- if it is not signed, it is only accepted if it contains a `SessionIndex`. This value is opaque and cannot be guessed, so pac4j tolerates the missing signature for compatibility with the IdPs that do not sign their logout requests. A warning is logged
+- if it is not signed and has no `SessionIndex`, it is rejected: the `NameID` alone is too easy to guess to identify the session to destroy.
+
+The SAML specification requires the IdP to sign its logout requests (SAML Profiles 2.0, §4.4.4.1).
+**The tolerance of unsigned logout requests may be removed in a future version to require the signature: configure your IdP to sign its logout requests.**
+
+The signature of a `LogoutResponse` sent by the IdP is checked the same way, if it exists.
+
 
 ## 5) Authentication Attributes
 
@@ -537,6 +550,17 @@ For more information, see [https://docs.oracle.com/javase/tutorial/ext/basics/sp
 ## 9) SAML message store
 
 A Message Store is an abstraction used by pac4j to track ongoing requests and incoming responses.
+None is defined by default (`EmptyStoreFactory`).
+
+When one is defined (`cfg.setSamlMessageStoreFactory(new HttpSessionStoreFactory())`), the `InResponseTo` of the response and of its bearer subject confirmation must match the authentication request sent.
+
+Responses which do not answer any request (IdP-initiated SSO) are accepted by default, which exposes to login CSRF. To reject them (a message store is required):
+
+```java
+cfg.setAllowUnsolicitedResponses(false);
+```
+
+This protects from login CSRF only with the `HttpSessionStore`, which binds the request to the session of the user: the `HazelcastSAMLMessageStore` is shared by all users, so a response obtained by an attacker for their own request is still accepted in the browser of another user.
 
 ### HttpSessionStore
 
