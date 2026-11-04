@@ -12,6 +12,7 @@ import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.logout.LogoutType;
 import org.pac4j.core.logout.handler.SessionLogoutHandler;
+import org.pac4j.core.util.Announcement;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.credentials.SAML2AuthenticationCredentials;
 import org.pac4j.saml.credentials.SAML2Credentials;
@@ -35,6 +36,11 @@ import java.util.Objects;
 @Getter
 @Setter
 public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
+
+    private static final Announcement ANNOUNCE_UNSIGNED_LOGOUT_REQUEST = new Announcement(null,
+        "An unsigned SAML LogoutRequest is accepted because it carries a SessionIndex, although the SAML specification "
+            + "requires it to be signed. This tolerance may be removed in a future version to require the signature: "
+            + "configure your IdP to sign its logout requests", true);
 
     /**
      * Logouts are only successful if the IdP was able to inform all services, otherwise it will
@@ -102,6 +108,7 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
 
         logger.trace("Validating logout request:\n{}", Configuration.serializeSamlObject(logoutRequest));
         validateSignatureIfItExists(logoutRequest.getSignature(), context, engine);
+        validateRedirectBindingSignatureIfItExists(context, engine);
 
         // don't check because of CAS v5
         //validateIssueInstant(logoutRequest.getIssueInstant());
@@ -127,9 +134,13 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
         val sloKey = computeSloKey(sessionIndex, samlNameId);
         if (sloKey != null && logoutHandler != null) {
             // only an authenticated logout request may destroy a session identified by a NameID (too guessable)
-            if (StringUtils.isBlank(sessionIndex) && !context.getSAMLPeerEntityContext().isAuthenticated()) {
-                throw new SAMLException("Refusing to destroy a session keyed on the NameID "
-                    + "for an unauthenticated logout request");
+            if (!context.getSAMLPeerEntityContext().isAuthenticated()) {
+                if (StringUtils.isBlank(sessionIndex)) {
+                    throw new SAMLException("Refusing to destroy a session keyed on the NameID "
+                        + "for an unauthenticated logout request");
+                }
+                // the IdP must sign its LogoutRequest (SAML Profiles 2.0, §4.4.4.1): an opaque SessionIndex is tolerated instead
+                ANNOUNCE_UNSIGNED_LOGOUT_REQUEST.announce();
             }
             logoutHandler.destroySession(context.getCallContext(), sloKey);
         }
@@ -151,6 +162,7 @@ public class SAML2LogoutValidator extends AbstractSAML2ResponseValidator {
         validateSuccess(logoutResponse.getStatus());
 
         validateSignatureIfItExists(logoutResponse.getSignature(), context, engine);
+        validateRedirectBindingSignatureIfItExists(context, engine);
 
         validateIssueInstant(logoutResponse.getIssueInstant());
 

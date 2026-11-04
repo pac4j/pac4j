@@ -4,6 +4,12 @@ import lombok.val;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.opensaml.messaging.context.MessageContext;
+import org.opensaml.saml.common.xml.SAMLConstants;
+import org.opensaml.security.credential.CredentialSupport;
+import org.opensaml.security.credential.impl.StaticCredentialResolver;
+import org.opensaml.xmlsec.config.impl.DefaultSecurityConfigurationBootstrap;
+import org.opensaml.xmlsec.signature.support.SignatureConstants;
+import org.opensaml.xmlsec.signature.support.impl.ExplicitKeySignatureTrustEngine;
 import org.opensaml.saml.saml2.core.LogoutResponse;
 import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.opensaml.saml.saml2.metadata.impl.EntityDescriptorBuilder;
@@ -17,6 +23,7 @@ import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.crypto.ExplicitSignatureTrustEngineProvider;
 import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
 import org.pac4j.saml.exceptions.SAMLException;
+import org.pac4j.saml.exceptions.SAMLSignatureValidationException;
 import org.pac4j.saml.metadata.SAML2IdentityProviderMetadataResolver;
 import org.pac4j.saml.metadata.SAML2ServiceProviderMetadataResolver;
 import org.pac4j.saml.profile.api.SAML2ResponseValidator;
@@ -27,11 +34,18 @@ import org.pac4j.test.context.MockWebContext;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.PrivateKey;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.Base64;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 
@@ -230,6 +244,118 @@ public class SAML2LogoutValidatorTests {
         getLogoutValidator(logoutHandler).validate(context);
 
         Mockito.verify(logoutHandler).destroySession(Mockito.any(), Mockito.eq(NAME_ID));
+    }
+
+    private static final KeyPair IDP_KEYS = generateKeyPair();
+
+    private static KeyPair generateKeyPair() {
+        try {
+            val generator = KeyPairGenerator.getInstance("RSA");
+            generator.initialize(2048);
+            return generator.generateKeyPair();
+        } catch (final Exception e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    // the IdP public key as the only trusted credential
+    private static SAML2LogoutValidator getRedirectLogoutValidator(final SessionLogoutHandler logoutHandler) {
+        val credential = CredentialSupport.getSimpleCredential(IDP_KEYS.getPublic(), null);
+        SAML2SignatureTrustEngineProvider engine = () -> new ExplicitKeySignatureTrustEngine(new StaticCredentialResolver(credential),
+            DefaultSecurityConfigurationBootstrap.buildBasicInlineKeyInfoCredentialResolver());
+        return new SAML2LogoutValidator(engine, mock(Decrypter.class), logoutHandler, mock(ReplayCacheProvider.class),
+            new ExcludingParametersURIComparator());
+    }
+
+    // signs SAMLRequest=...&RelayState=...&SigAlg=... as URL-encoded (SAML Bindings 2.0, §3.4.4.1)
+    private static String buildSignedQueryString(final String xml, final String relayState, final PrivateKey key) throws Exception {
+        var signedContent = "SAMLRequest=" + URLEncoder.encode(Base64.getEncoder().encodeToString(xml.getBytes(StandardCharsets.UTF_8)),
+            StandardCharsets.UTF_8);
+        if (relayState != null) {
+            signedContent += "&RelayState=" + URLEncoder.encode(relayState, StandardCharsets.UTF_8);
+        }
+        signedContent += "&SigAlg=" + URLEncoder.encode(SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA256, StandardCharsets.UTF_8);
+        val signer = java.security.Signature.getInstance("SHA256withRSA");
+        signer.initSign(key);
+        signer.update(signedContent.getBytes(StandardCharsets.UTF_8));
+        return signedContent + "&Signature=" + URLEncoder.encode(Base64.getEncoder().encodeToString(signer.sign()), StandardCharsets.UTF_8);
+    }
+
+    private static SAML2MessageContext getRedirectLogoutRequestContext(final String xml, final String queryString) {
+        val context = getLogoutRequestContext(xml);
+        ((MockWebContext) context.getCallContext().webContext()).setQueryString(queryString);
+        context.getSAMLBindingContext().setBindingUri(SAMLConstants.SAML2_REDIRECT_BINDING_URI);
+        return context;
+    }
+
+    @Test
+    public void verifyRedirectSignedLogoutRequestWithOnlyANameIdDestroysTheSession() throws Exception {
+        val logoutHandler = mock(SessionLogoutHandler.class);
+        val xml = buildLogoutRequest("");
+        val context = getRedirectLogoutRequestContext(xml, buildSignedQueryString(xml, null, IDP_KEYS.getPrivate()));
+
+        getRedirectLogoutValidator(logoutHandler).validate(context);
+
+        assertTrue(context.getSAMLPeerEntityContext().isAuthenticated());
+        Mockito.verify(logoutHandler).destroySession(Mockito.any(), Mockito.eq(NAME_ID));
+    }
+
+    @Test
+    public void verifyRedirectSignedLogoutRequestWithARelayStateDestroysTheSession() throws Exception {
+        val logoutHandler = mock(SessionLogoutHandler.class);
+        val xml = buildLogoutRequest("");
+        val queryString = buildSignedQueryString(xml, "https://sp.example.org/a b", IDP_KEYS.getPrivate());
+        val context = getRedirectLogoutRequestContext(xml, queryString);
+
+        getRedirectLogoutValidator(logoutHandler).validate(context);
+
+        Mockito.verify(logoutHandler).destroySession(Mockito.any(), Mockito.eq(NAME_ID));
+    }
+
+    @Test
+    public void verifyRedirectLogoutRequestSignedByAnotherKeyIsRejected() throws Exception {
+        val logoutHandler = mock(SessionLogoutHandler.class);
+        val xml = buildLogoutRequest("<samlp:SessionIndex>_opaque-session-index</samlp:SessionIndex>");
+        val context = getRedirectLogoutRequestContext(xml, buildSignedQueryString(xml, null, generateKeyPair().getPrivate()));
+
+        assertThrows(SAMLSignatureValidationException.class, () -> getRedirectLogoutValidator(logoutHandler).validate(context));
+
+        Mockito.verify(logoutHandler, Mockito.never()).destroySession(Mockito.any(), Mockito.any());
+    }
+
+    @Test
+    public void verifyRedirectLogoutRequestWithATamperedRelayStateIsRejected() throws Exception {
+        val logoutHandler = mock(SessionLogoutHandler.class);
+        val xml = buildLogoutRequest("");
+        val queryString = buildSignedQueryString(xml, "https://sp.example.org", IDP_KEYS.getPrivate())
+            .replace("sp.example.org", "evil.example.org");
+        val context = getRedirectLogoutRequestContext(xml, queryString);
+
+        assertThrows(SAMLSignatureValidationException.class, () -> getRedirectLogoutValidator(logoutHandler).validate(context));
+
+        Mockito.verify(logoutHandler, Mockito.never()).destroySession(Mockito.any(), Mockito.any());
+    }
+
+    @Test
+    public void verifyRedirectLogoutRequestWithADuplicateSamlRequestIsRejected() throws Exception {
+        val logoutHandler = mock(SessionLogoutHandler.class);
+        val xml = buildLogoutRequest("");
+        val context = getRedirectLogoutRequestContext(xml,
+            "SAMLRequest=other&" + buildSignedQueryString(xml, null, IDP_KEYS.getPrivate()));
+
+        assertThrows(SAMLSignatureValidationException.class, () -> getRedirectLogoutValidator(logoutHandler).validate(context));
+
+        Mockito.verify(logoutHandler, Mockito.never()).destroySession(Mockito.any(), Mockito.any());
+    }
+
+    @Test
+    public void verifyUnsignedRedirectLogoutRequestWithOnlyANameIdDoesNotDestroyTheSession() {
+        val logoutHandler = mock(SessionLogoutHandler.class);
+        val context = getRedirectLogoutRequestContext(buildLogoutRequest(""), "SAMLRequest=abc&RelayState=xyz");
+
+        assertThrows(SAMLException.class, () -> getRedirectLogoutValidator(logoutHandler).validate(context));
+
+        Mockito.verify(logoutHandler, Mockito.never()).destroySession(Mockito.any(), Mockito.any());
     }
 
     private void validateResponse(String xml) {
