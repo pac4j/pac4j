@@ -5,6 +5,8 @@ import net.shibboleth.shared.resolver.CriteriaSet;
 import org.junit.jupiter.api.Test;
 import org.opensaml.core.xml.util.XMLObjectSupport;
 import org.opensaml.saml.common.messaging.context.SAMLPeerEntityContext;
+import org.opensaml.saml.saml2.core.Audience;
+import org.opensaml.saml.saml2.core.AudienceRestriction;
 import org.opensaml.saml.saml2.core.AuthnContext;
 import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.opensaml.saml.saml2.core.Response;
@@ -38,6 +40,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -569,5 +572,54 @@ public class SAML2DefaultResponseValidatorTests {
 
         val validator = createResponseValidatorWithSigningValidationOf(saml2Configuration);
         validator.validate(context);
+    }
+
+    private static final String SP_ENTITY_ID = "urn:mace:saml:pac4j.org";
+
+    private static AudienceRestriction audienceRestriction(final String... uris) {
+        val restriction = (AudienceRestriction) XMLObjectSupport.buildXMLObject(AudienceRestriction.DEFAULT_ELEMENT_NAME);
+        for (val uri : uris) {
+            val audience = (Audience) XMLObjectSupport.buildXMLObject(Audience.DEFAULT_ELEMENT_NAME);
+            audience.setURI(uri);
+            restriction.getAudiences().add(audience);
+        }
+        return restriction;
+    }
+
+    private static void validateAudiences(final AudienceRestriction... restrictions) {
+        createResponseValidatorWithSigningValidationOf(getSaml2Configuration(false, false))
+            .validateAudienceRestrictions(List.of(restrictions), SP_ENTITY_ID);
+    }
+
+    @Test
+    public void testAudienceInSingleRestriction() {
+        validateAudiences(audienceRestriction("urn:other:sp", SP_ENTITY_ID));
+    }
+
+    @Test
+    public void testAudienceNotInSingleRestriction() {
+        assertThrows(SAMLAssertionAudienceException.class, () -> validateAudiences(audienceRestriction("urn:other:sp")));
+    }
+
+    @Test
+    public void testAudienceInEachRestriction() {
+        validateAudiences(audienceRestriction(SP_ENTITY_ID), audienceRestriction("urn:other:sp", SP_ENTITY_ID));
+    }
+
+    @Test
+    public void testAudienceInOnlyOneRestriction() {
+        assertThrows(SAMLAssertionAudienceException.class,
+            () -> validateAudiences(audienceRestriction(SP_ENTITY_ID), audienceRestriction("urn:other:sp")));
+    }
+
+    @Test
+    public void testEmptyAudienceRestriction() {
+        assertThrows(SAMLAssertionAudienceException.class,
+            () -> validateAudiences(audienceRestriction(SP_ENTITY_ID), audienceRestriction()));
+    }
+
+    @Test
+    public void testNoAudienceRestriction() {
+        assertThrows(SAMLAssertionAudienceException.class, () -> validateAudiences());
     }
 }

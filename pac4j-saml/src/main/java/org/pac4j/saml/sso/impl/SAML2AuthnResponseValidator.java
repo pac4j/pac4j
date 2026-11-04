@@ -660,7 +660,8 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
     }
 
     /**
-     * Validate audience by matching the SP entityId.
+     * Validate audience by matching the SP entityId: as several audience restrictions must all be satisfied,
+     * the SP entityId must be one of the audiences of each restriction (SAML Core 2.0, section 2.5.1.4).
      *
      * @param audienceRestrictions the audience restrictions
      * @param spEntityId           the sp entity id
@@ -672,17 +673,17 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
             throw new SAMLAssertionAudienceException("Audience restrictions cannot be null or empty");
         }
 
-        final Collection<String> audienceUris = new HashSet<>();
         for (val audienceRestriction : audienceRestrictions) {
+            final Collection<String> audienceUris = new HashSet<>();
             if (audienceRestriction.getAudiences() != null) {
                 for (val audience : audienceRestriction.getAudiences()) {
                     audienceUris.add(audience.getURI());
                 }
             }
-        }
-        if (!audienceUris.contains(spEntityId)) {
-            throw new SAMLAssertionAudienceException("Assertion audience " + audienceUris
-                + " does not match SP configuration " + spEntityId);
+            if (!audienceUris.contains(spEntityId)) {
+                throw new SAMLAssertionAudienceException("Assertion audience " + audienceUris
+                    + " does not match SP configuration " + spEntityId);
+            }
         }
     }
 

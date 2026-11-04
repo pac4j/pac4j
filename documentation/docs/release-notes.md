@@ -16,6 +16,7 @@ description: "Review pac4j release notes for supported Java lines, including aut
 - SAML: a warning is logged when an unsigned `LogoutRequest` is accepted thanks to its `SessionIndex` (this tolerance may be removed in a future version)
 - SAML: with a message store, the `InResponseTo` of the bearer subject confirmation is now checked against the authentication request sent
 - SAML: the new `allowUnsolicitedResponses` property (`true` by default) of the `SAML2Configuration` allows to reject the unsolicited responses (it requires a message store)
+- SAML: when an assertion has several `AudienceRestriction`, the SP entity ID must now be in each of them
 
 **v6.6.0**:
 - Moved most test components from the `org.pac4j.test` package of the `pac4j-core` module into the new `pac4j-test` module (only `MockWebContext`, `MockSessionStore`, `TestsConstants` and `TestsHelper` remain in `pac4j-core`)
