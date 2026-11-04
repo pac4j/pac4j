@@ -2,7 +2,6 @@ package org.pac4j.saml.logout.impl;
 
 import lombok.val;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.security.credential.CredentialSupport;
@@ -43,11 +42,8 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Base64;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.Mockito.mock;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 /**
  * This is {@link SAML2LogoutValidatorTests}.
@@ -209,7 +205,7 @@ public class SAML2LogoutValidatorTests {
 
         assertThrows(SAMLException.class, () -> getLogoutValidator(logoutHandler).validate(context));
 
-        Mockito.verify(logoutHandler, Mockito.never()).destroySession(Mockito.any(), Mockito.any());
+        verify(logoutHandler, never()).destroySession(any(), any());
     }
 
     @Test
@@ -221,7 +217,7 @@ public class SAML2LogoutValidatorTests {
 
         getLogoutValidator(logoutHandler).validate(context);
 
-        Mockito.verify(logoutHandler).destroySession(Mockito.any(), Mockito.eq("_opaque-session-index"));
+        verify(logoutHandler).destroySession(any(), eq("_opaque-session-index"));
     }
 
     @Test
@@ -231,7 +227,7 @@ public class SAML2LogoutValidatorTests {
 
         assertThrows(SAMLException.class, () -> getLogoutValidator(logoutHandler).validate(context));
 
-        Mockito.verify(logoutHandler, Mockito.never()).destroySession(Mockito.any(), Mockito.any());
+        verify(logoutHandler, never()).destroySession(any(), any());
     }
 
     @Test
@@ -243,7 +239,7 @@ public class SAML2LogoutValidatorTests {
 
         getLogoutValidator(logoutHandler).validate(context);
 
-        Mockito.verify(logoutHandler).destroySession(Mockito.any(), Mockito.eq(NAME_ID));
+        verify(logoutHandler).destroySession(any(), eq(NAME_ID));
     }
 
     private static final KeyPair IDP_KEYS = generateKeyPair();
@@ -297,7 +293,7 @@ public class SAML2LogoutValidatorTests {
         getRedirectLogoutValidator(logoutHandler).validate(context);
 
         assertTrue(context.getSAMLPeerEntityContext().isAuthenticated());
-        Mockito.verify(logoutHandler).destroySession(Mockito.any(), Mockito.eq(NAME_ID));
+        verify(logoutHandler).destroySession(any(), eq(NAME_ID));
     }
 
     @Test
@@ -309,7 +305,7 @@ public class SAML2LogoutValidatorTests {
 
         getRedirectLogoutValidator(logoutHandler).validate(context);
 
-        Mockito.verify(logoutHandler).destroySession(Mockito.any(), Mockito.eq(NAME_ID));
+        verify(logoutHandler).destroySession(any(), eq(NAME_ID));
     }
 
     @Test
@@ -320,7 +316,7 @@ public class SAML2LogoutValidatorTests {
 
         assertThrows(SAMLSignatureValidationException.class, () -> getRedirectLogoutValidator(logoutHandler).validate(context));
 
-        Mockito.verify(logoutHandler, Mockito.never()).destroySession(Mockito.any(), Mockito.any());
+        verify(logoutHandler, never()).destroySession(any(), any());
     }
 
     @Test
@@ -333,7 +329,7 @@ public class SAML2LogoutValidatorTests {
 
         assertThrows(SAMLSignatureValidationException.class, () -> getRedirectLogoutValidator(logoutHandler).validate(context));
 
-        Mockito.verify(logoutHandler, Mockito.never()).destroySession(Mockito.any(), Mockito.any());
+        verify(logoutHandler, never()).destroySession(any(), any());
     }
 
     @Test
@@ -345,7 +341,7 @@ public class SAML2LogoutValidatorTests {
 
         assertThrows(SAMLSignatureValidationException.class, () -> getRedirectLogoutValidator(logoutHandler).validate(context));
 
-        Mockito.verify(logoutHandler, Mockito.never()).destroySession(Mockito.any(), Mockito.any());
+        verify(logoutHandler, never()).destroySession(any(), any());
     }
 
     @Test
@@ -355,7 +351,7 @@ public class SAML2LogoutValidatorTests {
 
         assertThrows(SAMLException.class, () -> getRedirectLogoutValidator(logoutHandler).validate(context));
 
-        Mockito.verify(logoutHandler, Mockito.never()).destroySession(Mockito.any(), Mockito.any());
+        verify(logoutHandler, never()).destroySession(any(), any());
     }
 
     private void validateResponse(String xml) {
