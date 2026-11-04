@@ -341,6 +341,19 @@ The `SAML2Client` can participate in the central logout and send a logout reques
 The binding of this request is controlled by the `spLogoutRequestBindingType` property and
 the request can be signed using the `spLogoutRequestSigned` property of the `SAML2Configuration`.
 
+The IdP can also send a logout request to the `SAML2Client` (on its callback URL) to end the user session in the application.
+This `LogoutRequest` is validated this way:
+
+- if it is signed, the signature is checked against the IdP certificate of the IdP metadata, and the request is rejected if the signature is invalid.
+  With the HTTP-POST and SOAP bindings, the signature is in the XML message. With the HTTP-Redirect binding, it is in the `Signature` and `SigAlg` parameters of the URL (supported since v6.6.1)
+- if it is not signed, it is only accepted if it contains a `SessionIndex`. This value is opaque and cannot be guessed, so pac4j tolerates the missing signature for compatibility with the IdPs that do not sign their logout requests. A warning is logged
+- if it is not signed and has no `SessionIndex`, it is rejected: the `NameID` alone is too easy to guess to identify the session to destroy.
+
+The SAML specification requires the IdP to sign its logout requests (SAML Profiles 2.0, §4.4.4.1).
+**The tolerance of unsigned logout requests may be removed in a future version to require the signature: configure your IdP to sign its logout requests.**
+
+The signature of a `LogoutResponse` sent by the IdP is checked the same way, if it exists.
+
 
 ## 5) Authentication Attributes
 
