@@ -168,6 +168,12 @@ public class SAML2Configuration extends BaseClientConfiguration {
 
     private boolean responseDestinationAttributeMandatory = true;
 
+    /**
+     * Whether responses that answer no AuthnRequest of the message store (IdP-initiated SSO) are accepted.
+     * Accepting them exposes to login CSRF; rejecting them requires a message store.
+     */
+    private boolean allowUnsolicitedResponses = true;
+
     private int assertionConsumerServiceIndex = -1;
 
     private int attributeConsumingServiceIndex = -1;

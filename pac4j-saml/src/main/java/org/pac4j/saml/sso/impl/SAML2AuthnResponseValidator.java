@@ -22,6 +22,7 @@ import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
 import org.pac4j.saml.exceptions.*;
 import org.pac4j.saml.profile.impl.AbstractSAML2ResponseValidator;
 import org.pac4j.saml.replay.ReplayCacheProvider;
+import org.pac4j.saml.store.SAMLMessageStore;
 import org.pac4j.saml.util.Configuration;
 import org.pac4j.saml.util.SAML2Utils;
 
@@ -81,6 +82,12 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
         }
 
         validateSamlSSOResponse(response, context, engine, decrypter);
+
+        // SAML 2.0 Profiles §4.1.5: unsolicited responses are allowed, but an SP may refuse them
+        if (!configuration.isAllowUnsolicitedResponses() && context.getInResponseToRequest() == null) {
+            throw new SAMLInResponseToMismatchException("Unsolicited response rejected: it answers no AuthnRequest of the message store");
+        }
+
         return buildSAML2Credentials(context, response);
     }
 
@@ -229,21 +236,9 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
 
         validateIssueInstant(response.getIssueInstant());
 
-        AuthnRequest request = null;
         val messageStorage = context.getSamlMessageStore();
         if (messageStorage != null && response.getInResponseTo() != null) {
-            val xmlObject = messageStorage.get(response.getInResponseTo());
-            if (xmlObject.isEmpty()) {
-                throw new SAMLInResponseToMismatchException(
-                    "InResponseToField of the Response doesn't correspond to sent message "
-                        + response.getInResponseTo());
-            } else if (xmlObject.get() instanceof AuthnRequest) {
-                request = (AuthnRequest) xmlObject.get();
-            } else {
-                throw new SAMLInResponseToMismatchException(
-                    "Sent request was of different type than the expected AuthnRequest "
-                        + response.getInResponseTo());
-            }
+            context.setInResponseToRequest(retrieveAuthnRequest(messageStorage, response.getInResponseTo()));
         }
 
         val endpoint = Objects.requireNonNull(context.getSAMLEndpointContext().getEndpoint());
@@ -259,11 +254,32 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
         val isDestinationMandatory = context.getSaml2Configuration().isResponseDestinationAttributeMandatory();
         verifyEndpoint(expected, response.getDestination(), isDestinationMandatory);
 
-        if (request != null) {
-            verifyRequest(request, context);
+        if (context.getInResponseToRequest() != null) {
+            verifyRequest(context.getInResponseToRequest(), context);
         }
 
         validateIssuerIfItExists(response.getIssuer(), context);
+    }
+
+    /**
+     * Retrieve from the message store the AuthnRequest a response answers.
+     * The store forgets its messages once one is read.
+     *
+     * @param messageStorage the message store
+     * @param inResponseTo   the ID of the request
+     * @return the AuthnRequest
+     */
+    protected AuthnRequest retrieveAuthnRequest(final SAMLMessageStore messageStorage, final String inResponseTo) {
+        val xmlObject = messageStorage.get(inResponseTo);
+        if (xmlObject.isEmpty()) {
+            throw new SAMLInResponseToMismatchException(
+                "InResponseTo doesn't correspond to sent message " + inResponseTo);
+        } else if (xmlObject.get() instanceof AuthnRequest request) {
+            return request;
+        } else {
+            throw new SAMLInResponseToMismatchException(
+                "Sent request was of different type than the expected AuthnRequest " + inResponseTo);
+        }
     }
 
     /**
@@ -485,6 +501,7 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
      * - notBefore
      * - NotOnOrAfter
      * - recipient
+     * - inResponseTo
      *
      * @param data    the data
      * @param context the context
@@ -540,6 +557,50 @@ public class SAML2AuthnResponseValidator extends AbstractSAML2ResponseValidator 
             return false;
         }
 
+        return isValidBearerInResponseTo(data, context);
+    }
+
+    /**
+     * Validate the InResponseTo of the Bearer subject confirmation data: per SAML 2.0 Profiles §4.1.4.3,
+     * it must be the ID of the original AuthnRequest, unless the response is unsolicited.
+     * When the Response itself carries no InResponseTo, the request is looked up in the message store with this value.
+     *
+     * @param data    the data
+     * @param context the context
+     * @return true if the InResponseTo is valid
+     */
+    protected boolean isValidBearerInResponseTo(final SubjectConfirmationData data, final SAML2MessageContext context) {
+        val inResponseTo = data.getInResponseTo();
+        var request = context.getInResponseToRequest();
+
+        if (inResponseTo == null) {
+            if (request != null) {
+                // SAML 2.0 Profiles §4.1.4.2: the IdP must set it when answering an AuthnRequest
+                logger.warn("SubjectConfirmationData has no InResponseTo whereas the response answers the request {}", request.getID());
+            }
+            return true;
+        }
+
+        if (request == null) {
+            val messageStorage = context.getSamlMessageStore();
+            if (messageStorage == null) {
+                logger.debug("No message store, SubjectConfirmationData InResponseTo {} cannot be checked", inResponseTo);
+                return true;
+            }
+            try {
+                request = retrieveAuthnRequest(messageStorage, inResponseTo);
+            } catch (final SAMLInResponseToMismatchException e) {
+                logger.debug("SubjectConfirmationData InResponseTo is invalid: {}", e.getMessage());
+                return false;
+            }
+            context.setInResponseToRequest(request);
+            verifyRequest(request, context);
+        }
+
+        if (!inResponseTo.equals(request.getID())) {
+            logger.debug("SubjectConfirmationData InResponseTo {} does not match the request {}", inResponseTo, request.getID());
+            return false;
+        }
         return true;
     }
 

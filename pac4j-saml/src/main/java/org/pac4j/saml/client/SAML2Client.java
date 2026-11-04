@@ -30,9 +30,11 @@ import org.pac4j.saml.sso.artifact.SOAPPipelineProvider;
 import org.pac4j.saml.sso.impl.SAML2AuthnResponseValidator;
 import org.pac4j.saml.sso.impl.SAML2WebSSOMessageSender;
 import org.pac4j.saml.state.SAML2StateGenerator;
+import org.pac4j.saml.store.EmptyStoreFactory;
 import org.pac4j.saml.util.Configuration;
 
 import static org.pac4j.core.util.CommonHelper.assertNotNull;
+import static org.pac4j.core.util.CommonHelper.assertTrue;
 
 /**
  * This class is the client to authenticate and logout users with a SAML2 Identity Provider.
@@ -221,6 +223,9 @@ public class SAML2Client extends IndirectClient {
 
     protected void initSAMLContextProvider(final boolean forceReinit) {
         if (this.contextProvider == null || forceReinit) {
+            assertTrue(this.configuration.isAllowUnsolicitedResponses()
+                    || !(this.configuration.getSamlMessageStoreFactory() instanceof EmptyStoreFactory),
+                "Rejecting unsolicited responses requires a SAML message store");
             this.contextProvider = new SAML2ContextProvider(this.identityProviderMetadataResolver, this.serviceProviderMetadataResolver,
                 this.configuration.getSamlMessageStoreFactory());
         }

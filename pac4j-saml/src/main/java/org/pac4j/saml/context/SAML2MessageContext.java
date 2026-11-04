@@ -10,6 +10,7 @@ import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.profile.context.ProfileRequestContext;
 import org.opensaml.saml.common.messaging.context.*;
 import org.opensaml.saml.saml2.core.Assertion;
+import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.opensaml.saml.saml2.core.BaseID;
 import org.opensaml.saml.saml2.core.StatusResponseType;
 import org.opensaml.saml.saml2.core.SubjectConfirmation;
@@ -59,6 +60,9 @@ public class SAML2MessageContext {
     private BaseID baseID;
 
     private SAMLMessageStore samlMessageStore;
+
+    /* AuthnRequest of the message store the response answers, null for an unsolicited response */
+    private AuthnRequest inResponseToRequest;
 
 
     /**
