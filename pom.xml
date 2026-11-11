@@ -92,7 +92,7 @@
         <eudi-sdjwt.version>0.21.0</eudi-sdjwt.version>
 		<spring.version>7.0.10</spring.version>
 		<spring.security.version>7.1.2</spring.security.version>
-        <bouncycastle.version>1.86</bouncycastle.version>
+        <bouncycastle.version>1.87</bouncycastle.version>
 		<shiro.version>3.0.1</shiro.version>
         <jbcrypt.version>0.4.3</jbcrypt.version>
 		<mockito.version>5.24.0</mockito.version>
