@@ -47,4 +47,4 @@ description: "Explore the pac4j reference for authentication clients, authorizat
 
 ## 13) [Customizations](customizations.html)
 
-## 14) [Javadoc](https://www.javadoc.io/doc/org.pac4j/pac4j-core/6.5.5/index.html)
+## 14) [Javadoc](https://www.javadoc.io/doc/org.pac4j/pac4j-core/6.6.1/index.html)
