@@ -6,7 +6,7 @@ import com.github.scribejava.core.oauth.OAuth10aService;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.oauth.config.OAuth10Configuration;
@@ -34,18 +34,19 @@ public class YahooProfileCreator extends OAuth10ProfileCreator {
 
     /** {@inheritDoc} */
     @Override
-    protected Optional<UserProfile> retrieveUserProfileFromToken(final WebContext context, final Token accessToken) {
+    protected Optional<UserProfile> retrieveUserProfileFromToken(final CallContext context, final Token accessToken) {
         // get the guid: https://developer.yahoo.com/social/rest_api_guide/introspective-guid-resource.html
         val profileDefinition = configuration.getProfileDefinition();
         val profileUrl = profileDefinition.getProfileUrl(accessToken, this.configuration);
         val service = (OAuth10aService) configuration.buildService(context, client);
-        var body = sendRequestForData(service, accessToken, profileUrl, profileDefinition.getProfileVerb());
+        var body = sendRequestForData(context, service, accessToken, profileUrl, profileDefinition.getProfileVerb());
         val guid = StringUtils.substringBetween(body, "<value>", "</value>");
         logger.debug("guid : {}", guid);
         if (StringUtils.isBlank(guid)) {
             throw new HttpCommunicationException("Cannot find guid from body : " + body);
         }
-        body = sendRequestForData(service, accessToken, "https://social.yahooapis.com/v1/user/" + guid + "/profile?format=json", Verb.GET);
+        body = sendRequestForData(context, service, accessToken,
+            "https://social.yahooapis.com/v1/user/" + guid + "/profile?format=json", Verb.GET);
         UserProfile profile = (YahooProfile) configuration.getProfileDefinition().extractUserProfile(body);
         addTokenToProfile(profile, accessToken);
         return Optional.of(profile);

@@ -4,7 +4,7 @@ import com.github.scribejava.core.model.OAuth1AccessToken;
 import com.github.scribejava.core.oauth.OAuth10aService;
 import lombok.val;
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.oauth.config.OAuth10Configuration;
@@ -34,11 +34,10 @@ public class OAuth10Authenticator extends OAuthAuthenticator {
 
     /** {@inheritDoc} */
     @Override
-    protected void retrieveAccessToken(final WebContext context, final Credentials credentials) {
+    protected void retrieveAccessToken(final CallContext context, final Credentials credentials) {
         var oAuth10Credentials = (OAuth10Credentials) credentials;
         val tokenRequest = oAuth10Credentials.getRequestToken();
         val token = oAuth10Credentials.getToken();
-        val verifier = oAuth10Credentials.getVerifier();
         if (tokenRequest == null) {
             val message = "Token request expired";
             throw new OAuthCredentialsException(message);
@@ -50,7 +49,14 @@ public class OAuth10Authenticator extends OAuthAuthenticator {
         }
         final OAuth1AccessToken accessToken;
         try {
-            accessToken = ((OAuth10aService) this.configuration.buildService(context, client)).getAccessToken(tokenRequest, verifier);
+            val service = (OAuth10aService) configuration.buildService(context, client);
+            val request = ((OAuth10Configuration) configuration).getTokenRequestBuilder()
+                .build(context, oAuth10Credentials, service);
+            configuration.getHttpRequestConfigurer().configure(request, context);
+            service.signRequest(new OAuth1AccessToken(tokenRequest.getToken(), tokenRequest.getTokenSecret()), request);
+            try (val response = service.execute(request)) {
+                accessToken = service.getApi().getAccessTokenExtractor().extract(response);
+            }
         } catch (final IOException | InterruptedException | ExecutionException e) {
             throw new HttpCommunicationException("Error getting token:" + e.getMessage());
         }

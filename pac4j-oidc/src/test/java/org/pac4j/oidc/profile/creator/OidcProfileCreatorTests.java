@@ -1,5 +1,7 @@
 package org.pac4j.oidc.profile.creator;
 
+import java.util.concurrent.atomic.AtomicInteger;
+import org.pac4j.oidc.http.OidcHttpRequestConfigurer;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTClaimsSet;
@@ -63,6 +65,7 @@ public class OidcProfileCreatorTests implements TestsConstants {
             .build());
 
         configuration = mock(OidcConfiguration.class);
+        when(configuration.getHttpRequestConfigurer()).thenReturn(new OidcHttpRequestConfigurer(configuration));
         metadata = mock(OIDCProviderMetadata.class);
         when(configuration.getFederation()).thenReturn(new OidcFederationProperties());
         when(metadata.getIssuer()).thenReturn(new Issuer(PAC4J_URL));
@@ -104,7 +107,18 @@ public class OidcProfileCreatorTests implements TestsConstants {
         val credentials = new OidcCredentials();
         credentials.setAccessToken(new BearerAccessToken(UUID.randomUUID().toString()).toJSONObject());
         credentials.setIdToken(new PlainJWT(idTokenClaims.toJWTClaimsSet()).serialize());
-        return creator.create(new CallContext(MockWebContext.create(), new MockSessionStore()), credentials);
+        val ctx = new CallContext(MockWebContext.create(), new MockSessionStore());
+        val calls = new AtomicInteger();
+        when(configuration.getHttpRequestConfigurer()).thenReturn((request, callContext) -> {
+            assertSame(ctx, callContext);
+            assertEquals("Bearer " + credentials.toAccessToken().getValue(), request.getAuthorization());
+            calls.incrementAndGet();
+        });
+        try {
+            return creator.create(ctx, credentials);
+        } finally {
+            assertEquals(1, calls.get());
+        }
     }
 
     @Test

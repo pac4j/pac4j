@@ -4,7 +4,7 @@ import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.oauth.OAuth20Service;
 import lombok.val;
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.oauth.config.OAuth20Configuration;
@@ -33,13 +33,18 @@ public class OAuth20Authenticator extends OAuthAuthenticator {
 
     /** {@inheritDoc} */
     @Override
-    protected void retrieveAccessToken(final WebContext context, final Credentials credentials) {
+    protected void retrieveAccessToken(final CallContext context, final Credentials credentials) {
         var oAuth20Credentials = (OAuth20Credentials) credentials;
         // no request token saved in context and no token (OAuth v2.0)
-        val code = oAuth20Credentials.getCode();
         final OAuth2AccessToken accessToken;
         try {
-            accessToken = ((OAuth20Service) this.configuration.buildService(context, client)).getAccessToken(code);
+            val service = (OAuth20Service) configuration.buildService(context, client);
+            val request = ((OAuth20Configuration) configuration).getTokenRequestBuilder()
+                .build(context, oAuth20Credentials, service);
+            configuration.getHttpRequestConfigurer().configure(request, context);
+            try (val response = service.execute(request)) {
+                accessToken = service.getApi().getAccessTokenExtractor().extract(response);
+            }
         } catch (final IOException | InterruptedException | ExecutionException e) {
             throw new HttpCommunicationException("Error getting token:" + e.getMessage());
         }

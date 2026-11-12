@@ -149,7 +149,7 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
             if (configuration.isCallUserInfoEndpoint()) {
                 final var uri = configuration.getOpMetadataResolver().load().getUserInfoEndpointURI();
                 try {
-                    callUserInfoEndpoint(uri, accessToken, profile);
+                    callUserInfoEndpoint(ctx, uri, accessToken, profile);
                 } catch (final UserInfoErrorResponseException e) {
                     // bearer call -> no profile returned
                     if (!regularOidcFlow) {
@@ -183,13 +183,14 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
         }
     }
 
-    public void callUserInfoEndpoint(final URI userInfoEndpointUri, final AccessToken accessToken, final UserProfile profile)
+    public void callUserInfoEndpoint(final CallContext ctx, final URI userInfoEndpointUri,
+                                     final AccessToken accessToken, final UserProfile profile)
         throws IOException, ParseException, java.text.ParseException, UserInfoErrorResponseException {
         val opMetadata = configuration.getOpMetadataResolver().load();
         if (opMetadata.getUserInfoEndpointURI() != null && accessToken != null) {
             Request userInfoRequest = new UserInfoRequest(opMetadata.getUserInfoEndpointURI(), accessToken);
             val userInfoHttpRequest = userInfoRequest.toHTTPRequest();
-            configuration.configureHttpRequest(userInfoHttpRequest);
+            configuration.getHttpRequestConfigurer().configure(userInfoHttpRequest, ctx);
             OidcProtocolMessages.sent(userInfoHttpRequest);
             val httpResponse = userInfoHttpRequest.send();
             OidcProtocolMessages.received(httpResponse);

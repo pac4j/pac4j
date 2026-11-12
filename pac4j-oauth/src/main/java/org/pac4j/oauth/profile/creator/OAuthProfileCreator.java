@@ -4,13 +4,13 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.scribejava.core.exceptions.OAuthException;
 import com.github.scribejava.core.model.OAuthRequest;
+import com.github.scribejava.core.model.OAuth1AccessToken;
 import com.github.scribejava.core.model.Token;
 import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.oauth.OAuthService;
 import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.CallContext;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.core.exception.TechnicalException;
@@ -65,7 +65,7 @@ abstract class OAuthProfileCreator implements ProfileCreator {
     public Optional<UserProfile> create(final CallContext ctx, final Credentials credentials) {
         try {
             val token = getAccessToken(credentials);
-            return retrieveUserProfileFromToken(ctx.webContext(), token);
+            return retrieveUserProfileFromToken(ctx, token);
         } catch (final OAuthException e) {
             throw new TechnicalException(e);
         }
@@ -86,11 +86,11 @@ abstract class OAuthProfileCreator implements ProfileCreator {
      * @param accessToken the access token
      * @return the user profile
      */
-    protected Optional<UserProfile> retrieveUserProfileFromToken(final WebContext context, final Token accessToken) {
+    protected Optional<UserProfile> retrieveUserProfileFromToken(final CallContext context, final Token accessToken) {
         val profileDefinition = configuration.getProfileDefinition();
         val profileUrl = profileDefinition.getProfileUrl(accessToken, configuration);
         val service = this.configuration.buildService(context, client);
-        val body = sendRequestForData(service, accessToken, profileUrl, profileDefinition.getProfileVerb());
+        val body = sendRequestForData(context, service, accessToken, profileUrl, profileDefinition.getProfileVerb());
         if (body == null) {
             throw new HttpCommunicationException("No data found for accessToken: " + accessToken);
         }
@@ -102,16 +102,25 @@ abstract class OAuthProfileCreator implements ProfileCreator {
     /**
      * Make a request to get the data of the authenticated user for the provider.
      *
+     * @param context the call context
      * @param service the OAuth service
      * @param accessToken the access token
      * @param dataUrl     url of the data
      * @param verb        method used to request data
      * @return the user data response
      */
-    protected String sendRequestForData(final OAuthService service, final Token accessToken, final String dataUrl, Verb verb) {
+    protected String sendRequestForData(final CallContext context, final OAuthService service, final Token accessToken,
+                                        final String dataUrl, final Verb verb) {
         val t0 = System.currentTimeMillis();
         val request = createOAuthRequest(dataUrl, verb);
-        signRequest(service, accessToken, request);
+        // OAuth 1 parameters must be configured before signing; OAuth 2 configurers can inspect the bearer token.
+        if (accessToken instanceof OAuth1AccessToken) {
+            configuration.getHttpRequestConfigurer().configure(request, context);
+            signRequest(service, accessToken, request);
+        } else {
+            signRequest(service, accessToken, request);
+            configuration.getHttpRequestConfigurer().configure(request, context);
+        }
         final String body;
         final int code;
         try {

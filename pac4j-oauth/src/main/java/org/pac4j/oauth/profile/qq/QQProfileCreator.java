@@ -6,7 +6,7 @@ import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.oauth.OAuth20Service;
 import lombok.val;
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.CommonHelper;
@@ -36,19 +36,19 @@ public class QQProfileCreator extends OAuth20ProfileCreator {
 
     /** {@inheritDoc} */
     @Override
-    public Optional<UserProfile> retrieveUserProfileFromToken(final WebContext context, final Token accessToken) {
+    public Optional<UserProfile> retrieveUserProfileFromToken(final CallContext context, final Token accessToken) {
         var profileDefinition = (QQProfileDefinition) configuration.getProfileDefinition();
         var openidUrl = profileDefinition.getOpenidUrl((OAuth2AccessToken) accessToken, (OAuth20Configuration) configuration);
         val service = (OAuth20Service) this.configuration.buildService(context, client);
 
-        var body = sendRequestForData(service, accessToken, openidUrl, Verb.GET);
+        var body = sendRequestForData(context, service, accessToken, openidUrl, Verb.GET);
         var openid = profileDefinition.extractOpenid(body);
 
         var profileUrl = profileDefinition.getProfileUrl(accessToken, configuration);
         profileUrl = CommonHelper.addParameter(profileUrl, "openid", openid);
         profileUrl = CommonHelper.addParameter(profileUrl, "oauth_consumer_key",
             configuration.getKey());
-        body = sendRequestForData(service, accessToken, profileUrl, Verb.GET);
+        body = sendRequestForData(context, service, accessToken, profileUrl, Verb.GET);
         if (body == null) {
             throw new HttpCommunicationException("Not data found for accessToken: " + accessToken);
         }

@@ -3,7 +3,7 @@ package org.pac4j.oauth.profile.wechat;
 import com.github.scribejava.core.model.Token;
 import lombok.val;
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.profile.creator.OAuth20ProfileCreator;
@@ -30,7 +30,7 @@ public class WechatProfileCreator extends OAuth20ProfileCreator {
 
     /** {@inheritDoc} */
     @Override
-    protected Optional<UserProfile> retrieveUserProfileFromToken(final WebContext context, final Token accessToken) {
+    protected Optional<UserProfile> retrieveUserProfileFromToken(final CallContext context, final Token accessToken) {
         val token = (WechatToken) accessToken;
         val profile = super.retrieveUserProfileFromToken(context, token);
         profile.get().setId(token.getOpenid());

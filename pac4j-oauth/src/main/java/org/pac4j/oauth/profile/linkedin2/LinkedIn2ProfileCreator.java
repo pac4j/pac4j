@@ -4,7 +4,7 @@ import com.github.scribejava.core.model.Token;
 import com.github.scribejava.core.oauth.OAuth20Service;
 import lombok.val;
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.oauth.config.OAuth20Configuration;
@@ -36,13 +36,13 @@ public class LinkedIn2ProfileCreator extends OAuth20ProfileCreator {
 
     /** {@inheritDoc} */
     @Override
-    protected Optional<UserProfile> retrieveUserProfileFromToken(final WebContext context, final Token accessToken) {
+    protected Optional<UserProfile> retrieveUserProfileFromToken(final CallContext context, final Token accessToken) {
         super.retrieveUserProfileFromToken(context, accessToken);
         val profileDefinition = (LinkedIn2ProfileDefinition) configuration.getProfileDefinition();
         val linkedin2Configuration = (LinkedIn2Configuration) configuration;
         val profileUrl = profileDefinition.getProfileUrl(accessToken, linkedin2Configuration);
         val service = (OAuth20Service) configuration.buildService(context, client);
-        var body = sendRequestForData(service, accessToken, profileUrl, profileDefinition.getProfileVerb());
+        var body = sendRequestForData(context, service, accessToken, profileUrl, profileDefinition.getProfileVerb());
         if (body == null) {
             throw new HttpCommunicationException("Not data found for accessToken: " + accessToken);
         }
@@ -53,7 +53,7 @@ public class LinkedIn2ProfileCreator extends OAuth20ProfileCreator {
             return Optional.ofNullable(profile);
         }
 
-        body = sendRequestForData(service, accessToken, EMAIL_URL, profileDefinition.getProfileVerb());
+        body = sendRequestForData(context, service, accessToken, EMAIL_URL, profileDefinition.getProfileVerb());
         if (body == null) {
             throw new HttpCommunicationException("Not email data found for accessToken: " + accessToken);
         }

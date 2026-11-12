@@ -2,6 +2,10 @@ package org.pac4j.oauth.config;
 
 import com.github.scribejava.core.builder.api.DefaultApi20;
 import com.github.scribejava.core.oauth.OAuthService;
+import com.github.scribejava.core.oauth.OAuth20Service;
+import org.pac4j.oauth.credentials.OAuth20Credentials;
+import org.pac4j.oauth.credentials.authenticator.TokenRequestBuilder;
+import org.pac4j.oauth.credentials.authenticator.OAuth20TokenRequestBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +15,7 @@ import lombok.With;
 import lombok.experimental.Accessors;
 import lombok.val;
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.generator.RandomValueGenerator;
 import org.pac4j.core.util.generator.ValueGenerator;
@@ -35,6 +39,8 @@ import java.util.Map;
 @NoArgsConstructor
 public class OAuth20Configuration extends OAuthConfiguration {
 
+    private TokenRequestBuilder<OAuth20Credentials, OAuth20Service> tokenRequestBuilder;
+
     /** Constant <code>OAUTH_CODE="code"</code> */
     public static final String OAUTH_CODE = "code";
 
@@ -51,13 +57,13 @@ public class OAuth20Configuration extends OAuthConfiguration {
     /**
      * {@inheritDoc}
      *
-     * Build an OAuth service from the web context.
+     * Build an OAuth service from the call context.
      */
     @Override
-    public OAuthService buildService(final WebContext context, final IndirectClient client) {
+    public OAuthService buildService(final CallContext context, final IndirectClient client) {
         init();
 
-        val finalCallbackUrl = client.computeFinalCallbackUrl(context);
+        val finalCallbackUrl = client.computeFinalCallbackUrl(context.webContext());
 
         return ((DefaultApi20) api).createService(this.key, this.secret, finalCallbackUrl, this.scope,
             this.responseType, null, null, this.httpClientConfig, OAuthProtocolMessages.httpClient(this.httpClientConfig));
@@ -71,5 +77,23 @@ public class OAuth20Configuration extends OAuthConfiguration {
     public void setStateGenerator(final ValueGenerator stateGenerator) {
         CommonHelper.assertNotNull("stateGenerator", stateGenerator);
         this.stateGenerator = stateGenerator;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    protected void internalInit(final boolean forceReinit) {
+        super.internalInit(forceReinit);
+        setTokenRequestBuilderIfNotDefined(new OAuth20TokenRequestBuilder());
+    }
+
+    /**
+     * Set the default token request builder without replacing a custom one.
+     *
+     * @param builder the default builder
+     */
+    public void setTokenRequestBuilderIfNotDefined(final TokenRequestBuilder<OAuth20Credentials, OAuth20Service> builder) {
+        if (tokenRequestBuilder == null) {
+            tokenRequestBuilder = builder;
+        }
     }
 }

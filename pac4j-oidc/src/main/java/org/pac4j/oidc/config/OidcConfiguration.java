@@ -1,5 +1,7 @@
 package org.pac4j.oidc.config;
 
+import org.pac4j.core.http.configurer.HttpRequestConfigurer;
+import org.pac4j.oidc.http.OidcHttpRequestConfigurer;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.util.DefaultResourceRetriever;
 import com.nimbusds.jose.util.ResourceRetriever;
@@ -55,6 +57,9 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
 @NoArgsConstructor
 @Slf4j
 public class OidcConfiguration extends BaseClientConfiguration {
+
+    private HttpRequestConfigurer<HTTPRequest> httpRequestConfigurer;
+
     // deprecate: move to OidcConstants
     /**
      * Constant <code>login_hint="user@example.org"</code>
@@ -258,6 +263,7 @@ public class OidcConfiguration extends BaseClientConfiguration {
      */
     @Override
     protected void internalInit(final boolean forceReinit) {
+        setHttpRequestConfigurerIfNotDefined(new OidcHttpRequestConfigurer(this));
         if (disablePkce) {
             LOGGER.info("PKCE is disabled for: " + oidcClient.getName());
         } else {
@@ -566,5 +572,16 @@ public class OidcConfiguration extends BaseClientConfiguration {
 
     public boolean isEnablePkce() {
         return !disablePkce;
+    }
+
+    /**
+     * Set the default configurer without replacing a custom one.
+     *
+     * @param configurer the default configurer
+     */
+    public void setHttpRequestConfigurerIfNotDefined(final HttpRequestConfigurer<HTTPRequest> configurer) {
+        if (httpRequestConfigurer == null) {
+            httpRequestConfigurer = configurer;
+        }
     }
 }

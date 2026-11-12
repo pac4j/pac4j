@@ -1,6 +1,9 @@
 package org.pac4j.oauth.config;
 
+import org.pac4j.core.http.configurer.HttpRequestConfigurer;
+import org.pac4j.oauth.http.OAuthHttpRequestConfigurer;
 import com.github.scribejava.core.httpclient.HttpClientConfig;
+import com.github.scribejava.core.model.OAuthRequest;
 import com.github.scribejava.core.oauth.OAuthService;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,7 +11,7 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.config.BaseClientConfiguration;
-import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
 
@@ -23,6 +26,8 @@ import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
 @ToString(exclude = "secret")
 @Accessors(chain = true)
 public abstract class OAuthConfiguration extends BaseClientConfiguration {
+
+    private HttpRequestConfigurer<OAuthRequest> httpRequestConfigurer;
 
     /** Constant <code>OAUTH_TOKEN="oauth_token"</code> */
     public static final String OAUTH_TOKEN = "oauth_token";
@@ -51,6 +56,7 @@ public abstract class OAuthConfiguration extends BaseClientConfiguration {
     /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
+        setHttpRequestConfigurerIfNotDefined(new OAuthHttpRequestConfigurer());
         CommonHelper.assertNotNull("api", api);
         CommonHelper.assertNotBlank("key", this.key);
         CommonHelper.assertNotBlank("secret", this.secret);
@@ -61,9 +67,20 @@ public abstract class OAuthConfiguration extends BaseClientConfiguration {
     /**
      * <p>buildService.</p>
      *
-     * @param context a {@link WebContext} object
+     * @param context the call context
      * @param client a {@link IndirectClient} object
      * @return a {@link OAuthService} object
      */
-    public abstract OAuthService buildService(final WebContext context, final IndirectClient client);
+    public abstract OAuthService buildService(final CallContext context, final IndirectClient client);
+
+    /**
+     * Set the default configurer without replacing a custom one.
+     *
+     * @param configurer the default configurer
+     */
+    public void setHttpRequestConfigurerIfNotDefined(final HttpRequestConfigurer<OAuthRequest> configurer) {
+        if (httpRequestConfigurer == null) {
+            httpRequestConfigurer = configurer;
+        }
+    }
 }

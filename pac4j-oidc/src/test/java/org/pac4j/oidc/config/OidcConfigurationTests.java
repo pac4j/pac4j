@@ -1,7 +1,13 @@
 package org.pac4j.oidc.config;
 
+import org.pac4j.oidc.http.OidcHttpRequestConfigurer;
+import java.net.URI;
+import com.nimbusds.oauth2.sdk.http.HTTPRequest;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLSocketFactory;
 import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
 import lombok.val;
+import org.pac4j.core.context.CallContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.pac4j.core.exception.TechnicalException;
@@ -31,6 +37,30 @@ public class OidcConfigurationTests implements TestsConstants {
         config.setDiscoveryURI(CASSERVERPAC4J_OIDC_URL);
         config.setAllowUnsignedIdTokens(true);
         config.setOidcClient(mock(OidcClient.class));
+    }
+
+    @Test
+    public void testHttpRequestConfigurerDefaultsAndCustomization() throws Exception {
+        config.setConnectTimeout(1234);
+        config.setReadTimeout(5678);
+        val ssl = (SSLSocketFactory) SSLSocketFactory.getDefault();
+        val hostnameVerifier = mock(HostnameVerifier.class);
+        config.setSslSocketFactory(ssl);
+        config.setHostnameVerifier(hostnameVerifier);
+        val request = new HTTPRequest(
+            HTTPRequest.Method.POST, new URI("https://op.example/token"));
+        config.init();
+        config.getHttpRequestConfigurer().configure(request, new CallContext(null, null));
+        assertEquals(1234, request.getConnectTimeout());
+        assertEquals(5678, request.getReadTimeout());
+        assertSame(ssl, request.getSSLSocketFactory());
+        assertSame(hostnameVerifier, request.getHostnameVerifier());
+
+        val custom = new OidcHttpRequestConfigurer(config);
+        config.setHttpRequestConfigurer(custom);
+        config.init();
+        config.reinit();
+        assertSame(custom, config.getHttpRequestConfigurer());
     }
 
     @Test

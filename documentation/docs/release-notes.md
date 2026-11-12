@@ -8,6 +8,7 @@ description: "Review pac4j release notes for supported Java lines, including aut
 ### JDK17:
 
 **v6.7.0**:
+- Prepare DPoP client support by introducing `HttpRequestConfigurer` to customize OAuth and OIDC token and profile requests using `CallContext`.
 
 
 **v6.6.1**:
