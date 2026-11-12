@@ -39,12 +39,12 @@ Add the Spring MVC integration and the OpenID Connect module:
 <dependency>
     <groupId>org.pac4j</groupId>
     <artifactId>spring-webmvc-pac4j</artifactId>
-    <version>8.0.3</version>
+    <version>8.0.4</version>
 </dependency>
 <dependency>
     <groupId>org.pac4j</groupId>
     <artifactId>pac4j-oidc</artifactId>
-    <version>6.5.9</version>
+    <version>6.6.1</version>
 </dependency>
 ```
 

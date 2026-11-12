@@ -23,7 +23,8 @@ description: "Browse current and archived pac4j documentation by release to find
 <div class="jdk-label">JDK 17</div>
 
 <div class="version-group">
-<h3 class="ver-minor" id="v6.6"><a href="/docs/index.html">v6.6</a> <small>(MINOR)</small></h3>
+<h3 class="ver-minor" id="v6.7"><a href="/docs/index.html">v6.7</a> <small>(MINOR)</small></h3>
+<h3 class="ver-minor" id="v6.6"><a href="https://www.pac4j.org/6.6.x/docs/index.html">v6.6</a> <small>(MINOR)</small></h3>
 <h3 class="ver-minor" id="v6.5"><a href="https://www.pac4j.org/6.5.x/docs/index.html">v6.5</a> <small>(MINOR)</small></h3>
 <h3 class="ver-minor" id="v6.4"><a href="https://www.pac4j.org/6.4.x/docs/index.html">v6.4</a> <small>(MINOR)</small></h3>
 <h3 class="ver-minor" id="v6.3"><a href="https://www.pac4j.org/6.3.x/docs/index.html">v6.3</a> <small>(MINOR)</small></h3>

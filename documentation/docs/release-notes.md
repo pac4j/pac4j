@@ -7,6 +7,9 @@ description: "Review pac4j release notes for supported Java lines, including aut
 
 ### JDK17:
 
+**v6.7.0**:
+
+
 **v6.6.1**:
 - The `JwtAuthenticator` now rejects a JWT whose `nbf` (not before) date is in the future
 - The `JwtAuthenticator` now accepts a clock skew (`clockSkewSeconds`, 60 seconds by default) when checking the `exp` and `nbf` dates
