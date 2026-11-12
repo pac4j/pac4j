@@ -1,0 +1,30 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><style>
+  * { box-sizing: border-box; margin: 0; }
+  html, body { width: 1200px; height: 630px; }
+  body {
+    display: flex; align-items: center; gap: 56px;
+    padding: 0 64px;
+    background: #ffffff;
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: #1f2933;
+    border-bottom: 16px solid #1565c0;
+  }
+  .logo { width: 300px; flex: 0 0 300px; }
+  .logo img { width: 100%; height: auto; display: block; }
+  h1 { font-size: 52px; line-height: 1.18; font-weight: 800; letter-spacing: -.6px; white-space: nowrap; }
+  h1 .accent {
+    background-image: linear-gradient(to bottom, transparent 58%, rgba(21,101,192,.3) 58%);
+  }
+  p.sub { margin-top: 30px; font-size: 29px; line-height: 1.5; color: #52606d; }
+  p.url { margin-top: 34px; font-size: 25px; font-weight: 600; color: #52606d; letter-spacing: .3px; }
+  p.url b { color: #1565c0; font-weight: 800; }
+</style></head>
+<body>
+  <div class="logo"><img src="pac4j-logo.svg" /></div>
+  <div>
+    <h1>One <span class="accent">Java security framework</span><br />for every web framework</h1>
+    <p class="sub">OpenID Connect &middot; SAML &middot; CAS &middot; OAuth &middot; JWT<br />for Spring Boot, Jakarta EE, Play, Vert.x and 15+ others</p>
+    <p class="url"><b>pac4j.org</b> &nbsp;&middot;&nbsp; Apache 2.0 &nbsp;&middot;&nbsp; Java 17+</p>
+  </div>
+</body></html>

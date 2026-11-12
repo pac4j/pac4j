@@ -1,0 +1,134 @@
+---
+layout: idoc
+title: Implementations comparison for the default logics&#58;
+seo_title: "Compare security logic across Java frameworks | pac4j"
+description: "Compare the default security, callback and logout logic used by pac4j framework integrations."
+---
+
+<a href="./comparison.html" class="back-link"><span class="back-circle"><i class="fa fa-long-arrow-left" aria-hidden="true"></i></span> Categories</a>
+
+<style>
+    table {
+        margin-top: 20px
+    }
+    table img {
+        border: 0
+    }
+</style>
+
+<table class="centered">
+    <tr>
+        <th>Implementation</th>
+        <th>The default <code class="highlighter-rouge">SecurityLogic</code></th>
+        <th>The default <code class="highlighter-rouge">CallbackLogic</code></th>
+        <th>The default <code class="highlighter-rouge">LogoutLogic</code></th>
+    </tr>
+    <tr>
+        <td>spring-webmvc-pac4j</td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultSecurityLogic.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultCallbackLogic.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultLogoutLogic.INSTANCE</code></td>
+    </tr>
+    <tr>
+        <td>spring-webflux-pac4j</td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultSecurityLogic.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultCallbackLogic.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultLogoutLogic.INSTANCE</code></td>
+    </tr>
+    <tr>
+        <td>jee-pac4j</td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultSecurityLogic.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultCallbackLogic.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultLogoutLogic.INSTANCE</code></td>
+    </tr>
+    <tr>
+        <td>buji-pac4j</td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultSecurityLogic.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultCallbackLogic.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultLogoutLogic.INSTANCE</code></td>
+    </tr>
+    <tr>
+        <td>spring-security-pac4j</td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultSecurityLogic.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultCallbackLogic.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultLogoutLogic.INSTANCE</code></td>
+    </tr>
+    <tr>
+        <td>play-pac4j</td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultSecurityLogic.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultCallbackLogic.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultLogoutLogic.INSTANCE</code></td>
+    </tr>
+    <tr>
+        <td>vertx-pac4j</td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultSecurityLogic.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultCallbackLogic.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultLogoutLogic.INSTANCE</code></td>
+    </tr>
+    <tr>
+        <td>spark-pac4j</td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultSecurityLogic.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultCallbackLogic.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultLogoutLogic.INSTANCE</code></td>
+    </tr>
+    <tr>
+        <td>javalin-pac4j</td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultSecurityLogic.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultCallbackLogic.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultLogoutLogic.INSTANCE</code></td>
+    </tr>
+    <tr>
+        <td>ratpack-pac4j</td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/red_cross.png" /></td>
+    </tr>
+    <tr>
+        <td>pippo-pac4j</td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultSecurityLogic</code> or configurable</td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultCallbackLogic</code> or configurable</td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultLogoutLogic</code> or configurable</td>
+    </tr>
+    <tr>
+        <td>undertow-pac4j</td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultSecurityLogic.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultCallbackLogic.INSTANCE</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultLogoutLogic.INSTANCE</code></td>
+    </tr>
+    <tr>
+        <td>CAS</td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultSecurityLogic.INSTANCE</code></td>
+        <td><img src="/img/red_cross.png" /></td>
+        <td><img src="/img/red_cross.png" /></td>
+    </tr>
+    <tr>
+        <td>jax-rs-pac4j</td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultSecurityLogic</code> or configurable</td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultCallbackLogic</code> or configurable</td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultLogoutLogic</code> or configurable</td>
+    </tr>
+    <tr>
+        <td>dropwizard-pac4j</td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultSecurityLogic</code> or configurable</td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultCallbackLogic</code> or configurable</td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultLogoutLogic</code> or configurable</td>
+    </tr>
+    <tr>
+        <td>http4s-pac4j</td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultSecurityLogic</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultCallbackLogic</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultLogoutLogic</code></td>
+    </tr>
+    <tr>
+        <td>Knox</td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultSecurityLogic.INSTANCE</code> (via jee-pac4j)</td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultCallbackLogic.INSTANCE</code> (via jee-pac4j)</td>
+        <td><img src="/img/red_cross.png" /><br />No logout endpoint</td>
+    </tr>
+    <tr>
+        <td>jooby-pac4j</td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultSecurityLogic</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultCallbackLogic</code></td>
+        <td><img src="/img/green_check.png" /><br /><code class="highlighter-rouge">DefaultLogoutLogic</code></td>
+    </tr>
+</table>

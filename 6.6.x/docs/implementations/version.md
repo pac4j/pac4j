@@ -1,0 +1,140 @@
+---
+layout: idoc
+title: Implementations comparison regarding the version of pac4j&#58;
+seo_title: "Core version compatibility by framework integration | pac4j"
+description: "Find the pac4j core versions used by framework integrations to choose compatible Java authentication and authorization libraries."
+---
+
+<a href="./comparison.html" class="back-link"><span class="back-circle"><i class="fa fa-long-arrow-left" aria-hidden="true"></i></span> Categories</a>
+
+<style>
+    table {
+        margin-top: 20px
+    }
+    table img {
+        border: 0
+    }
+</style>
+
+
+<table class="centered">
+    <tr>
+        <th>Implementation</th>
+        <th>pac4j version<br /><small>(latest)</small></th>
+        <th>Framework version</th>
+        <th>JDK requirement<br /><small>(for that version)</small></th>
+    </tr>
+    <tr>
+        <td>spring-webmvc-pac4j</td>
+        <td>6.x</td>
+        <td>Spring 6.x - 7.x</td>
+        <td>JDK 17+</td>
+    </tr>
+    <tr>
+        <td>spring-webflux-pac4j</td>
+        <td>6.x</td>
+        <td>Spring WebFlux 6.x+</td>
+        <td>JDK 17+</td>
+    </tr>
+    <tr>
+        <td>jee-pac4j</td>
+        <td>6.x</td>
+        <td>JEE 8+ / Jakarta EE 9+</td>
+        <td>JDK 17+</td>
+    </tr>
+    <tr>
+        <td>buji-pac4j</td>
+        <td>6.x</td>
+        <td>Apache Shiro 3.x</td>
+        <td>JDK 17+</td>
+    </tr>
+    <tr>
+        <td>spring-security-pac4j</td>
+        <td>6.x</td>
+        <td>Spring Security 6.x / 7.x</td>
+        <td>JDK 17+</td>
+    </tr>
+    <tr>
+        <td>play-pac4j</td>
+        <td>6.x</td>
+        <td>Play Framework 3.0<br /><small>(2.8 and 2.9 with play-pac4j 12.0.x)</small></td>
+        <td>JDK 17+</td>
+    </tr>
+    <tr>
+        <td>vertx-pac4j</td>
+        <td>6.x</td>
+        <td>Vert.x 5.x</td>
+        <td>JDK 17+</td>
+    </tr>
+    <tr>
+        <td>spark-pac4j</td>
+        <td>6.x</td>
+        <td>Spark Java 2.9+</td>
+        <td>JDK 17+</td>
+    </tr>
+    <tr>
+        <td>javalin-pac4j</td>
+        <td>6.x</td>
+        <td>Javalin 7.x</td>
+        <td>JDK 17+</td>
+    </tr>
+    <tr>
+        <td>ratpack-pac4j</td>
+        <td>6.x</td>
+        <td>Ratpack 1.9+</td>
+        <td>JDK 17+</td>
+    </tr>
+    <tr>
+        <td>undertow-pac4j</td>
+        <td>6.x</td>
+        <td>Undertow 2.4</td>
+        <td>JDK 17+</td>
+    </tr>
+    <tr>
+        <td>jax-rs-pac4j</td>
+        <td>6.x</td>
+        <td>Jakarta RS 3.x - 4.x</td>
+        <td>JDK 17+</td>
+    </tr>
+    <tr>
+        <td>dropwizard-pac4j</td>
+        <td>6.x</td>
+        <td>Dropwizard 5.0+</td>
+        <td>JDK 17+</td>
+    </tr>
+    <tr>
+        <td>http4s-pac4j</td>
+        <td>6.x</td>
+        <td>Http4s 0.23+</td>
+        <td>JDK 17+</td>
+    </tr>
+    <tr>
+        <td>Knox</td>
+        <td>6.x</td>
+        <td>Apache Knox 3.x</td>
+        <td>JDK 17+</td>
+    </tr>
+    <tr>
+        <td>jooby-pac4j</td>
+        <td>6.x</td>
+        <td>Jooby 4.x<br /><small>(3.x on JDK 17+)</small></td>
+        <td>JDK 21+</td>
+    </tr>
+    <tr>
+        <td>pippo-pac4j</td>
+        <td>2.x</td>
+        <td>Pippo 1.x</td>
+        <td>JDK 8+</td>
+    </tr>
+    <tr>
+        <td>CAS</td>
+        <td>6.x</td>
+        <td>Apereo CAS 7.x - 8.x</td>
+        <td>JDK 21+<br /><small>(JDK 25+ for CAS 8.x)</small></td>
+    </tr>
+</table>
+
+<p class="caption">This table lists the <b>latest</b> version of each implementation. The current
+<b>pac4j 6.x</b> line requires JDK 17; the older <b>4.x</b> (JDK 8) and <b>5.x</b> (JDK 11) lines are no longer
+maintained, though critical security fixes are backported to them &mdash; see the
+<a target="_blank" href="https://github.com/pac4j/pac4j/blob/master/SECURITY.md">security policy</a>.</p>

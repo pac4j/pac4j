@@ -1,0 +1,56 @@
+---
+layout: homeblog
+title: <i class="fa fa-info-circle" aria-hidden="true"></i> Blog&#58;
+seo_title: "Java security blog and authentication tutorials | pac4j"
+description: "Explore Java authentication tutorials and articles on OIDC, SAML, CAS, JWT and JWKS, plus pac4j release news and security advisories."
+---
+
+{%- comment -%}
+  This index is generated from the posts themselves: every page using the "blog"
+  layout and NOT flagged "draft: true" shows up here, newest first.
+  A draft stays reachable at its own URL for proofreading, but is listed neither
+  here nor in /feed.xml. To publish it, just remove its "draft: true" line.
+  Tag labels live in _data/blogtags.yml.
+{%- endcomment -%}
+{%- capture keys -%}
+{%- for p in site.pages -%}
+{%- if p.dir == "/blog/" and p.layout == "blog" and p.draft != true and p.title and p.date -%}
+{{ p.date | date: "%Y%m%d" }}|{{ p.url }}~
+{%- endif -%}
+{%- endfor -%}
+{%- endcapture -%}
+{%- assign sorted = keys | split: "~" | sort | reverse -%}
+
+## Step-by-step guides
+
+<ul class="blog-index">
+{% assign protocols = "oidc,cas,saml" | split: "," %}
+{% for protocol in protocols %}
+    <li>
+        <a href="/how-to-secure-a-java-application-with-{{ protocol }}.html">How to secure a Java client application with {{ protocol | upcase }} (using Spring Boot)</a>
+        <span class="tag tag-howto">{{ site.data.blogtags.howto }}</span>
+        <span class="tag tag-{{ protocol }}">{{ site.data.blogtags[protocol] }}</span>
+    </li>
+{% endfor %}
+</ul>
+
+<p class="text-center"><a class="btn" href="/gettingstarted.html">More guides <span aria-hidden="true">&rarr;</span></a></p>
+
+## Latest articles
+
+<ul class="blog-index">
+{%- for key in sorted -%}
+{%- assign purl = key | split: "|" | last -%}
+{%- for p in site.pages -%}
+{%- if p.url == purl %}
+    <li>
+        <time>{{ p.date | date: "%B %Y" }}</time>
+        <a href="{{ p.url }}">{{ p.title | replace: "&colon;", ":" | replace: "&#58;", ":" }}</a>
+        {%- for t in p.tags %}
+        <span class="tag tag-{{ t }}">{{ site.data.blogtags[t] | default: t }}</span>
+        {%- endfor %}
+    </li>
+{%- endif -%}
+{%- endfor -%}
+{%- endfor %}
+</ul>

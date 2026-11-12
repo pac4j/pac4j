@@ -1,0 +1,9 @@
+{% assign share_url = page.url | prepend: site.url | cgi_escape %}
+{% assign share_title = page.title | cgi_escape %}
+<div class="share-page">
+  <span>Share this post!</span>
+  <a href="https://twitter.com/intent/tweet?text={{ share_title }}&amp;url={{ share_url }}" rel="nofollow noopener" target="_blank" title="Share on X/Twitter"><i class="fa fa-twitter"></i></a>
+  <a href="https://www.linkedin.com/shareArticle?url={{ share_url }}&amp;title={{ share_title }}" rel="nofollow noopener" target="_blank" title="Share on LinkedIn"><i class="fa fa-linkedin"></i></a>
+  <a href="https://www.reddit.com/submit?url={{ share_url }}&amp;title={{ share_title }}" rel="nofollow noopener" target="_blank" title="Share on Reddit"><i class="fa fa-reddit"></i></a>
+  <a href="https://news.ycombinator.com/submitlink?u={{ share_url }}&amp;t={{ share_title }}" rel="nofollow noopener" target="_blank" title="Share on Hacker News"><i class="fa fa-hacker-news"></i></a>
+</div>

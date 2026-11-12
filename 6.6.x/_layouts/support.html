@@ -1,0 +1,13 @@
+{% assign nav_active = 'support' %}
+{% include header.html %}
+
+<main>
+    <div class="container">
+
+         <div class="title">
+            <h1 class="text-center"><span class="alert alert-support">{{ page.title }}</span></h1>
+        </div>
+
+        {{ content }}
+
+        {% include footer.html %}

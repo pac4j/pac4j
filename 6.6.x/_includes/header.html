@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    {%- assign seo_title = page.seo_title | default: nil -%}
+    {%- assign seo_desc = page.description | default: site.description -%}
+    {%- comment -%}
+    The archived documentation of past releases lives in /N.N.x/ directories on
+    gh-pages and is rebuilt with this very header. Those pages duplicate the
+    current documentation, so their canonical URL is the same path at the root.
+    {%- endcomment -%}
+    {%- assign seo_path = page.url | replace: 'index.html', '' -%}
+    {%- assign seo_parts = seo_path | split: '/' -%}
+    {%- assign seo_version = seo_parts[1] | split: '.' -%}
+    {%- if seo_version.size == 3 and seo_version[2] == 'x' -%}
+        {%- assign seo_prefix = '/' | append: seo_parts[1] -%}
+        {%- assign seo_path = seo_path | remove_first: seo_prefix -%}
+    {%- endif -%}
+    {%- assign seo_url = seo_path | prepend: site.url -%}
+    <title>
+        {%- if seo_title -%}
+        {{ seo_title | strip_html | escape_once }}
+        {%- elsif page.title -%}
+        {{ page.title | strip_html | escape_once }} | pac4j
+        {%- else -%}
+        pac4j - security for Java
+        {%- endif -%}
+    </title>
+    <meta name="description" content="{{ seo_desc | strip_html | strip_newlines | escape_once }}"/>
+    <link rel="canonical" href="{{ seo_url }}">
+    <meta property="og:type" content="website"/>
+    <meta property="og:site_name" content="pac4j"/>
+    <meta property="og:title" content="{% if seo_title %}{{ seo_title | strip_html | escape_once }}{% elsif page.title %}{{ page.title | strip_html | escape_once }} | pac4j{% else %}pac4j - security for Java{% endif %}"/>
+    <meta property="og:description" content="{{ seo_desc | strip_html | strip_newlines | escape_once }}"/>
+    <meta property="og:url" content="{{ seo_url }}"/>
+    <meta property="og:image" content="{{ site.url }}/img/og-image.png"/>
+    <meta property="og:image:width" content="2400"/>
+    <meta property="og:image:height" content="1260"/>
+    <meta property="og:image:alt" content="pac4j - one Java security framework for every web framework"/>
+    <meta name="twitter:card" content="summary_large_image"/>
+    <link rel="stylesheet" href="/css/main19.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="alternate" type="application/rss+xml" title="pac4j blog" href="/feed.xml">
+    {% if page.url contains 'docs' or page.url contains 'mailing' or page.url contains 'blog/' or page.url contains 'commercial' or page.url contains '/how-to-secure-a-' %}
+        <script src="/js/anchor.min.js"></script>
+    {% endif %}
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+</head>
+
+<body>
+
+<header class="site-header">
+    <div class="header-inner">
+        <a class="brand" href="/index.html">pac4j</a>
+        <a class="gh-link" target="_blank" rel="noopener" href="https://github.com/pac4j/pac4j" aria-label="pac4j on GitHub" title="pac4j on GitHub">
+            <svg viewBox="0 0 16 16" width="20" height="20" aria-hidden="true" focusable="false"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg><span class="gh-stars" id="ghStars" hidden></span>
+        </a>
+        <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-mobile">
+            <span></span><span></span><span></span>
+        </button>
+        <nav class="site-nav" id="nav-mobile">
+            <ul class="nav-list">
+                <li class="{% if nav_active == 'started' %}active{% endif %}"><a href="/gettingstarted.html">GETTING STARTED</a></li>
+                <li class="{% if nav_active == 'implementations' %}active{% endif %}"><a href="/implementations.html">IMPLEMENTATIONS</a></li>
+                <li class="{% if nav_active == 'docs' %}active{% endif %}"><a href="/docs/alldocs.html">DOCUMENTATION</a></li>
+                <li class="{% if nav_active == 'blog' %}active{% endif %}"><a href="/blog.html">BLOG</a></li>
+                <li class="{% if nav_active == 'support' %}active{% endif %}"><a href="/commercial-support.html">COMMERCIAL SUPPORT</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>

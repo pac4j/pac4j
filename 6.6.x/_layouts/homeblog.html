@@ -1,0 +1,13 @@
+{% assign nav_active = 'blog' %}
+{% include header.html %}
+
+<main class="blog-home">
+    <div class="container">
+
+         <div class="title">
+            <h1 class="text-center"><span class="alert alert-blog">{{ page.title }}</span></h1>
+        </div>
+
+        {{ content }}
+
+        {% include footer.html %}
