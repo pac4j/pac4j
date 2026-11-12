@@ -93,7 +93,7 @@
 		<spring.version>7.0.10</spring.version>
 		<spring.security.version>7.1.2</spring.security.version>
         <bouncycastle.version>1.87</bouncycastle.version>
-		<shiro.version>3.0.1</shiro.version>
+		<shiro.version>3.0.2</shiro.version>
         <jbcrypt.version>0.4.3</jbcrypt.version>
 		<mockito.version>5.24.0</mockito.version>
 		<slf4j.version>2.0.20</slf4j.version>
