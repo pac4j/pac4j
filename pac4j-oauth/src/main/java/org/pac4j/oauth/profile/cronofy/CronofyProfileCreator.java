@@ -2,7 +2,7 @@ package org.pac4j.oauth.profile.cronofy;
 
 import com.github.scribejava.core.model.*;
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.profile.creator.OAuth20ProfileCreator;
@@ -28,7 +28,7 @@ public class CronofyProfileCreator extends OAuth20ProfileCreator {
     }
 
     /** {@inheritDoc} */
-    protected Optional<UserProfile> retrieveUserProfileFromToken(final WebContext context, final Token accessToken) {
+    protected Optional<UserProfile> retrieveUserProfileFromToken(final CallContext context, final Token accessToken) {
         final UserProfile profile = configuration.getProfileDefinition().extractUserProfile(accessToken.getRawResponse());
         addTokenToProfile(profile, accessToken);
         return Optional.of(profile);

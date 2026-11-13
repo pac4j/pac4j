@@ -4,7 +4,7 @@ import com.github.scribejava.core.model.OAuth1AccessToken;
 import com.github.scribejava.core.oauth.OAuth10aService;
 import lombok.val;
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.oauth.config.OAuth10Configuration;
@@ -34,7 +34,7 @@ public class OAuth10Authenticator extends OAuthAuthenticator {
 
     /** {@inheritDoc} */
     @Override
-    protected void retrieveAccessToken(final WebContext context, final Credentials credentials) {
+    protected void retrieveAccessToken(final CallContext context, final Credentials credentials) {
         var oAuth10Credentials = (OAuth10Credentials) credentials;
         val tokenRequest = oAuth10Credentials.getRequestToken();
         val token = oAuth10Credentials.getToken();

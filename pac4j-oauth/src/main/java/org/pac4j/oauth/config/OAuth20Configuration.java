@@ -11,11 +11,10 @@ import lombok.With;
 import lombok.experimental.Accessors;
 import lombok.val;
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.generator.RandomValueGenerator;
 import org.pac4j.core.util.generator.ValueGenerator;
-import org.pac4j.oauth.util.OAuthProtocolMessages;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -51,16 +50,16 @@ public class OAuth20Configuration extends OAuthConfiguration {
     /**
      * {@inheritDoc}
      *
-     * Build an OAuth service from the web context.
+     * Build an OAuth service from the call context.
      */
     @Override
-    public OAuthService buildService(final WebContext context, final IndirectClient client) {
+    public OAuthService buildService(final CallContext context, final IndirectClient client) {
         init();
 
-        val finalCallbackUrl = client.computeFinalCallbackUrl(context);
+        val finalCallbackUrl = client.computeFinalCallbackUrl(context.webContext());
 
         return ((DefaultApi20) api).createService(this.key, this.secret, finalCallbackUrl, this.scope,
-            this.responseType, null, null, this.httpClientConfig, OAuthProtocolMessages.httpClient(this.httpClientConfig));
+            this.responseType, null, null, this.httpClientConfig, buildHttpClient(context));
     }
 
     /**

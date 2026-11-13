@@ -1,5 +1,6 @@
 package org.pac4j.oidc.profile.creator;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTClaimsSet;
@@ -11,6 +12,7 @@ import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import com.nimbusds.oauth2.sdk.http.HTTPRequest;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.test.context.session.MockSessionStore;
 import org.pac4j.core.credentials.TokenCredentials;
@@ -34,6 +36,7 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -43,6 +46,7 @@ import static org.mockito.Mockito.when;
  * @author Misagh Moayyed
  * @since 5.4.4
  */
+@SuppressWarnings("PMD.TooManyStaticImports")
 public class OidcProfileCreatorTests implements TestsConstants {
     private OidcConfiguration configuration;
 
@@ -104,7 +108,20 @@ public class OidcProfileCreatorTests implements TestsConstants {
         val credentials = new OidcCredentials();
         credentials.setAccessToken(new BearerAccessToken(UUID.randomUUID().toString()).toJSONObject());
         credentials.setIdToken(new PlainJWT(idTokenClaims.toJWTClaimsSet()).serialize());
-        return creator.create(new CallContext(MockWebContext.create(), new MockSessionStore()), credentials);
+        val ctx = new CallContext(MockWebContext.create(), new MockSessionStore());
+        val calls = new AtomicInteger();
+        doAnswer(invocation -> {
+            assertSame(ctx, invocation.getArgument(1));
+            assertEquals("Bearer " + credentials.toAccessToken().getValue(),
+                invocation.<HTTPRequest>getArgument(0).getAuthorization());
+            calls.incrementAndGet();
+            return null;
+        }).when(configuration).configureHttpRequest(any(), any());
+        try {
+            return creator.create(ctx, credentials);
+        } finally {
+            assertEquals(1, calls.get());
+        }
     }
 
     @Test

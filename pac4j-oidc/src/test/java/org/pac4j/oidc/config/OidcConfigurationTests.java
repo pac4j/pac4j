@@ -1,7 +1,12 @@
 package org.pac4j.oidc.config;
 
+import java.net.URI;
+import com.nimbusds.oauth2.sdk.http.HTTPRequest;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLSocketFactory;
 import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
 import lombok.val;
+import org.pac4j.core.context.CallContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.pac4j.core.exception.TechnicalException;
@@ -31,6 +36,38 @@ public class OidcConfigurationTests implements TestsConstants {
         config.setDiscoveryURI(CASSERVERPAC4J_OIDC_URL);
         config.setAllowUnsignedIdTokens(true);
         config.setOidcClient(mock(OidcClient.class));
+    }
+
+    @Test
+    public void testHttpSettingsAreAppliedBeforeTheHttpRequestConfigurer() throws Exception {
+        config.setConnectTimeout(1234);
+        config.setReadTimeout(5678);
+        val ssl = (SSLSocketFactory) SSLSocketFactory.getDefault();
+        val hostnameVerifier = mock(HostnameVerifier.class);
+        config.setSslSocketFactory(ssl);
+        config.setHostnameVerifier(hostnameVerifier);
+        val request = new HTTPRequest(
+            HTTPRequest.Method.POST, new URI("https://op.example/token"));
+        val ctx = new CallContext(null, null);
+        config.setHttpRequestConfigurer((configured, callContext) -> {
+            assertSame(ctx, callContext);
+            // the HTTP settings are already applied and can be overridden
+            assertEquals(5678, configured.getReadTimeout());
+            configured.setReadTimeout(9999);
+            configured.setHeader("X-Test", "configured");
+        });
+        config.configureHttpRequest(request, ctx);
+        assertEquals(1234, request.getConnectTimeout());
+        assertEquals(9999, request.getReadTimeout());
+        assertSame(ssl, request.getSSLSocketFactory());
+        assertSame(hostnameVerifier, request.getHostnameVerifier());
+        assertEquals("configured", request.getHeaderMap().get("X-Test").get(0));
+
+        config.setHttpRequestConfigurer(null);
+        val untouched = new HTTPRequest(HTTPRequest.Method.POST, new URI("https://op.example/token"));
+        config.configureHttpRequest(untouched, ctx);
+        assertEquals(5678, untouched.getReadTimeout());
+        assertNull(untouched.getHeaderMap().get("X-Test"));
     }
 
     @Test

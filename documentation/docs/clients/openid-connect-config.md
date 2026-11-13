@@ -201,6 +201,14 @@ To rename claims, supply a mapping from each source claim to its destination nam
 config.setMappedClaims(mapping);
 ```
 
+The pushed authorization, token and UserInfo requests can be changed just before they are sent with an
+`HttpRequestConfigurer`. It receives the Nimbus `HTTPRequest`, on which the HTTP settings of the configuration
+(timeouts, SSL socket factory, hostname verifier) are already applied, and the `CallContext`:
+
+```java
+config.setHttpRequestConfigurer((request, ctx) -> request.setHeader("X-Request-Id", UUID.randomUUID().toString()));
+```
+
 
 ## 6) Keys rotation
 

@@ -1,5 +1,7 @@
 package org.pac4j.oidc.config;
 
+import org.pac4j.core.context.CallContext;
+import org.pac4j.core.http.configurer.HttpRequestConfigurer;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.util.DefaultResourceRetriever;
 import com.nimbusds.jose.util.ResourceRetriever;
@@ -55,6 +57,10 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
 @NoArgsConstructor
 @Slf4j
 public class OidcConfiguration extends BaseClientConfiguration {
+
+    /** Applied to the pushed authorization, token and UserInfo requests, after the HTTP settings of this configuration; none by default. */
+    private HttpRequestConfigurer<HTTPRequest> httpRequestConfigurer;
+
     // deprecate: move to OidcConstants
     /**
      * Constant <code>login_hint="user@example.org"</code>
@@ -419,6 +425,19 @@ public class OidcConfiguration extends BaseClientConfiguration {
         request.setReadTimeout(getReadTimeout());
         request.setSSLSocketFactory(sslSocketFactory);
         request.setHostnameVerifier(hostnameVerifier);
+    }
+
+    /**
+     * Apply the HTTP settings of this configuration to the request, then the HTTP request configurer, if any.
+     *
+     * @param request the request
+     * @param ctx the call context
+     */
+    public void configureHttpRequest(final HTTPRequest request, final CallContext ctx) {
+        configureHttpRequest(request);
+        if (httpRequestConfigurer != null) {
+            httpRequestConfigurer.configure(request, ctx);
+        }
     }
 
     /**

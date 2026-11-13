@@ -6,7 +6,7 @@ import com.github.scribejava.core.model.*;
 import com.github.scribejava.core.oauth.OAuth20Service;
 import lombok.val;
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.CommonHelper;
@@ -41,7 +41,7 @@ public class FacebookProfileCreator extends OAuth20ProfileCreator {
 
     /** {@inheritDoc} */
     @Override
-    protected Optional<UserProfile> retrieveUserProfileFromToken(final WebContext context, final Token accessToken) {
+    protected Optional<UserProfile> retrieveUserProfileFromToken(final CallContext context, final Token accessToken) {
         val profileDefinition = configuration.getProfileDefinition();
         val facebookConfiguration = (FacebookConfiguration) configuration;
         val profileUrl = profileDefinition.getProfileUrl(accessToken, configuration);

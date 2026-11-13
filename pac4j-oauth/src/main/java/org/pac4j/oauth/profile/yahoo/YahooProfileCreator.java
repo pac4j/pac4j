@@ -6,7 +6,7 @@ import com.github.scribejava.core.oauth.OAuth10aService;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.oauth.config.OAuth10Configuration;
@@ -34,7 +34,7 @@ public class YahooProfileCreator extends OAuth10ProfileCreator {
 
     /** {@inheritDoc} */
     @Override
-    protected Optional<UserProfile> retrieveUserProfileFromToken(final WebContext context, final Token accessToken) {
+    protected Optional<UserProfile> retrieveUserProfileFromToken(final CallContext context, final Token accessToken) {
         // get the guid: https://developer.yahoo.com/social/rest_api_guide/introspective-guid-resource.html
         val profileDefinition = configuration.getProfileDefinition();
         val profileUrl = profileDefinition.getProfileUrl(accessToken, this.configuration);

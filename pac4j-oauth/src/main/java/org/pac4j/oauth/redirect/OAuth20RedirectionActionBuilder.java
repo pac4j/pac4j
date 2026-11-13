@@ -63,7 +63,7 @@ public class OAuth20RedirectionActionBuilder implements RedirectionActionBuilder
                 ANNOUNCE_WITH_STATE_DISABLED.announce();
                 state = null;
             }
-            val service = (OAuth20Service) this.configuration.buildService(webContext, client);
+            val service = (OAuth20Service) this.configuration.buildService(ctx, client);
             val authorizationUrl = new AuthorizationUrlBuilder(service)
                 .state(state).additionalParams(this.configuration.getCustomParams()).build();
             OAuthProtocolMessages.sentToBrowser("authorization URL: " + authorizationUrl);

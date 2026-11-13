@@ -127,3 +127,26 @@ logging.level.PROTOCOL_MESSAGE.OAUTH=DEBUG
 
 The `PROTOCOL_MESSAGE.OAUTH` logger is a child of `PROTOCOL_MESSAGE`, which enables the messages of all protocols at once.
 Messages are logged as they travel, tokens included: enable these logs to diagnose, not permanently in production.
+
+
+## 4) HTTP client and requests
+
+The requests to the OAuth server are sent by ScribeJava. By default, its HTTP client is built from the
+`httpClientConfig` of the configuration, or is the JDK one. You can provide your own instead:
+
+```java
+facebookClient.getConfiguration().setHttpClient(myHttpClient);
+```
+
+Every request sent to the OAuth server (request token, access token, profile) can be changed just before it is sent,
+once ScribeJava has built and signed it, with an `HttpRequestConfigurer`. It receives the method, the complete URL and
+the headers, which can be added, replaced or removed, as well as the `CallContext`:
+
+```java
+facebookClient.getConfiguration().setHttpRequestConfigurer((request, ctx) -> {
+    request.headers().put("X-Request-Id", UUID.randomUUID().toString());
+});
+```
+
+The configurer applies whatever the HTTP client: the default one, the one of the `httpClientConfig` or your own.
+If you override `buildHttpClient` in your configuration, wrap your client in a `ConfiguringHttpClient` to keep it applied.

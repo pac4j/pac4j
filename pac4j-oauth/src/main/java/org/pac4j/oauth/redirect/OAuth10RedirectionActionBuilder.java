@@ -51,7 +51,7 @@ public class OAuth10RedirectionActionBuilder implements RedirectionActionBuilder
 
             val webContext = ctx.webContext();
 
-            val service = (OAuth10aService) this.configuration.buildService(webContext, client);
+            val service = (OAuth10aService) this.configuration.buildService(ctx, client);
             final OAuth1RequestToken requestToken;
             try {
                 requestToken = service.getRequestToken();

@@ -10,7 +10,6 @@ import com.github.scribejava.core.oauth.OAuthService;
 import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.CallContext;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.core.exception.TechnicalException;
@@ -65,7 +64,7 @@ abstract class OAuthProfileCreator implements ProfileCreator {
     public Optional<UserProfile> create(final CallContext ctx, final Credentials credentials) {
         try {
             val token = getAccessToken(credentials);
-            return retrieveUserProfileFromToken(ctx.webContext(), token);
+            return retrieveUserProfileFromToken(ctx, token);
         } catch (final OAuthException e) {
             throw new TechnicalException(e);
         }
@@ -82,11 +81,11 @@ abstract class OAuthProfileCreator implements ProfileCreator {
     /**
      * Retrieve the user profile from the access token.
      *
-     * @param context the web context
+     * @param context the call context
      * @param accessToken the access token
      * @return the user profile
      */
-    protected Optional<UserProfile> retrieveUserProfileFromToken(final WebContext context, final Token accessToken) {
+    protected Optional<UserProfile> retrieveUserProfileFromToken(final CallContext context, final Token accessToken) {
         val profileDefinition = configuration.getProfileDefinition();
         val profileUrl = profileDefinition.getProfileUrl(accessToken, configuration);
         val service = this.configuration.buildService(context, client);

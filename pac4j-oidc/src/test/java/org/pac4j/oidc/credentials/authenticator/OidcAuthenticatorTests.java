@@ -102,6 +102,10 @@ public final class OidcAuthenticatorTests {
     @Test
     public void testValidateExchangesAuthorizationCodeAndStoresTokens() throws Exception {
         val tokenRequest = mockTokenRequestReturning(buildSuccessfulTokenResponse());
+        configuration.setHttpRequestConfigurer((request, callContext) -> {
+            assertSame(context, callContext);
+            request.setHeader("X-Test", "configured");
+        });
         val authenticator = new TestableOidcAuthenticator(configuration, client, tokenRequest);
         val credentials = new OidcCredentials();
         credentials.setCode("auth-code");
@@ -119,6 +123,10 @@ public final class OidcAuthenticatorTests {
         assertNotNull(credentials.getAccessToken());
         assertNotNull(credentials.getRefreshToken());
         assertNotNull(credentials.getIdToken());
+        val httpRequest = tokenRequest.toHTTPRequest();
+        val order = Mockito.inOrder(httpRequest);
+        order.verify(httpRequest).setHeader("X-Test", "configured");
+        order.verify(httpRequest).send();
     }
 
     @Test
@@ -138,16 +146,24 @@ public final class OidcAuthenticatorTests {
     @Test
     public void testRefreshExchangesRefreshTokenAndStoresTokens() throws Exception {
         val tokenRequest = mockTokenRequestReturning(buildSuccessfulTokenResponse());
+        configuration.setHttpRequestConfigurer((request, callContext) -> {
+            assertSame(context, callContext);
+            request.setHeader("X-Test", "configured");
+        });
         val authenticator = new TestableOidcAuthenticator(configuration, client, tokenRequest);
         val credentials = new OidcCredentials();
         credentials.setRefreshTokenObject(new RefreshToken("refresh-token"));
 
-        authenticator.refresh(credentials);
+        authenticator.refresh(context, credentials);
 
         assertTrue(authenticator.getLastGrant() instanceof RefreshTokenGrant);
         assertNotNull(credentials.getAccessToken());
         assertNotNull(credentials.getRefreshToken());
         assertNotNull(credentials.getIdToken());
+        val httpRequest = tokenRequest.toHTTPRequest();
+        val order = Mockito.inOrder(httpRequest);
+        order.verify(httpRequest).setHeader("X-Test", "configured");
+        order.verify(httpRequest).send();
     }
 
     @Test
@@ -159,7 +175,7 @@ public final class OidcAuthenticatorTests {
         val credentials = new OidcCredentials();
         credentials.setRefreshTokenObject(new RefreshToken("refresh-token"));
 
-        assertThrows(OidcException.class, () -> authenticator.refresh(credentials));
+        assertThrows(OidcException.class, () -> authenticator.refresh(context, credentials));
     }
 
     @Test

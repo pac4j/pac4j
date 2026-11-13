@@ -63,7 +63,7 @@ public class OidcAuthenticator implements Authenticator {
                         .retrieve(ctx, client.getCodeVerifierSessionAttributeName(), client).orElse(null);
                     // Token request
                     val request = createTokenRequest(new AuthorizationCodeGrant(code, new URI(computedCallbackUrl), verifier));
-                    executeTokenRequest(request, credentials);
+                    executeTokenRequest(ctx, request, credentials);
                 } catch (final URISyntaxException | IOException | ParseException e) {
                     throw new OidcException(e);
                 }
@@ -75,14 +75,15 @@ public class OidcAuthenticator implements Authenticator {
     /**
      * <p>refresh.</p>
      *
+     * @param ctx the call context
      * @param credentials a {@link OidcCredentials} object
      */
-    public void refresh(final OidcCredentials credentials) {
+    public void refresh(final CallContext ctx, final OidcCredentials credentials) {
         val refreshToken = credentials.toRefreshToken();
         if (refreshToken != null) {
             try {
                 val request = createTokenRequest(new RefreshTokenGrant(refreshToken));
-                executeTokenRequest(request, credentials);
+                executeTokenRequest(ctx, request, credentials);
             } catch (final IOException | ParseException e) {
                 throw new OidcException(e);
             }
@@ -108,9 +109,10 @@ public class OidcAuthenticator implements Authenticator {
         }
     }
 
-    private void executeTokenRequest(Request request, OidcCredentials credentials) throws IOException, ParseException {
+    private void executeTokenRequest(final CallContext ctx, final Request request, final OidcCredentials credentials)
+        throws IOException, ParseException {
         val tokenHttpRequest = request.toHTTPRequest();
-        configuration.configureHttpRequest(tokenHttpRequest);
+        configuration.configureHttpRequest(tokenHttpRequest, ctx);
 
         OidcProtocolMessages.sent(tokenHttpRequest);
         val httpResponse = tokenHttpRequest.send();

@@ -6,8 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.With;
 import lombok.val;
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.oauth.util.OAuthProtocolMessages;
+import org.pac4j.core.context.CallContext;
 
 /**
  * The OAuh 1.0 configuration.
@@ -28,17 +27,17 @@ public class OAuth10Configuration extends OAuthConfiguration {
     /**
      * {@inheritDoc}
      *
-     * Build an OAuth service from the web context.
+     * Build an OAuth service from the call context.
      */
     @Override
-    public OAuthService buildService(final WebContext context, final IndirectClient client) {
+    public OAuthService buildService(final CallContext context, final IndirectClient client) {
         init();
 
-        val finalCallbackUrl = client.computeFinalCallbackUrl(context);
+        val finalCallbackUrl = client.computeFinalCallbackUrl(context.webContext());
 
         return ((DefaultApi10a) api)
             .createService(this.key, this.secret, finalCallbackUrl, this.scope, null, null, this.httpClientConfig,
-                OAuthProtocolMessages.httpClient(this.httpClientConfig));
+                buildHttpClient(context));
     }
 
     /**
