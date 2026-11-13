@@ -12,10 +12,6 @@
     <packaging>bundle</packaging>
     <name>pac4j: Java web security for OpenID Connect</name>
 
-    <properties>
-        <oauth-oidc-sdk.version>11.39</oauth-oidc-sdk.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.pac4j</groupId>
@@ -24,13 +20,6 @@
         <dependency>
             <groupId>com.nimbusds</groupId>
             <artifactId>oauth2-oidc-sdk</artifactId>
-            <version>${oauth-oidc-sdk.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.nimbusds</groupId>
-                    <artifactId>nimbus-jose-jwt</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.nimbusds</groupId>

@@ -241,10 +241,7 @@ public class OidcRedirectionActionBuilder extends InitializableObject implements
                     authzRequest
                 );
                 val request = parRequest.toHTTPRequest();
-                config.configureHttpRequest(request, ctx);
-                OidcProtocolMessages.sent(request);
-                val response = request.send();
-                OidcProtocolMessages.received(response);
+                val response = config.send(request, ctx);
                 val parResponse = PushedAuthorizationResponse.parse(response);
 
                 if (parResponse.indicatesSuccess()) {

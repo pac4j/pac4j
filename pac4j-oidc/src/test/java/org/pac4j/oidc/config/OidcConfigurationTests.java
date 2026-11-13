@@ -1,23 +1,28 @@
 package org.pac4j.oidc.config;
 
-import java.net.URI;
-import com.nimbusds.oauth2.sdk.http.HTTPRequest;
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLSocketFactory;
 import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
+import com.nimbusds.oauth2.sdk.http.HTTPRequest;
+import com.nimbusds.oauth2.sdk.http.HTTPResponse;
 import lombok.val;
-import org.pac4j.core.context.CallContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.http.interceptor.HttpInterceptor;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.exceptions.OidcConfigurationException;
 import org.pac4j.oidc.metadata.IOidcOpMetadataResolver;
 import org.pac4j.oidc.metadata.OidcOpMetadataResolver;
 import org.pac4j.test.util.TestsConstants;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLSocketFactory;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 /**
  * Tests {@link OidcConfiguration}.
@@ -25,6 +30,7 @@ import static org.mockito.Mockito.mock;
  * @author Jerome LELEU
  * @since 6.4.0
  */
+@SuppressWarnings("PMD.TooManyStaticImports")
 public class OidcConfigurationTests implements TestsConstants {
 
     private OidcConfiguration config;
@@ -39,7 +45,7 @@ public class OidcConfigurationTests implements TestsConstants {
     }
 
     @Test
-    public void testHttpSettingsAreAppliedBeforeTheHttpRequestConfigurer() throws Exception {
+    public void testHttpSettingsAreAppliedBeforeTheHttpInterceptor() throws Exception {
         config.setConnectTimeout(1234);
         config.setReadTimeout(5678);
         val ssl = (SSLSocketFactory) SSLSocketFactory.getDefault();
@@ -49,7 +55,8 @@ public class OidcConfigurationTests implements TestsConstants {
         val request = new HTTPRequest(
             HTTPRequest.Method.POST, new URI("https://op.example/token"));
         val ctx = new CallContext(null, null);
-        config.setHttpRequestConfigurer((configured, callContext) -> {
+        config.setHttpInterceptor((configuredRequest, callContext) -> {
+            val configured = (HTTPRequest) configuredRequest;
             assertSame(ctx, callContext);
             // the HTTP settings are already applied and can be overridden
             assertEquals(5678, configured.getReadTimeout());
@@ -63,11 +70,48 @@ public class OidcConfigurationTests implements TestsConstants {
         assertSame(hostnameVerifier, request.getHostnameVerifier());
         assertEquals("configured", request.getHeaderMap().get("X-Test").get(0));
 
-        config.setHttpRequestConfigurer(null);
+        config.setHttpInterceptor(null);
         val untouched = new HTTPRequest(HTTPRequest.Method.POST, new URI("https://op.example/token"));
         config.configureHttpRequest(untouched, ctx);
         assertEquals(5678, untouched.getReadTimeout());
         assertNull(untouched.getHeaderMap().get("X-Test"));
+    }
+
+    @Test
+    public void testSendSendsAgainOnceWhenTheHttpInterceptorAsksForIt() throws Exception {
+        val request = mock(HTTPRequest.class);
+        val refused = new HTTPResponse(400);
+        val accepted = new HTTPResponse(200);
+        when(request.send()).thenReturn(refused, accepted, refused);
+        val ctx = new CallContext(null, null);
+        val handled = new ArrayList<Object>();
+        config.setHttpInterceptor(new HttpInterceptor() {
+            @Override
+            public void configureRequest(final Object configured, final CallContext callContext) {
+                ((HTTPRequest) configured).setHeader("X-Test", "configured");
+            }
+
+            @Override
+            public boolean handleResponse(final Object handledRequest, final Object response, final CallContext callContext) {
+                assertSame(request, handledRequest);
+                assertSame(ctx, callContext);
+                handled.add(response);
+                return true;
+            }
+        });
+
+        // sent again once, even if the interceptor asks for more
+        assertSame(accepted, config.send(request, ctx));
+        assertEquals(List.of(refused, accepted), handled);
+        verify(request, times(2)).setHeader("X-Test", "configured");
+        verify(request, times(2)).send();
+
+        config.setHttpInterceptor((configured, callContext) -> { });
+        assertSame(refused, config.send(request, ctx));
+        config.setHttpInterceptor(null);
+        when(request.send()).thenReturn(accepted);
+        assertSame(accepted, config.send(request, ctx));
+        verify(request, times(4)).send();
     }
 
     @Test

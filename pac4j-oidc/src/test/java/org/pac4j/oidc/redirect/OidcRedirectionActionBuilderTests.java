@@ -5,6 +5,7 @@ import com.nimbusds.jwt.SignedJWT;
 import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
 import com.nimbusds.oauth2.sdk.auth.ClientSecretBasic;
 import com.nimbusds.oauth2.sdk.auth.Secret;
+import com.nimbusds.oauth2.sdk.http.HTTPRequest;
 import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.oauth2.sdk.id.Issuer;
 import com.nimbusds.oauth2.sdk.pkce.CodeChallengeMethod;
@@ -307,9 +308,9 @@ public class OidcRedirectionActionBuilderTests implements TestsConstants {
             val parEndpoint = new URI("http://localhost:" + webServer.getListeningPort() + "/par?r=ok");
             enablePar(parEndpoint);
             val configured = new ArrayList<URI>();
-            configuration.setHttpRequestConfigurer((request, callContext) -> {
+            configuration.setHttpInterceptor((request, callContext) -> {
                 assertSame(context, callContext);
-                configured.add(request.getURI());
+                configured.add(((HTTPRequest) request).getURI());
             });
             val action = getFoundAction();
             assertEquals(302, action.getCode());
