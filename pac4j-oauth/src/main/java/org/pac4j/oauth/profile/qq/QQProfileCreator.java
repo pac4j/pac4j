@@ -41,14 +41,14 @@ public class QQProfileCreator extends OAuth20ProfileCreator {
         var openidUrl = profileDefinition.getOpenidUrl((OAuth2AccessToken) accessToken, (OAuth20Configuration) configuration);
         val service = (OAuth20Service) this.configuration.buildService(context, client);
 
-        var body = sendRequestForData(context, service, accessToken, openidUrl, Verb.GET);
+        var body = sendRequestForData(service, accessToken, openidUrl, Verb.GET);
         var openid = profileDefinition.extractOpenid(body);
 
         var profileUrl = profileDefinition.getProfileUrl(accessToken, configuration);
         profileUrl = CommonHelper.addParameter(profileUrl, "openid", openid);
         profileUrl = CommonHelper.addParameter(profileUrl, "oauth_consumer_key",
             configuration.getKey());
-        body = sendRequestForData(context, service, accessToken, profileUrl, Verb.GET);
+        body = sendRequestForData(service, accessToken, profileUrl, Verb.GET);
         if (body == null) {
             throw new HttpCommunicationException("Not data found for accessToken: " + accessToken);
         }

@@ -1,7 +1,7 @@
 package org.pac4j.oidc.config;
 
+import org.pac4j.core.context.CallContext;
 import org.pac4j.core.http.configurer.HttpRequestConfigurer;
-import org.pac4j.oidc.http.OidcHttpRequestConfigurer;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.util.DefaultResourceRetriever;
 import com.nimbusds.jose.util.ResourceRetriever;
@@ -58,6 +58,7 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
 @Slf4j
 public class OidcConfiguration extends BaseClientConfiguration {
 
+    /** Applied to the pushed authorization, token and UserInfo requests, after the HTTP settings of this configuration; none by default. */
     private HttpRequestConfigurer<HTTPRequest> httpRequestConfigurer;
 
     // deprecate: move to OidcConstants
@@ -263,7 +264,6 @@ public class OidcConfiguration extends BaseClientConfiguration {
      */
     @Override
     protected void internalInit(final boolean forceReinit) {
-        setHttpRequestConfigurerIfNotDefined(new OidcHttpRequestConfigurer(this));
         if (disablePkce) {
             LOGGER.info("PKCE is disabled for: " + oidcClient.getName());
         } else {
@@ -428,6 +428,19 @@ public class OidcConfiguration extends BaseClientConfiguration {
     }
 
     /**
+     * Apply the HTTP settings of this configuration to the request, then the HTTP request configurer, if any.
+     *
+     * @param request the request
+     * @param ctx the call context
+     */
+    public void configureHttpRequest(final HTTPRequest request, final CallContext ctx) {
+        configureHttpRequest(request);
+        if (httpRequestConfigurer != null) {
+            httpRequestConfigurer.configure(request, ctx);
+        }
+    }
+
+    /**
      * Use {@code getResourceRetriever()}
      */
     @Deprecated
@@ -572,16 +585,5 @@ public class OidcConfiguration extends BaseClientConfiguration {
 
     public boolean isEnablePkce() {
         return !disablePkce;
-    }
-
-    /**
-     * Set the default configurer without replacing a custom one.
-     *
-     * @param configurer the default configurer
-     */
-    public void setHttpRequestConfigurerIfNotDefined(final HttpRequestConfigurer<HTTPRequest> configurer) {
-        if (httpRequestConfigurer == null) {
-            httpRequestConfigurer = configurer;
-        }
     }
 }

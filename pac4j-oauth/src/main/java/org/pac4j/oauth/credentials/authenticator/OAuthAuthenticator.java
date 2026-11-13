@@ -54,7 +54,7 @@ abstract class OAuthAuthenticator implements Authenticator {
     /**
      * Retrieve the access token from OAuth credentials.
      *
-     * @param context the web context
+     * @param context the call context
      * @param credentials credentials
      */
     protected abstract void retrieveAccessToken(CallContext context, Credentials credentials);

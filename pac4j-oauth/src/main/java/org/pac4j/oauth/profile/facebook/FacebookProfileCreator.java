@@ -46,7 +46,7 @@ public class FacebookProfileCreator extends OAuth20ProfileCreator {
         val facebookConfiguration = (FacebookConfiguration) configuration;
         val profileUrl = profileDefinition.getProfileUrl(accessToken, configuration);
         val service = (OAuth20Service) this.configuration.buildService(context, client);
-        var body = sendRequestForData(context, service, accessToken, profileUrl, Verb.GET);
+        var body = sendRequestForData(service, accessToken, profileUrl, Verb.GET);
         if (body == null) {
             throw new HttpCommunicationException("Not data found for accessToken: " + accessToken);
         }
@@ -57,7 +57,6 @@ public class FacebookProfileCreator extends OAuth20ProfileCreator {
             url = CommonHelper.addParameter(url, OAuthConstants.CLIENT_SECRET, configuration.getSecret());
             url = addExchangeToken(url, (OAuth2AccessToken) accessToken);
             val request = createOAuthRequest(url, Verb.GET);
-            configuration.getHttpRequestConfigurer().configure(request, context);
             val t0 = System.currentTimeMillis();
             final Response response;
             final int code;

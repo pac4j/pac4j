@@ -1,19 +1,22 @@
 package org.pac4j.oauth.config;
 
-import org.pac4j.core.http.configurer.HttpRequestConfigurer;
-import org.pac4j.oauth.http.OAuthHttpRequestConfigurer;
+import com.github.scribejava.core.httpclient.HttpClient;
 import com.github.scribejava.core.httpclient.HttpClientConfig;
-import com.github.scribejava.core.model.OAuthRequest;
 import com.github.scribejava.core.oauth.OAuthService;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
+import lombok.val;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.config.BaseClientConfiguration;
 import org.pac4j.core.context.CallContext;
+import org.pac4j.core.http.configurer.HttpRequestConfigurer;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.oauth.http.ConfiguringHttpClient;
+import org.pac4j.oauth.http.OAuthHttpRequest;
 import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
+import org.pac4j.oauth.util.OAuthProtocolMessages;
 
 /**
  * The base OAuth configuration.
@@ -26,8 +29,6 @@ import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
 @ToString(exclude = "secret")
 @Accessors(chain = true)
 public abstract class OAuthConfiguration extends BaseClientConfiguration {
-
-    private HttpRequestConfigurer<OAuthRequest> httpRequestConfigurer;
 
     /** Constant <code>OAUTH_TOKEN="oauth_token"</code> */
     public static final String OAUTH_TOKEN = "oauth_token";
@@ -53,10 +54,15 @@ public abstract class OAuthConfiguration extends BaseClientConfiguration {
 
     protected Object api;
 
+    /** The HTTP client ScribeJava must use, instead of the one it builds from the HTTP client configuration; none by default. */
+    protected HttpClient httpClient;
+
+    /** Applied to every request sent to the OAuth server, once ScribeJava has built it; none by default. */
+    protected HttpRequestConfigurer<OAuthHttpRequest> httpRequestConfigurer;
+
     /** {@inheritDoc} */
     @Override
     protected void internalInit(final boolean forceReinit) {
-        setHttpRequestConfigurerIfNotDefined(new OAuthHttpRequestConfigurer());
         CommonHelper.assertNotNull("api", api);
         CommonHelper.assertNotBlank("key", this.key);
         CommonHelper.assertNotBlank("secret", this.secret);
@@ -74,13 +80,19 @@ public abstract class OAuthConfiguration extends BaseClientConfiguration {
     public abstract OAuthService buildService(final CallContext context, final IndirectClient client);
 
     /**
-     * Set the default configurer without replacing a custom one.
+     * Build the HTTP client ScribeJava must use: the defined one, or the one of the HTTP client configuration, logging
+     * the messages when the logger is enabled and applying the HTTP request configurer when there is one. None, for
+     * ScribeJava to build its own, when nothing of that is needed.
      *
-     * @param configurer the default configurer
+     * @param context the call context
+     * @return the HTTP client, or null
      */
-    public void setHttpRequestConfigurerIfNotDefined(final HttpRequestConfigurer<OAuthRequest> configurer) {
-        if (httpRequestConfigurer == null) {
-            httpRequestConfigurer = configurer;
+    protected HttpClient buildHttpClient(final CallContext context) {
+        if (httpClient == null && httpRequestConfigurer == null) {
+            return OAuthProtocolMessages.httpClient(httpClientConfig);
         }
+        val client = httpClient == null ? OAuthProtocolMessages.requiredHttpClient(httpClientConfig)
+            : OAuthProtocolMessages.LOGGER.isEnabled() ? OAuthProtocolMessages.httpClient(httpClient) : httpClient;
+        return httpRequestConfigurer == null ? client : new ConfiguringHttpClient(client, httpRequestConfigurer, context);
     }
 }

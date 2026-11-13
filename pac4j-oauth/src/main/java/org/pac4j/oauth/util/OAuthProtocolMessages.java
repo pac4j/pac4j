@@ -111,6 +111,18 @@ public class OAuthProtocolMessages {
     }
 
     /**
+     * <p>The HTTP client the configuration defines, for whoever needs one whether the messages are logged or not:
+     * wrapped when the logger is enabled, as is otherwise.</p>
+     *
+     * @param config the HTTP client configuration, or null for the default JDK client
+     * @return the HTTP client
+     */
+    public HttpClient requiredHttpClient(final HttpClientConfig config) {
+        val client = buildHttpClient(config);
+        return LOGGER.isEnabled() ? httpClient(client) : client;
+    }
+
+    /**
      * <p>Wrap an HTTP client so that the messages it exchanges with the OAuth server are logged.</p>
      *
      * @param client the HTTP client

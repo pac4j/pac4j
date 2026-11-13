@@ -38,6 +38,7 @@ public class OAuth10Authenticator extends OAuthAuthenticator {
         var oAuth10Credentials = (OAuth10Credentials) credentials;
         val tokenRequest = oAuth10Credentials.getRequestToken();
         val token = oAuth10Credentials.getToken();
+        val verifier = oAuth10Credentials.getVerifier();
         if (tokenRequest == null) {
             val message = "Token request expired";
             throw new OAuthCredentialsException(message);
@@ -49,14 +50,7 @@ public class OAuth10Authenticator extends OAuthAuthenticator {
         }
         final OAuth1AccessToken accessToken;
         try {
-            val service = (OAuth10aService) configuration.buildService(context, client);
-            val request = ((OAuth10Configuration) configuration).getTokenRequestBuilder()
-                .build(context, oAuth10Credentials, service);
-            configuration.getHttpRequestConfigurer().configure(request, context);
-            service.signRequest(new OAuth1AccessToken(tokenRequest.getToken(), tokenRequest.getTokenSecret()), request);
-            try (val response = service.execute(request)) {
-                accessToken = service.getApi().getAccessTokenExtractor().extract(response);
-            }
+            accessToken = ((OAuth10aService) this.configuration.buildService(context, client)).getAccessToken(tokenRequest, verifier);
         } catch (final IOException | InterruptedException | ExecutionException e) {
             throw new HttpCommunicationException("Error getting token:" + e.getMessage());
         }

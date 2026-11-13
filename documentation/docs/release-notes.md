@@ -8,7 +8,8 @@ description: "Review pac4j release notes for supported Java lines, including aut
 ### JDK17:
 
 **v6.7.0**:
-- Prepare DPoP client support by introducing `HttpRequestConfigurer` to customize OAuth and OIDC token and profile requests using `CallContext`.
+- Prepare DPoP client support by introducing `HttpRequestConfigurer` to customize, using `CallContext`, every request sent to the OAuth server and the OIDC pushed authorization, token and UserInfo requests. `OAuthConfiguration.buildService`, `OidcAuthenticator.refresh`, `OidcProfileCreator.callUserInfoEndpoint` and `OidcRedirectionActionBuilder.buildAuthenticationRequestUrl` now take a `CallContext`.
+- The ScribeJava HTTP client used by the OAuth clients can be defined via the `httpClient` property of the `OAuthConfiguration`.
 
 
 **v6.6.1**:

@@ -190,7 +190,7 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
         if (opMetadata.getUserInfoEndpointURI() != null && accessToken != null) {
             Request userInfoRequest = new UserInfoRequest(opMetadata.getUserInfoEndpointURI(), accessToken);
             val userInfoHttpRequest = userInfoRequest.toHTTPRequest();
-            configuration.getHttpRequestConfigurer().configure(userInfoHttpRequest, ctx);
+            configuration.configureHttpRequest(userInfoHttpRequest, ctx);
             OidcProtocolMessages.sent(userInfoHttpRequest);
             val httpResponse = userInfoHttpRequest.send();
             OidcProtocolMessages.received(httpResponse);

@@ -2,9 +2,6 @@ package org.pac4j.oauth.redirect;
 
 import com.github.scribejava.core.exceptions.OAuthException;
 import com.github.scribejava.core.model.OAuth1RequestToken;
-import com.github.scribejava.core.model.OAuth1AccessToken;
-import com.github.scribejava.core.model.OAuthConstants;
-import com.github.scribejava.core.model.OAuthRequest;
 import com.github.scribejava.core.oauth.OAuth10aService;
 import lombok.val;
 import org.pac4j.core.client.IndirectClient;
@@ -57,15 +54,7 @@ public class OAuth10RedirectionActionBuilder implements RedirectionActionBuilder
             val service = (OAuth10aService) this.configuration.buildService(ctx, client);
             final OAuth1RequestToken requestToken;
             try {
-                val api = service.getApi();
-                val request = new OAuthRequest(api.getRequestTokenVerb(), api.getRequestTokenEndpoint());
-                request.addOAuthParameter(OAuthConstants.CALLBACK,
-                    service.getCallback() == null ? OAuthConstants.OOB : service.getCallback());
-                configuration.getHttpRequestConfigurer().configure(request, ctx);
-                service.signRequest(new OAuth1AccessToken("", ""), request);
-                try (val response = service.execute(request)) {
-                    requestToken = api.getRequestTokenExtractor().extract(response);
-                }
+                requestToken = service.getRequestToken();
             } catch (final IOException | InterruptedException | ExecutionException e) {
                 throw new HttpCommunicationException("Error getting token: " + e.getMessage());
             }

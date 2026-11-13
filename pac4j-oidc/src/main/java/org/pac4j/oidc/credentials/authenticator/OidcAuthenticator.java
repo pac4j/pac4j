@@ -112,7 +112,7 @@ public class OidcAuthenticator implements Authenticator {
     private void executeTokenRequest(final CallContext ctx, final Request request, final OidcCredentials credentials)
         throws IOException, ParseException {
         val tokenHttpRequest = request.toHTTPRequest();
-        configuration.getHttpRequestConfigurer().configure(tokenHttpRequest, ctx);
+        configuration.configureHttpRequest(tokenHttpRequest, ctx);
 
         OidcProtocolMessages.sent(tokenHttpRequest);
         val httpResponse = tokenHttpRequest.send();

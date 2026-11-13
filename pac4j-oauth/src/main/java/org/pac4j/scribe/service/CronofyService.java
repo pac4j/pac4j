@@ -21,7 +21,7 @@ import java.util.Map;
  * @author Jerome LELEU
  * @since 5.3.1
  */
-public class CronofyService extends OAuth20Service implements TokenRequestFactory {
+public class CronofyService extends OAuth20Service {
 
     private final DefaultApi20 api;
 
@@ -47,7 +47,7 @@ public class CronofyService extends OAuth20Service implements TokenRequestFactor
     }
 
     /** {@inheritDoc} */
-    public OAuthRequest createAccessTokenRequest(AccessTokenRequestParams params) {
+    protected OAuthRequest createAccessTokenRequest(AccessTokenRequestParams params) {
         final OAuthRequest request = new OAuthRequest(api.getAccessTokenVerb(), api.getAccessTokenEndpoint());
 
         final Map<String, String> map = new HashMap<>();

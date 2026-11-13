@@ -150,7 +150,7 @@ public class OidcRedirectionActionBuilder extends InitializableObject implements
         } else {
             newParams.putAll(params.requestObject());
         }
-        val location = buildAuthenticationRequestUrl(newParams);
+        val location = buildAuthenticationRequestUrl(ctx, newParams);
         OidcProtocolMessages.sentToBrowser("authentication request URL: " + location);
 
         return Optional.of(HttpActionHelper.buildRedirectUrlAction(webContext, location));
@@ -215,7 +215,7 @@ public class OidcRedirectionActionBuilder extends InitializableObject implements
         }
     }
 
-    protected String buildAuthenticationRequestUrl(final Map<String, String> params) {
+    protected String buildAuthenticationRequestUrl(final CallContext ctx, final Map<String, String> params) {
         final Map<String, String> newParams;
 
         val config = client.getConfiguration();
@@ -241,7 +241,7 @@ public class OidcRedirectionActionBuilder extends InitializableObject implements
                     authzRequest
                 );
                 val request = parRequest.toHTTPRequest();
-                config.configureHttpRequest(request);
+                config.configureHttpRequest(request, ctx);
                 OidcProtocolMessages.sent(request);
                 val response = request.send();
                 OidcProtocolMessages.received(response);

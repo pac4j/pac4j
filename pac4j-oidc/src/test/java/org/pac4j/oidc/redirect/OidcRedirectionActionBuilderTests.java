@@ -32,6 +32,7 @@ import org.pac4j.test.web.WebServer;
 
 import java.net.URI;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -303,9 +304,16 @@ public class OidcRedirectionActionBuilderTests implements TestsConstants {
                 "application/json", parSuccessResponse));
         webServer.start();
         try {
-            enablePar(new URI("http://localhost:" + webServer.getListeningPort() + "/par?r=ok"));
+            val parEndpoint = new URI("http://localhost:" + webServer.getListeningPort() + "/par?r=ok");
+            enablePar(parEndpoint);
+            val configured = new ArrayList<URI>();
+            configuration.setHttpRequestConfigurer((request, callContext) -> {
+                assertSame(context, callContext);
+                configured.add(request.getURI());
+            });
             val action = getFoundAction();
             assertEquals(302, action.getCode());
+            assertEquals(List.of(parEndpoint), configured);
 
             val url = new URIBuilder(action.getLocation());
             assertAuthorizationEndpointUrl(url);

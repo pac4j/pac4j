@@ -1,7 +1,6 @@
 package org.pac4j.oidc.profile.creator;
 
 import java.util.concurrent.atomic.AtomicInteger;
-import org.pac4j.oidc.http.OidcHttpRequestConfigurer;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTClaimsSet;
@@ -13,6 +12,7 @@ import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import com.nimbusds.oauth2.sdk.http.HTTPRequest;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.test.context.session.MockSessionStore;
 import org.pac4j.core.credentials.TokenCredentials;
@@ -36,6 +36,7 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -45,6 +46,7 @@ import static org.mockito.Mockito.when;
  * @author Misagh Moayyed
  * @since 5.4.4
  */
+@SuppressWarnings("PMD.TooManyStaticImports")
 public class OidcProfileCreatorTests implements TestsConstants {
     private OidcConfiguration configuration;
 
@@ -65,7 +67,6 @@ public class OidcProfileCreatorTests implements TestsConstants {
             .build());
 
         configuration = mock(OidcConfiguration.class);
-        when(configuration.getHttpRequestConfigurer()).thenReturn(new OidcHttpRequestConfigurer(configuration));
         metadata = mock(OIDCProviderMetadata.class);
         when(configuration.getFederation()).thenReturn(new OidcFederationProperties());
         when(metadata.getIssuer()).thenReturn(new Issuer(PAC4J_URL));
@@ -109,11 +110,13 @@ public class OidcProfileCreatorTests implements TestsConstants {
         credentials.setIdToken(new PlainJWT(idTokenClaims.toJWTClaimsSet()).serialize());
         val ctx = new CallContext(MockWebContext.create(), new MockSessionStore());
         val calls = new AtomicInteger();
-        when(configuration.getHttpRequestConfigurer()).thenReturn((request, callContext) -> {
-            assertSame(ctx, callContext);
-            assertEquals("Bearer " + credentials.toAccessToken().getValue(), request.getAuthorization());
+        doAnswer(invocation -> {
+            assertSame(ctx, invocation.getArgument(1));
+            assertEquals("Bearer " + credentials.toAccessToken().getValue(),
+                invocation.<HTTPRequest>getArgument(0).getAuthorization());
             calls.incrementAndGet();
-        });
+            return null;
+        }).when(configuration).configureHttpRequest(any(), any());
         try {
             return creator.create(ctx, credentials);
         } finally {

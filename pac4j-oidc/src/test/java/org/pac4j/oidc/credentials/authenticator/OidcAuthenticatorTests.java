@@ -74,8 +74,6 @@ public final class OidcAuthenticatorTests {
         client = new OidcClient();
         client.setConfiguration(configuration);
         client.setCallbackUrl(CALLBACK_URL);
-        configuration.setOidcClient(client);
-        configuration.init();
 
         val webContext = MockWebContext.create();
         sessionStore = new MockSessionStore();
