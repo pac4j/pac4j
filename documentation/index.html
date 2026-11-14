@@ -105,14 +105,14 @@ public class SecurityConfig extends Pac4jSecurityConfig {
             <div class="mechanism" id="authent">
                 <h3>Authentication</h3>
                 <div class="chips chips-links">
-                    <a class="chip" href="/how-to-secure-a-java-application-with-oidc.html">OpenID Connect</a>
-                    <a class="chip" href="/how-to-secure-a-java-application-with-saml.html">SAML</a>
-                    <a class="chip" href="/how-to-secure-a-java-application-with-cas.html">CAS</a>
-                    <span class="chip">OAuth</span>
+                    <a class="chip" href="/docs/clients/openid-connect.html">OpenID Connect</a>
+                    <a class="chip" href="/docs/clients/saml.html">SAML</a>
+                    <a class="chip" href="/docs/clients/cas.html">CAS</a>
+                    <a class="chip" href="/docs/clients/oauth.html">OAuth</a>
                     <span class="chip">HTTP</span>
                     <span class="chip">LDAP</span>
                     <span class="chip">SQL</span>
-                    <span class="chip">JWT</span>
+                    <a class="chip" href="/docs/authenticators/jwt.html">JWT</a>
                     <span class="chip">MongoDB</span>
                     <span class="chip">IP address</span>
                     <span class="chip">Kerberos</span>
@@ -135,9 +135,10 @@ public class SecurityConfig extends Pac4jSecurityConfig {
 
             <div class="mechanism" id="advanced">
                 <h3>Advanced</h3>
-                <div class="chips">
-                    <span class="chip">OpenID Federation</span>
-                    <span class="chip">OpenID for Verifiable Presentations (EUDI wallet, eIDAS 2.0)</span>
+                <div class="chips chips-links">
+                    <a class="chip" href="/docs/clients/dpop.html">DPoP</a>
+                    <a class="chip" href="/docs/clients/openid-connect-federation.html">OpenID Federation</a>
+                    <a class="chip" href="/docs/clients/openid4vp.html">OpenID for Verifiable Presentations (EUDI wallet, eIDAS 2.0)</a>
                 </div>
             </div>
         </div>

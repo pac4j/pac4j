@@ -102,9 +102,9 @@ public final class OidcAuthenticatorTests {
     @Test
     public void testValidateExchangesAuthorizationCodeAndStoresTokens() throws Exception {
         val tokenRequest = mockTokenRequestReturning(buildSuccessfulTokenResponse());
-        configuration.setHttpRequestConfigurer((request, callContext) -> {
+        configuration.setHttpInterceptor((request, callContext) -> {
             assertSame(context, callContext);
-            request.setHeader("X-Test", "configured");
+            ((HTTPRequest) request).setHeader("X-Test", "configured");
         });
         val authenticator = new TestableOidcAuthenticator(configuration, client, tokenRequest);
         val credentials = new OidcCredentials();
@@ -146,9 +146,9 @@ public final class OidcAuthenticatorTests {
     @Test
     public void testRefreshExchangesRefreshTokenAndStoresTokens() throws Exception {
         val tokenRequest = mockTokenRequestReturning(buildSuccessfulTokenResponse());
-        configuration.setHttpRequestConfigurer((request, callContext) -> {
+        configuration.setHttpInterceptor((request, callContext) -> {
             assertSame(context, callContext);
-            request.setHeader("X-Test", "configured");
+            ((HTTPRequest) request).setHeader("X-Test", "configured");
         });
         val authenticator = new TestableOidcAuthenticator(configuration, client, tokenRequest);
         val credentials = new OidcCredentials();

@@ -66,6 +66,7 @@
         <module>pac4j-saml</module>
         <module>pac4j-oidc</module>
         <module>pac4j-openid4vp</module>
+        <module>pac4j-dpop</module>
         <module>pac4j-jwt</module>
         <module>pac4j-ldap</module>
         <module>pac4j-sql</module>
@@ -89,6 +90,7 @@
         <commons-text.version>1.15.0</commons-text.version>
 		<guava.version>33.8.0-jre</guava.version>
 		<nimbus-jose-jwt.version>10.10</nimbus-jose-jwt.version>
+		<oauth-oidc-sdk.version>11.39</oauth-oidc-sdk.version>
         <eudi-sdjwt.version>0.21.0</eudi-sdjwt.version>
 		<spring.version>7.0.10</spring.version>
 		<spring.security.version>7.1.2</spring.security.version>
@@ -263,6 +265,17 @@
 				<groupId>com.nimbusds</groupId>
 				<artifactId>nimbus-jose-jwt</artifactId>
 				<version>${nimbus-jose-jwt.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.nimbusds</groupId>
+				<artifactId>oauth2-oidc-sdk</artifactId>
+				<version>${oauth-oidc-sdk.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>com.nimbusds</groupId>
+						<artifactId>nimbus-jose-jwt</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>

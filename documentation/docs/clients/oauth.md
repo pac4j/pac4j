@@ -139,14 +139,18 @@ facebookClient.getConfiguration().setHttpClient(myHttpClient);
 ```
 
 Every request sent to the OAuth server (request token, access token, profile) can be changed just before it is sent,
-once ScribeJava has built and signed it, with an `HttpRequestConfigurer`. It receives the method, the complete URL and
-the headers, which can be added, replaced or removed, as well as the `CallContext`:
+once ScribeJava has built and signed it, with an `HttpInterceptor`. It receives the method, the complete URL and
+the headers, which can be added, replaced or removed, in an `OAuthHttpRequest` to which the request must be cast,
+as well as the `CallContext`:
 
 ```java
-facebookClient.getConfiguration().setHttpRequestConfigurer((request, ctx) -> {
-    request.headers().put("X-Request-Id", UUID.randomUUID().toString());
+facebookClient.getConfiguration().setHttpInterceptor((request, ctx) -> {
+    ((OAuthHttpRequest) request).headers().put("X-Request-Id", UUID.randomUUID().toString());
 });
 ```
 
-The configurer applies whatever the HTTP client: the default one, the one of the `httpClientConfig` or your own.
-If you override `buildHttpClient` in your configuration, wrap your client in a `ConfiguringHttpClient` to keep it applied.
+The interceptor can also handle the response, received as an `OAuthHttpResponse` (status code, headers and body), by overriding
+its `handleResponse` method: returning `true` makes the request configured and sent again, once. This is how [DPoP](dpop.html) is supported.
+
+The interceptor applies whatever the HTTP client: the default one, the one of the `httpClientConfig` or your own.
+If you override `buildHttpClient` in your configuration, wrap your client in an `InterceptingHttpClient` to keep it applied.

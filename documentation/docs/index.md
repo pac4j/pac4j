@@ -25,6 +25,8 @@ description: "Explore the pac4j reference for authentication clients, authorizat
 
 ## 5) Advanced mechanisms:
 
+### &#9656; [DPoP](clients/dpop.html)
+
 ### &#9656; [OpenID Federation](clients/openid-connect-federation.html)
 
 ### &#9656; [OpenID for Verifiable Presentations (EUDI wallet, eIDAS 2.0)](clients/openid4vp.html)

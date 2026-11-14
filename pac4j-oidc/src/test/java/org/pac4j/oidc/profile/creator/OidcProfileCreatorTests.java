@@ -117,6 +117,7 @@ public class OidcProfileCreatorTests implements TestsConstants {
             calls.incrementAndGet();
             return null;
         }).when(configuration).configureHttpRequest(any(), any());
+        when(configuration.send(any(), any())).thenCallRealMethod();
         try {
             return creator.create(ctx, credentials);
         } finally {

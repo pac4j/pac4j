@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.context.CallContext;
-import org.pac4j.oidc.util.OidcProtocolMessages;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.profile.ProfileHelper;
@@ -190,10 +189,7 @@ public class OidcProfileCreator extends ProfileDefinitionAware implements Profil
         if (opMetadata.getUserInfoEndpointURI() != null && accessToken != null) {
             Request userInfoRequest = new UserInfoRequest(opMetadata.getUserInfoEndpointURI(), accessToken);
             val userInfoHttpRequest = userInfoRequest.toHTTPRequest();
-            configuration.configureHttpRequest(userInfoHttpRequest, ctx);
-            OidcProtocolMessages.sent(userInfoHttpRequest);
-            val httpResponse = userInfoHttpRequest.send();
-            OidcProtocolMessages.received(httpResponse);
+            val httpResponse = configuration.send(userInfoHttpRequest, ctx);
 
             val userInfoResponse = UserInfoResponse.parse(httpResponse);
             if (userInfoResponse instanceof UserInfoErrorResponse) {
