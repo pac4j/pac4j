@@ -143,7 +143,7 @@ Inside the `<dependencies>` element, add `shiro-web` and three pac4j artifacts: 
 <dependency>
     <groupId>org.pac4j</groupId>
     <artifactId>pac4j-cas</artifactId>
-    <version>6.5.9</version>
+    <version>6.6.1</version>
 </dependency>
 <!-- the bridge: pushes the pac4j profile into the Shiro subject -->
 <dependency>

@@ -35,7 +35,7 @@ We need two pac4j dependencies alongside Javalin: `javalin-pac4j` for the handle
 <dependency>
     <groupId>org.pac4j</groupId>
     <artifactId>pac4j-saml</artifactId>
-    <version>6.5.9</version>
+    <version>6.6.1</version>
 </dependency>
 ```
 

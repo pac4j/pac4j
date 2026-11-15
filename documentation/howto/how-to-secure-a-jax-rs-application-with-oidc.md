@@ -87,7 +87,7 @@ For Jersey 3, use `jersey.version` v**3.1.12** and `jersey3-pac4j` in step 2. Th
 
 ## 2) Add the Maven dependencies
 
-Pick the `jax-rs-pac4j` module matching your runtime, and add the OpenID Connect module. The integration modules has the `org.pac4j` *groupId* and its version is **8.1.0** (it is based on pac4j v**6.5.9** as well):
+Pick the `jax-rs-pac4j` module matching your runtime, and add the OpenID Connect module. The integration modules has the `org.pac4j` *groupId* and its version is **8.1.0** (we explicitly use pac4j v**6.6.1** below):
 
 | Your runtime | Maven artifact |
 |--------------|----------------|
@@ -124,7 +124,7 @@ Add these dependencies inside the `<dependencies>` element of your `pom.xml`:
 <dependency>
     <groupId>org.pac4j</groupId>
     <artifactId>pac4j-oidc</artifactId>
-    <version>6.5.9</version>
+    <version>6.6.1</version>
 </dependency>
 ```
 
@@ -280,7 +280,7 @@ There are other ways to access the profile, depending on what the method needs:
 
 ## 6) Protect a REST API with the access token
 
-This step is an alternative to browser login. Let's take the second case: an API caller that already has an access token. For this setup, add `org.pac4j:pac4j-http:6.5.9` for `HeaderClient` and a JSON provider such as `jersey-media-json-jackson`, matching your Jersey version. Also add this BOM inside `<dependencyManagement><dependencies>` to align the Jackson dependencies of Jersey and pac4j:
+This step is an alternative to browser login. Let's take the second case: an API caller that already has an access token. For this setup, add `org.pac4j:pac4j-http:6.6.1` for `HeaderClient` and a JSON provider such as `jersey-media-json-jackson`, matching your Jersey version. Also add this BOM inside `<dependencyManagement><dependencies>` to align the Jackson dependencies of Jersey and pac4j:
 
 ```xml
 <dependency>
@@ -412,11 +412,11 @@ Replace the Jersey BOM with `io.dropwizard:dropwizard-bom:5.0.2` (also with `typ
 <dependency>
     <groupId>org.pac4j</groupId>
     <artifactId>pac4j-oidc</artifactId>
-    <version>6.5.9</version>
+    <version>6.6.1</version>
 </dependency>
 ```
 
-Dropwizard 5 uses Jersey 3. The **dropwizard-pac4j 8.1.0** bundle already brings **jersey3-pac4j 8.1.0**; keep the Jersey 4 dependencies out of this project. It also uses pac4j 6.5.9 and jakartaee-pac4j 8.0.3.
+Dropwizard 5 uses Jersey 3. The **dropwizard-pac4j 8.1.0** bundle already brings **jersey3-pac4j 8.1.0**; keep the Jersey 4 dependencies out of this project. The example explicitly uses pac4j 6.6.1; the bundle brings jakartaee-pac4j 8.0.3.
 
 Create `src/main/java/org/example/security/SecurityConfigFactory.java` and move the OIDC configuration of step 3 into this `ConfigFactory`. Use the externally reachable callback URL, including any configured application context path.
 

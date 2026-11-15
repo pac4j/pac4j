@@ -70,7 +70,7 @@ libraryDependencies += guice
 libraryDependencies += caffeine
 
 val playPac4jVersion = "14.0.0"
-val pac4jVersion = "6.5.9"
+val pac4jVersion = "6.6.1"
 
 libraryDependencies ++= Seq(
   "org.pac4j" %% "play-pac4j" % playPac4jVersion,
@@ -79,7 +79,7 @@ libraryDependencies ++= Seq(
 )
 ```
 
-OpenSAML is published in the Shibboleth repository, so a specific resolver is required. The Scala Jackson module must match the Jackson 2.22.x databind brought by pac4j 6.5.9; Play's default 2.14.x module cannot run with it. Keep the transitive dependencies required by pac4j SAML.
+OpenSAML is published in the Shibboleth repository, so a specific resolver is required. The Scala Jackson module must match the Jackson 2.22.x databind brought by pac4j 6.6.1; Play's default 2.14.x module cannot run with it. Keep the transitive dependencies required by pac4j SAML.
 
 **play-pac4j v14 only supports Play 3 and Scala 3**. For Scala 2.13 or Play 2.8 / 2.9, use older versions as displayed in this [matrix](https://github.com/pac4j/play-pac4j#readme).
 
@@ -320,7 +320,7 @@ Open [http://localhost:9000/protected/index.html](http://localhost:9000/protecte
 - **"Please create a SessionStore and define it in the config"** at startup: `config.setSessionStoreFactory(...)` is missing in the module.
 - **The IdP rejects the request as an unknown service provider**: the SP metadata is not registered, or the entity ID at the IdP differs from `setServiceProviderEntityId`.
 - **403 on the POST callback**: the `+ nocsrf` modifier is missing on the route.
-- **"Authentication issue instant is too old"**: check the clocks and any positive limit configured with `cfg.setMaximumAuthenticationLifetime(seconds)`. In pac4j 6.5.9, the default is `0`, which disables this authentication-age check; assertion validity timestamps are still checked.
+- **"Authentication issue instant is too old"**: check the clocks and any positive limit configured with `cfg.setMaximumAuthenticationLifetime(seconds)`. In pac4j 6.6.1, the default is `0`, which disables this authentication-age check; assertion validity timestamps are still checked.
 
 
 ## 10) Switching to OIDC or CAS

@@ -85,7 +85,7 @@ Inside the `<dependencies>` element, add Vert.x Web, the Vert.x integration for 
 <dependency>
     <groupId>org.pac4j</groupId>
     <artifactId>pac4j-cas</artifactId>
-    <version>6.5.9</version>
+    <version>6.6.1</version>
 </dependency>
 ```
 
