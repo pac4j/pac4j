@@ -87,7 +87,7 @@ Inside the `<dependencies>` element, on top of Spring MVC, you need two pac4j ar
 <dependency>
     <groupId>org.pac4j</groupId>
     <artifactId>pac4j-oidc</artifactId>
-    <version>6.5.9</version>
+    <version>6.6.1</version>
 </dependency>
 ```
 

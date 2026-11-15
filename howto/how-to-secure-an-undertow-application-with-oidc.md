@@ -85,7 +85,7 @@ Inside the `<dependencies>` element, add Undertow, the Undertow integration for 
 <dependency>
     <groupId>org.pac4j</groupId>
     <artifactId>pac4j-oidc</artifactId>
-    <version>6.5.9</version>
+    <version>6.6.1</version>
 </dependency>
 ```
 

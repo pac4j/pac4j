@@ -36,11 +36,11 @@ Start with a Spring Boot 3 Maven application using the WebFlux starter and the S
 <dependency>
     <groupId>org.pac4j</groupId>
     <artifactId>pac4j-oidc</artifactId>
-    <version>6.5.9</version>
+    <version>6.6.1</version>
 </dependency>
 ```
 
-Why declare `spring-jcl` explicitly? pac4j 6.5.9 excludes it from its transitive `spring-core` dependency, but Spring 6 still needs it at runtime.
+Why declare `spring-jcl` explicitly? pac4j 6.6.1 excludes it from its transitive `spring-core` dependency, but Spring 6 still needs it at runtime.
 
 The [spring-webflux-pac4j-boot-demo](https://github.com/pac4j/spring-webflux-pac4j-boot-demo) contains a broader application. To adapt it, replace its security configuration with the one below. Place the following classes under the package scanned by your `@SpringBootApplication`.
 
