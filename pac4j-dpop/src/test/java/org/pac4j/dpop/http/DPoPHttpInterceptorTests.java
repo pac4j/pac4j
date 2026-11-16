@@ -15,10 +15,14 @@ import com.nimbusds.oauth2.sdk.token.DPoPAccessToken;
 import com.nimbusds.openid.connect.sdk.Nonce;
 import lombok.val;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.http.oauth.OAuthHttpRequest;
 import org.pac4j.core.http.oauth.OAuthHttpResponse;
+import org.pac4j.core.util.JwkHelper;
 import org.pac4j.dpop.util.DPoPConstants;
 import org.pac4j.test.context.MockWebContext;
 import org.pac4j.test.context.session.MockSessionStore;
@@ -38,6 +42,8 @@ class DPoPHttpInterceptorTests {
     private static final String TOKEN_URL = "https://server.example/token";
 
     private static final String PROFILE_URL = "https://server.example/profile";
+
+    private static final String ENCODED_TOKEN_URL = "https://server.example/tenant%20name/a%2Fb%3Fc%23d%25/token";
 
     private static final String ACCESS_TOKEN = "access-token";
 
@@ -60,14 +66,35 @@ class DPoPHttpInterceptorTests {
         assertEquals(KeyType.EC, proof.getHeader().getJWK().getKeyType());
     }
 
-    @Test
-    void addsAProofBoundToTheAccessTokenAndTheDPoPSchemeToAnOAuthProfileRequest() throws Exception {
-        val request = oauthRequest("GET", PROFILE_URL, "Bearer " + ACCESS_TOKEN);
+    @ParameterizedTest
+    @ValueSource(strings = {"Bearer", "DPoP"})
+    void addsAProofWithoutChangingTheOAuthAuthorizationScheme(final String scheme) throws Exception {
+        val request = oauthRequest("GET", PROFILE_URL, scheme + " " + ACCESS_TOKEN);
 
         interceptor.configureRequest(request, ctx);
 
-        assertEquals("DPoP " + ACCESS_TOKEN, request.headers().get("Authorization"));
+        assertEquals(scheme + " " + ACCESS_TOKEN, request.headers().get("Authorization"));
         assertValidProof(SignedJWT.parse(request.headers().get("DPoP")), "GET", PROFILE_URL, ACCESS_TOKEN);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"", "?a=b", "#fragment", "?a=b#fragment"})
+    void preservesEncodedPathInOAuthProof(final String suffix) throws Exception {
+        val request = oauthRequest("POST", ENCODED_TOKEN_URL + suffix, "Basic credentials");
+
+        interceptor.configureRequest(request, ctx);
+
+        assertValidProof(SignedJWT.parse(request.headers().get("DPoP")), "POST", ENCODED_TOKEN_URL, null);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"", "?a=b", "#fragment", "?a=b#fragment"})
+    void preservesEncodedPathInNimbusProof(final String suffix) throws Exception {
+        val request = new HTTPRequest(HTTPRequest.Method.POST, new URI(ENCODED_TOKEN_URL + suffix));
+
+        interceptor.configureRequest(request, ctx);
+
+        assertValidProof(request.getDPoP(), "POST", ENCODED_TOKEN_URL, null);
     }
 
     @Test
@@ -94,11 +121,11 @@ class DPoPHttpInterceptorTests {
 
     @Test
     void savesTheGeneratedKeyPairInTheSessionAndReusesIt() throws Exception {
-        assertTrue(ctx.sessionStore().get(ctx.webContext(), DPoPConstants.KEY_SESSION_ATTRIBUTE).isEmpty());
+        assertTrue(ctx.sessionStore().get(ctx.webContext(), DPoPConstants.KEY_SESSION_ATTRIBUTE_PREFIX + "ES256").isEmpty());
 
         val first = configuredProof(ctx);
         val saved = JWK.parse((String) ctx.sessionStore()
-            .get(ctx.webContext(), DPoPConstants.KEY_SESSION_ATTRIBUTE).orElseThrow());
+            .get(ctx.webContext(), DPoPConstants.KEY_SESSION_ATTRIBUTE_PREFIX + "ES256").orElseThrow());
         val second = configuredProof(ctx);
 
         assertTrue(saved.isPrivate());
@@ -109,8 +136,8 @@ class DPoPHttpInterceptorTests {
 
     @Test
     void usesTheKeyPairAlreadyInTheSession() throws Exception {
-        val key = new DPoPHttpInterceptor().generateKey();
-        ctx.sessionStore().set(ctx.webContext(), DPoPConstants.KEY_SESSION_ATTRIBUTE, key.toJSONString());
+        val key = JwkHelper.generateKey(JWSAlgorithm.ES256);
+        ctx.sessionStore().set(ctx.webContext(), DPoPConstants.KEY_SESSION_ATTRIBUTE_PREFIX + "ES256", key.toJSONString());
 
         assertEquals(key.toPublicJWK(), configuredProof(ctx).getHeader().getJWK());
     }
@@ -152,6 +179,31 @@ class DPoPHttpInterceptorTests {
         assertThrows(TechnicalException.class, () -> configuredProof(ctx));
     }
 
+    @ParameterizedTest
+    @CsvSource({"ES256,PS256", "ES256,ES384", "RS256,PS256"})
+    void keepsEachClientsKeyWhenAlgorithmsDiffer(final String firstAlgorithm, final String secondAlgorithm) throws Exception {
+        val firstClient = new DPoPHttpInterceptor().setJwsAlgorithm(JWSAlgorithm.parse(firstAlgorithm));
+        val secondClient = new DPoPHttpInterceptor().setJwsAlgorithm(JWSAlgorithm.parse(secondAlgorithm));
+        val firstRequest = new HTTPRequest(HTTPRequest.Method.POST, new URI(TOKEN_URL));
+        val secondRequest = new HTTPRequest(HTTPRequest.Method.POST, new URI(TOKEN_URL));
+
+        firstClient.configureRequest(firstRequest, ctx);
+        val firstKey = firstRequest.getDPoP().getHeader().getJWK();
+        secondClient.configureRequest(secondRequest, ctx);
+        val secondKey = secondRequest.getDPoP().getHeader().getJWK();
+
+        assertValidProof(firstRequest.getDPoP(), "POST", TOKEN_URL, null);
+        assertValidProof(secondRequest.getDPoP(), "POST", TOKEN_URL, null);
+        assertEquals(firstClient.getJwsAlgorithm(), firstKey.getAlgorithm());
+        assertEquals(secondClient.getJwsAlgorithm(), secondKey.getAlgorithm());
+        assertNotEquals(firstKey, secondKey);
+
+        firstClient.configureRequest(firstRequest, ctx);
+        secondClient.configureRequest(secondRequest, ctx);
+        assertEquals(firstKey, firstRequest.getDPoP().getHeader().getJWK());
+        assertEquals(secondKey, secondRequest.getDPoP().getHeader().getJWK());
+    }
+
     @Test
     void rejectsAnUnsupportedRequestType() {
         assertThrows(TechnicalException.class, () -> interceptor.configureRequest("request", ctx));
@@ -172,7 +224,7 @@ class DPoPHttpInterceptorTests {
 
     @Test
     void sendsAgainWithTheNonceRequiredByTheResourceServer() throws Exception {
-        val request = oauthRequest("GET", PROFILE_URL + "?a=b", "Bearer " + ACCESS_TOKEN);
+        val request = oauthRequest("GET", PROFILE_URL + "?a=b", "DPoP " + ACCESS_TOKEN);
         interceptor.configureRequest(request, ctx);
 
         assertTrue(interceptor.handleResponse(request,

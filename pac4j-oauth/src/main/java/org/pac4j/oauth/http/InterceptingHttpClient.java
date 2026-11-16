@@ -48,7 +48,7 @@ public class InterceptingHttpClient implements HttpClient {
                                       final String completeUrl, final byte[] bodyContents,
                                       final OAuthAsyncRequestCallback<T> callback,
                                       final OAuthRequest.ResponseConverter<T> converter) {
-        return delegate.executeAsync(userAgent, configure(headers, httpVerb, completeUrl).headers(), httpVerb, completeUrl,
+        return delegate.executeAsync(userAgent, toRequest(headers, httpVerb, completeUrl).headers(), httpVerb, completeUrl,
             bodyContents, callback, converter);
     }
 
@@ -58,7 +58,7 @@ public class InterceptingHttpClient implements HttpClient {
                                       final String completeUrl, final MultipartPayload bodyContents,
                                       final OAuthAsyncRequestCallback<T> callback,
                                       final OAuthRequest.ResponseConverter<T> converter) {
-        return delegate.executeAsync(userAgent, configure(headers, httpVerb, completeUrl).headers(), httpVerb, completeUrl,
+        return delegate.executeAsync(userAgent, toRequest(headers, httpVerb, completeUrl).headers(), httpVerb, completeUrl,
             bodyContents, callback, converter);
     }
 
@@ -68,7 +68,7 @@ public class InterceptingHttpClient implements HttpClient {
                                       final String completeUrl, final String bodyContents,
                                       final OAuthAsyncRequestCallback<T> callback,
                                       final OAuthRequest.ResponseConverter<T> converter) {
-        return delegate.executeAsync(userAgent, configure(headers, httpVerb, completeUrl).headers(), httpVerb, completeUrl,
+        return delegate.executeAsync(userAgent, toRequest(headers, httpVerb, completeUrl).headers(), httpVerb, completeUrl,
             bodyContents, callback, converter);
     }
 
@@ -78,7 +78,7 @@ public class InterceptingHttpClient implements HttpClient {
                                       final String completeUrl, final File bodyContents,
                                       final OAuthAsyncRequestCallback<T> callback,
                                       final OAuthRequest.ResponseConverter<T> converter) {
-        return delegate.executeAsync(userAgent, configure(headers, httpVerb, completeUrl).headers(), httpVerb, completeUrl,
+        return delegate.executeAsync(userAgent, toRequest(headers, httpVerb, completeUrl).headers(), httpVerb, completeUrl,
             bodyContents, callback, converter);
     }
 
@@ -124,11 +124,11 @@ public class InterceptingHttpClient implements HttpClient {
      */
     private Response execute(final Map<String, String> headers, final Verb verb, final String url, final Sender sender)
         throws InterruptedException, ExecutionException, IOException {
-        var request = configure(headers, verb, url);
+        var request = toRequest(headers, verb, url);
         var response = sender.send(request.headers());
         if (interceptor.handleResponse(request, toResponse(response), context)) {
             response.close();
-            request = configure(headers, verb, url);
+            request = toRequest(headers, verb, url);
             response = sender.send(request.headers());
             interceptor.handleResponse(request, toResponse(response), context);
         }
@@ -138,7 +138,7 @@ public class InterceptingHttpClient implements HttpClient {
     /**
      * Apply the interceptor to a copy of the headers, those of the ScribeJava request being left untouched.
      */
-    private OAuthHttpRequest configure(final Map<String, String> headers, final Verb verb, final String url) {
+    private OAuthHttpRequest toRequest(final Map<String, String> headers, final Verb verb, final String url) {
         val request = new OAuthHttpRequest(verb.name(), url, caseInsensitive(headers));
         interceptor.configureRequest(request, context);
         return request;

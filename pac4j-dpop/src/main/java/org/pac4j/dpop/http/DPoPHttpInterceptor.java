@@ -2,10 +2,7 @@ package org.pac4j.dpop.http;
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
-import com.nimbusds.jose.jwk.Curve;
 import com.nimbusds.jose.jwk.JWK;
-import com.nimbusds.jose.jwk.gen.ECKeyGenerator;
-import com.nimbusds.jose.jwk.gen.RSAKeyGenerator;
 import com.nimbusds.jose.util.JSONObjectUtils;
 import com.nimbusds.jwt.SignedJWT;
 import com.nimbusds.oauth2.sdk.dpop.DefaultDPoPProofFactory;
@@ -25,6 +22,7 @@ import org.pac4j.core.http.interceptor.HttpInterceptor;
 import org.pac4j.core.http.oauth.OAuthHttpRequest;
 import org.pac4j.core.http.oauth.OAuthHttpResponse;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.JwkHelper;
 import org.pac4j.dpop.util.DPoPProtocolMessages;
 
 import java.net.URI;
@@ -37,7 +35,7 @@ import static org.pac4j.dpop.util.DPoPConstants.*;
  * Adds a DPoP proof (RFC 9449) to the requests sent to the OAuth server by the OAuth clients (an
  * {@link OAuthHttpRequest}) and to the OpenID provider by the OIDC clients (a Nimbus {@link HTTPRequest}).
  *
- * The proof is signed by a key pair saved in the web session, generated on first use: the tokens are bound to it,
+ * The proof is signed by a key pair saved per signature algorithm in the web session, generated on first use: the tokens are bound to it,
  * so the same one proves their possession on the following requests (UserInfo, refresh). A web session is required.
  *
  * When a server requires a nonce (RFC 9449, sections 8 and 9), it is saved in the web session as well, per server,
@@ -52,7 +50,7 @@ import static org.pac4j.dpop.util.DPoPConstants.*;
 @Slf4j
 public class DPoPHttpInterceptor implements HttpInterceptor {
 
-    /** The algorithm signing the proofs, of the EC or RSA family: it decides the type of the generated key pair. */
+    /** The algorithm signing the proofs (ES256/384/512, RS256/384/512 or PS256/384/512): it decides the generated key pair. */
     private JWSAlgorithm jwsAlgorithm = JWSAlgorithm.ES256;
 
     /** {@inheritDoc} */
@@ -143,8 +141,8 @@ public class DPoPHttpInterceptor implements HttpInterceptor {
     }
 
     /**
-     * Add the proof to a request of an OAuth client. ScribeJava always sends the access token as a bearer token,
-     * while a DPoP-bound access token must use the DPoP scheme (RFC 9449, section 7.1): the scheme is replaced.
+     * Add the proof to a request of an OAuth client. The profile creator selects the authorization scheme
+     * from the token type returned by the server: the authorization is left untouched.
      *
      * @param request the request
      * @param context the call context
@@ -153,9 +151,6 @@ public class DPoPHttpInterceptor implements HttpInterceptor {
         val headers = request.headers();
         val accessToken = extractAccessToken(headers.get(HttpConstants.AUTHORIZATION_HEADER));
         headers.put(DPOP_HEADER, buildProof(request.verb(), request.url(), accessToken, context).serialize());
-        if (accessToken != null) {
-            headers.put(HttpConstants.AUTHORIZATION_HEADER, DPOP_HEADER_PREFIX + accessToken);
-        }
     }
 
     /**
@@ -178,7 +173,7 @@ public class DPoPHttpInterceptor implements HttpInterceptor {
      */
     protected String extractAccessToken(final String authorization) {
         if (authorization != null) {
-            for (val prefix : new String[] {HttpConstants.BEARER_HEADER_PREFIX, DPOP_HEADER_PREFIX}) {
+            for (val prefix : new String[] {HttpConstants.BEARER_HEADER_PREFIX, HttpConstants.DPOP_HEADER_PREFIX}) {
                 if (authorization.regionMatches(true, 0, prefix, 0, prefix.length())) {
                     return authorization.substring(prefix.length()).trim();
                 }
@@ -200,9 +195,8 @@ public class DPoPHttpInterceptor implements HttpInterceptor {
                                    final CallContext context) {
         CommonHelper.assertNotNull("jwsAlgorithm", jwsAlgorithm);
         try {
-            val uri = new URI(url);
-            // the htu claim is the URI without query and fragment (RFC 9449, section 4.2)
-            val htu = new URI(uri.getScheme(), uri.getRawAuthority(), uri.getRawPath(), null, null);
+            // remove query and fragment without changing the URI's percent-encoding (RFC 9449, section 4.2)
+            val htu = new URI(url.split("[?#]", 2)[0]);
             // the ath claim, hash of the access token, is required when it is presented (RFC 9449, section 4.2)
             val token = accessToken == null ? null : new DPoPAccessToken(accessToken);
             val key = getKey(context);
@@ -219,7 +213,7 @@ public class DPoPHttpInterceptor implements HttpInterceptor {
     }
 
     /**
-     * Get the DPoP key pair of the web session, generated and saved when missing. A web session is required.
+     * Get the DPoP key pair for the signature algorithm in the web session, generated and saved when missing.
      *
      * @param context the call context
      * @return the key pair
@@ -228,7 +222,8 @@ public class DPoPHttpInterceptor implements HttpInterceptor {
         assertSession(context);
         val webContext = context.webContext();
         val sessionStore = context.sessionStore();
-        val saved = sessionStore.get(webContext, KEY_SESSION_ATTRIBUTE);
+        val sessionAttribute = KEY_SESSION_ATTRIBUTE_PREFIX + jwsAlgorithm.getName();
+        val saved = sessionStore.get(webContext, sessionAttribute);
         if (saved.isPresent()) {
             try {
                 return JWK.parse((String) saved.get());
@@ -236,9 +231,9 @@ public class DPoPHttpInterceptor implements HttpInterceptor {
                 throw new TechnicalException("Cannot read the DPoP key from the session", e);
             }
         }
-        val key = generateKey();
+        val key = JwkHelper.generateKey(jwsAlgorithm);
         LOGGER.debug("DPoP key pair generated and saved in the web session");
-        sessionStore.set(webContext, KEY_SESSION_ATTRIBUTE, key.toJSONString());
+        sessionStore.set(webContext, sessionAttribute, key.toJSONString());
         return key;
     }
 
@@ -248,22 +243,4 @@ public class DPoPHttpInterceptor implements HttpInterceptor {
         }
     }
 
-    /**
-     * Generate a key pair for the signature algorithm.
-     *
-     * @return the key pair
-     */
-    protected JWK generateKey() {
-        try {
-            if (JWSAlgorithm.Family.EC.contains(jwsAlgorithm)) {
-                return new ECKeyGenerator(Curve.forJWSAlgorithm(jwsAlgorithm).iterator().next()).generate();
-            }
-            if (JWSAlgorithm.Family.RSA.contains(jwsAlgorithm)) {
-                return new RSAKeyGenerator(RSA_KEY_SIZE).generate();
-            }
-        } catch (final JOSEException e) {
-            throw new TechnicalException("Cannot generate the DPoP key", e);
-        }
-        throw new TechnicalException("Unsupported DPoP signature algorithm: " + jwsAlgorithm);
-    }
 }

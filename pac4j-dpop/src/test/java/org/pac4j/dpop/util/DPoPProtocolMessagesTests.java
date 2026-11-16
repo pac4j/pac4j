@@ -69,7 +69,7 @@ final class DPoPProtocolMessagesTests {
             "<<< server https://server.example DPoP-Nonce: nonce-1 (use_dpop_nonce: the request is sent again)",
             "<<< server https://server.example DPoP-Nonce: nonce-2"), lines());
         // neither the private key saved in the session nor the query string is logged
-        val key = (String) ctx.sessionStore().get(ctx.webContext(), DPoPConstants.KEY_SESSION_ATTRIBUTE).orElseThrow();
+        val key = (String) ctx.sessionStore().get(ctx.webContext(), DPoPConstants.KEY_SESSION_ATTRIBUTE_PREFIX + "ES256").orElseThrow();
         assertTrue(key.contains("\"d\""));
         assertFalse(String.join("\n", lines()).contains("secret"));
     }

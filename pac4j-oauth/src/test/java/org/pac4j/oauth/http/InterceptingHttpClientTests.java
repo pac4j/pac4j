@@ -8,6 +8,8 @@ import lombok.val;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.ArgumentCaptor;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.http.interceptor.HttpInterceptor;
@@ -47,6 +49,10 @@ class InterceptingHttpClientTests {
 
     private final List<String> received = new ArrayList<>();
 
+    private final List<String> authorizations = new ArrayList<>();
+
+    private String tokenType = "bearer";
+
     private static final HttpInterceptor DPOP_PROOF =
         (request, context) -> ((OAuthHttpRequest) request).headers().put("DPoP", "proof");
 
@@ -64,13 +70,15 @@ class InterceptingHttpClientTests {
             val body = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
             received.add(exchange.getRequestMethod() + " " + exchange.getRequestURI() + " DPoP="
                 + exchange.getRequestHeaders().getFirst("DPoP") + " " + body);
+            authorizations.add(exchange.getRequestHeaders().getFirst("Authorization"));
             val refused = refusals > 0;
             if (refused) {
                 refusals--;
                 exchange.getResponseHeaders().add("DPoP-Nonce", "nonce");
             }
             val response = (refused ? "{\"error\":\"use_dpop_nonce\"}"
-                : "{\"access_token\":\"access-token\",\"token_type\":\"bearer\"}").getBytes(StandardCharsets.UTF_8);
+                : "{\"access_token\":\"access-token\""
+                    + (tokenType == null ? "" : ",\"token_type\":\"" + tokenType + "\"") + "}").getBytes(StandardCharsets.UTF_8);
             exchange.getResponseHeaders().add("Content-Type", "application/json");
             exchange.sendResponseHeaders(refused ? 400 : 200, response.length);
             try (val out = exchange.getResponseBody()) {
@@ -110,9 +118,14 @@ class InterceptingHttpClientTests {
             "https://provider.example/token", "payload");
     }
 
-    @Test
-    void configuresTheTokenAndProfileRequestsSentByScribeJava() {
+    @ParameterizedTest
+    @CsvSource({"bearer,Bearer,false", "DPoP,DPoP,false", "dpop,DPoP,false", ",Bearer,false",
+        "bearer,Bearer,true", "DPoP,DPoP,true", "dpop,DPoP,true", ",Bearer,true"})
+    void configuresTheTokenAndProfileRequestsSentByScribeJava(final String returnedType, final String scheme,
+                                                            final boolean tokenAsHeader) {
+        tokenType = returnedType;
         val config = configuration(new GenericApi20(serverUrl + "/authorize", serverUrl + "/token"));
+        config.setTokenAsHeader(tokenAsHeader);
         val seen = new ArrayList<String>();
         config.setHttpInterceptor((configured, context) -> {
             val request = (OAuthHttpRequest) configured;
@@ -129,7 +142,8 @@ class InterceptingHttpClientTests {
 
         assertEquals(2, seen.size());
         assertTrue(seen.get(0).startsWith("POST " + serverUrl + "/token Basic "), seen.get(0));
-        assertEquals("GET " + serverUrl + "/profile Bearer access-token", seen.get(1));
+        assertEquals("GET " + serverUrl + "/profile " + scheme + " access-token", seen.get(1));
+        assertEquals(scheme + " access-token", authorizations.get(1));
         assertEquals(2, received.size());
         assertTrue(received.get(0).startsWith("POST /token DPoP=proof "), received.get(0));
         assertTrue(received.get(0).contains("code=code"), received.get(0));

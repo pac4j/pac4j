@@ -50,10 +50,14 @@ config.setHttpInterceptor(new DPoPHttpInterceptor());
 The same interceptor handles both protocols: it adds a DPoP proof to every request sent to the [OAuth server](oauth.html#4-http-client-and-requests)
 or to the [OpenID provider](openid-connect-config.html) (pushed authorization, token and UserInfo requests).
 
+The authorization scheme follows the token type returned by the server: `DPoP` for a DPoP-bound access token,
+or `Bearer` if the server issues an unbound access token. Adding a proof does not turn a Bearer token into a DPoP-bound token.
+
 The proofs are signed by a key pair saved in the web session and generated on first use: the tokens are bound to it, and the following requests
 (UserInfo, refresh) prove its possession. A web session is thus required: without a web context or a session store, the interceptor fails.
+One key pair is kept per signature algorithm in the session, so clients using different algorithms do not overwrite each other's keys.
 
-The signature algorithm is `ES256` by default and can be changed, for an algorithm of the EC or RSA family:
+The signature algorithm is `ES256` by default and can be changed, for `ES384`, `ES512`, `RS256`, `RS384`, `RS512`, `PS256`, `PS384` or `PS512`:
 
 ```java
 config.setHttpInterceptor(new DPoPHttpInterceptor().setJwsAlgorithm(JWSAlgorithm.PS256));

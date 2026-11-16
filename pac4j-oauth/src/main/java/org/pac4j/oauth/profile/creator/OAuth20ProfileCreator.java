@@ -62,8 +62,15 @@ public class OAuth20ProfileCreator extends OAuthProfileCreator {
     /** {@inheritDoc} */
     @Override
     protected void signRequest(final OAuthService service, final Token token, final OAuthRequest request) {
-        ((OAuth20Service) service).signRequest((OAuth2AccessToken) token, request);
-        val accessToken = ((OAuth2AccessToken) token).getAccessToken();
+        val oauth2Token = (OAuth2AccessToken) token;
+        val accessToken = oauth2Token.getAccessToken();
+        // ScribeJava ignores the token type, but a DPoP-bound access token requires the DPoP authorization scheme
+        // (RFC 9449, section 7.1)
+        if (HttpConstants.DPOP_SCHEME.equalsIgnoreCase(oauth2Token.getTokenType())) {
+            request.addHeader(HttpConstants.AUTHORIZATION_HEADER, HttpConstants.DPOP_HEADER_PREFIX + accessToken);
+            return;
+        }
+        ((OAuth20Service) service).signRequest(oauth2Token, request);
         if (this.configuration.isTokenAsHeader()) {
             request.addHeader(HttpConstants.AUTHORIZATION_HEADER, HttpConstants.BEARER_HEADER_PREFIX + accessToken);
         }
