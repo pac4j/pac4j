@@ -8,8 +8,13 @@ import lombok.val;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.ArgumentCaptor;
 import org.pac4j.core.context.CallContext;
+import org.pac4j.core.http.interceptor.HttpInterceptor;
+import org.pac4j.core.http.oauth.OAuthHttpRequest;
+import org.pac4j.core.http.oauth.OAuthHttpResponse;
 import org.pac4j.oauth.client.OAuth20Client;
 import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.credentials.OAuth20Credentials;
@@ -34,15 +39,25 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 /**
- * Tests {@link ConfiguringHttpClient}: alone, then behind the requests ScribeJava sends to a local OAuth server.
+ * Tests {@link InterceptingHttpClient}: alone, then behind the requests ScribeJava sends to a local OAuth server.
  */
-class ConfiguringHttpClientTests {
+class InterceptingHttpClientTests {
 
     private static final String CALLBACK = "https://client.example/callback";
 
     private final CallContext ctx = new CallContext(MockWebContext.create(), new MockSessionStore());
 
     private final List<String> received = new ArrayList<>();
+
+    private final List<String> authorizations = new ArrayList<>();
+
+    private String tokenType = "bearer";
+
+    private static final HttpInterceptor DPOP_PROOF =
+        (request, context) -> ((OAuthHttpRequest) request).headers().put("DPoP", "proof");
+
+    /** How many requests the server still refuses, requiring a nonce. */
+    private int refusals;
 
     private HttpServer server;
 
@@ -55,9 +70,17 @@ class ConfiguringHttpClientTests {
             val body = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
             received.add(exchange.getRequestMethod() + " " + exchange.getRequestURI() + " DPoP="
                 + exchange.getRequestHeaders().getFirst("DPoP") + " " + body);
-            val response = "{\"access_token\":\"access-token\",\"token_type\":\"bearer\"}".getBytes(StandardCharsets.UTF_8);
+            authorizations.add(exchange.getRequestHeaders().getFirst("Authorization"));
+            val refused = refusals > 0;
+            if (refused) {
+                refusals--;
+                exchange.getResponseHeaders().add("DPoP-Nonce", "nonce");
+            }
+            val response = (refused ? "{\"error\":\"use_dpop_nonce\"}"
+                : "{\"access_token\":\"access-token\""
+                    + (tokenType == null ? "" : ",\"token_type\":\"" + tokenType + "\"") + "}").getBytes(StandardCharsets.UTF_8);
             exchange.getResponseHeaders().add("Content-Type", "application/json");
-            exchange.sendResponseHeaders(200, response.length);
+            exchange.sendResponseHeaders(refused ? 400 : 200, response.length);
             try (val out = exchange.getResponseBody()) {
                 out.write(response);
             }
@@ -78,9 +101,10 @@ class ConfiguringHttpClientTests {
         when(delegate.execute(any(), anyMap(), any(), anyString(), anyString())).thenReturn(response);
         val headers = new HashMap<String, String>();
         headers.put("Authorization", "Bearer access-token");
-        val client = new ConfiguringHttpClient(delegate, (request, context) -> {
+        val client = new InterceptingHttpClient(delegate, (configured, context) -> {
+            val request = (OAuthHttpRequest) configured;
             assertSame(ctx, context);
-            assertEquals(Verb.POST, request.verb());
+            assertEquals("POST", request.verb());
             assertEquals("https://provider.example/token", request.url());
             assertEquals("Bearer access-token", request.headers().get("authorization"));
             request.headers().put("AUTHORIZATION", "DPoP access-token");
@@ -94,11 +118,17 @@ class ConfiguringHttpClientTests {
             "https://provider.example/token", "payload");
     }
 
-    @Test
-    void configuresTheTokenAndProfileRequestsSentByScribeJava() {
+    @ParameterizedTest
+    @CsvSource({"bearer,Bearer,false", "DPoP,DPoP,false", "dpop,DPoP,false", ",Bearer,false",
+        "bearer,Bearer,true", "DPoP,DPoP,true", "dpop,DPoP,true", ",Bearer,true"})
+    void configuresTheTokenAndProfileRequestsSentByScribeJava(final String returnedType, final String scheme,
+                                                            final boolean tokenAsHeader) {
+        tokenType = returnedType;
         val config = configuration(new GenericApi20(serverUrl + "/authorize", serverUrl + "/token"));
+        config.setTokenAsHeader(tokenAsHeader);
         val seen = new ArrayList<String>();
-        config.setHttpRequestConfigurer((request, context) -> {
+        config.setHttpInterceptor((configured, context) -> {
+            val request = (OAuthHttpRequest) configured;
             assertSame(ctx, context);
             seen.add(request.verb() + " " + request.url() + " " + request.headers().get("Authorization"));
             request.headers().put("DPoP", "proof");
@@ -112,11 +142,73 @@ class ConfiguringHttpClientTests {
 
         assertEquals(2, seen.size());
         assertTrue(seen.get(0).startsWith("POST " + serverUrl + "/token Basic "), seen.get(0));
-        assertEquals("GET " + serverUrl + "/profile Bearer access-token", seen.get(1));
+        assertEquals("GET " + serverUrl + "/profile " + scheme + " access-token", seen.get(1));
+        assertEquals(scheme + " access-token", authorizations.get(1));
         assertEquals(2, received.size());
         assertTrue(received.get(0).startsWith("POST /token DPoP=proof "), received.get(0));
         assertTrue(received.get(0).contains("code=code"), received.get(0));
         assertTrue(received.get(1).startsWith("GET /profile DPoP=proof"), received.get(1));
+    }
+
+    @Test
+    void sendsTheRequestAgainOnceWhenTheInterceptorAsksForIt() {
+        refusals = 1;
+        val config = configuration(new GenericApi20(serverUrl + "/authorize", serverUrl + "/token"));
+        val responses = new ArrayList<String>();
+        config.setHttpInterceptor(new HttpInterceptor() {
+            private String nonce;
+
+            @Override
+            public void configureRequest(final Object request, final CallContext context) {
+                ((OAuthHttpRequest) request).headers().put("DPoP", "proof-" + nonce);
+            }
+
+            @Override
+            public boolean handleResponse(final Object request, final Object response, final CallContext context) {
+                assertSame(ctx, context);
+                assertEquals(serverUrl + "/token", ((OAuthHttpRequest) request).url());
+                val received = (OAuthHttpResponse) response;
+                nonce = received.headers().get("dpop-nonce");
+                responses.add(received.code() + " " + nonce + " " + received.body());
+                return received.code() == 400;
+            }
+        });
+
+        val credentials = new OAuth20Credentials("code");
+        new OAuth20Authenticator(config, client(config)).validate(ctx, credentials);
+
+        assertEquals("access-token", credentials.toAccessToken().getAccessToken());
+        assertEquals(2, received.size());
+        assertTrue(received.get(0).startsWith("POST /token DPoP=proof-null "), received.get(0));
+        assertTrue(received.get(1).startsWith("POST /token DPoP=proof-nonce "), received.get(1));
+        assertTrue(received.get(1).contains("code=code"), received.get(1));
+        assertEquals(2, responses.size());
+        assertEquals("400 nonce {\"error\":\"use_dpop_nonce\"}", responses.get(0));
+        assertTrue(responses.get(1).startsWith("200 null "), responses.get(1));
+    }
+
+    @Test
+    void neverSendsTheRequestAThirdTime() throws Exception {
+        val delegate = mock(HttpClient.class);
+        val response = new Response(400, "Bad Request", Map.of(), "body");
+        when(delegate.execute(any(), anyMap(), any(), anyString(), anyString())).thenReturn(response);
+        val handled = new ArrayList<Object>();
+        val client = new InterceptingHttpClient(delegate, new HttpInterceptor() {
+            @Override
+            public void configureRequest(final Object request, final CallContext context) {
+            }
+
+            @Override
+            public boolean handleResponse(final Object request, final Object received, final CallContext context) {
+                handled.add(received);
+                return true;
+            }
+        }, ctx);
+
+        assertSame(response, client.execute("agent", Map.of(), Verb.POST, "https://provider.example/token", "payload"));
+
+        assertEquals(2, handled.size());
+        verify(delegate, times(2)).execute("agent", Map.of(), Verb.POST, "https://provider.example/token", "payload");
     }
 
     @Test
@@ -128,7 +220,7 @@ class ConfiguringHttpClientTests {
             }
         };
         val config = configuration(api);
-        config.setHttpRequestConfigurer((request, context) -> request.headers().put("DPoP", "proof"));
+        config.setHttpInterceptor(DPOP_PROOF);
 
         new OAuth20Authenticator(config, client(config)).validate(ctx, new OAuth20Credentials("code"));
 
@@ -138,7 +230,7 @@ class ConfiguringHttpClientTests {
     }
 
     @Test
-    void sendsTheRequestsUntouchedWithoutConfigurer() {
+    void sendsTheRequestsUntouchedWithoutInterceptor() {
         val config = configuration(new GenericApi20(serverUrl + "/authorize", serverUrl + "/token"));
 
         new OAuth20Authenticator(config, client(config)).validate(ctx, new OAuth20Credentials("code"));
@@ -148,7 +240,7 @@ class ConfiguringHttpClientTests {
     }
 
     @Test
-    void usesTheDefinedHttpClientWithAndWithoutConfigurer() throws Exception {
+    void usesTheDefinedHttpClientWithAndWithoutInterceptor() throws Exception {
         val httpClient = mock(HttpClient.class);
         val tokenResponse = new Response(200, "OK", Map.of(), "{\"access_token\":\"access-token\"}");
         when(httpClient.execute(any(), anyMap(), any(), anyString(), any(byte[].class))).thenReturn(tokenResponse);
@@ -157,7 +249,7 @@ class ConfiguringHttpClientTests {
         val client = client(config);
 
         new OAuth20Authenticator(config, client).validate(ctx, new OAuth20Credentials("code"));
-        config.setHttpRequestConfigurer((request, context) -> request.headers().put("DPoP", "proof"));
+        config.setHttpInterceptor(DPOP_PROOF);
         new OAuth20Authenticator(config, client).validate(ctx, new OAuth20Credentials("code"));
 
         val headers = ArgumentCaptor.forClass(Map.class);

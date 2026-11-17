@@ -65,6 +65,12 @@ public interface HttpConstants {
     /** Constant <code>BEARER_HEADER_PREFIX="Bearer "</code> */
     String BEARER_HEADER_PREFIX = "Bearer ";
 
+    /** The DPoP authorization scheme (RFC 9449, section 7.1). */
+    String DPOP_SCHEME = "DPoP";
+
+    /** The prefix of the authorization header carrying a DPoP-bound access token (RFC 9449, section 7.1). */
+    String DPOP_HEADER_PREFIX = DPOP_SCHEME + " ";
+
     /** Constant <code>DIGEST_HEADER_PREFIX="Digest "</code> */
     String DIGEST_HEADER_PREFIX = "Digest ";
 

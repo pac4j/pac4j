@@ -1,7 +1,8 @@
 package org.pac4j.oidc.config;
 
 import org.pac4j.core.context.CallContext;
-import org.pac4j.core.http.configurer.HttpRequestConfigurer;
+import org.pac4j.oidc.util.OidcProtocolMessages;
+import org.pac4j.core.http.interceptor.HttpInterceptor;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.util.DefaultResourceRetriever;
 import com.nimbusds.jose.util.ResourceRetriever;
@@ -9,6 +10,7 @@ import com.nimbusds.oauth2.sdk.ParseException;
 import com.nimbusds.oauth2.sdk.ResponseType;
 import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
 import com.nimbusds.oauth2.sdk.http.HTTPRequest;
+import com.nimbusds.oauth2.sdk.http.HTTPResponse;
 import com.nimbusds.oauth2.sdk.pkce.CodeChallengeMethod;
 import com.nimbusds.openid.connect.sdk.OIDCResponseTypeValue;
 import lombok.*;
@@ -58,8 +60,11 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
 @Slf4j
 public class OidcConfiguration extends BaseClientConfiguration {
 
-    /** Applied to the pushed authorization, token and UserInfo requests, after the HTTP settings of this configuration; none by default. */
-    private HttpRequestConfigurer<HTTPRequest> httpRequestConfigurer;
+    /**
+     * Applied to the pushed authorization, token and UserInfo requests (a Nimbus {@code HTTPRequest}),
+     * after the HTTP settings of this configuration; none by default.
+     */
+    private HttpInterceptor httpInterceptor;
 
     // deprecate: move to OidcConstants
     /**
@@ -428,16 +433,42 @@ public class OidcConfiguration extends BaseClientConfiguration {
     }
 
     /**
-     * Apply the HTTP settings of this configuration to the request, then the HTTP request configurer, if any.
+     * Apply the HTTP settings of this configuration to the request, then the HTTP interceptor, if any.
      *
      * @param request the request
      * @param ctx the call context
      */
     public void configureHttpRequest(final HTTPRequest request, final CallContext ctx) {
         configureHttpRequest(request);
-        if (httpRequestConfigurer != null) {
-            httpRequestConfigurer.configure(request, ctx);
+        if (httpInterceptor != null) {
+            httpInterceptor.configureRequest(request, ctx);
         }
+    }
+
+    /**
+     * Send the request once configured and, when the HTTP interceptor asks for it after handling the response,
+     * a second and last time.
+     *
+     * @param request the request
+     * @param ctx the call context
+     * @return the response
+     * @throws IOException if the request cannot be sent
+     */
+    public HTTPResponse send(final HTTPRequest request, final CallContext ctx) throws IOException {
+        var response = sendOnce(request, ctx);
+        if (httpInterceptor != null && httpInterceptor.handleResponse(request, response, ctx)) {
+            response = sendOnce(request, ctx);
+            httpInterceptor.handleResponse(request, response, ctx);
+        }
+        return response;
+    }
+
+    private HTTPResponse sendOnce(final HTTPRequest request, final CallContext ctx) throws IOException {
+        configureHttpRequest(request, ctx);
+        OidcProtocolMessages.sent(request);
+        val response = request.send();
+        OidcProtocolMessages.received(response);
+        return response;
     }
 
     /**

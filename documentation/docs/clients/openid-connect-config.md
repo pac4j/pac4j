@@ -202,12 +202,16 @@ config.setMappedClaims(mapping);
 ```
 
 The pushed authorization, token and UserInfo requests can be changed just before they are sent with an
-`HttpRequestConfigurer`. It receives the Nimbus `HTTPRequest`, on which the HTTP settings of the configuration
+`HttpInterceptor`. It receives the Nimbus `HTTPRequest` (to which the request must be cast), on which the HTTP settings of the configuration
 (timeouts, SSL socket factory, hostname verifier) are already applied, and the `CallContext`:
 
 ```java
-config.setHttpRequestConfigurer((request, ctx) -> request.setHeader("X-Request-Id", UUID.randomUUID().toString()));
+config.setHttpInterceptor((request, ctx) ->
+    ((HTTPRequest) request).setHeader("X-Request-Id", UUID.randomUUID().toString()));
 ```
+
+The interceptor can also handle the response, a Nimbus `HTTPResponse`, by overriding its `handleResponse` method: returning `true`
+makes the request configured and sent again, once. This is how [DPoP](dpop.html) is supported.
 
 
 ## 6) Keys rotation

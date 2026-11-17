@@ -109,7 +109,7 @@ pac4j also powers the authentication delegation of [Apereo CAS](https://apereo.g
 
 ## 🧪 Advanced mechanisms
 
-[OpenID Federation](https://www.pac4j.org/docs/clients/openid-connect-federation.html) &bull; [OpenID for Verifiable Presentations (EUDI wallet, eIDAS 2.0)](https://www.pac4j.org/docs/clients/openid4vp.html)
+[DPoP](https://www.pac4j.org/docs/clients/dpop.html) &bull; [OpenID Federation](https://www.pac4j.org/docs/clients/openid-connect-federation.html) &bull; [OpenID for Verifiable Presentations (EUDI wallet, eIDAS 2.0)](https://www.pac4j.org/docs/clients/openid4vp.html)
 
 ## 📦 Versions
 
