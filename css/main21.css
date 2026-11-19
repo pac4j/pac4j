@@ -245,6 +245,40 @@ main ul li { list-style-type: disc; }
 .warning { color: #ef6c00; }
 .error { color: #d32f2f; }
 
+/* orange cards (same shape as the home "mechanism" cards) */
+.notice-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto 1fr;
+  gap: 1.2rem;
+  align-items: start;
+  margin: 30px 0;
+}
+/* the last card fills the right column, the two others stack on the left */
+.notice-cards > div:last-child { grid-column: 2; grid-row: 1 / span 2; }
+@media (max-width: 640px) {
+  .notice-cards { grid-template-columns: 1fr; grid-template-rows: none; }
+  .notice-cards > div:last-child { grid-column: auto; grid-row: auto; }
+}
+.notice-cards > div {
+  padding: 1.1rem 1.2rem 1.2rem;
+  border: 1px solid #f2c98c;
+  border-top: 3px solid #e8871e;
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, #fff9f0 0%, #fdeeda 100%);
+  color: #7c4a11;
+}
+.notice-cards > div b { color: #a75c0c; }
+.notice-cards > div .fa { color: #e8871e; }
+.notice-cards > .error {
+  border-color: #f2b3a8;
+  border-top-color: #d9432b;
+  background: linear-gradient(180deg, #fff5f2 0%, #fde2dc 100%);
+  color: #8a2415;
+}
+.notice-cards > .error b { color: #b3301c; }
+.notice-cards > .error .fa { color: #d9432b; }
+
 .caption {
   margin: 1.25rem auto;
   padding: .55em 1em;

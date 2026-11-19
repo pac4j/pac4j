@@ -53,5 +53,5 @@ It's the list of the [matcher](matchers.html) names (separated by commas) that t
 
 By default, if the `matchers` is blank or not defined, the [`securityHeaders`](matchers.html#4-securityheaders) is applied and the `csrfToken` is applied only for web applications (at least one `IndirectClient` is defined).
 
-You can also use the [out-of-the-box matchers](matchers.html#3-default-matchers), already available without defining them in the security configuration.
+You can also use the [out-of-the-box matchers](matchers.html#5-other-matchers), already available without defining them in the security configuration.
 Start the `matchers` string by "+" to add other matchers to the default ones or without to replace them.
