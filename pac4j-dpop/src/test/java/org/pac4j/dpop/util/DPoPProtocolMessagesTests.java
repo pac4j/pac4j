@@ -10,13 +10,19 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.pac4j.core.context.CallContext;
+import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.http.oauth.OAuthHttpRequest;
 import org.pac4j.core.http.oauth.OAuthHttpResponse;
+import org.pac4j.dpop.DPoPTestHelper;
+import org.pac4j.dpop.credentials.extractor.DPoPAuthExtractor;
 import org.pac4j.dpop.http.DPoPHttpInterceptor;
+import org.pac4j.dpop.proof.DPoPNonceManager;
 import org.pac4j.test.context.MockWebContext;
 import org.pac4j.test.context.session.MockSessionStore;
 import org.slf4j.LoggerFactory;
 
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -24,7 +30,7 @@ import java.util.TreeMap;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Tests {@link DPoPProtocolMessages}, through the {@link DPoPHttpInterceptor}.
+ * Tests {@link DPoPProtocolMessages}, through the {@link DPoPHttpInterceptor} and the {@link DPoPAuthExtractor}.
  */
 final class DPoPProtocolMessagesTests {
 
@@ -99,6 +105,37 @@ final class DPoPProtocolMessagesTests {
             interceptorLogger.detachAppender(decoded);
             interceptorLogger.setLevel(null);
         }
+    }
+
+    @Test
+    void logsTheProofsReceivedAndTheNoncesSentOnTheServerSide() throws Exception {
+        val key = DPoPTestHelper.generateKey();
+        val accessToken = DPoPTestHelper.accessToken(key);
+        val proof = DPoPTestHelper.proof(key, "GET", DPoPTestHelper.URL, accessToken);
+        val context = DPoPTestHelper.request("GET", DPoPTestHelper.URL + "?secret=secret", accessToken, proof);
+
+        assertThrows(CredentialsException.class, () -> new DPoPAuthExtractor().setNonceSecret("nonce-secret")
+            .extract(new CallContext(context, new MockSessionStore())));
+
+        assertEquals(List.of(
+            "<<< client GET " + DPoPTestHelper.URL + " DPoP: " + proof,
+            ">>> client DPoP-Nonce: " + context.getResponseHeaders().get("DPoP-Nonce") + " (use_dpop_nonce)"), lines());
+        assertFalse(String.join("\n", lines()).contains("secret="));
+    }
+
+    @Test
+    void logsTheNonceRenewedOnTheServerSide() throws Exception {
+        val key = DPoPTestHelper.generateKey();
+        val accessToken = DPoPTestHelper.accessToken(key);
+        val oldNonce = new DPoPNonceManager("nonce-secret", 300).generate(Instant.now().minusSeconds(200));
+        val proof = DPoPTestHelper.proof(key, "GET", DPoPTestHelper.URL, accessToken, new Date(), oldNonce);
+        val context = DPoPTestHelper.request("GET", DPoPTestHelper.URL, accessToken, proof);
+
+        new DPoPAuthExtractor().setNonceSecret("nonce-secret").extract(new CallContext(context, new MockSessionStore()));
+
+        assertEquals(List.of(
+            "<<< client GET " + DPoPTestHelper.URL + " DPoP: " + proof,
+            ">>> client DPoP-Nonce: " + context.getResponseHeaders().get("DPoP-Nonce")), lines());
     }
 
     @Test

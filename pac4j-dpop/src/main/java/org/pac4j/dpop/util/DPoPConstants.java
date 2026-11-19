@@ -26,4 +26,13 @@ public interface DPoPConstants {
     /** The member carrying the error code in an error response (RFC 6749, section 5.2). */
     String ERROR = "error";
 
+    /** The error by which a resource server refuses a DPoP proof (RFC 9449, section 7.1). */
+    String INVALID_DPOP_PROOF_ERROR = "invalid_dpop_proof";
+
+    /** The error by which a resource server refuses an access token (RFC 6750, section 3.1). */
+    String INVALID_TOKEN_ERROR = "invalid_token";
+
+    /** The request attribute holding the error for which the DPoP authentication of the request was refused. */
+    String ERROR_REQUEST_ATTRIBUTE = "pac4jDPoPError";
+
 }

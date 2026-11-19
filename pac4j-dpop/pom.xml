@@ -12,7 +12,7 @@
     <packaging>bundle</packaging>
     <name>pac4j: Java web security for DPoP</name>
     <description>OAuth 2.0 Demonstrating Proof of Possession (DPoP, RFC 9449) support for the OAuth and
-        OpenID Connect clients.</description>
+        OpenID Connect clients, and for the web resources protected by DPoP-bound access tokens.</description>
 
     <dependencies>
         <dependency>
