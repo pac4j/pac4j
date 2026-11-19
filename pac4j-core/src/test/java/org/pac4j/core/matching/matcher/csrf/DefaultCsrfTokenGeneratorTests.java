@@ -2,6 +2,8 @@ package org.pac4j.core.matching.matcher.csrf;
 
 import lombok.val;
 import org.junit.jupiter.api.Test;
+import org.pac4j.core.authorization.authorizer.CsrfAuthorizer;
+import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.test.context.session.MockSessionStore;
 import org.pac4j.core.context.session.SessionStore;
@@ -38,6 +40,40 @@ public final class DefaultCsrfTokenGeneratorTests {
         val generator = new DefaultCsrfTokenGenerator();
         generator.setRotateTokens(true);
         internalTest(generator, true);
+    }
+
+    @Test
+    public void testNoRotateRenewsExpiredToken() {
+        val generator = new DefaultCsrfTokenGenerator();
+        generator.setRotateTokens(false);
+        final WebContext context = MockWebContext.create();
+        final SessionStore sessionStore = new MockSessionStore();
+        val token = generator.get(context, sessionStore);
+        sessionStore.set(context, Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE, new Date().getTime() - 1000);
+
+        val newToken = generator.get(context, sessionStore);
+
+        assertNotEquals(token, newToken);
+        assertEquals(newToken, sessionStore.get(context, Pac4jConstants.CSRF_TOKEN).orElse(null));
+        assertEquals(token, sessionStore.get(context, Pac4jConstants.PREVIOUS_CSRF_TOKEN).orElse(null));
+        final long expirationDate = (Long) sessionStore.get(context, Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE).orElse(null);
+        assertTrue(expirationDate > new Date().getTime());
+    }
+
+    @Test
+    public void testNoRotateTokenAcceptedAfterExpiration() {
+        val generator = new DefaultCsrfTokenGenerator();
+        generator.setRotateTokens(false);
+        final SessionStore sessionStore = new MockSessionStore();
+        final WebContext firstContext = MockWebContext.create();
+        generator.get(firstContext, sessionStore);
+        sessionStore.set(firstContext, Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE, new Date().getTime() - 1000);
+
+        val postContext = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.POST.name());
+        val token = generator.get(postContext, sessionStore);
+        postContext.addRequestParameter(Pac4jConstants.CSRF_TOKEN, token);
+
+        assertTrue(new CsrfAuthorizer().isAuthorized(postContext, sessionStore, null));
     }
 
     private void internalTest(final DefaultCsrfTokenGenerator generator, final boolean rotate) {

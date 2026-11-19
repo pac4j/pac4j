@@ -41,7 +41,8 @@ public class DefaultCsrfTokenGenerator implements CsrfTokenGenerator {
             sessionStore.set(context, Pac4jConstants.PREVIOUS_CSRF_TOKEN, null);
         }
 
-        if (optCurrentToken.isEmpty() || rotateTokens) {
+        // without rotation, the current token must still be renewed once it has expired
+        if (optCurrentToken.isEmpty() || rotateTokens || isExpired(context, sessionStore)) {
             token = CommonHelper.randomString(32);
             LOGGER.debug("generated CSRF token: {} for current URL: {}", token, context.getFullRequestURL());
             val expirationDate = new Date().getTime() + ttlInSeconds * 1000;
@@ -50,5 +51,10 @@ public class DefaultCsrfTokenGenerator implements CsrfTokenGenerator {
             sessionStore.set(context, Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE, expirationDate);
         }
         return token;
+    }
+
+    private boolean isExpired(final WebContext context, final SessionStore sessionStore) {
+        val expirationDate = (Long) sessionStore.get(context, Pac4jConstants.CSRF_TOKEN_EXPIRATION_DATE).orElse(0L);
+        return expirationDate < new Date().getTime();
     }
 }
