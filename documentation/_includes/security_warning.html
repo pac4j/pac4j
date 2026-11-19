@@ -1,4 +1,5 @@
-<div class="warning" style="margin-top: 30px; margin-bottom: 30px;">
+{% unless include.nowrap %}<div class="notice-cards">{% endunless %}
+<div class="warning">
   <i class="fa fa-exclamation-triangle fa-2x" aria-hidden="true"></i>
     You MUST upgrade vs You SHOULD upgrade<br/>
     <br/>
@@ -15,3 +16,4 @@
     <br/>
     <b>The practical takeaway is clear: use the latest mature version of pac4j and apply security updates as soon as possible.</b>
 </div>
+{% unless include.nowrap %}</div>{% endunless %}
