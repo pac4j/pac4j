@@ -18,8 +18,8 @@ import java.text.ParseException;
  */
 public class AzureAdLogoutTokenValidator extends LogoutTokenValidator {
 
-    private LogoutTokenValidator base;
-    private String originalIssuer;
+    private final LogoutTokenValidator base;
+    private final String originalIssuer;
 
     /**
      * <p>Constructor for AzureAdLogoutTokenValidator.</p>
@@ -35,20 +35,22 @@ public class AzureAdLogoutTokenValidator extends LogoutTokenValidator {
     /** {@inheritDoc} */
     @Override
     public LogoutTokenClaimsSet validate(final JWT logoutToken) throws BadJOSEException, JOSEException {
+        // this validator is shared by all requests: never store the tenant-specific validator in a field
+        var validator = base;
         try {
             if (originalIssuer.contains("%7Btenantid%7D")) {
                 var tid = logoutToken.getJWTClaimsSet().getClaim("tid");
                 if (tid == null) {
-                    throw new BadJWTException("ID token does not contain the 'tid' claim");
+                    throw new BadJWTException("Logout token does not contain the 'tid' claim");
                 }
-                base = new LogoutTokenValidator(new Issuer(originalIssuer.replace("%7Btenantid%7D", tid.toString())),
+                validator = new LogoutTokenValidator(new Issuer(originalIssuer.replace("%7Btenantid%7D", tid.toString())),
                     base.getClientID(), base.getJWSKeySelector(), base.getJWEKeySelector());
-                base.setMaxClockSkew(getMaxClockSkew());
+                validator.setMaxClockSkew(getMaxClockSkew());
             }
         } catch (ParseException e) {
             throw new BadJWTException(e.getMessage(), e);
         }
-        return base.validate(logoutToken);
+        return validator.validate(logoutToken);
     }
 
 }
