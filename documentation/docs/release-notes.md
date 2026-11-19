@@ -11,6 +11,7 @@ description: "Review pac4j release notes for supported Java lines, including aut
 - Added the DPoP (RFC 9449) client support via the new `pac4j-dpop` module: set a `DPoPHttpInterceptor` on the OAuth or OIDC configuration to enable it (the nonce required by a server is handled, and the proofs and nonces are logged on the `PROTOCOL_MESSAGE.DPOP` logger)
 - Introduced the `HttpInterceptor` to customize, using `CallContext`, every request sent to the OAuth server (an `OAuthHttpRequest`) and the OIDC pushed authorization, token and UserInfo requests (a Nimbus `HTTPRequest`), and to handle their response, possibly sending the request again once. `OAuthConfiguration.buildService`, `OidcAuthenticator.refresh`, `OidcProfileCreator.callUserInfoEndpoint` and `OidcRedirectionActionBuilder.buildAuthenticationRequestUrl` now take a `CallContext`.
 - The ScribeJava HTTP client used by the OAuth clients can be defined via the `httpClient` property of the `OAuthConfiguration`.
+- Fix the `DefaultCsrfTokenGenerator` with `rotateTokens` disabled: an expired CSRF token is now renewed instead of being returned forever, which made every POST/PUT/PATCH/DELETE request of the session fail
 - Fix a race condition in the `AzureAdIdTokenValidator` and the `AzureAdLogoutTokenValidator`: with the multi-tenant `{tenantid}` issuer, concurrent logins or back-channel logouts from different tenants could wrongly reject a valid token
 
 
