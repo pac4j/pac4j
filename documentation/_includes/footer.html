@@ -13,6 +13,12 @@
     <script>
         anchors.add();
     </script>
+{% elsif page.url == '/' %}
+    <script>
+        // on the left, out of the flow, so the centered titles do not move
+        anchors.options.placement = 'left';
+        anchors.add('#home .section-title');
+    </script>
 {% endif %}
 
 <script src="/js/copy-code.js"></script>
