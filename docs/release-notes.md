@@ -14,6 +14,7 @@ description: "Review pac4j release notes for supported Java lines, including aut
 - Fix the `DefaultCsrfTokenGenerator` with `rotateTokens` disabled: an expired CSRF token is now renewed instead of being returned forever, which made every POST/PUT/PATCH/DELETE request of the session fail
 - Fix a race condition in the `AzureAdIdTokenValidator` and the `AzureAdLogoutTokenValidator`: with the multi-tenant `{tenantid}` issuer, concurrent logins or back-channel logouts from different tenants could wrongly reject a valid token
 
+
 **v6.6.1**:
 - The `JwtAuthenticator` now rejects a JWT whose `nbf` (not before) date is in the future
 - The `JwtAuthenticator` now accepts a clock skew (`clockSkewSeconds`, 60 seconds by default) when checking the `exp` and `nbf` dates
