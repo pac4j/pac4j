@@ -16,7 +16,7 @@ description: "Browse current and archived pac4j documentation by release to find
     .jdk-label { margin-top: 1.4rem; margin-bottom: .7rem; }
 </style>
 
-<p class="caption">MAJOR: ⚠️ API breaking changes + 🧹 CLEANUP of deprecated classes &mdash; MINOR: small runtime breaking changes, no API breaking changes, classes are deprecated</p>
+<p class="caption">MAJOR: ⚠️ public API breaking changes + 🧹 CLEANUP of deprecated classes &mdash; MINOR: small runtime breaking changes, no public API breaking changes, classes are deprecated</p>
 
 <div class="text-center" style="padding-top: 8px">
 

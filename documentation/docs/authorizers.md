@@ -16,8 +16,8 @@ Generally, authorizers are defined in the [security configuration](config.html) 
 
 Various authorizers are available:
 
-- [Roles](authorizers/profile-authorizers.html#roles) - [Anonymous/remember-me/(fully) authenticated](authorizers/profile-authorizers.html#authentication-levels) - [Profile type, attribute](authorizers/profile-authorizers.html#others)
-- [CSRF](authorizers/web-authorizers.html#csrf) - [IP address, HTTP method](authorizers/web-authorizers.html#others)
+- [Roles](authorizers/profile-authorizers.html#1-roles) - [Anonymous/remember-me/(fully) authenticated](authorizers/profile-authorizers.html#2-authentication-levels) - [Profile type, attribute](authorizers/profile-authorizers.html#3-others)
+- [CSRF](authorizers/web-authorizers.html#1-csrf) - [IP address, HTTP method](authorizers/web-authorizers.html#2-others)
 
 
 ## &#9656; Default authorizer names
