@@ -6,6 +6,7 @@ import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import com.nimbusds.jwt.proc.BadJWTException;
 import com.nimbusds.oauth2.sdk.auth.Secret;
 import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.oauth2.sdk.id.Issuer;
@@ -88,7 +89,7 @@ public final class AzureAdIdTokenValidatorTests {
         val jwt = new SignedJWT(new JWSHeader(JWSAlgorithm.HS256), claims);
         jwt.sign(new MACSigner(SECRET));
 
-        assertThrows(Exception.class, () -> newValidator().validate(jwt, null));
+        assertThrows(BadJWTException.class, () -> newValidator().validate(jwt, null));
     }
 
     /**
