@@ -93,7 +93,7 @@
 		<oauth-oidc-sdk.version>11.39</oauth-oidc-sdk.version>
         <eudi-sdjwt.version>0.21.0</eudi-sdjwt.version>
 		<spring.version>7.0.10</spring.version>
-		<spring.security.version>7.1.2</spring.security.version>
+		<spring.security.version>7.2.0</spring.security.version>
         <bouncycastle.version>1.87</bouncycastle.version>
 		<shiro.version>3.0.2</shiro.version>
         <jbcrypt.version>0.4.3</jbcrypt.version>
