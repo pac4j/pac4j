@@ -28,7 +28,7 @@ This funding makes it possible to consolidate all this work, while opening a new
 
 Four tasks are sponsored.
 
-### 1) pac4j v7
+### 1) New version 7 of pac4j
 
 Started in December 2026:
 
@@ -40,21 +40,30 @@ Started in December 2026:
 
 Then, in 2027: upgrade of the 15 [pac4j implementations](/implementations.html) currently available for pac4j v6, and maybe more.
 
-### 2) OpenID Federation
+### 2) Going further with OpenID Federation
+
+Since v6.4.0, a pac4j application can join a federation as a relying party: it publishes its entity configuration and resolves the OpenID Provider through trust anchors, as tested with Connect2id and CAS. This task completes the implementation of the specification on the relying party side:
 
 - bug fixes and improvements: `jwks_uri`, `signed_jwks_uri`, trust marks...
 - sending the resolved trust chain upfront
 - extraction of the support into its own module (`pac4j-openidfederation`), to be reused by OpenID4VP.
 
-### 3) OpenID4VP
+### 3) Going further with OpenID4VP
+
+Since v6.6.0, a pac4j application can authenticate users with a digital wallet, with SD-JWT VC and mdoc credentials, on the same device, on another device or through the Digital Credentials API. This task completes the implementation of the specification with what is still missing:
 
 - `verifier_attestation` and `openid_federation` client identifier prefixes
 - `transaction_data` for the SD-JWT VC and mdoc verifiers
 - more testing on various flows and wallet playgrounds.
 
-### 4) OpenID certifications
+### 4) Official OpenID certifications
 
-The goal is to make pac4j pass the official OpenID certification tests for OpenID Connect, OpenID Federation and OpenID4VP.
+The goal is to get pac4j officially certified by the <a href="https://openid.net/certification/" target="_blank">OpenID Foundation</a> for OpenID Connect, OpenID Federation and OpenID4VP: passing the conformance tests, and then the official certifications themselves, whose fees are covered by the funding.
+
+
+## Timeline
+
+pac4j v7.0 is planned for the end of January 2027. The whole work, ending with the certifications, should be completed by mid-2027.
 
 
 ## How you can help
