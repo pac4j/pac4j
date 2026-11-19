@@ -476,6 +476,8 @@ main ul li { list-style-type: disc; }
   text-transform: uppercase;
   color: var(--blue);
   margin: 0;
+  /* a linked title stops below the sticky header */
+  scroll-margin-top: 5rem;
 }
 #home .section-sub {
   margin: .35rem 0 1.4rem;
