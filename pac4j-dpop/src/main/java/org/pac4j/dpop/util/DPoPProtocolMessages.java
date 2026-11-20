@@ -5,12 +5,11 @@ import lombok.experimental.UtilityClass;
 import org.pac4j.core.util.ProtocolMessages;
 
 /**
- * The DPoP messages exchanged, logged raw on the {@code PROTOCOL_MESSAGE.DPOP} logger, at debug level: the proofs sent
- * to the servers and the nonces received from them and, on the server side, the proofs received from the clients
- * and the nonces sent to them.
+ * Logs DPoP exchanges on the {@code PROTOCOL_MESSAGE.DPOP} logger at debug level.
+ * Incoming proofs are identified by the request method and URL.
  *
  * <p>The requests and the responses carrying them are logged by the protocol sending them (OAuth or OpenID Connect).
- * A proof holds the public key only: the private key is never logged.</p>
+ * Locally generated proofs contain only the public key.</p>
  *
  * @author Jerome LELEU
  * @since 6.7.0
@@ -59,11 +58,10 @@ public class DPoPProtocolMessages {
      *
      * @param method the method of the request
      * @param url the URL of the request, without query string
-     * @param proof the proof, as received
      */
-    public void receivedProof(final String method, final String url, final String proof) {
+    public void receivedProof(final String method, final String url) {
         if (LOGGER.isEnabled()) {
-            LOGGER.received(CLIENT, method + " " + url + " DPoP: " + proof);
+            LOGGER.received(CLIENT, method + " " + url + " DPoP proof received");
         }
     }
 

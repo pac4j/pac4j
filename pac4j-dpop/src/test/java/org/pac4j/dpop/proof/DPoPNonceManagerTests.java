@@ -20,33 +20,27 @@ final class DPoPNonceManagerTests {
 
     @Test
     void acceptsANonceItGenerated() {
-        assertTrue(manager.isValid(manager.generate()));
+        assertTrue(manager.isValid(manager.generate(Instant.now())));
     }
 
     @Test
     void acceptsANonceGeneratedByAnotherNodeSharingTheSecret() {
-        assertTrue(manager.isValid(new DPoPNonceManager(SECRET, 300).generate()));
+        assertTrue(manager.isValid(new DPoPNonceManager(SECRET, 300).generate(Instant.now())));
     }
 
     @Test
     void generatesATimestampAndItsHmacBase64UrlEncoded() {
-        val before = Instant.now().getEpochSecond();
+        val creation = Instant.parse("2026-01-01T12:00:00Z");
 
-        val nonce = manager.generate();
+        val nonce = manager.generate(creation);
 
-        val parts = new String(Base64.getUrlDecoder().decode(nonce), StandardCharsets.UTF_8).split("\\.");
-        assertEquals(2, parts.length);
-        val timestamp = Long.parseLong(parts[0]);
-        assertTrue(timestamp >= before && timestamp <= Instant.now().getEpochSecond());
-        // HMAC-SHA256: 32 bytes
-        assertEquals(32, Base64.getUrlDecoder().decode(parts[1]).length);
-        // NQCHAR only (RFC 9449, section 8.1)
-        assertTrue(nonce.matches("[A-Za-z0-9_-]+"), nonce);
+        // Reference vector for HMAC-SHA256 of the ASCII timestamp 1767268800 with SECRET.
+        assertEquals("MTc2NzI2ODgwMC5FandUQ1dTREFMR3VMZlJXQjh6cVNtb01tREpLdDI2LTlUWkhZY2JZQk1Z", nonce);
     }
 
     @Test
     void refusesANonceOfAnotherSecret() {
-        assertFalse(manager.isValid(new DPoPNonceManager("another-secret", 300).generate()));
+        assertFalse(manager.isValid(new DPoPNonceManager("another-secret", 300).generate(Instant.now())));
     }
 
     @Test
@@ -66,7 +60,7 @@ final class DPoPNonceManagerTests {
 
     @Test
     void renewsAValidNoncePastHalfOfItsMaximumAge() {
-        assertFalse(manager.shouldBeRenewed(manager.generate()));
+        assertFalse(manager.shouldBeRenewed(manager.generate(Instant.now())));
         assertFalse(manager.shouldBeRenewed(manager.generate(Instant.now().minusSeconds(140))));
         assertTrue(manager.shouldBeRenewed(manager.generate(Instant.now().minusSeconds(160))));
         assertTrue(manager.shouldBeRenewed(manager.generate(Instant.now().minusSeconds(290))));

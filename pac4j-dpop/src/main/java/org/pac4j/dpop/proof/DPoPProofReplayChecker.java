@@ -17,8 +17,8 @@ import java.security.NoSuchAlgorithmException;
  * Refuses a DPoP proof already used, by saving its identifier ("jti" claim) in a {@link Store} for the time window
  * in which the proof would be accepted (RFC 9449, section 11.1).
  *
- * <p>The store has no atomic "set if absent" operation: the check is atomic in this JVM only. With a store shared
- * between several nodes, the same proof sent to two of them at the same time may be accepted twice.</p>
+ * <p>The check is synchronized per verifier instance. Two verifiers sharing a store can both accept the same
+ * proof concurrently, even in the same JVM, because the store reads and writes the entry in separate operations.</p>
  *
  * @author Jerome LELEU
  * @since 6.7.0

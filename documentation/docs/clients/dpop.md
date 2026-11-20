@@ -111,6 +111,12 @@ The authentication is done in two steps:
 - the [`DPoPAuthExtractor`](https://github.com/pac4j/pac4j/blob/master/pac4j-dpop/src/main/java/org/pac4j/dpop/credentials/extractor/DPoPAuthExtractor.java) checks the proof and only extracts the access token (as `TokenCredentials`) when the proof is valid
 - the authenticator you have defined validates the access token, like for a Bearer token: a [`JwtAuthenticator`](../authenticators/jwt.html) for example.
 
+When a resource accepts both schemes, `DirectBearerAuthClient` rejects a DPoP-bound access token presented as Bearer,
+whether the request includes a `DPoP` proof header or omits it. `JwtAuthenticator` reads the `cnf` claim after signature
+verification and any configured decryption. A custom authenticator or profile creator that validates opaque tokens by
+introspection must call `tokenCredentials.setTokenConfirmation(introspectionResponse.get("cnf"))`
+before returning credentials or a profile. The same applies to a custom validator that decrypts access tokens.
+
 ### a) Proof validation
 
 The proof is checked according to the [section 4.3 of the RFC](https://www.rfc-editor.org/rfc/rfc9449.html#section-4.3), by the Nimbus SDK:
@@ -196,4 +202,4 @@ WWW-Authenticate: DPoP realm="authentication required", error="invalid_dpop_proo
 | `use_dpop_nonce` | A nonce is required: it is provided in the `DPoP-Nonce` header |
 {:.table-striped}
 
-The reason of a refusal is logged at INFO level by the client. The proofs received and the nonces sent are logged raw on the `PROTOCOL_MESSAGE.DPOP` logger, at DEBUG level, like for the client support.
+The client logs the reason for a refusal at INFO level. At DEBUG level, the `PROTOCOL_MESSAGE.DPOP` logger records the HTTP method and URL for incoming proofs and the nonce values sent in responses.

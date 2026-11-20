@@ -32,15 +32,6 @@ public class DPoPNonceManager {
     private final int maxAgeSeconds;
 
     /**
-     * Generate a nonce.
-     *
-     * @return the nonce
-     */
-    public String generate() {
-        return generate(Instant.now());
-    }
-
-    /**
      * Generate a nonce created at a given time.
      *
      * @param creation the creation time

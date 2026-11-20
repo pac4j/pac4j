@@ -7,6 +7,8 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.PlainJWT;
 import lombok.val;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
@@ -266,6 +268,23 @@ public final class JwtTests implements TestsConstants {
         profile.addAttribute(TwitterProfileDefinition.PROFILE_LINK_COLOR, new Color(1, 2, 3));
         val token = generator.generate(profile);
         assertNotNull(token);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "exp, -3600, The JWT is expired",
+        "exp, 7200, The JWT expiration exceeds the configured limit",
+        "nbf, 3600, The JWT is not yet valid"
+    })
+    public void testValidateRejectsInvalidTokenDates(final String claim, final int secondsFromNow, final String reason) {
+        val signature = new SecretSignatureConfiguration(MAC_SECRET);
+        val token = new JwtGenerator(signature).generate(Map.of(JwtClaims.SUBJECT, ID, claim, inSeconds(secondsFromNow)));
+        val authenticator = new JwtAuthenticator(signature);
+        authenticator.setExpirationTime(inSeconds(3600));
+        val credentials = new TokenCredentials(token);
+
+        val error = assertThrows(CredentialsException.class, () -> authenticator.validate(null, credentials));
+        assertEquals(reason, error.getMessage());
     }
 
     @Test

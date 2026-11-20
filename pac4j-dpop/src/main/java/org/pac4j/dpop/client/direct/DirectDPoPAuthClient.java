@@ -11,6 +11,7 @@ import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.profile.creator.ProfileCreator;
+import org.pac4j.core.util.Announcement;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.dpop.credentials.extractor.DPoPAuthExtractor;
 
@@ -25,7 +26,8 @@ import static org.pac4j.dpop.util.DPoPConstants.INVALID_TOKEN_ERROR;
  * <p>This class is the client to authenticate users directly through the RFC 9449 HTTP DPoP authentication:
  * an access token bound to a key, sent along with a proof of possession of that key.</p>
  *
- * <p>The proof is checked by the {@link DPoPAuthExtractor}, the access token by the authenticator.</p>
+ * <p>The {@link DPoPAuthExtractor} checks the proof. The authenticator validates the access token unless
+ * the client is configured with a {@link ProfileCreator} alone, which then performs this validation.</p>
  *
  * @author Jerome LELEU
  * @since 6.7.0
@@ -35,6 +37,10 @@ import static org.pac4j.dpop.util.DPoPConstants.INVALID_TOKEN_ERROR;
 @ToString(callSuper = true)
 @Slf4j
 public class DirectDPoPAuthClient extends DirectClient {
+
+    private static final Announcement ANNOUNCE_TOKEN_VALIDATION = new Announcement(
+        "DirectDPoPAuthClient uses Authenticator.ALWAYS_VALIDATE, which accepts every access token. "
+            + "The ProfileCreator must validate the access token before returning a profile.");
 
     private String realmName = Pac4jConstants.DEFAULT_REALM_NAME;
 
@@ -56,7 +62,7 @@ public class DirectDPoPAuthClient extends DirectClient {
     /**
      * <p>Constructor for DirectDPoPAuthClient.</p>
      *
-     * @param profileCreator a {@link ProfileCreator} object
+     * @param profileCreator validates the access token and creates the profile
      */
     public DirectDPoPAuthClient(final ProfileCreator profileCreator) {
         setAuthenticatorIfUndefined(Authenticator.ALWAYS_VALIDATE);
@@ -80,6 +86,9 @@ public class DirectDPoPAuthClient extends DirectClient {
     protected void internalInit(final boolean forceReinit) {
         assertNotBlank("realmName", this.realmName);
 
+        if (getAuthenticator() == Authenticator.ALWAYS_VALIDATE) {
+            ANNOUNCE_TOKEN_VALIDATION.announce();
+        }
         setCredentialsExtractorIfUndefined(new DPoPAuthExtractor());
     }
 

@@ -1,5 +1,6 @@
 package org.pac4j.dpop;
 
+import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.crypto.ECDSASigner;
@@ -17,6 +18,8 @@ import lombok.val;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.util.JwkHelper;
 import org.pac4j.dpop.util.DPoPConstants;
+import org.pac4j.jwt.config.signature.ECSignatureConfiguration;
+import org.pac4j.jwt.credentials.authenticator.JwtAuthenticator;
 import org.pac4j.test.context.MockWebContext;
 
 import java.net.URI;
@@ -36,14 +39,24 @@ public class DPoPTestHelper {
         return JwkHelper.generateKey(JWSAlgorithm.ES256);
     }
 
+    public JwtAuthenticator issuerAuthenticator() throws JOSEException {
+        val signature = new ECSignatureConfiguration();
+        signature.setPublicKey(ISSUER_KEY.toECPublicKey());
+        return new JwtAuthenticator(signature);
+    }
+
     /**
      * Build a JWT access token.
      *
      * @param boundKey the key the access token is bound to, or null for an unbound one
+     * @param expiration the expiration time, or null to omit the exp claim
      * @return the access token
      */
-    public String accessToken(final JWK boundKey) throws Exception {
+    public String accessToken(final JWK boundKey, final Date expiration) throws Exception {
         val claims = new JWTClaimsSet.Builder().issuer("https://server.example.org").subject("user");
+        if (expiration != null) {
+            claims.expirationTime(expiration);
+        }
         if (boundKey != null) {
             val confirmation = new JWKThumbprintConfirmation(boundKey.computeThumbprint()).toJWTClaim();
             claims.claim(confirmation.getKey(), confirmation.getValue());

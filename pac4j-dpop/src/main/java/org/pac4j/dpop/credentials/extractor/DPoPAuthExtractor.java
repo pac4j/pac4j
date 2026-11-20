@@ -35,6 +35,7 @@ import org.pac4j.dpop.util.DPoPProtocolMessages;
 
 import java.net.URI;
 import java.text.ParseException;
+import java.time.Instant;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
@@ -140,7 +141,7 @@ public class DPoPAuthExtractor extends InitializableObject implements Credential
         val header = webContext.getRequestHeader(DPOP_HEADER)
             .or(() -> webContext.getRequestHeader(DPOP_HEADER.toLowerCase(Locale.ROOT)))
             .orElseThrow(() -> refuse(webContext, INVALID_DPOP_PROOF_ERROR, "Missing DPoP proof", null));
-        DPoPProtocolMessages.receivedProof(method, url, header);
+        DPoPProtocolMessages.receivedProof(method, url);
 
         final SignedJWT proof;
         final String nonce;
@@ -189,7 +190,7 @@ public class DPoPAuthExtractor extends InitializableObject implements Credential
     }
 
     private void provideNonce(final WebContext webContext, final boolean required) {
-        val nonce = nonceManager.generate();
+        val nonce = nonceManager.generate(Instant.now());
         webContext.setResponseHeader(DPOP_NONCE_HEADER, nonce);
         DPoPProtocolMessages.sentNonce(nonce, required);
     }

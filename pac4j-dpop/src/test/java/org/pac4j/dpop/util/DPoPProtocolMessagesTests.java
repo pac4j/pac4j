@@ -3,7 +3,13 @@ package org.pac4j.dpop.util;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.spi.ThrowableProxyUtil;
 import ch.qos.logback.core.read.ListAppender;
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.JWSHeader;
+import com.nimbusds.jose.crypto.ECDSASigner;
+import com.nimbusds.jose.jwk.ECKey;
+import com.nimbusds.jose.util.Base64URL;
 import com.nimbusds.jwt.SignedJWT;
 import lombok.val;
 import org.junit.jupiter.api.AfterEach;
@@ -14,6 +20,7 @@ import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.http.oauth.OAuthHttpRequest;
 import org.pac4j.core.http.oauth.OAuthHttpResponse;
 import org.pac4j.dpop.DPoPTestHelper;
+import org.pac4j.dpop.client.direct.DirectDPoPAuthClient;
 import org.pac4j.dpop.credentials.extractor.DPoPAuthExtractor;
 import org.pac4j.dpop.http.DPoPHttpInterceptor;
 import org.pac4j.dpop.proof.DPoPNonceManager;
@@ -21,6 +28,7 @@ import org.pac4j.test.context.MockWebContext;
 import org.pac4j.test.context.session.MockSessionStore;
 import org.slf4j.LoggerFactory;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
@@ -110,7 +118,7 @@ final class DPoPProtocolMessagesTests {
     @Test
     void logsTheProofsReceivedAndTheNoncesSentOnTheServerSide() throws Exception {
         val key = DPoPTestHelper.generateKey();
-        val accessToken = DPoPTestHelper.accessToken(key);
+        val accessToken = DPoPTestHelper.accessToken(key, null);
         val proof = DPoPTestHelper.proof(key, "GET", DPoPTestHelper.URL, accessToken);
         val context = DPoPTestHelper.request("GET", DPoPTestHelper.URL + "?secret=secret", accessToken, proof);
 
@@ -118,15 +126,52 @@ final class DPoPProtocolMessagesTests {
             .extract(new CallContext(context, new MockSessionStore())));
 
         assertEquals(List.of(
-            "<<< client GET " + DPoPTestHelper.URL + " DPoP: " + proof,
+            "<<< client GET " + DPoPTestHelper.URL + " DPoP proof received",
             ">>> client DPoP-Nonce: " + context.getResponseHeaders().get("DPoP-Nonce") + " (use_dpop_nonce)"), lines());
         assertFalse(String.join("\n", lines()).contains("secret="));
     }
 
     @Test
+    void refusesAProofCarryingAPrivateKeyWithoutLoggingIt() throws Exception {
+        val key = (ECKey) DPoPTestHelper.generateKey();
+        val accessToken = DPoPTestHelper.accessToken(key, null);
+        val proof = SignedJWT.parse(DPoPTestHelper.proof(key, "GET", DPoPTestHelper.URL, accessToken));
+        val header = Base64URL.encode("{\"typ\":\"dpop+jwt\",\"alg\":\"ES256\",\"jwk\":" + key.toJSONString() + "}");
+        val payload = proof.getPayload().toBase64URL();
+        val signature = new ECDSASigner(key).sign(new JWSHeader(JWSAlgorithm.ES256),
+            (header + "." + payload).getBytes(StandardCharsets.UTF_8));
+
+        val received = header + "." + payload + "." + signature;
+        val context = DPoPTestHelper.request("GET", DPoPTestHelper.URL, accessToken, received);
+        val client = new DirectDPoPAuthClient(DPoPTestHelper.issuerAuthenticator());
+        val clientLogger = (Logger) LoggerFactory.getLogger(DirectDPoPAuthClient.class);
+        val previousLevel = clientLogger.getLevel();
+        clientLogger.setLevel(Level.DEBUG);
+        clientLogger.addAppender(appender);
+        try {
+            assertTrue(client.getCredentials(new CallContext(context, new MockSessionStore())).isEmpty());
+        } finally {
+            clientLogger.detachAppender(appender);
+            clientLogger.setLevel(previousLevel);
+        }
+
+        assertEquals(DPoPConstants.INVALID_DPOP_PROOF_ERROR,
+            context.getRequestAttribute(DPoPConstants.ERROR_REQUEST_ATTRIBUTE).orElseThrow());
+        assertTrue(lines().contains("<<< client GET " + DPoPTestHelper.URL + " DPoP proof received"));
+        assertTrue(appender.list.stream().anyMatch(event -> event.getLoggerName().equals(clientLogger.getName())
+            && event.getLevel() == Level.INFO && event.getFormattedMessage().contains("Malformed DPoP proof")));
+        for (val event : appender.list) {
+            val cause = event.getThrowableProxy();
+            val log = event.getFormattedMessage() + (cause == null ? "" : ThrowableProxyUtil.asString(cause));
+            assertFalse(log.contains(header.toString()));
+            assertFalse(log.contains(key.getD().toString()));
+        }
+    }
+
+    @Test
     void logsTheNonceRenewedOnTheServerSide() throws Exception {
         val key = DPoPTestHelper.generateKey();
-        val accessToken = DPoPTestHelper.accessToken(key);
+        val accessToken = DPoPTestHelper.accessToken(key, null);
         val oldNonce = new DPoPNonceManager("nonce-secret", 300).generate(Instant.now().minusSeconds(200));
         val proof = DPoPTestHelper.proof(key, "GET", DPoPTestHelper.URL, accessToken, new Date(), oldNonce);
         val context = DPoPTestHelper.request("GET", DPoPTestHelper.URL, accessToken, proof);
@@ -134,7 +179,7 @@ final class DPoPProtocolMessagesTests {
         new DPoPAuthExtractor().setNonceSecret("nonce-secret").extract(new CallContext(context, new MockSessionStore()));
 
         assertEquals(List.of(
-            "<<< client GET " + DPoPTestHelper.URL + " DPoP: " + proof,
+            "<<< client GET " + DPoPTestHelper.URL + " DPoP proof received",
             ">>> client DPoP-Nonce: " + context.getResponseHeaders().get("DPoP-Nonce")), lines());
     }
 
