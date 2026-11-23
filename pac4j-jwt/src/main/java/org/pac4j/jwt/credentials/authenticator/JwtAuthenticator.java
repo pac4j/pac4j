@@ -301,6 +301,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
                 }
             }
 
+            credentials.setTokenConfirmation(jwt.getJWTClaimsSet().getClaim("cnf"));
             createJwtProfile(ctx, credentials, jwt);
 
         } catch (final ParseException e) {
@@ -336,19 +337,16 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
         val expTime = claimSet.getExpirationTime();
         if (expTime != null) {
             if (expTime.before(new Date(now.getTime() - clockSkewSeconds * 1000))) {
-                LOGGER.warn("The JWT is expired: no profile is built");
-                return;
+                throw new CredentialsException("The JWT is expired");
             }
             if (this.expirationTime != null && expTime.after(this.expirationTime)) {
-                LOGGER.warn("The JWT is expired: no profile is built");
-                return;
+                throw new CredentialsException("The JWT expiration exceeds the configured limit");
             }
         }
 
         val nbfTime = claimSet.getNotBeforeTime();
         if (nbfTime != null && nbfTime.after(new Date(now.getTime() + clockSkewSeconds * 1000))) {
-            LOGGER.warn("The JWT is not yet valid: no profile is built");
-            return;
+            throw new CredentialsException("The JWT is not yet valid");
         }
 
         val attributes = new HashMap<>(claimSet.getClaims());

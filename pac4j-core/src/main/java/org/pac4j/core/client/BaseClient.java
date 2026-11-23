@@ -151,7 +151,7 @@ public abstract class BaseClient extends InitializableObject implements Client {
             }
         }
 
-        var profile = this.profileCreator.create(ctx, credentials);
+        var profile = createProfile(ctx, credentials);
         logger.debug("profile: {}", profile);
         if (profile.isPresent()) {
             profile.get().setClientName(getName());
@@ -162,6 +162,17 @@ public abstract class BaseClient extends InitializableObject implements Client {
             }
         }
         return profile;
+    }
+
+    /**
+     * Create the authenticated profile before applying authorization generators.
+     *
+     * @param ctx the call context
+     * @param credentials the credentials
+     * @return the created profile
+     */
+    protected Optional<UserProfile> createProfile(final CallContext ctx, final Credentials credentials) {
+        return this.profileCreator.create(ctx, credentials);
     }
 
     /** {@inheritDoc} */

@@ -17,9 +17,11 @@ import org.pac4j.test.context.session.MockSessionStore;
 import org.pac4j.test.util.TestsConstants;
 import org.pac4j.test.util.TestsHelper;
 
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * This class tests the {@link DirectBearerAuthClient} class.
@@ -89,5 +91,21 @@ public final class DirectBearerAuthClientTests implements TestsConstants {
         val authnCredentials = client.validateCredentials(ctx, credentials).get();
         UserProfile profile = (CommonProfile) client.getUserProfile(ctx, authnCredentials).get();
         assertEquals(KEY, profile.getId());
+    }
+
+    @Test
+    public void rejectsBindingDiscoveredByIntrospectionDuringProfileCreation() {
+        val client = new DirectBearerAuthClient((ProfileCreator) (ctx, credentials) -> {
+            ((TokenCredentials) credentials).setTokenConfirmation(Map.of("jkt", "key-thumbprint"));
+            return Optional.of(new CommonProfile());
+        });
+        val context = MockWebContext.create().addRequestHeader(HttpConstants.AUTHORIZATION_HEADER,
+            HttpConstants.BEARER_HEADER_PREFIX + TOKEN);
+        val ctx = new CallContext(context, new MockSessionStore());
+        val credentials = client.validateCredentials(ctx, client.getCredentials(ctx).orElseThrow()).orElseThrow();
+
+        assertTrue(client.getUserProfile(ctx, credentials).isEmpty());
+        assertEquals("Bearer realm=\"authentication required\", error=\"invalid_token\"",
+            context.getResponseHeaders().get(HttpConstants.AUTHENTICATE_HEADER));
     }
 }
