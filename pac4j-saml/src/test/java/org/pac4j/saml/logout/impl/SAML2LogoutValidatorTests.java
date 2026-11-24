@@ -2,6 +2,8 @@ package org.pac4j.saml.logout.impl;
 
 import lombok.val;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.security.credential.CredentialSupport;
@@ -338,6 +340,33 @@ public class SAML2LogoutValidatorTests {
         val xml = buildLogoutRequest("");
         val context = getRedirectLogoutRequestContext(xml,
             "SAMLRequest=other&" + buildSignedQueryString(xml, null, IDP_KEYS.getPrivate()));
+
+        assertThrows(SAMLSignatureValidationException.class, () -> getRedirectLogoutValidator(logoutHandler).validate(context));
+
+        verify(logoutHandler, never()).destroySession(any(), any());
+    }
+
+    @ParameterizedTest(name = "encoded name first = {0}")
+    @ValueSource(booleans = {true, false})
+    public void verifyRedirectLogoutRequestWithAnEncodedSamlRequestNameIsRejected(final boolean encodedNameFirst) throws Exception {
+        val logoutHandler = mock(SessionLogoutHandler.class);
+        val xml = buildLogoutRequest("");
+        val signedQuery = buildSignedQueryString(xml, null, IDP_KEYS.getPrivate());
+        val encodedParameter = "SAML%52equest" + signedQuery.substring(signedQuery.indexOf('='), signedQuery.indexOf('&'));
+        val query = encodedNameFirst ? encodedParameter + "&" + signedQuery : signedQuery + "&" + encodedParameter;
+        val context = getRedirectLogoutRequestContext(xml, query);
+
+        assertThrows(SAMLSignatureValidationException.class, () -> getRedirectLogoutValidator(logoutHandler).validate(context));
+
+        verify(logoutHandler, never()).destroySession(any(), any());
+    }
+
+    @Test
+    public void verifyRedirectLogoutRequestWithAMalformedParameterNameIsRejected() throws Exception {
+        val logoutHandler = mock(SessionLogoutHandler.class);
+        val xml = buildLogoutRequest("");
+        val query = buildSignedQueryString(xml, null, IDP_KEYS.getPrivate()) + "&extra%ZZ=value";
+        val context = getRedirectLogoutRequestContext(xml, query);
 
         assertThrows(SAMLSignatureValidationException.class, () -> getRedirectLogoutValidator(logoutHandler).validate(context));
 

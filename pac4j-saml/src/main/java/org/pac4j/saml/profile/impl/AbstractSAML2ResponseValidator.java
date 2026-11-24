@@ -203,6 +203,15 @@ public abstract class AbstractSAML2ResponseValidator implements SAML2ResponseVal
         final Map<String, String> rawParameters = new HashMap<>();
         for (val pair : queryString.split("&")) {
             val name = StringUtils.substringBefore(pair, "=");
+            final String decodedName;
+            try {
+                decodedName = URLDecoder.decode(name, StandardCharsets.UTF_8);
+            } catch (final IllegalArgumentException e) {
+                throw new SAMLSignatureValidationException("Malformed parameter name in the HTTP-Redirect query string", e);
+            }
+            if (!name.equals(decodedName) && REDIRECT_SIGNED_PARAMETERS.contains(decodedName)) {
+                throw new SAMLSignatureValidationException("Encoded " + decodedName + " parameter name in the HTTP-Redirect query string");
+            }
             if (REDIRECT_SIGNED_PARAMETERS.contains(name) && rawParameters.put(name, StringUtils.substringAfter(pair, "=")) != null) {
                 // the decoded message must be the signed one
                 throw new SAMLSignatureValidationException("Duplicate " + name + " parameter in the HTTP-Redirect query string");
