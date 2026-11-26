@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="248" viewBox="0 0 600 248" role="img" aria-labelledby="title desc">
+  <title id="title">DPoP during OIDC login</title>
+  <desc id="desc">The pac4j client exchanges the code at CAS, then presents the resulting token with a second proof to CAS UserInfo.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 10 5 0 10Z" fill="#334155"/>
+    </marker>
+  </defs>
+  <rect width="600" height="248" fill="white"/>
+  <g font-family="Arial, sans-serif" text-anchor="middle">
+    <path d="M90 60 V240" stroke="#acb7c3" stroke-dasharray="3 4"/>
+    <rect x="3" y="5" width="174" height="55" rx="7" fill="#eaf2fc"/>
+    <text x="90" y="28" fill="#204b79" font-size="17" font-weight="bold">Client</text>
+    <text x="90" y="49" fill="#263747" font-size="15">pac4j application</text>
+    <path d="M300 60 V240" stroke="#acb7c3" stroke-dasharray="3 4"/>
+    <rect x="213" y="5" width="174" height="55" rx="7" fill="#f1ecf9"/>
+    <text x="300" y="28" fill="#5a4076" font-size="17" font-weight="bold">Authorization server</text>
+    <text x="300" y="49" fill="#263747" font-size="15">CAS</text>
+    <path d="M510 60 V240" stroke="#acb7c3" stroke-dasharray="3 4"/>
+    <rect x="423" y="5" width="174" height="55" rx="7" fill="#e2f3ee"/>
+    <text x="510" y="28" fill="#205748" font-size="17" font-weight="bold">Resource server</text>
+    <text x="510" y="49" fill="#263747" font-size="15">CAS UserInfo</text>
+    <path d="M90 98 H300" fill="none" stroke="#334155" stroke-width="1.8" marker-end="url(#arrow)"/>
+    <text x="195" y="90" font-size="15" fill="#1e293b" stroke="white" stroke-width="5" stroke-linejoin="round" paint-order="stroke">Code + token endpoint proof</text>
+    <path d="M300 142 H90" fill="none" stroke="#334155" stroke-width="1.8" marker-end="url(#arrow)"/>
+    <text x="195" y="134" font-size="15" fill="#1e293b" stroke="white" stroke-width="5" stroke-linejoin="round" paint-order="stroke">DPoP-bound access token</text>
+    <path d="M90 186 H510" fill="none" stroke="#334155" stroke-width="1.8" marker-end="url(#arrow)"/>
+    <text x="300" y="178" font-size="15" fill="#1e293b" stroke="white" stroke-width="5" stroke-linejoin="round" paint-order="stroke">Access token + UserInfo proof</text>
+    <path d="M510 230 H90" fill="none" stroke="#334155" stroke-width="1.8" marker-end="url(#arrow)"/>
+    <text x="300" y="222" font-size="15" fill="#1e293b" stroke="white" stroke-width="5" stroke-linejoin="round" paint-order="stroke">User profile</text>
+  </g>
+</svg>

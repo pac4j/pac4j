@@ -16,6 +16,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.HttpConstants;
@@ -61,6 +62,7 @@ import static org.pac4j.dpop.util.DPoPConstants.*;
 @Getter
 @Setter
 @Accessors(chain = true)
+@Slf4j
 @ToString(exclude = {"nonceSecret", "tokenExtractor", "verifier", "nonceManager"})
 public class DPoPAuthExtractor extends InitializableObject implements CredentialsExtractor {
 
@@ -80,6 +82,10 @@ public class DPoPAuthExtractor extends InitializableObject implements Credential
      * {@link ConcurrentMapStore} keeping them as long as their proof would be accepted.
      */
     private Store<String, Boolean> store;
+
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
+    private ConcurrentMapStore<String, Boolean> defaultStore;
 
     /** The secret generating the nonces: when defined, a nonce is required in the proofs. */
     private String nonceSecret;
@@ -107,9 +113,15 @@ public class DPoPAuthExtractor extends InitializableObject implements Credential
 
         tokenExtractor = new HeaderExtractor(HttpConstants.AUTHORIZATION_HEADER, HttpConstants.DPOP_HEADER_PREFIX);
         tokenExtractor.setTrimValue(true);
+        // A proof created in the future, within the clock skew, is accepted until it reaches its maximum age.
+        val retentionSeconds = maxAgeSeconds + clockSkewSeconds;
         if (store == null) {
-            // a proof created in the future, within the clock skew, is accepted until it reaches its maximum age
-            store = new ConcurrentMapStore<>(maxAgeSeconds + clockSkewSeconds, TimeUnit.SECONDS);
+            defaultStore = new ConcurrentMapStore<>(retentionSeconds, TimeUnit.SECONDS);
+            store = defaultStore;
+        } else if (store == defaultStore) {
+            defaultStore.setTimeout(retentionSeconds);
+        } else {
+            defaultStore = null;
         }
         verifier = new DPoPProtectedResourceRequestVerifier(jwsAlgorithms, clockSkewSeconds, maxAgeSeconds,
             new DPoPProofReplayChecker(store));
@@ -168,6 +180,8 @@ public class DPoPAuthExtractor extends InitializableObject implements Credential
         } catch (final AccessTokenValidationException e) {
             throw refuse(webContext, INVALID_TOKEN_ERROR, e.getMessage(), e);
         }
+
+        LOGGER.debug("DPoP proof validated for method {} with algorithm {}", method, proof.getHeader().getAlgorithm());
 
         // a nonce getting old is renewed in the response to the accepted request (RFC 9449, section 8.2)
         if (nonceManager != null && nonceManager.shouldBeRenewed(nonce)) {

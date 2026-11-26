@@ -8,9 +8,6 @@ package org.pac4j.dpop.util;
  */
 public interface DPoPConstants {
 
-    /** The prefix of the session attributes holding the DPoP key pairs as JSON JWKs, followed by the signature algorithm. */
-    String KEY_SESSION_ATTRIBUTE_PREFIX = "pac4jDPoPKey|";
-
     /** The prefix of the session attributes holding the last nonce of a server, followed by the origin of its URL. */
     String NONCE_SESSION_ATTRIBUTE_PREFIX = "pac4jDPoPNonce|";
 

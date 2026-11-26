@@ -82,7 +82,9 @@ public class JEESessionStore extends PrefixedSessionStore {
         val prefixedKey = computePrefixedKey(key);
         if (httpSession.isPresent()) {
             val value = httpSession.get().getAttribute(prefixedKey);
-            LOGGER.debug("Get value: {} for key: {}", value, prefixedKey);
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Get value: {} for key: {}", valueForLog(key, value), prefixedKey);
+            }
             return Optional.ofNullable(value);
         } else {
             LOGGER.debug("Can't get value for key: {}, no session available", prefixedKey);
@@ -102,13 +104,11 @@ public class JEESessionStore extends PrefixedSessionStore {
             }
         } else {
             val httpSession = getNativeSession(context, true);
-            if (value instanceof Exception) {
-                LOGGER.debug("Set key: {} for value: {}", prefixedKey, value.toString());
-            } else {
-                LOGGER.debug("Set key: {} for value: {}", prefixedKey, value);
-            }
             try {
                 httpSession.get().setAttribute(prefixedKey, value);
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("Set key: {} for value: {}", prefixedKey, valueForLog(key, value));
+                }
             } catch (IllegalStateException e) {
                 LOGGER.debug("Session has already been invalidated.");
             }

@@ -16,6 +16,9 @@ public interface Pac4jConstants {
     /** Constant <code>USER_PROFILES="pac4jUserProfiles"</code> */
     String USER_PROFILES = "pac4jUserProfiles";
 
+    /** Prefix of the session attributes holding private DPoP signing keys, followed by the algorithm. */
+    String DPOP_KEY_SESSION_ATTRIBUTE_PREFIX = "pac4jDPoPKey|";
+
     /* CSRF token name saved in session */
     /** Constant <code>PREVIOUS_CSRF_TOKEN="pac4jPreviousCsrfToken"</code> */
     String PREVIOUS_CSRF_TOKEN = "pac4jPreviousCsrfToken";

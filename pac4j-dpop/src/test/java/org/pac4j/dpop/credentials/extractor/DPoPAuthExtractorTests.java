@@ -253,6 +253,22 @@ final class DPoPAuthExtractorTests {
         val store = assertInstanceOf(ConcurrentMapStore.class, extractor.getStore());
         assertEquals(135, store.getTimeout());
         assertEquals(TimeUnit.SECONDS, store.getTimeUnit());
+
+        extractor.setMaxAgeSeconds(180).reinit();
+        assertSame(store, extractor.getStore());
+        assertEquals(195, store.getTimeout());
+    }
+
+    @Test
+    void keepsTheTimeoutOfAnApplicationStoreOnReinit() {
+        val store = new ConcurrentMapStore<String, Boolean>(5, TimeUnit.MINUTES);
+        extractor.init();
+        extractor.setStore(store).reinit();
+        extractor.setMaxAgeSeconds(180).reinit();
+
+        assertSame(store, extractor.getStore());
+        assertEquals(5, store.getTimeout());
+        assertEquals(TimeUnit.MINUTES, store.getTimeUnit());
     }
 
     @Test

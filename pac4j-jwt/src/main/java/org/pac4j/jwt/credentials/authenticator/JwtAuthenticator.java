@@ -253,7 +253,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
                         }
                     }
                     if (!found) {
-                        throw new CredentialsException("No encryption algorithm found for JWT: " + token);
+                        throw invalidJwt("No encryption algorithm found for JWT", token);
                     }
                     // Even when other (e.g. symmetric) encryption configurations are also defined, a token that
                     // was actually decrypted via an asymmetric (RSA/EC) configuration proves nothing about its
@@ -262,8 +262,8 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
                     if (signatureConfigurations.isEmpty()
                         && (usedEncryptionConfiguration instanceof RSAEncryptionConfiguration
                             || usedEncryptionConfiguration instanceof ECEncryptionConfiguration)) {
-                        throw new CredentialsException("A JWT decrypted using an asymmetric (RSA/EC) encryption "
-                            + "configuration cannot be accepted without a signature configuration: " + token);
+                        throw invalidJwt("A JWT decrypted using an asymmetric (RSA/EC) encryption "
+                            + "configuration cannot be accepted without a signature configuration", token);
                     }
                 }
 
@@ -293,10 +293,10 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
                         }
                     }
                     if (!found) {
-                        throw new CredentialsException("No signature algorithm found for JWT: " + token);
+                        throw invalidJwt("No signature algorithm found for JWT", token);
                     }
                     if (!verified) {
-                        throw new CredentialsException("JWT verification failed: " + token);
+                        throw invalidJwt("JWT verification failed", token);
                     }
                 }
             }
@@ -309,6 +309,11 @@ public class JwtAuthenticator extends ProfileDefinitionAware implements Authenti
         }
 
         return Optional.of(credentials);
+    }
+
+    private static CredentialsException invalidJwt(final String reason, final String token) {
+        LOGGER.debug("{}: {}", reason, token);
+        return new CredentialsException(reason);
     }
 
     /**

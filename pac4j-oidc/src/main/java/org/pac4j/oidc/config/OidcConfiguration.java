@@ -455,16 +455,18 @@ public class OidcConfiguration extends BaseClientConfiguration {
      * @throws IOException if the request cannot be sent
      */
     public HTTPResponse send(final HTTPRequest request, final CallContext ctx) throws IOException {
-        var response = sendOnce(request, ctx);
+        configureHttpRequest(request, ctx);
+        var response = sendOnce(request);
         if (httpInterceptor != null && httpInterceptor.handleResponse(request, response, ctx)) {
-            response = sendOnce(request, ctx);
+            configureHttpRequest(request, ctx);
+            OidcProtocolMessages.LOGGER.sent(OidcProtocolMessages.OPENID_PROVIDER, "Resending HTTP request");
+            response = sendOnce(request);
             httpInterceptor.handleResponse(request, response, ctx);
         }
         return response;
     }
 
-    private HTTPResponse sendOnce(final HTTPRequest request, final CallContext ctx) throws IOException {
-        configureHttpRequest(request, ctx);
+    private HTTPResponse sendOnce(final HTTPRequest request) throws IOException {
         OidcProtocolMessages.sent(request);
         val response = request.send();
         OidcProtocolMessages.received(response);

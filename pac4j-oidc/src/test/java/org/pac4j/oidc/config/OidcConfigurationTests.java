@@ -1,5 +1,9 @@
 package org.pac4j.oidc.config;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
 import com.nimbusds.oauth2.sdk.http.HTTPRequest;
 import com.nimbusds.oauth2.sdk.http.HTTPResponse;
@@ -14,6 +18,7 @@ import org.pac4j.oidc.exceptions.OidcConfigurationException;
 import org.pac4j.oidc.metadata.IOidcOpMetadataResolver;
 import org.pac4j.oidc.metadata.OidcOpMetadataResolver;
 import org.pac4j.test.util.TestsConstants;
+import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
@@ -101,7 +106,21 @@ public class OidcConfigurationTests implements TestsConstants {
         });
 
         // sent again once, even if the interceptor asks for more
-        assertSame(accepted, config.send(request, ctx));
+        val logger = (Logger) LoggerFactory.getLogger("PROTOCOL_MESSAGE.OIDC");
+        val previousLevel = logger.getLevel();
+        val appender = new ListAppender<ILoggingEvent>();
+        appender.start();
+        logger.addAppender(appender);
+        try {
+            logger.setLevel(Level.DEBUG);
+            assertSame(accepted, config.send(request, ctx));
+            assertEquals(1, appender.list.stream().filter(event -> event.getLevel() == Level.DEBUG)
+                .map(ILoggingEvent::getFormattedMessage).filter(">>> OpenID provider Resending HTTP request"::equals).count());
+        } finally {
+            logger.detachAppender(appender);
+            logger.setLevel(previousLevel);
+            appender.stop();
+        }
         assertEquals(List.of(refused, accepted), handled);
         verify(request, times(2)).setHeader("X-Test", "configured");
         verify(request, times(2)).send();

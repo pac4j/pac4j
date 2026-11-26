@@ -1,5 +1,9 @@
 package org.pac4j.jwt;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 import com.nimbusds.jose.EncryptionMethod;
 import com.nimbusds.jose.JWEAlgorithm;
 import com.nimbusds.jose.JWSAlgorithm;
@@ -34,6 +38,7 @@ import org.pac4j.oauth.profile.facebook.FacebookProfileDefinition;
 import org.pac4j.oauth.profile.twitter.TwitterProfile;
 import org.pac4j.oauth.profile.twitter.TwitterProfileDefinition;
 import org.pac4j.test.util.TestsConstants;
+import org.slf4j.LoggerFactory;
 
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
@@ -236,7 +241,9 @@ public final class JwtTests implements TestsConstants {
             val authenticator = new JwtAuthenticator(List.of(),
                 List.of(encryptionConfiguration, secretConfiguration));
             val credentials = new TokenCredentials(forgedToken);
-            assertThrows(CredentialsException.class, () -> authenticator.validate(null, credentials));
+            val e = assertThrows(CredentialsException.class, () -> authenticator.validate(null, credentials));
+            assertEquals("A JWT decrypted using an asymmetric (RSA/EC) encryption configuration "
+                + "cannot be accepted without a signature configuration", e.getMessage());
             assertNull(credentials.getUserProfile());
         }
     }
@@ -517,7 +524,31 @@ public final class JwtTests implements TestsConstants {
         val jwtAuthenticator = new JwtAuthenticator();
         jwtAuthenticator.addSignatureConfiguration(new SecretSignatureConfiguration(MAC_SECRET));
         val e = TestsHelper.expectException(() -> assertToken(profile, token, jwtAuthenticator));
-        assertTrue(e.getMessage().startsWith("JWT verification failed"));
+        assertEquals("JWT verification failed", e.getMessage());
+    }
+
+    @Test
+    public void testRejectedTokenOnlyLoggedAtDebug() {
+        val generator = new JwtGenerator(new SecretSignatureConfiguration(KEY2));
+        val token = generator.generate(createProfile());
+        val authenticator = new JwtAuthenticator(new SecretSignatureConfiguration(MAC_SECRET));
+        val logger = (Logger) LoggerFactory.getLogger(JwtAuthenticator.class);
+        val previousLevel = logger.getLevel();
+        val appender = new ListAppender<ILoggingEvent>();
+        appender.start();
+        logger.addAppender(appender);
+        try {
+            logger.setLevel(Level.DEBUG);
+            assertNull(authenticator.validateToken(token));
+            assertEquals(List.of(Level.DEBUG), appender.list.stream()
+                .filter(event -> event.getFormattedMessage().contains(token)).map(ILoggingEvent::getLevel).toList());
+            assertEquals(List.of("Failed to retrieve or validate credentials: JWT verification failed"), appender.list.stream()
+                .filter(event -> event.getLevel() == Level.WARN).map(ILoggingEvent::getFormattedMessage).toList());
+        } finally {
+            logger.detachAppender(appender);
+            logger.setLevel(previousLevel);
+            appender.stop();
+        }
     }
 
     @Test
@@ -528,7 +559,7 @@ public final class JwtTests implements TestsConstants {
         val jwtAuthenticator = new JwtAuthenticator();
         jwtAuthenticator.addSignatureConfiguration(buildECSignatureConfiguration());
         val e = TestsHelper.expectException(() -> assertToken(profile, token, jwtAuthenticator));
-        assertTrue(e.getMessage().startsWith("No signature algorithm found for JWT:"));
+        assertEquals("No signature algorithm found for JWT", e.getMessage());
     }
 
     @Test
@@ -540,7 +571,7 @@ public final class JwtTests implements TestsConstants {
         val jwtAuthenticator = new JwtAuthenticator();
         jwtAuthenticator.addEncryptionConfiguration(new SecretEncryptionConfiguration(MAC_SECRET));
         val e = TestsHelper.expectException(() -> assertToken(profile, token, jwtAuthenticator));
-        assertTrue(e.getMessage().startsWith("No encryption algorithm found for JWT:"));
+        assertEquals("No encryption algorithm found for JWT", e.getMessage());
     }
 
     @Test

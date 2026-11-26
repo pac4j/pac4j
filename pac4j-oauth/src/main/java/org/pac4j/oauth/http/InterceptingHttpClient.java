@@ -12,6 +12,7 @@ import org.pac4j.core.context.CallContext;
 import org.pac4j.core.http.interceptor.HttpInterceptor;
 import org.pac4j.core.http.oauth.OAuthHttpRequest;
 import org.pac4j.core.http.oauth.OAuthHttpResponse;
+import org.pac4j.oauth.util.OAuthProtocolMessages;
 
 import java.io.File;
 import java.io.IOException;
@@ -129,6 +130,7 @@ public class InterceptingHttpClient implements HttpClient {
         if (interceptor.handleResponse(request, toResponse(response), context)) {
             response.close();
             request = toRequest(headers, verb, url);
+            OAuthProtocolMessages.LOGGER.sent(OAuthProtocolMessages.OAUTH_SERVER, "Resending HTTP request");
             response = sender.send(request.headers());
             interceptor.handleResponse(request, toResponse(response), context);
         }

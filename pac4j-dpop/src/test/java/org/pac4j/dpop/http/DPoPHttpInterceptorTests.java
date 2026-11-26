@@ -23,7 +23,7 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.http.oauth.OAuthHttpRequest;
 import org.pac4j.core.http.oauth.OAuthHttpResponse;
 import org.pac4j.core.util.JwkHelper;
-import org.pac4j.dpop.util.DPoPConstants;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.test.context.MockWebContext;
 import org.pac4j.test.context.session.MockSessionStore;
 
@@ -121,11 +121,11 @@ class DPoPHttpInterceptorTests {
 
     @Test
     void savesTheGeneratedKeyPairInTheSessionAndReusesIt() throws Exception {
-        assertTrue(ctx.sessionStore().get(ctx.webContext(), DPoPConstants.KEY_SESSION_ATTRIBUTE_PREFIX + "ES256").isEmpty());
+        assertTrue(ctx.sessionStore().get(ctx.webContext(), Pac4jConstants.DPOP_KEY_SESSION_ATTRIBUTE_PREFIX + "ES256").isEmpty());
 
         val first = configuredProof(ctx);
         val saved = JWK.parse((String) ctx.sessionStore()
-            .get(ctx.webContext(), DPoPConstants.KEY_SESSION_ATTRIBUTE_PREFIX + "ES256").orElseThrow());
+            .get(ctx.webContext(), Pac4jConstants.DPOP_KEY_SESSION_ATTRIBUTE_PREFIX + "ES256").orElseThrow());
         val second = configuredProof(ctx);
 
         assertTrue(saved.isPrivate());
@@ -137,7 +137,7 @@ class DPoPHttpInterceptorTests {
     @Test
     void usesTheKeyPairAlreadyInTheSession() throws Exception {
         val key = JwkHelper.generateKey(JWSAlgorithm.ES256);
-        ctx.sessionStore().set(ctx.webContext(), DPoPConstants.KEY_SESSION_ATTRIBUTE_PREFIX + "ES256", key.toJSONString());
+        ctx.sessionStore().set(ctx.webContext(), Pac4jConstants.DPOP_KEY_SESSION_ATTRIBUTE_PREFIX + "ES256", key.toJSONString());
 
         assertEquals(key.toPublicJWK(), configuredProof(ctx).getHeader().getJWK());
     }
