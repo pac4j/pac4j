@@ -15,6 +15,7 @@ description: "Review pac4j release notes for supported Java lines, including aut
 - Fix the `DefaultCsrfTokenGenerator` with `rotateTokens` disabled: an expired CSRF token is now renewed instead of being returned forever, which made every POST/PUT/PATCH/DELETE request of the session fail
 - Fix a race condition in the `AzureAdIdTokenValidator` and the `AzureAdLogoutTokenValidator`: with the multi-tenant `{tenantid}` issuer, concurrent logins or back-channel logouts from different tenants could wrongly reject a valid token
 - SAML logout now rejects ambiguous or badly encoded parameter names in HTTP-Redirect messages
+- Improved `ConcurrentMapStore` write performance: each write checks a single bucket for expired entries, the buckets being checked in turn (`AbstractConcurrentMapStore.purgeExpired()` now purges one bucket per call)
 
 **v6.6.1**:
 - The `JwtAuthenticator` now rejects a JWT whose `nbf` (not before) date is in the future
