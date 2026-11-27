@@ -40,6 +40,11 @@ OidcConfiguration config = new OidcConfiguration();
 config.setHttpInterceptor(new DPoPHttpInterceptor());
 ```
 
+In the OIDC authorization code flow, **pac4j signs two distinct DPoP proofs with the same session key** when it exchanges the code and then calls UserInfo. The provider's discovery metadata supplies the endpoint URLs.
+
+1. **Token endpoint** (e.g. `POST /token`). pac4j sends the first proof in the `DPoP` header. Its `htm` and `htu` identify the POST and the token endpoint. It has no `ath` claim because pac4j is still requesting the access token.
+2. **UserInfo endpoint** (e.g. `GET /userinfo`). pac4j presents the bound token in `Authorization: DPoP <access token>` and signs a new proof for this GET and its target URI. This proof has its own `jti` and includes `ath`, the hash of the access token.
+
 **Example (OAuth):**
 
 ```java
@@ -82,6 +87,7 @@ logging.level.org.pac4j.dpop.http.DPoPHttpInterceptor=TRACE
 ```
 
 The requests and the responses carrying them are logged by the `PROTOCOL_MESSAGE.OAUTH` and `PROTOCOL_MESSAGE.OIDC` loggers (a request sent again is logged twice).
+The protocol logger writes `Resending HTTP request` at DEBUG just before the retry.
 The `PROTOCOL_MESSAGE.DPOP` logger is a child of `PROTOCOL_MESSAGE`, which enables the messages of all protocols at once.
 Messages are logged as they travel: enable these logs to diagnose, not permanently in production.
 
@@ -203,3 +209,4 @@ WWW-Authenticate: DPoP realm="authentication required", error="invalid_dpop_proo
 {:.table-striped}
 
 The client logs the reason for a refusal at INFO level. At DEBUG level, the `PROTOCOL_MESSAGE.DPOP` logger records the HTTP method and URL for incoming proofs and the nonce values sent in responses.
+At DEBUG level, `org.pac4j.dpop.credentials.extractor.DPoPAuthExtractor` logs the HTTP method and signature algorithm after it validates the proof, before the authenticator validates the access token.

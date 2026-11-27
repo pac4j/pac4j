@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="404" viewBox="0 0 800 404" role="img" aria-labelledby="title desc">
+  <title id="title">From the protected page to the DPoP-protected API</title>
+  <desc id="desc">Opening /protected/index starts the login from part one. After sign-in, the link opens /protected/call-api in the browser. The pac4j client calls /api/hello with its token and proof. The API checks the token with CAS, then the client returns the API response to the browser.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0 0 10 5 0 10Z" fill="#334155"/>
+    </marker>
+  </defs>
+  <rect width="800" height="404" fill="white"/>
+  <g font-family="Arial, sans-serif" text-anchor="middle">
+    <g stroke="#acb7c3" stroke-dasharray="3 4">
+      <path d="M91 60 V396 M297 60 V396 M503 60 V396 M709 60 V396"/>
+    </g>
+    <g>
+      <rect x="4" y="5" width="174" height="55" rx="7" fill="#edf0f3"/>
+      <rect x="210" y="5" width="174" height="55" rx="7" fill="#eaf2fc"/>
+      <rect x="416" y="5" width="174" height="55" rx="7" fill="#f1ecf9"/>
+      <rect x="622" y="5" width="174" height="55" rx="7" fill="#e2f3ee"/>
+    </g>
+    <g font-size="17" font-weight="bold">
+      <text x="91" y="38" fill="#334155">Browser</text>
+      <text x="297" y="28" fill="#204b79">Client</text>
+      <text x="503" y="28" fill="#5a4076">Authorization server</text>
+      <text x="709" y="28" fill="#205748">Resource server</text>
+    </g>
+    <g fill="#263747" font-size="15">
+      <text x="297" y="49">pac4j application</text>
+      <text x="503" y="49">CAS</text>
+      <text x="709" y="49">pac4j /api/hello</text>
+    </g>
+
+    <rect x="25" y="74" width="544" height="58" rx="7" fill="#f8fafc" stroke="#cbd5e1"/>
+    <text x="297" y="97" fill="#334155" font-size="16" font-weight="bold">Part one · Open /protected/index and sign in at CAS</text>
+    <text x="297" y="119" fill="#334155" font-size="15">pac4j exchanges the code for a token and calls CAS UserInfo.</text>
+
+    <g fill="none" stroke="#334155" stroke-width="1.8" marker-end="url(#arrow)">
+      <path d="M91 188 H297"/>
+      <path d="M297 235 H709"/>
+      <path d="M709 275 H503"/>
+      <path d="M503 315 H709"/>
+      <path d="M709 355 H297"/>
+      <path d="M297 392 H91"/>
+    </g>
+    <g fill="#1e293b" font-size="15" stroke="white" stroke-width="5" stroke-linejoin="round" paint-order="stroke">
+      <text x="194" y="159" font-weight="bold">Call the API protected by DPoP</text>
+      <text x="194" y="180">GET /protected/call-api</text>
+      <text x="503" y="227">GET /api/hello · access token + DPoP proof</text>
+      <text x="606" y="267">POST /cas/oidc/introspect</text>
+      <text x="606" y="307">Token active + key thumbprint</text>
+      <text x="503" y="347">API response</text>
+      <text x="194" y="384">Forward response to browser</text>
+    </g>
+  </g>
+</svg>

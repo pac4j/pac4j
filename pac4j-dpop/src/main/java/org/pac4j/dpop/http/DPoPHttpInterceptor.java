@@ -23,6 +23,7 @@ import org.pac4j.core.http.oauth.OAuthHttpRequest;
 import org.pac4j.core.http.oauth.OAuthHttpResponse;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.JwkHelper;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.dpop.util.DPoPProtocolMessages;
 
 import java.net.URI;
@@ -222,7 +223,7 @@ public class DPoPHttpInterceptor implements HttpInterceptor {
         assertSession(context);
         val webContext = context.webContext();
         val sessionStore = context.sessionStore();
-        val sessionAttribute = KEY_SESSION_ATTRIBUTE_PREFIX + jwsAlgorithm.getName();
+        val sessionAttribute = Pac4jConstants.DPOP_KEY_SESSION_ATTRIBUTE_PREFIX + jwsAlgorithm.getName();
         val saved = sessionStore.get(webContext, sessionAttribute);
         if (saved.isPresent()) {
             try {

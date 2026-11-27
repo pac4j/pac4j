@@ -36,4 +36,4 @@ public class MyStore extends AbstractConcurrentMapStore<String, MyValue> {
 
 The expiration date is computed once, when the value is stored: changing it afterwards is only taken into account on the next `set`. Returning `null` keeps the entry forever.
 
-Entries are dropped when they expire: when they are read and when another value is stored. Neither of these two stores runs a background thread.
+Expired entries are dropped when they are read, and by the writes: each one checks the next of the 256 buckets of the store, so an expired entry is dropped within 256 writes. Neither of these two stores runs a background thread.

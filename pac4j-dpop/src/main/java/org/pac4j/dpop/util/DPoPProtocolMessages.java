@@ -49,7 +49,7 @@ public class DPoPProtocolMessages {
     public void receivedNonce(final String server, final String nonce, final boolean required) {
         if (LOGGER.isEnabled()) {
             LOGGER.received(SERVER, server + " DPoP-Nonce: " + nonce
-                + (required ? " (use_dpop_nonce: the request is sent again)" : ""));
+                + (required ? " (use_dpop_nonce)" : ""));
         }
     }
 

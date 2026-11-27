@@ -19,6 +19,7 @@ import org.pac4j.core.context.CallContext;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.http.oauth.OAuthHttpRequest;
 import org.pac4j.core.http.oauth.OAuthHttpResponse;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.dpop.DPoPTestHelper;
 import org.pac4j.dpop.client.direct.DirectDPoPAuthClient;
 import org.pac4j.dpop.credentials.extractor.DPoPAuthExtractor;
@@ -80,12 +81,36 @@ final class DPoPProtocolMessagesTests {
         assertNotNull(SignedJWT.parse(proof).getHeader().getJWK());
         assertEquals(List.of(
             ">>> server POST https://server.example/token DPoP: " + proof,
-            "<<< server https://server.example DPoP-Nonce: nonce-1 (use_dpop_nonce: the request is sent again)",
+            "<<< server https://server.example DPoP-Nonce: nonce-1 (use_dpop_nonce)",
             "<<< server https://server.example DPoP-Nonce: nonce-2"), lines());
         // neither the private key saved in the session nor the query string is logged
-        val key = (String) ctx.sessionStore().get(ctx.webContext(), DPoPConstants.KEY_SESSION_ATTRIBUTE_PREFIX + "ES256").orElseThrow();
+        val key = (String) ctx.sessionStore()
+            .get(ctx.webContext(), Pac4jConstants.DPOP_KEY_SESSION_ATTRIBUTE_PREFIX + "ES256").orElseThrow();
         assertTrue(key.contains("\"d\""));
         assertFalse(String.join("\n", lines()).contains("secret"));
+    }
+
+    @Test
+    void logsValidationOnlyWhenTheVerifierAcceptsTheProof() throws Exception {
+        val key = DPoPTestHelper.generateKey();
+        val token = DPoPTestHelper.accessToken(key, null);
+        val proof = DPoPTestHelper.proof(key, "GET", DPoPTestHelper.URL, token);
+        val request = new CallContext(DPoPTestHelper.request("GET", DPoPTestHelper.URL, token, proof), new MockSessionStore());
+        val extractor = new DPoPAuthExtractor();
+        val extractorLogger = (Logger) LoggerFactory.getLogger(DPoPAuthExtractor.class);
+        val previousLevel = extractorLogger.getLevel();
+        extractorLogger.addAppender(appender);
+        try {
+            extractorLogger.setLevel(Level.DEBUG);
+            assertTrue(extractor.extract(request).isPresent());
+            assertThrows(CredentialsException.class, () -> extractor.extract(request));
+            assertEquals(List.of("DPoP proof validated for method GET with algorithm ES256"), appender.list.stream()
+                .filter(event -> event.getLoggerName().equals(extractorLogger.getName()) && event.getLevel() == Level.DEBUG)
+                .map(ILoggingEvent::getFormattedMessage).toList());
+        } finally {
+            extractorLogger.detachAppender(appender);
+            extractorLogger.setLevel(previousLevel);
+        }
     }
 
     @Test

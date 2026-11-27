@@ -20,6 +20,7 @@ import org.pac4j.core.http.oauth.OAuthHttpResponse;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.creator.ProfileCreator;
+import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.dpop.credentials.extractor.DPoPAuthExtractor;
 import org.pac4j.dpop.http.DPoPHttpInterceptor;
 import org.pac4j.dpop.proof.DPoPNonceManager;
@@ -287,7 +288,7 @@ final class DirectDPoPAuthClientTests implements TestsConstants {
         interceptor.configureRequest(new OAuthHttpRequest("POST", "https://server.example.org/token",
             new TreeMap<>(String.CASE_INSENSITIVE_ORDER)), callerCtx);
         val callerKey = JWK.parse((String) callerCtx.sessionStore().get(callerCtx.webContext(),
-            DPoPConstants.KEY_SESSION_ATTRIBUTE_PREFIX + "ES256").orElseThrow());
+            Pac4jConstants.DPOP_KEY_SESSION_ATTRIBUTE_PREFIX + "ES256").orElseThrow());
         val accessToken = accessToken(callerKey, null);
         val request = new OAuthHttpRequest("GET", URL + "?a=b", new TreeMap<>(String.CASE_INSENSITIVE_ORDER));
         request.headers().put(HttpConstants.AUTHORIZATION_HEADER, HttpConstants.DPOP_HEADER_PREFIX + accessToken);
@@ -313,7 +314,7 @@ final class DirectDPoPAuthClientTests implements TestsConstants {
         interceptor.configureRequest(new OAuthHttpRequest("POST", "https://server.example.org/token",
             new TreeMap<>(String.CASE_INSENSITIVE_ORDER)), callerCtx);
         val callerKey = JWK.parse((String) callerCtx.sessionStore().get(callerCtx.webContext(),
-            DPoPConstants.KEY_SESSION_ATTRIBUTE_PREFIX + "ES256").orElseThrow());
+            Pac4jConstants.DPOP_KEY_SESSION_ATTRIBUTE_PREFIX + "ES256").orElseThrow());
         val accessToken = accessToken(callerKey, null);
         // the application holds a nonce of the protected resource, which has passed half of its maximum age
         val oldNonce = new DPoPNonceManager(SECRET, 300).generate(Instant.now().minusSeconds(200));
